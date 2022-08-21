@@ -54,7 +54,7 @@ import java.util.*;
 
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
-import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
 
 public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IBlockOverlayText,
 		IConfigurableSides, IPlayerInteraction, IBlockEntityDrop, IComparatorOverride
@@ -77,8 +77,8 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(
-			Direction.DOWN, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, Direction.DOWN),
-			Direction.UP, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, Direction.UP)
+			Direction.DOWN, CapabilityReference.forNeighbor(this, FLUID_HANDLER, Direction.DOWN),
+			Direction.UP, CapabilityReference.forNeighbor(this, FLUID_HANDLER, Direction.UP)
 	);
 
 	@Override
@@ -183,7 +183,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==FLUID_HANDLER_CAPABILITY&&sidedFluidHandler.containsKey(facing))
+		if(capability==FLUID_HANDLER&&sidedFluidHandler.containsKey(facing))
 			return sidedFluidHandler.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}

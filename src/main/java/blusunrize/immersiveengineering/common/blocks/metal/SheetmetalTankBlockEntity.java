@@ -36,10 +36,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -68,7 +68,7 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 			}
 	);
 	private final Map<Direction, CapabilityReference<IFluidHandler>> fluidNeighbors = CapabilityReference.forAllNeighbors(
-			this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+			this, ForgeCapabilities.FLUID_HANDLER
 	);
 
 	public SheetmetalTankBlockEntity(BlockEntityType<SheetmetalTankBlockEntity> type, BlockPos pos, BlockState state)
@@ -165,7 +165,7 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.FLUID_HANDLER)
 		{
 			if(ioBottomOffset.equals(posInMultiblock))
 				return fluidIO.getAndCast();

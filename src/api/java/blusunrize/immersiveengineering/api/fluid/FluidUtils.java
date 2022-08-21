@@ -7,11 +7,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -69,7 +69,7 @@ public class FluidUtils
 	)
 	{
 		ItemStack containerCopy = ItemHandlerHelper.copyStackWithSize(container, 1);
-		return containerCopy.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(handler -> {
+		return containerCopy.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(handler -> {
 			final FluidStack simulatedMoved = FluidUtil.tryFluidTransfer(
 					fluidDestination, handler, maxAmount, false
 			);

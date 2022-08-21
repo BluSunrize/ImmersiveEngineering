@@ -76,10 +76,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.ModList;
@@ -626,7 +626,7 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
+		return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
 	}
 
 	public static Optional<CraftingRecipe> findCraftingRecipe(CraftingContainer crafting, Level world)

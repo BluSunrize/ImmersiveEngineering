@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 
 public abstract class InternalStorageItemContainer extends ItemContainer
@@ -29,7 +29,7 @@ public abstract class InternalStorageItemContainer extends ItemContainer
 	{
 		super(type, id, iinventory, world, entityEquipmentSlot, heldItem);
 		this.entityEquipmentSlot = entityEquipmentSlot;
-		this.inv = heldItem.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);
+		this.inv = heldItem.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setInventoryForUpdate(iinventory);
 		updateSlots();

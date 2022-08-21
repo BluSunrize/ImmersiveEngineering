@@ -29,8 +29,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -50,11 +50,11 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(worldPosition.relative(getFacing(), 2).offset(0, -1, 0), getFacing().getOpposite()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			ForgeCapabilities.ITEM_HANDLER
 	);
 	private final CapabilityReference<IItemHandler> slag = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(worldPosition.relative(getFacing(), -2).offset(0, -1, 0), getFacing().getOpposite()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			ForgeCapabilities.ITEM_HANDLER
 	);
 
 	@Override
@@ -199,7 +199,7 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(ioOffsets.contains(posInMultiblock)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(ioOffsets.contains(posInMultiblock)&&capability==ForgeCapabilities.ITEM_HANDLER)
 		{
 			if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
 				return inputHandler.getAndCast();

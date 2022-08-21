@@ -33,8 +33,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -212,7 +212,7 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&isEnergyPos())
+		if(capability==ForgeCapabilities.ENERGY&&isEnergyPos())
 			return energyCap.getAndCast();
 		return super.getCapability(capability, facing);
 	}

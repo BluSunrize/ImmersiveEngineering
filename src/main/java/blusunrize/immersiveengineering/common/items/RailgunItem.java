@@ -51,11 +51,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -104,7 +103,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
 		super.recalculateUpgrades(stack, w, player);
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 		if(energy.getEnergyStored() > this.getMaxEnergyStored(stack))
 			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
@@ -113,7 +112,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	public void clearUpgrades(ItemStack stack)
 	{
 		super.clearUpgrades(stack);
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 		if(energy.getEnergyStored() > this.getMaxEnergyStored(stack))
 			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
@@ -151,7 +150,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
-					if(capability==CapabilityEnergy.ENERGY)
+					if(capability==ForgeCapabilities.ENERGY)
 						return energyStorage.cast();
 					if(capability==CapabilityShader.SHADER_CAPABILITY)
 						return shaders.cast();
@@ -164,7 +163,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
 		list.add(Component.translatable(Lib.DESC+"info.energyStored", stored));
 	}
@@ -184,7 +183,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		int consumption = IEServerConfig.TOOLS.railgun_consumption.get();
 		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 		consumption = (int)(consumption*energyMod);
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 		if(energy.extractEnergy(consumption, true)==consumption&&!findAmmo(stack, player).isEmpty())
 		{
 			player.startUsingItem(hand);
@@ -222,7 +221,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 			int consumption = IEServerConfig.TOOLS.railgun_consumption.get();
 			float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 			consumption = (int)(consumption*energyMod);
-			IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+			IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 			if(energy.extractEnergy(consumption, true)==consumption)
 			{
 				ItemStack ammo = findAmmo(stack, (Player)user);
@@ -354,7 +353,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty())
 				Utils.unlockIEAdvancement(player, "tools/upgrade_railgun");

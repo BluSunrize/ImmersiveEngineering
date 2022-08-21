@@ -26,8 +26,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
@@ -59,7 +59,7 @@ public class PowerpackItem extends IEBaseItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
 		list.add(Component.translatable(Lib.DESC+"info.energyStored", stored).withStyle(ChatFormatting.GRAY));
 	}
@@ -121,7 +121,7 @@ public class PowerpackItem extends IEBaseItem
 	{
 		if(!stack.isEmpty())
 			return new SimpleCapProvider<>(
-					() -> CapabilityEnergy.ENERGY, new ItemEnergyStorage(stack, PowerpackItem::getMaxEnergyStored)
+					() -> ForgeCapabilities.ENERGY, new ItemEnergyStorage(stack, PowerpackItem::getMaxEnergyStored)
 			);
 		else
 			return super.initCapabilities(stack, nbt);

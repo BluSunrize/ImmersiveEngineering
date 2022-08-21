@@ -36,8 +36,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -81,7 +81,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(worldPosition.relative(getFacing()), getFacing().getOpposite()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			ForgeCapabilities.ITEM_HANDLER);
 
 	@Override
 	public void tickServer()
@@ -262,7 +262,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&facing==getFacing().getOpposite())
+		if(capability==ForgeCapabilities.ITEM_HANDLER&&facing==getFacing().getOpposite())
 			return insertionCap.cast();
 		if(capability==CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION)
 			return redstoneCap.cast();

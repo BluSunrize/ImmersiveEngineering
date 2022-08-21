@@ -53,10 +53,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -96,10 +96,10 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	public int pouringMetal = 0;
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).relative(getFacing(), -1), getFacing().getOpposite()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			ForgeCapabilities.ITEM_HANDLER);
 	private final CapabilityReference<IItemHandler> slagOut = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).relative(getFacing()), getFacing().getOpposite()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			ForgeCapabilities.ITEM_HANDLER);
 
 	public ArcFurnaceBlockEntity(BlockEntityType<ArcFurnaceBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -688,7 +688,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.ITEM_HANDLER)
 		{
 			if(posInMultiblock==MAIN_OUT_POS)
 				return outputHandler.getAndCast();

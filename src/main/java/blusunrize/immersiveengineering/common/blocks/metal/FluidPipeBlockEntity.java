@@ -55,12 +55,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -138,7 +138,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 							else
 							{
 								LazyOptional<IFluidHandler> handlerOptional = adjacentTile.getCapability(
-										CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, fd.getOpposite());
+										ForgeCapabilities.FLUID_HANDLER, fd.getOpposite());
 								handlerOptional.ifPresent(handler ->
 								{
 									if(handler.getTanks() > 0)
@@ -264,7 +264,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 
 	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = CapabilityReference.forAllNeighbors(
-			this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+			this, ForgeCapabilities.FLUID_HANDLER
 	);
 
 	{
@@ -293,7 +293,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&sideConfig.getBoolean(facing))
+		if(capability==ForgeCapabilities.FLUID_HANDLER&&facing!=null&&sideConfig.getBoolean(facing))
 			return sidedHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}

@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteEnergyDa
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.network.NetworkEvent.Context;
 import net.minecraftforge.network.PacketDistributor;
@@ -52,7 +52,7 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 			RemoteEnergyData data = null;
 			if(provider!=null)
 			{
-				IEnergyStorage energyCap = CapabilityUtils.getCapability(provider, CapabilityEnergy.ENERGY);
+				IEnergyStorage energyCap = CapabilityUtils.getCapability(provider, ForgeCapabilities.ENERGY);
 				if(energyCap!=null&&energyCap.getMaxEnergyStored() > 0)
 					data = new RemoteEnergyData(
 							pos, level.getGameTime(), true, energyCap.getEnergyStored(), energyCap.getMaxEnergyStored()

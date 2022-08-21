@@ -55,8 +55,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -605,7 +605,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	@Override
 	public <T2> LazyOptional<T2> getCapability(@Nonnull Capability<T2> cap, @Nullable Direction side)
 	{
-		if(cap==CapabilityEnergy.ENERGY&&(side!=null||!isDummy()))
+		if(cap==ForgeCapabilities.ENERGY&&(side!=null||!isDummy()))
 			return energyCap.getAndCast();
 		return super.getCapability(cap, side);
 	}

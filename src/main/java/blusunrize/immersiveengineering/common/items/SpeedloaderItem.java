@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,7 +60,7 @@ public class SpeedloaderItem extends InternalStorageItem implements IBulletConta
 
 	public boolean isEmpty(ItemStack stack)
 	{
-		return stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).map(inv ->
+		return stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).map(inv ->
 		{
 			for(int i = 0; i < inv.getSlots(); i++)
 			{

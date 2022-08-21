@@ -42,12 +42,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -93,7 +93,7 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
 				Utils.unlockIEAdvancement(player, "tools/upgrade_drill");
@@ -108,9 +108,9 @@ public class DrillItem extends DieselToolItem
 
 	public static ItemStack getHeadStatic(ItemStack drill)
 	{
-		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+		if(ForgeCapabilities.ITEM_HANDLER==null)
 			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		LazyOptional<IItemHandler> cap = drill.getCapability(ForgeCapabilities.ITEM_HANDLER);
 		if(cap.isPresent())
 		{
 			ItemStack head = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
@@ -122,7 +122,7 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public void setHead(ItemStack drill, ItemStack head)
 	{
-		IItemHandler inv = drill.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);
+		IItemHandler inv = drill.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
 		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
 	}
 

@@ -50,15 +50,14 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -317,7 +316,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(
-			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			this, this::getOutputPos, ForgeCapabilities.ITEM_HANDLER
 	);
 
 	@Override
@@ -417,7 +416,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.FLUID_HANDLER)
 		{
 			if(facing==null)
 				return fluidInputCap.getAndCast();
@@ -427,7 +426,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 			else if(FLUID_OUTPUT.equals(relativeFace))
 				return fluidOutputCap.getAndCast();
 		}
-		if((facing==null||new BlockPos(1, 1, 0).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((facing==null||new BlockPos(1, 1, 0).equals(posInMultiblock))&&capability==ForgeCapabilities.ITEM_HANDLER)
 			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}

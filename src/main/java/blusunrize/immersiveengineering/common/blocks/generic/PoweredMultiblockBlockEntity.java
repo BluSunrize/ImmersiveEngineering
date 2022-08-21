@@ -34,8 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -150,7 +150,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction side)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&(side==null||isEnergyPos(side)))
+		if(capability==ForgeCapabilities.ENERGY&&(side==null||isEnergyPos(side)))
 			return energyCap.getAndCast();
 		return super.getCapability(capability, side);
 	}

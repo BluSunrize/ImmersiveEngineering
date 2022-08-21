@@ -19,7 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -39,7 +39,7 @@ public class ToolboxMenu extends IEContainerMenu implements ICallbackContainer
 		return new ToolboxMenu(
 				itemCtx(type, id, invPlayer, slot, stack),
 				invPlayer,
-				CapabilityUtils.getPresentCapability(stack, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+				CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ITEM_HANDLER)
 		);
 	}
 

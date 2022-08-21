@@ -56,10 +56,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -414,7 +414,7 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
-			() -> new DirectionalBlockPos(getBlockPos().relative(getFacing(), -1), getFacing().getOpposite()), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			() -> new DirectionalBlockPos(getBlockPos().relative(getFacing(), -1), getFacing().getOpposite()), ForgeCapabilities.ITEM_HANDLER);
 
 	@Override
 	public void doProcessOutput(ItemStack output)

@@ -50,16 +50,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -102,7 +101,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(2, 1, 1)).relative(outDir), outDir.getOpposite());
-	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	}, ForgeCapabilities.ITEM_HANDLER);
 
 	@Override
 	public void tickClient()
@@ -368,10 +367,10 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.FLUID_HANDLER)
 			if(facing==null||(BlockPos.ZERO.equals(posInMultiblock)&&facing.getAxis().isHorizontal()))
 				return fluidCap.getAndCast();
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.ITEM_HANDLER)
 			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().getClockWise(): this.getFacing().getCounterClockWise()))
 				return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);

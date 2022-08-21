@@ -43,7 +43,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -167,7 +167,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	{
 		if(stack.getItem() instanceof InternalStorageItem)
 		{
-			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(inv ->
+			stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(inv ->
 			{
 				for(int i = 0; i < inv.getSlots(); i++)
 					inventory.set(i, inv.getStackInSlot(i));

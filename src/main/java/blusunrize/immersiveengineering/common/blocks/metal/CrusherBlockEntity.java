@@ -50,10 +50,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -353,7 +353,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(getBlockPos().offset(0, -1, 0).relative(getFacing(), -2), getFacing()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			ForgeCapabilities.ITEM_HANDLER);
 
 	@Override
 	public void doProcessOutput(ItemStack output)
@@ -465,7 +465,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&isInInput(false))
+		if(capability==ForgeCapabilities.ITEM_HANDLER&&isInInput(false))
 			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}

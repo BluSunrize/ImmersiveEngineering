@@ -40,8 +40,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -217,7 +217,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap==CapabilityEnergy.ENERGY&&(side==null||(side==getFacing()&&isDummy())))
+		if(cap==ForgeCapabilities.ENERGY&&(side==null||(side==getFacing()&&isDummy())))
 			return energyCap.getAndCast();
 		return super.getCapability(cap, side);
 	}

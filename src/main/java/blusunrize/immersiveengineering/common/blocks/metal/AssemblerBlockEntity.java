@@ -51,15 +51,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -138,7 +137,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing().getOpposite()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			ForgeCapabilities.ITEM_HANDLER);
 
 	@Override
 	public void tickServer()
@@ -517,10 +516,10 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.FLUID_HANDLER)
 			if(facing==null||fluidInputPos.equals(asRelativeFace(facing)))
 				return fluidCap.getAndCast();
-		if(itemConnections.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(itemConnections.contains(posInMultiblock)&&capability==ForgeCapabilities.ITEM_HANDLER)
 		{
 			if(inputPos.equals(posInMultiblock)&&facing==this.getFacing().getOpposite())
 				return insertionHandler.getAndCast();

@@ -52,12 +52,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -100,7 +99,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
-			this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+			this, ForgeCapabilities.FLUID_HANDLER
 	);
 
 	@Override
@@ -360,9 +359,9 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&(facing==null||(facing==Direction.UP&&isDummy())))
+		if(capability==ForgeCapabilities.ENERGY&&(facing==null||(facing==Direction.UP&&isDummy())))
 			return energyCap.getAndCast();
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!isDummy())
+		if(capability==ForgeCapabilities.FLUID_HANDLER&&facing!=null&&!isDummy())
 		{
 			if(!sidedFluidHandler.containsKey(facing))
 				sidedFluidHandler.put(facing, registerCapability(new SidedFluidHandler(this, facing)));

@@ -39,8 +39,8 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -173,7 +173,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap==CapabilityEnergy.ENERGY)
+		if(cap==ForgeCapabilities.ENERGY)
 			return (side==null?nullEnergyCap: energyCaps.get(side)).cast();
 		return super.getCapability(cap, side);
 	}

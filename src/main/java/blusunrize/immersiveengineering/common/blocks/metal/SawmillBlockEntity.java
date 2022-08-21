@@ -53,11 +53,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -119,10 +119,10 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(this, () -> {
 		Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(4, 1, 1)).relative(outDir), outDir.getOpposite());
-	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	}, ForgeCapabilities.ITEM_HANDLER);
 
 	private final CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forBlockEntityAt(
-			this, this::getSecondaryOutputCapPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			this, this::getSecondaryOutputCapPos, ForgeCapabilities.ITEM_HANDLER
 	);
 
 	@Override
@@ -554,7 +554,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.ITEM_HANDLER)
 			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().getClockWise(): this.getFacing().getCounterClockWise()))
 				return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);

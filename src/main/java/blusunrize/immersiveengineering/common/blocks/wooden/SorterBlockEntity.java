@@ -44,7 +44,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER;
 
 //TODO Metadata and oredict are gone. Update manual entry as well.
 public class SorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<SorterBlockEntity>, IBlockEntityDrop
@@ -60,7 +60,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	private static Set<BlockPos> routed = null;
 
 	private final Map<Direction, CapabilityReference<IItemHandler>> neighborCaps = CapabilityReference.forAllNeighbors(
-			this, ITEM_HANDLER_CAPABILITY
+			this, ITEM_HANDLER
 	);
 
 	public SorterBlockEntity(BlockPos pos, BlockState state)
@@ -350,7 +350,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==ITEM_HANDLER_CAPABILITY&&facing!=null)
+		if(capability==ITEM_HANDLER&&facing!=null)
 			return insertionHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}

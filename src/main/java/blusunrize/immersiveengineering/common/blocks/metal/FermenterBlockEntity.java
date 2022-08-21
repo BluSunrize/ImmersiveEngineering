@@ -44,14 +44,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -103,7 +102,7 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 			() -> {
 				Direction fw = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
 				return new DirectionalBlockPos(this.getBlockPos().relative(fw), fw.getOpposite());
-			}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			}, ForgeCapabilities.ITEM_HANDLER);
 
 	@Override
 	public void tickServer()
@@ -353,9 +352,9 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||FLUID_OUTPUT.equals(asRelativeFace(facing))))
+		if(capability==ForgeCapabilities.FLUID_HANDLER&&(facing==null||FLUID_OUTPUT.equals(asRelativeFace(facing))))
 			return fluidCap.getAndCast();
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.ITEM_HANDLER)
 		{
 			if(new BlockPos(0, 1, 0).equals(posInMultiblock))
 				return insertionHandler.getAndCast();

@@ -47,10 +47,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -250,7 +250,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	}
 
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(
-			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			this, this::getOutputPos, ForgeCapabilities.ITEM_HANDLER
 	);
 
 	@Override
@@ -352,7 +352,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.ITEM_HANDLER)
 			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==this.getFacing().getOpposite())
 				return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);

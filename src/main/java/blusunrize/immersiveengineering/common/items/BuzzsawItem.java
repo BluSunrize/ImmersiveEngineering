@@ -41,8 +41,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -53,11 +53,11 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
@@ -141,7 +141,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty())
 				Utils.unlockIEAdvancement(player, "tools/upgrade_buzzsaw");
@@ -152,7 +152,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
 		super.recalculateUpgrades(stack, w, player);
-		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 		invCap.ifPresent(inv -> {
 			for(int iUpgrade = 1; iUpgrade <= 2; iUpgrade++)
 			{
@@ -177,9 +177,9 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public static ItemStack getSawblade(ItemStack itemStack, int spare)
 	{
-		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+		if(ForgeCapabilities.ITEM_HANDLER==null)
 			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> cap = itemStack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 		// handle spares
 		int slot = spare==0?0: 2+spare;
 		ItemStack sawblade = cap.orElseThrow(RuntimeException::new).getStackInSlot(slot);
@@ -195,7 +195,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade, int spare)
 	{
 		int slot = spare==0?0: 2+spare;
-		IItemHandler inv = CapabilityUtils.getPresentCapability(buzzsaw, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		IItemHandler inv = CapabilityUtils.getPresentCapability(buzzsaw, ForgeCapabilities.ITEM_HANDLER);
 		((IItemHandlerModifiable)inv).setStackInSlot(slot, sawblade);
 	}
 

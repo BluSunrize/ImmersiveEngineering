@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -68,7 +68,7 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 		ItemStack tool = this.getSlot(0).getItem();
 		if(tool.getItem() instanceof IUpgradeableTool upgradeableTool)
 		{
-			IItemHandler toolInv = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
+			IItemHandler toolInv = tool.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElseThrow(RuntimeException::new);
 			if(toolInv instanceof IEItemStackHandler ieInv)
 				ieInv.setTile(tile);
 

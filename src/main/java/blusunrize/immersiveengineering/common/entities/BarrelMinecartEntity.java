@@ -29,7 +29,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
 
 public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEntity>
 {
@@ -95,7 +95,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	{
 		super.invalidateCaps();
 		if(this.containedBlockEntity!=null)
-			this.containedBlockEntity.getCapability(FLUID_HANDLER_CAPABILITY).invalidate();
+			this.containedBlockEntity.getCapability(FLUID_HANDLER).invalidate();
 	}
 
 	@Override

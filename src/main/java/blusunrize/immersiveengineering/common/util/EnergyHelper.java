@@ -15,8 +15,8 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -89,7 +89,7 @@ public class EnergyHelper
 	{
 		if(stack==null)
 			return 0;
-		return stack.getCapability(CapabilityEnergy.ENERGY, side)
+		return stack.getCapability(ForgeCapabilities.ENERGY, side)
 				.map(IEnergyStorage::getEnergyStored)
 				.orElse(0);
 	}
@@ -103,7 +103,7 @@ public class EnergyHelper
 	{
 		if(stack==null)
 			return 0;
-		return stack.getCapability(CapabilityEnergy.ENERGY, side)
+		return stack.getCapability(ForgeCapabilities.ENERGY, side)
 				.map(IEnergyStorage::getMaxEnergyStored)
 				.orElse(0);
 	}
@@ -117,7 +117,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return false;
-		return tile.getCapability(CapabilityEnergy.ENERGY, facing)
+		return tile.getCapability(ForgeCapabilities.ENERGY, facing)
 				.map(IEnergyStorage::canReceive)
 				.orElse(false);
 	}
@@ -131,7 +131,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return false;
-		return tile.getCapability(CapabilityEnergy.ENERGY, facing).isPresent();
+		return tile.getCapability(ForgeCapabilities.ENERGY, facing).isPresent();
 	}
 
 	public static int insertFlux(ICapabilityProvider tile, int energy, boolean simulate)
@@ -143,7 +143,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return 0;
-		return tile.getCapability(CapabilityEnergy.ENERGY, facing)
+		return tile.getCapability(ForgeCapabilities.ENERGY, facing)
 				.map(storage -> storage.receiveEnergy(energy, simulate))
 				.orElse(0);
 	}
@@ -157,7 +157,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return 0;
-		return tile.getCapability(CapabilityEnergy.ENERGY, facing)
+		return tile.getCapability(ForgeCapabilities.ENERGY, facing)
 				.map(storage -> storage.extractEnergy(energy, simulate))
 				.orElse(0);
 	}

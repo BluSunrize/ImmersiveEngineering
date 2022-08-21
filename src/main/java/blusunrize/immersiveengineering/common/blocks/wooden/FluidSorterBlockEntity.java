@@ -41,7 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
 
 /**
  * @author BluSunrize - 02.03.2017
@@ -58,7 +58,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	 */
 	private static Set<BlockPos> usedRouters = null;
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborCaps = CapabilityReference.forAllNeighbors(
-			this, FLUID_HANDLER_CAPABILITY
+			this, FLUID_HANDLER
 	);
 
 	public FluidSorterBlockEntity(BlockPos pos, BlockState state)
@@ -247,7 +247,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==FLUID_HANDLER_CAPABILITY&&facing!=null)
+		if(capability==FLUID_HANDLER&&facing!=null)
 			return insertionHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}

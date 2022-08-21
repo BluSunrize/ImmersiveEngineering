@@ -43,10 +43,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -241,9 +240,9 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&(facing==null||facing==Direction.DOWN||facing==getFacing().getOpposite()))
+		if(capability==ForgeCapabilities.ENERGY&&(facing==null||facing==Direction.DOWN||facing==getFacing().getOpposite()))
 			return energyCap.cast();
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.ITEM_HANDLER)
 			return insertionHandler.cast();
 		return super.getCapability(capability, facing);
 	}

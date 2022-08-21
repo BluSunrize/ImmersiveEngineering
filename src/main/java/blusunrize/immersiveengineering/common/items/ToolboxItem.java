@@ -32,8 +32,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -88,7 +88,7 @@ public class ToolboxItem extends InternalStorageItem
 		if(slots.length < 1)
 			return 0;
 
-		LazyOptional<IItemHandler> lazyHandler = toolbox.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> lazyHandler = toolbox.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 		return lazyHandler.map(handler -> {
 			ItemStack remain = other.copy();
 			for(int iSlot : slots)

@@ -33,8 +33,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.OptionalDouble;
@@ -102,7 +102,7 @@ public class ExtractConveyor extends ConveyorBase
 		{
 			BlockState connected = world.getBlockState(neighbour);
 			BlockEntity connectedTile = world.getBlockEntity(neighbour);
-			if(connectedTile!=null&&connectedTile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, this.getExtractDirection().getOpposite()).isPresent())
+			if(connectedTile!=null&&connectedTile.getCapability(ForgeCapabilities.ITEM_HANDLER, this.getExtractDirection().getOpposite()).isPresent())
 			{
 				VoxelShape connectedShape = connected.getShape(world, neighbour);
 				VoxelShape projected = connectedShape.getFaceShape(this.getExtractDirection().getOpposite());

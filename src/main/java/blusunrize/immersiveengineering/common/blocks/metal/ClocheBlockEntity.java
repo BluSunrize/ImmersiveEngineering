@@ -59,17 +59,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
@@ -120,7 +118,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(worldPosition.above().relative(getFacing().getOpposite()), getFacing()),
-			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+			ForgeCapabilities.ITEM_HANDLER);
 
 	@Override
 	public boolean canTickAny()
@@ -449,18 +447,18 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&(facing==null||
+		if(capability==ForgeCapabilities.ENERGY&&(facing==null||
 				(dummy==0&&facing.getAxis()==this.getFacing().getClockWise().getAxis())||
 				(dummy==2&&facing==Direction.UP)))
 			return energyCap.getAndCast();
-		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.ITEM_HANDLER)
 		{
 			if(facing==null||(dummy==0&&facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
 				return inputHandler.getAndCast();
 			if(dummy==1&&facing==this.getFacing().getOpposite())
 				return outputHandler.getAndCast();
 		}
-		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		else if(capability==ForgeCapabilities.FLUID_HANDLER)
 			if(facing==null||(dummy==0&&facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
 				return tankCap.getAndCast();
 		return super.getCapability(capability, facing);

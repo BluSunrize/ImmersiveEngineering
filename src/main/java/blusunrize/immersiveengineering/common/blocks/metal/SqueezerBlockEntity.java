@@ -49,14 +49,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -73,7 +72,7 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 	public float animation_piston = 0;
 	public boolean animation_down = true;
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(
-			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			this, this::getOutputPos, ForgeCapabilities.ITEM_HANDLER
 	);
 
 	public SqueezerBlockEntity(BlockEntityType<SqueezerBlockEntity> type, BlockPos pos, BlockState state)
@@ -392,9 +391,9 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||FLUID_OUTPUT.equals(asRelativeFace(facing))))
+		if(capability==ForgeCapabilities.FLUID_HANDLER&&(facing==null||FLUID_OUTPUT.equals(asRelativeFace(facing))))
 			return fluidCap.getAndCast();
-		if((inputOffset.equals(posInMultiblock)||outputOffset.equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if((inputOffset.equals(posInMultiblock)||outputOffset.equals(posInMultiblock))&&capability==ForgeCapabilities.ITEM_HANDLER)
 		{
 			if(inputOffset.equals(posInMultiblock))
 				return insertionHandler.getAndCast();

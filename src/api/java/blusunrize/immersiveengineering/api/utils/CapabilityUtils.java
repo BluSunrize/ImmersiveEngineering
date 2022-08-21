@@ -17,12 +17,11 @@ import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.extensions.IForgeAbstractMinecart;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -59,19 +58,19 @@ public class CapabilityUtils
 
 	public static LazyOptional<IItemHandler> findItemHandlerAtPos(Level world, BlockPos pos, Direction side, boolean allowCart)
 	{
-		return findCapabilityAtPos(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, world, pos, side, allowCart);
+		return findCapabilityAtPos(ForgeCapabilities.ITEM_HANDLER, world, pos, side, allowCart);
 	}
 
 	public static LazyOptional<IFluidHandler> findFluidHandlerAtPos(Level world, BlockPos pos, Direction side, boolean allowCart)
 	{
-		return findCapabilityAtPos(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, world, pos, side, allowCart);
+		return findCapabilityAtPos(ForgeCapabilities.FLUID_HANDLER, world, pos, side, allowCart);
 	}
 
 	public static boolean canInsertStackIntoInventory(BlockEntity inventory, ItemStack stack, Direction side)
 	{
 		if(!stack.isEmpty()&&inventory!=null)
 		{
-			return inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)
+			return inventory.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
 					.map(handler -> {
 						ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
 						return temp.isEmpty()||temp.getCount() < stack.getCount();
@@ -85,7 +84,7 @@ public class CapabilityUtils
 	{
 		if(!stack.isEmpty()&&inventory!=null)
 		{
-			return inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)
+			return inventory.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
 					.map(handler -> {
 						ItemStack temp = ItemHandlerHelper.insertItem(handler, stack.copy(), true);
 						if(temp.isEmpty()||temp.getCount() < stack.getCount())
@@ -101,7 +100,7 @@ public class CapabilityUtils
 	{
 		if(inventory!=null&&!stack.isEmpty())
 		{
-			return inventory.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)
+			return inventory.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
 					.map(handler -> ItemHandlerHelper.insertItem(handler, stack.copy(), simulate))
 					.orElse(stack);
 		}

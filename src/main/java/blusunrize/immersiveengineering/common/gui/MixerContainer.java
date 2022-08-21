@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 
 //TODO custom subclass of ItemStackHandler for markDirty etc
@@ -28,7 +28,7 @@ public class MixerContainer extends IEBaseContainerOld<MixerBlockEntity> impleme
 	{
 		super(type, tile, id);
 
-		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
+		IItemHandler inv = tile.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
 				.orElseThrow(RuntimeException::new);
 		for(int i = 0; i < 8; i++)
 			this.addSlot(new IESlot.ContainerCallback(this, inv, i, 7+(i%2)*21, 7+(i/2)*18));

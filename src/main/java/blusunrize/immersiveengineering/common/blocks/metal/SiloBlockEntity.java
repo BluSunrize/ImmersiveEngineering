@@ -30,8 +30,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -63,7 +63,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 			}
 	);
 	private final Map<Direction, CapabilityReference<IItemHandler>> outputCaps = CapabilityReference.forAllNeighbors(
-			this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			this, ForgeCapabilities.ITEM_HANDLER
 	);
 
 	public SiloBlockEntity(BlockEntityType<SiloBlockEntity> type, BlockPos pos, BlockState state)
@@ -179,7 +179,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(ioOffsets.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(ioOffsets.contains(posInMultiblock)&&capability==ForgeCapabilities.ITEM_HANDLER)
 			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}

@@ -39,11 +39,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -103,13 +102,13 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	private final List<CapabilityReference<IEnergyStorage>> outputs = Arrays.asList(
 			CapabilityReference.forBlockEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(0, 1, 4)).offset(0, 1, 0), Direction.DOWN),
-					CapabilityEnergy.ENERGY),
+					ForgeCapabilities.ENERGY),
 			CapabilityReference.forBlockEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(1, 1, 4)).offset(0, 1, 0), Direction.DOWN),
-					CapabilityEnergy.ENERGY),
+					ForgeCapabilities.ENERGY),
 			CapabilityReference.forBlockEntityAt(this,
 					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 1, 4)).offset(0, 1, 0), Direction.DOWN),
-					CapabilityEnergy.ENERGY)
+					ForgeCapabilities.ENERGY)
 	);
 
 	public void tickCommon()
@@ -332,7 +331,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		if(capability==ForgeCapabilities.FLUID_HANDLER)
 			if(facing==null||isFluidInput(facing))
 				return fluidCap.getAndCast();
 		return super.getCapability(capability, facing);

@@ -58,8 +58,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -491,7 +491,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap==CapabilityEnergy.ENERGY&&(side==null||!isDummy()))
+		if(cap==ForgeCapabilities.ENERGY&&(side==null||!isDummy()))
 			return energyCap.getAndCast();
 		return super.getCapability(cap, side);
 	}

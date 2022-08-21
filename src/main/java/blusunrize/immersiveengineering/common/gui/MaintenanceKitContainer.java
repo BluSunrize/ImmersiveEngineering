@@ -21,7 +21,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -65,7 +65,7 @@ public class MaintenanceKitContainer extends ItemContainer
 		if(tool.getItem() instanceof IUpgradeableTool upgradeableTool)
 		{
 			wasUsed = true;
-			IItemHandler toolInv = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
+			IItemHandler toolInv = tool.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElseThrow(RuntimeException::new);
 			Slot[] slots = upgradeableTool.getWorkbenchSlots(
 					this, tool, world, () -> player, world.isClientSide?clientInventory: toolInv
 			);

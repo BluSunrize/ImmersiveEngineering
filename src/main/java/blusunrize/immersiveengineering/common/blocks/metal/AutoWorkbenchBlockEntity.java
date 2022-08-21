@@ -42,10 +42,10 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -240,7 +240,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(
-			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+			this, this::getOutputPos, ForgeCapabilities.ITEM_HANDLER
 	);
 
 	@Override
@@ -341,7 +341,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(new BlockPos(0, 1, 2).equals(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(new BlockPos(0, 1, 2).equals(posInMultiblock)&&capability==ForgeCapabilities.ITEM_HANDLER)
 			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}

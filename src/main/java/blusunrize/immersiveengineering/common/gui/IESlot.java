@@ -31,10 +31,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -405,7 +405,7 @@ public abstract class IESlot extends Slot
 			super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool upgradeableTool)
 				upgradeableTool.removeFromWorkbench(player, stack);
-			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
+			stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
 				if(handler instanceof IEItemStackHandler ieHandler)
 					ieHandler.setTile(null);
 			});

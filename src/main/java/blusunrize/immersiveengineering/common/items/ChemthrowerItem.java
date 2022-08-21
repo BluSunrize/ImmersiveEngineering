@@ -46,11 +46,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -264,7 +264,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
-					if(capability==CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
+					if(capability==ForgeCapabilities.FLUID_HANDLER_ITEM)
 						return fluids.cast();
 					if(capability==CapabilityShader.SHADER_CAPABILITY)
 						return shaders.cast();

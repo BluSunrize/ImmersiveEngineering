@@ -52,9 +52,9 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.items.IItemHandler;
@@ -97,7 +97,7 @@ public class IEShieldItem extends UpgradeableToolItem
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
-					if(capability==CapabilityEnergy.ENERGY)
+					if(capability==ForgeCapabilities.ENERGY)
 						return energyStorage.cast();
 					if(capability==CapabilityShader.SHADER_CAPABILITY)
 						return shaders.cast();
@@ -128,7 +128,7 @@ public class IEShieldItem extends UpgradeableToolItem
 	{
 		if(getMaxEnergyStored(stack) > 0)
 		{
-			IEnergyStorage energyStorage = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+			IEnergyStorage energyStorage = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 			String stored = energyStorage.getEnergyStored()+"/"+getMaxEnergyStored(stack);
 			list.add(Component.translatable(Lib.DESC+"info.energyStored", stored));
 		}
@@ -145,7 +145,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			inHand |= ((LivingEntity)ent).getItemInHand(InteractionHand.OFF_HAND)==stack;
 
 		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isBlocking();
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
 			if(getUpgrades(stack).contains("flash_cooldown", Tag.TAG_INT)&&energy.extractEnergy(10, true)==10)

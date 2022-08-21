@@ -26,8 +26,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 {
 	private int energyOutput = -1;
 	private final Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = CapabilityReference.forAllNeighbors(
-			this, CapabilityEnergy.ENERGY
+			this, ForgeCapabilities.ENERGY
 	);
 
 	public ThermoelectricGenBlockEntity(BlockPos pos, BlockState state)
@@ -129,7 +129,7 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap==CapabilityEnergy.ENERGY)
+		if(cap==ForgeCapabilities.ENERGY)
 			return energyCap.cast();
 		return super.getCapability(cap, side);
 	}

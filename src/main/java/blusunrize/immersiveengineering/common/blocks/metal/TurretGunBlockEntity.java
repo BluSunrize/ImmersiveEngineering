@@ -37,8 +37,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -238,7 +238,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(!isDummy()&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
+		if(!isDummy()&&capability==ForgeCapabilities.ITEM_HANDLER&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
 			return itemHandler.cast();
 		return super.getCapability(capability, facing);
 	}
