@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
@@ -64,6 +65,9 @@ public class BasicClientProperties implements MultiblockManualData
 			materials = NonNullList.create();
 			for(StructureBlockInfo info : structure)
 			{
+				// Skip dummy blocks in total
+				if(info.state.hasProperty(IEProperties.MULTIBLOCKSLAVE) && info.state.getValue(IEProperties.MULTIBLOCKSLAVE))
+					continue;
 				ItemStack picked = Utils.getPickBlock(info.state);
 				boolean added = false;
 				for(ItemStack existing : materials)

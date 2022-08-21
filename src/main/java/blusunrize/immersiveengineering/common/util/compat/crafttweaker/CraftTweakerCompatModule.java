@@ -7,13 +7,41 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
-import blusunrize.immersiveengineering.common.util.compat.IECompatModules.StandardIECompatModule;
-import net.minecraftforge.common.MinecraftForge;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.plugin.CraftTweakerPlugin;
+import com.blamejared.crafttweaker.api.plugin.ICommandRegistrationHandler;
+import com.blamejared.crafttweaker.api.plugin.ICraftTweakerPlugin;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 
-public class CraftTweakerCompatModule extends StandardIECompatModule
+
+@CraftTweakerPlugin(Lib.MODID+":ct_module")
+public class CraftTweakerCompatModule implements ICraftTweakerPlugin
 {
-	public CraftTweakerCompatModule()
+	@Override
+	public void registerCommands(ICommandRegistrationHandler handler)
 	{
-		MinecraftForge.EVENT_BUS.register(CrafttweakerEventHandlers.class);
+		handler.registerDump(
+				"ieBlueprintCategories",
+				Component.literal("Lists the different blueprint categories for the IE workbench"),
+				CraftTweakerCompatModule::buildDumpCommand
+		);
+	}
+
+	private static void buildDumpCommand(LiteralArgumentBuilder<CommandSourceStack> builder)
+	{
+		builder.executes(ctx -> {
+			CraftTweakerAPI.LOGGER.info("List of all known blueprint categories: ");
+			for(String recipeCategory : BlueprintCraftingRecipe.recipeCategories)
+				CraftTweakerAPI.LOGGER.info("- {}", recipeCategory);
+			final Component message = Component.literal("Categories written to the log")
+					.withStyle(ChatFormatting.GREEN);
+			ctx.getSource().sendSuccess(message, true);
+			return 0;
+		});
 	}
 }

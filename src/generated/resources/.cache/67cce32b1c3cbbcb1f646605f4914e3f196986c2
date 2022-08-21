@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-08T14:16:26.37135158	LootTables
+// 1.19.2	2022-08-21T09:48:33.224473513	LootTables
 53c77f343d012af1111af7a6fef68f6838270605 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 94a46b870062652f589a6b228854fae4c6d6eff4 data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 10afcc2798d9fa5d063fafb4139b257263f697b0 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -220,6 +220,8 @@ bf1a5cf141b6185a02972bb537c606a2789da890 data/immersiveengineering/loot_tables/b
 bd3e9622fc72639f297c675cf32db7e7a4d1ac5b data/immersiveengineering/loot_tables/blocks/slab_treated_wood_horizontal.json
 61dd3b5cf9174644aa530c451594dc67686ad864 data/immersiveengineering/loot_tables/blocks/slab_treated_wood_packaged.json
 04134b52085cd9b5c4a509f3de90656fb47d1c6b data/immersiveengineering/loot_tables/blocks/slab_treated_wood_vertical.json
+c349c6bf429288f3111f89ca45bf95d724529be2 data/immersiveengineering/loot_tables/blocks/slag_glass.json
+c0b705a78d89eda07d939b1e17696d1c5e852f35 data/immersiveengineering/loot_tables/blocks/slag_gravel.json
 7a28253f86658ffe9b8ea36e0ad9b558cea116a8 data/immersiveengineering/loot_tables/blocks/sorter.json
 72df8fbe65cb89826957c7fb2d455c297b823738 data/immersiveengineering/loot_tables/blocks/squeezer.json
 a57746ab575e8661f3d91d94063185f78dec3914 data/immersiveengineering/loot_tables/blocks/stairs_alu_scaffolding_grate_top.json

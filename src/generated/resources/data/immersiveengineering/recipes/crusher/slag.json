@@ -5,7 +5,7 @@
     "tag": "forge:slag"
   },
   "result": {
-    "item": "minecraft:sand"
+    "item": "immersiveengineering:slag_gravel"
   },
   "secondaries": []
 }

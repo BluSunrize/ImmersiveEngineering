@@ -154,12 +154,14 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.COKEBRICK, rl("block/stone_decoration/cokebrick"));
 		cubeAll(StoneDecoration.BLASTBRICK, rl("block/stone_decoration/blastbrick"));
 		cubeAll(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
+		cubeAll(StoneDecoration.SLAG_GRAVEL, rl("block/stone_decoration/slag_gravel"));
 		cubeAll(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
 		cubeAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
 		cubeAll(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
 		cubeAll(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
 		cubeAll(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
 		cubeAll(StoneDecoration.INSULATING_GLASS, rl("block/stone_decoration/insulating_glass"));
+		cubeAll(StoneDecoration.SLAG_GLASS, rl("block/stone_decoration/slag_glass"));
 		cubeAll(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
 		cubeAll(StoneDecoration.DUROPLAST, rl("block/stone_decoration/duroplast"));
 
@@ -580,7 +582,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
 			ModelFile model = models().withExistingParent("block/hemp/"+g.getSerializedName(),
-					new ResourceLocation("block/crop"))
+							new ResourceLocation("block/crop"))
 					.texture("crop", g.getTextureName());
 			builder.partialState()
 					.with(HempBlock.GROWTH, g)

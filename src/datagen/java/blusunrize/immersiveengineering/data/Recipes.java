@@ -850,7 +850,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.GRAVEL)
 				.setEnergy(1600)
 				.build(out, toRL("crusher/gravel"));
-		CrusherRecipeBuilder.builder(Items.SAND)
+		CrusherRecipeBuilder.builder(StoneDecoration.SLAG_GRAVEL.asItem())
 				.addInput(IETags.slag)
 				.setEnergy(1600)
 				.build(out, toRL("crusher/slag"));
@@ -1090,13 +1090,6 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));
-		MixerRecipeBuilder.builder(concrete, half_bucket)
-				.addFluidTag(FluidTags.WATER, half_bucket)
-				.addInput(new IngredientWithSize(IETags.slag, 2))
-				.addInput(Tags.Items.GRAVEL)
-				.addInput(IETags.clay)
-				.setEnergy(3200)
-				.build(out, toRL("mixer/concrete"));
 		MixerRecipeBuilder.builder(IEFluids.HERBICIDE.getStill(), half_bucket)
 				.addFluidTag(IETags.fluidEthanol, half_bucket)
 				.addInput(IETags.sulfurDust)
@@ -1324,6 +1317,10 @@ public class Recipes extends RecipeProvider
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_TILE, out);
 
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.slag), StoneDecoration.SLAG_GLASS, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_slag", has(IETags.slag))
+				.save(out, toRL("smelting/"+toPath(StoneDecoration.SLAG_GLASS)));
+
 		ShapedRecipeBuilder.shaped(StoneDecoration.ALLOYBRICK, 2)
 				.pattern("sb")
 				.pattern("bs")
@@ -1348,18 +1345,6 @@ public class Recipes extends RecipeProvider
 				.define('g', Tags.Items.GRAVEL)
 				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_clay", has(IETags.clay))
-				.save(out, toRL("concrete"));
-		TurnAndCopyRecipeBuilder.builder(StoneDecoration.CONCRETE, 12)
-				.allowQuarterTurn()
-				.group("ie_concrete")
-				.pattern("scs")
-				.pattern("gbg")
-				.pattern("scs")
-				.define('s', IEItems.Ingredients.SLAG)
-				.define('c', IETags.clay)
-				.define('g', Tags.Items.GRAVEL)
-				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
-				.unlockedBy("has_slag", has(IEItems.Ingredients.SLAG))
 				.save(out, toRL("concrete"));
 		ShapedRecipeBuilder.shaped(StoneDecoration.CONCRETE_TILE, 4)
 				.group("ie_concrete")
@@ -2165,7 +2150,7 @@ public class Recipes extends RecipeProvider
 				.pattern("cic")
 				.pattern("cic")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
-				.define('c', StoneDecoration.INSULATING_GLASS)
+				.define('c', Ingredient.of(StoneDecoration.INSULATING_GLASS, StoneDecoration.SLAG_GLASS))
 				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.IRON).ingot))
 				.save(out, toRL("connector_hv_relay"));
 	}

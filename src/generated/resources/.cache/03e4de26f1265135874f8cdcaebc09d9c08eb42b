@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-08T17:17:00.524892034	Tags for minecraft:item
+// 1.19.2	2022-08-21T09:48:33.221794004	Tags for minecraft:item
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/charcoal.json
@@ -25,6 +25,7 @@ e37fe9d52c56579fee854aba2229814dbbed0f71 data/forge/tags/items/dusts/wood.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/items/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/items/fences/steel.json
 2142a61b9270c745352c9075368e8a23cf247539 data/forge/tags/items/fiber_hemp.json
+798333dba3595d9304d05418ce04a44f69a7d6c1 data/forge/tags/items/gravel.json
 3b879807f754943defbdc7716baec88d0093988e data/forge/tags/items/ingots.json
 99853b54b717df7267eb4b1bb67b87a3ea136078 data/forge/tags/items/ingots/aluminum.json
 7e0d4ce25fccdd5ff5b56a41778d4f700ac34a1b data/forge/tags/items/ingots/constantan.json

@@ -1,0 +1,18 @@
+{
+  "slag_gravel": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:slag_gravel"
+      }
+    ]
+  },
+  "slag_glass": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:slag_glass"
+      }
+    ]
+  }
+}

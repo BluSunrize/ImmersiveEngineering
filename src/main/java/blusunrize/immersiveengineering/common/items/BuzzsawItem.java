@@ -144,7 +144,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty())
-				Utils.unlockIEAdvancement(player, "main/upgrade_buzzsaw");
+				Utils.unlockIEAdvancement(player, "tools/upgrade_buzzsaw");
 		});
 	}
 
@@ -335,6 +335,15 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			if(canFellTree(stack)&&canToolBeUsed(stack)&&isTree(world, pos)&&!state.is(IETags.buzzsawTreeBlacklist))
 				fellTree(world, pos, (ServerPlayer)living, stack);
 		return true;
+	}
+
+	@Override
+	protected int getToolDamageFromBlock(ItemStack stack, @Nullable BlockState state)
+	{
+		ItemStack sawblade = getHead(stack);
+		if(sawblade.getItem() instanceof SawbladeItem sawbladeItem)
+			return sawbladeItem.getSawbladeDamageFromBlock(state==null||isEffective(stack, state));
+		return 0;
 	}
 
 	@Override

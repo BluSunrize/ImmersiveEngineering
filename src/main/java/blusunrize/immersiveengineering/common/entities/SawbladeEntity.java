@@ -39,9 +39,9 @@ public class SawbladeEntity extends IEProjectileEntity
 		this.pickup = Pickup.ALLOWED;
 	}
 
-	public SawbladeEntity(Level world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
+	public SawbladeEntity(Level world, @Nonnull LivingEntity living, float velocity, float accuracy, ItemStack ammo)
 	{
-		super(IEEntityTypes.SAWBLADE.get(), world, living, ax, ay, az);
+		super(IEEntityTypes.SAWBLADE.get(), world, living, velocity, accuracy);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickup = Pickup.ALLOWED;

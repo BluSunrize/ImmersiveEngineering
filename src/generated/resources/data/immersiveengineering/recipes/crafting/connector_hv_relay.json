@@ -1,9 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "c": {
-      "item": "immersiveengineering:insulating_glass"
-    },
+    "c": [
+      {
+        "item": "immersiveengineering:insulating_glass"
+      },
+      {
+        "item": "immersiveengineering:slag_glass"
+      }
+    ],
     "i": {
       "tag": "forge:ingots/aluminum"
     }

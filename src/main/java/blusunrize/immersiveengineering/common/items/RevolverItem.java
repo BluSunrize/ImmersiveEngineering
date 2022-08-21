@@ -199,7 +199,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.ifPresent(inv -> {
 					if(!inv.getStackInSlot(18).isEmpty()&&!inv.getStackInSlot(19).isEmpty())
-						Utils.unlockIEAdvancement(player, "main/upgrade_revolver");
+						Utils.unlockIEAdvancement(player, "tools/upgrade_revolver");
 				});
 	}
 

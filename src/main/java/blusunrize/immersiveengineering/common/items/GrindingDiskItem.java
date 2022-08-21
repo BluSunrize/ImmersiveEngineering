@@ -51,6 +51,12 @@ public class GrindingDiskItem extends SawbladeItem
 	}
 
 	@Override
+	public int getSawbladeDamageFromBlock(boolean effective)
+	{
+		return effective?1: 10;
+	}
+
+	@Override
 	public boolean canSawbladeFellTree()
 	{
 		return false;

@@ -232,6 +232,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 			this.sails++;
 			if(!player.getAbilities().instabuild)
 				heldItem.shrink(1);
+			this.setChanged();
 			return true;
 		}
 		return false;

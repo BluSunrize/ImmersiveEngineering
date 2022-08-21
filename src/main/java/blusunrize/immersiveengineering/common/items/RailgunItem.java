@@ -232,7 +232,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
 					Vec3 vec = user.getLookAngle();
 					float speed = 20;
-					Entity shot = new RailgunShotEntity(user.level, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
+					Entity shot = new RailgunShotEntity(user.level, user, speed, 0, ammoConsumed);
 					shot = projectileProperties.getProjectile((Player)user, ammoConsumed, shot);
 					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
 					energy.extractEnergy(consumption, false);
@@ -357,7 +357,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty())
-				Utils.unlockIEAdvancement(player, "main/upgrade_railgun");
+				Utils.unlockIEAdvancement(player, "tools/upgrade_railgun");
 		});
 	}
 

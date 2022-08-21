@@ -128,6 +128,8 @@ public class IEBlockTags extends BlockTagsProvider
 		}
 		tag(IETags.coalCokeBlock)
 				.add(StoneDecoration.COKE.get());
+		tag(Tags.Blocks.GRAVEL)
+				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
 
@@ -135,7 +137,8 @@ public class IEBlockTags extends BlockTagsProvider
 		registerPickaxeMineable();
 		registerAxeMineable();
 		tag(BlockTags.MINEABLE_WITH_SHOVEL)
-				.add(WoodenDecoration.SAWDUST.get());
+				.add(WoodenDecoration.SAWDUST.get())
+				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(IETags.wirecutterHarvestable)
 				.add(MetalDevices.RAZOR_WIRE.get());
 		tag(IETags.drillHarvestable)

@@ -1,4 +1,7 @@
-##### Version 1.18.2-8.1.1-pre
+##### Version 1.18.2-8.2.1-pre
+- Fix fluid pump showing as 2x in the required materials of the bottling machine (BluSunrize)
+
+##### Version 1.18.2-8.2.0-151
 - Overhauled the Bottling Machine (BluSunrize)
     - Had its internals adjusted to match other multiblocks
     - Now allows for multiple inputs in its recipes
@@ -22,9 +25,22 @@
     - By default, this blacklists Dynamic Trees, because they have their own mechanic for felling
 - Add Ersatz Leather, a leather alternative crafted with hemp fabric and beeswax or plant oil (BluSunrize)
 - Add recipes to break down prismarine blocks and press blaze powder into rods (BluSunrize)
+- Add additional uses for slag (BluSunrize, Silfryi)
+    - Slag glass blocks 50% of light passing through it and works as an insulator for HV relays
+    - Slag gravel speeds up water plants growing on it (kelp) and can be crushed into sand
+    - Slag recycling is now documented in the manual
+- Improve the railgun (BluSunrize)
+    - End rods are now valid projectiles, they are super effective against Endermen
+    - All railgun projectiles have perfect accuracy now (but are still affected by gravity)
+    - Tridents now have greatly increased speed (and thus range) when fired from a railgun
+    - The manual now documents the various types of ammunition in more detail
 - Change assembler to only use a single tank for a fluid, to allow better "filtering" (BluSunrize)
 - Change Diesel Generator consume fuel every 10 ticks, allowing for more granular burntime configurations (Silfryi)
 - Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)
+- Fix advancements for upgrading drill, railgun, buzzsaw and revolver to being triggered (BluSunrize)
+- Fix windmill sails not being saved properly (BluSunrize)
+- Fix crash with CraftTweaker (BluSunrize)
+- Fix crash with Minecolonies pathfinding (BluSunrize, Raycoms)
 - Translations Added/Updated: ja_jp (karakufire)
 
 ##### Version 1.18.2-8.1.0-150

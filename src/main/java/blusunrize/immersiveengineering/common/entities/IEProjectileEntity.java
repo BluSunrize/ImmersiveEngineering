@@ -76,6 +76,15 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 		this(type, world, living, living.getX(), living.getY()+living.getEyeHeight(), living.getZ(), ax, ay, az);
 	}
 
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, @Nonnull LivingEntity living, float velocity, float inaccuracy)
+	{
+		this(type, world);
+		setOwner(living);
+		this.setShooterSynced();
+		this.setPos(living.getX(), living.getEyeY()-0.1, living.getZ());
+		this.shootFromRotation(living, living.getXRot(), living.getYRot(), 0.0F, velocity, inaccuracy);
+	}
+
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
 	{
 		this(type, world);

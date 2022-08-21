@@ -78,6 +78,11 @@ public class SawbladeItem extends IEBaseItem
 		return sawbladeDamage;
 	}
 
+	public int getSawbladeDamageFromBlock(boolean effective)
+	{
+		return effective?1: 3;
+	}
+
 	public boolean canSawbladeFellTree()
 	{
 		return true;

@@ -67,7 +67,7 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		this.notNormalBlock = !defaultBlockState().canOcclude();
 
 		this.registerDefaultState(getInitDefaultState());
-		lightOpacity = 15;
+		lightOpacity = -1;
 	}
 
 	public IEBaseBlock setHidden(boolean shouldHide)
@@ -109,13 +109,12 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	@SuppressWarnings("deprecation")
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos)
 	{
-		if(notNormalBlock)
+		if(this.lightOpacity!=-1)
+			return this.lightOpacity;
+		else if(notNormalBlock)
 			return 0;
-			//TODO this sometimes locks up when generating IE blocks as part of worldgen
-		else if(state.isSolidRender(worldIn, pos))
-			return lightOpacity;
 		else
-			return state.propagatesSkylightDown(worldIn, pos)?0: 1;
+			return super.getLightBlock(state, worldIn, pos);
 	}
 
 	public IEBaseBlock setMobility(PushReaction flag)
@@ -187,7 +186,7 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	@Override
 	@SuppressWarnings("deprecation")
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-											 BlockHitResult hit)
+								 BlockHitResult hit)
 	{
 		ItemStack activeStack = player.getItemInHand(hand);
 		if(activeStack.is(IETags.hammers))
@@ -332,7 +331,7 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		}
 
 		@Override
-		public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity)
+		public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, @Nullable LivingEntity entity)
 		{
 			return true;
 		}

@@ -137,7 +137,7 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 	}
 
 	@Override
-	public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity)
+	public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, @Nullable LivingEntity entity)
 	{
 		return true;
 	}

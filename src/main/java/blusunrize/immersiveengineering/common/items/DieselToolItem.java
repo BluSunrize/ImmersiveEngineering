@@ -236,6 +236,11 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 		return true;
 	}
 
+	protected int getToolDamageFromBlock(ItemStack stack, @Nullable BlockState state)
+	{
+		return state==null||isEffective(stack, state)?1: 3;
+	}
+
 	protected void consumeDurability(
 			ItemStack stack, Level world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living
 	)
@@ -243,7 +248,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 		Preconditions.checkArgument((pos==null)==(state==null));
 		if(state==null||state.getDestroySpeed(world, pos)!=0.0f)
 		{
-			int dmg = state==null||isEffective(stack, state)?1: 3;
+			int dmg = getToolDamageFromBlock(stack, state);
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
 			{

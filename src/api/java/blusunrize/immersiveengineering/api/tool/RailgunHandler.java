@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.tool;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -81,6 +82,11 @@ public class RailgunHandler
 		default double getDamage(Level world, Entity target, @Nullable UUID shooter, Entity projectile)
 		{
 			return 0;
+		}
+
+		default DamageSource getDamageSource(Level world, Entity target, @Nullable UUID shooter, Entity projectile)
+		{
+			return null;
 		}
 
 		/**
@@ -185,7 +191,7 @@ public class RailgunHandler
 
 		private static int[] splitRGB(int rgb)
 		{
-			return new int[]{(rgb >> 16)&255, (rgb >> 8)&255, rgb&255};
+			return new int[]{(rgb>>16)&255, (rgb>>8)&255, rgb&255};
 		}
 
 		public int[] getRingColor(int lengthIdx, int widthIdx)

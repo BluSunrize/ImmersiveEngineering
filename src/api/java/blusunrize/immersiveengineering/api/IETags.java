@@ -43,6 +43,7 @@ public class IETags
 		toItemTag.put(Blocks.ORES_IN_GROUND_DEEPSLATE, Items.ORES_IN_GROUND_DEEPSLATE);
 		toItemTag.put(Blocks.ORE_RATES_SINGULAR, Items.ORE_RATES_SINGULAR);
 		toItemTag.put(BlockTags.PLANKS, ItemTags.PLANKS);
+		toItemTag.put(Blocks.GRAVEL, Items.GRAVEL);
 	}
 
 	//Vanilla
