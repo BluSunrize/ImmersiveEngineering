@@ -1131,6 +1131,7 @@ public class Recipes extends RecipeProvider
 		ResourceKey<DimensionType> overworld = DimensionType.OVERWORLD_LOCATION;
 		ResourceKey<DimensionType> nether = DimensionType.NETHER_LOCATION;
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(Tags.Items.ORES_COAL, .8f)
 				.addOre(sulfur, .2f)
 				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
@@ -1138,6 +1139,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/bituminous_coal"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(Items.CLAY, .5f)
 				.addOre(Items.SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
@@ -1145,6 +1147,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/silt"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(Blocks.GRANITE, .3f)
 				.addOre(Blocks.DIORITE, .3f)
 				.addOre(Blocks.ANDESITE, .3f)
@@ -1154,6 +1157,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/igneous_rock"));
 		// Metals
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(iron, .35f)
 				.addOre(nickel, .35f)
 				.addOre(sulfur, .3f)
@@ -1161,6 +1165,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/pentlandite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(iron, .35f)
 				.addOre(copper, .35f)
 				.addOre(sulfur, .3f)
@@ -1168,6 +1173,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/chalcopyrite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(aluminum, .7f)
 				.addOre(iron, .2f)
 				.addOre(titanium, .1f, getTagCondition(titanium))
@@ -1175,12 +1181,14 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/laterite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(copper, .75f)
 				.addOre(gold, .25f)
 				.setWeight(30)
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/auricupride"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(lead, .4f)
 				.addOre(sulfur, .4f)
 				.addOre(silver, .2f)
@@ -1188,6 +1196,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/galena"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(redstone, .6f)
 				.addOre(sulfur, .4f)
 				.addOre(mercury, .3f, getTagCondition(mercury))
@@ -1196,6 +1205,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/cinnabar"));
 		// Rare
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(uranium, .7f)
 				.addOre(lead, .3f)
 				.addOre(thorium, .1f, getTagCondition(thorium))
@@ -1203,6 +1213,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.15f)
 				.build(out, toRL("mineral/uraninite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(emerald, .3f)
 				.addOre(prismarine, .7f)
 				.addOre(aquamarine, .3f, getTagCondition(aquamarine))
@@ -1211,6 +1222,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/beryl"));
 		// Nether
 		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
 				.addOre(Blocks.NETHER_QUARTZ_ORE, .6f)
 				.addOre(Blocks.NETHER_GOLD_ORE, .2f)
 				.addOre(sulfur, .2f)
@@ -1219,6 +1231,7 @@ public class Recipes extends RecipeProvider
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
 				.build(out, toRL("mineral/mephitic_quarzite"));
 		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
 				.addOre(Blocks.GRAVEL, .6f)
 				.addOre(Blocks.ANCIENT_DEBRIS, .4f)
 				.setWeight(8)
@@ -1228,12 +1241,14 @@ public class Recipes extends RecipeProvider
 
 		// Compat
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addCondition(getTagCondition(tin))
 				.addOre(tin, 1)
 				.setWeight(20)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/cassiterite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addCondition(getTagCondition(platinum))
 				.addOre(platinum, .5f)
 				.addOre(paladium, .5f, getTagCondition(paladium))
@@ -1242,6 +1257,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/cooperite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addCondition(getTagCondition(tungsten))
 				.addOre(tungsten, .5f)
 				.addOre(iron, .5f)

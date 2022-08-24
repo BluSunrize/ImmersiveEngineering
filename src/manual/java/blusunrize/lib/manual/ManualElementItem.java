@@ -46,7 +46,7 @@ public class ManualElementItem extends SpecialManualElements
 		super(manual);
 		this.stacks = stacks;
 		int totalLength = stacks.size();
-		scale = totalLength > 7?1f: totalLength > 4?1.5f: 1.75f;
+		scale = totalLength > 6?1f:totalLength > 5?1.25f: totalLength > 4?1.5f: 1.75f;
 		//Alternating long and short lines of items
 		int longLineLen = (int)(8/scale);
 		int shortLineLen = longLineLen-1;

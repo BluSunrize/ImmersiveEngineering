@@ -49,6 +49,7 @@ import net.minecraftforge.fml.VersionChecker.CheckResult;
 import net.minecraftforge.fml.VersionChecker.Status;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.maven.artifact.versioning.ComparableVersion;
+import org.lwjgl.system.CallbackI.S;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -194,7 +195,9 @@ public class IEManual
 				dimensionString = I18n.get("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
 
 			List<StackWithChance> formattedOutputs = Arrays.asList(mineral.outputs);
+			List<StackWithChance> formattedSpoils = Arrays.asList(mineral.spoils);
 			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.chance()));
+			formattedSpoils.sort(Comparator.comparingDouble(i -> -i.chance()));
 
 			StringBuilder outputString = new StringBuilder();
 			NonNullList<ItemStack> sortedOres = NonNullList.create();
@@ -210,8 +213,24 @@ public class IEManual
 						.append(sorted.stack().get().getHoverName().getString());
 				sortedOres.add(sorted.stack().get());
 			}
+
+			StringBuilder spoilString = new StringBuilder();
+			for(StackWithChance sorted : formattedSpoils)
+			{
+				spoilString
+						.append("\n")
+						.append(
+								new DecimalFormat("00.00")
+										.format(sorted.chance()*100)
+										.replaceAll("\\G0", "\u00A0")
+						).append("% ")
+						.append(sorted.stack().get().getHoverName().getString());
+				sortedOres.add(sorted.stack().get());
+			}
+
 			specials.add(new SpecialElementData(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
-			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
+			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString(), spoilString.toString());
+
 			if(text.length() > 0)
 				text.append("<np>");
 			text.append("<&")
