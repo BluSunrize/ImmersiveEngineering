@@ -208,6 +208,8 @@ public final class IEItems
 
 		public static final ItemRegObject<SurveyToolsItem> SURVEY_TOOLS = register("survey_tools", SurveyToolsItem::new);
 
+		public static final ItemRegObject<GliderItem> GLIDER = register("glider", GliderItem::new);
+
 		private static void init()
 		{
 			for(EquipmentSlot slot : EquipmentSlot.values())
