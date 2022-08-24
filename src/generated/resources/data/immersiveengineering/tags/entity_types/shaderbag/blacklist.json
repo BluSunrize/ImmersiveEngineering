@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "minecraft:wither"
+    "minecraft:wither",
+    "minecraft:iron_golem"
   ]
 }

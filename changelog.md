@@ -1,6 +1,7 @@
 ##### Version 1.18.2-8.2.1-pre
 - Fix fluid pump showing as 2x in the required materials of the bottling machine (BluSunrize)
 - Fix sawblade accidentally silktouching leaves (BluSunrize)
+- Fix iron golems dropping shader bags reserved for bosses (BluSunrize)
 
 ##### Version 1.18.2-8.2.0-151
 - Overhauled the Bottling Machine (BluSunrize)
