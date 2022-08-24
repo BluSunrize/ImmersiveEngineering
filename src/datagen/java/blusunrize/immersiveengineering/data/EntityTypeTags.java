@@ -40,7 +40,7 @@ public class EntityTypeTags extends ForgeRegistryTagsProvider<EntityType<?>>
 	@Override
 	protected void addTags()
 	{
-		tag(IETags.shaderbagBlacklist).add(EntityType.WITHER);
+		tag(IETags.shaderbagBlacklist).add(EntityType.WITHER).add(EntityType.IRON_GOLEM);
 	}
 
 
