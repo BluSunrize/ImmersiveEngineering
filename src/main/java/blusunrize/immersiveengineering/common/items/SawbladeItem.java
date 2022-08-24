@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 public class SawbladeItem extends IEBaseItem
 {
 	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
-			ToolActions.AXE_DIG, ToolActions.SWORD_DIG, ToolActions.SHEARS_DIG, ToolActions.SHEARS_CARVE
+			ToolActions.AXE_DIG, ToolActions.SWORD_DIG, ToolActions.SHEARS_CARVE
 	);
 	private final float sawbladeSpeed;
 	private final float sawbladeDamage;
