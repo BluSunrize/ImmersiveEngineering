@@ -1,5 +1,6 @@
 ##### Version 1.18.2-8.2.1-pre
 - Add the Collapsible Glider, an early game, less powerful Elytra
+    - Sound for the glider taking damage are by Iain McCurdy, licensed under CC BY 4.0
 - Fix fluid pump showing as 2x in the required materials of the bottling machine (BluSunrize)
 - Fix sawblade accidentally silktouching leaves (BluSunrize)
 - Fix iron golems dropping shader bags reserved for bosses (BluSunrize)
