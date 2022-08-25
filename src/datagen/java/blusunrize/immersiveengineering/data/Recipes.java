@@ -3012,6 +3012,17 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.save(out, toRL(toPath(wireCoilRedstone)));
 
+		ShapelessRecipeBuilder.shapeless(wireCoilCopper)
+				.requires(Misc.WIRE_COILS.get(WireType.COPPER_INSULATED))
+				.requires(Tools.WIRECUTTER)
+				.unlockedBy("has_copper_coil", has(Misc.WIRE_COILS.get(WireType.COPPER)))
+		        .save(out, toRL("strip_lv"));
+		ShapelessRecipeBuilder.shapeless(wireCoilElectrum)
+				.requires(Misc.WIRE_COILS.get(WireType.ELECTRUM_INSULATED))
+				.requires(Tools.WIRECUTTER)
+				.unlockedBy("has_electrum_coil", has(Misc.WIRE_COILS.get(WireType.ELECTRUM)))
+				.save(out, toRL("strip_mv"));
+
 		ShapedRecipeBuilder.shaped(Misc.JERRYCAN)
 				.pattern(" ii")
 				.pattern("ibb")
