@@ -49,7 +49,6 @@ import net.minecraftforge.fml.VersionChecker.CheckResult;
 import net.minecraftforge.fml.VersionChecker.Status;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.lwjgl.system.CallbackI.S;
 
 import java.io.IOException;
 import java.io.InputStream;
