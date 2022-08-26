@@ -145,7 +145,7 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		spoilsArray.add(basalt);
 		JsonObject gravel = new JsonObject();
 		gravel.addProperty("chance", 0.2f);
-		gravel.add("output", serializeItemStack(new ItemStack(Blocks.BLACKSTONE.asItem())));
+		gravel.add("output", serializeItemStack(new ItemStack(Blocks.GRAVEL.asItem())));
 		spoilsArray.add(gravel);
 		return this;
 	}
