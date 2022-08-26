@@ -1248,6 +1248,14 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.SOUL_SOIL))
 				.build(out, toRL("mineral/nether_silt"));
+		MineralMixBuilder.builder(nether)
+				.addOre(Items.MAGMA_BLOCK, .5f)
+				.addOre(Items.SMOOTH_BASALT, .3f)
+				.addOre(Items.OBSIDIAN, .2f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.build(out, toRL("mineral/cooled_lava_tube"));
 
 		// Compat
 		MineralMixBuilder.builder(overworld)
