@@ -1240,6 +1240,14 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.5f)
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.POLISHED_BLACKSTONE))
 				.build(out, toRL("mineral/ancient_debris"));
+		MineralMixBuilder.builder(nether)
+				.addOre(Items.SOUL_SOIL, .5f)
+				.addOre(Items.SOUL_SAND, .3f)
+				.addOre(Items.GRAVEL, .2f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.SOUL_SOIL))
+				.build(out, toRL("mineral/nether_silt"));
 
 		// Compat
 		MineralMixBuilder.builder(overworld)
