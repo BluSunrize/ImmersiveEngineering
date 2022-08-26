@@ -1232,11 +1232,13 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/mephitic_quarzite"));
 		MineralMixBuilder.builder(nether)
 				.addNetherSpoils()
-				.addOre(Blocks.GRAVEL, .6f)
-				.addOre(Blocks.ANCIENT_DEBRIS, .4f)
+				.addOre(Blocks.POLISHED_BLACKSTONE_BRICKS, .4f)
+				.addOre(Blocks.POLISHED_BLACKSTONE, .3f)
+				.addOre(Blocks.ANCIENT_DEBRIS, .2f)
+				.addOre(Blocks.GILDED_BLACKSTONE, .1f)
 				.setWeight(8)
-				.setFailchance(.7f)
-				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.setFailchance(.5f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.POLISHED_BLACKSTONE))
 				.build(out, toRL("mineral/ancient_debris"));
 
 		// Compat
