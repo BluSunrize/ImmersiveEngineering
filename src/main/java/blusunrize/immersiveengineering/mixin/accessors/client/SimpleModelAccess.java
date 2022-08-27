@@ -11,12 +11,12 @@ import java.util.List;
 @Mixin(SimpleBakedModel.class)
 public interface SimpleModelAccess
 {
-	@Accessor
+	@Accessor(remap = false)
 	ChunkRenderTypeSet getBlockRenderTypes();
 
-	@Accessor
+	@Accessor(remap = false)
 	List<RenderType> getItemRenderTypes();
 
-	@Accessor
+	@Accessor(remap = false)
 	List<RenderType> getFabulousItemRenderTypes();
 }
