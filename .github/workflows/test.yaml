@@ -67,7 +67,7 @@ jobs:
       - name: Check for crashes during data generation
         run: bash -c "[ -f run/ie_data_gen_done ]"
       - name: Check that no files have changed
-        run: git add src/generated/resources/.cache/ ; git update-index --really-refresh || (git diff && false)
+        run: git update-index --really-refresh || (git diff && false)
       - name: Create list of actual generated resources
         run: find src/generated/resources/ ! -path "**/.cache*" > resources_new.txt
       - name: Check that no new resources have been created
