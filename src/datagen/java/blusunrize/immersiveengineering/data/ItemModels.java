@@ -232,6 +232,7 @@ public class ItemModels extends TRSRItemModelProvider
 				Tools.MANUAL, Tools.STEEL_PICK, Tools.STEEL_SHOVEL, Tools.STEEL_AXE, Tools.STEEL_HOE, Tools.STEEL_SWORD
 		);
 		addItemModels("", Tools.SURVEY_TOOLS);
+		addItemModels("", Tools.GLIDER);
 		addItemModels("", IEItems.Misc.WIRE_COILS.values().toArray(new ItemLike[0]));
 		addItemModels("", IEItems.Misc.GRAPHITE_ELECTRODE);
 		addItemModels("", IEItems.Misc.TOOL_UPGRADES.values().toArray(new ItemLike[0]));

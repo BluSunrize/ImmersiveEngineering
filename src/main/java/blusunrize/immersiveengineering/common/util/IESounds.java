@@ -39,6 +39,7 @@ public class IESounds
 	public static final RegistryObject<SoundEvent> dieselGenerator = registerSound("diesel_generator");
 	public static final RegistryObject<SoundEvent> direSwitch = registerSound("dire_switch");
 	public static final RegistryObject<SoundEvent> chute = registerSound("chute");
+	public static RegistryObject<SoundEvent> glider = registerSound("glider");
 
 	public static void init()
 	{

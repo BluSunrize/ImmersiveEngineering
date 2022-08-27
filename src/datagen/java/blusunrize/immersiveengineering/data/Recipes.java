@@ -2421,6 +2421,16 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(Tools.HAMMER), has(Tools.HAMMER));
 		new NoContainerRecipeBuilder(surveyToolRecipe::save)
 				.save(out, toRL(toPath(Tools.SURVEY_TOOLS)));
+
+		ShapedRecipeBuilder.shaped(Tools.GLIDER)
+				.pattern(" f ")
+				.pattern("rcr")
+				.pattern("frf")
+				.define('f', IETags.fabricHemp)
+				.define('r', IETags.aluminumRod)
+				.define('c', Items.LEATHER_CHESTPLATE)
+				.unlockedBy("has_hemp_fabric", has(IETags.fabricHemp))
+				.save(out, toRL(toPath(Tools.GLIDER)));
 	}
 
 	private void recipesIngredients(@Nonnull Consumer<FinishedRecipe> out)

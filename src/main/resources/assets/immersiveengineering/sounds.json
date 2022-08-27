@@ -129,5 +129,14 @@
 			"immersiveengineering:chute3"
 		],
 		"subtitle": "subtitle.immersiveengineering.chute"
+	},
+	"glider": {
+		"category": "player",
+		"sounds": [
+			"immersiveengineering:glider_speed0",
+			"immersiveengineering:glider_speed1",
+			"immersiveengineering:glider_speed2"
+		],
+		"subtitle": "subtitle.immersiveengineering.glider"
 	}
 }
