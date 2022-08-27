@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " f ",
-    "rcr",
-    "frf"
-  ],
   "key": {
+    "c": {
+      "item": "minecraft:leather_chestplate"
+    },
     "f": {
       "tag": "forge:fabric_hemp"
     },
     "r": {
       "tag": "forge:rods/aluminum"
-    },
-    "c": {
-      "item": "minecraft:leather_chestplate"
     }
   },
+  "pattern": [
+    " f ",
+    "rcr",
+    "frf"
+  ],
   "result": {
     "item": "immersiveengineering:glider"
   }
