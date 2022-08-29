@@ -1139,7 +1139,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/bituminous_coal"));
 		MineralMixBuilder.builder(overworld)
-				.addOverworldSpoils()
+				.addSiltSpoils()
 				.addOre(Items.CLAY, .5f)
 				.addOre(Items.SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
@@ -1241,6 +1241,7 @@ public class Recipes extends RecipeProvider
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.POLISHED_BLACKSTONE))
 				.build(out, toRL("mineral/ancient_debris"));
 		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
 				.addOre(Items.SOUL_SOIL, .5f)
 				.addOre(Items.SOUL_SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
@@ -1249,6 +1250,7 @@ public class Recipes extends RecipeProvider
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.SOUL_SOIL))
 				.build(out, toRL("mineral/nether_silt"));
 		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
 				.addOre(Items.MAGMA_BLOCK, .5f)
 				.addOre(Items.SMOOTH_BASALT, .3f)
 				.addOre(Items.OBSIDIAN, .2f)

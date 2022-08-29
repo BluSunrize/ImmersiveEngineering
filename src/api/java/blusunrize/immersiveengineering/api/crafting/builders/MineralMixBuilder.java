@@ -133,6 +133,23 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return this;
 	}
 
+	public MineralMixBuilder addSiltSpoils()
+	{
+		JsonObject coarseDirt = new JsonObject();
+		coarseDirt.addProperty("chance", 0.2f);
+		coarseDirt.add("output", serializeItemStack(new ItemStack(Items.COARSE_DIRT)));
+		spoilsArray.add(coarseDirt);
+		JsonObject cobblestone = new JsonObject();
+		cobblestone.addProperty("chance", 0.5f);
+		cobblestone.add("output", serializeItemStack(new ItemStack(Items.COBBLESTONE)));
+		spoilsArray.add(cobblestone);
+		JsonObject deepslateCobblestone = new JsonObject();
+		deepslateCobblestone.addProperty("chance", 0.3f);
+		deepslateCobblestone.add("output", serializeItemStack(new ItemStack(Items.COBBLED_DEEPSLATE)));
+		spoilsArray.add(deepslateCobblestone);
+		return this;
+	}
+
 	public MineralMixBuilder addNetherSpoils()
 	{
 		JsonObject netherrack = new JsonObject();

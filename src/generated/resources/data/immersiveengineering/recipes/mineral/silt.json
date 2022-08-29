@@ -24,7 +24,7 @@
     {
       "chance": 0.2,
       "output": {
-        "item": "minecraft:gravel"
+        "item": "minecraft:coarse_dirt"
       }
     },
     {
