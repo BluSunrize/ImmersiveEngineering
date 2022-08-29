@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/strip_mv"
+    ]
+  },
+  "criteria": {
+    "has_electrum_coil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:wirecoil_electrum"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/strip_mv"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_electrum_coil",
+      "has_the_recipe"
+    ]
+  ]
+}
