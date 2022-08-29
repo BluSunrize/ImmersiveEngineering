@@ -19,7 +19,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
@@ -27,12 +29,14 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 {
 	JsonArray oresArray = new JsonArray();
+	JsonArray spoilsArray = new JsonArray();
 	JsonArray dimensionsArray = new JsonArray();
 
 	private MineralMixBuilder()
 	{
 		super(MineralMix.SERIALIZER.get());
 		addWriter(jsonObject -> jsonObject.add("ores", oresArray));
+		addWriter(jsonObject -> jsonObject.add("spoils", spoilsArray));
 		addWriter(jsonObject -> jsonObject.add("dimensions", dimensionsArray));
 	}
 
@@ -109,6 +113,40 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		jsonObject.addProperty("chance", chance);
 		jsonObject.add("output", ingredient.serialize());
 		oresArray.add(jsonObject);
+		return this;
+	}
+
+	public MineralMixBuilder addOverworldSpoils()
+	{
+		JsonObject gravel = new JsonObject();
+		gravel.addProperty("chance", 0.2f);
+		gravel.add("output", serializeItemStack(new ItemStack(Items.GRAVEL)));
+		spoilsArray.add(gravel);
+		JsonObject cobblestone = new JsonObject();
+		cobblestone.addProperty("chance", 0.5f);
+		cobblestone.add("output", serializeItemStack(new ItemStack(Items.COBBLESTONE)));
+		spoilsArray.add(cobblestone);
+		JsonObject deepslateCobblestone = new JsonObject();
+		deepslateCobblestone.addProperty("chance", 0.3f);
+		deepslateCobblestone.add("output", serializeItemStack(new ItemStack(Items.COBBLED_DEEPSLATE)));
+		spoilsArray.add(deepslateCobblestone);
+		return this;
+	}
+
+	public MineralMixBuilder addNetherSpoils()
+	{
+		JsonObject netherrack = new JsonObject();
+		netherrack.addProperty("chance", 0.5f);
+		netherrack.add("output", serializeItemStack(new ItemStack(Items.NETHERRACK)));
+		spoilsArray.add(netherrack);
+		JsonObject basalt = new JsonObject();
+		basalt.addProperty("chance", 0.3f);
+		basalt.add("output", serializeItemStack(new ItemStack(Blocks.BASALT.asItem())));
+		spoilsArray.add(basalt);
+		JsonObject gravel = new JsonObject();
+		gravel.addProperty("chance", 0.2f);
+		gravel.add("output", serializeItemStack(new ItemStack(Blocks.GRAVEL.asItem())));
+		spoilsArray.add(gravel);
 		return this;
 	}
 }

@@ -311,12 +311,11 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 		if(ore.isEmpty())
 			return;
 		// if random number of 0-1 is smaller than the fail chance of the specific mineral
-		if(Utils.RAND.nextFloat() < mineralMix.failChance)
-			return;
-		// if random number of 0-1 is smaller than the distance based fail chance of the vein
-		if(Utils.RAND.nextFloat() < mineralVein.getFailChance(wheelPos))
-			return;
-		wheel.digStacks.set(targetDown, ore);
+		// or if random number of 0-1 is smaller than the distance based fail chance of the vein
+		if(Utils.RAND.nextFloat() < mineralMix.failChance || Utils.RAND.nextFloat() < mineralVein.getFailChance(wheelPos))
+            wheel.digStacks.set(targetDown, mineralMix.getRandomSpoil(Utils.RAND));
+		else
+		    wheel.digStacks.set(targetDown, ore);
 		wheel.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}

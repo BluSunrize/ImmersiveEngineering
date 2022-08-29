@@ -2,8 +2,8 @@
  * Adds a new mix to the Mineral Mixes
  */
 
-//<recipetype:immersiveengineering:mineral_mix>.addRecipe(String recipePath, MCWeightedItemStack[] outputs, int weight, float failChance, ResourceLocation[] dimensions, Block background)
-<recipetype:immersiveengineering:mineral_mix>.addRecipe("sheep_mix", [<item:minecraft:white_wool> % 50, <item:minecraft:orange_wool> % 25, <item:minecraft:magenta_wool>], 50, 0.5, [<resource:minecraft:overworld>], <block:minecraft:white_wool>);
+//<recipetype:immersiveengineering:mineral_mix>.addRecipe(String recipePath, MCWeightedItemStack[] outputs, MCWeightedItemStack[] spoils, int weight, float failChance, ResourceLocation[] dimensions, Block background)
+<recipetype:immersiveengineering:mineral_mix>.addRecipe("sheep_mix", [<item:minecraft:white_wool> % 50, <item:minecraft:orange_wool> % 25, <item:minecraft:magenta_wool>], [<item:minecraft:cobblestone> % 50, <item:minecraft:stone> % 25, <item:minecraft:gravel>], 50, 0.5, [<resource:minecraft:overworld>], <block:minecraft:white_wool>);
 
 /*
  * Removes a mix from the Mineral Mixes based on it's name
