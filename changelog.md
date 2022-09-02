@@ -13,6 +13,7 @@
 - Fix iron golems dropping shader bags reserved for bosses (BluSunrize)
 - Fix diesel generator running endlessly without particles and animation (BluSunrize)
 - Fix error being thrown in log when Pneumatricraft reads our villager trades (BluSunrize)
+- Fix crusher not accelerating if it is given enough power (BluSunrize)
 
 ##### Version 1.18.2-8.2.0-151
 - Overhauled the Bottling Machine (BluSunrize)
