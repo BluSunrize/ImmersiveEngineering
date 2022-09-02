@@ -1139,7 +1139,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/bituminous_coal"));
 		MineralMixBuilder.builder(overworld)
-				.addOverworldSpoils()
+				.addSiltSpoils()
 				.addOre(Items.CLAY, .5f)
 				.addOre(Items.SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
@@ -1232,12 +1232,32 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/mephitic_quarzite"));
 		MineralMixBuilder.builder(nether)
 				.addNetherSpoils()
-				.addOre(Blocks.GRAVEL, .6f)
-				.addOre(Blocks.ANCIENT_DEBRIS, .4f)
+				.addOre(Blocks.POLISHED_BLACKSTONE_BRICKS, .4f)
+				.addOre(Blocks.POLISHED_BLACKSTONE, .3f)
+				.addOre(Blocks.ANCIENT_DEBRIS, .2f)
+				.addOre(Blocks.GILDED_BLACKSTONE, .1f)
 				.setWeight(8)
-				.setFailchance(.7f)
-				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.setFailchance(.5f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.POLISHED_BLACKSTONE))
 				.build(out, toRL("mineral/ancient_debris"));
+		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
+				.addOre(Items.SOUL_SOIL, .5f)
+				.addOre(Items.SOUL_SAND, .3f)
+				.addOre(Items.GRAVEL, .2f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.SOUL_SOIL))
+				.build(out, toRL("mineral/nether_silt"));
+		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
+				.addOre(Items.MAGMA_BLOCK, .5f)
+				.addOre(Items.SMOOTH_BASALT, .3f)
+				.addOre(Items.OBSIDIAN, .2f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.build(out, toRL("mineral/cooled_lava_tube"));
 
 		// Compat
 		MineralMixBuilder.builder(overworld)
