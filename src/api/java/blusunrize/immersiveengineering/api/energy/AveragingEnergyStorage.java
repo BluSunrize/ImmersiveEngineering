@@ -20,12 +20,27 @@ public class AveragingEnergyStorage extends MutableEnergyStorage
 		super(capacity);
 	}
 
+	private int tickInsert = 0;
+	private int tickExtract = 0;
+
+	/**
+	 * This must be called once per tick to keep the average working nicely
+	 */
+	public void updateAverage()
+	{
+		// calculate averages
+		averageInsertion = (int)Math.round(averageInsertion*AVERAGE_DECAY_FACTOR+tickInsert*(1-AVERAGE_DECAY_FACTOR));
+		averageExtraction = (int)Math.round(averageExtraction*AVERAGE_DECAY_FACTOR+tickExtract*(1-AVERAGE_DECAY_FACTOR));
+		// reset per-tick amount
+		tickInsert = tickExtract = 0;
+	}
+
 	@Override
 	public int receiveEnergy(int energy, boolean simulate)
 	{
 		int received = super.receiveEnergy(energy, simulate);
 		if(!simulate)
-			averageInsertion = (int)Math.round(averageInsertion*AVERAGE_DECAY_FACTOR+received*(1-AVERAGE_DECAY_FACTOR));
+			tickInsert += energy;
 		return received;
 	}
 
@@ -34,12 +49,17 @@ public class AveragingEnergyStorage extends MutableEnergyStorage
 	{
 		int extracted = super.extractEnergy(energy, simulate);
 		if(!simulate)
-			averageExtraction = (int)Math.round(averageExtraction*AVERAGE_DECAY_FACTOR+extracted*(1-AVERAGE_DECAY_FACTOR));
+			tickExtract += energy;
 		return extracted;
 	}
 
 	public int getAverageInsertion()
 	{
 		return averageInsertion;
+	}
+
+	public int getAverageExtraction()
+	{
+		return averageExtraction;
 	}
 }

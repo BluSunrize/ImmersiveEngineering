@@ -98,6 +98,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	@Override
 	public void tickServer()
 	{
+		this.energyStorage.updateAverage();
 		if(EnergyHelper.isFluxReceiver(inventory.get(0)))
 		{
 			if(charging)

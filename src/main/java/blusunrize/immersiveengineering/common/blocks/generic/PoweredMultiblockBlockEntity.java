@@ -205,6 +205,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	@Override
 	public void tickServer()
 	{
+		energyStorage.updateAverage();
 		syncRenderActive();
 		if(isRSDisabled())
 			return;
