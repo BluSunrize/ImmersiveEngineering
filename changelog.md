@@ -1,3 +1,6 @@
+##### Version 1.18.2-8.2.2-pre
+- Fix world loading crash with Create Crafts & Additions installed (BluSunrize)
+
 ##### Version 1.18.2-8.2.1-152
 - Add the Collapsible Glider, an early game, less powerful Elytra
     - Sound for the glider taking damage are by Iain McCurdy, licensed under CC BY 4.0
