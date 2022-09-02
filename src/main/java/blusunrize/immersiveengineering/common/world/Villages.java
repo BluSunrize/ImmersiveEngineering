@@ -358,7 +358,8 @@ public class Villages
 
 		public EmeraldForItems(@Nonnull TagKey<Item> tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
 		{
-			this(l -> IEApi.getPreferredTagStack(l.registryAccess(), tag), buyAmounts, maxUses, xp);
+			this(l -> l!=null?IEApi.getPreferredTagStack(l.registryAccess(), tag): ItemStack.EMPTY,
+					buyAmounts, maxUses, xp);
 		}
 
 
@@ -370,10 +371,13 @@ public class Villages
 
 		@Nullable
 		@Override
-		public MerchantOffer getOffer(Entity trader, Random rand)
+		public MerchantOffer getOffer(@Nullable Entity trader, Random rand)
 		{
 			if(buyingItem==null)
-				this.buyingItem = Objects.requireNonNull(this.getBuyingItem.apply(trader.level));
+				if(trader==null)
+					this.buyingItem = Objects.requireNonNull(this.getBuyingItem.apply(null));
+				else
+					this.buyingItem = Objects.requireNonNull(this.getBuyingItem.apply(trader.level));
 			return new MerchantOffer(
 					ItemHandlerHelper.copyStackWithSize(this.buyingItem, this.buyAmounts.getPrice(rand)),
 					new ItemStack(Items.EMERALD),
@@ -449,8 +453,10 @@ public class Villages
 
 		@Override
 		@Nullable
-		public MerchantOffer getOffer(Entity trader, @Nonnull Random random)
+		public MerchantOffer getOffer(@Nullable Entity trader, @Nonnull Random random)
 		{
+			if(trader==null)
+				return null;
 			Level world = trader.getCommandSenderWorld();
 			BlockPos merchantPos = trader.blockPosition();
 			List<MineralVein> veins = new ArrayList<>();
@@ -495,9 +501,9 @@ public class Villages
 			ItemStack stack = new ItemStack(part==0?Ingredients.GUNPART_BARREL: part==1?Ingredients.GUNPART_DRUM: Ingredients.GUNPART_HAMMER);
 
 			float luck = 1;
-			if(trader instanceof AbstractVillager&&((AbstractVillager)trader).isTrading())
+			if(trader instanceof AbstractVillager villager&&villager.isTrading())
 			{
-				luck = ((AbstractVillager)trader).getTradingPlayer().getLuck();
+				luck = villager.getTradingPlayer().getLuck();
 			}
 			CompoundTag perksTag = RevolverItem.RevolverPerk.generatePerkSet(random, luck);
 			ItemNBTHelper.setTagCompound(stack, "perks", perksTag);
