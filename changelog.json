@@ -1,6 +1,10 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/immersive-engineering",
     "promos": {
-        
+        "1.19.2-latest": "1.19.2-9.0.0-153",
+        "1.19.2-recommended": "1.19.2-9.0.0-153"
+    },
+    "1.19.2": {
+        "1.19.2-9.0.0-153": "- Initial release for 1.19.2"
     }
 }

@@ -1,4 +1,4 @@
-##### Version 1.19.2-9.0.0-pre
+##### Version 1.19.2-9.0.0-153
 - Initial release for 1.19.2
 
 ##### Version 1.18.2-8.2.1-152
