@@ -113,9 +113,6 @@ minecraft {
     mappings channel: 'parchment', version: "$version_parchment-$version_minecraft"
     //mappings channel: 'official', version: version_minecraft
 
-    // TODO get rid of this at first chance! I.e. once minecarts are ATd in Forge
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
     runs {
         client {
             workingDirectory project.file('run')
