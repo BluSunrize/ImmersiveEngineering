@@ -2,6 +2,11 @@
 - Add the Collapsible Glider, an early game, less powerful Elytra
     - Sound for the glider taking damage are by Iain McCurdy, licensed under CC BY 4.0
 - Add spoil to the Excavator, instead of empty buckets, it collects cobble and gravel instead (Silfryi)
+    - In the nether you get netherack, gravel and basalt
+- Add new mineral veins in the nether! (Silfryi)
+    - Archaic Digsite now contains various blackstone blocks
+    - Cooled Lava Tubes provide magma, obsidian and smooth basalt
+    - Soul Silt provides soul sand, soul soil and gravel
 - Add recipes to strip insulation from LV and MV wires again (Silfryi)
 - Fix fluid pump showing as 2x in the required materials of the bottling machine (BluSunrize)
 - Fix sawblade accidentally silktouching leaves (BluSunrize)
