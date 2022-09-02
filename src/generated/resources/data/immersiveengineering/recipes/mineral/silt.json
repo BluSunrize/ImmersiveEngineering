@@ -24,5 +24,25 @@
       }
     }
   ],
+  "spoils": [
+    {
+      "chance": 0.2,
+      "output": {
+        "item": "minecraft:coarse_dirt"
+      }
+    },
+    {
+      "chance": 0.5,
+      "output": {
+        "item": "minecraft:cobblestone"
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "item": "minecraft:cobbled_deepslate"
+      }
+    }
+  ],
   "weight": 25
 }

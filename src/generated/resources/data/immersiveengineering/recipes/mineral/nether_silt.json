@@ -1,46 +1,47 @@
 {
   "type": "immersiveengineering:mineral_mix",
   "dimensions": [
-    "minecraft:overworld"
+    "minecraft:the_nether"
   ],
   "fail_chance": 0.05,
   "ores": [
     {
-      "chance": 0.4,
-      "output": {
-        "tag": "forge:ores/lead"
-      }
-    },
-    {
-      "chance": 0.4,
-      "output": {
-        "tag": "forge:dusts/sulfur"
-      }
-    },
-    {
-      "chance": 0.2,
-      "output": {
-        "tag": "forge:ores/silver"
-      }
-    }
-  ],
-  "spoils": [
-    {
-      "chance": 0.2,
-      "output": {
-        "item": "minecraft:gravel"
-      }
-    },
-    {
       "chance": 0.5,
       "output": {
-        "item": "minecraft:cobblestone"
+        "item": "minecraft:soul_soil"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "item": "minecraft:soul_sand"
+      }
+    },
+    {
+      "chance": 0.2,
+      "output": {
+        "item": "minecraft:gravel"
+      }
+    }
+  ],
+  "sample_background": "minecraft:soul_soil",
+  "spoils": [
+    {
+      "chance": 0.5,
+      "output": {
+        "item": "minecraft:netherrack"
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "item": "minecraft:basalt"
+      }
+    },
+    {
+      "chance": 0.2,
+      "output": {
+        "item": "minecraft:gravel"
       }
     }
   ],

@@ -44,7 +44,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	public MineralMix readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		JsonArray array = json.getAsJsonArray("ores");
-		List<StackWithChance> tempOres = new ArrayList<>();
+		List<StackWithChance> temp = new ArrayList<>();
 		float totalChance = 0;
 		for(int i = 0; i < array.size(); i++)
 		{
@@ -54,11 +54,28 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 				Lazy<ItemStack> stack = readOutput(element.get("output"));
 				float chance = GsonHelper.getAsFloat(element, "chance");
 				totalChance += chance;
-				tempOres.add(new StackWithChance(stack, chance));
+				temp.add(new StackWithChance(stack, chance));
 			}
 		}
 		float finalTotalChance = totalChance;
-		StackWithChance[] ores = tempOres.stream().map(stack -> stack.recalculate(finalTotalChance)).toArray(StackWithChance[]::new);
+		StackWithChance[] ores = temp.stream().map(stack -> stack.recalculate(finalTotalChance)).toArray(StackWithChance[]::new);
+
+		array = json.getAsJsonArray("spoils");
+		temp.clear();
+		float totalSpoilChance = 0;
+		for(int i = 0; i < array.size(); i++)
+		{
+			JsonObject element = array.get(i).getAsJsonObject();
+			if(CraftingHelper.processConditions(element, "conditions", context))
+			{
+				Lazy<ItemStack> stack = readOutput(element.get("output"));
+				float chance = GsonHelper.getAsFloat(element, "chance");
+				totalSpoilChance += chance;
+				temp.add(new StackWithChance(stack, chance));
+			}
+		}
+		float finalTotalSpoilChance = totalSpoilChance;
+		StackWithChance[] spoils = temp.stream().map(stack -> stack.recalculate(finalTotalSpoilChance)).toArray(StackWithChance[]::new);
 
 		int weight = GsonHelper.getAsInt(json, "weight");
 		float failChance = GsonHelper.getAsFloat(json, "fail_chance", 0);
@@ -73,7 +90,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		Block b = ForgeRegistries.BLOCKS.getValue(rl);
 		if(b==Blocks.AIR)
 			b = Blocks.STONE;
-		return new MineralMix(recipeId, ores, weight, failChance, dimensions, b);
+		return new MineralMix(recipeId, ores, spoils, weight, failChance, dimensions, b);
 	}
 
 	@Nullable
@@ -84,6 +101,10 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		StackWithChance[] outputs = new StackWithChance[count];
 		for(int i = 0; i < count; i++)
 			outputs[i] = StackWithChance.read(buffer);
+		count = buffer.readInt();
+		StackWithChance[] spoils = new StackWithChance[count];
+		for(int i = 0; i < count; i++)
+			spoils[i] = StackWithChance.read(buffer);
 		int weight = buffer.readInt();
 		float failChance = buffer.readFloat();
 		count = buffer.readInt();
@@ -94,7 +115,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 					buffer.readResourceLocation()
 			));
 		Block bg = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
-		return new MineralMix(recipeId, outputs, weight, failChance, dimensions, bg);
+		return new MineralMix(recipeId, outputs, spoils, weight, failChance, dimensions, bg);
 	}
 
 	@Override
@@ -103,6 +124,9 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		buffer.writeInt(recipe.outputs.length);
 		for(StackWithChance secondaryOutput : recipe.outputs)
 			secondaryOutput.write(buffer);
+		buffer.writeInt(recipe.spoils.length);
+		for(StackWithChance spoils : recipe.spoils)
+			spoils.write(buffer);
 		buffer.writeInt(recipe.weight);
 		buffer.writeFloat(recipe.failChance);
 		buffer.writeInt(recipe.dimensions.size());

@@ -3,34 +3,28 @@
   "dimensions": [
     "minecraft:the_nether"
   ],
-  "fail_chance": 0.5,
+  "fail_chance": 0.05,
   "ores": [
     {
-      "chance": 0.4,
+      "chance": 0.5,
       "output": {
-        "item": "minecraft:polished_blackstone_bricks"
+        "item": "minecraft:magma_block"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "item": "minecraft:polished_blackstone"
+        "item": "minecraft:smooth_basalt"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "item": "minecraft:ancient_debris"
-      }
-    },
-    {
-      "chance": 0.1,
-      "output": {
-        "item": "minecraft:gilded_blackstone"
+        "item": "minecraft:obsidian"
       }
     }
   ],
-  "sample_background": "minecraft:polished_blackstone",
+  "sample_background": "minecraft:netherrack",
   "spoils": [
     {
       "chance": 0.5,
@@ -51,5 +45,5 @@
       }
     }
   ],
-  "weight": 8
+  "weight": 15
 }

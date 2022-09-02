@@ -33,18 +33,20 @@ public class MineralMix extends IESerializableRecipe
 	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(IERecipeTypes.MINERAL_MIX);
 
 	public final StackWithChance[] outputs;
+	public final StackWithChance[] spoils;
 	public final int weight;
 	public final float failChance;
 	public final ImmutableSet<ResourceKey<Level>> dimensions;
 	public final Block background;
 
-	public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance,
-					  List<ResourceKey<Level>> dimensions, Block background)
+	public MineralMix(ResourceLocation id, StackWithChance[] outputs, StackWithChance[] spoils, int weight,
+					  float failChance, List<ResourceKey<Level>> dimensions, Block background)
 	{
 		super(LAZY_EMPTY, IERecipeTypes.MINERAL_MIX, id);
 		this.weight = weight;
 		this.failChance = failChance;
 		this.outputs = outputs;
+		this.spoils = spoils;
 		this.dimensions = ImmutableSet.copyOf(dimensions);
 		this.background = background;
 	}
@@ -76,6 +78,19 @@ public class MineralMix extends IESerializableRecipe
 	{
 		float r = rand.nextFloat();
 		for(StackWithChance o : outputs)
+			if(o.chance() >= 0)
+			{
+				r -= o.chance();
+				if(r < 0)
+					return o.stack().get();
+			}
+		return ItemStack.EMPTY;
+	}
+
+	public ItemStack getRandomSpoil(Random rand)
+	{
+		float r = rand.nextFloat();
+		for(StackWithChance o : spoils)
 			if(o.chance() >= 0)
 			{
 				r -= o.chance();

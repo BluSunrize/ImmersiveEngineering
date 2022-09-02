@@ -1,9 +1,22 @@
-##### Version 1.18.2-8.2.1-pre
+##### Version 1.19.2-9.0.0-pre
+- Initial release for 1.19.2
+
+##### Version 1.18.2-8.2.1-152
 - Add the Collapsible Glider, an early game, less powerful Elytra
     - Sound for the glider taking damage are by Iain McCurdy, licensed under CC BY 4.0
+- Add spoil to the Excavator, instead of empty buckets, it collects cobble and gravel instead (Silfryi)
+    - In the nether you get netherack, gravel and basalt
+- Add new mineral veins in the nether! (Silfryi)
+    - Archaic Digsite now contains various blackstone blocks
+    - Cooled Lava Tubes provide magma, obsidian and smooth basalt
+    - Soul Silt provides soul sand, soul soil and gravel
+- Add recipes to strip insulation from LV and MV wires again (Silfryi)
 - Fix fluid pump showing as 2x in the required materials of the bottling machine (BluSunrize)
 - Fix sawblade accidentally silktouching leaves (BluSunrize)
 - Fix iron golems dropping shader bags reserved for bosses (BluSunrize)
+- Fix diesel generator running endlessly without particles and animation (BluSunrize)
+- Fix error being thrown in log when Pneumatricraft reads our villager trades (BluSunrize)
+- Fix crusher not accelerating if it is given enough power (BluSunrize)
 
 ##### Version 1.18.2-8.2.0-151
 - Overhauled the Bottling Machine (BluSunrize)

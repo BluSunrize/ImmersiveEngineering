@@ -1134,6 +1134,7 @@ public class Recipes extends RecipeProvider
 		ResourceKey<DimensionType> overworld = BuiltinDimensionTypes.OVERWORLD;
 		ResourceKey<DimensionType> nether = BuiltinDimensionTypes.NETHER;
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(Tags.Items.ORES_COAL, .8f)
 				.addOre(sulfur, .2f)
 				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
@@ -1141,6 +1142,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/bituminous_coal"));
 		MineralMixBuilder.builder(overworld)
+				.addSiltSpoils()
 				.addOre(Items.CLAY, .5f)
 				.addOre(Items.SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
@@ -1148,6 +1150,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/silt"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(Blocks.GRANITE, .3f)
 				.addOre(Blocks.DIORITE, .3f)
 				.addOre(Blocks.ANDESITE, .3f)
@@ -1157,6 +1160,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/igneous_rock"));
 		// Metals
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(iron, .35f)
 				.addOre(nickel, .35f)
 				.addOre(sulfur, .3f)
@@ -1164,6 +1168,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/pentlandite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(iron, .35f)
 				.addOre(copper, .35f)
 				.addOre(sulfur, .3f)
@@ -1171,6 +1176,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/chalcopyrite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(aluminum, .7f)
 				.addOre(iron, .2f)
 				.addOre(titanium, .1f, getTagCondition(titanium))
@@ -1178,12 +1184,14 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/laterite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(copper, .75f)
 				.addOre(gold, .25f)
 				.setWeight(30)
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/auricupride"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(lead, .4f)
 				.addOre(sulfur, .4f)
 				.addOre(silver, .2f)
@@ -1191,6 +1199,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/galena"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(redstone, .6f)
 				.addOre(sulfur, .4f)
 				.addOre(mercury, .3f, getTagCondition(mercury))
@@ -1199,6 +1208,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/cinnabar"));
 		// Rare
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(uranium, .7f)
 				.addOre(lead, .3f)
 				.addOre(thorium, .1f, getTagCondition(thorium))
@@ -1206,6 +1216,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.15f)
 				.build(out, toRL("mineral/uraninite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addOre(emerald, .3f)
 				.addOre(prismarine, .7f)
 				.addOre(aquamarine, .3f, getTagCondition(aquamarine))
@@ -1214,6 +1225,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mineral/beryl"));
 		// Nether
 		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
 				.addOre(Blocks.NETHER_QUARTZ_ORE, .6f)
 				.addOre(Blocks.NETHER_GOLD_ORE, .2f)
 				.addOre(sulfur, .2f)
@@ -1222,21 +1234,44 @@ public class Recipes extends RecipeProvider
 				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
 				.build(out, toRL("mineral/mephitic_quarzite"));
 		MineralMixBuilder.builder(nether)
-				.addOre(Blocks.GRAVEL, .6f)
-				.addOre(Blocks.ANCIENT_DEBRIS, .4f)
+				.addNetherSpoils()
+				.addOre(Blocks.POLISHED_BLACKSTONE_BRICKS, .4f)
+				.addOre(Blocks.POLISHED_BLACKSTONE, .3f)
+				.addOre(Blocks.ANCIENT_DEBRIS, .2f)
+				.addOre(Blocks.GILDED_BLACKSTONE, .1f)
 				.setWeight(8)
-				.setFailchance(.7f)
-				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.setFailchance(.5f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.POLISHED_BLACKSTONE))
 				.build(out, toRL("mineral/ancient_debris"));
+		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
+				.addOre(Items.SOUL_SOIL, .5f)
+				.addOre(Items.SOUL_SAND, .3f)
+				.addOre(Items.GRAVEL, .2f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.SOUL_SOIL))
+				.build(out, toRL("mineral/nether_silt"));
+		MineralMixBuilder.builder(nether)
+				.addNetherSpoils()
+				.addOre(Items.MAGMA_BLOCK, .5f)
+				.addOre(Items.SMOOTH_BASALT, .3f)
+				.addOre(Items.OBSIDIAN, .2f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.build(out, toRL("mineral/cooled_lava_tube"));
 
 		// Compat
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addCondition(getTagCondition(tin))
 				.addOre(tin, 1)
 				.setWeight(20)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/cassiterite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addCondition(getTagCondition(platinum))
 				.addOre(platinum, .5f)
 				.addOre(paladium, .5f, getTagCondition(paladium))
@@ -1245,6 +1280,7 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/cooperite"));
 		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
 				.addCondition(getTagCondition(tungsten))
 				.addOre(tungsten, .5f)
 				.addOre(iron, .5f)
@@ -3014,6 +3050,17 @@ public class Recipes extends RecipeProvider
 				.define('s', Tags.Items.RODS_WOODEN)
 				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.save(out, toRL(toPath(wireCoilRedstone)));
+
+		ShapelessRecipeBuilder.shapeless(wireCoilCopper)
+				.requires(Misc.WIRE_COILS.get(WireType.COPPER_INSULATED))
+				.requires(Tools.WIRECUTTER)
+				.unlockedBy("has_copper_coil", has(Misc.WIRE_COILS.get(WireType.COPPER)))
+		        .save(out, toRL("strip_lv"));
+		ShapelessRecipeBuilder.shapeless(wireCoilElectrum)
+				.requires(Misc.WIRE_COILS.get(WireType.ELECTRUM_INSULATED))
+				.requires(Tools.WIRECUTTER)
+				.unlockedBy("has_electrum_coil", has(Misc.WIRE_COILS.get(WireType.ELECTRUM)))
+				.save(out, toRL("strip_mv"));
 
 		ShapedRecipeBuilder.shaped(Misc.JERRYCAN)
 				.pattern(" ii")

@@ -32,6 +32,8 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 	private LevelDependentData<R> levelData;
 	public boolean clearProcess = false;
 
+	private int extraProcessTicks = -1;
+
 	public MultiblockProcess(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, R> getRecipe)
 	{
 		this.recipeId = recipeId;
@@ -50,7 +52,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 	protected List<ItemStack> getRecipeItemOutputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
 		R recipe = getLevelData(multiblock.getLevel()).recipe;
-		if (recipe == null)
+		if(recipe==null)
 			return List.of();
 		return recipe.getActualItemOutputs(multiblock);
 	}
@@ -58,7 +60,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 	protected List<FluidStack> getRecipeFluidOutputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
 		R recipe = getLevelData(multiblock.getLevel()).recipe;
-		if (recipe == null)
+		if(recipe==null)
 			return List.of();
 		return recipe.getActualFluidOutputs(multiblock);
 	}
@@ -66,7 +68,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 	public boolean canProcess(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
 		LevelDependentData<R> levelData = getLevelData(multiblock.getLevel());
-		if (levelData.recipe == null)
+		if(levelData.recipe==null)
 			return true;
 		if(multiblock.energyStorage.extractEnergy(levelData.energyPerTick, true)==levelData.energyPerTick)
 		{
@@ -129,31 +131,44 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 	public void doProcessTick(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
 		LevelDependentData<R> levelData = getLevelData(multiblock.getLevel());
-		if (levelData.recipe == null)
+		if(levelData.recipe==null)
 		{
 			this.clearProcess = true;
 			return;
 		}
-		int energyExtracted = levelData.energyPerTick;
-		int ticksAdded = 1;
-		if(levelData.recipe.getMultipleProcessTicks() > 1)
+		// perform initial tick
+		multiblock.energyStorage.extractEnergy(levelData.energyPerTick, false);
+		this.processTick += 1;
+
+		// initialize if not yet happened
+		if(extraProcessTicks < 0)
+			extraProcessTicks = levelData.recipe.getMultipleProcessTicks();
+
+		if(extraProcessTicks >= 0)
 		{
-			//Average Insertion, tracked by the advanced flux storage
 			int averageInsertion = multiblock.energyStorage.getAverageInsertion();
-			//Average Insertion mustn't be greater than possible extraction
-			averageInsertion = multiblock.energyStorage.extractEnergy(averageInsertion, true);
-			if(averageInsertion > energyExtracted)
+			int averageExtraction = multiblock.energyStorage.getAverageExtraction();
+			if(averageInsertion < averageExtraction)
+				extraProcessTicks = Math.max(0, extraProcessTicks-1);
+			else if(averageInsertion > averageExtraction)
+				extraProcessTicks = Math.min(levelData.recipe.getMultipleProcessTicks(), extraProcessTicks+1);
+
+			int possibleTicks = Math.min(
+					Math.min(
+							extraProcessTicks, // extra ticks that can step up and down
+							levelData.maxTicks-this.processTick // ticks remaining in the recipe
+					),
+					Math.min(
+							averageInsertion/levelData.energyPerTick, // max ticks possible with current insertion
+							multiblock.energyStorage.getEnergyStored()/levelData.energyPerTick // max ticks possible with current stored power
+					)
+			);
+			if(possibleTicks > 0)
 			{
-				int possibleTicks = Math.min(averageInsertion/levelData.energyPerTick, Math.min(levelData.recipe.getMultipleProcessTicks(), levelData.maxTicks-this.processTick));
-				if(possibleTicks > 1)
-				{
-					ticksAdded = possibleTicks;
-					energyExtracted *= ticksAdded;
-				}
+				multiblock.energyStorage.extractEnergy(levelData.energyPerTick*possibleTicks, false);
+				this.processTick += possibleTicks;
 			}
 		}
-		multiblock.energyStorage.extractEnergy(energyExtracted, false);
-		this.processTick += ticksAdded;
 
 		if(this.processTick >= levelData.maxTicks)
 			this.processFinish(multiblock);
@@ -223,7 +238,8 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 		return levelData;
 	}
 
-	private void populateLevelData(R recipe){
+	private void populateLevelData(R recipe)
+	{
 		if(recipe!=null)
 		{
 			int maxTicks = recipe.getTotalProcessTime();
@@ -239,7 +255,8 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 		return recipeId;
 	}
 
-	public int getMaxTicks(Level level) {
+	public int getMaxTicks(Level level)
+	{
 		return getLevelData(level).maxTicks;
 	}
 
