@@ -10,10 +10,20 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.imp
 
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 
 public class PoweredMBCallbacks extends Callback<PoweredMultiblockBlockEntity<?, ?>>
 {
 	public static final PoweredMBCallbacks INSTANCE = new PoweredMBCallbacks();
+
+	@ComputerCallable
+	public boolean isRunning(CallbackEnvironment<PoweredMultiblockBlockEntity<?, ?>> env)
+	{
+		PoweredMultiblockBlockEntity<?, ?> master = env.object().master();
+		if(master==null) return false;
+		return master.shouldRenderAsActive();
+	}
 
 	public PoweredMBCallbacks()
 	{
