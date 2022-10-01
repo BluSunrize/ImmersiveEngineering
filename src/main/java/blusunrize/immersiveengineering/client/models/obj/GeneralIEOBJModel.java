@@ -133,7 +133,6 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 			key = extraData.get(keyProperty);
 		else
 			key = BlockCallback.castOrDefault(callback).getDefaultKey();
-		RenderType layerToCheck;
 		boolean includeLayer = BlockCallback.castOrDefault(callback).dependsOnLayer();
 		ShaderCase shader = extraData.get(CapabilityShader.MODEL_PROPERTY);
 		return new ModelKey<>(key, shader, includeLayer?layer: null);

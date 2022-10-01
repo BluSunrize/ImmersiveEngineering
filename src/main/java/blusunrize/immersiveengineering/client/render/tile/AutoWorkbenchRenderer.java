@@ -47,9 +47,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.*;
 
 public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBlockEntity>
@@ -578,5 +576,9 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 	private interface LinePainter
 	{
 		void drawLine(float x0, float y0, float x1, float y1);
+	}
+
+	private record Point(int x, int y)
+	{
 	}
 }
