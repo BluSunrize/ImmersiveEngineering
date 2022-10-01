@@ -8,14 +8,29 @@
 
 package blusunrize.immersiveengineering.common.util;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.network.MessageNoSpamChat;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.PacketDistributor;
+
+import java.nio.charset.StandardCharsets;
 
 public class ChatUtils
 {
+	public static final MessageSignature NO_SPAM_SIGNATURE = new MessageSignature(
+			(Lib.MODID+"nospam").getBytes(StandardCharsets.UTF_8)
+	);
+
 	public static void sendServerNoSpamMessages(Player player, Component message)
 	{
-		// TODO currently not no-spam, need to see if no-spam is still feasible with 1.19.1+
-		player.sendSystemMessage(message);
+		if(!(player instanceof ServerPlayer serverPlayer))
+			return;
+		ImmersiveEngineering.packetHandler.send(
+				PacketDistributor.PLAYER.with(() -> serverPlayer), new MessageNoSpamChat(message)
+		);
 	}
 }
