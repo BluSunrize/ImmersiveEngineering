@@ -53,12 +53,19 @@ public class IETags
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final TagKey<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
 	public static final TagKey<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
+	public static final TagKey<Item> cutCopperBlocks = createItemWrapper(rl("cut_blocks/copper"));
+	public static final TagKey<Item> cutCopperStairs = createItemWrapper(rl("cut_stairs/copper"));
+	public static final TagKey<Item> cutCopperSlabs = createItemWrapper(rl("cut_slabs/copper"));
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
 	public static final TagKey<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
 	public static final TagKey<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
 	public static final TagKey<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
+	public static final TagKey<Block> scaffoldingSteelStair = createBlockTag(rl("scaffolding_stairs/steel"));
+	public static final TagKey<Block> scaffoldingAluStair = createBlockTag(rl("scaffolding_stairs/aluminum"));
+	public static final TagKey<Block> scaffoldingSteelSlab = createBlockTag(rl("scaffolding_slabs/steel"));
+	public static final TagKey<Block> scaffoldingAluSlab = createBlockTag(rl("scaffolding_slabs/aluminum"));
 	public static final TagKey<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
 	public static final TagKey<Block> fencesSteel = createBlockTag(forgeLoc("fences/steel"));
 	public static final TagKey<Block> fencesAlu = createBlockTag(forgeLoc("fences/aluminum"));
