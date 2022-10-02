@@ -80,7 +80,9 @@ public class PeripheralCreator<T>
 	{
 		try
 		{
-			return callback.invoke(otherArgs.getAll(), new CallbackEnvironment<>(owner.preprocess(mainArgument)));
+			return callback.invoke(
+					otherArgs.getAll(), new CallbackEnvironment<>(owner.preprocess(mainArgument), mainArgument)
+			);
 		} catch(RuntimeException x)
 		{
 			throw new LuaException(x.getMessage());

@@ -28,10 +28,11 @@ public final class IEDevice<T> implements RPCDevice
 	public IEDevice(WrappedOwner<T> owner, T value)
 	{
 		this.owner = owner;
-		this.value = value;
+		final T preprocessed = owner.getOwner().preprocess(value);
+		this.value = preprocessed;
 		List<RPCMethodGroup> list = new ArrayList<>();
 		for(ComputerCallback<? super T> cb : owner.getMethods())
-			list.add(new IERPCMethod<>(cb, value));
+			list.add(new IERPCMethod<>(cb, value, preprocessed));
 		this.methods = list;
 	}
 

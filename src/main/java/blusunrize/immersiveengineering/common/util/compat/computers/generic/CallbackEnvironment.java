@@ -8,6 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
-public record CallbackEnvironment<T>(T object)
+public record CallbackEnvironment<T>(T object, T beforePreprocess)
 {
 }

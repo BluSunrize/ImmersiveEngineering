@@ -27,7 +27,7 @@ public abstract class MultiblockCallbackOwner<T extends MultiblockPartBlockEntit
 	@Override
 	public T preprocess(T arg)
 	{
-		T master = (T)arg.master();
+		T master = arg.master();
 		if(master!=null)
 			return master;
 		else
