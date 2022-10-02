@@ -1,5 +1,6 @@
 {
   "parent": "immersiveengineering:block/ie_scaffolding",
+  "render_type": "minecraft:cutout",
   "textures": {
     "bottom": "immersiveengineering:block/metal_decoration/steel_scaffolding",
     "side": "immersiveengineering:block/metal_decoration/steel_scaffolding",

@@ -2,17 +2,16 @@ package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.blocks.IEStairsBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.data.DataGenUtils;
-import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
-import blusunrize.immersiveengineering.data.models.MirroredModelBuilder;
-import blusunrize.immersiveengineering.data.models.NongeneratedModels;
+import blusunrize.immersiveengineering.data.models.*;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
-import blusunrize.immersiveengineering.data.models.SplitModelBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -22,13 +21,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +80,14 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected void cubeAll(Supplier<? extends Block> b, ResourceLocation texture)
 	{
-		simpleBlockAndItem(b, models().cubeAll(name(b), texture));
+		cubeAll(b, texture, null);
+	}
+
+	protected void cubeAll(Supplier<? extends Block> b, ResourceLocation texture, @Nullable RenderType layer)
+	{
+		final BlockModelBuilder model = models().cubeAll(name(b), texture);
+		setRenderType(layer, model);
+		simpleBlockAndItem(b, model);
 	}
 
 	protected void scaffold(Supplier<? extends Block> b, ResourceLocation others, ResourceLocation top)
@@ -92,53 +98,69 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 						.texture("side", others)
 						.texture("bottom", others)
 						.texture("top", top)
+						.renderType(ModelProviderUtils.getName(RenderType.cutout()))
 		);
 	}
 
 	protected void slabFor(Supplier<? extends Block> b, ResourceLocation texture)
 	{
-		slabFor(b, texture, texture, texture);
+		slabFor(b, texture, null);
+	}
+
+	protected void slabFor(Supplier<? extends Block> b, ResourceLocation texture, @Nullable RenderType layer)
+	{
+		slabFor(b, texture, texture, texture, layer);
 	}
 
 	protected void slabFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
-		slab(IEBlocks.TO_SLAB.get(Registry.BLOCK.getKey(b.get())).get(), side, top, bottom);
+		slabFor(b, side, top, bottom, null);
 	}
 
-	protected void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
+	protected void slabFor(
+			Supplier<? extends Block> full,
+			ResourceLocation side, ResourceLocation top, ResourceLocation bottom,
+			@Nullable RenderType layer
+	)
 	{
-		ModelFile mainModel = models().slab(name(b)+"_bottom", side, bottom, top);
-		slabBlock(
-				b, mainModel,
-				models().slabTop(name(b)+"_top", side, bottom, top),
-				models().cubeBottomTop(name(b)+"_double", side, bottom, top)
-		);
+		SlabBlock b = IEBlocks.TO_SLAB.get(Registry.BLOCK.getKey(full.get())).get();
+		ModelBuilder<?> mainModel = models().slab(name(b)+"_bottom", side, bottom, top);
+		ModelBuilder<?> topModel = models().slabTop(name(b)+"_top", side, bottom, top);
+		ModelBuilder<?> doubleModel = models().cubeBottomTop(name(b)+"_double", side, bottom, top);
+		setRenderType(layer, mainModel, topModel, doubleModel);
+		slabBlock(b, mainModel, topModel, doubleModel);
 		itemModel(() -> b, mainModel);
 	}
 
 	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation texture)
 	{
-		stairs(IEBlocks.TO_STAIRS.get(Registry.BLOCK.getKey(b.get())).get(), texture);
+		stairsFor(b, texture, texture, texture, null);
 	}
 
-	protected void stairs(StairBlock b, ResourceLocation texture)
+	protected void stairsFor(
+			Supplier<? extends Block> full,
+			ResourceLocation side, ResourceLocation top, ResourceLocation bottom,
+			@Nullable RenderType layer
+	)
 	{
-		stairs(b, texture, texture, texture);
-	}
-
-	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
-	{
-		stairs(IEBlocks.TO_STAIRS.get(Registry.BLOCK.getKey(b.get())).get(), side, top, bottom);
-	}
-
-	protected void stairs(StairBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
-	{
+		final IEStairsBlock b = IEBlocks.TO_STAIRS.get(Registry.BLOCK.getKey(full.get())).get();
 		String baseName = name(b);
-		ModelFile stairs = models().stairs(baseName, side, bottom, top);
-		ModelFile stairsInner = models().stairsInner(baseName+"_inner", side, bottom, top);
-		ModelFile stairsOuter = models().stairsOuter(baseName+"_outer", side, bottom, top);
+		ModelBuilder<?> stairs = models().stairs(baseName, side, bottom, top);
+		ModelBuilder<?> stairsInner = models().stairsInner(baseName+"_inner", side, bottom, top);
+		ModelBuilder<?> stairsOuter = models().stairsOuter(baseName+"_outer", side, bottom, top);
+		setRenderType(layer, stairs, stairsInner, stairsOuter);
 		stairsBlock(b, stairs, stairsInner, stairsOuter);
 		itemModel(() -> b, stairs);
+	}
+
+	private void setRenderType(@Nullable RenderType type, ModelBuilder<?>... builders)
+	{
+		if(type!=null)
+		{
+			final String typeName = ModelProviderUtils.getName(type);
+			for(final ModelBuilder<?> model : builders)
+				model.renderType(typeName);
+		}
 	}
 
 	protected ResourceLocation forgeLoc(String path)
@@ -164,7 +186,14 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected BlockModelBuilder obj(String loc)
 	{
-		return obj(loc, models());
+		return obj(loc, (RenderType)null);
+	}
+
+	protected BlockModelBuilder obj(String loc, @Nullable RenderType layer)
+	{
+		final var model = obj(loc, models());
+		setRenderType(layer, model);
+		return model;
 	}
 
 	protected <T extends ModelBuilder<T>>

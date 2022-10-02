@@ -1,5 +1,6 @@
 {
   "parent": "immersiveengineering:block/ie_ladder",
+  "render_type": "minecraft:cutout",
   "textures": {
     "ladder": "immersiveengineering:block/metal_decoration/metal_ladder"
   }

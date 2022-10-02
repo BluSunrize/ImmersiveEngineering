@@ -4,6 +4,7 @@
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/sprayed_concrete.obj",
+  "render_type": "minecraft:cutout",
   "textures": {
     "particle": "immersiveengineering:block/stone_decoration/concrete_sprayed"
   }

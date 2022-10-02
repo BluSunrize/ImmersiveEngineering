@@ -12,17 +12,11 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
-import com.google.common.base.Suppliers;
-import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,11 +24,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 // TODO replace by new data-driven system, maybe. Not trivial in some cases, at least without a lot of duplicate code
@@ -44,16 +35,8 @@ public class BlockRenderLayers
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent ev)
 	{
-		setRenderLayer(StoneDecoration.INSULATING_GLASS, RenderType.translucent());
-		setRenderLayer(StoneDecoration.SLAG_GLASS, RenderType.translucent());
-		setRenderLayer(StoneDecoration.CONCRETE_SPRAYED, RenderType.cutout());
-		setRenderLayer(StoneDecoration.DUROPLAST, RenderType.translucent());
 		setRenderLayer(MetalDevices.FLOODLIGHT, RenderType.solid(), RenderType.translucent());
 
-		for(MetalScaffoldingType type : MetalScaffoldingType.values())
-			for(BlockEntry<?> block : ImmutableList.of(MetalDecoration.ALU_SCAFFOLDING.get(type), MetalDecoration.STEEL_SCAFFOLDING.get(type)))
-				setRenderLayer(block, RenderType.cutout());
-		setRenderLayer(WoodenDecoration.TREATED_SCAFFOLDING, RenderType.cutout());
 		setRenderLayer(WoodenDevices.LOGIC_UNIT, RenderType.solid(), RenderType.translucent());
 		setRenderLayer(Connectors.ENERGY_CONNECTORS.get(Pair.of(WireType.HV_CATEGORY, true)), RenderType.translucent());
 		setRenderLayer(Connectors.CONNECTOR_BUNDLED, RenderType.cutout());
@@ -74,21 +57,8 @@ public class BlockRenderLayers
 		setRenderLayer(Multiblocks.DIESEL_GENERATOR, RenderType.cutoutMipped());
 		setRenderLayer(Multiblocks.BOTTLING_MACHINE, RenderType.solid(), RenderType.translucent());
 
-		for(Map<ResourceLocation, ? extends BlockEntry<? extends Block>> map : ImmutableList.of(IEBlocks.TO_SLAB, IEBlocks.TO_STAIRS))
-			for(Entry<ResourceLocation, ? extends BlockEntry<? extends Block>> slab : map.entrySet())
-			{
-				Supplier<Block> baseBlock = Suppliers.memoize(() -> ForgeRegistries.BLOCKS.getValue(slab.getKey()));
-				ItemBlockRenderTypes.setRenderLayer(
-						slab.getValue().get(),
-						rt -> ItemBlockRenderTypes.getRenderLayers(baseBlock.get().defaultBlockState()).contains(rt)
-				);
-			}
 		setRenderLayer(Cloth.BALLOON, RenderType.translucent());
-		for(CoverType cover : CoverType.values())
-			setRenderLayer(MetalDecoration.METAL_LADDER.get(cover), RenderType.cutout());
 
-		setRenderLayer(Misc.HEMP_PLANT, RenderType.cutout());
-		setRenderLayer(Misc.POTTED_HEMP, RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(IEFluids.POTION.get(), RenderType.translucent());
 		for(RegistryObject<Fluid> f : IEFluids.REGISTER.getEntries())
 			if(f.get()!=IEFluids.CONCRETE.getFlowing()&&f.get()!=IEFluids.CONCRETE.getStill())
