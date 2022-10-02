@@ -63,17 +63,18 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		array = json.getAsJsonArray("spoils");
 		temp.clear();
 		float totalSpoilChance = 0;
-		for(int i = 0; i < array.size(); i++)
-		{
-			JsonObject element = array.get(i).getAsJsonObject();
-			if(CraftingHelper.processConditions(element, "conditions", context))
+		if(array!=null)
+			for(int i = 0; i < array.size(); i++)
 			{
-				Lazy<ItemStack> stack = readOutput(element.get("output"));
-				float chance = GsonHelper.getAsFloat(element, "chance");
-				totalSpoilChance += chance;
-				temp.add(new StackWithChance(stack, chance));
+				JsonObject element = array.get(i).getAsJsonObject();
+				if(CraftingHelper.processConditions(element, "conditions", context))
+				{
+					Lazy<ItemStack> stack = readOutput(element.get("output"));
+					float chance = GsonHelper.getAsFloat(element, "chance");
+					totalSpoilChance += chance;
+					temp.add(new StackWithChance(stack, chance));
+				}
 			}
-		}
 		float finalTotalSpoilChance = totalSpoilChance;
 		StackWithChance[] spoils = temp.stream().map(stack -> stack.recalculate(finalTotalSpoilChance)).toArray(StackWithChance[]::new);
 

@@ -1,3 +1,6 @@
+##### Version 1.18.2-8.2.2-154
+- Fix world loading crash with Create Crafts & Additions installed (BluSunrize)
+
 ##### Version 1.19.2-9.0.0-153
 - Initial release for 1.19.2
 

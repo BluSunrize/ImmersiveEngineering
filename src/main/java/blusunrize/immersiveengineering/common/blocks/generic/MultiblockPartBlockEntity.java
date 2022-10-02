@@ -241,16 +241,13 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 		Set<BlockPos> rsPositions = getRedstonePos();
 		if(rsPositions==null||rsPositions.isEmpty())
 			return false;
-		MultiblockPartBlockEntity<?> master = master();
-		if(master==null)
-			master = this;
-		if(master.computerControl.isAttached())
-			return !master.computerControl.isEnabled();
 		for(BlockPos rsPos : rsPositions)
 		{
 			T tile = this.getEntityForPos(rsPos);
 			if(tile!=null)
 			{
+				if(tile.computerControl.isAttached())
+					return !tile.computerControl.isEnabled();
 				boolean b = tile.isRSPowered();
 				if(redstoneControlInverted!=b)
 					return true;
