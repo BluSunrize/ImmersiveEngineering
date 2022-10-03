@@ -60,6 +60,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelData.Builder;
@@ -221,6 +222,12 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	)
 	{
 		return ICacheKeyProvider.super.getQuads(state, side, rand, extraData, layer);
+	}
+
+	@Override
+	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
+	{
+		return ChunkRenderTypeSet.all();
 	}
 
 	private static class FeedthroughItemOverride extends ItemOverrides

@@ -17,8 +17,10 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,5 +105,17 @@ public class CompositeBakedModel<T extends BakedModel> implements BakedModel
 	public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data)
 	{
 		return base.getParticleIcon(data);
+	}
+
+	@Override
+	public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous)
+	{
+		return base.getRenderTypes(itemStack, fabulous);
+	}
+
+	@Override
+	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
+	{
+		return base.getRenderTypes(state, rand, data);
 	}
 }

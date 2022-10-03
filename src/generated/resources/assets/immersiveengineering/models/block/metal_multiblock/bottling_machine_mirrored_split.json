@@ -5,6 +5,10 @@
     "inner_model": {
       "parent": "minecraft:block/block",
       "callbacks": "immersiveengineering:bottling_machine",
+      "layers": [
+        "solid",
+        "translucent"
+      ],
       "loader": "immersiveengineering:ie_obj",
       "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine.obj.ie",
       "textures": {

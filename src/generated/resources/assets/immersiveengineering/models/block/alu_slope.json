@@ -1,6 +1,9 @@
 {
   "parent": "minecraft:block/block",
   "callbacks": "immersiveengineering:structural_arm",
+  "layers": [
+    "cutout"
+  ],
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/slope.obj.ie",
   "textures": {

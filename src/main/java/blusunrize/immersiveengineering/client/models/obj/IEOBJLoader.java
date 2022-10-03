@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallbac
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
@@ -24,6 +25,8 @@ import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -33,6 +36,7 @@ public class IEOBJLoader implements IGeometryLoader<IEOBJModel>
 	public static final String MODEL_KEY = "model";
 	public static final String CALLBACKS_KEY = "callbacks";
 	public static final String DYNAMIC_KEY = "dynamic";
+	public static final String LAYERS_KEY = "layers";
 	public static final IEOBJLoader instance = new IEOBJLoader();
 
 	@Override
@@ -54,9 +58,15 @@ public class IEOBJLoader implements IGeometryLoader<IEOBJModel>
 			}
 			else
 				callback = DefaultCallback.INSTANCE;
-			return new IEOBJModel(
-					model, modelContents.has(DYNAMIC_KEY)&&modelContents.get(DYNAMIC_KEY).getAsBoolean(), callback
-			);
+			final boolean dynamic = modelContents.has(DYNAMIC_KEY)&&modelContents.get(DYNAMIC_KEY).getAsBoolean();
+			List<ResourceLocation> layers = null;
+			if(modelContents.has(LAYERS_KEY))
+			{
+				layers = new ArrayList<>();
+				for(final JsonElement entry : modelContents.getAsJsonArray(LAYERS_KEY))
+					layers.add(new ResourceLocation(entry.getAsString()));
+			}
+			return new IEOBJModel(model, dynamic, callback, layers);
 		} catch(IOException e)
 		{
 			throw new RuntimeException(e);

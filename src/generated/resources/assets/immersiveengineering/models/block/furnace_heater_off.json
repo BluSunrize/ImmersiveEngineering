@@ -1,5 +1,6 @@
 {
   "parent": "immersiveengineering:block/ie_six_sides_overlay_all_but_one",
+  "render_type": "minecraft:cutout",
   "textures": {
     "block_all": "immersiveengineering:block/metal_device/furnace_heater",
     "block_north": "immersiveengineering:block/metal_device/furnace_heater_socket",

@@ -4,6 +4,7 @@
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/connector/relay_hv.obj",
+  "render_type": "minecraft:translucent",
   "textures": {
     "particle": "immersiveengineering:block/connector/relay_hv"
   }

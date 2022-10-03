@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static net.minecraft.client.renderer.RenderType.*;
 
 public class ConnectorBlockStates extends ExtendedBlockstateProvider
 {
@@ -60,7 +61,10 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		));
 
 		createAllRotatedBlock(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"));
-		createAllRotatedBlock(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"));
+		createAllRotatedBlock(
+				Connectors.getEnergyConnector(WireType.HV_CATEGORY, true),
+				obj("block/connector/relay_hv.obj", translucent())
+		);
 
 		createAllRotatedBlock(
 				Connectors.CONNECTOR_STRUCTURAL,
@@ -72,9 +76,12 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		);
 		createAllRotatedBlock(
 				Connectors.CONNECTOR_PROBE,
-				ieObjBuilder("block/connector/connector_probe.obj.ie").callback(ProbeConnectorCallbacks.INSTANCE).end()
+				ieObjBuilder("block/connector/connector_probe.obj.ie")
+						.callback(ProbeConnectorCallbacks.INSTANCE)
+						.layer(cutout(), translucent())
+						.end()
 		);
-		createAllRotatedBlock(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj"));
+		createAllRotatedBlock(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj", cutout()));
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();
@@ -92,8 +99,18 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 
 		ModelFile ctModel = split(innerObj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
 		createHorizontalRotatedBlock(Connectors.CURRENT_TRANSFORMER, ctModel, 0);
-		createHorizontalRotatedBlock(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end(), 0);
-		simpleBlock(Cloth.BALLOON.get(), ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end());
+		createHorizontalRotatedBlock(
+				MetalDevices.RAZOR_WIRE,
+				ieObjBuilder("block/razor_wire.obj.ie")
+						.callback(RazorWireCallbacks.INSTANCE)
+						.layer(cutout())
+						.end(),
+				0
+		);
+		simpleBlock(
+				Cloth.BALLOON.get(),
+				ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).layer(translucent()).end()
+		);
 	}
 
 	private void floodlightModel()
@@ -101,10 +118,12 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		ResourceLocation modelLoc = modLoc("block/metal_device/floodlight.obj.ie");
 		BlockModelBuilder offModel = ieObjBuilder("block/metal_device/floodlight_off", modelLoc)
 				.callback(FloodlightCallbacks.INSTANCE)
+				.layer(solid(), translucent())
 				.end()
 				.texture("texture", modLoc("block/metal_device/floodlight"));
 		BlockModelBuilder onModel = ieObjBuilder("block/metal_device/floodlight_on", modelLoc)
 				.callback(FloodlightCallbacks.INSTANCE)
+				.layer(solid(), translucent())
 				.end()
 				.texture("texture", modLoc("block/metal_device/floodlight_on"));
 		createAllRotatedBlock(

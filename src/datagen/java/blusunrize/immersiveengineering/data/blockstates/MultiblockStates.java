@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static net.minecraft.client.renderer.RenderType.*;
 
 public class MultiblockStates extends ExtendedBlockstateProvider
 {
@@ -75,6 +76,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 				splitDynamic(
 						ieObjBuilder("block/metal_device/cloche.obj.ie", innerModels)
 								.callback(ClocheCallbacks.INSTANCE)
+								.layer(solid(), translucent())
 								.end(),
 						COLUMN_THREE
 				)
@@ -148,16 +150,19 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 
 		createMultiblock(Multiblocks.ADVANCED_BLAST_FURNACE, split(innerObj("block/blastfurnace_advanced.obj"), IEMultiblocks.ADVANCED_BLAST_FURNACE));
 		createMultiblock(Multiblocks.SILO, split(innerObj("block/metal_multiblock/silo.obj"), IEMultiblocks.SILO));
-		createMultiblock(Multiblocks.TANK, split(innerObj("block/metal_multiblock/tank.obj"), IEMultiblocks.SHEETMETAL_TANK));
+		createMultiblock(Multiblocks.TANK, split(innerObj("block/metal_multiblock/tank.obj", cutoutMipped()), IEMultiblocks.SHEETMETAL_TANK));
 		createDynamicMultiblock(
-				ieObjBuilder("block/metal_multiblock/bottling_machine.obj.ie", innerModels).callback(BottlingMachineCallbacks.INSTANCE).end(),
+				ieObjBuilder("block/metal_multiblock/bottling_machine.obj.ie", innerModels)
+						.callback(BottlingMachineCallbacks.INSTANCE)
+						.layer(solid(), translucent())
+						.end(),
 				IEMultiblocks.BOTTLING_MACHINE
 		);
 		createMultiblock(innerObj("block/metal_multiblock/fermenter.obj"), IEMultiblocks.FERMENTER);
 		createMultiblock(innerObj("block/metal_multiblock/squeezer.obj"), IEMultiblocks.SQUEEZER);
 		createMultiblock(innerObj("block/metal_multiblock/mixer.obj"), IEMultiblocks.MIXER);
 		createMultiblock(innerObj("block/metal_multiblock/refinery.obj"), IEMultiblocks.REFINERY);
-		createMultiblock(innerObj("block/metal_multiblock/diesel_generator.obj"), IEMultiblocks.DIESEL_GENERATOR);
+		createMultiblock(innerObj("block/metal_multiblock/diesel_generator.obj", cutoutMipped()), IEMultiblocks.DIESEL_GENERATOR);
 		createMultiblock(Multiblocks.LIGHTNING_ROD,
 				split(innerObj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD));
 		createMultiblock(WoodenDevices.WORKBENCH,
@@ -173,7 +178,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 				null, null);
 		createMultiblock(MetalDevices.SAMPLE_DRILL,
 				split(
-						innerObj("block/metal_device/core_drill.obj"),
+						innerObj("block/metal_device/core_drill.obj", cutout()),
 						ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.above(), BlockPos.ZERO.above(2))
 				),
 				null, null);

@@ -4,6 +4,7 @@
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/connector/connector_bundled.obj",
+  "render_type": "minecraft:cutout",
   "textures": {
     "particle": "immersiveengineering:block/connector/connector_bundled"
   }

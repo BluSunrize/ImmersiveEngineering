@@ -111,5 +111,6 @@
   },
   "flip_v": true,
   "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/connector/connector_probe.obj.ie"
+  "model": "immersiveengineering:models/block/connector/connector_probe.obj.ie",
+  "render_type": "minecraft:translucent"
 }

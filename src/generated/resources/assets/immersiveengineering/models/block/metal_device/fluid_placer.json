@@ -1,5 +1,6 @@
 {
   "type": "all_same_texture",
   "base_name": "immersiveengineering:block/metal_device/fluid_placer",
-  "loader": "immersiveengineering:conf_sides"
+  "loader": "immersiveengineering:conf_sides",
+  "render_type": "minecraft:cutout"
 }

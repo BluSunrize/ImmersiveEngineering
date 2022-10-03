@@ -55,10 +55,10 @@ public abstract class AbstractSplitModel<T extends BakedModel> extends Composite
 		ModelData baseData = super.getModelData(world, pos, state, tileData);
 		BlockEntity te = world.getBlockEntity(pos);
 		BlockPos offset = null;
-		if(te instanceof IModelOffsetProvider)
-			offset = ((IModelOffsetProvider)te).getModelOffset(state, size);
-		else if(state.getBlock() instanceof IModelOffsetProvider)
-			offset = ((IModelOffsetProvider)state.getBlock()).getModelOffset(state, size);
+		if(te instanceof IModelOffsetProvider offsetProvider)
+			offset = offsetProvider.getModelOffset(state, size);
+		else if(state.getBlock() instanceof IModelOffsetProvider offsetProvider)
+			offset = offsetProvider.getModelOffset(state, size);
 		if(offset!=null)
 			return baseData.derive()
 					.with(Model.SUBMODEL_OFFSET, offset)

@@ -7,6 +7,7 @@
     "flip_v": true,
     "loader": "forge:obj",
     "model": "immersiveengineering:models/block/metal_device/core_drill.obj",
+    "render_type": "minecraft:cutout",
     "textures": {
       "particle": "immersiveengineering:block/metal_device/coresample_drill"
     }

@@ -46,9 +46,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,6 +68,9 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 			.build(CacheLoader.from(p -> new SpecificIEOBJModel<>(this, p.callbackKey(), p.shader(), p.renderTypeIfRelevant())));
 	private final IEOBJCallback<T> callback;
 	private final OBJModel<OBJMaterial> baseModel;
+	private final ChunkRenderTypeSet blockLayers;
+	private final List<RenderType> itemTypes;
+	private final List<RenderType> fabulousItemTypes;
 	private final TextureAtlasSprite particles;
 	private final IGeometryBakingContext owner;
 	private final Function<Material, TextureAtlasSprite> spriteGetter;
@@ -80,11 +85,17 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 			IGeometryBakingContext owner,
 			Function<Material, TextureAtlasSprite> spriteGetter,
 			ModelState sprite,
-			boolean isDynamic
+			boolean isDynamic,
+			ChunkRenderTypeSet blockLayers,
+			List<RenderType> itemTypes,
+			List<RenderType> fabulousItemTypes
 	)
 	{
 		this.callback = callback;
 		this.baseModel = baseModel;
+		this.blockLayers = blockLayers;
+		this.itemTypes = itemTypes;
+		this.fabulousItemTypes = fabulousItemTypes;
 		this.particles = spriteGetter.apply(owner.getMaterial("particle"));
 		this.owner = owner;
 		this.spriteGetter = spriteGetter;
@@ -158,6 +169,22 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 		return modelData.build();
 	}
 
+	@Nonnull
+	@Override
+	public ChunkRenderTypeSet getRenderTypes(
+			@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data
+	)
+	{
+		return blockLayers;
+	}
+
+	@Nonnull
+	@Override
+	public List<RenderType> getRenderTypes(@Nonnull ItemStack itemStack, boolean fabulous)
+	{
+		return fabulous?fabulousItemTypes: itemTypes;
+	}
+
 	@Override
 	public boolean useAmbientOcclusion()
 	{
@@ -189,6 +216,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 		return getParticleIcon(ModelData.EMPTY);
 	}
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data)
 	{

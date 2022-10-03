@@ -34,6 +34,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
@@ -120,6 +121,16 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	public ItemOverrides getOverrides()
 	{
 		return baseModel.getOverrides();
+	}
+
+	@Nonnull
+	@Override
+	public List<RenderType> getRenderTypes(@Nonnull ItemStack itemStack, boolean fabulous)
+	{
+		if(layer!=null)
+			return List.of(layer);
+		else
+			return baseModel.getRenderTypes(itemStack, fabulous);
 	}
 
 	private static final Matrix4f INVERT = Matrix4f.createScaleMatrix(-1, -1, -1);

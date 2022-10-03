@@ -4,11 +4,17 @@ import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static blusunrize.immersiveengineering.client.models.obj.IEOBJLoader.*;
 
@@ -22,6 +28,7 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 	private boolean dynamic = false;
 	private ResourceLocation modelLocation = null;
 	private IEOBJCallback<?> callback;
+	private List<RenderType> layers;
 
 	protected IEOBJBuilder(T parent, ExistingFileHelper existingFileHelper)
 	{
@@ -34,6 +41,14 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 		return this;
 	}
 
+	public IEOBJBuilder<T> layer(RenderType... layers)
+	{
+		if(this.layers==null)
+			this.layers = new ArrayList<>();
+		this.layers.addAll(Arrays.asList(layers));
+		return this;
+	}
+
 	@Override
 	public JsonObject toJson(JsonObject json)
 	{
@@ -43,6 +58,13 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 		json.addProperty(MODEL_KEY, modelLocation.toString());
 		if(dynamic)
 			json.addProperty(DYNAMIC_KEY, true);
+		if(this.layers!=null)
+		{
+			JsonArray types = new JsonArray();
+			for(final RenderType layer : this.layers)
+				types.add(ModelProviderUtils.getName(layer));
+			json.add(LAYERS_KEY, types);
+		}
 		json.addProperty(CALLBACKS_KEY, IEOBJCallbacks.getName(callback).toString());
 		return json;
 	}

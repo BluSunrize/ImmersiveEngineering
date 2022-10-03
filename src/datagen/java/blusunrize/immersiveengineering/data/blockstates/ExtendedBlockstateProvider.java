@@ -153,7 +153,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		itemModel(() -> b, stairs);
 	}
 
-	private void setRenderType(@Nullable RenderType type, ModelBuilder<?>... builders)
+	protected void setRenderType(@Nullable RenderType type, ModelBuilder<?>... builders)
 	{
 		if(type!=null)
 		{
@@ -178,10 +178,17 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		itemModels().getBuilder(name(block)).parent(model);
 	}
 
-	protected NongeneratedModel innerObj(String loc)
+	protected NongeneratedModel innerObj(String loc, @Nullable RenderType layer)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
-		return obj(loc.substring(0, loc.length()-4), modLoc(loc), innerModels);
+		final var result = obj(loc.substring(0, loc.length()-4), modLoc(loc), innerModels);
+		setRenderType(layer, result);
+		return result;
+	}
+
+	protected NongeneratedModel innerObj(String loc)
+	{
+		return innerObj(loc, null);
 	}
 
 	protected BlockModelBuilder obj(String loc)

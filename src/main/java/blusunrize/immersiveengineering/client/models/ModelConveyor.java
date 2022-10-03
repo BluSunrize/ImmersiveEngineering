@@ -55,11 +55,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -504,6 +507,18 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		return tileData.derive()
 				.with(CONVEYOR_MODEL_DATA, ConveyorHandler.getConveyor(conveyorName, bEntity))
 				.build();
+	}
+
+	@Override
+	public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous)
+	{
+		return List.of(ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get());
+	}
+
+	@Override
+	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
+	{
+		return ChunkRenderTypeSet.of(RenderType.cutout());
 	}
 
 	public record RawConveyorModel(IConveyorType<?> type) implements IUnbakedGeometry<RawConveyorModel>

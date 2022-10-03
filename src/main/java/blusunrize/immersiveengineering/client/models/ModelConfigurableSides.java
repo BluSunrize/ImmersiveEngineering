@@ -35,14 +35,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.RenderTypeGroup;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -126,11 +130,15 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	final String name;
 	public Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures;
+	private final RenderTypeGroup renderTypes;
 
-	public ModelConfigurableSides(String name, Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures)
+	public ModelConfigurableSides(
+			String name, Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures, RenderTypeGroup renderTypes
+	)
 	{
 		this.name = name;
 		this.textures = textures;
+		this.renderTypes = renderTypes;
 	}
 
 	@Nonnull
@@ -255,6 +263,18 @@ public class ModelConfigurableSides extends BakedIEModel
 		return ItemOverrides.EMPTY;
 	}
 
+	@Override
+	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
+	{
+		return ChunkRenderTypeSet.of(renderTypes.block());
+	}
+
+	@Override
+	public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous)
+	{
+		return List.of(fabulous?renderTypes.entityFabulous(): renderTypes.entity());
+	}
+
 	public static class Loader implements IGeometryLoader<ConfigSidesModelBase>
 	{
 		public static ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "conf_sides");
@@ -298,7 +318,10 @@ public class ModelConfigurableSides extends BakedIEModel
 				}
 				tex.put(f, forSide);
 			}
-			return new ModelConfigurableSides(name, tex);
+			final ResourceLocation renderTypeName = Objects.requireNonNullElseGet(
+					owner.getRenderTypeHint(), () -> new ResourceLocation("solid")
+			);
+			return new ModelConfigurableSides(name, tex, owner.getRenderType(renderTypeName));
 		}
 
 		@Override

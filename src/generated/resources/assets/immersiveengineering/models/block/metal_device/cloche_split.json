@@ -4,6 +4,10 @@
   "inner_model": {
     "parent": "minecraft:block/block",
     "callbacks": "immersiveengineering:cloche",
+    "layers": [
+      "solid",
+      "translucent"
+    ],
     "loader": "immersiveengineering:ie_obj",
     "model": "immersiveengineering:models/block/metal_device/cloche.obj.ie",
     "textures": {

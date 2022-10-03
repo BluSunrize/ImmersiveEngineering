@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static net.minecraft.client.renderer.RenderType.translucent;
 
 public class ItemModels extends TRSRItemModelProvider
 {
@@ -90,7 +91,8 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/post"));
 
 		obj(MetalDevices.CLOCHE, rl("block/metal_device/cloche.obj.ie"))
-				.transforms(rl("item/cloche"));
+				.transforms(rl("item/cloche"))
+				.renderType(ModelProviderUtils.getName(translucent()));
 		obj(MetalDevices.TESLA_COIL, rl("block/metal_device/teslacoil.obj"))
 				.transforms(rl("item/teslacoil"));
 		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.CHUTES.entrySet())
@@ -356,7 +358,8 @@ public class ItemModels extends TRSRItemModelProvider
 		obj(Connectors.CONNECTOR_REDSTONE, rl("block/connector/connector_redstone.obj.ie"))
 				.transforms(rl("item/connector"));
 		obj(Connectors.CONNECTOR_PROBE, rl("block/connector/connector_probe.obj.ie"))
-				.transforms(rl("item/connector"));
+				.transforms(rl("item/connector"))
+				.renderType(ModelProviderUtils.getName(translucent()));
 		obj(Connectors.CONNECTOR_BUNDLED, rl("block/connector/connector_bundled.obj"))
 				.transforms(rl("item/connector"));
 		obj(Connectors.CONNECTOR_STRUCTURAL, rl("block/connector/connector_structural.obj.ie"))
