@@ -102,7 +102,7 @@ public class ClocheRecipeManager implements IRecipeManager<ClocheRecipe>
 	 * @docParam renderType "generic"
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient seed, IIngredient soil, int time, IItemStack[] outputs, Block renderBlock, @ZenCodeType.Optional("\"generic\"") String renderType)
+	public void addRecipe(String recipePath, IIngredient seed, IIngredient soil, int time, IItemStack[] outputs, Block renderBlock, @ZenCodeType.OptionalString("\"generic\"") String renderType)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final List<Lazy<ItemStack>> outputList = CrTIngredientUtil.getNonNullList(outputs);
