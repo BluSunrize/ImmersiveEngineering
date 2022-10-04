@@ -20,7 +20,7 @@ public class MultiblockCallbacks extends Callback<MultiblockPartBlockEntity<?>>
 	@ComputerCallable
 	public boolean getEnabled(CallbackEnvironment<MultiblockPartBlockEntity<?>> env)
 	{
-		return env.object().computerControl.isEnabled();
+		return env.beforePreprocess().computerControl.isEnabled();
 	}
 
 	@ComputerCallable

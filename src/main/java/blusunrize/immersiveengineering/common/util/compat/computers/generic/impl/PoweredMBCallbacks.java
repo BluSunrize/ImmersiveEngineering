@@ -20,9 +20,7 @@ public class PoweredMBCallbacks extends Callback<PoweredMultiblockBlockEntity<?,
 	@ComputerCallable
 	public boolean isRunning(CallbackEnvironment<PoweredMultiblockBlockEntity<?, ?>> env)
 	{
-		PoweredMultiblockBlockEntity<?, ?> master = env.object().master();
-		if(master==null) return false;
-		return master.shouldRenderAsActive();
+		return env.object().shouldRenderAsActive();
 	}
 
 	public PoweredMBCallbacks()
