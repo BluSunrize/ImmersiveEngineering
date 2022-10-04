@@ -23,13 +23,15 @@ import javax.annotation.Nullable;
 public final class IERPCMethod<T> implements RPCMethod
 {
 	private final ComputerCallback<? super T> callback;
-	private final T object;
+	private final T preprocessed;
 	private final RPCParameter[] parameters;
+	private final T rawObject;
 
-	public IERPCMethod(ComputerCallback<? super T> callback, T object)
+	public IERPCMethod(ComputerCallback<? super T> callback, T rawObject, T preprocessed)
 	{
 		this.callback = callback;
-		this.object = object;
+		this.preprocessed = preprocessed;
+		this.rawObject = rawObject;
 		this.parameters = callback.getUserArguments().stream()
 				.map(ArgumentType::getActualType)
 				.map(IERPCParameter::new)
@@ -73,7 +75,7 @@ public final class IERPCMethod<T> implements RPCMethod
 			parameters[i] = rpcInvocation.getGson().fromJson(
 					jsonParms.get(i), getParameters()[i].getType()
 			);
-		Object[] internalResult = callback.invoke(parameters, new CallbackEnvironment<>(object));
+		Object[] internalResult = callback.invoke(parameters, new CallbackEnvironment<>(preprocessed, rawObject));
 		if(internalResult.length==0)
 			return null;
 		else if(internalResult[0] instanceof EventWaiterResult waiter)

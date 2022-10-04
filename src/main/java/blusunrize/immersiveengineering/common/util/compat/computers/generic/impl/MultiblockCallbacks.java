@@ -26,6 +26,8 @@ public class MultiblockCallbacks extends Callback<MultiblockPartBlockEntity<?>>
 	@ComputerCallable
 	public void setEnabled(CallbackEnvironment<MultiblockPartBlockEntity<?>> env, boolean enable)
 	{
-		env.object().computerControl.setEnabled(enable);
+		// This has to run on the BE the computer is attached to, since the computerControl object needs to see all
+		// attach/detach calls, which won't work with the master BE in a potentially unloaded chunk
+		env.beforePreprocess().computerControl.setEnabled(enable);
 	}
 }
