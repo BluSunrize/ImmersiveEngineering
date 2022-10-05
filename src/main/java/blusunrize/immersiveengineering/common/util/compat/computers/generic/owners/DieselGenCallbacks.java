@@ -9,11 +9,19 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorBlockEntity;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MultiblockCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
 
 public class DieselGenCallbacks extends MultiblockCallbackOwner<DieselGeneratorBlockEntity>
 {
+	@ComputerCallable
+	public boolean isRunning(CallbackEnvironment<DieselGeneratorBlockEntity> env)
+	{
+		return env.object().active;
+	}
+
 	public DieselGenCallbacks()
 	{
 		super(DieselGeneratorBlockEntity.class, "diesel_generator");
