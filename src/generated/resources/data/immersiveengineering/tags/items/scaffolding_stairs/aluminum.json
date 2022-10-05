@@ -1,4 +1,8 @@
 {
   "replace": false,
-  "values": []
+  "values": [
+    "immersiveengineering:stairs_alu_scaffolding_standard",
+    "immersiveengineering:stairs_alu_scaffolding_grate_top",
+    "immersiveengineering:stairs_alu_scaffolding_wooden_top"
+  ]
 }

@@ -207,6 +207,7 @@ public class ImmersiveEngineering
 		));
 		for(EnumMetals metal : EnumMetals.values())
 			ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.getTagsFor(metal).sheetmetal));
+		ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.sheetmetalSlabs));
 		// Metal devices & Chutes
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDevices.RAZOR_WIRE, MetalDevices.BARREL, MetalDevices.FLUID_PIPE

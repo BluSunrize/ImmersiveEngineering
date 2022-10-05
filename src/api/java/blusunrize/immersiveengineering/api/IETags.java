@@ -67,6 +67,7 @@ public class IETags
 	public static final TagKey<Block> scaffoldingSteelSlab = createBlockTag(rl("scaffolding_slabs/steel"));
 	public static final TagKey<Block> scaffoldingAluSlab = createBlockTag(rl("scaffolding_slabs/aluminum"));
 	public static final TagKey<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
+	public static final TagKey<Block> sheetmetalSlabs = createBlockTag(forgeLoc("sheetmetal_slabs"));
 	public static final TagKey<Block> fencesSteel = createBlockTag(forgeLoc("fences/steel"));
 	public static final TagKey<Block> fencesAlu = createBlockTag(forgeLoc("fences/aluminum"));
 	//IE Items
