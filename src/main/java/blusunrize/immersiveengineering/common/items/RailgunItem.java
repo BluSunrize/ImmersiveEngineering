@@ -212,7 +212,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	@Override
 	public void releaseUsing(ItemStack stack, Level world, LivingEntity user, int timeLeft)
 	{
-		if(user instanceof Player)
+		if(!world.isClientSide()&&user instanceof Player player)
 		{
 			int inUse = this.getUseDuration(stack)-timeLeft;
 			ItemNBTHelper.remove(stack, "inUse");
@@ -224,15 +224,14 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 			IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
 			if(energy.extractEnergy(consumption, true)==consumption)
 			{
-				ItemStack ammo = findAmmo(stack, (Player)user);
+				ItemStack ammo = findAmmo(stack, player);
 				if(!ammo.isEmpty())
 				{
 					ItemStack ammoConsumed = ammo.split(1);
 					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
-					Vec3 vec = user.getLookAngle();
 					float speed = 20;
 					Entity shot = new RailgunShotEntity(user.level, user, speed, 0, ammoConsumed);
-					shot = projectileProperties.getProjectile((Player)user, ammoConsumed, shot);
+					shot = projectileProperties.getProjectile(player, ammoConsumed, shot);
 					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
 					energy.extractEnergy(consumption, false);
 					if(!world.isClientSide)
