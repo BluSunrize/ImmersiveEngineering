@@ -96,7 +96,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 					nameField.setValue("");
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), () -> !tile.whitelist,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
@@ -104,7 +104,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 					tag.putBoolean("whitelist", tile.whitelist);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), () -> tile.attackAnimals,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
@@ -112,7 +112,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 					tag.putBoolean("attackAnimals", tile.attackAnimals);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), () -> tile.attackPlayers,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
@@ -120,7 +120,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 					tag.putBoolean("attackPlayers", tile.attackPlayers);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), () -> tile.attackNeutrals,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;

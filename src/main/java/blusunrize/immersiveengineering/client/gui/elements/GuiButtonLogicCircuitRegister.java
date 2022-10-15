@@ -18,6 +18,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,11 +26,22 @@ import java.util.Locale;
 public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRegister> implements ITooltipWidget
 {
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
+	private final MutableInt state;
 
-	public GuiButtonLogicCircuitRegister(int x, int y, Component name, IIEPressable<GuiButtonState<LogicCircuitRegister>> handler)
+	public static GuiButtonLogicCircuitRegister create(
+			int x, int y, Component name, IIEPressable<GuiButtonState<LogicCircuitRegister>> handler
+	)
 	{
-		super(x, y, 18, 18, name, LogicCircuitRegister.values(), 0, TEXTURE, 234, 0, -1, handler);
+		return new GuiButtonLogicCircuitRegister(x, y, name, handler, new MutableInt());
+	}
+
+	private GuiButtonLogicCircuitRegister(
+			int x, int y, Component name, IIEPressable<GuiButtonState<LogicCircuitRegister>> handler, MutableInt state
+	)
+	{
+		super(x, y, 18, 18, name, LogicCircuitRegister.values(), state::getValue, TEXTURE, 234, 0, -1, handler);
 		this.textOffset = new int[]{3, 5};
+		this.state = state;
 	}
 
 	@Override
@@ -59,6 +71,11 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 		}
 	}
 
+	public void setState(int state)
+	{
+		this.state.setValue(state);
+	}
+
 	private static final ListMultimap<Character, Integer> SPLIT_BY_INITIAL = ArrayListMultimap.create(11, 2);
 
 	static
@@ -79,7 +96,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 			int number = Character.digit(codePoint, 10);
 			if(number>=0 && number<8)
 			{
-				this.setStateByInt(number+16); // plus 16 colors
+				this.state.setValue(number+16); // plus 16 colors
 				this.onPress.onPress(this);
 				return true;
 			}
@@ -90,7 +107,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 			if(!options.isEmpty())
 			{
 				int next = (options.indexOf(this.getStateAsInt())+1)%options.size();
-				this.setStateByInt(options.get(next));
+				this.state.setValue(options.get(next));
 				this.onPress.onPress(this);
 				return true;
 			}

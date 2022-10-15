@@ -26,7 +26,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -95,13 +94,6 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	{
 		return mouseX >= leftPos+x&&mouseY >= topPos+y
 				&&mouseX < leftPos+x+w&&mouseY < topPos+y+h;
-	}
-
-	protected void clearIntArray(ContainerData ints)
-	{
-		// Clear GUI ints, the sync code assumes that 0 is the initial state
-		for(int i = 0; i < ints.getCount(); ++i)
-			ints.set(i, 0);
 	}
 
 	public void fullInit()

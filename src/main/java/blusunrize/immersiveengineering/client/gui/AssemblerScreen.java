@@ -105,7 +105,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.recursiveButton = new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", menu.recursiveIngredients.get(), TEXTURE, 240, 66, 3,
+		this.recursiveButton = new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", menu.recursiveIngredients::get, TEXTURE, 240, 66, 3,
 				btn -> {
 					sendButtonClick.accept(3);
 					fullInit();
@@ -116,8 +116,6 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		if(menu.recursiveIngredients.get()!=this.recursiveButton.getState())
-			this.recursiveButton.setStateByInt(menu.recursiveIngredients.get()?1: 0);
 		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
 			if(menu.inv.getStackInSlot(18+i).isEmpty()&&!menu.patterns.get(i).getItem(9).isEmpty())
 			{

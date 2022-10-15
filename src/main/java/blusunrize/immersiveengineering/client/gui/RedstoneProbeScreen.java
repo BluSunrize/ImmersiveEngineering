@@ -52,13 +52,13 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 		{
 			final DyeColor color = DyeColor.byId(i);
 			colorButtonsSend[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsSend, guiLeft+20+(i%4*14), guiTop+28+(i/4*14),
-					blockEntity.redstoneChannelSending.ordinal()==i, color, btn -> {
+					() -> blockEntity.redstoneChannelSending==color, color, btn -> {
 						sendConfig("redstoneChannelSending", color.getId());
 					});
 			this.addRenderableWidget(colorButtonsSend[i]);
 
 			colorButtonsReceive[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsReceive, guiLeft+136+(i%4*14), guiTop+28+(i/4*14),
-					blockEntity.redstoneChannel.ordinal()==i, color, btn -> {
+					() -> blockEntity.redstoneChannel==color, color, btn -> {
 						sendConfig("redstoneChannel", color.getId());
 					});
 			this.addRenderableWidget(colorButtonsReceive[i]);

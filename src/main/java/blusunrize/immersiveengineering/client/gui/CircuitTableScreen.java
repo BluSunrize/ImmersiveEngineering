@@ -50,8 +50,8 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 
 	// Buttons
 	private GuiSelectingList operatorList;
-	private final List<GuiButtonState<LogicCircuitRegister>> inputButtons = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
-	private GuiButtonState<LogicCircuitRegister> outputButton;
+	private final List<GuiButtonLogicCircuitRegister> inputButtons = new ArrayList<>(LogicCircuitOperator.TOTAL_MAX_INPUTS);
+	private GuiButtonLogicCircuitRegister outputButton;
 	private final Rect2i copyArea;
 
 	private final ResettableLazy<Optional<LogicCircuitInstruction>> instruction = new ResettableLazy<>(() -> {
@@ -105,7 +105,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 			this.minecraft.tell(this::updateInstruction);
 		}, Arrays.stream(LogicCircuitOperator.values()).map(Enum::name).toArray(String[]::new)).setPadding(1, 1, 2, 0));
 
-		this.outputButton = this.addRenderableWidget(new GuiButtonLogicCircuitRegister(
+		this.outputButton = this.addRenderableWidget(GuiButtonLogicCircuitRegister.create(
 				leftPos+121, topPos+56,
 				Component.literal("Output"), btn -> this.minecraft.tell(this::updateInstruction))
 		);
@@ -166,7 +166,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 			int inputStart = 130-(inputCount*10-1);
 			if(inputCount < this.inputButtons.size())
 			{
-				Iterator<GuiButtonState<LogicCircuitRegister>> it = this.inputButtons.iterator();
+				Iterator<GuiButtonLogicCircuitRegister> it = this.inputButtons.iterator();
 				int i = 0;
 				// Reposition buttons and remove excess
 				while(it.hasNext())
@@ -187,7 +187,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 					if(i < this.inputButtons.size()) // Reposition buttons
 						this.inputButtons.get(i).x = leftPos+inputStart+20*i;
 					else // Add new ones
-						this.inputButtons.add(this.addRenderableWidget(new GuiButtonLogicCircuitRegister(
+						this.inputButtons.add(this.addRenderableWidget(GuiButtonLogicCircuitRegister.create(
 								leftPos+inputStart+20*i, topPos+18,
 								Component.literal("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
 						));
@@ -200,8 +200,8 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 			this.operatorList.active = false;
 			this.operatorList.setSelectedString(editInstr.getOperator().name());
 			for(int i = 0; i < editInstr.getInputs().length; i++)
-				this.inputButtons.get(i).setStateByInt(editInstr.getInputs()[i].ordinal());
-			this.outputButton.setStateByInt(editInstr.getOutput().ordinal());
+				this.inputButtons.get(i).setState(editInstr.getInputs()[i].ordinal());
+			this.outputButton.setState(editInstr.getOutput().ordinal());
 		}
 		else
 			this.operatorList.active = true;
@@ -267,10 +267,10 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 			{
 				this.operatorList.setSelectedString(instr.getOperator().name());
 				this.updateButtons();
-				this.outputButton.setStateByInt(instr.getOutput().ordinal());
+				this.outputButton.setState(instr.getOutput().ordinal());
 				LogicCircuitRegister[] inputs = instr.getInputs();
 				for(int i = 0; i < inputs.length; i++)
-					this.inputButtons.get(i).setStateByInt(inputs[i].ordinal());
+					this.inputButtons.get(i).setState(inputs[i].ordinal());
 				return true;
 			}
 		}

@@ -15,15 +15,16 @@ import net.minecraft.world.item.DyeColor;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.IntSupplier;
 
 public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 {
 	public GuiButtonDyeColor(
-			int x, int y, String name, DyeColor initialColor,
+			int x, int y, String name, IntSupplier color,
 			IIEPressable<GuiButtonState<DyeColor>> handler, BiConsumer<List<Component>, DyeColor> tooltip
 	)
 	{
-		super(x, y, 8, 8, Component.nullToEmpty(name), DyeColor.values(), initialColor.ordinal(), GuiReactiveList.TEXTURE, 0, 128, -1, handler, tooltip);
+		super(x, y, 8, 8, Component.nullToEmpty(name), DyeColor.values(), color, GuiReactiveList.TEXTURE, 0, 128, -1, handler, tooltip);
 	}
 
 	@Override

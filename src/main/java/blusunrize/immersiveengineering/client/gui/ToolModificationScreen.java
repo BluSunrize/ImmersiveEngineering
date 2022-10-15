@@ -49,7 +49,7 @@ public abstract class ToolModificationScreen<C extends AbstractContainerMenu> ex
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			if(boolArray!=null)
 				for(ToolConfigBoolean b : boolArray)
-					this.addRenderableWidget(new GuiButtonCheckbox(leftPos+b.x, topPos+b.y, tool.fomatConfigName(stack, b), b.value,
+					this.addRenderableWidget(new GuiButtonCheckbox(leftPos+b.x, topPos+b.y, tool.fomatConfigName(stack, b), () -> b.value,
 							btn -> sendChange(!btn.getState(), b.name, ByteTag::valueOf)));
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)

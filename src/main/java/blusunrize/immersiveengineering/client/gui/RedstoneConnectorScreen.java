@@ -27,6 +27,7 @@ import net.minecraft.world.item.DyeColor;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -54,7 +55,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		clearWidgets();
 
 		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, Component.empty(), new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
-				blockEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
+				() -> blockEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
 				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
 		);
 		this.addRenderableWidget(buttonInOut);
@@ -64,7 +65,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		{
 			final DyeColor color = DyeColor.byId(i);
 			colorButtons[i] = buildColorButton(colorButtons, guiLeft+22+(i%4*14), guiTop+44+(i/4*14),
-					blockEntity.redstoneChannel.ordinal()==i, color, btn -> sendConfig("redstoneChannel", color.getId()));
+					() -> blockEntity.redstoneChannel==color, color, btn -> sendConfig("redstoneChannel", color.getId()));
 			this.addRenderableWidget(colorButtons[i]);
 		}
 	}
@@ -122,7 +123,9 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
-	public static GuiButtonBoolean buildColorButton(GuiButtonBoolean[] buttons, int posX, int posY, boolean active, DyeColor color, Consumer<GuiButtonBoolean> onClick)
+	public static GuiButtonBoolean buildColorButton(
+			GuiButtonBoolean[] buttons, int posX, int posY, BooleanSupplier active, DyeColor color, Consumer<GuiButtonBoolean> onClick
+	)
 	{
 		return new GuiButtonBoolean(posX, posY, 12, 12, "", active,
 				TEXTURE, 194, 0, 1,
@@ -130,8 +133,8 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 					if(btn.getNextState())
 						onClick.accept((GuiButtonBoolean)btn);
 					for(int j = 0; j < buttons.length; j++)
-						if(j!=color.ordinal())
-							buttons[j].setStateByInt(0);
+						if(j!=color.ordinal()&&buttons[j].getState())
+							buttons[j].onClick(buttons[j].x, buttons[j].y);
 				})
 		{
 			@Override

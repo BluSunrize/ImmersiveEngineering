@@ -19,27 +19,29 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.IntSupplier;
 
 public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 {
 	public E[] states;
-	private int state;
+	private final IntSupplier state;
 	protected final int offsetDir;
 	private final BiConsumer<List<Component>, E> tooltip;
-	public int[] textOffset = {0, 0};
+	public int[] textOffset;
 
-	public GuiButtonState(int x, int y, int w, int h, Component name, E[] states, int initialState, ResourceLocation texture, int u,
+	public GuiButtonState(int x, int y, int w, int h, Component name, E[] states, IntSupplier state, ResourceLocation texture, int u,
 						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
 	{
-		this(x, y, w, h, name, states, initialState, texture, u, v, offsetDir, handler, (a, b) -> {});
+		this(x, y, w, h, name, states, state, texture, u, v, offsetDir, handler, (a, b) -> {
+		});
 	}
 
-	public GuiButtonState(int x, int y, int w, int h, Component name, E[] states, int initialState, ResourceLocation texture, int u,
+	public GuiButtonState(int x, int y, int w, int h, Component name, E[] states, IntSupplier state, ResourceLocation texture, int u,
 						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler, BiConsumer<List<Component>, E> tooltip)
 	{
 		super(x, y, w, h, name, texture, u, v, handler);
 		this.states = states;
-		this.state = initialState;
+		this.state = state;
 		this.offsetDir = offsetDir;
 		this.tooltip = tooltip;
 		textOffset = new int[]{width+1, height/2-3};
@@ -47,7 +49,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 
 	protected int getNextStateInt()
 	{
-		return (state+1)%states.length;
+		return (state.getAsInt()+1)%states.length;
 	}
 
 	public E getNextState()
@@ -55,19 +57,14 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 		return this.states[getNextStateInt()];
 	}
 
-	public void setStateByInt(int state)
-	{
-		this.state = state;
-	}
-
 	public E getState()
 	{
-		return this.states[this.state];
+		return this.states[this.state.getAsInt()];
 	}
 
 	protected int getStateAsInt()
 	{
-		return this.state;
+		return this.state.getAsInt();
 	}
 
 	public int[] getTextOffset(Font fontrenderer)
@@ -87,8 +84,8 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 			RenderSystem.blendFunc(770, 771);
-			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state;
-			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state;
+			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state.getAsInt();
+			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state.getAsInt();
 			this.blit(transform, x, y, u, v, width, height);
 			if(!getMessage().getString().isEmpty())
 			{
@@ -101,15 +98,6 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 				this.drawString(transform, fontrenderer, getMessage(), x+offset[0], y+offset[1], txtCol);
 			}
 		}
-	}
-
-	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int key)
-	{
-		boolean b = super.mouseClicked(mouseX, mouseY, key);
-		if(b)
-			this.state = getNextStateInt();
-		return b;
 	}
 
 	@Override
