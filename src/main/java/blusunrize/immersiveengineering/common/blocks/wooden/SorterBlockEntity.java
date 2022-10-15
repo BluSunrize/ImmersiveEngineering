@@ -49,9 +49,11 @@ import static net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HAND
 //TODO Metadata and oredict are gone. Update manual entry as well.
 public class SorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<SorterBlockEntity>, IBlockEntityDrop
 {
+	public static final int FILTER_SLOTS_PER_SIDE = 8;
+	public static final int TOTAL_SLOTS = 6*SorterBlockEntity.FILTER_SLOTS_PER_SIDE;
+
 	public SorterInventory filter;
 	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
-	public static final int filterSlotsPerSide = 8;
 	/**
 	 * The positions of the routers that have been used in the current "outermost" `routeItem` call.
 	 * Necessary to stop "blocks" of routers (and similar setups) from causing massive lag (using just a boolean
@@ -418,7 +420,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	{
 		public SorterInventory()
 		{
-			super(NonNullList.withSize(6*filterSlotsPerSide, ItemStack.EMPTY));
+			super(NonNullList.withSize(6*FILTER_SLOTS_PER_SIDE, ItemStack.EMPTY));
 		}
 
 		public ItemStack getStackBySideAndSlot(Direction side, int slotOnSide)
@@ -428,7 +430,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 
 		public int getSlotId(Direction side, int slotOnSide)
 		{
-			return side.ordinal()*filterSlotsPerSide+slotOnSide;
+			return side.ordinal()*FILTER_SLOTS_PER_SIDE+slotOnSide;
 		}
 
 		@Override
@@ -440,7 +442,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		public Iterable<ItemStack> getFilterStacksOnSide(Direction side)
 		{
 			return () -> Iterators.transform(
-					IntIterators.fromTo(0, filterSlotsPerSide), i -> getStackBySideAndSlot(side, i)
+					IntIterators.fromTo(0, FILTER_SLOTS_PER_SIDE), i -> getStackBySideAndSlot(side, i)
 			);
 		}
 

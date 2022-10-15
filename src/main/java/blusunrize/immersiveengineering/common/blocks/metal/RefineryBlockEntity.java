@@ -56,20 +56,19 @@ import java.util.Set;
 public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBlockEntity, RefineryRecipe> implements
 		ISelectionBounds, ICollisionBounds, IPlayerInteraction, IInteractionObjectIE<RefineryBlockEntity>, IBlockBounds
 {
-	public FluidTank[] tanks = new FluidTank[]{
-			new FluidTank(24*FluidType.BUCKET_VOLUME),
-			new FluidTank(24*FluidType.BUCKET_VOLUME),
-			new FluidTank(24*FluidType.BUCKET_VOLUME)
-	};
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 	private static final int SLOT_CATALYST = 0;
 	private static final int SLOT_CONTAINER_IN = 1;
 	private static final int SLOT_CONTAINER_OUT = 2;
+	public static final int NUM_SLOTS = 3;
+	public static final int ENERGY_CAPACITY = 16000;
+
+	public FluidTank[] tanks = makeTanks();
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 
 
 	public RefineryBlockEntity(BlockEntityType<RefineryBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.REFINERY, 16000, true, type, pos, state);
+		super(IEMultiblocks.REFINERY, ENERGY_CAPACITY, true, type, pos, state);
 		tanks[0].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(level, fs, tanks[1].getFluid()).isPresent());
 		tanks[1].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(level, fs, tanks[0].getFluid()).isPresent());
 	}
@@ -395,5 +394,14 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	public BEContainer<RefineryBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.REFINERY;
+	}
+
+	public static FluidTank[] makeTanks()
+	{
+		return new FluidTank[]{
+				new FluidTank(24*FluidType.BUCKET_VOLUME),
+				new FluidTank(24*FluidType.BUCKET_VOLUME),
+				new FluidTank(24*FluidType.BUCKET_VOLUME)
+		};
 	}
 }

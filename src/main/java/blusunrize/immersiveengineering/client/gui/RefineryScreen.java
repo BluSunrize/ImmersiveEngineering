@@ -12,8 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.RefineryBlockEntity;
-import blusunrize.immersiveengineering.common.gui.RefineryContainer;
+import blusunrize.immersiveengineering.common.gui.RefineryMenu;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -25,16 +24,13 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class RefineryScreen extends IEContainerScreen<RefineryContainer>
+public class RefineryScreen extends IEContainerScreen<RefineryMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("refinery");
 
-	private final RefineryBlockEntity tile;
-
-	public RefineryScreen(RefineryContainer container, Inventory inventoryPlayer, Component component)
+	public RefineryScreen(RefineryMenu container, Inventory inventoryPlayer, Component component)
 	{
 		super(container, inventoryPlayer, component, TEXTURE);
-		this.tile = container.tile;
 	}
 
 	@Nonnull
@@ -42,10 +38,10 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+40, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new EnergyInfoArea(leftPos+157, topPos+21, tile.energyStorage)
+				new FluidInfoArea(menu.tanks[0], new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(menu.tanks[1], new Rect2i(leftPos+40, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(menu.tanks[2], new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new EnergyInfoArea(leftPos+157, topPos+21, menu.energy)
 		);
 	}
 

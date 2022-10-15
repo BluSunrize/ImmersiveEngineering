@@ -68,11 +68,15 @@ public class IEMenuTypes
 	public static final BEContainer<LogicUnitBlockEntity, LogicUnitMenu> LOGIC_UNIT = registerBENew(
 			Lib.GUIID_LogicUnit, LogicUnitMenu::makeServer, LogicUnitMenu::makeClient
 	);
-	public static final BEContainer<SqueezerBlockEntity, SqueezerContainer> SQUEEZER = register(Lib.GUIID_Squeezer, SqueezerContainer::new);
+	public static final BEContainer<SqueezerBlockEntity, SqueezerMenu> SQUEEZER = registerBENew(
+			Lib.GUIID_Squeezer, SqueezerMenu::makeServer, SqueezerMenu::makeClient
+	);
 	public static final BEContainer<FermenterBlockEntity, FermenterMenu> FERMENTER = registerBENew(
 			Lib.GUIID_Fermenter, FermenterMenu::makeServer, FermenterMenu::makeClient
 	);
-	public static final BEContainer<RefineryBlockEntity, RefineryContainer> REFINERY = register(Lib.GUIID_Refinery, RefineryContainer::new);
+	public static final BEContainer<RefineryBlockEntity, RefineryMenu> REFINERY = registerBENew(
+			Lib.GUIID_Refinery, RefineryMenu::makeServer, RefineryMenu::makeClient
+	);
 	public static final BEContainer<ArcFurnaceBlockEntity, ArcFurnaceMenu> ARC_FURNACE = registerBENew(
 			Lib.GUIID_ArcFurnace, ArcFurnaceMenu::makeServer, ArcFurnaceMenu::makeClient
 	);

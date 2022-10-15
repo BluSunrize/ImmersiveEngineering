@@ -430,9 +430,9 @@ public class ClientProxy extends CommonProxy
 		registerTileScreen(IEMenuTypes.SORTER, SorterScreen::new);
 		MenuScreens.register(IEMenuTypes.ITEM_BATCHER.getType(), ItemBatcherScreen::new);
 		MenuScreens.register(IEMenuTypes.LOGIC_UNIT.getType(), LogicUnitScreen::new);
-		registerTileScreen(IEMenuTypes.SQUEEZER, SqueezerScreen::new);
+		MenuScreens.register(IEMenuTypes.SQUEEZER.getType(), SqueezerScreen::new);
 		MenuScreens.register(IEMenuTypes.FERMENTER.getType(), FermenterScreen::new);
-		registerTileScreen(IEMenuTypes.REFINERY, RefineryScreen::new);
+		MenuScreens.register(IEMenuTypes.REFINERY.getType(), RefineryScreen::new);
 		MenuScreens.register(IEMenuTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
 		MenuScreens.register(IEMenuTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
 		registerTileScreen(IEMenuTypes.MIXER, MixerScreen::new);

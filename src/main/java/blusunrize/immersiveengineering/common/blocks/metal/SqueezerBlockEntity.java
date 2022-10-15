@@ -67,8 +67,12 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<SqueezerBlockEntity>, IBlockBounds,
 		IEClientTickableBE
 {
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidType.BUCKET_VOLUME)};
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
+	public static final int NUM_SLOTS = 11;
+	public static final int TANK_CAPACITY = 24*FluidType.BUCKET_VOLUME;
+	public static final int ENERGY_CAPACITY = 16000;
+
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(TANK_CAPACITY)};
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 	public float animation_piston = 0;
 	public boolean animation_down = true;
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(
@@ -77,7 +81,7 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 
 	public SqueezerBlockEntity(BlockEntityType<SqueezerBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SQUEEZER, 16000, true, type, pos, state);
+		super(IEMultiblocks.SQUEEZER, ENERGY_CAPACITY, true, type, pos, state);
 	}
 
 	@Override

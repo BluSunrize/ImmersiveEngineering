@@ -46,8 +46,8 @@ public class MixerContainer extends IEBaseContainerOld<MixerBlockEntity> impleme
 	public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject)
 	{
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
-			if(process instanceof MultiblockProcessInMachine)
-				for(int s : ((MultiblockProcessInMachine)process).getInputSlots())
+			if(process instanceof MultiblockProcessInMachine<?> inMachine)
+				for(int s : inMachine.getInputSlots())
 					if(s==slotNumer)
 						return false;
 		return true;
@@ -57,8 +57,8 @@ public class MixerContainer extends IEBaseContainerOld<MixerBlockEntity> impleme
 	public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject)
 	{
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
-			if(process instanceof MultiblockProcessInMachine)
-				for(int s : ((MultiblockProcessInMachine)process).getInputSlots())
+			if(process instanceof MultiblockProcessInMachine<?> inMachine)
+				for(int s : inMachine.getInputSlots())
 					if(s==slotNumer)
 						return false;
 		return true;
