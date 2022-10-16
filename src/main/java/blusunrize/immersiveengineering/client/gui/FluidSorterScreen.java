@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
+import blusunrize.immersiveengineering.client.gui.SorterScreen.FilterBit;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -35,6 +35,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
@@ -127,25 +128,20 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			int x = leftPos+21+(side/2)*58;
 			int y = topPos+3+(side%2)*76;
 			final int sideFinal = side;
-			ButtonSorter b = new ButtonSorter(x, y, 1, btn ->
-			{
-				CompoundTag tag = new CompoundTag();
-				tag.putInt("useNBT", 1-menu.sortWithNBT.get()[sideFinal]);
-				tag.putInt("side", sideFinal);
-				sendUpdateToServer(tag);
-				fullInit();
-			});
+			final BooleanSupplier value = () -> menu.sortWithNBT.get()[sideFinal]!=0;
+			ButtonSorter b = new ButtonSorter(
+					x, y, FilterBit.NBT, () -> value.getAsBoolean()?FilterBit.NBT.mask(): 0,
+					btn -> {
+						CompoundTag tag = new CompoundTag();
+						tag.putInt("useNBT", value.getAsBoolean()?0: 1);
+						tag.putInt("side", sideFinal);
+						sendUpdateToServer(tag);
+						fullInit();
+					}
+			);
 			this.sorterButtons.add(b);
 			this.addRenderableWidget(b);
 		}
-	}
-
-	@Override
-	protected void drawBackgroundTexture(PoseStack transform)
-	{
-		for(int i = 0; i < DirectionUtils.VALUES.length; ++i)
-			sorterButtons.get(i).active = menu.sortWithNBT.get()[i] > 0;
-		super.drawBackgroundTexture(transform);
 	}
 
 	public void setFluidInSlot(int side, int slot, FluidStack fluid)

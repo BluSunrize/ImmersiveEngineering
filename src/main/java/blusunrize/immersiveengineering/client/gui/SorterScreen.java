@@ -8,14 +8,12 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
-import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity;
-import blusunrize.immersiveengineering.common.gui.SorterContainer;
-import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
+import blusunrize.immersiveengineering.common.gui.SorterMenu;
+import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -29,22 +27,21 @@ import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Locale;
+import java.util.function.IntSupplier;
 
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
 import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
 import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
-public class SorterScreen extends IEContainerScreen<SorterContainer>
+public class SorterScreen extends IEContainerScreen<SorterMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("sorter");
 
-	private final SorterBlockEntity tile;
-
-	public SorterScreen(SorterContainer container, Inventory inventoryPlayer, Component title)
+	public SorterScreen(SorterMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.tile = container.tile;
 		this.imageHeight = 244;
 		this.inventoryLabelY = this.imageHeight-91;
 	}
@@ -68,35 +65,33 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 		super.init();
 		this.clearWidgets();
 		for(int side = 0; side < 6; side++)
-			for(int bit = 0; bit < 3; bit++)
+			for(final FilterBit bit : FilterBit.values())
 			{
-				int x = leftPos+3+(side/2)*58+bit*18;
+				int x = leftPos+3+(side/2)*58+bit.ordinal()*18;
 				int y = topPos+3+(side%2)*76;
-				final int bitFinal = bit;
 				final int sideFinal = side;
-				ButtonSorter b = new ButtonSorter(x, y, bit, btn -> {
-					int mask = (1<<bitFinal);
-					tile.sideFilter[sideFinal] = tile.sideFilter[sideFinal]^mask;
-
+				final GetterAndSetter<Integer> value = menu.filterMasks.get(side);
+				ButtonSorter b = new ButtonSorter(x, y, bit, value::get, btn -> {
 					CompoundTag tag = new CompoundTag();
-					tag.putIntArray("sideConfig", tile.sideFilter);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
+					tag.putInt("sideConfigVal", value.get()^bit.mask());
+					tag.putInt("sideConfigId", sideFinal);
+					sendUpdateToServer(tag);
 					fullInit();
 				});
-				b.active = bit==0?this.tile.doOredict(side): bit==1?this.tile.doNBT(side): this.tile.doFuzzy(side);
 				this.addRenderableWidget(b);
 			}
 	}
 
 	public static class ButtonSorter extends Button implements ITooltipWidget
 	{
-		int type;
-		boolean active = false;
+		private final FilterBit type;
+		private final IntSupplier state;
 
-		public ButtonSorter(int x, int y, int type, OnPress handler)
+		public ButtonSorter(int x, int y, FilterBit type, IntSupplier state, OnPress handler)
 		{
 			super(x, y, 18, 18, Component.empty(), handler);
 			this.type = type;
+			this.state = state;
 		}
 
 		@Override
@@ -108,19 +103,35 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 				isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
-				this.blit(transform, this.x, this.y, 176+type*18, (active?3: 21), this.width, this.height);
+				final boolean active = (state.getAsInt()&type.mask())!=0;
+				this.blit(transform, this.x, this.y, 176+type.ordinal()*18, (active?3: 21), this.width, this.height);
 			}
 		}
 
 		@Override
 		public void gatherTooltip(int mouseX, int mouseY, List<Component> tooltip)
 		{
-			String[] split = I18n.get(Lib.DESC_INFO+"filter."+(type==0?"tag": type==1?"nbt": "damage")).split("<br>");
+			String[] split = I18n.get(type.getTranslationKey()).split("<br>");
 			for(int i = 0; i < split.length; i++)
-				if (i == 0)
+				if(i==0)
 					tooltip.add(Component.literal(split[i]));
 				else
 					tooltip.add(TextUtils.applyFormat(Component.literal(split[i]), ChatFormatting.GRAY));
+		}
+	}
+
+	public enum FilterBit
+	{
+		TAG, NBT, DAMAGE;
+
+		public String getTranslationKey()
+		{
+			return Lib.DESC_INFO+"filter."+name().toLowerCase(Locale.ROOT);
+		}
+
+		public int mask()
+		{
+			return 1<<ordinal();
 		}
 	}
 }

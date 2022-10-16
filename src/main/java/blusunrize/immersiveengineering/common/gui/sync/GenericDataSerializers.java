@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -44,6 +45,10 @@ public class GenericDataSerializers
 	// Allows items to be synced without requiring a slot
 	public static final DataSerializer<ItemStack> ITEM_STACK = register(
 			FriendlyByteBuf::readItem, FriendlyByteBuf::writeItem, ItemStack::copy, ItemStack::matches
+	);
+	public static final DataSerializer<byte[]> BYTE_ARRAY = register(
+			FriendlyByteBuf::readByteArray, FriendlyByteBuf::writeByteArray,
+			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
 
 	private static <T> DataSerializer<T> register(

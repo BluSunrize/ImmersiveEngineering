@@ -68,6 +68,7 @@ public class FluidSorterMenu extends IEContainerMenu
 		for(List<GetterAndSetter<FluidStack>> sideFilter : this.filters)
 			for(GetterAndSetter<FluidStack> filter : sideFilter)
 				addGenericData(new GenericContainerData<>(GenericDataSerializers.FLUID_STACK, filter));
+		addGenericData(new GenericContainerData<>(GenericDataSerializers.BYTE_ARRAY, sortWithNBT));
 	}
 
 	@Override

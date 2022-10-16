@@ -27,7 +27,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -152,13 +151,6 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	public BEContainer<SorterBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.SORTER;
-	}
-
-	@Override
-	public void receiveMessageFromClient(CompoundTag message)
-	{
-		if(message.contains("sideConfig", Tag.TAG_INT_ARRAY))
-			this.sideFilter = message.getIntArray("sideConfig");
 	}
 
 	public Direction[][] getValidOutputs(Direction inputSide, ItemStack stack)

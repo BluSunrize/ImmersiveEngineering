@@ -61,7 +61,9 @@ public class IEMenuTypes
 	public static final BEContainer<AssemblerBlockEntity, AssemblerMenu> ASSEMBLER = registerBENew(
 			Lib.GUIID_Assembler, AssemblerMenu::makeServer, AssemblerMenu::makeClient
 	);
-	public static final BEContainer<SorterBlockEntity, SorterContainer> SORTER = register(Lib.GUIID_Sorter, SorterContainer::new);
+	public static final BEContainer<SorterBlockEntity, SorterMenu> SORTER = registerBENew(
+			Lib.GUIID_Sorter, SorterMenu::makeServer, SorterMenu::makeClient
+	);
 	public static final BEContainer<ItemBatcherBlockEntity, ItemBatcherMenu> ITEM_BATCHER = registerBENew(
 			Lib.GUIID_ItemBatcher, ItemBatcherMenu::makeServer, ItemBatcherMenu::makeClient
 	);
