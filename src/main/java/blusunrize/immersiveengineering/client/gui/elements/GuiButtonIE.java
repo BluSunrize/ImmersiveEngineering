@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -82,14 +81,13 @@ public class GuiButtonIE extends Button
 		this.onPress.onPress(this);
 	}
 
-	public interface IIEPressable<B extends GuiButtonIE> extends OnPress
+	public interface IIEPressable<B extends Button> extends OnPress
 	{
 		void onIEPress(B var1);
 
 		@Override
 		default void onPress(Button var1)
 		{
-			Preconditions.checkArgument(var1 instanceof GuiButtonIE);
 			this.onIEPress((B)var1);
 		}
 	}

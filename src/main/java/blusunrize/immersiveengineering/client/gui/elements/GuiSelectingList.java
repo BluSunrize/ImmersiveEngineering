@@ -10,17 +10,19 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.Screen;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 
 public class GuiSelectingList extends GuiReactiveList
 {
-	public GuiSelectingList(Screen gui, int x, int y, int w, int h, OnPress handler, String... entries)
+	public GuiSelectingList(int x, int y, int w, int h, IIEPressable<GuiSelectingList> handler, String... entries)
 	{
-		super(gui, x, y, w, h, handler, entries);
+		super(x, y, w, h, handler, () -> Arrays.asList(entries));
 	}
 
 	@Override
@@ -37,16 +39,18 @@ public class GuiSelectingList extends GuiReactiveList
 
 	public void setSelectedString(String key)
 	{
-		for(int i = 0; i < this.entries.length; i++)
-			if(key.equals(this.entries[i]))
+		final List<String> entries = this.entries.get();
+		for(int i = 0; i < entries.size(); i++)
+			if(key.equals(entries.get(i)))
 				this.selectedOption = i;
 	}
 
 	@Nullable
 	public String getSelectedString()
 	{
-		if(this.selectedOption >= 0&&this.selectedOption < this.entries.length)
-			return this.entries[this.selectedOption];
+		final List<String> entries = this.entries.get();
+		if(this.selectedOption >= 0&&this.selectedOption < entries.size())
+			return entries.get(this.selectedOption);
 		return null;
 	}
 

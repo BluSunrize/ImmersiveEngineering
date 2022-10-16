@@ -100,7 +100,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 		super.init();
 		mc().keyboardHandler.setSendRepeatsToGui(true);
 
-		this.operatorList = (GuiSelectingList)this.addRenderableWidget(new GuiSelectingList(this, leftPos+58, topPos+16, 36, 56, btn -> {
+		this.operatorList = (GuiSelectingList)this.addRenderableWidget(new GuiSelectingList(leftPos+58, topPos+16, 36, 56, btn -> {
 			this.minecraft.tell(this::updateButtons);
 			this.minecraft.tell(this::updateInstruction);
 		}, Arrays.stream(LogicCircuitOperator.values()).map(Enum::name).toArray(String[]::new)).setPadding(1, 1, 2, 0));

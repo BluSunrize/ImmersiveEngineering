@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,7 +38,9 @@ import javax.annotation.Nullable;
 
 public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEntity>
 {
-	public FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME);
+	public static final int TANK_VOLUME = 4*FluidType.BUCKET_VOLUME;
+
+	public FluidTank tank = new FluidTank(TANK_VOLUME);
 	public boolean ignite = false;
 
 	public TurretChemBlockEntity(BlockEntityType<TurretChemBlockEntity> type, BlockPos pos, BlockState state)
@@ -123,14 +124,6 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 				}
 			}
 		}
-	}
-
-	@Override
-	public void receiveMessageFromClient(CompoundTag message)
-	{
-		super.receiveMessageFromClient(message);
-		if(message.contains("ignite", Tag.TAG_BYTE))
-			ignite = message.getBoolean("ignite");
 	}
 
 	@Override

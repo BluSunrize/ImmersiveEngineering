@@ -68,6 +68,10 @@ public class GenericDataSerializers
 	public static final DataSerializer<List<MixerMenu.SlotProgress>> MIXER_SLOTS = register(
 			fbb -> fbb.readList(SlotProgress::new), (fbb, list) -> fbb.writeCollection(list, SlotProgress::write)
 	);
+	public static final DataSerializer<List<String>> STRINGS = register(
+			fbb -> fbb.readList(FriendlyByteBuf::readUtf), (fbb, list) -> fbb.writeCollection(list, FriendlyByteBuf::writeUtf),
+			ArrayList::new, List::equals
+	);
 
 	private static <T> DataSerializer<T> register(
 			Function<FriendlyByteBuf, T> read, BiConsumer<FriendlyByteBuf, T> write

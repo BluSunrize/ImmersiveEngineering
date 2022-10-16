@@ -8,16 +8,13 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
-import blusunrize.immersiveengineering.common.gui.TurretContainer;
-import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
+import blusunrize.immersiveengineering.common.gui.TurretMenu;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
@@ -33,17 +30,15 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends TurretContainer<T>> extends IEContainerScreen<C>
+public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScreen<C>
 {
 	protected static final ResourceLocation TEXTURE = makeTextureLocation("turret");
 
-	public T tile;
 	private EditBox nameField;
 
 	public TurretScreen(C container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.tile = container.tile;
 		this.imageHeight = 190;
 		this.inventoryLabelY = 99;
 	}
@@ -52,7 +47,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(leftPos+158, topPos+16, tile.energyStorage));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+158, topPos+16, menu.data.energy()));
 	}
 
 	@Override
@@ -67,65 +62,47 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 		this.nameField.setMaxLength(30);
 
 		this.clearWidgets();
-		this.addRenderableWidget(new GuiReactiveList(this, leftPos+10, topPos+10, 60, 72,
-				btn -> {
-					GuiReactiveList list = (GuiReactiveList)btn;
+		this.addRenderableWidget(new GuiReactiveList(leftPos+10, topPos+10, 60, 72,
+				list -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					int rem = list.selectedOption;
-					if(rem >= 0&&tile.targetList.size() > 0)
+					if(rem >= 0&&menu.data.targetList().get().size() > 0)
 					{
-						tile.targetList.remove(rem);
 						tag.putInt("remove", rem);
 						listOffset = list.getOffset()-1;
 						handleButtonClick(tag, listOffset);
 					}
-				}, tile.targetList.toArray(new String[0]))
+				}, menu.data.targetList())
 				.setPadding(0, 0, 2, 2));
 		this.addRenderableWidget(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, Component.translatable(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
+				btn -> addName()));
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), () -> !menu.data.whitelist().get(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
-					String name = nameField.getValue();
-					if(!tile.targetList.contains(name))
-					{
-						listOffset = ((GuiReactiveList)children().get(0)).getMaxOffset();
-						tag.putString("add", name);
-						tile.targetList.add(name);
-					}
-					nameField.setValue("");
+					tag.putBoolean("whitelist", btn.getState());
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), () -> !tile.whitelist,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), menu.data.attackAnimals(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
-					tile.whitelist = btn.getState();
-					tag.putBoolean("whitelist", tile.whitelist);
+					tag.putBoolean("attackAnimals", btn.getNextState());
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), () -> tile.attackAnimals,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), menu.data.attackPlayers(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
-					tile.attackAnimals = !btn.getState();
-					tag.putBoolean("attackAnimals", tile.attackAnimals);
+					tag.putBoolean("attackPlayers", btn.getNextState());
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), () -> tile.attackPlayers,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), menu.data.attackNeutrals(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
-					tile.attackPlayers = !btn.getState();
-					tag.putBoolean("attackPlayers", tile.attackPlayers);
-					handleButtonClick(tag, listOffset);
-				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), () -> tile.attackNeutrals,
-				btn -> {
-					CompoundTag tag = new CompoundTag();
-					int listOffset = -1;
-					tile.attackNeutrals = !btn.getState();
-					tag.putBoolean("attackNeutrals", tile.attackNeutrals);
+					tag.putBoolean("attackNeutrals", btn.getNextState());
 					handleButtonClick(tag, listOffset);
 				}));
 
@@ -138,8 +115,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 	{
 		if(!nbt.isEmpty())
 		{
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, nbt));
-			this.init();
+			sendUpdateToServer(nbt);
 			if(listOffset >= 0)
 				((GuiReactiveList)this.children().get(0)).setOffset(listOffset);
 		}
@@ -165,25 +141,27 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 		if(this.nameField.isFocused())
 		{
 			if(key==GLFW.GLFW_KEY_ENTER)
-			{
-				String name = this.nameField.getValue();
-				if(!tile.targetList.contains(name))
-				{
-					CompoundTag tag = new CompoundTag();
-					tag.putString("add", name);
-					tile.targetList.add(name);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
-
-					this.init();
-					((GuiReactiveList)this.children().get(0)).setOffset(((GuiReactiveList)this.children().get(0)).getMaxOffset());
-				}
-			}
+				addName();
 			else
 				this.nameField.keyPressed(key, scancode, p_keyPressed_3_);
 			return true;
 		}
 		else
 			return super.keyPressed(key, scancode, p_keyPressed_3_);
+	}
+
+	private void addName()
+	{
+		CompoundTag tag = new CompoundTag();
+		int listOffset = -1;
+		String name = nameField.getValue();
+		if(!menu.data.targetList().get().contains(name))
+		{
+			listOffset = ((GuiReactiveList)children().get(0)).getMaxOffset();
+			tag.putString("add", name);
+		}
+		nameField.setValue("");
+		handleButtonClick(tag, listOffset);
 	}
 
 	@Override

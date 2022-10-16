@@ -13,8 +13,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
-import blusunrize.immersiveengineering.common.gui.TurretContainer;
+import blusunrize.immersiveengineering.common.gui.TurretMenu.GunTurretMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
@@ -25,9 +24,9 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GunTurretScreen extends TurretScreen<TurretGunBlockEntity, TurretContainer.GunTurretContainer>
+public class GunTurretScreen extends TurretScreen<GunTurretMenu>
 {
-	public GunTurretScreen(TurretContainer.GunTurretContainer container, Inventory inventoryPlayer, Component title)
+	public GunTurretScreen(GunTurretMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 	}
@@ -39,7 +38,7 @@ public class GunTurretScreen extends TurretScreen<TurretGunBlockEntity, TurretCo
 		List<InfoArea> result = new ArrayList<>(super.makeInfoAreas());
 		result.add(new TooltipArea(
 				new Rect2i(leftPos+134, topPos+31, 16, 16),
-				() -> Component.translatable(Lib.GUI_CONFIG+"turret.expel_casings_"+(tile.expelCasings?"on": "off"))
+				() -> Component.translatable(Lib.GUI_CONFIG+"turret.expel_casings_"+(menu.expelCasings.get()?"on": "off"))
 		));
 		return result;
 	}
@@ -55,12 +54,11 @@ public class GunTurretScreen extends TurretScreen<TurretGunBlockEntity, TurretCo
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addRenderableWidget(new GuiButtonBoolean(leftPos+134, topPos+31, 16, 16, "", () -> tile.expelCasings, TEXTURE, 176, 81, 0,
+		this.addRenderableWidget(new GuiButtonBoolean(leftPos+134, topPos+31, 16, 16, "", menu.expelCasings, TEXTURE, 176, 81, 0,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
-					tile.expelCasings = btn.getNextState();
-					tag.putBoolean("expelCasings", tile.expelCasings);
+					tag.putBoolean("expelCasings", btn.getNextState());
 					handleButtonClick(tag, listOffset);
 				}));
 	}

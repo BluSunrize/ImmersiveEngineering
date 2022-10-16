@@ -11,53 +11,53 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Function;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class GuiReactiveList extends Button
 {
 	static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("hud_elements");
 
-	private final Screen gui;
-	protected String[] entries;
-	private int[] padding = {0, 0, 0, 0};
+	protected Supplier<List<String>> entries;
+	private final int[] padding = {0, 0, 0, 0};
 	private boolean needsSlider = false;
 	protected int perPage;
-	private Function<String, String> translationFunction;
-	private int scrollMode = 0;
-	private float textScale = 1;
+	private final float textScale = 1;
 
 	protected int offset;
 	private int maxOffset;
 
-	private long prevWheelNano = 0;
 	private int targetEntry = -1;
 	private int hoverTimer = 0;
 
-	public GuiReactiveList(Screen gui, int x, int y, int w, int h, OnPress handler, String... entries)
+	public GuiReactiveList(int x, int y, int w, int h, IIEPressable<? extends GuiReactiveList> handler, Supplier<List<String>> entries)
 	{
 		super(x, y, w, h, Component.empty(), handler);
-		this.gui = gui;
 		this.entries = entries;
-		recalculateEntries();
 	}
 
 	private void recalculateEntries()
 	{
+		final int length = this.entries.get().size();
 		perPage = (int)((this.height-padding[0]-padding[1])/(ClientUtils.mc().font.lineHeight*textScale));
-		if(perPage < entries.length)
+		if(perPage < length)
 		{
 			needsSlider = true;
-			maxOffset = entries.length-perPage;
+			maxOffset = length-perPage;
+			this.offset = Math.min(this.offset, maxOffset);
 		}
 		else
+		{
 			needsSlider = false;
+			this.maxOffset = this.offset = 0;
+		}
 	}
 
 	public GuiReactiveList setPadding(int up, int down, int left, int right)
@@ -66,29 +66,6 @@ public class GuiReactiveList extends Button
 		this.padding[1] = down;
 		this.padding[2] = left;
 		this.padding[3] = right;
-		recalculateEntries();
-		return this;
-	}
-
-	public GuiReactiveList setTranslationFunc(Function<String, String> func)
-	{
-		this.translationFunction = func;
-		return this;
-	}
-
-	/**
-	 * @param mode 0: No scrolling<br>1: Scroll when hovered<br>2: Scroll all
-	 */
-	public GuiReactiveList setScrollMode(int mode)
-	{
-		this.scrollMode = mode;
-		return this;
-	}
-
-	public GuiReactiveList setFormatting(float textScale)
-	{
-		this.textScale = textScale;
-		this.recalculateEntries();
 		return this;
 	}
 
@@ -110,6 +87,8 @@ public class GuiReactiveList extends Button
 	@Override
 	public void render(PoseStack transform, int mx, int my, float partialTicks)
 	{
+		recalculateEntries();
+		final List<String> entries = this.entries.get();
 		Font fr = ClientUtils.mc().font;
 
 		int mmY = my-this.y;
@@ -134,7 +113,7 @@ public class GuiReactiveList extends Button
 		transform.scale(textScale, textScale, 1);
 		this.isHovered = active && mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		boolean hasTarget = false;
-		for(int i = 0; i < Math.min(perPage, entries.length); i++)
+		for(int i = 0; i < Math.min(perPage, entries.size()); i++)
 		{
 			int j = offset+i;
 			int col = 0xE0E0E0;
@@ -151,9 +130,9 @@ public class GuiReactiveList extends Button
 					hoverTimer++;
 				col = Lib.COLOUR_I_ImmersiveOrange;
 			}
-			if(j > entries.length-1)
-				j = entries.length-1;
-			String s = translationFunction!=null?translationFunction.apply(entries[j]): entries[j];
+			if(j > entries.size()-1)
+				j = entries.size()-1;
+			String s = entries.get(j);
 			int overLength = s.length()-fr.plainSubstrByWidth(s, strWidth).length();
 			if(overLength > 0)//String is too long
 			{
@@ -204,7 +183,7 @@ public class GuiReactiveList extends Button
 			{
 				Font fr = ClientUtils.mc().font;
 				double mmY = my-this.y;
-				for(int i = 0; i < Math.min(perPage, entries.length); i++)
+				for(int i = 0; i < Math.min(perPage, entries.get().size()); i++)
 					if(mmY >= i*fr.lineHeight&&mmY < (i+1)*fr.lineHeight)
 						selectedOption = offset+i;
 			}

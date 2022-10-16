@@ -16,10 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEnti
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.gui.*;
-import blusunrize.immersiveengineering.common.gui.TurretContainer.ChemTurretContainer;
-import blusunrize.immersiveengineering.common.gui.TurretContainer.GunTurretContainer;
+import blusunrize.immersiveengineering.common.gui.TurretMenu.ChemTurretMenu;
+import blusunrize.immersiveengineering.common.gui.TurretMenu.GunTurretMenu;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -88,8 +87,12 @@ public class IEMenuTypes
 	public static final BEContainer<MixerBlockEntity, MixerMenu> MIXER = registerBENew(
 			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient
 	);
-	public static final BEContainer<TurretGunBlockEntity, GunTurretContainer> GUN_TURRET = register(Lib.GUIID_Turret_Gun, TurretContainer.GunTurretContainer::new);
-	public static final BEContainer<TurretChemBlockEntity, ChemTurretContainer> CHEM_TURRET = register(Lib.GUIID_Turret_Chem, TurretContainer.ChemTurretContainer::new);
+	public static final BEContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerBENew(
+			Lib.GUIID_Turret_Gun, GunTurretMenu::makeServer, GunTurretMenu::makeClient
+	);
+	public static final BEContainer<TurretChemBlockEntity, ChemTurretMenu> CHEM_TURRET = registerBENew(
+			Lib.GUIID_Turret_Chem, ChemTurretMenu::makeServer, ChemTurretMenu::makeClient
+	);
 	public static final BEContainer<FluidSorterBlockEntity, FluidSorterMenu> FLUID_SORTER = registerBENew(
 			Lib.GUIID_FluidSorter, FluidSorterMenu::makeServer, FluidSorterMenu::makeClient
 	);
@@ -263,11 +266,6 @@ public class IEMenuTypes
 	public interface NewItemContainerConstructor<C extends AbstractContainerMenu>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, EquipmentSlot slot, ItemStack stack);
-	}
-
-	public interface EntityContainerConstructor<E extends Entity, C extends AbstractContainerMenu>
-	{
-		C construct(MenuType<?> type, int windowId, Inventory inventoryPlayer, E entity);
 	}
 
 	public interface SimpleContainerConstructor<C extends AbstractContainerMenu>

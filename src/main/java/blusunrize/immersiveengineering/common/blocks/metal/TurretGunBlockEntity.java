@@ -25,7 +25,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
@@ -47,8 +46,10 @@ import javax.annotation.Nullable;
 
 public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity>
 {
+	public static final int NUM_SLOTS = 2;
+
 	public int cycleRender;
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 	public boolean expelCasings = false;
 
 	public TurretGunBlockEntity(BlockEntityType<TurretGunBlockEntity> type, BlockPos pos, BlockState state)
@@ -198,14 +199,6 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundTag message)
-	{
-		super.receiveMessageFromClient(message);
-		if(message.contains("expelCasings", Tag.TAG_BYTE))
-			expelCasings = message.getBoolean("expelCasings");
-	}
-
-	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
@@ -228,10 +221,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	}
 
 	private final ResettableCapability<IItemHandler> itemHandler = registerCapability(
-			new IEInventoryHandler(2, this, 0, new boolean[]{true, false}, new boolean[]{false, true})
-	);
-	public final ResettableCapability<IItemHandler> containerHandler = registerCapability(
-			new IEInventoryHandler(2, this)
+			new IEInventoryHandler(NUM_SLOTS, this, 0, new boolean[]{true, false}, new boolean[]{false, true})
 	);
 
 	@Nonnull

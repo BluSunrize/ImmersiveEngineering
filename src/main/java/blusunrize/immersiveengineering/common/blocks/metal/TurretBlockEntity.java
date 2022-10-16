@@ -71,7 +71,9 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		IStateBasedDirectional, IBlockBounds, IInteractionObjectIE<T>, IEntityProof, IScrewdriverInteraction,
 		IModelOffsetProvider
 {
-	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(16000);
+	public static final int ENERGY_CAPACITY = 16000;
+
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY);
 	public boolean redstoneControlInverted = false;
 
 	public String owner;
@@ -293,23 +295,9 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		return owner.equalsIgnoreCase(player.getName().getString());
 	}
 
-	@Override
-	public void receiveMessageFromClient(CompoundTag message)
+	public void resetTarget()
 	{
-		if(message.contains("add", Tag.TAG_STRING))
-			targetList.add(message.getString("add"));
-		if(message.contains("remove", Tag.TAG_INT))
-			targetList.remove(message.getInt("remove"));
-		if(message.contains("whitelist", Tag.TAG_BYTE))
-			whitelist = message.getBoolean("whitelist");
-		if(message.contains("attackAnimals", Tag.TAG_BYTE))
-			attackAnimals = message.getBoolean("attackAnimals");
-		if(message.contains("attackPlayers", Tag.TAG_BYTE))
-			attackPlayers = message.getBoolean("attackPlayers");
-		if(message.contains("attackNeutrals", Tag.TAG_BYTE))
-			attackNeutrals = message.getBoolean("attackNeutrals");
-		target = null;
-		this.setChanged();
+		this.target = null;
 	}
 
 	@Override

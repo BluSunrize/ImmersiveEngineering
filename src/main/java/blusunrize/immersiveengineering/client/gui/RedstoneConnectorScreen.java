@@ -27,8 +27,8 @@ import net.minecraft.world.item.DyeColor;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -124,7 +124,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 	}
 
 	public static GuiButtonBoolean buildColorButton(
-			GuiButtonBoolean[] buttons, int posX, int posY, BooleanSupplier active, DyeColor color, Consumer<GuiButtonBoolean> onClick
+			GuiButtonBoolean[] buttons, int posX, int posY, Supplier<Boolean> active, DyeColor color, Consumer<GuiButtonBoolean> onClick
 	)
 	{
 		return new GuiButtonBoolean(posX, posY, 12, 12, "", active,
