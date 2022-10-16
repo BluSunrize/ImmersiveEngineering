@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.gui.info;
 
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,29 +17,31 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class MultitankArea extends InfoArea
 {
-	private final MultiFluidTank tank;
+	private final int capacity;
+	private final Supplier<List<FluidStack>> getFluids;
 
-	public MultitankArea(Rect2i area, MultiFluidTank tank)
+	public MultitankArea(Rect2i area, int capacity, Supplier<List<FluidStack>> getFluids)
 	{
 		super(area);
-		this.tank = tank;
+		this.capacity = capacity;
+		this.getFluids = getFluids;
 	}
 
 	@Override
 	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
-		if(tank.getFluidTypes()==0)
+		if(getFluids().isEmpty())
 			tooltip.add(Component.translatable("gui.immersiveengineering.empty"));
 		else
 		{
-			float capacity = tank.getCapacity();
 			int myRelative = area.getY()+area.getHeight()-mouseY;
 			forEachFluid((fluid, lastY, newY) -> {
 				if(myRelative >= lastY&&myRelative < newY)
-					FluidInfoArea.fillTooltip(fluid, (int)capacity, tooltip::add);
+					FluidInfoArea.fillTooltip(fluid, capacity, tooltip::add);
 			});
 		}
 	}
@@ -55,24 +56,31 @@ public class MultitankArea extends InfoArea
 		buffers.endBatch();
 	}
 
-	private void forEachFluid(TankVisitor visitor) {
-		float capacity = tank.getCapacity();
+	private void forEachFluid(TankVisitor visitor)
+	{
 		int fluidUpToNow = 0;
 		int lastY = 0;
-		for(int i = tank.getFluidTypes()-1; i >= 0; i--)
+		final List<FluidStack> fluids = getFluids();
+		for(int i = fluids.size()-1; i >= 0; i--)
 		{
-			FluidStack fs = tank.fluids.get(i);
+			FluidStack fs = fluids.get(i);
 			if(!fs.isEmpty())
 			{
 				fluidUpToNow += fs.getAmount();
-				int newY = (int)(area.getHeight()*(fluidUpToNow/capacity));
+				int newY = (int)(area.getHeight()*(fluidUpToNow/(float)capacity));
 				visitor.visit(fs, lastY, newY);
 				lastY = newY;
 			}
 		}
 	}
 
-	private interface TankVisitor {
+	private List<FluidStack> getFluids()
+	{
+		return getFluids.get();
+	}
+
+	private interface TankVisitor
+	{
 		void visit(FluidStack fluid, int lastY, int newY);
 	}
 }

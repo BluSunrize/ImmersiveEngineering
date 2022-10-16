@@ -85,7 +85,9 @@ public class IEMenuTypes
 	public static final BEContainer<AutoWorkbenchBlockEntity, AutoWorkbenchMenu> AUTO_WORKBENCH = registerBENew(
 			Lib.GUIID_AutoWorkbench, AutoWorkbenchMenu::makeServer, AutoWorkbenchMenu::makeClient
 	);
-	public static final BEContainer<MixerBlockEntity, MixerContainer> MIXER = register(Lib.GUIID_Mixer, MixerContainer::new);
+	public static final BEContainer<MixerBlockEntity, MixerMenu> MIXER = registerBENew(
+			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient
+	);
 	public static final BEContainer<TurretGunBlockEntity, GunTurretContainer> GUN_TURRET = register(Lib.GUIID_Turret_Gun, TurretContainer.GunTurretContainer::new);
 	public static final BEContainer<TurretChemBlockEntity, ChemTurretContainer> CHEM_TURRET = register(Lib.GUIID_Turret_Chem, TurretContainer.ChemTurretContainer::new);
 	public static final BEContainer<FluidSorterBlockEntity, FluidSorterMenu> FLUID_SORTER = registerBENew(

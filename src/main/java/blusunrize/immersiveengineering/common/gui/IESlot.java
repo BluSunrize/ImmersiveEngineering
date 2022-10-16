@@ -695,9 +695,9 @@ public abstract class IESlot extends Slot
 
 	public static class ContainerCallback extends SlotItemHandler
 	{
-		AbstractContainerMenu container;
+		ICallbackContainer container;
 
-		public ContainerCallback(AbstractContainerMenu container, IItemHandler inv, int id, int x, int y)
+		public ContainerCallback(ICallbackContainer container, IItemHandler inv, int id, int x, int y)
 		{
 			super(inv, id, x, y);
 			this.container = container;
@@ -706,17 +706,13 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			if(this.container instanceof ICallbackContainer)
-				return ((ICallbackContainer)this.container).canInsert(itemStack, getSlotIndex(), this);
-			return true;
+			return this.container.canInsert(itemStack, getSlotIndex(), this);
 		}
 
 		@Override
 		public boolean mayPickup(Player player)
 		{
-			if(this.container instanceof ICallbackContainer)
-				return ((ICallbackContainer)this.container).canTake(this.getItem(), getSlotIndex(), this);
-			return true;
+			return this.container.canTake(this.getItem(), getSlotIndex(), this);
 		}
 	}
 

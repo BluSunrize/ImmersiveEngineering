@@ -10,6 +10,8 @@
 package blusunrize.immersiveengineering.common.gui.sync;
 
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
+import blusunrize.immersiveengineering.common.gui.MixerMenu;
+import blusunrize.immersiveengineering.common.gui.MixerMenu.SlotProgress;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -49,6 +51,22 @@ public class GenericDataSerializers
 	public static final DataSerializer<byte[]> BYTE_ARRAY = register(
 			FriendlyByteBuf::readByteArray, FriendlyByteBuf::writeByteArray,
 			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
+	);
+	public static final DataSerializer<List<FluidStack>> FLUID_STACKS = register(
+			fbb -> fbb.readList(FriendlyByteBuf::readFluidStack),
+			(fbb, stacks) -> fbb.writeCollection(stacks, FriendlyByteBuf::writeFluidStack),
+			l -> l.stream().map(FluidStack::copy).toList(),
+			(l1, l2) -> {
+				if(l1.size()!=l2.size())
+					return false;
+				for(int i = 0; i < l1.size(); ++i)
+					if(!l1.get(i).isFluidStackIdentical(l2.get(i)))
+						return false;
+				return true;
+			}
+	);
+	public static final DataSerializer<List<MixerMenu.SlotProgress>> MIXER_SLOTS = register(
+			fbb -> fbb.readList(SlotProgress::new), (fbb, list) -> fbb.writeCollection(list, SlotProgress::write)
 	);
 
 	private static <T> DataSerializer<T> register(
