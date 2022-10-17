@@ -57,6 +57,7 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags.EntityTypes;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -230,11 +231,10 @@ public class EventHandler
 	{
 		if(!event.isCanceled())
 		{
-			boolean isBoss = event.getEntity().getMaxHealth() >= 100||event.getEntity().getType().is(IETags.shaderbagWhitelist);
+			boolean isBoss = event.getEntity().getType().is(EntityTypes.BOSSES);
 			if(!isBoss||event.getEntity().getType().is(IETags.shaderbagBlacklist))
 				return;
-			Rarity r = Rarity.EPIC;
-			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(r));
+			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(Rarity.EPIC));
 			event.getDrops().add(new ItemEntity(event.getEntity().level, event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), bag));
 		}
 	}
