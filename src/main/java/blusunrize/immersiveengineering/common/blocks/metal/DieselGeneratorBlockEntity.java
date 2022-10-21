@@ -159,7 +159,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 		tickCommon();
 		final boolean prevActive = active;
 
-		if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
+		if(shouldRunGenerator())
 		{
 			int output = IEServerConfig.MACHINES.dieselGen_output.get();
 			List<IEnergyStorage> presentOutputs = outputs.stream()
@@ -172,27 +172,13 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 			}
 			if(consumeTick<=0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
 			{
-				GeneratorFuel recipe = recipeGetter.apply(level, tanks[0].getFluid().getFluid());
-				if(recipe!=null)
+				if (!active)
 				{
-					int burnTime = recipe.getBurnTime();
-					int fluidConsumed = (10*FluidAttributes.BUCKET_VOLUME)/burnTime;
-					if(tanks[0].getFluidAmount() >= fluidConsumed)
-					{
-						if(!active)
-						{
-							active = true;
-							animation_fanFadeIn = 80;
-						}
-						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
-						consumeTick = 10;
-					}
-					else if(active)
-					{
-						active = false;
-						animation_fanFadeOut = 80;
-					}
+					active = true;
+					animation_fanFadeIn = 80;
 				}
+				tanks[0].drain(getFuelConsumption(), FluidAction.EXECUTE);
+				consumeTick = 10;
 			}
 		}
 		else if(active)
@@ -206,6 +192,23 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
+	}
+
+	private boolean shouldRunGenerator() {
+		return !isRSDisabled() && hasEnoughFuel();
+	}
+
+	private boolean hasEnoughFuel() {
+		if (tanks[0].getFluid().isEmpty())
+			return false;
+		return tanks[0].getFluidAmount() >= getFuelConsumption();
+	}
+
+	private int getFuelConsumption() {
+		GeneratorFuel recipe = recipeGetter.apply(level, tanks[0].getFluid().getFluid());
+		if (recipe == null)
+			return Integer.MAX_VALUE;
+		return (10 * FluidAttributes.BUCKET_VOLUME) / recipe.getBurnTime();
 	}
 
 	public static AABB getBlockBounds(BlockPos posInMultiblock)
