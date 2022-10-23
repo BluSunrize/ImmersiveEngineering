@@ -32,7 +32,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -185,16 +184,6 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 	{
 		BlockPos origin = getOrigin();
 		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
-	}
-
-	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
-	{
-		if(state.getBlock()==this.getBlockState().getBlock())
-			getLevelNonnull().removeBlock(pos, false);
-		getLevelNonnull().setBlockAndUpdate(pos, state);
-		BlockEntity tile = getLevelNonnull().getBlockEntity(pos);
-		if(tile instanceof IReadOnPlacement readPlacement)
-			readPlacement.readOnPlacement(null, stack);
 	}
 
 	//	=================================

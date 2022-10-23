@@ -314,7 +314,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	protected int getComparatorValueOnMaster()
 	{
 		float damage = 1-(this.sawblade.getDamageValue()/(float)this.sawblade.getMaxDamage());
-		return Mth.floor(damage*15);
+		return Mth.ceil(damage*15);
 	}
 
 	@Override

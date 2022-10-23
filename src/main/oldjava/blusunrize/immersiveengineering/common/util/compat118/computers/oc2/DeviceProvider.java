@@ -66,6 +66,6 @@ public class DeviceProvider extends AbstractBlockDeviceProvider
 		@SuppressWarnings("unchecked") T asT = (T)actualBE;
 		if(owner==null||!owner.getOwner().canAttachTo(asT))
 			return Invalidatable.empty();
-		return Invalidatable.of(new IEDevice<>(owner, owner.getOwner().preprocess(asT)));
+		return Invalidatable.of(new IEDevice<>(owner, asT));
 	}
 }
