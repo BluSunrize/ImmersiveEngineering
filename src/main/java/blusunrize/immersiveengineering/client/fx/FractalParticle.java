@@ -112,7 +112,6 @@ public class FractalParticle extends Particle
 		Matrix3f transformN = matrixStack.last().normal();
 		matrixStack.popPose();
 
-		List<Pair<RenderType, Consumer<VertexConsumer>>> ret = new ArrayList<>();
 		LinePointProcessor putLinePoint = (buffer, i, color) -> {
 			int correctIndex = getCyclicIndexInRange(iStart, iEnd, i);
 			Vector3f vecRender = pointsList[correctIndex];
@@ -127,12 +126,14 @@ public class FractalParticle extends Particle
 				renderLinePoint(transformN, transform, next, vecRender, color, buffer, true);
 			}
 		};
-		ret.add(Pair.of(IERenderTypes.getLines(4f), buffer -> {
+
+		List<Pair<RenderType, Consumer<VertexConsumer>>> ret = new ArrayList<>();
+		ret.add(Pair.of(IERenderTypes.getParticleLines(4f), buffer -> {
 			for(int i = iStart; i <= iEnd; i++)
 				putLinePoint.draw(buffer, i, colourOut);
 		}));
 
-		ret.add(Pair.of(IERenderTypes.getLines(1f), buffer -> {
+		ret.add(Pair.of(IERenderTypes.getParticleLines(1f), buffer -> {
 			for(int i = iStart; i <= iEnd; i++)
 				putLinePoint.draw(buffer, i, colourIn);
 		}));

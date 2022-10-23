@@ -13,26 +13,23 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.excavator.MineralMix;
-import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.utils.FastEither;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
-import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
-import blusunrize.immersiveengineering.client.utils.*;
+import blusunrize.immersiveengineering.client.utils.FontUtils;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -50,25 +47,20 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
@@ -76,9 +68,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.tags.TagKey;
@@ -89,7 +78,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -110,19 +98,16 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.loading.FMLLoader;
 
 import javax.annotation.Nonnull;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class ClientEventHandler implements ResourceManagerReloadListener
 {
-	private static final boolean ENABLE_VEIN_DEBUG = false;
 	private boolean shieldToggleButton = false;
 	private int shieldToggleTimer = 0;
 
@@ -131,8 +116,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	{
 		ImmersiveEngineering.proxy.clearRenderCaches();
 	}
-
-	public static final Map<Connection, Pair<Collection<BlockPos>, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
 
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
@@ -199,7 +182,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event)
 	{
-		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getSecond().decrementAndGet() <= 0);
+		LevelStageRenders.FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getSecond().decrementAndGet() <= 0);
 		ClientLevel world = Minecraft.getInstance().level;
 		if(world!=null)
 			GlobalWireNetwork.getNetwork(world).update(world);
@@ -283,27 +266,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					event.setSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 			}
 		}
-	}
-
-	private void renderObstructingBlocks(PoseStack transform, MultiBufferSource buffers)
-	{
-		VertexConsumer baseBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-		TransformingVertexBuilder builder = new TransformingVertexBuilder(
-				baseBuilder, IERenderTypes.TRANSLUCENT_POSITION_COLOR.format()
-		);
-		builder.defaultColor(255, 0, 0, 128);
-		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
-		{
-			for(BlockPos obstruction : entry.getValue().getFirst())
-			{
-				transform.pushPose();
-				transform.translate(obstruction.getX(), obstruction.getY(), obstruction.getZ());
-				final float eps = 1e-3f;
-				RenderUtils.renderBox(builder, transform, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
-				transform.popPose();
-			}
-		}
-		builder.unsetDefaultColor();
 	}
 
 	@SubscribeEvent
@@ -814,154 +776,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				}
 			}
 		}
-	}
-
-	@SubscribeEvent
-	public void onRenderWorldLastEvent(RenderLevelLastEvent event)
-	{
-		float partial = event.getPartialTick();
-		PoseStack transform = event.getPoseStack();
-		transform.pushPose();
-		Vec3 renderView = ClientUtils.mc().gameRenderer.getMainCamera().getPosition();
-		transform.translate(-renderView.x, -renderView.y, -renderView.z);
-		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
-		{
-			List<Pair<RenderType, List<Consumer<VertexConsumer>>>> renders = new ArrayList<>();
-			for(FractalParticle p : FractalParticle.PARTICLE_FRACTAL_DEQUE)
-				for(Pair<RenderType, Consumer<VertexConsumer>> r : p.render(partial, transform))
-				{
-					boolean added = false;
-					for(Pair<RenderType, List<Consumer<VertexConsumer>>> e : renders)
-						if(e.getFirst().equals(r.getFirst()))
-						{
-							e.getSecond().add(r.getSecond());
-							added = true;
-							break;
-						}
-					if(!added)
-						renders.add(Pair.of(r.getFirst(), new ArrayList<>(ImmutableList.of(r.getSecond()))));
-				}
-			for(Pair<RenderType, List<Consumer<VertexConsumer>>> entry : renders)
-			{
-				VertexConsumer bb = buffers.getBuffer(entry.getFirst());
-				for(Consumer<VertexConsumer> render : entry.getSecond())
-					render.accept(bb);
-			}
-			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
-		}
-
-		/* Debug for Mineral Veins */
-		// !isProduction: Safety feature to make sure this doesn't run even if the enable flag is left on by accident
-		boolean show = ENABLE_VEIN_DEBUG&&!FMLLoader.isProduction();
-		if(show)
-		{
-			// Default <=> shift is sneak, use ctrl instead
-			if(Minecraft.getInstance().options.keyShift.isDefault())
-				show = Screen.hasControlDown();
-			else
-				show = Screen.hasShiftDown();
-		}
-		if(show)
-		{
-			ResourceKey<Level> dimension = ClientUtils.mc().player.getCommandSenderWorld().dimension();
-			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.RECIPES.getRecipeNames(ClientUtils.mc().level));
-			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			BlockPos feetPos = ClientUtils.mc().player.blockPosition();
-			final ColumnPos playerCol = new ColumnPos(feetPos.getX(), feetPos.getZ());
-			// 24: very roughly 16 * sqrt(2)
-			final long maxDistance = ClientUtils.mc().options.renderDistance().get()*24L;
-			final long maxDistanceSq = maxDistance*maxDistance;
-			Multimap<ResourceKey<Level>, MineralVein> minerals;
-			synchronized(minerals = ExcavatorHandler.getMineralVeinList())
-			{
-				for(MineralVein vein : minerals.get(dimension))
-				{
-					MineralMix mineral = vein.getMineral(ClientUtils.mc().level);
-					if(mineral==null)
-						continue;
-					transform.pushPose();
-					ColumnPos pos = vein.getPos();
-					final long xDiff = pos.x()-playerCol.x();
-					final long zDiff = pos.z()-playerCol.z();
-					long distToPlayerSq = xDiff*xDiff+zDiff*zDiff;
-					if(distToPlayerSq > maxDistanceSq)
-						continue;
-					int iC = keyList.indexOf(mineral.getId());
-					DyeColor color = DyeColor.values()[iC%16];
-					float[] rgb = color.getTextureDiffuseColors();
-					float r = rgb[0];
-					float g = rgb[1];
-					float b = rgb[2];
-					transform.translate(pos.x(), 0, pos.z());
-					VertexConsumer bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
-					Matrix4f mat = transform.last().pose();
-					Matrix3f matN = transform.last().normal();
-					bufferBuilder.vertex(mat, 0, 0, 0).color(r, g, b, .75f).normal(matN, 0, 1, 0).endVertex();
-					bufferBuilder.vertex(mat, 0, 128, 0).color(r, g, b, .75f).normal(matN, 0, 1, 0).endVertex();
-					int radius = vein.getRadius();
-					List<Vector3f> positions = new ArrayList<>();
-					for(int p = 0; p < 12; p++)
-					{
-						final float angle = 360.0f/12*p;
-						final double x1 = radius*Math.cos(angle*Math.PI/180);
-						final double z1 = radius*Math.sin(angle*Math.PI/180);
-						positions.add(new Vector3f((float)x1, (float)(Minecraft.getInstance().player.position().y+10), (float)z1));
-					}
-					for(int p = 0; p < 12; p++)
-					{
-						Vector3f pointA = positions.get(p);
-						Vector3f pointB = positions.get((p+1)%positions.size());
-						Vector3f diff = pointB.copy();
-						diff.sub(pointA);
-						diff.normalize();
-						for(Vector3f point : ImmutableList.of(pointA, pointB))
-							bufferBuilder.vertex(mat, point.x(), point.y(), point.z())
-									.color(r, g, b, .75f)
-									//Not actually a normal, just the direction of the line
-									.normal(matN, diff.x(), diff.y(), diff.z())
-									.endVertex();
-					}
-					buffers.endBatch();
-					transform.popPose();
-				}
-			}
-		}
-
-		if(!FAILED_CONNECTIONS.isEmpty())
-		{
-			VertexConsumer builder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
-			for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
-			{
-				Connection conn = entry.getKey();
-				transform.pushPose();
-				transform.translate(conn.getEndA().getX(), conn.getEndA().getY(), conn.getEndA().getZ());
-				Matrix4f mat = transform.last().pose();
-				Matrix3f matN = transform.last().normal();
-				int time = entry.getValue().getSecond().get();
-				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
-				Vec3 prev = conn.getPoint(0, conn.getEndA());
-				for(int i = 0; i < Connection.RENDER_POINTS_PER_WIRE; i++)
-				{
-					Vec3 next = conn.getCatenaryData().getRenderPoint(i+1);
-					Vec3 diff = next.subtract(prev).normalize();
-					builder.vertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
-							.color(1, 0, 0, alpha)
-							.normal(matN, (float)diff.x, (float)diff.y, (float)diff.z)
-							.endVertex();
-					alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
-					builder.vertex(mat, (float)next.x, (float)next.y, (float)next.z)
-							.color(1, 0, 0, alpha)
-							.normal(matN, (float)diff.x, (float)diff.y, (float)diff.z)
-							.endVertex();
-					prev = next;
-				}
-				transform.popPose();
-			}
-			renderObstructingBlocks(transform, buffers);
-		}
-		transform.popPose();
-		buffers.endBatch();
 	}
 
 	@SubscribeEvent()

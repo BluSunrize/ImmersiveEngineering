@@ -121,7 +121,7 @@ public class IERenderTypes extends RenderStateShard
 				RenderType.CompositeState.builder()
 						.setShaderState(POINTS_SHADER)
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-						.setOutputState(ITEM_ENTITY_TARGET)
+						.setOutputState(RenderStateShard.PARTICLES_TARGET)
 						.setWriteMaskState(COLOR_DEPTH_WRITE)
 						.setCullState(NO_CULL)
 						.createCompositeState(false)
@@ -151,7 +151,7 @@ public class IERenderTypes extends RenderStateShard
 						.setLineState(new LineStateShard(OptionalDouble.of(5)))
 						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
 						.setCullState(NO_CULL)
-						.setOutputState(ITEM_ENTITY_TARGET)
+						.setOutputState(MAIN_TARGET)
 						.setWriteMaskState(COLOR_DEPTH_WRITE)
 						.createCompositeState(false)
 		);
@@ -240,7 +240,16 @@ public class IERenderTypes extends RenderStateShard
 
 	public static RenderType getLines(float lineWidth)
 	{
-		//TODO fix all usages with normals
+		return getLines(lineWidth, RenderStateShard.MAIN_TARGET);
+	}
+
+	public static RenderType getParticleLines(float lineWidth)
+	{
+		return getLines(lineWidth, RenderStateShard.PARTICLES_TARGET);
+	}
+
+	private static RenderType getLines(float lineWidth, OutputStateShard target)
+	{
 		return createDefault(
 				"lines_color_pos_"+lineWidth,
 				DefaultVertexFormat.POSITION_COLOR_NORMAL,
@@ -248,6 +257,7 @@ public class IERenderTypes extends RenderStateShard
 				RenderType.CompositeState.builder()
 						.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
 						.setShaderState(RENDERTYPE_LINES_SHADER)
+						.setOutputState(target)
 						.createCompositeState(false)
 		);
 	}
