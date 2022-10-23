@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
@@ -58,7 +59,10 @@ public record IEOBJModel(
 				fabulousItemTypes.add(types.entityFabulous());
 			}
 		else
-			blockTypes = itemTypes = fabulousItemTypes = List.of(RenderType.solid());
+		{
+			blockTypes = List.of(RenderType.solid());
+			itemTypes = fabulousItemTypes = List.of(ForgeRenderTypes.ITEM_LAYERED_SOLID.get());
+		}
 		return new GeneralIEOBJModel<>(
 				callback, base, context, spriteGetter, modelState, dynamic,
 				ChunkRenderTypeSet.of(blockTypes), itemTypes, fabulousItemTypes
