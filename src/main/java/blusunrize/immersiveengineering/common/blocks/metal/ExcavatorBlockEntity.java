@@ -114,7 +114,7 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 				totalDepletion += pair.getFirst().getDepletion();
 			totalDepletion /= veins.size();
 			float remain = (ExcavatorHandler.mineralVeinYield-totalDepletion)/(float)ExcavatorHandler.mineralVeinYield;
-			return Mth.floor(Math.max(remain, 0)*15);
+			return Mth.ceil(Math.max(remain, 0)*15);
 		}
 		return 0;
 	}
@@ -128,9 +128,8 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 		{
 			BlockEntity center = level.getBlockEntity(wheelPos);
 
-			if(center instanceof BucketWheelBlockEntity)
+			if(center instanceof BucketWheelBlockEntity wheel)
 			{
-				BucketWheelBlockEntity wheel = ((BucketWheelBlockEntity)center);
 				if(wheel!=wheel.master())
 					return;
 				float rot = 0;

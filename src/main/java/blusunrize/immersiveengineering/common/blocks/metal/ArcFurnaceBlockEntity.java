@@ -491,7 +491,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 			if(!inventory.get(i).isEmpty())
 				f += 1-(inventory.get(i).getDamageValue()/(float)inventory.get(i).getMaxDamage());
-		return Mth.floor(Math.max(f/3f, 0)*15);
+		return Mth.ceil(Math.max(f/3f, 0)*15);
 	}
 
 	@Override

@@ -330,7 +330,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	protected int getComparatorValueOnMaster()
 	{
 		float fill = processQueue.size()/(float)getProcessQueueMaxLength();
-		return Mth.floor(fill*14.0F)+(fill > 0?1: 0);
+		return Mth.ceil(fill*14.0F)+(fill > 0?1: 0);
 	}
 
 	@Override
