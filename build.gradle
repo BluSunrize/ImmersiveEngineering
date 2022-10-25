@@ -235,8 +235,8 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.19-forge-api:${version_jei}")
-    compileOnly fg.deobf("mezz.jei:jei-1.19-common-api:${version_jei}")
+    compileOnly fg.deobf("mezz.jei:jei-1.19.2-forge-api:${version_jei}")
+    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:${version_jei}")
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.137")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-${version_minecraft}:${version_cctweaked}")
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3825695")
