@@ -148,7 +148,6 @@ public class IEContent
 
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
-		BlueprintCraftingRecipe.registerDefaultCategories();
 		populateAPI();
 	}
 

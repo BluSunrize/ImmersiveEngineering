@@ -35,6 +35,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
+	@Deprecated(forRemoval = true)
 	public static final Set<String> recipeCategories = new TreeSet<>();
 	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLUEPRINT);
 	private static int reloadCountForCategories = CachedRecipeList.INVALID_RELOAD_COUNT;
@@ -174,37 +175,24 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static void updateRecipeCategories(Level level)
 	{
-		if (reloadCountForCategories == CachedRecipeList.getReloadCount())
+		if(reloadCountForCategories==CachedRecipeList.getReloadCount())
 			return;
 		recipesByCategory = RECIPES.getRecipes(level).stream()
 				.collect(Collectors.groupingBy(r -> r.blueprintCategory));
 		for(Entry<String, List<BlueprintCraftingRecipe>> e : recipesByCategory.entrySet())
-		{
-
-			if(!recipeCategories.contains(e.getKey()))
-				throw new RuntimeException(
-						"Recipe category "+e.getKey()+" was not registered during startup or in the IE config, but has recipes "+e.getValue().stream()
-								.map(r -> r.getId().toString())
-								.collect(Collectors.joining(", "))
-				);
 			e.getValue().sort(Comparator.comparing(BlueprintCraftingRecipe::getId));
-		}
 		reloadCountForCategories = CachedRecipeList.getReloadCount();
+	}
+
+	public static Set<String> getCategoriesWithRecipes(Level level)
+	{
+		updateRecipeCategories(level);
+		return recipesByCategory.keySet();
 	}
 
 	@Override
 	public int getMultipleProcessTicks()
 	{
 		return 0;
-	}
-
-	public static void registerDefaultCategories()
-	{
-		recipeCategories.add("components");
-		recipeCategories.add("molds");
-		recipeCategories.add("bullet");
-		recipeCategories.add("specialBullet");
-		recipeCategories.add("electrode");
-		recipeCategories.add("bannerpatterns");
 	}
 }

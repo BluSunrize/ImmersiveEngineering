@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -42,33 +43,36 @@ public class EngineersBlueprintItem extends IEBaseItem
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String key = getCategory(stack);
-		if(!key.isEmpty()&&BlueprintCraftingRecipe.recipeCategories.contains(key))
+		if(key.isEmpty())
+			return;
+		String formatKey = Lib.DESC_INFO+"blueprint."+key;
+		String formatted = I18n.get(formatKey);
+		if(formatKey.equals(formatted))
+			list.add(Component.literal(key));
+		else
+			list.add(Component.translatable(formatKey));
+		if(world==null)
+			return;
+		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);
+		if(recipes.length==0)
+			return;
+		if(Screen.hasShiftDown())
 		{
-			String formatKey = Lib.DESC_INFO+"blueprint."+key;
-			String formatted = I18n.get(formatKey);
-			if(formatKey.equals(formatted))
-				list.add(Component.literal(key));
-			else
-				list.add(Component.translatable(formatKey));
-			if(world!=null&&Screen.hasShiftDown())
-			{
-				list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates1"));
-				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);
-				if(recipes.length > 0)
-					for(BlueprintCraftingRecipe recipe : recipes)
-						list.add(Component.literal(" ").append(recipe.output.get().getHoverName()));
-			}
-			else
-				list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates0"));
+			list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates1"));
+			for(BlueprintCraftingRecipe recipe : recipes)
+				list.add(Component.literal(" ").append(recipe.output.get().getHoverName()));
 		}
+		else
+			list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates0"));
 	}
 
 
 	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
 	{
-		if(this.allowedIn(tab))
-			for(String key : BlueprintCraftingRecipe.recipeCategories)
+		final Level level = ImmersiveEngineering.proxy.getClientWorld();
+		if(this.allowedIn(tab)&&level!=null)
+			for(String key : BlueprintCraftingRecipe.getCategoriesWithRecipes(level))
 			{
 				ItemStack stack = new ItemStack(this);
 				ItemNBTHelper.putString(stack, "blueprint", key);

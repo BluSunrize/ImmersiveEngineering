@@ -22,7 +22,6 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import org.apache.logging.log4j.Logger;
 import org.openzen.zencode.java.ZenCodeType;
 
 /**
@@ -72,18 +71,6 @@ public class BlueprintCraftingRecipeManager implements IRecipeManager<BlueprintC
 				resourceLocation, blueprintCategory, IESerializableRecipe.of(results), ingredients
 		);
 
-		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null)
-		{
-			@Override
-			public boolean validate(Logger logger)
-			{
-				if(!BlueprintCraftingRecipe.recipeCategories.contains(blueprintCategory))
-				{
-					logger.error("Blueprint Category '{}' does not exist!", blueprintCategory);
-					return false;
-				}
-				return true;
-			}
-		});
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
 }
