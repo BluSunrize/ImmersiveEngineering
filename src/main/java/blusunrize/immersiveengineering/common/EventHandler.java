@@ -12,11 +12,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
@@ -121,19 +123,20 @@ public class EventHandler
 	@SubscribeEvent
 	public void onMinecartInteraction(EntityInteractSpecific event)
 	{
-		Player player = event.getEntity();
 		ItemStack stack = event.getItemStack();
 		if(!(event.getTarget() instanceof AbstractMinecart cart))
 			return;
 		if(stack.getItem() instanceof IShaderItem)
 		{
-			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
+			final ShaderWrapper wrapper = CapabilityUtils.getCapability(cart, CapabilityShader.SHADER_CAPABILITY);
+			if(wrapper!=null&&!event.getLevel().isClientSide)
 			{
 				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));
-				if(!player.level.isClientSide)
-					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
-							new MessageMinecartShaderSync(cart, wrapper));
-			});
+				ImmersiveEngineering.packetHandler.send(
+						PacketDistributor.TRACKING_ENTITY.with(() -> cart),
+						new MessageMinecartShaderSync(cart, wrapper)
+				);
+			}
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.SUCCESS);
 		}
@@ -242,9 +245,8 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingAttacked(LivingAttackEvent event)
 	{
-		if(event.getEntity() instanceof Player)
+		if(event.getEntity() instanceof Player player)
 		{
-			Player player = (Player)event.getEntity();
 			ItemStack activeStack = player.getUseItem();
 			if(!activeStack.isEmpty()&&activeStack.getItem() instanceof IEShieldItem&&event.getAmount() >= 3&&Utils.canBlockDamageSource(player, event.getSource()))
 			{

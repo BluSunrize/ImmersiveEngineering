@@ -138,9 +138,7 @@ public class StaticTemplateManager
 				ResourceLocation rl = templateMB.getTemplateLocation();
 				toSync.add(new SyncedTemplate(template, rl));
 			}
-		ImmersiveEngineering.packetHandler.send(
-				target, new MessageMultiblockSync(toSync)
-		);
+		ImmersiveEngineering.packetHandler.send(target, new MessageMultiblockSync(toSync));
 	}
 
 	@SubscribeEvent

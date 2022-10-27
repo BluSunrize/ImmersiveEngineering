@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -18,7 +19,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.network.NetworkEvent.Context;
 import net.minecraftforge.network.PacketDistributor;
@@ -31,13 +31,16 @@ public class MessageMinecartShaderSync implements IMessage
 	private final int entityID;
 	private final ItemStack shader;
 
-	public MessageMinecartShaderSync(Entity entity, Object o)
+	public MessageMinecartShaderSync(Entity entity, ShaderWrapper wrapper)
 	{
 		this.entityID = entity.getId();
-		if(o instanceof ShaderWrapper)
-			shader = ((ShaderWrapper)o).getShaderItem();
-		else
-			shader = ItemStack.EMPTY;
+		this.shader = wrapper.getShaderItem();
+	}
+
+	public MessageMinecartShaderSync(Entity entity)
+	{
+		this.entityID = entity.getId();
+		this.shader = ItemStack.EMPTY;
 	}
 
 	public MessageMinecartShaderSync(FriendlyByteBuf buf)
@@ -64,11 +67,12 @@ public class MessageMinecartShaderSync implements IMessage
 				Entity entity = world.getEntity(entityID);
 				if(entity==null)
 					return;
-				LazyOptional<ShaderWrapper> cap = entity.getCapability(CapabilityShader.SHADER_CAPABILITY);
-				cap.ifPresent(handler ->
-						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world::dimension),
-								new MessageMinecartShaderSync(entity, handler)
-						));
+				ShaderWrapper cap = CapabilityUtils.getCapability(entity, CapabilityShader.SHADER_CAPABILITY);
+				if(cap!=null)
+					ImmersiveEngineering.packetHandler.send(
+							PacketDistributor.DIMENSION.with(world::dimension),
+							new MessageMinecartShaderSync(entity, cap)
+					);
 			});
 		}
 		else

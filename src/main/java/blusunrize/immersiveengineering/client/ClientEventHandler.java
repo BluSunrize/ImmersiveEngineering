@@ -804,6 +804,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	{
 		if(event.getEntity().level.isClientSide&&event.getEntity() instanceof AbstractMinecart&&
 				event.getEntity().getCapability(CapabilityShader.SHADER_CAPABILITY).isPresent())
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(), null));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity()));
 	}
 }
