@@ -11,6 +11,8 @@ public interface IMultiblockBEHelperDummy<State extends IMultiblockState> extend
 
 	void setPositionInMB(BlockPos pos);
 
+	BlockPos getPositionInMB();
+
 	interface Factory
 	{
 		<T extends IMultiblockState>

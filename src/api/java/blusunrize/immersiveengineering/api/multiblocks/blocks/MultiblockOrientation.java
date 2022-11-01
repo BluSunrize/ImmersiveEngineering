@@ -3,12 +3,17 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public record MultiblockOrientation(Direction front, boolean mirrored)
 {
@@ -39,5 +44,17 @@ public record MultiblockOrientation(Direction front, boolean mirrored)
 		return TemplateMultiblock.getAbsoluteOffset(
 				withoutRotation, mirrored?Mirror.FRONT_BACK: Mirror.NONE, Rotation.NONE
 		);
+	}
+
+	public VoxelShape transformRelativeShape(VoxelShape relative)
+	{
+		// TODO copy from CachedVoxelShapes
+		VoxelShape ret = Shapes.empty();
+		for(AABB aabb : relative.toAabbs())
+		{
+			final var newBox = CachedShapesWithTransform.withFacingAndMirror(aabb, front, mirrored);
+			ret = Shapes.joinUnoptimized(ret, Shapes.create(newBox), BooleanOp.OR);
+		}
+		return ret.optimize();
 	}
 }

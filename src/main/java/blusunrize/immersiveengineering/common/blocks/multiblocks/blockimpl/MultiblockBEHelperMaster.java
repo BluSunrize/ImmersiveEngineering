@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.I
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -95,6 +96,13 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState> implements
 	public MultiblockRegistration<State> getMultiblock()
 	{
 		return multiblock;
+	}
+
+	@Override
+	public VoxelShape getShape()
+	{
+		// TODO cache!
+		return orientation.transformRelativeShape(multiblock.logic().getShape(multiblock.masterPosInMB()));
 	}
 
 	@Override

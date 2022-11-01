@@ -1,8 +1,10 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -16,7 +18,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class MultiblockBlockEntityDummy<State extends IMultiblockState> extends BlockEntity
+public class MultiblockBlockEntityDummy<State extends IMultiblockState>
+		extends BlockEntity
+		implements IModelOffsetProvider, IMultiblockBE<State>
 {
 	private final IMultiblockBEHelperDummy<State> helper;
 
@@ -70,8 +74,15 @@ public class MultiblockBlockEntityDummy<State extends IMultiblockState> extends 
 		return helper.getCapability(cap, side);
 	}
 
+	@Override
 	public IMultiblockBEHelperDummy<State> getHelper()
 	{
 		return helper;
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state, @javax.annotation.Nullable Vec3i size)
+	{
+		return helper.getPositionInMB().subtract(helper.getMultiblock().masterPosInMB());
 	}
 }

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -15,6 +16,9 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 	<T> LazyOptional<T> getCapability(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock, @Nullable RelativeBlockFace side, Capability<T> cap
 	);
+
+	// TODO split into collision and selection?
+	VoxelShape getShape(BlockPos posInMultiblock);
 
 	interface IMultiblockState
 	{

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -29,4 +30,6 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	<T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side);
 
 	MultiblockRegistration<State> getMultiblock();
+
+	VoxelShape getShape();
 }

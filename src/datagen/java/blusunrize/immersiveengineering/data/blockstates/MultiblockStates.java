@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEnt
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -179,8 +180,10 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(innerObj("block/metal_multiblock/mixer.obj"), IEMultiblocks.MIXER);
 		createMultiblock(innerObj("block/metal_multiblock/refinery.obj"), IEMultiblocks.REFINERY);
 		createMultiblock(innerObj("block/metal_multiblock/diesel_generator.obj", cutoutMipped()), IEMultiblocks.DIESEL_GENERATOR);
-		createMultiblock(Multiblocks.LIGHTNING_ROD,
-				split(innerObj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD));
+		createMultiblock(
+				IEMultiblockLogic.LIGHTNING_ROD.block(),
+				split(innerObj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD)
+		);
 		createMultiblock(WoodenDevices.WORKBENCH,
 				splitDynamic(
 						ieObjBuilder("block/wooden_device/workbench.obj.ie", innerModels).callback(WorkbenchCallbacks.INSTANCE).end(),

@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -11,6 +12,9 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,7 +25,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 
 	public MultiblockPartBlock(Properties properties, MultiblockRegistration<State> multiblock)
 	{
-		super(properties);
+		super(properties.dynamicShape());
 		this.multiblock = multiblock;
 	}
 
@@ -78,5 +82,21 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	)
 	{
 		return expected==actual?(BlockEntityTicker<A>)ticker: null;
+	}
+
+	@Nonnull
+	@Override
+	public VoxelShape getShape(
+			@Nonnull BlockState state,
+			@Nonnull BlockGetter level,
+			@Nonnull BlockPos pos,
+			@Nonnull CollisionContext context
+	)
+	{
+		final var bEntity = level.getBlockEntity(pos);
+		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
+			return multiblockBE.getHelper().getShape();
+		else
+			return Shapes.block();
 	}
 }

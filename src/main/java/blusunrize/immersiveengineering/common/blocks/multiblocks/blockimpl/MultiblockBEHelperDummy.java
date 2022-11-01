@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -129,5 +130,18 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState> implements 
 		Preconditions.checkArgument(!multiblock.masterPosInMB().equals(pos));
 		this.positionInMB = pos;
 		this.be.setChanged();
+	}
+
+	@Override
+	public BlockPos getPositionInMB()
+	{
+		return positionInMB;
+	}
+
+	@Override
+	public VoxelShape getShape()
+	{
+		// TODO cache!
+		return orientation.transformRelativeShape(multiblock.logic().getShape(positionInMB));
 	}
 }

@@ -1,8 +1,10 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
+import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -16,7 +18,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class MultiblockBlockEntityMaster<State extends IMultiblockState> extends BlockEntity
+public class MultiblockBlockEntityMaster<State extends IMultiblockState>
+		extends BlockEntity
+		implements IModelOffsetProvider, IMultiblockBE<State>
 {
 	private final IMultiblockBEHelperMaster<State> helper;
 
@@ -71,6 +75,7 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState> extends
 		helper.invalidateCaps();
 	}
 
+	@Override
 	public IMultiblockBEHelperMaster<State> getHelper()
 	{
 		return helper;
@@ -80,5 +85,11 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState> extends
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
 		return helper.getCapability(cap, side);
+	}
+
+	@Override
+	public BlockPos getModelOffset(BlockState state, @javax.annotation.Nullable Vec3i size)
+	{
+		return BlockPos.ZERO;
 	}
 }
