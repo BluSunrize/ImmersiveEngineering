@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockBlockEntityDummy;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,11 +37,19 @@ import java.util.function.Consumer;
 
 public abstract class IETemplateMultiblock extends TemplateMultiblock
 {
-	private final IEBlocks.BlockEntry<?> baseState;
+	private final RegistryObject<? extends Block> baseState;
 
 	public IETemplateMultiblock(
 			ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
 			IEBlocks.BlockEntry<?> baseState
+	)
+	{
+		this(loc, masterFromOrigin, triggerFromOrigin, size, baseState.getRegObject());
+	}
+
+	public IETemplateMultiblock(
+			ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
+			RegistryObject<? extends Block> baseState
 	)
 	{
 		super(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableMap.of());
@@ -49,8 +60,11 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	protected void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
 	{
 		BlockState state = baseState.get().defaultBlockState();
-		if(!offsetFromMaster.equals(Vec3i.ZERO))
-			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
+		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, !offsetFromMaster.equals(Vec3i.ZERO));
+		if(state.hasProperty(IEProperties.MIRRORED))
+			state = state.setValue(IEProperties.MIRRORED, mirrored);
+		if(state.hasProperty(IEProperties.FACING_HORIZONTAL))
+			state = state.setValue(IEProperties.FACING_HORIZONTAL, transformDirection(clickDirection.getOpposite()));
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
 		if(curr instanceof MultiblockPartBlockEntity<?> tile)
@@ -58,13 +72,12 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
-			if(state.hasProperty(IEProperties.MIRRORED))
-				tile.setMirrored(mirrored);
-			tile.setFacing(transformDirection(clickDirection.getOpposite()));
 			tile.setChanged();
 			world.blockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
 		}
-		else
+		else if(curr instanceof MultiblockBlockEntityDummy<?> dummy)
+			dummy.getHelper().setPositionInMB(info.pos);
+		else if(!(curr instanceof MultiblockBlockEntityMaster<?>))
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
 	}
 

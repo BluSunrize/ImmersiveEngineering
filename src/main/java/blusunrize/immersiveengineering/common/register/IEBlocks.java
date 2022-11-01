@@ -91,7 +91,7 @@ public final class IEBlocks
 					.strength(3, 15)
 					.requiresCorrectToolForDrops()
 					.isViewBlocking((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	public static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
 
 	private IEBlocks()
 	{
@@ -765,6 +765,11 @@ public final class IEBlocks
 		public Item asItem()
 		{
 			return get().asItem();
+		}
+
+		public RegistryObject<? extends Block> getRegObject()
+		{
+			return regObject;
 		}
 	}
 }

@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockOrientation;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessBE;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
@@ -21,7 +23,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -366,12 +367,12 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 
 	protected final MultiblockFace asRelativeFace(Direction absoluteFace)
 	{
-		return new MultiblockFace(
-				posInMultiblock, RelativeBlockFace.from(getFacing().getOpposite(), getIsMirrored(), absoluteFace)
-		);
+		return new MultiblockFace(posInMultiblock, RelativeBlockFace.from(
+				new MultiblockOrientation(getFacing().getOpposite(), getIsMirrored()), absoluteFace
+		));
 	}
 
-	protected static record MultiblockFace(BlockPos posInMultiblock, RelativeBlockFace face)
+	protected record MultiblockFace(BlockPos posInMultiblock, RelativeBlockFace face)
 	{
 		public MultiblockFace(int x, int y, int z, RelativeBlockFace face)
 		{

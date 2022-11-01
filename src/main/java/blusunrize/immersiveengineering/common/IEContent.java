@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockBEHelperDummy;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
@@ -37,6 +39,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltBlockEnti
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperDummy;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
@@ -71,6 +75,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -114,14 +119,15 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
 		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
-		IEFluids.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEFluids.TYPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEPotions.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEParticles.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEBlockEntities.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEMenuTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEEntityDataSerializers.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+		IEFluids.REGISTER.register(modBus);
+		IEFluids.TYPE_REGISTER.register(modBus);
+		IEPotions.REGISTER.register(modBus);
+		IEParticles.REGISTER.register(modBus);
+		IEBlockEntities.REGISTER.register(modBus);
+		IEEntityTypes.REGISTER.register(modBus);
+		IEMenuTypes.REGISTER.register(modBus);
+		IEEntityDataSerializers.REGISTER.register(modBus);
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();
@@ -139,6 +145,7 @@ public class IEContent
 
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
+		IEMultiblockLogic.init(modBus);
 		populateAPI();
 	}
 
@@ -286,6 +293,8 @@ public class IEContent
 		TemplateWorldCreator.CREATOR.setValue(TemplateWorld::new);
 		ConveyorHandler.CONVEYOR_BLOCKS.setValue(rl -> MetalDevices.CONVEYORS.get(rl).get());
 		ConveyorHandler.BLOCK_ENTITY_TYPES.setValue(rl -> ConveyorBeltBlockEntity.BE_TYPES.get(rl).get());
+		IMultiblockBEHelperMaster.MAKE_HELPER.setValue(MultiblockBEHelperMaster::new);
+		IMultiblockBEHelperDummy.MAKE_HELPER.setValue(MultiblockBEHelperDummy::new);
 		SetRestrictedField.lock(false);
 	}
 }
