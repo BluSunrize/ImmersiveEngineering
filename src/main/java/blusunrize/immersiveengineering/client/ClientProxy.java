@@ -153,8 +153,6 @@ public class ClientProxy extends CommonProxy
 		ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
 		reloadableManager.registerReloadListener(handler);
 		reloadableManager.registerReloadListener(new ConnectionRenderer());
-
-		IEModelLayers.registerDefinitions();
 	}
 
 	@SubscribeEvent
