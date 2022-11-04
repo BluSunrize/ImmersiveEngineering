@@ -45,6 +45,13 @@ public record MultiblockLevel(
 		return SafeChunkUtils.getSafeBE(level(), toAbsolute(relativePosition));
 	}
 
+	@Nullable
+	@Override
+	public BlockEntity forciblyGetBlockEntity(BlockPos relativePosition)
+	{
+		return level().getBlockEntity(toAbsolute(relativePosition));
+	}
+
 	@Override
 	@Nullable
 	public <T> T getCapabilityValue(

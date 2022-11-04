@@ -63,9 +63,8 @@ public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? su
 	@Override
 	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player)
 	{
-		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof MultiblockPartBlockEntity)
-			return Utils.getPickBlock(((MultiblockPartBlockEntity<?>)te).getOriginalBlock(), target, player);
+		if(world.getBlockEntity(pos) instanceof MultiblockPartBlockEntity<?> multiblockBE)
+			return Utils.getPickBlock(multiblockBE.getOriginalBlock(), target, player);
 		return ItemStack.EMPTY;
 	}
 

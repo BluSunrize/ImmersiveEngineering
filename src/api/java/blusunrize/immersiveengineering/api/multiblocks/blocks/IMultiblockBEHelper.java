@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -32,4 +33,10 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	MultiblockRegistration<State> getMultiblock();
 
 	VoxelShape getShape();
+
+	void disassemble();
+
+	void markDisassembling();
+
+	BlockPos getPositionInMB();
 }

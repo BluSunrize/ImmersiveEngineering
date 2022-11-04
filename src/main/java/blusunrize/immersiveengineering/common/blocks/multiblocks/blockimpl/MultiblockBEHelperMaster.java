@@ -2,11 +2,9 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
-import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -14,20 +12,19 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiblockBEHelperMaster<State extends IMultiblockState> implements IMultiblockBEHelperMaster<State>
+public class MultiblockBEHelperMaster<State extends IMultiblockState>
+		extends MultiblockBEHelperCommon<State>
+		implements IMultiblockBEHelperMaster<State>
 {
-	private final MultiblockBlockEntityMaster<State> be;
-	private final MultiblockRegistration<State> multiblock;
-	private final MultiblockOrientation orientation;
+	private final BlockEntity be;
 	private final State state;
 	private final MultiblockContext<State> context;
 	private final List<LazyOptional<?>> capabilities = new ArrayList<>();
 
 	public MultiblockBEHelperMaster(MultiblockBlockEntityMaster<State> be, MultiblockRegistration<State> multiblock)
 	{
+		super(multiblock, be.getBlockState());
 		this.be = be;
-		this.multiblock = multiblock;
-		this.orientation = new MultiblockOrientation(be.getBlockState(), multiblock.mirrorable());
 		this.state = multiblock.logic().createInitialState(new CapabilitySource(
 				be, orientation, multiblock.masterPosInMB()
 		));
@@ -50,6 +47,13 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState> implements
 	public MultiblockContext<State> getContext()
 	{
 		return context;
+	}
+
+	@Nullable
+	@Override
+	protected IMultiblockContext<State> getContextWithChunkloads()
+	{
+		return getContext();
 	}
 
 	@Override
@@ -85,24 +89,15 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState> implements
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
-	{
-		return multiblock.logic().getCapability(
-				context, multiblock.masterPosInMB(), RelativeBlockFace.from(orientation, side), cap
-		);
-	}
-
-	@Override
 	public MultiblockRegistration<State> getMultiblock()
 	{
 		return multiblock;
 	}
 
 	@Override
-	public VoxelShape getShape()
+	public BlockPos getPositionInMB()
 	{
-		// TODO cache!
-		return orientation.transformRelativeShape(multiblock.logic().getShape(multiblock.masterPosInMB()));
+		return multiblock.masterPosInMB();
 	}
 
 	@Override

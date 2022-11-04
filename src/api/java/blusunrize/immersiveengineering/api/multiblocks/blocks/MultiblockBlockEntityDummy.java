@@ -81,7 +81,7 @@ public class MultiblockBlockEntityDummy<State extends IMultiblockState>
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @javax.annotation.Nullable Vec3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		return helper.getPositionInMB().subtract(helper.getMultiblock().masterPosInMB());
 	}

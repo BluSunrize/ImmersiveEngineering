@@ -18,6 +18,12 @@ public interface IMultiblockLevel
 	@Nullable
 	BlockEntity getBlockEntity(BlockPos relativePosition);
 
+	/**
+	 * This method will load chunks if the given position is not loaded yet!
+	 */
+	@Nullable
+	BlockEntity forciblyGetBlockEntity(BlockPos relativePosition);
+
 	@Nullable
 	<T> T getCapabilityValue(Capability<T> capability, BlockPos relativePosition, @Nullable RelativeBlockFace face);
 

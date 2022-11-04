@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockBlockEntityDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
@@ -122,6 +123,8 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		BlockEntity be = world.getBlockEntity(pos);
 		if(be instanceof MultiblockPartBlockEntity<?> multiblockBE)
 			multiblockBE.formed = false;
+		else if(be instanceof IMultiblockBE<?> multiblockBE)
+			multiblockBE.getHelper().markDisassembling();
 		else if(be!=null)
 			IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, be);
 	}

@@ -4,30 +4,25 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
-public class MultiblockBEHelperDummy<State extends IMultiblockState> implements IMultiblockBEHelperDummy<State>
+public class MultiblockBEHelperDummy<State extends IMultiblockState>
+		extends MultiblockBEHelperCommon<State>
+		implements IMultiblockBEHelperDummy<State>
 {
 	private final BlockEntity be;
-	private final MultiblockRegistration<State> multiblock;
-	private final MultiblockOrientation orientation;
 	private final MultiblockLevel level;
 	private BlockPos positionInMB;
 
 	public MultiblockBEHelperDummy(BlockEntity be, MultiblockRegistration<State> multiblock)
 	{
+		super(multiblock, be.getBlockState());
 		this.be = be;
-		this.multiblock = multiblock;
-		this.orientation = new MultiblockOrientation(be.getBlockState(), multiblock.mirrorable());
 		this.level = new MultiblockLevel(be::getLevel, orientation, () -> {
 			final BlockPos absoluteOffset = orientation.getAbsoluteOffset(positionInMB);
 			return be.getBlockPos().subtract(absoluteOffset);
@@ -47,6 +42,14 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState> implements 
 	public IMultiblockContext<State> getContext()
 	{
 		return getOnMaster(IMultiblockBEHelperMaster::getContext);
+	}
+
+	@Nullable
+	@Override
+	protected IMultiblockContext<State> getContextWithChunkloads()
+	{
+		final var masterHelper = getMasterHelper(level.forciblyGetBlockEntity(multiblock.masterPosInMB()));
+		return masterHelper!=null?masterHelper.getContext(): null;
 	}
 
 	@Override
@@ -82,19 +85,6 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState> implements 
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
-	{
-		// TODO right now this is 2 master lookups, but we should really just cache the master BE in a weak reference
-		//  and check if it's still valid
-		final var state = getState();
-		final var ctx = getContext();
-		if(state==null||ctx==null)
-			return LazyOptional.empty();
-		final var relativeSide = RelativeBlockFace.from(orientation, side);
-		return multiblock.logic().getCapability(ctx, positionInMB, relativeSide, cap);
-	}
-
-	@Override
 	public MultiblockRegistration<State> getMultiblock()
 	{
 		return multiblock;
@@ -113,7 +103,12 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState> implements 
 	@Nullable
 	private IMultiblockBEHelperMaster<State> getMasterHelper()
 	{
-		final var beAtMasterPos = level.getBlockEntity(multiblock.masterPosInMB());
+		// TODO cache master BE?
+		return getMasterHelper(level.getBlockEntity(multiblock.masterPosInMB()));
+	}
+
+	private IMultiblockBEHelperMaster<State> getMasterHelper(BlockEntity beAtMasterPos)
+	{
 		if(!(beAtMasterPos instanceof MultiblockBlockEntityMaster<?> masterBE))
 			return null;
 		final var masterHelper = masterBE.getHelper();
@@ -136,12 +131,5 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState> implements 
 	public BlockPos getPositionInMB()
 	{
 		return positionInMB;
-	}
-
-	@Override
-	public VoxelShape getShape()
-	{
-		// TODO cache!
-		return orientation.transformRelativeShape(multiblock.logic().getShape(positionInMB));
 	}
 }

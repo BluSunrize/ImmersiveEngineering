@@ -99,4 +99,25 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		else
 			return Shapes.block();
 	}
+
+	@Override
+	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+	{
+		if(state.getBlock()!=newState.getBlock())
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			if(blockEntity instanceof IMultiblockBE<?> multiblockBE)
+			{
+				// Remove the BE here before disassembling: The block is already gone, so setting the block state here
+				// to a block providing a BE will produce strange results otherwise
+				super.onRemove(state, level, pos, newState, isMoving);
+				multiblockBE.getHelper().disassemble();
+				return;
+			}
+		}
+		super.onRemove(state, level, pos, newState, isMoving);
+	}
+
+	// TODO loot table
+	// TODO pick block
 }
