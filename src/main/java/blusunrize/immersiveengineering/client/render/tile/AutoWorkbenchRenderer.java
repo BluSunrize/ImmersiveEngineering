@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmode
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process_old.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process_old.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.HashMultimap;
