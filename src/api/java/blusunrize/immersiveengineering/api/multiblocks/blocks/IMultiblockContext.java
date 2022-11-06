@@ -8,11 +8,11 @@ public interface IMultiblockContext<State extends IMultiblockLogic.IMultiblockSt
 {
 	State getState();
 
-	void markMasterDirty();
-
 	IMultiblockLevel getLevel();
 
 	<T> LazyOptional<T> registerCapability(T value);
+
+	boolean isValid();
 
 	default <T> LazyOptional<T> orRegisterCapability(@Nullable LazyOptional<T> existingCap, T value)
 	{

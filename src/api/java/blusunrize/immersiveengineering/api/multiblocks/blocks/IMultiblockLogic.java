@@ -3,6 +3,10 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -20,14 +24,29 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 	// TODO split into collision and selection?
 	VoxelShape getShape(BlockPos posInMultiblock);
 
+	default InteractionResult click(
+			IMultiblockContext<State> ctx, BlockPos posInMultiblock, Player player,
+			InteractionHand hand,
+			// TODO make relative instead? Bit of a pain to compute, and possibly not that useful
+			BlockHitResult absoluteHit,
+			boolean isClient
+	)
+	{
+		return InteractionResult.PASS;
+	}
+
 	interface IMultiblockState
 	{
 		void writeSaveNBT(CompoundTag nbt);
 
-		void writeSyncNBT(CompoundTag nbt);
+		default void writeSyncNBT(CompoundTag nbt)
+		{
+		}
 
 		void readSaveNBT(CompoundTag nbt);
 
-		void readSyncNBT(CompoundTag nbt);
+		default void readSyncNBT(CompoundTag nbt)
+		{
+		}
 	}
 }

@@ -8,8 +8,12 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 public record MultiblockContext<State extends IMultiblockState>(
 		MultiblockBEHelperMaster<State> masterHelper,
@@ -21,6 +25,12 @@ public record MultiblockContext<State extends IMultiblockState>(
 	public State getState()
 	{
 		return masterHelper.getState();
+	}
+
+	@Override
+	public Supplier<@Nullable Level> levelSupplier()
+	{
+		return masterHelper.getMasterBE()::getLevel;
 	}
 
 	@Override
@@ -41,6 +51,12 @@ public record MultiblockContext<State extends IMultiblockState>(
 		LazyOptional<T> result = CapabilityUtils.constantOptional(value);
 		masterHelper.addCapability(result);
 		return result;
+	}
+
+	@Override
+	public boolean isValid()
+	{
+		return !masterHelper.getMasterBE().isRemoved();
 	}
 
 	@Override

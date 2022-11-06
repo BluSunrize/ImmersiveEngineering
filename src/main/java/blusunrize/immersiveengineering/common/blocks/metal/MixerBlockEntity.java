@@ -26,7 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
@@ -545,7 +545,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	}
 
 	@Override
-	public BEContainer<MixerBlockEntity, ?> getContainerType()
+	public ArgContainer<MixerBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.MIXER;
 	}

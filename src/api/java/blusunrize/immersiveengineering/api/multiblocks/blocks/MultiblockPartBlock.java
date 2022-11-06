@@ -3,6 +3,9 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -12,6 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -101,7 +105,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	}
 
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onRemove(BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		if(state.getBlock()!=newState.getBlock())
 		{
@@ -116,6 +120,24 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			}
 		}
 		super.onRemove(state, level, pos, newState, isMoving);
+	}
+
+	@Nonnull
+	@Override
+	public InteractionResult use(
+			@Nonnull BlockState state,
+			@Nonnull Level level,
+			@Nonnull BlockPos pos,
+			@Nonnull Player player,
+			@Nonnull InteractionHand hand,
+			@Nonnull BlockHitResult hit
+	)
+	{
+		final var bEntity = level.getBlockEntity(pos);
+		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
+			return multiblockBE.getHelper().click(player, hand, hit);
+		else
+			return InteractionResult.PASS;
 	}
 
 	// TODO loot table

@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.RegistryObject;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -23,12 +25,18 @@ public abstract class StoneMultiblock extends IETemplateMultiblock
 		super(loc, masterFromOrigin, triggerFromOrigin, size, baseState);
 	}
 
+	public StoneMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, RegistryObject<? extends Block> baseState)
+	{
+		super(loc, masterFromOrigin, triggerFromOrigin, size, baseState);
+	}
+
 	@Override
 	public boolean canBeMirrored()
 	{
 		return false;
 	}
 
+	// TODO get rid of
 	@Override
 	public Direction transformDirection(Direction original)
 	{

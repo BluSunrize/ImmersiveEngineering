@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEnt
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -148,7 +148,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	}
 
 	@Override
-	public BEContainer<SorterBlockEntity, ?> getContainerType()
+	public ArgContainer<SorterBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.SORTER;
 	}

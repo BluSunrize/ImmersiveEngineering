@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
@@ -24,6 +26,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class CokeOvenMenu extends IEContainerMenu
 {
 	public final ContainerData data;
@@ -35,6 +39,16 @@ public class CokeOvenMenu extends IEContainerMenu
 	{
 		return new CokeOvenMenu(
 				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()), be.guiData, be.tank
+		);
+	}
+
+	public static CokeOvenMenu makeServerNew(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<CokeOvenLogic.State> ctx
+	)
+	{
+		final var state = ctx.getState();
+		return new CokeOvenMenu(
+				multiblockCtx(type, id, ctx), invPlayer, state.getInventory().getRawHandler(), state, state.getTank()
 		);
 	}
 
@@ -58,7 +72,7 @@ public class CokeOvenMenu extends IEContainerMenu
 		this.addSlot(new SlotItemHandler(inv, 0, 30, 35)
 		{
 			@Override
-			public boolean mayPlace(ItemStack itemStack)
+			public boolean mayPlace(@Nonnull ItemStack itemStack)
 			{
 				return CokeOvenRecipe.findRecipe(inventoryPlayer.player.level, itemStack)!=null;
 			}

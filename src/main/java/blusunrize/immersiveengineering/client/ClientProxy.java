@@ -53,7 +53,7 @@ import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
@@ -382,6 +382,7 @@ public class ClientProxy extends CommonProxy
 	private static void registerContainersAndScreens()
 	{
 		MenuScreens.register(IEMenuTypes.COKE_OVEN.getType(), CokeOvenScreen::new);
+		MenuScreens.register(IEMenuTypes.COKE_OVEN_NEW.getType(), CokeOvenScreen::new);
 		MenuScreens.register(IEMenuTypes.ALLOY_SMELTER.getType(), AlloySmelterScreen::new);
 		MenuScreens.register(IEMenuTypes.BLAST_FURNACE.getType(), BlastFurnaceScreen::new);
 		MenuScreens.register(IEMenuTypes.BLAST_FURNACE_ADV.getType(), BlastFurnaceScreen.Advanced::new);
@@ -459,7 +460,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	public static <C extends IEBaseContainerOld<?>, S extends Screen & MenuAccess<C>>
-	void registerTileScreen(BEContainer<?, C> type, ScreenConstructor<C, S> factory)
+	void registerTileScreen(ArgContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
 		MenuScreens.register(type.getType(), factory);
 	}

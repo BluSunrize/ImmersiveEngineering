@@ -22,7 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -371,7 +371,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	}
 
 	@Override
-	public BEContainer<AutoWorkbenchBlockEntity, ?> getContainerType()
+	public ArgContainer<AutoWorkbenchBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.AUTO_WORKBENCH;
 	}

@@ -6,8 +6,12 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 public record CapabilitySource(
 		BlockEntity masterBE, MultiblockOrientation orientation, BlockPos masterOffset
@@ -19,6 +23,18 @@ public record CapabilitySource(
 	)
 	{
 		return getCapabilityAt(masterBE, orientation, masterOffset, capability, posRelativeToMB, face);
+	}
+
+	@Override
+	public Supplier<@Nullable Level> levelSupplier()
+	{
+		return masterBE::getLevel;
+	}
+
+	@Override
+	public void markMasterDirty()
+	{
+		masterBE.setChanged();
 	}
 
 	public static <T> CapabilityReference<T> getCapabilityAt(

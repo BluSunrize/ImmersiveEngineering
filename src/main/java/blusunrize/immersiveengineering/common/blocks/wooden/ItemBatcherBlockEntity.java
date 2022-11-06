@@ -21,7 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -212,7 +212,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	}
 
 	@Override
-	public BEContainer<ItemBatcherBlockEntity, ?> getContainerType()
+	public ArgContainer<ItemBatcherBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.ITEM_BATCHER;
 	}

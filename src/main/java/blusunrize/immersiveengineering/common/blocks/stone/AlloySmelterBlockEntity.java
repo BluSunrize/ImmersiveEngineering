@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -43,7 +43,7 @@ public class AlloySmelterBlockEntity extends FurnaceLikeBlockEntity<AlloyRecipe,
 	}
 
 	@Override
-	public BEContainer<AlloySmelterBlockEntity, ?> getContainerType()
+	public ArgContainer<AlloySmelterBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.ALLOY_SMELTER;
 	}

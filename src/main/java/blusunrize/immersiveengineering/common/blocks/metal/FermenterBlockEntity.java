@@ -24,7 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -400,7 +400,7 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	}
 
 	@Override
-	public BEContainer<FermenterBlockEntity, ?> getContainerType()
+	public ArgContainer<FermenterBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.FERMENTER;
 	}

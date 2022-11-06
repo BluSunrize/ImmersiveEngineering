@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
 import com.google.common.collect.Streams;
@@ -100,7 +100,7 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity
 	}
 
 	@Override
-	public BEContainer<CraftingTableBlockEntity, ?> getContainerType()
+	public ArgContainer<CraftingTableBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.CRAFTING_TABLE;
 	}

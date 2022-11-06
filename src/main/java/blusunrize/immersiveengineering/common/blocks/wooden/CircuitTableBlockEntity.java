@@ -19,7 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -124,7 +124,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	}
 
 	@Override
-	public BEContainer<CircuitTableBlockEntity, ?> getContainerType()
+	public ArgContainer<CircuitTableBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.CIRCUIT_TABLE;
 	}

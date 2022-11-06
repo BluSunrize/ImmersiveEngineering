@@ -3,7 +3,11 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -37,6 +41,15 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 			return LazyOptional.empty();
 		final var relativeSide = RelativeBlockFace.from(orientation, side);
 		return multiblock.logic().getCapability(ctx, getPositionInMB(), relativeSide, cap);
+	}
+
+	@Override
+	public InteractionResult click(Player player, InteractionHand hand, BlockHitResult hit)
+	{
+		final var ctx = getContext();
+		if(ctx==null)
+			return InteractionResult.FAIL;
+		return multiblock.logic().click(ctx, getPositionInMB(), player, hand, hit, player.level.isClientSide);
 	}
 
 	@Override

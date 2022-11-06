@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LightningRod implements IMultiblockLogic<LightningRod.State>, IServerTickableMultiblock<LightningRod.State>
+public class LightningRodLogic implements IMultiblockLogic<LightningRodLogic.State>, IServerTickableMultiblock<LightningRodLogic.State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(1, 1, 1);
 
@@ -218,19 +218,9 @@ public class LightningRod implements IMultiblockLogic<LightningRod.State>, IServ
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
-		{
-		}
-
-		@Override
 		public void readSaveNBT(CompoundTag nbt)
 		{
 			EnergyHelper.deserializeFrom(energy, nbt);
-		}
-
-		@Override
-		public void readSyncNBT(CompoundTag nbt)
-		{
 		}
 	}
 

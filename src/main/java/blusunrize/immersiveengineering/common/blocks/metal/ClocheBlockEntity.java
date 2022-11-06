@@ -31,7 +31,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
@@ -493,7 +493,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	}
 
 	@Override
-	public BEContainer<ClocheBlockEntity, ?> getContainerType()
+	public ArgContainer<ClocheBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.CLOCHE;
 	}

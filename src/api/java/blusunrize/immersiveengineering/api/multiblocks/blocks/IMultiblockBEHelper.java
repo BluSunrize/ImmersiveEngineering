@@ -4,6 +4,10 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.I
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -39,4 +43,6 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	void markDisassembling();
 
 	BlockPos getPositionInMB();
+
+	InteractionResult click(Player player, InteractionHand hand, BlockHitResult hit);
 }

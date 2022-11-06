@@ -17,6 +17,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MultiblockRegistrationBuilder<State extends IMultiblockState>
@@ -57,8 +58,16 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 			DeferredRegister<Block> register, BlockBehaviour.Properties properties
 	)
 	{
+		return customBlock(register, reg -> new MultiblockPartBlock<>(properties, reg));
+	}
+
+	public MultiblockRegistrationBuilder<State> customBlock(
+			DeferredRegister<Block> register,
+			Function<MultiblockRegistration<State>, ? extends MultiblockPartBlock<State>> make
+	)
+	{
 		Preconditions.checkState(this.block==null);
-		this.block = register.register(name, () -> new MultiblockPartBlock<>(properties, this.result));
+		this.block = register.register(name, () -> make.apply(this.result));
 		return this;
 	}
 

@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
@@ -19,8 +21,11 @@ import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.gui.TurretMenu.ChemTurretMenu;
 import blusunrize.immersiveengineering.common.gui.TurretMenu.GunTurretMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -33,73 +38,79 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class IEMenuTypes
 {
 	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Lib.MODID);
 
-	public static final BEContainer<CokeOvenBlockEntity, CokeOvenMenu> COKE_OVEN = registerBENew(
+	public static final ArgContainer<CokeOvenBlockEntity, CokeOvenMenu> COKE_OVEN = registerArg(
 			Lib.GUIID_CokeOven, CokeOvenMenu::makeServer, CokeOvenMenu::makeClient
 	);
-	public static final BEContainer<AlloySmelterBlockEntity, AlloySmelterMenu> ALLOY_SMELTER = registerBENew(
+	public static final ArgContainer<IMultiblockContext<CokeOvenLogic.State>, CokeOvenMenu> COKE_OVEN_NEW = registerArg(
+			"cokeoven_new", CokeOvenMenu::makeServerNew, CokeOvenMenu::makeClient
+	);
+	public static final ArgContainer<AlloySmelterBlockEntity, AlloySmelterMenu> ALLOY_SMELTER = registerArg(
 			Lib.GUIID_AlloySmelter, AlloySmelterMenu::makeServer, AlloySmelterMenu::makeClient
 	);
-	public static final BEContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE = registerBENew(
+	public static final ArgContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE = registerArg(
 			Lib.GUIID_BlastFurnace, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
 	);
-	public static final BEContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerBENew(
+	public static final ArgContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerArg(
 			Lib.GUIID_BlastFurnaceAdv, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
 	);
-	public static final BEContainer<CraftingTableBlockEntity, CraftingTableMenu> CRAFTING_TABLE = registerBENew(
+	public static final ArgContainer<CraftingTableBlockEntity, CraftingTableMenu> CRAFTING_TABLE = registerArg(
 			Lib.GUIID_CraftingTable, CraftingTableMenu::makeServer, CraftingTableMenu::makeClient
 	);
 	public static final RegistryObject<MenuType<CrateMenu>> WOODEN_CRATE = registerSimple(Lib.GUIID_WoodenCrate, CrateMenu::new);
-	public static final BEContainer<ModWorkbenchBlockEntity, ModWorkbenchContainer> MOD_WORKBENCH = register(Lib.GUIID_Workbench, ModWorkbenchContainer::new);
-	public static final BEContainer<CircuitTableBlockEntity, CircuitTableMenu> CIRCUIT_TABLE = registerBENew(
+	public static final ArgContainer<ModWorkbenchBlockEntity, ModWorkbenchContainer> MOD_WORKBENCH = register(Lib.GUIID_Workbench, ModWorkbenchContainer::new);
+	public static final ArgContainer<CircuitTableBlockEntity, CircuitTableMenu> CIRCUIT_TABLE = registerArg(
 			Lib.GUIID_CircuitTable, CircuitTableMenu::makeServer, CircuitTableMenu::makeClient
 	);
-	public static final BEContainer<AssemblerBlockEntity, AssemblerMenu> ASSEMBLER = registerBENew(
+	public static final ArgContainer<AssemblerBlockEntity, AssemblerMenu> ASSEMBLER = registerArg(
 			Lib.GUIID_Assembler, AssemblerMenu::makeServer, AssemblerMenu::makeClient
 	);
-	public static final BEContainer<SorterBlockEntity, SorterMenu> SORTER = registerBENew(
+	public static final ArgContainer<SorterBlockEntity, SorterMenu> SORTER = registerArg(
 			Lib.GUIID_Sorter, SorterMenu::makeServer, SorterMenu::makeClient
 	);
-	public static final BEContainer<ItemBatcherBlockEntity, ItemBatcherMenu> ITEM_BATCHER = registerBENew(
+	public static final ArgContainer<ItemBatcherBlockEntity, ItemBatcherMenu> ITEM_BATCHER = registerArg(
 			Lib.GUIID_ItemBatcher, ItemBatcherMenu::makeServer, ItemBatcherMenu::makeClient
 	);
-	public static final BEContainer<LogicUnitBlockEntity, LogicUnitMenu> LOGIC_UNIT = registerBENew(
+	public static final ArgContainer<LogicUnitBlockEntity, LogicUnitMenu> LOGIC_UNIT = registerArg(
 			Lib.GUIID_LogicUnit, LogicUnitMenu::makeServer, LogicUnitMenu::makeClient
 	);
-	public static final BEContainer<SqueezerBlockEntity, SqueezerMenu> SQUEEZER = registerBENew(
+	public static final ArgContainer<SqueezerBlockEntity, SqueezerMenu> SQUEEZER = registerArg(
 			Lib.GUIID_Squeezer, SqueezerMenu::makeServer, SqueezerMenu::makeClient
 	);
-	public static final BEContainer<FermenterBlockEntity, FermenterMenu> FERMENTER = registerBENew(
+	public static final ArgContainer<FermenterBlockEntity, FermenterMenu> FERMENTER = registerArg(
 			Lib.GUIID_Fermenter, FermenterMenu::makeServer, FermenterMenu::makeClient
 	);
-	public static final BEContainer<RefineryBlockEntity, RefineryMenu> REFINERY = registerBENew(
+	public static final ArgContainer<RefineryBlockEntity, RefineryMenu> REFINERY = registerArg(
 			Lib.GUIID_Refinery, RefineryMenu::makeServer, RefineryMenu::makeClient
 	);
-	public static final BEContainer<ArcFurnaceBlockEntity, ArcFurnaceMenu> ARC_FURNACE = registerBENew(
+	public static final ArgContainer<ArcFurnaceBlockEntity, ArcFurnaceMenu> ARC_FURNACE = registerArg(
 			Lib.GUIID_ArcFurnace, ArcFurnaceMenu::makeServer, ArcFurnaceMenu::makeClient
 	);
-	public static final BEContainer<AutoWorkbenchBlockEntity, AutoWorkbenchMenu> AUTO_WORKBENCH = registerBENew(
+	public static final ArgContainer<AutoWorkbenchBlockEntity, AutoWorkbenchMenu> AUTO_WORKBENCH = registerArg(
 			Lib.GUIID_AutoWorkbench, AutoWorkbenchMenu::makeServer, AutoWorkbenchMenu::makeClient
 	);
-	public static final BEContainer<MixerBlockEntity, MixerMenu> MIXER = registerBENew(
+	public static final ArgContainer<MixerBlockEntity, MixerMenu> MIXER = registerArg(
 			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient
 	);
-	public static final BEContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerBENew(
+	public static final ArgContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerArg(
 			Lib.GUIID_Turret_Gun, GunTurretMenu::makeServer, GunTurretMenu::makeClient
 	);
-	public static final BEContainer<TurretChemBlockEntity, ChemTurretMenu> CHEM_TURRET = registerBENew(
+	public static final ArgContainer<TurretChemBlockEntity, ChemTurretMenu> CHEM_TURRET = registerArg(
 			Lib.GUIID_Turret_Chem, ChemTurretMenu::makeServer, ChemTurretMenu::makeClient
 	);
-	public static final BEContainer<FluidSorterBlockEntity, FluidSorterMenu> FLUID_SORTER = registerBENew(
+	public static final ArgContainer<FluidSorterBlockEntity, FluidSorterMenu> FLUID_SORTER = registerArg(
 			Lib.GUIID_FluidSorter, FluidSorterMenu::makeServer, FluidSorterMenu::makeClient
 	);
-	public static final BEContainer<ClocheBlockEntity, ClocheMenu> CLOCHE = registerBENew(
+	public static final ArgContainer<ClocheBlockEntity, ClocheMenu> CLOCHE = registerArg(
 			Lib.GUIID_Cloche, ClocheMenu::makeServer, ClocheMenu::makeClient
 	);
-	public static final BEContainer<ToolboxBlockEntity, ToolboxMenu> TOOLBOX_BLOCK = registerBENew(
+	public static final ArgContainer<ToolboxBlockEntity, ToolboxMenu> TOOLBOX_BLOCK = registerArg(
 			Lib.GUIID_ToolboxBlock, ToolboxMenu::makeFromBE, ToolboxMenu::makeClient
 	);
 
@@ -111,13 +122,13 @@ public class IEMenuTypes
 
 	public static final RegistryObject<MenuType<CrateEntityContainer>> CRATE_MINECART = registerSimple(Lib.GUIID_CartCrate, CrateEntityContainer::new);
 
-	public static <T extends BlockEntity, C extends IEContainerMenu>
-	BEContainer<T, C> registerBENew(
-			String name, BEContainerConstructor<T, C> container, ClientContainerConstructor<C> client
+	public static <T, C extends IEContainerMenu>
+	ArgContainer<T, C> registerArg(
+			String name, ArgContainerConstructor<T, C> container, ClientContainerConstructor<C> client
 	)
 	{
 		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
-		return new BEContainer<>(typeRef, container);
+		return new ArgContainer<>(typeRef, container);
 	}
 
 	public static <C extends IEContainerMenu>
@@ -143,7 +154,7 @@ public class IEMenuTypes
 	}
 
 	public static <T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
-	BEContainer<T, C> register(String name, BEContainerConstructor<T, C> container)
+	ArgContainer<T, C> register(String name, ArgContainerConstructor<T, C> container)
 	{
 		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
 				name, () -> {
@@ -158,7 +169,7 @@ public class IEMenuTypes
 					return type;
 				}
 		);
-		return new BEContainer<>(typeRef, container);
+		return new ArgContainer<>(typeRef, container);
 	}
 
 	public static <C extends AbstractContainerMenu>
@@ -195,12 +206,12 @@ public class IEMenuTypes
 		);
 	}
 
-	public static class BEContainer<T extends BlockEntity, C extends IEContainerMenu>
+	public static class ArgContainer<T, C extends IEContainerMenu>
 	{
 		private final RegistryObject<MenuType<C>> type;
-		private final BEContainerConstructor<T, C> factory;
+		private final ArgContainerConstructor<T, C> factory;
 
-		private BEContainer(RegistryObject<MenuType<C>> type, BEContainerConstructor<T, C> factory)
+		private ArgContainer(RegistryObject<MenuType<C>> type, ArgContainerConstructor<T, C> factory)
 		{
 			this.type = type;
 			this.factory = factory;
@@ -209,6 +220,28 @@ public class IEMenuTypes
 		public C create(int windowId, Inventory playerInv, T tile)
 		{
 			return factory.construct(getType(), windowId, playerInv, tile);
+		}
+
+		public MenuProvider provide(T arg)
+		{
+			return new MenuProvider()
+			{
+				@Nonnull
+				@Override
+				public Component getDisplayName()
+				{
+					return Component.empty();
+				}
+
+				@Nullable
+				@Override
+				public AbstractContainerMenu createMenu(
+						int containerId, @Nonnull Inventory inventory, @Nonnull Player player
+				)
+				{
+					return create(containerId, inventory, arg);
+				}
+			};
 		}
 
 		public MenuType<C> getType()
@@ -248,7 +281,7 @@ public class IEMenuTypes
 		}
 	}
 
-	public interface BEContainerConstructor<T extends BlockEntity, C extends IEContainerMenu>
+	public interface ArgContainerConstructor<T, C extends IEContainerMenu>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, T te);
 	}
