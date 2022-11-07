@@ -1,0 +1,20 @@
+pluginManagement {
+    repositories {
+        maven { url 'https://maven.minecraftforge.net' }
+        mavenCentral()
+        maven {url 'https://repo.spongepowered.org/repository/maven-public/'}
+        maven { url 'https://maven.parchmentmc.org' }
+        maven { url = 'https://maven.moddingx.org' }
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.toString() == 'org.spongepowered.mixin') {
+                useModule("org.spongepowered:mixingradle:${requested.version}")
+            } else if (requested.id.toString() == 'org.moddingx.modgradle.mapping') {
+                useModule("org.moddingx:ModGradle:${requested.version}")
+            }
+        }
+    }
+}
+
+rootProject.name = "ImmersiveEngineering-${version_minecraft}"

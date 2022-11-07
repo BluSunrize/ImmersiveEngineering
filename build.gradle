@@ -3,32 +3,14 @@ import groovy.json.JsonSlurper
 import net.minecraftforge.gradle.common.tasks.SignJar
 import org.gradle.work.Incremental
 
-buildscript {
-    repositories {
-        maven { url 'https://maven.minecraftforge.net' }
-        maven {url 'https://plugins.gradle.org/m2/'}
-        mavenCentral()
-        maven {url 'https://repo.spongepowered.org/repository/maven-public/'}
-        maven { url 'https://maven.parchmentmc.org' }
-        maven { url = 'https://maven.moddingx.org' }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-        classpath 'org.parchmentmc:librarian:1.+'
-        classpath 'org.moddingx:ModGradle:3.0.2'
-        classpath "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:1.1.1"
-    }
+plugins {
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.6'
+    id 'org.moddingx.modgradle.mapping' version '3.0.2'
 }
-apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.jetbrains.gradle.plugin.idea-ext'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'org.moddingx.modgradle.mapping'
 
 version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
