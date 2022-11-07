@@ -58,7 +58,12 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 			DeferredRegister<Block> register, BlockBehaviour.Properties properties
 	)
 	{
-		return customBlock(register, reg -> new MultiblockPartBlock<>(properties, reg));
+		return customBlock(register, reg -> {
+			if(reg.mirrorable())
+				return new MultiblockPartBlock.WithMirrorState<>(properties, reg);
+			else
+				return new MultiblockPartBlock<>(properties, reg);
+		});
 	}
 
 	public MultiblockRegistrationBuilder<State> customBlock(

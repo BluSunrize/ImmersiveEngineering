@@ -30,7 +30,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	public VoxelShape getShape()
 	{
 		// TODO cache!
-		return orientation.transformRelativeShape(multiblock.logic().getShape(getPositionInMB()));
+		return orientation.transformRelativeShape(multiblock.logic().shapeGetter().apply(getPositionInMB()));
 	}
 
 	@Override

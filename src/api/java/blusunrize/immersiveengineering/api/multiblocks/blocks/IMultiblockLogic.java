@@ -12,6 +12,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 public interface IMultiblockLogic<State extends IMultiblockState>
 {
@@ -22,7 +23,7 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 	);
 
 	// TODO split into collision and selection?
-	VoxelShape getShape(BlockPos posInMultiblock);
+	Function<BlockPos, VoxelShape> shapeGetter();
 
 	default InteractionResult click(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock, Player player,

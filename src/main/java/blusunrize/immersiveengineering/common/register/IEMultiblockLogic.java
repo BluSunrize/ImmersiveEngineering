@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.LightningRodLogic;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,6 +36,12 @@ public class IEMultiblockLogic
 			.defaultBEs(BE_REGISTER)
 			.customBlock(BLOCK_REGISTER, r -> new CokeOvenBlock(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get(), r))
 			.structure(() -> IEMultiblocks.COKE_OVEN)
+			.build();
+
+	public static final MultiblockRegistration<CrusherLogic.State> CRUSHER = builder(new CrusherLogic(), "crusher")
+			.defaultBEs(BE_REGISTER)
+			.defaultBlock(BLOCK_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
+			.structure(() -> IEMultiblocks.CRUSHER)
 			.build();
 
 	public static void init(IEventBus bus)

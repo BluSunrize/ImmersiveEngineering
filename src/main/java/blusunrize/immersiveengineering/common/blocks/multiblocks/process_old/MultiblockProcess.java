@@ -54,7 +54,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 		R recipe = getLevelData(multiblock.getLevel()).recipe;
 		if(recipe==null)
 			return List.of();
-		return recipe.getActualItemOutputs(multiblock);
+		return recipe.getActualItemOutputs();
 	}
 
 	protected List<FluidStack> getRecipeFluidOutputs(PoweredMultiblockBlockEntity<?, R> multiblock)
@@ -62,7 +62,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 		R recipe = getLevelData(multiblock.getLevel()).recipe;
 		if(recipe==null)
 			return List.of();
-		return recipe.getActualFluidOutputs(multiblock);
+		return recipe.getActualFluidOutputs();
 	}
 
 	public boolean canProcess(PoweredMultiblockBlockEntity<?, R> multiblock)

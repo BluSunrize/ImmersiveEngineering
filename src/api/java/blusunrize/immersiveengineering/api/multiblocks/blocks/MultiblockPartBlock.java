@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,6 +32,8 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	{
 		super(properties.dynamicShape());
 		this.multiblock = multiblock;
+		final var hasMirrorProperty = getStateDefinition().getProperties().contains(IEProperties.MIRRORED);
+		Preconditions.checkState(this.multiblock.mirrorable()==hasMirrorProperty);
 	}
 
 	@Override
@@ -39,9 +42,6 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.MULTIBLOCKSLAVE);
 		builder.add(IEProperties.FACING_HORIZONTAL);
-		// TODO deal with this mess
-		//if(multiblock.mirrorable())
-		//	builder.add(IEProperties.MIRRORED);
 	}
 
 	@Nullable
@@ -142,4 +142,19 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 
 	// TODO loot table
 	// TODO pick block
+
+	public static class WithMirrorState<State extends IMultiblockState> extends MultiblockPartBlock<State>
+	{
+		public WithMirrorState(Properties properties, MultiblockRegistration<State> multiblock)
+		{
+			super(properties, multiblock);
+		}
+
+		@Override
+		protected void createBlockStateDefinition(@Nonnull Builder<Block, BlockState> builder)
+		{
+			super.createBlockStateDefinition(builder);
+			builder.add(IEProperties.MIRRORED);
+		}
+	}
 }

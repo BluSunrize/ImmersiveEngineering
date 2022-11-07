@@ -385,18 +385,12 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			implements IItemHandlerModifiable
 	{
 		protected T multiblock;
-		float transformationPoint = .5f;
-		boolean doProcessStacking = false;
+		private final float transformationPoint = .5f;
+		private boolean doProcessStacking = false;
 
 		public MultiblockInventoryHandler_DirectProcessing(T multiblock)
 		{
 			this.multiblock = multiblock;
-		}
-
-		public MultiblockInventoryHandler_DirectProcessing<T, R> setTransformationPoint(float point)
-		{
-			this.transformationPoint = point;
-			return this;
 		}
 
 		public MultiblockInventoryHandler_DirectProcessing<T, R> setProcessStacking(boolean stacking)

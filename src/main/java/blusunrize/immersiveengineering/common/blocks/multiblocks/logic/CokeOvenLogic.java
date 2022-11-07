@@ -2,10 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IServerTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockCapabilitySource;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic.State;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -20,7 +17,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -35,6 +31,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -148,7 +145,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 		final boolean canOutputItem;
 		if(currentOutputStack.isEmpty())
 			canOutputItem = true;
-		else if(!ItemStack.isSame(currentOutputStack, recipe.output.get()))
+		else if(!ItemHandlerHelper.canItemStacksStack(currentOutputStack, recipe.output.get()))
 			canOutputItem = false;
 		else
 			canOutputItem = currentOutputStack.getCount()+recipe.output.get().getCount() <= 64;
@@ -162,18 +159,9 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 	{
 		final var state = ctx.getState();
 		if(cap==ForgeCapabilities.ITEM_HANDLER)
-		{
-			state.invCap = ctx.orRegisterCapability(state.invCap, state.inventory);
-			return state.invCap.cast();
-		}
+			return state.invCap.cast(ctx);
 		else if(cap==ForgeCapabilities.FLUID_HANDLER)
-		{
-			if(!state.fluidCap.isPresent())
-				state.fluidCap = ctx.registerCapability(new ArrayFluidHandler(
-						new IFluidTank[]{state.tank}, true, false, ctx::markMasterDirty
-				));
-			return state.fluidCap.cast();
-		}
+			return state.fluidCap.cast(ctx);
 		else
 			return LazyOptional.empty();
 	}
@@ -194,9 +182,9 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 	}
 
 	@Override
-	public VoxelShape getShape(BlockPos posInMultiblock)
+	public Function<BlockPos, VoxelShape> shapeGetter()
 	{
-		return Shapes.block();
+		return $ -> Shapes.block();
 	}
 
 	public static class State implements IMultiblockState, ContainerData
@@ -212,8 +200,8 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 		private int process = 0;
 		private int processMax = 0;
 
-		private LazyOptional<IItemHandler> invCap;
-		private LazyOptional<IFluidHandler> fluidCap;
+		private final StoredCapability<IItemHandler> invCap;
+		private final StoredCapability<IFluidHandler> fluidCap;
 
 		public State(MultiblockCapabilitySource ctx)
 		{
@@ -229,6 +217,10 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 			);
 			cachedRecipe = CachedRecipe.cachedSkip1(
 					CokeOvenRecipe::findRecipe, () -> inventory.getStackInSlot(INPUT_SLOT)
+			);
+			this.invCap = new StoredCapability<>(this.inventory);
+			this.fluidCap = new StoredCapability<>(
+					new ArrayFluidHandler(new IFluidTank[]{tank}, true, false, ctx::markMasterDirty)
 			);
 		}
 
