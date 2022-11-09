@@ -11,4 +11,6 @@ public interface IMultiblockContext<State extends IMultiblockLogic.IMultiblockSt
 	<T> LazyOptional<T> registerCapability(T value);
 
 	boolean isValid();
+
+	void requestMasterBESync();
 }

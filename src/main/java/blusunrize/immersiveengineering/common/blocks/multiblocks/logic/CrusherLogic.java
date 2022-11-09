@@ -32,7 +32,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
-public class CrusherLogic implements IServerTickableMultiblock<State>
+public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(2, 1, 1);
 
@@ -48,9 +48,19 @@ public class CrusherLogic implements IServerTickableMultiblock<State>
 		final var state = context.getState();
 		// TODO redstone disabling
 		// TODO comparator values
-		// TODO rendering/sync
 		// TODO sound
-		state.processor.tickServer(state, context.getLevel(), true);
+		final var wasActive = state.renderAsActive;
+		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), true);
+		if(wasActive!=state.renderAsActive)
+			context.requestMasterBESync();
+	}
+
+	@Override
+	public void tickClient(IMultiblockContext<State> context)
+	{
+		final var state = context.getState();
+		if(state.renderAsActive)
+			state.barrelAngle = (state.barrelAngle+18)%360;
 	}
 
 	@Override
@@ -100,7 +110,7 @@ public class CrusherLogic implements IServerTickableMultiblock<State>
 			if(remaining.isEmpty())
 				itemEntity.discard();
 			else
-				stack.setCount(remaining.getCount());
+				itemEntity.setItem(remaining);
 		}
 		else if(collided instanceof LivingEntity&&(!(collided instanceof Player player)||!player.getAbilities().invulnerable))
 		{
@@ -157,14 +167,12 @@ public class CrusherLogic implements IServerTickableMultiblock<State>
 		public void writeSyncNBT(CompoundTag nbt)
 		{
 			nbt.putBoolean("renderActive", renderAsActive);
-			nbt.putFloat("angle", barrelAngle);
 		}
 
 		@Override
 		public void readSyncNBT(CompoundTag nbt)
 		{
 			renderAsActive = nbt.getBoolean("renderActive");
-			barrelAngle = nbt.getFloat("angle");
 		}
 
 		@Override

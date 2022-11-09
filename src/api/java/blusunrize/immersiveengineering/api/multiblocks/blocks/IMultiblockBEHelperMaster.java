@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 
 import javax.annotation.Nonnull;
 
@@ -18,6 +20,8 @@ public interface IMultiblockBEHelperMaster<State extends IMultiblockState> exten
 	@Nonnull
 	@Override
 	IMultiblockContext<State> getContext();
+
+	Packet<ClientGamePacketListener> getUpdatePacket();
 
 	interface Factory
 	{

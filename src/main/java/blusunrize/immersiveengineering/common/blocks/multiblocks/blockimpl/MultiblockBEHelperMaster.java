@@ -4,6 +4,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -74,6 +77,12 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 		CompoundTag result = new CompoundTag();
 		state.writeSyncNBT(result);
 		return result;
+	}
+
+	@Override
+	public Packet<ClientGamePacketListener> getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(getMasterBE());
 	}
 
 	@Override

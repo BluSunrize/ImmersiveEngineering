@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -57,6 +58,14 @@ public record MultiblockContext<State extends IMultiblockState>(
 	public boolean isValid()
 	{
 		return !masterHelper.getMasterBE().isRemoved();
+	}
+
+	@Override
+	public void requestMasterBESync()
+	{
+		final var level = this.level.getRawLevel();
+		if(level!=null&&level.getChunkSource() instanceof ServerChunkCache chunkCache)
+			chunkCache.blockChanged(this.masterHelper.getMasterBE().getBlockPos());
 	}
 
 	@Override

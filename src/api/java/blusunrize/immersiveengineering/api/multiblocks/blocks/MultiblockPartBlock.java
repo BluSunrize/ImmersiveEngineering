@@ -24,6 +24,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.BiConsumer;
 
 public class MultiblockPartBlock<State extends IMultiblockState> extends Block implements EntityBlock
 {
@@ -63,19 +64,10 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	{
 		if(state.getValue(IEProperties.MULTIBLOCKSLAVE))
 			return null;
-		if(level.isClientSide())
-		{
-			// TODO client tickable
-		}
-		else
-		{
-			if(multiblock.logic() instanceof IServerTickableMultiblock<State> serverTickable)
-				return createTickerHelper(
-						actual,
-						multiblock.masterBE().get(),
-						($1, $2, $3, be) -> serverTickable.tickServer(be.getHelper().getContext())
-				);
-		}
+		if(level.isClientSide&&multiblock.logic() instanceof IClientTickableMultiblock<State> clientTickable)
+			return makeTicker(actual, IClientTickableMultiblock::tickClient, clientTickable);
+		if(!level.isClientSide&&multiblock.logic() instanceof IServerTickableMultiblock<State> serverTickable)
+			return makeTicker(actual, IServerTickableMultiblock::tickServer, serverTickable);
 		return null;
 	}
 
@@ -147,6 +139,17 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		final var bEntity = level.getBlockEntity(pos);
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
 			multiblockBE.getHelper().onEntityCollided(entity);
+	}
+
+	private <O, A extends BlockEntity> BlockEntityTicker<A> makeTicker(
+			BlockEntityType<A> actual, BiConsumer<O, IMultiblockContext<State>> tick, O obj
+	)
+	{
+		return createTickerHelper(
+				actual,
+				multiblock.masterBE().get(),
+				($1, $2, $3, be) -> tick.accept(obj, be.getHelper().getContext())
+		);
 	}
 
 	// TODO loot table
