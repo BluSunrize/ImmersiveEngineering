@@ -25,4 +25,9 @@ public class StoredCapability<T>
 	{
 		return get(ctx).cast();
 	}
+
+	public T getValue()
+	{
+		return value;
+	}
 }

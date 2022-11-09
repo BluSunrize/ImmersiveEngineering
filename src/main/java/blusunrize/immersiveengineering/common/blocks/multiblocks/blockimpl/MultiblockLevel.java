@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
@@ -97,6 +99,20 @@ public record MultiblockLevel(
 			return relative.forFront(orientation);
 		else
 			return null;
+	}
+
+	@Override
+	public AABB toAbsolute(AABB relative)
+	{
+		final var minPos = new Vec3(relative.minX, relative.minY, relative.minZ);
+		final var maxPos = new Vec3(relative.maxX, relative.maxY, relative.maxZ);
+		return new AABB(toAbsolute(minPos), toAbsolute(maxPos));
+	}
+
+	@Override
+	public Vec3 toAbsolute(Vec3 relative)
+	{
+		return Vec3.atLowerCornerOf(getAbsoluteOrigin()).add(orientation.getAbsoluteOffset(relative));
 	}
 
 	@Override

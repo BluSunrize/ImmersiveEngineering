@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SimpleSkyhookProvider;
 import blusunrize.immersiveengineering.common.items.DrillItem;
@@ -83,6 +82,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class EventHandler
 {
@@ -211,19 +211,19 @@ public class EventHandler
 		}
 	}
 
-	public static Map<UUID, CrusherBlockEntity> crusherMap = new HashMap<>();
+	public static Map<UUID, Consumer<ItemStack>> crusherMap = new HashMap<>();
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingDropsLowest(LivingDropsEvent event)
 	{
 		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getMsgId()))
 		{
-			CrusherBlockEntity crusher = crusherMap.get(event.getEntity().getUUID());
+			final var crusher = crusherMap.get(event.getEntity().getUUID());
 			if(crusher!=null)
 			{
 				for(ItemEntity item : event.getDrops())
 					if(item!=null&&!item.getItem().isEmpty())
-						crusher.doProcessOutput(item.getItem());
+						crusher.accept(item.getItem());
 				crusherMap.remove(event.getEntity().getUUID());
 				event.setCanceled(true);
 			}

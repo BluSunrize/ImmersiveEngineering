@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -138,6 +139,14 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			return multiblockBE.getHelper().click(player, hand, hit);
 		else
 			return InteractionResult.PASS;
+	}
+
+	@Override
+	public void entityInside(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Entity entity)
+	{
+		final var bEntity = level.getBlockEntity(pos);
+		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
+			multiblockBE.getHelper().onEntityCollided(entity);
 	}
 
 	// TODO loot table

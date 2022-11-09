@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -11,10 +12,16 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.RecipeSource;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.CrusherShapes;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -41,8 +48,8 @@ public class CrusherLogic implements IServerTickableMultiblock<State>
 		final var state = context.getState();
 		// TODO redstone disabling
 		// TODO comparator values
-		// TODO entity input
 		// TODO rendering/sync
+		// TODO sound
 		state.processor.tickServer(state, context.getLevel(), true);
 	}
 
@@ -71,6 +78,41 @@ public class CrusherLogic implements IServerTickableMultiblock<State>
 		return false;
 	}
 
+	@Override
+	public void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
+	{
+		if(collided.level.isClientSide||!isInInput(posInMultiblock, true))
+			return;
+		if(!collided.isAlive())//TODO ||isRSDisabled())
+			return;
+		final var state = ctx.getState();
+		final var level = ctx.getLevel();
+		final var internalBB = new AABB(1.4375, 1.25, 0.4375, 2.5625, 2.5, 1.5625);
+		final var crusherInternal = level.toAbsolute(internalBB);
+		if(!collided.getBoundingBox().intersects(crusherInternal))
+			return;
+		if(collided instanceof ItemEntity itemEntity)
+		{
+			ItemStack stack = itemEntity.getItem();
+			if(stack.isEmpty())
+				return;
+			final var remaining = state.insertionHandler.getValue().insertItem(0, stack, false);
+			if(remaining.isEmpty())
+				itemEntity.discard();
+			else
+				stack.setCount(remaining.getCount());
+		}
+		else if(collided instanceof LivingEntity&&(!(collided instanceof Player player)||!player.getAbilities().invulnerable))
+		{
+			int consumed = state.energy.extractEnergy(80, false);
+			if(consumed > 0)
+			{
+				EventHandler.crusherMap.put(collided.getUUID(), s -> state.doProcessOutput(s, level));
+				collided.hurt(IEDamageSources.crusher, consumed/20f);
+			}
+		}
+	}
+
 	public static class State implements IMultiblockState, ProcessContextInWorld<CrusherRecipe>
 	{
 		private final AveragingEnergyStorage energy = new AveragingEnergyStorage(32000);
@@ -92,9 +134,9 @@ public class CrusherLogic implements IServerTickableMultiblock<State>
 					capabilitySource::markMasterDirty,
 					new RecipeSource<>(CrusherRecipe::findRecipe, CrusherRecipe.RECIPES::getById)
 			);
-			insertionHandler = new StoredCapability<>(
-					new DirectProcessingItemHandler<>(capabilitySource.levelSupplier(), processor)
-			);
+			final var insertionHandler = new DirectProcessingItemHandler<>(capabilitySource.levelSupplier(), processor)
+					.setProcessStacking(true);
+			this.insertionHandler = new StoredCapability<>(insertionHandler);
 		}
 
 		@Override
@@ -109,6 +151,20 @@ public class CrusherLogic implements IServerTickableMultiblock<State>
 		{
 			energy.deserializeNBT(nbt.get("energy"));
 			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new);
+		}
+
+		@Override
+		public void writeSyncNBT(CompoundTag nbt)
+		{
+			nbt.putBoolean("renderActive", renderAsActive);
+			nbt.putFloat("angle", barrelAngle);
+		}
+
+		@Override
+		public void readSyncNBT(CompoundTag nbt)
+		{
+			renderAsActive = nbt.getBoolean("renderActive");
+			barrelAngle = nbt.getFloat("angle");
 		}
 
 		@Override

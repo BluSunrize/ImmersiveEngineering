@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -45,4 +46,6 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	BlockPos getPositionInMB();
 
 	InteractionResult click(Player player, InteractionHand hand, BlockHitResult hit);
+
+	void onEntityCollided(Entity collided);
 }

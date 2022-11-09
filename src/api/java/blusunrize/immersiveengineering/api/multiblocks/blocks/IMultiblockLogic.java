@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -24,6 +25,10 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 
 	// TODO split into collision and selection?
 	Function<BlockPos, VoxelShape> shapeGetter();
+
+	default void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
+	{
+	}
 
 	default InteractionResult click(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock, Player player,

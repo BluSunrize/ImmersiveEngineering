@@ -5,6 +5,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
@@ -37,6 +39,10 @@ public interface IMultiblockLevel
 
 	@Nullable
 	Direction toAbsolute(@Nullable RelativeBlockFace relative);
+
+	AABB toAbsolute(AABB relative);
+
+	Vec3 toAbsolute(Vec3 relative);
 
 	BlockPos toRelative(BlockPos absolute);
 

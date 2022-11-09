@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.I
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -68,6 +69,12 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 				levelRaw, levelWrapper.getAbsoluteOrigin(), levelWrapper.getOrientation()
 		);
 		levelRaw.removeBlock(absolutePos, false);
+	}
+
+	@Override
+	public void onEntityCollided(Entity collided)
+	{
+		getMultiblock().logic().onEntityCollision(getContext(), getPositionInMB(), collided);
 	}
 
 	@Nullable

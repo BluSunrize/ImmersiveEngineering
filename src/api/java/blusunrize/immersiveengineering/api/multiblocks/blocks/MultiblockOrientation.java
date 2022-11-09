@@ -10,10 +10,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.Objects;
 
 public record MultiblockOrientation(Direction front, boolean mirrored)
 {
@@ -33,6 +38,15 @@ public record MultiblockOrientation(Direction front, boolean mirrored)
 	public BlockPos getAbsoluteOffset(BlockPos offsetInMB)
 	{
 		return TemplateMultiblock.getAbsoluteOffset(offsetInMB, mirrored, front);
+	}
+
+	public Vec3 getAbsoluteOffset(Vec3 relative)
+	{
+		Rotation rot = DirectionUtils.getRotationBetweenFacings(Direction.NORTH, front);
+		StructurePlaceSettings settings = new StructurePlaceSettings()
+				.setMirror(mirrored?Mirror.FRONT_BACK: Mirror.NONE)
+				.setRotation(Objects.requireNonNull(rot));
+		return StructureTemplate.transformedVec3d(settings, relative);
 	}
 
 	public BlockPos getPosInMB(BlockPos absoluteOffset)

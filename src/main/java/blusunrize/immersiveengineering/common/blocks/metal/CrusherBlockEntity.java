@@ -332,7 +332,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 				if(consumed > 0)
 				{
 					master.energyStorage.extractEnergy(consumed, false);
-					EventHandler.crusherMap.put(entity.getUUID(), master);
+					EventHandler.crusherMap.put(entity.getUUID(), master::doProcessOutput);
 					entity.hurt(IEDamageSources.crusher, consumed/20f);
 				}
 			}
