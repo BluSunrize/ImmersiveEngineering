@@ -14,6 +14,7 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 		RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE,
 		RegistryObject<? extends MultiblockPartBlock<State>> block,
 		boolean mirrorable,
+		boolean hasComparatorOutput,
 		Supplier<BlockPos> getMasterPosInMB,
 		Disassembler disassemble
 )

@@ -48,4 +48,6 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	InteractionResult click(Player player, InteractionHand hand, BlockHitResult hit);
 
 	void onEntityCollided(Entity collided);
+
+	int getComparatorValue();
 }

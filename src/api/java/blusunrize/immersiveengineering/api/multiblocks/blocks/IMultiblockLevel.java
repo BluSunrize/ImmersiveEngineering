@@ -55,4 +55,6 @@ public interface IMultiblockLevel
 	int getMaxBuildHeight();
 
 	Level getRawLevel();
+
+	void updateNeighbourForOutputSignal(BlockPos posInMultiblock);
 }

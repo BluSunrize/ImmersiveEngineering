@@ -28,6 +28,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	private RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE;
 	private RegistryObject<? extends MultiblockPartBlock<State>> block;
 	private boolean mirrorable = true;
+	private boolean hasComparatorOutput = false;
 	private Supplier<BlockPos> getMasterPosInMB;
 	private Disassembler disassemble;
 
@@ -42,6 +43,12 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	public MultiblockRegistrationBuilder<State> notMirrored()
 	{
 		this.mirrorable = false;
+		return this;
+	}
+
+	public MultiblockRegistrationBuilder<State> withComparator()
+	{
+		this.hasComparatorOutput = true;
 		return this;
 	}
 
@@ -98,7 +105,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Objects.requireNonNull(disassemble);
 		Preconditions.checkState(this.result==null);
 		this.result = new MultiblockRegistration<>(
-				logic, masterBE, dummyBE, block, mirrorable, getMasterPosInMB, disassemble
+				logic, masterBE, dummyBE, block, mirrorable, hasComparatorOutput, getMasterPosInMB, disassemble
 		);
 		return this.result;
 	}

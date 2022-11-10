@@ -42,6 +42,7 @@ public class IEMultiblockLogic
 			.defaultBEs(BE_REGISTER)
 			.defaultBlock(BLOCK_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
 			.structure(() -> IEMultiblocks.CRUSHER)
+			.withComparator()
 			.build();
 
 	public static void init(IEventBus bus)

@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -23,12 +25,13 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	private final State state;
 	private final MultiblockContext<State> context;
 	private final List<LazyOptional<?>> capabilities = new ArrayList<>();
+	private final Object2IntMap<BlockPos> currentComparatorOutputs = new Object2IntOpenHashMap<>();
 
 	public MultiblockBEHelperMaster(MultiblockBlockEntityMaster<State> be, MultiblockRegistration<State> multiblock)
 	{
 		super(multiblock, be.getBlockState());
 		this.be = be;
-		this.state = multiblock.logic().createInitialState(new CapabilitySource(
+		this.state = multiblock.logic().createInitialState(new InitialMultiblockContext<>(
 				be, orientation, multiblock.masterPosInMB()
 		));
 		final var multiblockOrigin = be.getBlockPos().subtract(
@@ -57,6 +60,13 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	protected IMultiblockContext<State> getContextWithChunkloads()
 	{
 		return getContext();
+	}
+
+	@Nullable
+	@Override
+	protected MultiblockBEHelperMaster<State> getMasterHelper()
+	{
+		return this;
 	}
 
 	@Override
@@ -128,5 +138,10 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	public void addCapability(LazyOptional<?> cap)
 	{
 		this.capabilities.add(cap);
+	}
+
+	public Object2IntMap<BlockPos> getCurrentComparatorOutputs()
+	{
+		return currentComparatorOutputs;
 	}
 }

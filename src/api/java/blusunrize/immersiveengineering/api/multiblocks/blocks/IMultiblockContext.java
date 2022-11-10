@@ -1,8 +1,10 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.util.LazyOptional;
 
-public interface IMultiblockContext<State extends IMultiblockLogic.IMultiblockState> extends MultiblockCapabilitySource
+public interface IMultiblockContext<State extends IMultiblockState> extends ICommonMultiblockContext
 {
 	State getState();
 
@@ -13,4 +15,6 @@ public interface IMultiblockContext<State extends IMultiblockLogic.IMultiblockSt
 	boolean isValid();
 
 	void requestMasterBESync();
+
+	void setComparatorOutputFor(BlockPos posInMultiblock, int newValue);
 }

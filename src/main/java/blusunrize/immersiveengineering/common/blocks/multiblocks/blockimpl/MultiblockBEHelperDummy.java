@@ -93,7 +93,7 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 	@Nullable
 	private <T> T getOnMaster(Function<IMultiblockBEHelperMaster<State>, T> get)
 	{
-		final var master = getMasterHelper();
+		final var master = getIMasterHelper();
 		if(master!=null)
 			return get.apply(master);
 		else
@@ -101,7 +101,14 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 	}
 
 	@Nullable
-	private IMultiblockBEHelperMaster<State> getMasterHelper()
+	@Override
+	protected MultiblockBEHelperMaster<State> getMasterHelper()
+	{
+		return getIMasterHelper() instanceof MultiblockBEHelperMaster<State> helper?helper: null;
+	}
+
+	@Nullable
+	protected IMultiblockBEHelperMaster<State> getIMasterHelper()
 	{
 		// TODO cache master BE?
 		return getMasterHelper(level.getBlockEntity(multiblock.masterPosInMB()));

@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockCapabilitySource;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IInitialMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -13,9 +14,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public record CapabilitySource(
-		BlockEntity masterBE, MultiblockOrientation orientation, BlockPos masterOffset
-) implements MultiblockCapabilitySource
+public record InitialMultiblockContext<State extends IMultiblockState>(
+		BlockEntity masterBE,
+		MultiblockOrientation orientation,
+		BlockPos masterOffset
+) implements IInitialMultiblockContext<State>
 {
 	@Override
 	public <T> CapabilityReference<T> getCapabilityAt(

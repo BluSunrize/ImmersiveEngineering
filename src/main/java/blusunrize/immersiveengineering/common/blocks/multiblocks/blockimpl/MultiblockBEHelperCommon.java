@@ -80,9 +80,24 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	@Nullable
 	protected abstract IMultiblockContext<State> getContextWithChunkloads();
 
+	@Nullable
+	protected abstract MultiblockBEHelperMaster<State> getMasterHelper();
+
 	@Override
 	public void markDisassembling()
 	{
 		beingDisassembled = true;
+	}
+
+	@Override
+	public int getComparatorValue()
+	{
+		if(!multiblock.hasComparatorOutput())
+			return 0;
+		// TODO cache locally?
+		final var masterHelper = getMasterHelper();
+		if(masterHelper==null)
+			return 0;
+		return masterHelper.getCurrentComparatorOutputs().getInt(getPositionInMB());
 	}
 }

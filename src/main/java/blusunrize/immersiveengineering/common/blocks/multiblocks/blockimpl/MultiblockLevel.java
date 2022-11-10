@@ -152,6 +152,16 @@ public record MultiblockLevel(
 		return level();
 	}
 
+	@Override
+	public void updateNeighbourForOutputSignal(BlockPos posInMultiblock)
+	{
+		final var absolutePos = toAbsolute(posInMultiblock);
+		if(!SafeChunkUtils.isChunkSafe(level(), absolutePos))
+			return;
+		final var stateAt = level().getBlockState(absolutePos);
+		level().updateNeighbourForOutputSignal(absolutePos, stateAt.getBlock());
+	}
+
 	private Level level()
 	{
 		return Objects.requireNonNull(getLevel.get());

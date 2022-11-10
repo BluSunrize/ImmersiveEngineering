@@ -49,7 +49,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 	public static final int TANK_CAPACITY = 12*FluidType.BUCKET_VOLUME;
 
 	@Override
-	public State createInitialState(MultiblockCapabilitySource capabilitySource)
+	public State createInitialState(IInitialMultiblockContext<State> capabilitySource)
 	{
 		return new State(capabilitySource);
 	}
@@ -203,7 +203,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 		private final StoredCapability<IItemHandler> invCap;
 		private final StoredCapability<IFluidHandler> fluidCap;
 
-		public State(MultiblockCapabilitySource ctx)
+		public State(IInitialMultiblockContext<State> ctx)
 		{
 			final var levelGetter = ctx.levelSupplier();
 			inventory = new SlotwiseItemHandler(

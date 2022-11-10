@@ -165,6 +165,16 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		return recipeSource;
 	}
 
+	public int getMaxQueueSize()
+	{
+		return maxQueueLength;
+	}
+
+	public int getQueueSize()
+	{
+		return processQueue.size();
+	}
+
 	public record RecipeSource<R extends MultiblockRecipe>(
 			BiFunction<Level, ItemStack, @Nullable R> getRecipeOnInsert,
 			BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID

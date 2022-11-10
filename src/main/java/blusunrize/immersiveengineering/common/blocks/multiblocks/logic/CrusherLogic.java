@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -35,9 +36,10 @@ import java.util.function.Function;
 public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(2, 1, 1);
+	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
 
 	@Override
-	public State createInitialState(MultiblockCapabilitySource capabilitySource)
+	public State createInitialState(IInitialMultiblockContext<State> capabilitySource)
 	{
 		return new State(capabilitySource);
 	}
@@ -47,12 +49,12 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 	{
 		final var state = context.getState();
 		// TODO redstone disabling
-		// TODO comparator values
 		// TODO sound
 		final var wasActive = state.renderAsActive;
 		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), true);
 		if(wasActive!=state.renderAsActive)
 			context.requestMasterBESync();
+		state.comparators.updateComparators(context);
 	}
 
 	@Override
@@ -97,12 +99,13 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 			return;
 		final var state = ctx.getState();
 		final var level = ctx.getLevel();
-		final var internalBB = new AABB(1.4375, 1.25, 0.4375, 2.5625, 2.5, 1.5625);
+		final var internalBB = new AABB(1.9375, 1.25, 0.9375, 3.0625, 2.5, 2.0625);
 		final var crusherInternal = level.toAbsolute(internalBB);
 		if(!collided.getBoundingBox().intersects(crusherInternal))
 			return;
 		if(collided instanceof ItemEntity itemEntity)
 		{
+			//AABB[-898.5625, -57.75, -416.5625] -> [-897.4375, -56.5, -415.4375]
 			ItemStack stack = itemEntity.getItem();
 			if(stack.isEmpty())
 				return;
@@ -129,12 +132,13 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		private final MultiblockProcessor<CrusherRecipe, ProcessContextInWorld<CrusherRecipe>> processor;
 		private boolean renderAsActive;
 		private float barrelAngle;
+		private final ComparatorManager<State> comparators = new ComparatorManager<>();
 
 		private final CapabilityReference<IItemHandler> output;
 		private final StoredCapability<IItemHandler> insertionHandler;
 		private final StoredCapability<IEnergyStorage> energyHandler = new StoredCapability<>(energy);
 
-		public State(MultiblockCapabilitySource capabilitySource)
+		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
 			this.output = capabilitySource.getCapabilityAt(
 					ForgeCapabilities.ITEM_HANDLER, new BlockPos(2, 0, 3), RelativeBlockFace.FRONT
@@ -147,6 +151,13 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 			final var insertionHandler = new DirectProcessingItemHandler<>(capabilitySource.levelSupplier(), processor)
 					.setProcessStacking(true);
 			this.insertionHandler = new StoredCapability<>(insertionHandler);
+			this.comparators.addComparator(
+					state -> {
+						float fill = processor.getQueueSize()/(float)processor.getMaxQueueSize();
+						return Mth.ceil(fill*14.0F)+(fill > 0?1: 0);
+					},
+					REDSTONE_POS
+			);
 		}
 
 		@Override

@@ -115,7 +115,7 @@ public class LightningRodLogic implements IMultiblockLogic<LightningRodLogic.Sta
 	}
 
 	@Override
-	public State createInitialState(MultiblockCapabilitySource capabilitySource)
+	public State createInitialState(IInitialMultiblockContext<State> capabilitySource)
 	{
 		return new State(capabilitySource);
 	}
@@ -153,7 +153,7 @@ public class LightningRodLogic implements IMultiblockLogic<LightningRodLogic.Sta
 		private FenceNet fenceNet = null;
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 
-		public State(MultiblockCapabilitySource capabilitySource)
+		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
 			ImmutableList.Builder<CapabilityReference<IEnergyStorage>> builder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.HORIZONTAL)

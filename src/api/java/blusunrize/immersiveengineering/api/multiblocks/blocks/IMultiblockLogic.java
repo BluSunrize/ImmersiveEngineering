@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public interface IMultiblockLogic<State extends IMultiblockState>
 {
-	State createInitialState(MultiblockCapabilitySource capabilitySource);
+	State createInitialState(IInitialMultiblockContext<State> capabilitySource);
 
 	<T> LazyOptional<T> getCapability(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock, @Nullable RelativeBlockFace side, Capability<T> cap

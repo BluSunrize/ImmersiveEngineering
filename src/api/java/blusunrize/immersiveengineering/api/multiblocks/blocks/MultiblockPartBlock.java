@@ -152,6 +152,22 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		);
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean hasAnalogOutputSignal(@Nonnull BlockState state)
+	{
+		return multiblock.hasComparatorOutput();
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public int getAnalogOutputSignal(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos)
+	{
+		if(multiblock.hasComparatorOutput()&&level.getBlockEntity(pos) instanceof IMultiblockBE<?> multiblockBE)
+			return multiblockBE.getHelper().getComparatorValue();
+		return super.getAnalogOutputSignal(state, level, pos);
+	}
+
 	// TODO loot table
 	// TODO pick block
 

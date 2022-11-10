@@ -7,14 +7,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Supplier;
 
 public record MultiblockContext<State extends IMultiblockState>(
 		MultiblockBEHelperMaster<State> masterHelper,
@@ -26,12 +23,6 @@ public record MultiblockContext<State extends IMultiblockState>(
 	public State getState()
 	{
 		return masterHelper.getState();
-	}
-
-	@Override
-	public Supplier<@Nullable Level> levelSupplier()
-	{
-		return masterHelper.getMasterBE()::getLevel;
 	}
 
 	@Override
@@ -69,11 +60,20 @@ public record MultiblockContext<State extends IMultiblockState>(
 	}
 
 	@Override
+	public void setComparatorOutputFor(BlockPos posInMultiblock, int newValue)
+	{
+		Preconditions.checkState(masterHelper.multiblock.hasComparatorOutput());
+		final var oldValue = masterHelper.getCurrentComparatorOutputs().put(posInMultiblock, newValue);
+		if(oldValue!=newValue)
+			level.updateNeighbourForOutputSignal(posInMultiblock);
+	}
+
+	@Override
 	public <T> CapabilityReference<T> getCapabilityAt(
 			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
 	)
 	{
-		return CapabilitySource.getCapabilityAt(
+		return InitialMultiblockContext.getCapabilityAt(
 				masterHelper.getMasterBE(), masterHelper.getOrientation(), multiblock.masterPosInMB(),
 				capability, posRelativeToMB, face
 		);
