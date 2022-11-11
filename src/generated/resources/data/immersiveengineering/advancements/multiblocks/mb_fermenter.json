@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:fermenter"
+      "item": "minecraft:air"
     },
     "show_toast": true,
     "title": {

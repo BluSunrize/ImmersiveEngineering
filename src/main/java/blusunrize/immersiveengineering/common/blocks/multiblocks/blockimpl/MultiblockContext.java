@@ -85,4 +85,16 @@ public record MultiblockContext<State extends IMultiblockState>(
 		else
 			return fallback;
 	}
+
+	@Override
+	public int getRedstoneInputValue(BlockPos posInMultiblock, int fallback)
+	{
+		Preconditions.checkState(masterHelper.multiblock.redstoneInputAware());
+		if(!(level.getBlockEntity(posInMultiblock) instanceof IMultiblockBE<?> beAtPos))
+			return fallback;
+		int result = 0;
+		for(final var face : RelativeBlockFace.values())
+			result = Math.max(result, beAtPos.getHelper().getRedstoneInput(face));
+		return result;
+	}
 }

@@ -8,17 +8,14 @@ import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -112,9 +109,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 		}
 
 		if(state.tank.getFluidAmount() > 0&&FluidUtils.fillFluidContainer(
-				state.tank,
-				EMPTY_CONTAINER_SLOT, FULL_CONTAINER_SLOT,
-				state.inventory::getStackInSlot, state.inventory::setStackInSlot
+				state.tank, EMPTY_CONTAINER_SLOT, FULL_CONTAINER_SLOT, state.inventory
 		))
 			context.markMasterDirty();
 
@@ -167,14 +162,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 	}
 
 	@Override
-	public InteractionResult click(
-			IMultiblockContext<State> ctx,
-			BlockPos posInMultiblock,
-			Player player,
-			InteractionHand hand,
-			BlockHitResult absoluteHit,
-			boolean isClient
-	)
+	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
 	{
 		if(!isClient)
 			player.openMenu(IEMenuTypes.COKE_OVEN_NEW.provide(ctx));
@@ -210,7 +198,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 					List.of(
 							IOConstraint.input(i -> CokeOvenRecipe.findRecipe(levelGetter.get(), i)!=null),
 							IOConstraint.OUTPUT,
-							IOConstraint.input(Utils::isFluidRelatedItemStack),
+							IOConstraint.FLUID_INPUT,
 							IOConstraint.OUTPUT
 					),
 					ctx::markMasterDirty

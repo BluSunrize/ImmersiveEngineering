@@ -3,10 +3,7 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenBlock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.LightningRodLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,6 +39,14 @@ public class IEMultiblockLogic
 			.defaultBEs(BE_REGISTER)
 			.defaultBlock(BLOCK_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
 			.structure(() -> IEMultiblocks.CRUSHER)
+			.withComparator()
+			.redstoneAware()
+			.build();
+
+	public static final MultiblockRegistration<FermenterLogic.State> FERMENTER = builder(new FermenterLogic(), "fermenter")
+			.defaultBEs(BE_REGISTER)
+			.defaultBlock(BLOCK_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
+			.structure(() -> IEMultiblocks.FERMENTER)
 			.withComparator()
 			.redstoneAware()
 			.build();

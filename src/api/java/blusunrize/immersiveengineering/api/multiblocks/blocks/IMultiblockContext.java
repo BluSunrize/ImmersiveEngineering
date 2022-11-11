@@ -19,4 +19,6 @@ public interface IMultiblockContext<State extends IMultiblockState> extends ICom
 	void setComparatorOutputFor(BlockPos posInMultiblock, int newValue);
 
 	int getRedstoneInputValue(BlockPos posInMultiblock, RelativeBlockFace side, int fallback);
+
+	int getRedstoneInputValue(BlockPos posInMultiblock, int fallback);
 }

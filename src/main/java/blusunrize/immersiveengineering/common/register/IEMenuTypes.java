@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
@@ -85,6 +86,9 @@ public class IEMenuTypes
 	);
 	public static final ArgContainer<FermenterBlockEntity, FermenterMenu> FERMENTER = registerArg(
 			Lib.GUIID_Fermenter, FermenterMenu::makeServer, FermenterMenu::makeClient
+	);
+	public static final ArgContainer<IMultiblockContext<FermenterLogic.State>, FermenterMenu> FERMENTER_NEW = registerArg(
+			"fermenter_new", FermenterMenu::makeServerNew, FermenterMenu::makeClient
 	);
 	public static final ArgContainer<RefineryBlockEntity, RefineryMenu> REFINERY = registerArg(
 			Lib.GUIID_Refinery, RefineryMenu::makeServer, RefineryMenu::makeClient

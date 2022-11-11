@@ -38,6 +38,11 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 			boolean isClient
 	)
 	{
+		return clickSimple(ctx, player, isClient);
+	}
+
+	default InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
+	{
 		return InteractionResult.PASS;
 	}
 

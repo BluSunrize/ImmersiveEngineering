@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.util.inventory;
 
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -7,6 +8,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -14,6 +16,15 @@ public final class SlotwiseItemHandler implements IItemHandlerModifiable
 {
 	private final ItemStackHandler rawHandler;
 	private final List<IOConstraint> slotConstraints;
+
+	public static SlotwiseItemHandler makeWithGroups(List<IOConstraintGroup> constraintGroups, Runnable onChanged)
+	{
+		List<IOConstraint> slotConstraints = new ArrayList<>();
+		for(final var group : constraintGroups)
+			for(int i = 0; i < group.slotCount; ++i)
+				slotConstraints.add(group.constraint);
+		return new SlotwiseItemHandler(slotConstraints, onChanged);
+	}
 
 	public SlotwiseItemHandler(List<IOConstraint> slotConstraints, Runnable onChanged)
 	{
@@ -96,10 +107,16 @@ public final class SlotwiseItemHandler implements IItemHandlerModifiable
 	public record IOConstraint(boolean allowExtract, Predicate<ItemStack> allowInsert)
 	{
 		public static final IOConstraint OUTPUT = new IOConstraint(true, $ -> false);
+		public static final IOConstraint ANY_INPUT = new IOConstraint(false, $ -> true);
+		public static final IOConstraint FLUID_INPUT = IOConstraint.input(Utils::isFluidRelatedItemStack);
 
 		public static IOConstraint input(Predicate<ItemStack> allow)
 		{
 			return new IOConstraint(false, allow);
 		}
+	}
+
+	public record IOConstraintGroup(IOConstraint constraint, int slotCount)
+	{
 	}
 }

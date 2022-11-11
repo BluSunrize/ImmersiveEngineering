@@ -19,6 +19,13 @@ public record ArrayFluidHandler(
 		IFluidTank[] internal, boolean allowDrain, boolean allowFill, Runnable afterTransfer
 ) implements IFluidHandler
 {
+	public ArrayFluidHandler(
+			IFluidTank internal, boolean allowDrain, boolean allowFill, Runnable afterTransfer
+	)
+	{
+		this(new IFluidTank[]{internal}, allowDrain, allowFill, afterTransfer);
+	}
+
 	@Override
 	public int getTanks()
 	{

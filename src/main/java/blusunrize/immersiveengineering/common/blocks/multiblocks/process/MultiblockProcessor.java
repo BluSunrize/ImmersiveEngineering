@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -173,6 +174,11 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	public int getQueueSize()
 	{
 		return processQueue.size();
+	}
+
+	public List<MultiblockProcess<R, CTX>> getQueue()
+	{
+		return Collections.unmodifiableList(processQueue);
 	}
 
 	public record RecipeSource<R extends MultiblockRecipe>(
