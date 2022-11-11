@@ -48,10 +48,9 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		// TODO redstone disabling
 		// TODO sound
 		final var wasActive = state.renderAsActive;
-		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), true);
+		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), canWorkFromRS(context));
 		if(wasActive!=state.renderAsActive)
 			context.requestMasterBESync();
 		state.comparators.updateComparators(context);
@@ -83,6 +82,12 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		return CrusherShapes.SHAPE_GETTER;
 	}
 
+	private static boolean canWorkFromRS(IMultiblockContext<State> ctx)
+	{
+		// TODO relative sides seem to be broken a bit...
+		return ctx.getRedstoneInputValue(REDSTONE_POS, RelativeBlockFace.BACK, 15) <= 0;
+	}
+
 	private static boolean isInInput(BlockPos posInMultiblock, boolean allowMiddleLayer)
 	{
 		if(posInMultiblock.getY()==2||(allowMiddleLayer&&posInMultiblock.getY()==1))
@@ -95,7 +100,7 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 	{
 		if(collided.level.isClientSide||!isInInput(posInMultiblock, true))
 			return;
-		if(!collided.isAlive())//TODO ||isRSDisabled())
+		if(!collided.isAlive()||!canWorkFromRS(ctx))
 			return;
 		final var state = ctx.getState();
 		final var level = ctx.getLevel();
@@ -105,7 +110,6 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 			return;
 		if(collided instanceof ItemEntity itemEntity)
 		{
-			//AABB[-898.5625, -57.75, -416.5625] -> [-897.4375, -56.5, -415.4375]
 			ItemStack stack = itemEntity.getItem();
 			if(stack.isEmpty())
 				return;

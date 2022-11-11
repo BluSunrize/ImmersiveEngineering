@@ -21,7 +21,6 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 		extends MultiblockBEHelperCommon<State>
 		implements IMultiblockBEHelperMaster<State>
 {
-	private final BlockEntity be;
 	private final State state;
 	private final MultiblockContext<State> context;
 	private final List<LazyOptional<?>> capabilities = new ArrayList<>();
@@ -29,8 +28,7 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 
 	public MultiblockBEHelperMaster(MultiblockBlockEntityMaster<State> be, MultiblockRegistration<State> multiblock)
 	{
-		super(multiblock, be.getBlockState());
-		this.be = be;
+		super(be, multiblock, be.getBlockState());
 		this.state = multiblock.logic().createInitialState(new InitialMultiblockContext<>(
 				be, orientation, multiblock.masterPosInMB()
 		));

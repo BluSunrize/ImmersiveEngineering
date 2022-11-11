@@ -15,14 +15,12 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 		extends MultiblockBEHelperCommon<State>
 		implements IMultiblockBEHelperDummy<State>
 {
-	private final BlockEntity be;
 	private final MultiblockLevel level;
 	private BlockPos positionInMB;
 
 	public MultiblockBEHelperDummy(BlockEntity be, MultiblockRegistration<State> multiblock)
 	{
-		super(multiblock, be.getBlockState());
-		this.be = be;
+		super(be, multiblock, be.getBlockState());
 		this.level = new MultiblockLevel(be::getLevel, orientation, () -> {
 			final BlockPos absoluteOffset = orientation.getAbsoluteOffset(positionInMB);
 			return be.getBlockPos().subtract(absoluteOffset);

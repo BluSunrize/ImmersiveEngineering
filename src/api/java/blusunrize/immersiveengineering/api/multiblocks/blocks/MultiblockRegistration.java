@@ -15,6 +15,7 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 		RegistryObject<? extends MultiblockPartBlock<State>> block,
 		boolean mirrorable,
 		boolean hasComparatorOutput,
+		boolean redstoneInputAware,
 		Supplier<BlockPos> getMasterPosInMB,
 		Disassembler disassemble
 )

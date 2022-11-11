@@ -168,6 +168,21 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		return super.getAnalogOutputSignal(state, level, pos);
 	}
 
+	@Override
+	public void neighborChanged(
+			@Nonnull BlockState state,
+			@Nonnull Level level,
+			@Nonnull BlockPos pos,
+			@Nonnull Block block,
+			@Nonnull BlockPos fromPos,
+			boolean isMoving
+	)
+	{
+		super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+		if(multiblock.redstoneInputAware()&&level.getBlockEntity(pos) instanceof IMultiblockBE<?> multiblockBE)
+			multiblockBE.getHelper().onNeighborChanged(fromPos);
+	}
+
 	// TODO loot table
 	// TODO pick block
 

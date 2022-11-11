@@ -2,11 +2,14 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import com.google.common.base.Preconditions;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -14,15 +17,21 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
 
 public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> implements IMultiblockBEHelper<State>
 {
+	protected final BlockEntity be;
 	private boolean beingDisassembled = false;
+	private final Map<RelativeBlockFace, Integer> cachedRedstoneValues = new EnumMap<>(RelativeBlockFace.class);
 	protected final MultiblockRegistration<State> multiblock;
 	protected final MultiblockOrientation orientation;
 
-	protected MultiblockBEHelperCommon(MultiblockRegistration<State> multiblock, BlockState state)
+	protected MultiblockBEHelperCommon(BlockEntity be, MultiblockRegistration<State> multiblock, BlockState state)
 	{
+		this.be = be;
 		this.multiblock = multiblock;
 		this.orientation = new MultiblockOrientation(state, multiblock.mirrorable());
 	}
@@ -99,5 +108,36 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		if(masterHelper==null)
 			return 0;
 		return masterHelper.getCurrentComparatorOutputs().getInt(getPositionInMB());
+	}
+
+	@Override
+	public void onNeighborChanged(BlockPos fromPos)
+	{
+		BlockPos delta = fromPos.subtract(be.getBlockPos());
+		Direction sideAbsolute = Direction.getNearest(delta.getX(), delta.getY(), delta.getZ());
+		Preconditions.checkNotNull(sideAbsolute);
+		updateRedstoneValue(sideAbsolute, fromPos);
+	}
+
+	@Override
+	public int getRedstoneInput(RelativeBlockFace side)
+	{
+		if(cachedRedstoneValues.containsKey(side))
+			return cachedRedstoneValues.get(side);
+		else
+		{
+			final var absoluteFace = side.forFront(orientation);
+			final var neighbor = be.getBlockPos().relative(absoluteFace);
+			return updateRedstoneValue(absoluteFace, neighbor);
+		}
+	}
+
+	private int updateRedstoneValue(Direction sideAbsolute, BlockPos neighborPos)
+	{
+		final var level = Objects.requireNonNull(be.getLevel());
+		final int rsStrength = level.getSignal(neighborPos, sideAbsolute);
+		final var sideRelative = RelativeBlockFace.from(orientation, sideAbsolute);
+		cachedRedstoneValues.put(sideRelative, rsStrength);
+		return rsStrength;
 	}
 }

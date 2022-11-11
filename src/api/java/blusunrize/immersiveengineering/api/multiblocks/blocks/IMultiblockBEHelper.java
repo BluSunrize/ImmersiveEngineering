@@ -50,4 +50,8 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	void onEntityCollided(Entity collided);
 
 	int getComparatorValue();
+
+	void onNeighborChanged(BlockPos fromPos);
+
+	int getRedstoneInput(RelativeBlockFace side);
 }

@@ -43,6 +43,7 @@ public class IEMultiblockLogic
 			.defaultBlock(BLOCK_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
 			.structure(() -> IEMultiblocks.CRUSHER)
 			.withComparator()
+			.redstoneAware()
 			.build();
 
 	public static void init(IEventBus bus)

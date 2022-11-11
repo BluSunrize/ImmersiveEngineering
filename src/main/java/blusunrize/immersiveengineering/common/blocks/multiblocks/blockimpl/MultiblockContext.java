@@ -1,10 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import com.google.common.base.Preconditions;
@@ -77,5 +74,15 @@ public record MultiblockContext<State extends IMultiblockState>(
 				masterHelper.getMasterBE(), masterHelper.getOrientation(), multiblock.masterPosInMB(),
 				capability, posRelativeToMB, face
 		);
+	}
+
+	@Override
+	public int getRedstoneInputValue(BlockPos posInMultiblock, RelativeBlockFace side, int fallback)
+	{
+		Preconditions.checkState(masterHelper.multiblock.redstoneInputAware());
+		if(level.getBlockEntity(posInMultiblock) instanceof IMultiblockBE<?> beAtPos)
+			return beAtPos.getHelper().getRedstoneInput(side);
+		else
+			return fallback;
 	}
 }

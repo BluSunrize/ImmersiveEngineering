@@ -29,6 +29,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	private RegistryObject<? extends MultiblockPartBlock<State>> block;
 	private boolean mirrorable = true;
 	private boolean hasComparatorOutput = false;
+	private boolean redstoneInputAware = false;
 	private Supplier<BlockPos> getMasterPosInMB;
 	private Disassembler disassemble;
 
@@ -49,6 +50,12 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	public MultiblockRegistrationBuilder<State> withComparator()
 	{
 		this.hasComparatorOutput = true;
+		return this;
+	}
+
+	public MultiblockRegistrationBuilder<State> redstoneAware()
+	{
+		this.redstoneInputAware = true;
 		return this;
 	}
 
@@ -105,7 +112,9 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Objects.requireNonNull(disassemble);
 		Preconditions.checkState(this.result==null);
 		this.result = new MultiblockRegistration<>(
-				logic, masterBE, dummyBE, block, mirrorable, hasComparatorOutput, getMasterPosInMB, disassemble
+				logic, masterBE, dummyBE, block,
+				mirrorable, hasComparatorOutput, redstoneInputAware,
+				getMasterPosInMB, disassemble
 		);
 		return this.result;
 	}
