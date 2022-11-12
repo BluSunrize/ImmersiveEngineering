@@ -10,6 +10,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -38,7 +39,7 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 
 	MultiblockRegistration<State> getMultiblock();
 
-	VoxelShape getShape();
+	VoxelShape getShape(CollisionContext ctx);
 
 	void disassemble();
 

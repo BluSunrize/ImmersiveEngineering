@@ -58,10 +58,6 @@ public class CommonProxy
 	{
 	}
 
-	public void stopTileSound(String soundName, BlockEntity tile)
-	{
-	}
-
 	public void spawnFractalFX(Level world, double x, double y, double z, Vec3 direction, double scale, int prefixColour, float[][] colour)
 	{
 		if(prefixColour >= 0)

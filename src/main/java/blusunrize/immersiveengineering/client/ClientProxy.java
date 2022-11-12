@@ -80,6 +80,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
@@ -233,9 +234,9 @@ public class ClientProxy extends CommonProxy
 		IEBlockEntitySound sound = tileSoundMap.get(pos);
 		if(sound==null&&tileActive)
 		{
-			if(tile instanceof ISoundBE&&mc().player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundBE)tile).getSoundRadiusSq())
+			if(tile instanceof ISoundBE soundBE&&mc().player.distanceToSqr(Vec3.atCenterOf(pos)) > soundBE.getSoundRadiusSq())
 				return;
-			sound = ClientUtils.generatePositionedIESound(soundEvent.get(), volume, pitch, true, 0, pos);
+			sound = ClientUtils.generatePositionedIESound(soundEvent.get(), volume, pitch, pos);
 			tileSoundMap.put(pos, sound);
 		}
 		else if(sound!=null&&(sound.donePlaying||!tileActive))
@@ -244,14 +245,6 @@ public class ClientProxy extends CommonProxy
 			mc().getSoundManager().stop(sound);
 			tileSoundMap.remove(pos);
 		}
-	}
-
-	@Override
-	public void stopTileSound(String soundName, BlockEntity tile)
-	{
-		IEBlockEntitySound sound = tileSoundMap.get(tile.getBlockPos());
-		if(sound!=null)
-			mc().getSoundManager().stop(sound);
 	}
 
 	@SubscribeEvent
@@ -435,7 +428,7 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SILO.master(), SiloRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SQUEEZER.master(), SqueezerRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.DIESEL_GENERATOR.masterBE().get(), DieselGeneratorRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);

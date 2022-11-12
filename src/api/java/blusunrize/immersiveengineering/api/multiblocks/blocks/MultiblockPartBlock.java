@@ -92,7 +92,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	{
 		final var bEntity = level.getBlockEntity(pos);
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
-			return multiblockBE.getHelper().getShape();
+			return multiblockBE.getHelper().getShape(context);
 		else
 			return Shapes.block();
 	}

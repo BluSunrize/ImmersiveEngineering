@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,10 +43,17 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	}
 
 	@Override
-	public VoxelShape getShape()
+	public VoxelShape getShape(CollisionContext ctx)
 	{
 		// TODO cache!
-		return orientation.transformRelativeShape(multiblock.logic().shapeGetter().apply(getPositionInMB()));
+		final var logic = multiblock.logic();
+		final var relativeShape = logic.shapeGetter().apply(getPositionInMB());
+		final var absoluteShape = orientation.transformRelativeShape(relativeShape);
+		final var multiblockCtx = getContext();
+		if(multiblockCtx!=null)
+			return logic.postProcessAbsoluteShape(multiblockCtx, absoluteShape, ctx, getPositionInMB());
+		else
+			return absoluteShape;
 	}
 
 	@Override

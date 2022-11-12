@@ -16,7 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.CrusherShapes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -26,6 +28,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -33,6 +36,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
@@ -65,6 +69,13 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		final var state = context.getState();
 		if(state.renderAsActive)
 			state.barrelAngle = (state.barrelAngle+18)%360;
+		if(!state.isPlayingSound.getAsBoolean())
+		{
+			final var soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
+			state.isPlayingSound = MultiblockSound.startSound(
+					() -> state.renderAsActive, context::isValid, soundPos, IESounds.crusher
+			);
+		}
 	}
 
 	@Override
@@ -143,6 +154,7 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		private final CapabilityReference<IItemHandler> output;
 		private final StoredCapability<IItemHandler> insertionHandler;
 		private final StoredCapability<IEnergyStorage> energyHandler = new StoredCapability<>(energy);
+		private BooleanSupplier isPlayingSound = () -> false;
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{

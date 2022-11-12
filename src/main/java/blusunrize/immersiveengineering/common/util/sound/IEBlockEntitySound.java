@@ -22,51 +22,33 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
 public class IEBlockEntitySound implements TickableSoundInstance
 {
 	protected Sound sound;
-	private final SoundSource category;
-	public Attenuation attenuation;
-	public final ResourceLocation resource;
-	public float volume;
-	public float pitch;
+	private final ResourceLocation resource;
+	private final float volume;
+	private final float pitch;
 
-	public int tileX;
-	public int tileY;
-	public int tileZ;
-	public boolean canRepeat;
-	public int repeatDelay;
-	public float volumeAjustment = 1;
+	private final BlockPos tilePos;
+	private float volumeAjustment = 1;
+	public boolean donePlaying = false;
 
-	public IEBlockEntitySound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, Attenuation attenuation, SoundSource category)
+	public IEBlockEntitySound(SoundEvent event, float volume, float pitch, BlockPos pos)
 	{
-		this.attenuation = attenuation;
-		this.resource = sound;
+		this.resource = event.getLocation();
 		this.volume = volume;
 		this.pitch = pitch;
-		this.tileX = x;
-		this.tileY = y;
-		this.tileZ = z;
-		this.canRepeat = repeat;
-		this.repeatDelay = repeatDelay;
-		origPos = new float[]{(float)x, (float)y, (float)z};
-		this.category = category;
+		this.tilePos = pos;
 	}
-
-	public IEBlockEntitySound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, Attenuation attenuation, SoundSource category)
-	{
-		this(event.getLocation(), volume, pitch, repeat, repeatDelay, pos.getX(), pos.getY(), pos.getZ(), attenuation, category);
-	}
-
-	public float[] origPos;
 
 	@Override
 	public Attenuation getAttenuation()
 	{
-		return attenuation;
+		return Attenuation.LINEAR;
 	}
 
 	@Override
@@ -96,7 +78,7 @@ public class IEBlockEntitySound implements TickableSoundInstance
 	@Override
 	public SoundSource getSource()
 	{
-		return category;
+		return SoundSource.BLOCKS;
 	}
 
 	@Override
@@ -114,25 +96,25 @@ public class IEBlockEntitySound implements TickableSoundInstance
 	@Override
 	public double getX()
 	{
-		return tileX;
+		return tilePos.getX();
 	}
 
 	@Override
 	public double getY()
 	{
-		return tileY;
+		return tilePos.getY();
 	}
 
 	@Override
 	public double getZ()
 	{
-		return tileZ;
+		return tilePos.getZ();
 	}
 
 	@Override
 	public boolean isLooping()
 	{
-		return canRepeat;
+		return true;
 	}
 
 	@Override
@@ -144,7 +126,7 @@ public class IEBlockEntitySound implements TickableSoundInstance
 	@Override
 	public int getDelay()
 	{
-		return repeatDelay;
+		return 0;
 	}
 
 	public void evaluateVolume()
@@ -157,7 +139,7 @@ public class IEBlockEntitySound implements TickableSoundInstance
 				volumeAjustment = EarmuffsItem.getVolumeMod(earmuffs);
 		}
 
-		BlockEntity tile = ClientUtils.mc().player.level.getBlockEntity(new BlockPos(tileX, tileY, tileZ));
+		BlockEntity tile = ClientUtils.mc().player.level.getBlockEntity(tilePos);
 		if(!(tile instanceof ISoundBE soundBE))
 			donePlaying = true;
 		else
@@ -168,7 +150,7 @@ public class IEBlockEntitySound implements TickableSoundInstance
 				float radiusSq = soundBE.getSoundRadiusSq();
 				if(ClientUtils.mc().player!=null)
 				{
-					double distSq = ClientUtils.mc().player.distanceToSqr(tileX, tileY, tileZ);
+					double distSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(tilePos));
 					if(distSq>radiusSq)
 						donePlaying = true;
 					else
@@ -185,8 +167,6 @@ public class IEBlockEntitySound implements TickableSoundInstance
 		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.level.getGameTime()%40==0)
 			evaluateVolume();
 	}
-
-	public boolean donePlaying = false;
 
 	@Override
 	public boolean isStopped()

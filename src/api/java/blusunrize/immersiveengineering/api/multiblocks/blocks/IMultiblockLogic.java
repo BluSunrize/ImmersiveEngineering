@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -22,7 +23,15 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 	<T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap);
 
 	// TODO split into collision and selection?
+	// TODO this API does not work for variable-size MBs
 	Function<BlockPos, VoxelShape> shapeGetter();
+
+	default VoxelShape postProcessAbsoluteShape(
+			IMultiblockContext<State> ctx, VoxelShape defaultShape, CollisionContext shapeCtx,
+			BlockPos posInMultiblock)
+	{
+		return defaultShape;
+	}
 
 	default void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
 	{

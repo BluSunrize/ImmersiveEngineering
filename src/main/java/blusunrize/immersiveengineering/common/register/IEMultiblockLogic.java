@@ -51,6 +51,13 @@ public class IEMultiblockLogic
 			.redstoneAware()
 			.build();
 
+	public static final MultiblockRegistration<DieselGeneratorLogic.State> DIESEL_GENERATOR = builder(new DieselGeneratorLogic(), "diesel_generator")
+			.defaultBEs(BE_REGISTER)
+			.defaultBlock(BLOCK_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
+			.structure(() -> IEMultiblocks.DIESEL_GENERATOR)
+			.redstoneAware()
+			.build();
+
 	public static void init(IEventBus bus)
 	{
 		BLOCK_REGISTER.register(bus);
