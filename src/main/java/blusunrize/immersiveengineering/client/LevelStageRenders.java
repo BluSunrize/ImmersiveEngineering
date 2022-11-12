@@ -46,7 +46,7 @@ import java.util.function.Consumer;
 public class LevelStageRenders
 {
 	public static final Map<Connection, Pair<Collection<BlockPos>, MutableInt>> FAILED_CONNECTIONS = new HashMap<>();
-	private static final boolean ENABLE_VEIN_DEBUG = true;
+	private static final boolean ENABLE_VEIN_DEBUG = false;
 
 	@SubscribeEvent
 	public static void onRenderLevelStage(RenderLevelStageEvent event)
@@ -121,7 +121,6 @@ public class LevelStageRenders
 				MineralMix mineral = vein.getMineral(ClientUtils.mc().level);
 				if(mineral==null)
 					continue;
-				transform.pushPose();
 				ColumnPos pos = vein.getPos();
 				final long xDiff = pos.x()-playerCol.x();
 				final long zDiff = pos.z()-playerCol.z();
@@ -134,6 +133,7 @@ public class LevelStageRenders
 				float r = rgb[0];
 				float g = rgb[1];
 				float b = rgb[2];
+				transform.pushPose();
 				transform.translate(pos.x(), 0, pos.z());
 				VertexConsumer bufferBuilder = context.getSecond().getBuffer(IERenderTypes.CHUNK_MARKER);
 				Matrix4f mat = transform.last().pose();
