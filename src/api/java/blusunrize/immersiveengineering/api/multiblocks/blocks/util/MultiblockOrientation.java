@@ -1,4 +1,4 @@
-package blusunrize.immersiveengineering.api.multiblocks.blocks;
+package blusunrize.immersiveengineering.api.multiblocks.blocks.util;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;

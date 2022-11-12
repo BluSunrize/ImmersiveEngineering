@@ -3,6 +3,9 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.LightningRodShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -122,11 +125,12 @@ public class LightningRodLogic implements IMultiblockLogic<LightningRodLogic.Sta
 
 	@Override
 	public <T> LazyOptional<T> getCapability(
-			IMultiblockContext<State> ctx, BlockPos posInMultiblock, @Nullable RelativeBlockFace side, Capability<T> cap
+			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
 	)
 	{
 		final State state = ctx.getState();
-		if(side==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1))
+		final var posInMultiblock = position.posInMultiblock();
+		if(position.side()==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1))
 			return ForgeCapabilities.ENERGY.orEmpty(cap, state.energyCap.get(ctx));
 		else
 			return LazyOptional.empty();

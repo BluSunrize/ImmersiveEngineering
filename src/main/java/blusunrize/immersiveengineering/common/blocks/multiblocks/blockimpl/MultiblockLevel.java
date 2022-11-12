@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLevel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockOrientation;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import net.minecraft.core.BlockPos;

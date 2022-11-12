@@ -1,7 +1,12 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockBEHelper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,7 +55,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		if(ctx==null)
 			return LazyOptional.empty();
 		final var relativeSide = RelativeBlockFace.from(orientation, side);
-		return multiblock.logic().getCapability(ctx, getPositionInMB(), relativeSide, cap);
+		return multiblock.logic().getCapability(ctx, new CapabilityPosition(getPositionInMB(), relativeSide), cap);
 	}
 
 	@Override

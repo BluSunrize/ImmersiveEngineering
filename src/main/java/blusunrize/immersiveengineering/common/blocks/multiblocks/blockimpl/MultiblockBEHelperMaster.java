@@ -1,7 +1,11 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;

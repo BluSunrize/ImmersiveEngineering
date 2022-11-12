@@ -3,8 +3,14 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.ComparatorManager.IComparatorValue;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IInitialMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -37,7 +43,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -46,8 +51,8 @@ import java.util.function.Function;
 public class FermenterLogic implements IServerTickableMultiblock<State>
 {
 	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
-	private static final BlockPos FLUID_OUTPUT = new BlockPos(2, 0, 1);
-	private static final BlockPos ENERGY_POS = new BlockPos(0, 1, 2);
+	private static final CapabilityPosition FLUID_OUTPUT = new CapabilityPosition(2, 0, 1, RelativeBlockFace.LEFT);
+	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
 
 	public static final int TANK_CAPACITY = 24*FluidType.BUCKET_VOLUME;
 	public static final int ENERGY_CAPACITY = 16000;
@@ -149,18 +154,18 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 
 	@Override
 	public <T> LazyOptional<T> getCapability(
-			IMultiblockContext<State> ctx, BlockPos posInMultiblock, @Nullable RelativeBlockFace side, Capability<T> cap
+			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
 	)
 	{
-		if(cap==ForgeCapabilities.ENERGY&&(side==null||(ENERGY_POS.equals(posInMultiblock)&&side==RelativeBlockFace.UP)))
+		if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return ctx.getState().energyHandler.cast(ctx);
-		if(cap==ForgeCapabilities.FLUID_HANDLER&&(side==null||(FLUID_OUTPUT.equals(posInMultiblock)&&side==RelativeBlockFace.LEFT)))
+		if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_OUTPUT.equalsOrNullFace(position))
 			return ctx.getState().fluidHandler.cast(ctx);
 		if(cap==ForgeCapabilities.ITEM_HANDLER)
 		{
-			if(new BlockPos(0, 1, 0).equals(posInMultiblock))
+			if(new BlockPos(0, 1, 0).equals(position.posInMultiblock()))
 				return ctx.getState().insertionHandler.cast(ctx);
-			else if(new BlockPos(1, 1, 1).equals(posInMultiblock))
+			else if(new BlockPos(1, 1, 1).equals(position.posInMultiblock()))
 				return ctx.getState().extractionHandler.cast(ctx);
 		}
 		return LazyOptional.empty();

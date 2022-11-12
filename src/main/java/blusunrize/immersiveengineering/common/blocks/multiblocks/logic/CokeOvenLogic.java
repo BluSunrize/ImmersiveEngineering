@@ -2,7 +2,11 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IInitialMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic.State;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -150,7 +154,9 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, BlockPos posInMultiblock, @Nullable RelativeBlockFace side, Capability<T> cap)
+	public <T> LazyOptional<T> getCapability(
+			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
+	)
 	{
 		final var state = ctx.getState();
 		if(cap==ForgeCapabilities.ITEM_HANDLER)

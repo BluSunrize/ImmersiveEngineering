@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.common.util.orientation;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockOrientation;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import junit.framework.TestCase;
 import net.minecraft.core.Direction;

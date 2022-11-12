@@ -3,6 +3,9 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
@@ -30,13 +33,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 
-import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(2, 1, 1);
 	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
+	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(4, 1, 1, RelativeBlockFace.UP);
 
 	@Override
 	public State createInitialState(IInitialMultiblockContext<State> capabilitySource)
@@ -65,14 +68,13 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, BlockPos posInMultiblock, @Nullable RelativeBlockFace side, Capability<T> cap)
+	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
 		final var state = ctx.getState();
-		if(cap==ForgeCapabilities.ITEM_HANDLER&&isInInput(posInMultiblock, false))
+		if(cap==ForgeCapabilities.ITEM_HANDLER&&isInInput(position.posInMultiblock(), false))
 			return state.insertionHandler.cast(ctx);
-		if(cap==ForgeCapabilities.ENERGY)
-			if(side==null||(posInMultiblock.equals(new BlockPos(4, 1, 1))&&side==RelativeBlockFace.UP))
-				return state.energyHandler.cast(ctx);
+		if(cap==ForgeCapabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
+			return state.energyHandler.cast(ctx);
 		return LazyOptional.empty();
 	}
 

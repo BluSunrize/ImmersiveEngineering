@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.api.multiblocks.blocks;
+package blusunrize.immersiveengineering.api.multiblocks.blocks.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;

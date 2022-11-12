@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import junit.framework.TestCase;
 import net.minecraft.core.BlockPos;
