@@ -156,33 +156,35 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		if(pouringMetal > 0)
 			pouringMetal--;
 		if(shouldRenderAsActive())
-			for(int i = 0; i < Math.max(1, processQueue.size() * 0.5); i++)
+			for(int i = 0; i < Math.max(1, processQueue.size() * 0.51); i++)
 			{
 				//Each of these renders in triplicate, one for each electrode.
 				if(Utils.RAND.nextInt(6)==0)
 				{
-					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5-.25*getFacing().getStepX(),
+					level.addAlwaysVisibleParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5-.25*getFacing().getStepX(),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5-.25*getFacing().getStepZ(),
 							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
-					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()+.375*getFacing().getStepZ(),
+					level.addAlwaysVisibleParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()+.375*getFacing().getStepZ(),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+.25*getFacing().getStepZ()+.375*getFacing().getStepX(),
 							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
-					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()-.375*getFacing().getStepZ(),
+					level.addAlwaysVisibleParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()-.375*getFacing().getStepZ(),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+.25*getFacing().getStepZ()-.375*getFacing().getStepX(),
 							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 
-					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5-.25*getFacing().getStepX(),
+					level.addAlwaysVisibleParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5-.25*getFacing().getStepX(),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5-.25*getFacing().getStepZ(),
 							Utils.RAND.nextDouble()*.05-.025, .05, Utils.RAND.nextDouble()*.05-.025);
-					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()+.375*getFacing().getStepZ(),
+					level.addAlwaysVisibleParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()+.375*getFacing().getStepZ(),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+.25*getFacing().getStepZ()+.375*getFacing().getStepX(),
 							Utils.RAND.nextDouble()*.05-.025, .05, Utils.RAND.nextDouble()*.05-.025);
-					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()-.375*getFacing().getStepZ(),
+					level.addAlwaysVisibleParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+.25*getFacing().getStepX()-.375*getFacing().getStepZ(),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+.25*getFacing().getStepZ()-.375*getFacing().getStepX(),
 							Utils.RAND.nextDouble()*.05-.025, .05, Utils.RAND.nextDouble()*.05-.025);
 				}
-				level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
-						Utils.RAND.nextDouble()*.01875-0.009375, .05, Utils.RAND.nextDouble()*.01875-0.009375);
+
+
+				level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
+						Utils.RAND.nextDouble()*.01875-0.009375, .0625, Utils.RAND.nextDouble()*.01875-0.009375);
 			}
 	}
 

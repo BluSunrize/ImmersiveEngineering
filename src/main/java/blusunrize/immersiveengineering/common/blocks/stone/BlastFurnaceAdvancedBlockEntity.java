@@ -64,7 +64,7 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 		if(isDummy())
 			return;
 		if(getIsActive())
-			level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
+			level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
 			Utils.RAND.nextDouble()*.0125-.00625, .05, Utils.RAND.nextDouble()*.0125-.00625);
 	}
 
