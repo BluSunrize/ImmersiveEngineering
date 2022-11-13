@@ -69,7 +69,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 	public IRecipeTransferError transferRecipe(AssemblerMenu container, CraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer)
 	{
 		for(int i = 0; i < 3; i++)
-			if(container.patterns.get(i).getItem(9).isEmpty())
+			if(container.patterns.get(i).getStackInSlot(9).isEmpty())
 			{
 				if(doTransfer)
 				{

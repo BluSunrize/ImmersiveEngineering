@@ -16,8 +16,6 @@ import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -26,18 +24,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class AssemblerMenu extends IEContainerMenu
 {
-	public final List<? extends Container> patterns;
+	public final List<IItemHandlerModifiable> patterns;
 	public final IItemHandler inv;
 	public final FluidTank[] tanks;
 	public final EnergyStorage energy;
@@ -47,18 +44,34 @@ public class AssemblerMenu extends IEContainerMenu
 			MenuType<?> type, int id, Inventory invPlayer, AssemblerBlockEntity be
 	)
 	{
+		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerBlockEntity.NUM_PATTERNS);
+		for(final var pattern : be.patterns)
+			patterns.add(new ItemStackHandler(pattern.inv)
+			{
+				@Override
+				protected void onContentsChanged(int slot)
+				{
+					pattern.recalculateOutput(be.getLevel());
+				}
+
+				@Override
+				public int getSlotLimit(int slot)
+				{
+					return 1;
+				}
+			});
 		return new AssemblerMenu(
 				blockCtx(type, id, be), invPlayer,
-				Arrays.asList(be.patterns), new ItemStackHandler(be.inventory), be.tanks, be.energyStorage,
+				patterns, new ItemStackHandler(be.inventory), be.tanks, be.energyStorage,
 				new GetterAndSetter<>(() -> be.recursiveIngredients, b -> be.recursiveIngredients = b)
 		);
 	}
 
 	public static AssemblerMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
 	{
-		List<Container> patterns = new ArrayList<>(AssemblerBlockEntity.NUM_PATTERNS);
+		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerBlockEntity.NUM_PATTERNS);
 		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; ++i)
-			patterns.add(new SimpleContainer(10));
+			patterns.add(new ItemStackHandler(10));
 		FluidTank[] tanks = new FluidTank[AssemblerBlockEntity.NUM_TANKS];
 		for(int i = 0; i < tanks.length; ++i)
 			tanks[i] = new FluidTank(AssemblerBlockEntity.TANK_CAPACITY);
@@ -71,7 +84,7 @@ public class AssemblerMenu extends IEContainerMenu
 
 	private AssemblerMenu(
 			MenuContext ctx, Inventory inventoryPlayer,
-			List<? extends Container> patterns, IItemHandler inv,
+			List<IItemHandlerModifiable> patterns, IItemHandler inv,
 			FluidTank[] tanks, MutableEnergyStorage energy, GetterAndSetter<Boolean> recursiveIngredients
 	)
 	{
@@ -83,7 +96,7 @@ public class AssemblerMenu extends IEContainerMenu
 		this.recursiveIngredients = recursiveIngredients;
 		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
 		{
-			IItemHandler itemHandler = new InvWrapper(patterns.get(i));
+			IItemHandler itemHandler = patterns.get(i);
 			for(int j = 0; j < 9; j++)
 			{
 				int x = 9+i*58+(j%3)*18;
@@ -104,9 +117,9 @@ public class AssemblerMenu extends IEContainerMenu
 		addGenericData(GenericContainerData.energy(energy));
 		for(int i = 0; i < AssemblerBlockEntity.NUM_TANKS; ++i)
 			addGenericData(GenericContainerData.fluid(tanks[i]));
-		for(Container pattern : patterns)
+		for(IItemHandlerModifiable pattern : patterns)
 			addGenericData(new GenericContainerData<>(
-					GenericDataSerializers.ITEM_STACK, () -> pattern.getItem(9), s -> pattern.setItem(9, s)
+					GenericDataSerializers.ITEM_STACK, () -> pattern.getStackInSlot(9), s -> pattern.setStackInSlot(9, s)
 			));
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.BOOLEAN, recursiveIngredients));
 	}
@@ -154,9 +167,9 @@ public class AssemblerMenu extends IEContainerMenu
 			int id = nbt.getInt("buttonID");
 			if(id >= 0&&id < patterns.size())
 			{
-				Container pattern = patterns.get(id);
-				for(int i = 0; i < pattern.getContainerSize(); i++)
-					pattern.setItem(i, ItemStack.EMPTY);
+				IItemHandlerModifiable pattern = patterns.get(id);
+				for(int i = 0; i < pattern.getSlots(); i++)
+					pattern.setStackInSlot(i, ItemStack.EMPTY);
 			}
 			else if(id==3)
 				recursiveIngredients.set(!recursiveIngredients.get());
@@ -165,11 +178,11 @@ public class AssemblerMenu extends IEContainerMenu
 		{
 			int r = nbt.getInt("recipe");
 			ListTag list = nbt.getList("patternSync", 10);
-			Container pattern = patterns.get(r);
+			IItemHandlerModifiable pattern = patterns.get(r);
 			for(int i = 0; i < list.size(); i++)
 			{
 				CompoundTag itemTag = list.getCompound(i);
-				pattern.setItem(itemTag.getInt("slot"), ItemStack.of(itemTag));
+				pattern.setStackInSlot(itemTag.getInt("slot"), ItemStack.of(itemTag));
 			}
 		}
 	}

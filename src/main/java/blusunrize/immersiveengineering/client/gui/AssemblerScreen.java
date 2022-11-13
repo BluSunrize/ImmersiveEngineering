@@ -81,10 +81,10 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 
 	private void addRecipeOutputTooltip(int i, List<Component> tooltip)
 	{
-		ItemStack recipeOutput = menu.patterns.get(i).getItem(9);
+		ItemStack recipeOutput = menu.patterns.get(i).getStackInSlot(9);
 		if(menu.inv.getStackInSlot(18+i).isEmpty()&&!recipeOutput.isEmpty())
 		{
-			tooltip.add(menu.patterns.get(i).getItem(9).getHoverName());
+			tooltip.add(menu.patterns.get(i).getStackInSlot(9).getHoverName());
 			recipeOutput.getItem().appendHoverText(recipeOutput, ClientUtils.mc().level, tooltip, Default.NORMAL);
 		}
 	}
@@ -117,9 +117,9 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
-			if(menu.inv.getStackInSlot(18+i).isEmpty()&&!menu.patterns.get(i).getItem(9).isEmpty())
+			if(menu.inv.getStackInSlot(18+i).isEmpty()&&!menu.patterns.get(i).getStackInSlot(9).isEmpty())
 			{
-				ItemStack stack = menu.patterns.get(i).getItem(9);
+				ItemStack stack = menu.patterns.get(i).getStackInSlot(9);
 				transform.pushPose();
 				Font font = null;
 				if(!stack.isEmpty())

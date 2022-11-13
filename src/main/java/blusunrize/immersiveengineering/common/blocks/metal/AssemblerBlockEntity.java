@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -32,7 +31,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
@@ -42,12 +40,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,7 +56,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -70,7 +64,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -97,7 +91,9 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 			new FluidTank(TANK_CAPACITY), new FluidTank(TANK_CAPACITY), new FluidTank(TANK_CAPACITY)
 	};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
-	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this), new CrafterPatternInventory(this), new CrafterPatternInventory(this)};
+	public CrafterPatternInventory[] patterns = {
+			new CrafterPatternInventory(), new CrafterPatternInventory(), new CrafterPatternInventory()
+	};
 	public boolean recursiveIngredients = false;
 
 	@Override
@@ -114,8 +110,8 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
 				ListTag patternList = nbt.getList("pattern"+iPattern, 10);
-				patterns[iPattern] = new CrafterPatternInventory(this);
-				patterns[iPattern].readFromNBT(patternList);
+				patterns[iPattern] = new CrafterPatternInventory();
+				patterns[iPattern].readFromNBT(patternList, level);
 			}
 		}
 	}
@@ -159,118 +155,93 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		super.tickServer();
 		if(isDummy()||isRSDisabled()||level.getGameTime()%16!=((getBlockPos().getX()^getBlockPos().getZ())&15))
 			return;
-		boolean update = false;
-		NonNullList<ItemStack>[] outputBuffer = new NonNullList[patterns.length];
-		for(int p = 0; p < patterns.length; p++)
-		{
-			CrafterPatternInventory pattern = patterns[p];
-			ComputerControlState state = computerControlByRecipe[p];
-			if(state.isAttached()&&!state.isEnabled())
-				continue;
-			if(!pattern.inv.get(9).isEmpty()&&canOutput(pattern.inv.get(9), p))
-			{
-				ItemStack output = pattern.inv.get(9).copy();
-				ArrayList<ItemStack> availableStacks = new ArrayList<>();//List of all available inputs in the inventory
-				for(NonNullList<ItemStack> bufferedStacks : outputBuffer)
-					if(bufferedStacks!=null)
-						for(ItemStack stack : bufferedStacks)
-							if(!stack.isEmpty())
-								availableStacks.add(stack);
-				for(ItemStack stack : this.inventory)
-					if(!stack.isEmpty())
-						availableStacks.add(stack);
-				int consumed = IEServerConfig.MACHINES.assembler_consumption.get();
-
-				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-				RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, level);
-				if(queries==null)
-					continue;
-				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&
-						this.consumeIngredients(queries, availableStacks, false, null, null))
-				{
-					this.energyStorage.extractEnergy(consumed, false);
-					NonNullList<ItemStack> outputList = NonNullList.create();//List of all outputs for the current recipe. This includes discarded containers
-					outputList.add(output);
-
-					BooleanList providedByNonItem = new BooleanArrayList(new boolean[9]);
-					NonNullList<ItemStack> gridItems = NonNullList.of(ItemStack.EMPTY, pattern.inv.toArray(new ItemStack[0]));
-					this.consumeIngredients(queries, availableStacks, true, gridItems, providedByNonItem);
-
-					NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
-					for(int i = 0; i < remainingItems.size(); i++)
-					{
-						ItemStack rem = remainingItems.get(i);
-						if(!providedByNonItem.getBoolean(i)&&!rem.isEmpty())
-							outputList.add(rem);
-					}
-
-					outputBuffer[p] = outputList;
-					update = true;
-				}
-			}
-		}
-		for(int buffer = 0; buffer < outputBuffer.length; buffer++)
-			if(outputBuffer[buffer]!=null&&outputBuffer[buffer].size() > 0)
-				for(int iOutput = 0; iOutput < outputBuffer[buffer].size(); iOutput++)
-				{
-					ItemStack output = outputBuffer[buffer].get(iOutput);
-					if(!output.isEmpty()&&output.getCount() > 0)
-					{
-						if(!isRecipeIngredient(output, buffer))
-						{
-							output = Utils.insertStackIntoInventory(this.output, output, false);
-							if(output.isEmpty()||output.getCount() <= 0)
-								continue;
-						}
-						int free = -1;
-						if(iOutput==0)//Main recipe output
-						{
-							if(this.inventory.get(18+buffer).isEmpty()&&free < 0)
-								free = 18+buffer;
-							else if(!this.inventory.get(18+buffer).isEmpty()&&
-									ItemHandlerHelper.canItemStacksStack(output, this.inventory.get(18+buffer))&&
-									this.inventory.get(18+buffer).getCount()+output.getCount() <= this.inventory.get(18+buffer).getMaxStackSize())
-							{
-								this.inventory.get(18+buffer).grow(output.getCount());
-								free = -1;
-								continue;
-							}
-						}
-						else
-							for(int i = 0; i < this.inventory.size(); i++)
-							{
-								if(this.inventory.get(i).isEmpty()&&free < 0)
-									free = i;
-								else if(!this.inventory.get(i).isEmpty()&&
-										ItemHandlerHelper.canItemStacksStack(output, this.inventory.get(i))&&
-										this.inventory.get(i).getCount()+output.getCount() <= this.inventory.get(i).getMaxStackSize())
-								{
-									this.inventory.get(i).grow(output.getCount());
-									free = -1;
-									break;
-								}
-							}
-						if(free >= 0)
-							this.inventory.set(free, output.copy());
-					}
-				}
+		final List<OutputBuffer> outputs = craftRecipes();
+		for(OutputBuffer buffer : outputs)
+			for(int i = 0; i < buffer.results.size(); ++i)
+				outputStack(buffer.results.get(i), buffer.id, i==0);
 		for(int i = 0; i < 3; i++)
 			if(!isRecipeIngredient(this.inventory.get(18+i), i))
 				this.inventory.set(18+i, Utils.insertStackIntoInventory(output, this.inventory.get(18+i), false));
+	}
 
-		if(update)
+	private List<OutputBuffer> craftRecipes()
+	{
+		List<OutputBuffer> outputBuffer = new ArrayList<>();
+		for(int patternId = 0; patternId < patterns.length; patternId++)
 		{
-			this.setChanged();
-			this.markContainingBlockForUpdate(null);
+			CrafterPatternInventory pattern = patterns[patternId];
+			ComputerControlState state = computerControlByRecipe[patternId];
+			if(state.isAttached()&&!state.isEnabled())
+				continue;
+			ItemStack output = pattern.inv.get(9).copy();
+			if(output.isEmpty()||!canOutput(output, patternId))
+				continue;
+			ArrayList<ItemStack> availableStacks = new ArrayList<>();//List of all available inputs in the inventory
+			for(OutputBuffer bufferedStacks : outputBuffer)
+				availableStacks.addAll(bufferedStacks.results);
+			for(ItemStack stack : this.inventory)
+				if(!stack.isEmpty())
+					availableStacks.add(stack);
+			List<RecipeQuery> queries = pattern.getQueries(getLevelNonnull());
+			if(queries==null)
+				continue;
+
+			int consumed = IEServerConfig.MACHINES.assembler_consumption.get();
+			if(!this.consumeIngredients(queries, availableStacks, false, null))
+				continue;
+			if(this.energyStorage.extractEnergy(consumed, false)!=consumed)
+				continue;
+			NonNullList<ItemStack> outputList = NonNullList.create();//List of all outputs for the current recipe. This includes discarded containers
+			outputList.add(output);
+
+			RecipeInputSources sources = new RecipeInputSources(pattern);
+			this.consumeIngredients(queries, availableStacks, true, sources);
+
+			NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, sources.gridItems));
+			for(int i = 0; i < remainingItems.size(); i++)
+			{
+				ItemStack rem = remainingItems.get(i);
+				if(!sources.providedByNonItem.getBoolean(i)&&!rem.isEmpty())
+					outputList.add(rem);
+			}
+
+			outputBuffer.add(new OutputBuffer(outputList, patternId));
+			markChunkDirty();
+		}
+		return outputBuffer;
+	}
+
+	private void outputStack(ItemStack output, int patternId, boolean isMainOutput)
+	{
+		if(!isRecipeIngredient(output, patternId))
+		{
+			output = Utils.insertStackIntoInventory(this.output, output, false);
+			if(output.isEmpty()||output.getCount() <= 0)
+				return;
+		}
+		if(isMainOutput)
+			tryInsertOnto(18+patternId, output);
+		else
+		{
+			boolean inserted = false;
+			for(int i = 0; i < this.inventory.size(); i++)
+				if(tryInsertOnto(i, output))
+				{
+					inserted = true;
+					break;
+				}
+			if(!inserted)
+				for(int i = 0; i < this.inventory.size(); i++)
+					if(inventory.get(i).isEmpty())
+						this.inventory.set(i, output.copy());
 		}
 	}
 
 	public boolean consumeIngredients(
-			RecipeQuery[] queries, ArrayList<ItemStack> itemStacks, boolean doConsume,
-			@Nullable NonNullList<ItemStack> gridItems, @Nullable BooleanList providedByNonItem
+			List<RecipeQuery> queries, ArrayList<ItemStack> itemStacks, boolean doConsume,
+			@Nullable RecipeInputSources sources
 	)
 	{
-		Preconditions.checkArgument((gridItems==null)==(providedByNonItem==null));
 		if(!doConsume)
 		{
 			ArrayList<ItemStack> dupeList = new ArrayList<>(itemStacks.size());
@@ -278,69 +249,82 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 				dupeList.add(stack.copy());
 			itemStacks = dupeList;
 		}
-		FluidStack[] tankFluids = Arrays.stream(tanks).map(tank -> doConsume?tank.getFluid(): tank.getFluid().copy()).toArray(FluidStack[]::new);
-		for(int i = 0; i < queries.length; i++)
+		List<FluidStack> tankFluids = Arrays.stream(tanks)
+				.map(tank -> doConsume?tank.getFluid(): tank.getFluid().copy())
+				.toList();
+		for(int i = 0; i < queries.size(); i++)
 		{
-			RecipeQuery recipeQuery = queries[i];
-			if(recipeQuery!=null)
+			RecipeQuery recipeQuery = queries.get(i);
+			int querySize = recipeQuery.getItemCount();
+			if(recipeQuery.isFluid())
 			{
-				int querySize = recipeQuery.getItemCount();
-				if(recipeQuery.isFluid())
-				{
-					boolean hasFluid = false;
-					for(int t = 0; t < tankFluids.length; t++)
-						if(recipeQuery.matchesFluid(tankFluids[t]))
-						{
-							hasFluid = true;
-							if(doConsume)
-								tanks[t].drain(recipeQuery.getFluidSize(), FluidAction.EXECUTE);
-							else
-								tankFluids[t].shrink(recipeQuery.getFluidSize());
-							break;
-						}
-					if(hasFluid)
-					{
-						if(providedByNonItem!=null)
-							providedByNonItem.set(i, true);
-						continue;
-					}
-					else
-						querySize = 1;
-				}
-				Iterator<ItemStack> it = itemStacks.iterator();
-				while(it.hasNext())
-				{
-					ItemStack next = it.next();
-					if(!next.isEmpty()&&recipeQuery.matchesIgnoringSize(next))
-					{
-						int taken = Math.min(querySize, next.getCount());
-						ItemStack forGrid = next.split(taken);
-						if(gridItems!=null)
-						{
-							gridItems.set(i, forGrid);
-							providedByNonItem.set(i, false);
-						}
-						if(next.getCount() <= 0)
-							it.remove();
-						querySize -= taken;
-						if(querySize <= 0)
-							break;
-					}
-				}
-				if(querySize > 0)
-					return false;
+				if(consumeFluid(tankFluids, i, recipeQuery, sources))
+					continue;
+				else
+					querySize = 1;
 			}
+			for(ItemStack next : itemStacks)
+				querySize -= consumeItem(querySize, i, next, recipeQuery, sources);
+			if(querySize > 0)
+				return false;
 		}
 		return true;
 	}
 
+	private boolean consumeFluid(
+			List<FluidStack> tankFluids, int slot, RecipeQuery query, @Nullable RecipeInputSources sources
+	)
+	{
+		for(FluidStack tankFluid : tankFluids)
+			if(query.matchesFluid(tankFluid))
+			{
+				tankFluid.shrink(query.getFluidSize());
+				if(sources!=null)
+					sources.providedByNonItem.set(slot, true);
+				return true;
+			}
+		return false;
+	}
+
+	private int consumeItem(
+			int maxConsume, int slot, ItemStack next, RecipeQuery query, @Nullable RecipeInputSources sources
+	)
+	{
+		if(maxConsume <= 0||next.isEmpty()||!query.matchesIgnoringSize(next))
+			return 0;
+		int taken = Math.min(maxConsume, next.getCount());
+		ItemStack forGrid = next.split(taken);
+		if(sources!=null)
+			sources.gridItems.set(slot, forGrid);
+		return taken;
+	}
+
+	private boolean tryInsertOnto(int slot, ItemStack toAdd)
+	{
+		if(!canInsertOnto(slot, toAdd))
+			return false;
+		final var present = this.inventory.get(slot);
+		if(present.isEmpty())
+			this.inventory.set(slot, toAdd);
+		else
+			present.grow(toAdd.getCount());
+		return true;
+	}
+
+	public boolean canInsertOnto(int slot, ItemStack output)
+	{
+		final ItemStack existing = this.inventory.get(slot);
+		if(existing.isEmpty())
+			return true;
+		else if(!ItemHandlerHelper.canItemStacksStack(output, existing))
+			return false;
+		else
+			return existing.getCount()+output.getCount() <= existing.getMaxStackSize();
+	}
+
 	public boolean canOutput(ItemStack output, int iPattern)
 	{
-		if(this.inventory.get(18+iPattern).isEmpty())
-			return true;
-		else
-			return ItemHandlerHelper.canItemStacksStack(output, this.inventory.get(18+iPattern))&&
-					this.inventory.get(18+iPattern).getCount()+output.getCount() <= this.inventory.get(18+iPattern).getMaxStackSize();
+		return canInsertOnto(18+iPattern, output);
 	}
 
 	public boolean isRecipeIngredient(ItemStack stack, int slot)
@@ -352,11 +336,8 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 			{
 				CrafterPatternInventory pattern = patterns[p];
 				for(int i = 0; i < 9; i++)
-					if(!pattern.inv.get(i).isEmpty())
-					{
-						if(ItemStack.isSame(pattern.inv.get(i), stack))
-							return true;
-					}
+					if(!pattern.inv.get(i).isEmpty()&&ItemStack.isSame(pattern.inv.get(i), stack))
+						return true;
 			}
 		return false;
 	}
@@ -427,13 +408,6 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		//TODO this seems both unnecessary and wrong
-		//BlockPos pos = getPos().offset(facing, -1);
-		//TileEntity inventoryTile = this.world.getTileEntity(pos);
-		//if(inventoryTile!=null)
-		//	output = Utils.insertStackIntoInventory(inventoryTile, output, facing.getOpposite());
-		//if(!output.isEmpty())
-		//	Utils.dropStackAtPos(world, pos, output, facing);
 	}
 
 	@Override
@@ -577,9 +551,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	@Override
 	public Direction[] sigOutputDirections()
 	{
-		/*TODO if(posInMultiblock==16)*/
 		return new Direction[]{this.getFacing()};
-		//return new Direction[0];
 	}
 
 	@Override
@@ -588,7 +560,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		super.setLevel(world);
 		if(getLevel()!=null)
 			for(CrafterPatternInventory pattern : patterns)
-				pattern.recalculateOutput();
+				pattern.recalculateOutput(level);
 	}
 
 	@Override
@@ -597,151 +569,15 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		return Arrays.stream(computerControlByRecipe);
 	}
 
-	public static class CrafterPatternInventory implements Container
+	private record OutputBuffer(NonNullList<ItemStack> results, int id)
 	{
-		public NonNullList<ItemStack> inv = NonNullList.withSize(10, ItemStack.EMPTY);
-		public Recipe<CraftingContainer> recipe;
-		final AssemblerBlockEntity tile;
+	}
 
-		public CrafterPatternInventory(AssemblerBlockEntity tile)
+	private record RecipeInputSources(List<ItemStack> gridItems, BooleanList providedByNonItem)
+	{
+		public RecipeInputSources(CrafterPatternInventory pattern)
 		{
-			this.tile = tile;
-		}
-
-		@Override
-		public int getContainerSize()
-		{
-			return 10;
-		}
-
-		@Override
-		public boolean isEmpty()
-		{
-			for(ItemStack stack : inv)
-			{
-				if(!stack.isEmpty())
-					return false;
-			}
-			return true;
-		}
-
-		@Override
-		public ItemStack getItem(int slot)
-		{
-			return inv.get(slot);
-		}
-
-		@Override
-		public ItemStack removeItem(int slot, int amount)
-		{
-			ItemStack stack = getItem(slot);
-			if(slot < 9&&!stack.isEmpty())
-				if(stack.getCount() <= amount)
-					setItem(slot, ItemStack.EMPTY);
-				else
-				{
-					stack = stack.split(amount);
-					if(stack.getCount()==0)
-						setItem(slot, ItemStack.EMPTY);
-				}
-			return stack;
-		}
-
-		@Override
-		public ItemStack removeItemNoUpdate(int slot)
-		{
-			ItemStack stack = getItem(slot);
-			if(!stack.isEmpty())
-				setItem(slot, ItemStack.EMPTY);
-			return stack;
-		}
-
-		@Override
-		public void setItem(int slot, ItemStack stack)
-		{
-			if(slot < 9)
-			{
-				inv.set(slot, stack);
-				if(!stack.isEmpty()&&stack.getCount() > getMaxStackSize())
-					stack.setCount(getMaxStackSize());
-			}
-			recalculateOutput();
-		}
-
-		@Override
-		public void clearContent()
-		{
-			for(int i = 0; i < this.inv.size(); i++)
-				this.inv.set(i, ItemStack.EMPTY);
-		}
-
-		public void recalculateOutput()
-		{
-			if(tile.getLevel()!=null)
-			{
-				CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-				this.recipe = Utils.findCraftingRecipe(invC, tile.getLevelNonnull()).orElse(null);
-				this.inv.set(9, recipe!=null?recipe.assemble(invC): ItemStack.EMPTY);
-			}
-		}
-
-
-		@Override
-		public int getMaxStackSize()
-		{
-			return 1;
-		}
-
-		@Override
-		public boolean stillValid(Player player)
-		{
-			return true;
-		}
-
-		@Override
-		public void startOpen(Player player)
-		{
-		}
-
-		@Override
-		public void stopOpen(Player player)
-		{
-		}
-
-		@Override
-		public boolean canPlaceItem(int slot, ItemStack stack)
-		{
-			return true;
-		}
-
-		@Override
-		public void setChanged()
-		{
-			this.tile.setChanged();
-		}
-
-		public void writeToNBT(ListTag list)
-		{
-			for(int i = 0; i < this.inv.size(); i++)
-				if(!this.inv.get(i).isEmpty())
-				{
-					CompoundTag itemTag = new CompoundTag();
-					itemTag.putByte("Slot", (byte)i);
-					this.inv.get(i).save(itemTag);
-					list.add(itemTag);
-				}
-		}
-
-		public void readFromNBT(ListTag list)
-		{
-			for(int i = 0; i < list.size(); i++)
-			{
-				CompoundTag itemTag = list.getCompound(i);
-				int slot = itemTag.getByte("Slot")&255;
-				if(slot < getContainerSize())
-					this.inv.set(slot, ItemStack.of(itemTag));
-			}
-			recalculateOutput();
+			this(List.copyOf(pattern.inv), new BooleanArrayList(new boolean[9]));
 		}
 	}
 

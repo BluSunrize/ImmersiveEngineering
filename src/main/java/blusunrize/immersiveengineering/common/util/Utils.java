@@ -718,7 +718,7 @@ public class Utils
 			super(nullContainer, w, h);
 		}
 
-		public static CraftingContainer createFilledCraftingInventory(int w, int h, NonNullList<ItemStack> stacks)
+		public static CraftingContainer createFilledCraftingInventory(int w, int h, List<ItemStack> stacks)
 		{
 			CraftingContainer invC = new Utils.InventoryCraftingFalse(w, h);
 			for(int j = 0; j < w*h; j++)

@@ -55,9 +55,10 @@ public class AssemblerHandler
 	}
 
 	@Nonnull
-	public static IRecipeAdapter<?> findAdapter(Recipe recipe)
+	public static <R extends Recipe<CraftingContainer>>
+	IRecipeAdapter<R> findAdapter(R recipe)
 	{
-		return findAdapterForClass(recipe.getClass());
+		return (IRecipeAdapter<R>)findAdapterForClass(recipe.getClass());
 	}
 
 	@Deprecated
@@ -85,7 +86,7 @@ public class AssemblerHandler
 	public interface IRecipeAdapter<R extends Recipe<CraftingContainer>>
 	{
 		@Nullable
-		RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input, Level world);
+		List<RecipeQuery> getQueriedInputs(R recipe, NonNullList<ItemStack> input, Level world);
 	}
 
 	private static <T> RecipeQuery fromFunctions(T in, ItemStack remaining, List<BiFunction<T, ItemStack, RecipeQuery>> converters)
