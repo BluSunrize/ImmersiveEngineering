@@ -156,7 +156,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		if(pouringMetal > 0)
 			pouringMetal--;
 		if(shouldRenderAsActive())
-			for(int i = 0; i < 4; i++)
+			for(int i = 0; i < Math.max(1, processQueue.size() * 0.5); i++)
 			{
 				//Each of these renders in triplicate, one for each electrode.
 				if(Utils.RAND.nextInt(6)==0)
@@ -182,7 +182,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 							Utils.RAND.nextDouble()*.05-.025, .05, Utils.RAND.nextDouble()*.05-.025);
 				}
 				level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
-						Utils.RAND.nextDouble()*.025-.0125, .05, Utils.RAND.nextDouble()*.025-.0125);
+						Utils.RAND.nextDouble()*.01875-0.009375, .05, Utils.RAND.nextDouble()*.01875-0.009375);
 			}
 	}
 
