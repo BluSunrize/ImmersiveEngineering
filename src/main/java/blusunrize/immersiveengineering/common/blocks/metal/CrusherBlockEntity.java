@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
@@ -33,7 +34,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -81,6 +85,17 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 		{
 			animation_barrelRotation += 18f;
 			animation_barrelRotation %= 360f;
+		}
+	}
+
+	public void spawnParticles(ItemStack stack)
+	{
+		Level level = getLevelNonnull();
+		if(level instanceof ServerLevel)
+		{
+			((ServerLevel)level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), getBlockPos().getX(), getBlockPos().getY() + 2.125, getBlockPos().getZ() + 0.5 , 8, 0, 0, 0, 0.0625);
+			((ServerLevel)level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), getBlockPos().getX() + 0.5, getBlockPos().getY() + 2.125, getBlockPos().getZ() + 0.5, 8, 0, 0, 0, 0.0625);
+			((ServerLevel)level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack), getBlockPos().getX() + 1, getBlockPos().getY() + 2.125, getBlockPos().getZ() + 0.5, 8, 0, 0, 0, 0.0625);
 		}
 	}
 
@@ -342,6 +357,10 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	@Override
 	public boolean additionalCanProcessCheck(MultiblockProcess<CrusherRecipe> process)
 	{
+		if (processQueue.size() > 0 && processQueue.get(0).getRecipe(getLevelNonnull()) != null)
+		{
+			spawnParticles(processQueue.get(0).getRecipe(getLevelNonnull()).input.getItems()[0]);
+		}
 		return true;
 	}
 
