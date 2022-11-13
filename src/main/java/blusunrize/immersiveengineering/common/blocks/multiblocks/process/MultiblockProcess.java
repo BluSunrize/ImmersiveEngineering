@@ -38,10 +38,12 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 		this.processTick = 0;
 	}
 
-	public MultiblockProcess(R recipe, BiFunction<Level, ResourceLocation, R> getRecipe)
+	public MultiblockProcess(R recipe)
 	{
 		this.recipeId = recipe.getId();
-		this.getRecipe = getRecipe;
+		this.getRecipe = ($, $1) -> {
+			throw new RuntimeException("A process initialized with a recipe should never query recipes");
+		};
 		this.processTick = 0;
 		populateLevelData(recipe);
 	}

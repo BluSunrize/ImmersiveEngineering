@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
@@ -14,6 +15,7 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 		RegistryObject<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE,
 		RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE,
 		RegistryObject<? extends MultiblockPartBlock<State>> block,
+		RegistryObject<? extends Item> blockItem,
 		boolean mirrorable,
 		boolean hasComparatorOutput,
 		boolean redstoneInputAware,

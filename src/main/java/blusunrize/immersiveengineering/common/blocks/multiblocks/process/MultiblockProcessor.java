@@ -16,29 +16,47 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.IntToDoubleFunction;
 
 public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends ProcessContext<R>>
 {
 	private final List<MultiblockProcess<R, CTX>> processQueue = new ArrayList<>();
 	private final int maxQueueLength;
-	private final int minProcessDelay;
+	// Input is the
+	private final IntToDoubleFunction minDelayAfter;
 	private final int maxProcessPerTick;
 	private final Runnable markDirty;
-	private final RecipeSource<R> recipeSource;
+	// TODO rename
+	private final Runnable onInsert;
+	private final BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID;
 
 	public MultiblockProcessor(
 			int maxQueueLength,
-			int minProcessDelay,
+			int minDelayAfter,
 			int maxProcessPerTick,
 			Runnable markDirty,
-			RecipeSource<R> recipeSource
+			BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID
+	)
+	{
+		this(maxQueueLength, $ -> minDelayAfter, maxProcessPerTick, markDirty, () -> {
+		}, getRecipeFromID);
+	}
+
+	public MultiblockProcessor(
+			int maxQueueLength,
+			IntToDoubleFunction minDelayAfter,
+			int maxProcessPerTick,
+			Runnable markDirty,
+			Runnable onInsert,
+			BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID
 	)
 	{
 		this.maxQueueLength = maxQueueLength;
-		this.minProcessDelay = minProcessDelay;
+		this.minDelayAfter = minDelayAfter;
 		this.maxProcessPerTick = maxProcessPerTick;
 		this.markDirty = markDirty;
-		this.recipeSource = recipeSource;
+		this.onInsert = onInsert;
+		this.getRecipeFromID = getRecipeFromID;
 	}
 
 	public boolean tickServer(CTX ctx, IMultiblockLevel level, boolean canWork)
@@ -59,7 +77,10 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 				tickedAny = true;
 			}
 			if(process.clearProcess)
+			{
 				processIterator.remove();
+				onInsert.run();
+			}
 		}
 		if(tickedAny)
 			markDirty.run();
@@ -89,10 +110,15 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		for(final var tag : list)
 			if(tag instanceof CompoundTag processTag)
 			{
-				final var loadedProcess = loader.fromNBT(this.recipeSource.getRecipeFromID, processTag);
+				final var loadedProcess = loader.fromNBT(getRecipeFromID, processTag);
 				if(loadedProcess!=null)
 					this.processQueue.add(loadedProcess);
 			}
+	}
+
+	public BiFunction<Level, ResourceLocation, R> recipeGetter()
+	{
+		return getRecipeFromID;
 	}
 
 	public boolean addProcessToQueue(MultiblockProcess<R, CTX> process, Level level, boolean simulate)
@@ -144,26 +170,22 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		}
 		if(maxQueueLength < 0||processQueue.size() < maxQueueLength)
 		{
-			float dist = Float.POSITIVE_INFINITY;
 			if(processQueue.size() > 0)
 			{
-				MultiblockProcess<R, CTX> lastBefore = processQueue.get(processQueue.size()-1);
-				dist = lastBefore.processTick/(float)lastBefore.getMaxTicks(level);
+				MultiblockProcess<R, CTX> previousProcess = processQueue.get(processQueue.size()-1);
+				final var maxTime = previousProcess.getMaxTicks(level);
+				float dist = previousProcess.processTick/(float)maxTime;
+				if(dist < minDelayAfter.applyAsDouble(maxTime))
+					return false;
 			}
-			if(dist < minProcessDelay)
-				return false;
 
 			if(!simulate)
 				processQueue.add(process);
 			markDirty.run();
+			onInsert.run();
 			return true;
 		}
 		return false;
-	}
-
-	public RecipeSource<R> getRecipeSource()
-	{
-		return recipeSource;
 	}
 
 	public int getMaxQueueSize()
@@ -179,13 +201,6 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	public List<MultiblockProcess<R, CTX>> getQueue()
 	{
 		return Collections.unmodifiableList(processQueue);
-	}
-
-	public record RecipeSource<R extends MultiblockRecipe>(
-			BiFunction<Level, ItemStack, @Nullable R> getRecipeOnInsert,
-			BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID
-	)
-	{
 	}
 
 	public interface ProcessLoader<R extends MultiblockRecipe, CTX extends ProcessContext<R>>

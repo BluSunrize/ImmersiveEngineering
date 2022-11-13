@@ -156,12 +156,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(innerObj("block/metal_multiblock/sawmill.obj"), IEMultiblocks.SAWMILL);
 		createMultiblock(innerObj("block/metal_multiblock/excavator.obj"), IEMultiblocks.EXCAVATOR);
 		createMultiblock(innerObj("block/metal_multiblock/crusher.obj"), IEMultiblocks.CRUSHER);
-		createMultiblock(Multiblocks.METAL_PRESS, split(
-				innerObj("block/metal_multiblock/metal_press.obj"),
-				IEMultiblocks.METAL_PRESS,
-				p -> new BlockPos(p.getZ()+1, p.getY(), p.getX()-1),
-				false
-		));
+		createMultiblock(innerObj("block/metal_multiblock/metal_press.obj"), IEMultiblocks.METAL_PRESS);
 		createMultiblock(Multiblocks.ASSEMBLER,
 				split(innerObj("block/metal_multiblock/assembler.obj"), IEMultiblocks.ASSEMBLER));
 		createMultiblock(innerObj("block/metal_multiblock/arc_furnace.obj"), IEMultiblocks.ARC_FURNACE);

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -41,11 +42,10 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe>
 	}
 
 	public MultiblockProcessInWorld(
-			R recipe, BiFunction<Level, ResourceLocation, R> getRecipe,
-			float transformationPoint, NonNullList<ItemStack> inputItem
+			R recipe, float transformationPoint, NonNullList<ItemStack> inputItem
 	)
 	{
-		super(recipe, getRecipe);
+		super(recipe);
 		this.inputItems = inputItem;
 		this.transformationPoint = transformationPoint;
 	}
@@ -58,6 +58,11 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe>
 		this.inputItems = NonNullList.withSize(data.getInt("numInputs"), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(data, this.inputItems);
 		this.transformationPoint = data.getFloat("process_transformationPoint");
+	}
+
+	public MultiblockProcessInWorld(R recipe, ItemStack input)
+	{
+		this(recipe, 0.5f, Utils.createNonNullItemStackListFromItemStack(input));
 	}
 
 	public List<ItemStack> getDisplayItem(Level level)

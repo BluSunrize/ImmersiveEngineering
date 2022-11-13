@@ -9,4 +9,8 @@ import java.util.function.Supplier;
 public interface IInitialMultiblockContext<State extends IMultiblockState> extends ICommonMultiblockContext
 {
 	Supplier<@Nullable Level> levelSupplier();
+
+	Runnable getMarkDirtyRunnable();
+
+	Runnable getSyncRunnable();
 }

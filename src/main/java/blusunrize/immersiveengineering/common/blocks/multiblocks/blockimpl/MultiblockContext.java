@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -55,9 +56,14 @@ public record MultiblockContext<State extends IMultiblockState>(
 	@Override
 	public void requestMasterBESync()
 	{
-		final var level = this.level.getRawLevel();
+		requestBESync(this.masterHelper.getMasterBE());
+	}
+
+	static void requestBESync(BlockEntity be)
+	{
+		final var level = be.getLevel();
 		if(level!=null&&level.getChunkSource() instanceof ServerChunkCache chunkCache)
-			chunkCache.blockChanged(this.masterHelper.getMasterBE().getBlockPos());
+			chunkCache.blockChanged(be.getBlockPos());
 	}
 
 	@Override

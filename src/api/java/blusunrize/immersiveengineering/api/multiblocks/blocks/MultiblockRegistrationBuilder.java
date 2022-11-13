@@ -3,8 +3,10 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.Disassembler;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -27,6 +29,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	private RegistryObject<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE;
 	private RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE;
 	private RegistryObject<? extends MultiblockPartBlock<State>> block;
+	private RegistryObject<? extends Item> item;
 	private boolean mirrorable = true;
 	private boolean hasComparatorOutput = false;
 	private boolean redstoneInputAware = false;
@@ -69,24 +72,29 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	}
 
 	public MultiblockRegistrationBuilder<State> defaultBlock(
-			DeferredRegister<Block> register, BlockBehaviour.Properties properties
+			DeferredRegister<Block> register,
+			DeferredRegister<Item> blockItemRegister,
+			BlockBehaviour.Properties properties
 	)
 	{
-		return customBlock(register, reg -> {
+		return customBlock(register, blockItemRegister, reg -> {
 			if(reg.mirrorable())
 				return new MultiblockPartBlock.WithMirrorState<>(properties, reg);
 			else
 				return new MultiblockPartBlock<>(properties, reg);
-		});
+		}, MultiblockItem::new);
 	}
 
 	public MultiblockRegistrationBuilder<State> customBlock(
 			DeferredRegister<Block> register,
-			Function<MultiblockRegistration<State>, ? extends MultiblockPartBlock<State>> make
+			DeferredRegister<Item> blockItemRegister,
+			Function<MultiblockRegistration<State>, ? extends MultiblockPartBlock<State>> make,
+			Function<Block, Item> makeItem
 	)
 	{
 		Preconditions.checkState(this.block==null);
 		this.block = register.register(name, () -> make.apply(this.result));
+		this.item = blockItemRegister.register(name, () -> makeItem.apply(this.result.block().get()));
 		return this;
 	}
 
@@ -108,11 +116,12 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Objects.requireNonNull(masterBE);
 		Objects.requireNonNull(dummyBE);
 		Objects.requireNonNull(block);
+		Objects.requireNonNull(item);
 		Objects.requireNonNull(getMasterPosInMB);
 		Objects.requireNonNull(disassemble);
 		Preconditions.checkState(this.result==null);
 		this.result = new MultiblockRegistration<>(
-				logic, masterBE, dummyBE, block,
+				logic, masterBE, dummyBE, block, item,
 				mirrorable, hasComparatorOutput, redstoneInputAware,
 				getMasterPosInMB, disassemble
 		);

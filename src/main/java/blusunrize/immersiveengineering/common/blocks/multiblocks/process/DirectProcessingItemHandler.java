@@ -6,8 +6,10 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements IItemHandlerModifiable
@@ -16,14 +18,17 @@ public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements 
 	private boolean doProcessStacking = false;
 	private final Supplier<Level> level;
 	private final MultiblockProcessor<R, ProcessContextInWorld<R>> processor;
+	private final BiFunction<Level, ItemStack, @Nullable R> getRecipeOnInsert;
 
 	public DirectProcessingItemHandler(
 			Supplier<Level> level,
-			MultiblockProcessor<R, ProcessContextInWorld<R>> processor
+			MultiblockProcessor<R, ProcessContextInWorld<R>> processor,
+			BiFunction<Level, ItemStack, @Nullable R> getRecipeOnInsert
 	)
 	{
 		this.level = level;
 		this.processor = processor;
+		this.getRecipeOnInsert = getRecipeOnInsert;
 	}
 
 	public DirectProcessingItemHandler<R> setProcessStacking(boolean stacking)
@@ -50,13 +55,12 @@ public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements 
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 	{
 		stack = stack.copy();
-		R recipe = processor.getRecipeSource().getRecipeOnInsert().apply(level.get(), stack);
+		R recipe = getRecipeOnInsert.apply(level.get(), stack);
 		if(recipe==null)
 			return stack;
 		ItemStack displayStack = recipe.getDisplayStack(stack);
 		if(processor.addProcessToQueue(new MultiblockProcessInWorld<>(
 				recipe,
-				processor.getRecipeSource().getRecipeFromID(),
 				TRANSFORMATION_POINT,
 				Utils.createNonNullItemStackListFromItemStack(displayStack)
 		), level.get(), simulate, doProcessStacking))

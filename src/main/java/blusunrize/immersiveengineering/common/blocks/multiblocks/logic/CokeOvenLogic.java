@@ -207,14 +207,14 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 							IOConstraint.FLUID_INPUT,
 							IOConstraint.OUTPUT
 					),
-					ctx::markMasterDirty
+					ctx.getMarkDirtyRunnable()
 			);
 			cachedRecipe = CachedRecipe.cachedSkip1(
 					CokeOvenRecipe::findRecipe, () -> inventory.getStackInSlot(INPUT_SLOT)
 			);
 			this.invCap = new StoredCapability<>(this.inventory);
 			this.fluidCap = new StoredCapability<>(
-					new ArrayFluidHandler(new IFluidTank[]{tank}, true, false, ctx::markMasterDirty)
+					new ArrayFluidHandler(new IFluidTank[]{tank}, true, false, ctx.getMarkDirtyRunnable())
 			);
 		}
 

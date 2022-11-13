@@ -1,0 +1,55 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic": false,
+  "inner_model": {
+    "inner_model": {
+      "parent": "minecraft:block/block",
+      "automatic_culling": false,
+      "flip_v": true,
+      "loader": "forge:obj",
+      "model": "immersiveengineering:models/block/metal_multiblock/metal_press.obj",
+      "textures": {
+        "particle": "immersiveengineering:block/multiblocks/metal_press"
+      }
+    },
+    "loader": "immersiveengineering:mirror"
+  },
+  "loader": "immersiveengineering:basic_split",
+  "split_parts": [
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      -1,
+      0
+    ],
+    [
+      0,
+      -1,
+      0
+    ],
+    [
+      -1,
+      -1,
+      0
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      1,
+      0,
+      0
+    ],
+    [
+      -1,
+      0,
+      0
+    ]
+  ]
+}

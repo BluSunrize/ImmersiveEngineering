@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.RecipeSource;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.FermenterShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
@@ -107,12 +106,11 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 			}
 			if(!stack.isEmpty()&&stack.getCount() > 0)
 			{
-				final var recipeSource = state.processor.getRecipeSource();
-				FermenterRecipe recipe = recipeSource.getRecipeOnInsert().apply(level, stack);
+				FermenterRecipe recipe = FermenterRecipe.findRecipe(level, stack);
 				if(recipe!=null)
 				{
 					MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(
-							recipe, recipeSource.getRecipeFromID(), slot
+							recipe, state.processor.recipeGetter(), slot
 					);
 					if(state.processor.addProcessToQueue(process, level, false))
 						addedAny = true;
@@ -203,16 +201,14 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.processor = new MultiblockProcessor<>(
-					8, 0, 8,
-					ctx::markMasterDirty,
-					new RecipeSource<>(FermenterRecipe::findRecipe, FermenterRecipe.RECIPES::getById)
+					8, 0, 8, ctx.getMarkDirtyRunnable(), FermenterRecipe.RECIPES::getById
 			);
 			this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
 					new IOConstraintGroup(IOConstraint.ANY_INPUT, NUM_INPUT_SLOTS),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1),
 					new IOConstraintGroup(IOConstraint.FLUID_INPUT, 1),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1)
-			), ctx::markMasterDirty);
+			), ctx.getMarkDirtyRunnable());
 			// TODO check pos and orientation
 			this.fluidOutput = ctx.getCapabilityAt(
 					ForgeCapabilities.FLUID_HANDLER, new BlockPos(3, 0, 1), RelativeBlockFace.LEFT
@@ -227,7 +223,7 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 					this.inventory, false, true, new IntRange(OUTPUT_SLOT, OUTPUT_SLOT+1)
 			));
 			this.fluidHandler = new StoredCapability<>(new ArrayFluidHandler(
-					tank, true, false, ctx::markMasterDirty
+					tank, true, false, ctx.getMarkDirtyRunnable()
 			));
 			this.energyHandler = new StoredCapability<>(energy);
 			this.comparators.addComparator(IComparatorValue.inventory(state -> state.inventory, 0, 8), REDSTONE_POS);

@@ -422,7 +422,7 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.CLOCHE.master(), ClocheRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.BLASTFURNACE_PREHEATER.master(), BlastFurnacePreheaterRenderer::new);
 		// MULTIBLOCKS
-		registerBERenderNoContext(event, IEBlockEntities.METAL_PRESS.master(), MetalPressRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.METAL_PRESS.masterBE().get(), MetalPressRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.CRUSHER.masterBE().get(), CrusherRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SAWMILL.master(), SawmillRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);

@@ -21,7 +21,7 @@
     "frame": "challenge",
     "hidden": false,
     "icon": {
-      "item": "minecraft:air"
+      "item": "immersiveengineering:diesel_generator_new"
     },
     "show_toast": true,
     "title": {

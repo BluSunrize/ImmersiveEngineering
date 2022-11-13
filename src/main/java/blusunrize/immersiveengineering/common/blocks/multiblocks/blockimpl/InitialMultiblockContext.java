@@ -35,9 +35,15 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 	}
 
 	@Override
-	public void markMasterDirty()
+	public Runnable getMarkDirtyRunnable()
 	{
-		masterBE.setChanged();
+		return masterBE::setChanged;
+	}
+
+	@Override
+	public Runnable getSyncRunnable()
+	{
+		return () -> MultiblockContext.requestBESync(masterBE);
 	}
 
 	public static <T> CapabilityReference<T> getCapabilityAt(

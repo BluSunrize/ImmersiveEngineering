@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -12,7 +13,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLo
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.RecipeSource;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.CrusherShapes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
@@ -43,6 +43,7 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(2, 1, 1);
 	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
+	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(2, 0, 3, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(4, 1, 1, RelativeBlockFace.UP);
 
 	@Override
@@ -158,16 +159,13 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
-			this.output = capabilitySource.getCapabilityAt(
-					ForgeCapabilities.ITEM_HANDLER, new BlockPos(2, 0, 3), RelativeBlockFace.FRONT
-			);
+			this.output = capabilitySource.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, OUTPUT_POS);
 			this.processor = new MultiblockProcessor<>(
-					2048, 0, 1,
-					capabilitySource::markMasterDirty,
-					new RecipeSource<>(CrusherRecipe::findRecipe, CrusherRecipe.RECIPES::getById)
+					2048, 0, 1, capabilitySource.getMarkDirtyRunnable(), CrusherRecipe.RECIPES::getById
 			);
-			final var insertionHandler = new DirectProcessingItemHandler<>(capabilitySource.levelSupplier(), processor)
-					.setProcessStacking(true);
+			final var insertionHandler = new DirectProcessingItemHandler<>(
+					capabilitySource.levelSupplier(), processor, CrusherRecipe::findRecipe
+			).setProcessStacking(true);
 			this.insertionHandler = new StoredCapability<>(insertionHandler);
 			this.comparators.addComparator(
 					state -> {
@@ -211,9 +209,9 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 			if(!output.isEmpty())
 				Utils.dropStackAtPos(
 						level.getRawLevel(),
-						level.toAbsolute(new BlockPos(2, 0, 3)),
+						level.toAbsolute(OUTPUT_POS.posInMultiblock()),
 						output,
-						RelativeBlockFace.BACK.forFront(level.getOrientation())
+						OUTPUT_POS.face().forFront(level.getOrientation()).getOpposite()
 				);
 		}
 

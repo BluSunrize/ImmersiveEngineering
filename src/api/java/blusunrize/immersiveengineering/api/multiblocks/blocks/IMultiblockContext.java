@@ -7,6 +7,8 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public interface IMultiblockContext<State extends IMultiblockState> extends ICommonMultiblockContext
 {
+	void markMasterDirty();
+
 	State getState();
 
 	IMultiblockLevel getLevel();

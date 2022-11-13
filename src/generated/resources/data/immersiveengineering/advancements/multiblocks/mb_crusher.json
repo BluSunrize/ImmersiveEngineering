@@ -21,7 +21,7 @@
     "frame": "goal",
     "hidden": false,
     "icon": {
-      "item": "minecraft:air"
+      "item": "immersiveengineering:crusher_new"
     },
     "show_toast": true,
     "title": {

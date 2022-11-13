@@ -46,7 +46,7 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 
 	public MultiblockProcessInMachine(R recipe, BiFunction<Level, ResourceLocation, R> getRecipe, int... inputSlots)
 	{
-		super(recipe, getRecipe);
+		super(recipe);
 		this.inputSlots = inputSlots;
 	}
 
