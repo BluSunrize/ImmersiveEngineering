@@ -38,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -180,6 +181,8 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+.25*getFacing().getStepZ()-.375*getFacing().getStepX(),
 							Utils.RAND.nextDouble()*.05-.025, .05, Utils.RAND.nextDouble()*.05-.025);
 				}
+				level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
+						Utils.RAND.nextDouble()*.025-.0125, .05, Utils.RAND.nextDouble()*.025-.0125);
 			}
 	}
 
