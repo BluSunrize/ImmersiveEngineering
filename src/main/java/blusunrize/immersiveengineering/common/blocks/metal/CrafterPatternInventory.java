@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 public class CrafterPatternInventory
@@ -30,8 +31,9 @@ public class CrafterPatternInventory
 		this.inv.set(9, recipe!=null?recipe.assemble(invC): ItemStack.EMPTY);
 	}
 
-	public void writeToNBT(ListTag list)
+	public ListTag writeToNBT()
 	{
+		ListTag list = new ListTag();
 		for(int i = 0; i < this.inv.size(); i++)
 			if(!this.inv.get(i).isEmpty())
 			{
@@ -40,10 +42,12 @@ public class CrafterPatternInventory
 				this.inv.get(i).save(itemTag);
 				list.add(itemTag);
 			}
+		return list;
 	}
 
-	public void readFromNBT(ListTag list, @Nullable Level level)
+	public void readFromNBT(ListTag list)
 	{
+		Collections.fill(this.inv, ItemStack.EMPTY);
 		for(int i = 0; i < list.size(); i++)
 		{
 			CompoundTag itemTag = list.getCompound(i);
@@ -51,12 +55,15 @@ public class CrafterPatternInventory
 			if(slot < NUM_SLOTS)
 				this.inv.set(slot, ItemStack.of(itemTag));
 		}
-		recalculateOutput(level);
 	}
 
 	@Nullable
 	public List<RecipeQuery> getQueries(Level level)
 	{
+		if(recipe==null)
+			recalculateOutput(level);
+		if(recipe==null)
+			return null;
 		return getQueriesGeneric(recipe, inv, level);
 	}
 

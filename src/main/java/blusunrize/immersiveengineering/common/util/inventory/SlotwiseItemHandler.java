@@ -8,11 +8,13 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public final class SlotwiseItemHandler implements IItemHandlerModifiable
+public final class SlotwiseItemHandler implements IItemHandlerModifiable, Iterable<ItemStack>
 {
 	private final ItemStackHandler rawHandler;
 	private final List<IOConstraint> slotConstraints;
@@ -104,11 +106,36 @@ public final class SlotwiseItemHandler implements IItemHandlerModifiable
 		return rawHandler;
 	}
 
+	@Nonnull
+	@Override
+	public Iterator<ItemStack> iterator()
+	{
+		return new Iterator<>()
+		{
+			private int slot = 0;
+
+			@Override
+			public boolean hasNext()
+			{
+				return slot < getSlots();
+			}
+
+			@Override
+			public ItemStack next()
+			{
+				final ItemStack next = getStackInSlot(slot);
+				++slot;
+				return next;
+			}
+		};
+	}
+
 	public record IOConstraint(boolean allowExtract, Predicate<ItemStack> allowInsert)
 	{
 		public static final IOConstraint OUTPUT = new IOConstraint(true, $ -> false);
 		public static final IOConstraint ANY_INPUT = new IOConstraint(false, $ -> true);
 		public static final IOConstraint FLUID_INPUT = IOConstraint.input(Utils::isFluidRelatedItemStack);
+		public static final IOConstraint NO_CONSTRAINT = new IOConstraint(true, $ -> true);
 
 		public static IOConstraint input(Predicate<ItemStack> allow)
 		{

@@ -157,8 +157,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(innerObj("block/metal_multiblock/excavator.obj"), IEMultiblocks.EXCAVATOR);
 		createMultiblock(innerObj("block/metal_multiblock/crusher.obj"), IEMultiblocks.CRUSHER);
 		createMultiblock(innerObj("block/metal_multiblock/metal_press.obj"), IEMultiblocks.METAL_PRESS);
-		createMultiblock(Multiblocks.ASSEMBLER,
-				split(innerObj("block/metal_multiblock/assembler.obj"), IEMultiblocks.ASSEMBLER));
+		createMultiblock(innerObj("block/metal_multiblock/assembler.obj"), IEMultiblocks.ASSEMBLER);
 		createMultiblock(innerObj("block/metal_multiblock/arc_furnace.obj"), IEMultiblocks.ARC_FURNACE);
 
 		createMultiblock(Multiblocks.ADVANCED_BLAST_FURNACE, split(innerObj("block/blastfurnace_advanced.obj"), IEMultiblocks.ADVANCED_BLAST_FURNACE));
@@ -241,12 +240,16 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 
 	private void createMultiblock(NongeneratedModel unsplitModel, IETemplateMultiblock multiblock, boolean dynamic)
 	{
-		createMultiblock(
-				multiblock::getBlock,
-				split(unsplitModel, multiblock, false, dynamic),
-				split(mirror(unsplitModel, innerModels), multiblock, true, dynamic),
-				IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED
-		);
+		final ModelFile mainModel = split(unsplitModel, multiblock, false, dynamic);
+		if(multiblock.getBlock().getStateDefinition().getProperties().contains(IEProperties.MIRRORED))
+			createMultiblock(
+					multiblock::getBlock,
+					mainModel,
+					split(mirror(unsplitModel, innerModels), multiblock, true, dynamic),
+					IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED
+			);
+		else
+			createMultiblock(multiblock::getBlock, mainModel, null, IEProperties.FACING_HORIZONTAL, null);
 	}
 
 	private void createMultiblock(Supplier<? extends Block> b, ModelFile masterModel)

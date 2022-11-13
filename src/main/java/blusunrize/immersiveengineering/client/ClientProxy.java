@@ -381,6 +381,7 @@ public class ClientProxy extends CommonProxy
 		registerTileScreen(IEMenuTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
 		MenuScreens.register(IEMenuTypes.CIRCUIT_TABLE.getType(), CircuitTableScreen::new);
 		MenuScreens.register(IEMenuTypes.ASSEMBLER.getType(), AssemblerScreen::new);
+		MenuScreens.register(IEMenuTypes.ASSEMBLER_NEW.getType(), AssemblerScreen::new);
 		MenuScreens.register(IEMenuTypes.SORTER.getType(), SorterScreen::new);
 		MenuScreens.register(IEMenuTypes.ITEM_BATCHER.getType(), ItemBatcherScreen::new);
 		MenuScreens.register(IEMenuTypes.LOGIC_UNIT.getType(), LogicUnitScreen::new);

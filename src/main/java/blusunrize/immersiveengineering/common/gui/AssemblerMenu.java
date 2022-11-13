@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -39,6 +41,34 @@ public class AssemblerMenu extends IEContainerMenu
 	public final FluidTank[] tanks;
 	public final EnergyStorage energy;
 	public final GetterAndSetter<Boolean> recursiveIngredients;
+
+	public static AssemblerMenu makeServerNew(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+	)
+	{
+		final var state = ctx.getState();
+		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerBlockEntity.NUM_PATTERNS);
+		for(final var pattern : state.patterns)
+			patterns.add(new ItemStackHandler(pattern.inv)
+			{
+				@Override
+				protected void onContentsChanged(int slot)
+				{
+					pattern.recalculateOutput(ctx.getLevel().getRawLevel());
+				}
+
+				@Override
+				public int getSlotLimit(int slot)
+				{
+					return 1;
+				}
+			});
+		return new AssemblerMenu(
+				multiblockCtx(type, id, ctx), invPlayer,
+				patterns, state.inventory, state.tanks, state.energy,
+				new GetterAndSetter<>(() -> state.recursiveIngredients, b -> state.recursiveIngredients = b)
+		);
+	}
 
 	public static AssemblerMenu makeServer(
 			MenuType<?> type, int id, Inventory invPlayer, AssemblerBlockEntity be

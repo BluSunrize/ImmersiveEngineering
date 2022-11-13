@@ -73,6 +73,14 @@ public class IEMultiblockLogic
 			.redstoneAware()
 			.build();
 
+	public static final MultiblockRegistration<AssemblerLogic.State> ASSEMBLER = builder(new AssemblerLogic(), "assembler")
+			.defaultBEs(BE_REGISTER)
+			.defaultBlock(BLOCK_REGISTER, ITEM_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
+			.structure(() -> IEMultiblocks.ASSEMBLER)
+			.redstoneAware()
+			.notMirrored()
+			.build();
+
 	public static void init(IEventBus bus)
 	{
 		BLOCK_REGISTER.register(bus);

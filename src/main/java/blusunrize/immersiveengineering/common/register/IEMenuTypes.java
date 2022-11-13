@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
@@ -71,6 +72,9 @@ public class IEMenuTypes
 	);
 	public static final ArgContainer<AssemblerBlockEntity, AssemblerMenu> ASSEMBLER = registerArg(
 			Lib.GUIID_Assembler, AssemblerMenu::makeServer, AssemblerMenu::makeClient
+	);
+	public static final ArgContainer<IMultiblockContext<AssemblerLogic.State>, AssemblerMenu> ASSEMBLER_NEW = registerArg(
+			"assembler_new", AssemblerMenu::makeServerNew, AssemblerMenu::makeClient
 	);
 	public static final ArgContainer<SorterBlockEntity, SorterMenu> SORTER = registerArg(
 			Lib.GUIID_Sorter, SorterMenu::makeServer, SorterMenu::makeClient

@@ -14,9 +14,14 @@ public record WrappingItemHandler(
 ) implements IItemHandler
 {
 
-	public WrappingItemHandler(SlotwiseItemHandler wrapped, boolean allowInsert, boolean allowExtract, IntRange allowed)
+	public WrappingItemHandler(IItemHandler wrapped, boolean allowInsert, boolean allowExtract, IntRange allowed)
 	{
 		this(wrapped, allowInsert, allowExtract, List.of(allowed));
+	}
+
+	public WrappingItemHandler(IItemHandler wrapped, boolean allowInsert, boolean allowExtract)
+	{
+		this(wrapped, allowInsert, allowExtract, new IntRange(0, wrapped.getSlots()));
 	}
 
 	@Override

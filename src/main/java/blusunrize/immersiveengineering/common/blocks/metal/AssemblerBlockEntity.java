@@ -111,7 +111,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 			{
 				ListTag patternList = nbt.getList("pattern"+iPattern, 10);
 				patterns[iPattern] = new CrafterPatternInventory();
-				patterns[iPattern].readFromNBT(patternList, level);
+				patterns[iPattern].readFromNBT(patternList);
 			}
 		}
 	}
@@ -128,11 +128,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 			nbt.putBoolean("recursiveIngredients", recursiveIngredients);
 			ContainerHelper.saveAllItems(nbt, inventory);
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
-			{
-				ListTag patternList = new ListTag();
-				patterns[iPattern].writeToNBT(patternList);
-				nbt.put("pattern"+iPattern, patternList);
-			}
+				nbt.put("pattern"+iPattern, patterns[iPattern].writeToNBT());
 		}
 	}
 
