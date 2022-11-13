@@ -81,6 +81,13 @@ public class IEMultiblockLogic
 			.notMirrored()
 			.build();
 
+	public static final MultiblockRegistration<AutoWorkbenchLogic.State> AUTO_WORKBENCH = builder(new AutoWorkbenchLogic(), "auto_workbench")
+			.defaultBEs(BE_REGISTER)
+			.defaultBlock(BLOCK_REGISTER, ITEM_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
+			.structure(() -> IEMultiblocks.AUTO_WORKBENCH)
+			.redstoneAware()
+			.build();
+
 	public static void init(IEventBus bus)
 	{
 		BLOCK_REGISTER.register(bus);

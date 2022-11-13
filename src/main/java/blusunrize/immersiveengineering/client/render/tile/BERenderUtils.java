@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.client.utils.InvertingVertexBuffer;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
@@ -19,9 +20,7 @@ import net.minecraft.core.Direction;
 public class BERenderUtils
 {
 	public static <T extends IMirrorAble & IDirectionalBE> MultiBufferSource mirror(
-			T tile,
-			PoseStack mat,
-			MultiBufferSource builderIn
+			T tile, PoseStack mat, MultiBufferSource builderIn
 	)
 	{
 		mirror(tile, mat);
@@ -29,6 +28,20 @@ public class BERenderUtils
 			return builderIn;
 		else
 			return type -> new InvertingVertexBuffer(4, builderIn.getBuffer(type));
+	}
+
+	public static MultiBufferSource mirror(
+			MultiblockOrientation orientation, PoseStack mat, MultiBufferSource builderIn
+	)
+	{
+		if(orientation.mirrored())
+		{
+			Direction facing = orientation.front();
+			mat.scale(facing.getStepX()==0?-1: 1, 1, facing.getStepZ()==0?-1: 1);
+			return type -> new InvertingVertexBuffer(4, builderIn.getBuffer(type));
+		}
+		else
+			return builderIn;
 	}
 
 	public static <T extends IMirrorAble & IDirectionalBE> void mirror(T tile, PoseStack mat)

@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -27,12 +28,12 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	private final int maxProcessPerTick;
 	private final Runnable markDirty;
 	// TODO rename
-	private final Runnable onInsert;
+	private final Runnable onQueueChange;
 	private final BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID;
 
 	public MultiblockProcessor(
 			int maxQueueLength,
-			int minDelayAfter,
+			float minDelayAfter,
 			int maxProcessPerTick,
 			Runnable markDirty,
 			BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID
@@ -47,7 +48,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 			IntToDoubleFunction minDelayAfter,
 			int maxProcessPerTick,
 			Runnable markDirty,
-			Runnable onInsert,
+			Runnable onQueueChange,
 			BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID
 	)
 	{
@@ -55,7 +56,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		this.minDelayAfter = minDelayAfter;
 		this.maxProcessPerTick = maxProcessPerTick;
 		this.markDirty = markDirty;
-		this.onInsert = onInsert;
+		this.onQueueChange = onQueueChange;
 		this.getRecipeFromID = getRecipeFromID;
 	}
 
@@ -79,7 +80,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 			if(process.clearProcess)
 			{
 				processIterator.remove();
-				onInsert.run();
+				onQueueChange.run();
 			}
 		}
 		if(tickedAny)
@@ -182,7 +183,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 			if(!simulate)
 				processQueue.add(process);
 			markDirty.run();
-			onInsert.run();
+			onQueueChange.run();
 			return true;
 		}
 		return false;
@@ -206,5 +207,19 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	public interface ProcessLoader<R extends MultiblockRecipe, CTX extends ProcessContext<R>>
 	{
 		MultiblockProcess<R, CTX> fromNBT(BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data);
+	}
+
+	// Convenience class to deal with the lack of typedefs
+	public static class InWorldProcessor<R extends MultiblockRecipe> extends MultiblockProcessor<R, ProcessContextInWorld<R>>
+	{
+		public InWorldProcessor(int maxQueueLength, float minDelayAfter, int maxProcessPerTick, Runnable markDirty, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
+		{
+			super(maxQueueLength, minDelayAfter, maxProcessPerTick, markDirty, getRecipeFromID);
+		}
+
+		public InWorldProcessor(int maxQueueLength, IntToDoubleFunction minDelayAfter, int maxProcessPerTick, Runnable markDirty, Runnable onQueueChange, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
+		{
+			super(maxQueueLength, minDelayAfter, maxProcessPerTick, markDirty, onQueueChange, getRecipeFromID);
+		}
 	}
 }

@@ -56,8 +56,8 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 		implements IInteractionObjectIE<AutoWorkbenchBlockEntity>, IConveyorAttachable, IBlockBounds
 {
 	public static final int BLUEPRINT_SLOT = 0;
-	private static final int FIRST_INPUT_SLOT = 1;
-	private static final int NUM_INPUT_SLOTS = 16;
+	public static final int FIRST_INPUT_SLOT = 1;
+	public static final int NUM_INPUT_SLOTS = 16;
 	public static final int NUM_SLOTS = 1+NUM_INPUT_SLOTS;
 	public static final int ENERGY_CAPACITY = 32000;
 

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
@@ -102,6 +103,9 @@ public class IEMenuTypes
 	);
 	public static final ArgContainer<AutoWorkbenchBlockEntity, AutoWorkbenchMenu> AUTO_WORKBENCH = registerArg(
 			Lib.GUIID_AutoWorkbench, AutoWorkbenchMenu::makeServer, AutoWorkbenchMenu::makeClient
+	);
+	public static final ArgContainer<IMultiblockContext<AutoWorkbenchLogic.State>, AutoWorkbenchMenu> AUTO_WORKBENCH_NEW = registerArg(
+			"auto_workbench_new", AutoWorkbenchMenu::makeServerNew, AutoWorkbenchMenu::makeClient
 	);
 	public static final ArgContainer<MixerBlockEntity, MixerMenu> MIXER = registerArg(
 			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient

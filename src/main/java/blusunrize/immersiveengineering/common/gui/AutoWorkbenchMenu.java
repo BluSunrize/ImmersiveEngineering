@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -41,6 +43,18 @@ public class AutoWorkbenchMenu extends IEContainerMenu
 				blockCtx(type, id, be), invPlayer,
 				new ItemStackHandler(be.getInventory()), be.energyStorage,
 				new GetterAndSetter<>(() -> be.selectedRecipe, i -> be.selectedRecipe = i)
+		);
+	}
+
+	public static AutoWorkbenchMenu makeServerNew(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+	)
+	{
+		final var state = ctx.getState();
+		return new AutoWorkbenchMenu(
+				multiblockCtx(type, id, ctx), invPlayer,
+				state.inventory, state.getEnergy(),
+				new GetterAndSetter<>(() -> state.selectedRecipe, i -> state.selectedRecipe = i)
 		);
 	}
 

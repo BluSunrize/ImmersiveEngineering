@@ -10,16 +10,16 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process_old.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process_old.MultiblockProcessInWorld;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -34,7 +34,6 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
@@ -43,33 +42,28 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
 
-public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBlockEntity>
+public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {
 	public static final String NAME = "auto_workbench_animated";
 	public static DynamicModel DYNAMIC;
 
 	@Override
-	public void render(AutoWorkbenchBlockEntity blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MultiblockBlockEntityMaster<State> blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!blockEntity.formed||blockEntity.isDummy()||!blockEntity.getLevelNonnull().hasChunkAt(blockEntity.getBlockPos()))
-			return;
-
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-		BlockPos blockPos = blockEntity.getBlockPos();
-		BlockState state = blockEntity.getLevelNonnull().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.AUTO_WORKBENCH.get())
-			return;
 		BakedModel model = DYNAMIC.get();
+		final var helper = blockEntity.getHelper();
+		final var state = helper.getState();
 
 		//Item Displacement
-		float[][] itemDisplays = new float[blockEntity.processQueue.size()][];
+		final var queue = state.processor.getQueue();
+		float[][] itemDisplays = new float[queue.size()][];
 		//Animations
 		float drill = 0;
 		float lift = 0;
@@ -78,7 +72,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
-			MultiblockProcess<MultiblockRecipe> process = blockEntity.processQueue.get(i);
+			MultiblockProcess<?, ?> process = queue.get(i);
 			if(process==null||process.processTick <= 0||process.processTick==process.getMaxTicks(blockEntity.getLevel()))
 				continue;
 			//+partialTicks
@@ -164,11 +158,12 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 
 		}
 
+		final var orientation = helper.getContext().getLevel().getOrientation();
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
-		bufferIn = BERenderUtils.mirror(blockEntity, matrixStack, bufferIn);
-		Direction facing = blockEntity.getFacing();
-		if(blockEntity.getIsMirrored())
+		bufferIn = BERenderUtils.mirror(orientation, matrixStack, bufferIn);
+		Direction facing = orientation.front();
+		if(orientation.mirrored())
 		{
 			if(facing.getAxis()==Axis.Z)
 				matrixStack.translate(-1, 0, 0);
@@ -179,13 +174,13 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		matrixStack.translate(0.5, 0.5, 0.5);
 
 		matrixStack.pushPose();
-		ItemStack blueprintStack = blockEntity.inventory.get(AutoWorkbenchBlockEntity.BLUEPRINT_SLOT);
+		ItemStack blueprintStack = state.inventory.getStackInSlot(AutoWorkbenchBlockEntity.BLUEPRINT_SLOT);
 		if(!blueprintStack.isEmpty())
-			renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "blueprint");
+			renderModelPart(matrixStack, blockRenderer, bufferIn, model, combinedLightIn, combinedOverlayIn, "blueprint");
 
 
 		matrixStack.translate(0, lift, 0);
-		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "lift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, model, combinedLightIn, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
 		float tx = 0;
@@ -193,7 +188,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		matrixStack.pushPose();
 		matrixStack.translate(tx, 0, tz);
 		matrixStack.mulPose(new Quaternionf().rotateXYZ(0, drill, 0));
-		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "drill");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, model, combinedLightIn, combinedOverlayIn, "drill");
 		matrixStack.popPose();
 
 		tx = 0;
@@ -201,11 +196,11 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		matrixStack.pushPose();
 		matrixStack.translate(tx, -.21875, tz);
 		matrixStack.mulPose(new Quaternionf().rotateXYZ(press*Mth.HALF_PI, 0, 0));
-		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "press");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, model, combinedLightIn, combinedOverlayIn, "press");
 		matrixStack.popPose();
 
 		matrixStack.translate(0, liftPress, 0);
-		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "pressLift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, model, combinedLightIn, combinedOverlayIn, "pressLift");
 
 		matrixStack.popPose();
 
@@ -213,7 +208,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
-				MultiblockProcess<MultiblockRecipe> process = blockEntity.processQueue.get(i);
+				MultiblockProcess<?, ?> process = queue.get(i);
 				if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 					continue;
 
@@ -270,13 +265,13 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(blockPos));
+		double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(blockEntity.getBlockPos()));
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(blockEntity.getLevel(), ItemNBTHelper.getString(blueprintStack, "blueprint"));
-			BlueprintCraftingRecipe recipe = (blockEntity.selectedRecipe < 0||blockEntity.selectedRecipe >= recipes.length)?null: recipes[blockEntity.selectedRecipe];
-			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, blockEntity.getLevelNonnull());
+			BlueprintCraftingRecipe recipe = (state.selectedRecipe < 0||state.selectedRecipe >= recipes.length)?null: recipes[state.selectedRecipe];
+			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, blockEntity.getLevel());
 			if(blueprint!=null)
 			{
 				matrixStack.pushPose();
@@ -293,7 +288,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 	}
 
 	public static void renderModelPart(
-			PoseStack matrix, final BlockRenderDispatcher blockRenderer, MultiBufferSource buffers, BlockState state,
+			PoseStack matrix, final BlockRenderDispatcher blockRenderer, MultiBufferSource buffers,
 			BakedModel model, int light, int overlay, String parts
 	)
 	{
@@ -302,7 +297,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		ModelData data = ModelDataUtils.single(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(parts));
 
 		blockRenderer.getModelRenderer().renderModel(
-				matrix.last(), buffers.getBuffer(RenderType.solid()), state, model,
+				matrix.last(), buffers.getBuffer(RenderType.solid()), null, model,
 				1, 1, 1,
 				light, overlay, data, RenderType.solid()
 		);
