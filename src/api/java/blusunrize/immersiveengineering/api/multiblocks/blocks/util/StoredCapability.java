@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks.util;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class StoredCapability<T>

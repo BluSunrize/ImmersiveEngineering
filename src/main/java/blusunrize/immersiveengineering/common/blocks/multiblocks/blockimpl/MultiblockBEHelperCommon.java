@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockBEHelper;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;

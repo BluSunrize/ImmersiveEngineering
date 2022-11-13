@@ -1,6 +1,7 @@
-package blusunrize.immersiveengineering.api.multiblocks.blocks;
+package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

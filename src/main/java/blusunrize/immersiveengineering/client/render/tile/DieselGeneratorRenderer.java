@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic;
 import com.mojang.blaze3d.vertex.PoseStack;

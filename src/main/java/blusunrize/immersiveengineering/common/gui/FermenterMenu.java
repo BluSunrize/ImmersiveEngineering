@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.FermenterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;

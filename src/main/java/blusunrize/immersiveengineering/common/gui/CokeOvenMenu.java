@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;

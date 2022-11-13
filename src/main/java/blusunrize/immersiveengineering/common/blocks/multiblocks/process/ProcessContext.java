@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;

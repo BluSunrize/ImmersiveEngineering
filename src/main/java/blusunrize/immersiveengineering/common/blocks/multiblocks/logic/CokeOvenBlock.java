@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockPartBlock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic.State;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;

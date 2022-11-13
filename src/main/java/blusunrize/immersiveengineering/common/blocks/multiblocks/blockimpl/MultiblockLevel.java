@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;

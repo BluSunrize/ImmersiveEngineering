@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

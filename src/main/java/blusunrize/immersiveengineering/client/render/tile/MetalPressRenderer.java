@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;

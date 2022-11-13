@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.NonNullList;

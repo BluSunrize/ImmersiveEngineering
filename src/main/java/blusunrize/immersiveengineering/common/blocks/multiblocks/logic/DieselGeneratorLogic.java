@@ -1,10 +1,10 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IInitialMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;

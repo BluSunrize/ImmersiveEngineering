@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;

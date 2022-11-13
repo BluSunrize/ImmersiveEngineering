@@ -2,11 +2,16 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.LightningRodLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.LightningRodShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
@@ -32,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class LightningRodLogic implements IMultiblockLogic<LightningRodLogic.State>, IServerTickableMultiblock<LightningRodLogic.State>
+public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickableMultiblock<State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(1, 1, 1);
 
