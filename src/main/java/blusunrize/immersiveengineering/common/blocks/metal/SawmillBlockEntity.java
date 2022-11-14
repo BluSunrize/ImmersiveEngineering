@@ -135,8 +135,11 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	{
 		if(shouldRenderAsActive())
 		{
-			animation_bladeRotation += 36f;
-			animation_bladeRotation %= 360f;
+			if ( !isRSDisabled())
+			{
+				animation_bladeRotation += 36f;
+				animation_bladeRotation %= 360f;
+			}
 
 			if(!this.sawblade.isEmpty())
 			{
@@ -378,7 +381,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(!world.isClientSide&&entity!=null&&entity.isAlive())
+		if(!world.isClientSide&&entity!=null&&entity.isAlive()&&!isRSDisabled())
 		{
 			SawmillBlockEntity master = master();
 			if(master==null)
