@@ -153,7 +153,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 					double vX = level.random.nextDouble()*particleDir.getStepX()*0.3;
 					double vY = level.random.nextDouble()*0.3;
 					double vZ = level.random.nextDouble()*particleDir.getStepZ()*0.3;
-					level.addParticle(
+					level.addAlwaysVisibleParticle(
 							new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(level, true)),
 							posX, posY, posZ, vX, vY, vZ
 					);
