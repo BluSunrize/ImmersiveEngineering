@@ -192,8 +192,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			ItemStack[] stacks = itemsOnConveyor.stream().map(Pair::getSecond).toArray(ItemStack[]::new);
 			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(
 					master.level,
-					stacks,
-					master.tanks[0].getFluid()
+					master.tanks[0].getFluid(), stacks
 			);
 			if(recipe==null&&!Utils.isFluidRelatedItemStack(stacks[0]))
 				return;
@@ -508,7 +507,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			stack = stack.copy();
-			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(multiblock.level, new ItemStack[]{stack}, multiblock.tanks[0].getFluid());
+			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(multiblock.level, multiblock.tanks[0].getFluid(), new ItemStack[]{stack});
 			if(recipe==null&&!Utils.isFluidRelatedItemStack(stack))
 				return stack;
 

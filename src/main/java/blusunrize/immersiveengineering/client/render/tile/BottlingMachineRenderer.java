@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
@@ -17,8 +18,8 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.MultiblockProcessBottling;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingProcess;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.Mth;
@@ -28,32 +29,25 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachineBlockEntity>
+public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {
 	public static final String NAME = "bottling_machine_dynamic";
 	public static DynamicModel DYNAMIC;
 
 	@Override
-	public void render(BottlingMachineBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
-			return;
-
-		//Grab model
-		BlockPos blockPos = te.getBlockPos();
-		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.BOTTLING_MACHINE.get())
-			return;
-		Direction facing = te.getFacing();
+		final var helper = te.getHelper();
+		final var orientation = helper.getContext().getLevel().getOrientation();
+		final var state = helper.getState();
+		Direction facing = orientation.front();
 
 		final float pixelHeight = 1f/16f;
 
@@ -61,17 +55,18 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 		final MultiBufferSource originalBuffer = bufferIn;
-		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
+		bufferIn = BERenderUtils.mirror(orientation, matrixStack, bufferIn);
 
+		final var processQueue = state.processor.getQueue();
 		//Item Displacement
-		float[][] itemDisplays = new float[te.processQueue.size()][];
+		float[][] itemDisplays = new float[processQueue.size()][];
 		//Animations
 		float lift = 0;
 
 		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
-			MultiblockProcessBottling process = (MultiblockProcessBottling)te.processQueue.get(i);
+			BottlingProcess process = (BottlingProcess)processQueue.get(i);
 			if(process==null)
 				continue;
 			float processMaxTicks = process.getMaxTicks(te.getLevel());
@@ -124,16 +119,17 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		matrixStack.mulPose(new Quaternionf().rotateY(dir));
 
 		float scale = pixelHeight;
-		FluidStack fs = te.tanks[0].getFluid();
+		FluidStack fs = state.tank.getFluid();
 		if(!fs.isEmpty())
 		{
 			final float tankWidth = 7;
 			matrixStack.pushPose();
-			float level = fs.getAmount()/(float)te.tanks[0].getCapacity();
+			float level = fs.getAmount()/(float)state.tank.getCapacity();
 			matrixStack.translate(-.21875, .376, 1.21875);
 			matrixStack.scale(scale, scale, scale);
 			matrixStack.translate(tankWidth/2, 0, -tankWidth/2);
 			float h = level*9;
+			// TODO does not work on fabulous
 			VertexConsumer builder = originalBuffer.getBuffer(RenderType.translucent());
 			for(int i = 0; i < 4; ++i)
 			{
@@ -158,7 +154,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
-				MultiblockProcessBottling process = (MultiblockProcessBottling)te.processQueue.get(i);
+				BottlingProcess process = (BottlingProcess)processQueue.get(i);
 				if(process==null)
 					continue;
 
@@ -209,6 +205,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		PoseStack innerStack = new PoseStack();
 		innerStack.last().pose().mul(matrix.last().pose());
 		innerStack.last().normal().mul(matrix.last().normal());
+		// TODO may be broken?
 		MultiBufferSource stencilWrapper = IERenderTypes.wrapWithStencil(
 				baseBuffer,
 				vertexBuilder -> {

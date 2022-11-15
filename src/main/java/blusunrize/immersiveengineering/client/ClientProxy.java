@@ -408,6 +408,14 @@ public class ClientProxy extends CommonProxy
 
 	private static <T extends BlockEntity>
 	void registerBERenderNoContext(
+			RegisterRenderers event, Supplier<BlockEntityType<? extends T>> type, Supplier<BlockEntityRenderer<T>> render
+	)
+	{
+		ClientProxy.registerBERenderNoContext(event, type.get(), render);
+	}
+
+	private static <T extends BlockEntity>
+	void registerBERenderNoContext(
 			RegisterRenderers event, BlockEntityType<? extends T> type, Supplier<BlockEntityRenderer<T>> render
 	)
 	{
@@ -424,17 +432,17 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.CLOCHE.master(), ClocheRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.BLASTFURNACE_PREHEATER.master(), BlastFurnacePreheaterRenderer::new);
 		// MULTIBLOCKS
-		registerBERenderNoContext(event, IEMultiblockLogic.METAL_PRESS.masterBE().get(), MetalPressRenderer::new);
-		registerBERenderNoContext(event, IEMultiblockLogic.CRUSHER.masterBE().get(), CrusherRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.METAL_PRESS.masterBE(), MetalPressRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.CRUSHER.masterBE(), CrusherRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SAWMILL.master(), SawmillRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SILO.master(), SiloRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SQUEEZER.master(), SqueezerRenderer::new);
-		registerBERenderNoContext(event, IEMultiblockLogic.DIESEL_GENERATOR.masterBE().get(), DieselGeneratorRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.DIESEL_GENERATOR.masterBE(), DieselGeneratorRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
-		registerBERenderNoContext(event, IEMultiblockLogic.AUTO_WORKBENCH.masterBE().get(), AutoWorkbenchRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.AUTO_WORKBENCH.masterBE(), AutoWorkbenchRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.BOTTLING_MACHINE.masterBE(), BottlingMachineRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.MIXER.master(), MixerRenderer::new);
 		//WOOD
 		registerBERenderNoContext(event, IEBlockEntities.WATERMILL.master(), WatermillRenderer::new);

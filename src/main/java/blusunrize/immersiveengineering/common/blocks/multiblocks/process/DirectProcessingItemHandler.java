@@ -5,19 +5,19 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Process
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements IItemHandlerModifiable
+public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements IItemHandler
 {
 	private static final float TRANSFORMATION_POINT = .5f;
 	private boolean doProcessStacking = false;
-	private final Supplier<Level> level;
-	private final MultiblockProcessor<R, ProcessContextInWorld<R>> processor;
+	protected final Supplier<Level> level;
+	protected final MultiblockProcessor<R, ProcessContextInWorld<R>> processor;
 	private final BiFunction<Level, ItemStack, @Nullable R> getRecipeOnInsert;
 
 	public DirectProcessingItemHandler(
@@ -85,10 +85,5 @@ public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements 
 	public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 	{
 		return true;//TODO
-	}
-
-	@Override
-	public void setStackInSlot(int slot, @Nonnull ItemStack stack)
-	{
 	}
 }

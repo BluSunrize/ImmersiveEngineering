@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -85,6 +86,13 @@ public class IEMultiblockLogic
 			.defaultBEs(BE_REGISTER)
 			.defaultBlock(BLOCK_REGISTER, ITEM_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
 			.structure(() -> IEMultiblocks.AUTO_WORKBENCH)
+			.redstoneAware()
+			.build();
+
+	public static final MultiblockRegistration<BottlingMachineLogic.State> BOTTLING_MACHINE = builder(new BottlingMachineLogic(), "bottling_machine")
+			.defaultBEs(BE_REGISTER)
+			.defaultBlock(BLOCK_REGISTER, ITEM_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get())
+			.structure(() -> IEMultiblocks.BOTTLING_MACHINE)
 			.redstoneAware()
 			.build();
 

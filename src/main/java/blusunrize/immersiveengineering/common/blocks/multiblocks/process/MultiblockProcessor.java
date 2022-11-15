@@ -209,7 +209,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		MultiblockProcess<R, CTX> fromNBT(BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data);
 	}
 
-	// Convenience class to deal with the lack of typedefs
+	// Convenience classes to deal with the lack of typedefs
 	public static class InWorldProcessor<R extends MultiblockRecipe> extends MultiblockProcessor<R, ProcessContextInWorld<R>>
 	{
 		public InWorldProcessor(int maxQueueLength, float minDelayAfter, int maxProcessPerTick, Runnable markDirty, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
@@ -221,5 +221,9 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		{
 			super(maxQueueLength, minDelayAfter, maxProcessPerTick, markDirty, onQueueChange, getRecipeFromID);
 		}
+	}
+
+	public interface InWorldProcessLoader<R extends MultiblockRecipe> extends ProcessLoader<R, ProcessContextInWorld<R>>
+	{
 	}
 }
