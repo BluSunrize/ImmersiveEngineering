@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,6 +31,16 @@ public class AlloySmelterMenu extends IEContainerMenu
 	{
 		return new AlloySmelterMenu(
 				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()), be.stateView
+		);
+	}
+
+	public static AlloySmelterMenu makeServerNew(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+	)
+	{
+		final var state = ctx.getState();
+		return new AlloySmelterMenu(
+				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.getStateView()
 		);
 	}
 

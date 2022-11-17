@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic.State;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -60,7 +61,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 	{
 		final var state = context.getState();
 		final var masterBlockState = context.getLevel().getBlock(MASTER_OFFSET);
-		final boolean activeBeforeTick = masterBlockState.getValue(CokeOvenBlock.ACTIVE);
+		final boolean activeBeforeTick = masterBlockState.getValue(NonMirrorableWithActiveBlock.ACTIVE);
 		boolean active = activeBeforeTick;
 		if(state.process > 0)
 		{
@@ -118,18 +119,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 			context.markMasterDirty();
 
 		if(activeBeforeTick!=active)
-		{
-			context.markMasterDirty();
-			for(int x = 0; x < 3; ++x)
-				for(int y = 0; y < 3; ++y)
-					for(int z = 0; z < 3; ++z)
-					{
-						final var pos = new BlockPos(x, y, z);
-						final var oldState = context.getLevel().getBlock(pos);
-						if(oldState.getBlock()==masterBlockState.getBlock())
-							context.getLevel().setBlock(pos, oldState.setValue(CokeOvenBlock.ACTIVE, active));
-					}
-		}
+			NonMirrorableWithActiveBlock.setActive(context.getLevel(), IEMultiblocks.COKE_OVEN, active);
 	}
 
 	@Nullable

@@ -12,10 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
@@ -56,6 +53,9 @@ public class IEMenuTypes
 	);
 	public static final ArgContainer<AlloySmelterBlockEntity, AlloySmelterMenu> ALLOY_SMELTER = registerArg(
 			Lib.GUIID_AlloySmelter, AlloySmelterMenu::makeServer, AlloySmelterMenu::makeClient
+	);
+	public static final ArgContainer<IMultiblockContext<AlloySmelterLogic.State>, AlloySmelterMenu> ALLOY_SMELTER_NEW = registerArg(
+			"alloysmelter_new", AlloySmelterMenu::makeServerNew, AlloySmelterMenu::makeClient
 	);
 	public static final ArgContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE = registerArg(
 			Lib.GUIID_BlastFurnace, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient

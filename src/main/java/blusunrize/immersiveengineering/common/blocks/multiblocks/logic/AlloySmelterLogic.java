@@ -1,0 +1,145 @@
+package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
+
+import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.IFurnaceEnvironment;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.InputSlot;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.OutputSlot;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
+import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+public class AlloySmelterLogic implements IServerTickableMultiblock<State>
+{
+	public static final int NUM_SLOTS = 4;
+
+	@Override
+	public void tickServer(IMultiblockContext<State> context)
+	{
+		final var level = context.getLevel();
+		final var wasActive = level.getBlock(IEMultiblocks.ALLOY_SMELTER.getMasterFromOriginOffset())
+				.getValue(NonMirrorableWithActiveBlock.ACTIVE);
+		final boolean active = context.getState().furnace.tickServer(context.getState());
+		if(active!=wasActive)
+			NonMirrorableWithActiveBlock.setActive(level, IEMultiblocks.ALLOY_SMELTER, active);
+	}
+
+	@Override
+	public State createInitialState(IInitialMultiblockContext<State> capabilitySource)
+	{
+		return new State(capabilitySource);
+	}
+
+	@Override
+	public <T>
+	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	{
+		return LazyOptional.empty();
+	}
+
+	@Override
+	public Function<BlockPos, VoxelShape> shapeGetter()
+	{
+		return $ -> Shapes.block();
+	}
+
+	@Override
+	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
+	{
+		if(!isClient)
+			player.openMenu(IEMenuTypes.ALLOY_SMELTER_NEW.provide(ctx));
+		return InteractionResult.SUCCESS;
+	}
+
+	public static class State implements IMultiblockState, IFurnaceEnvironment<AlloyRecipe>
+	{
+		private final SlotwiseItemHandler inventory;
+		private final FurnaceHandler<AlloyRecipe> furnace;
+		private final Supplier<AlloyRecipe> cachedRecipe;
+
+		public State(IInitialMultiblockContext<State> ctx)
+		{
+			this.furnace = new FurnaceHandler<>(
+					2,
+					List.of(new InputSlot<>(a -> a.input0, 0), new InputSlot<>(a -> a.input1, 1)),
+					List.of(new OutputSlot<>(a -> a.output, 3)),
+					a -> a.time,
+					ctx.getMarkDirtyRunnable()
+			);
+			// This inv is not exposed as a capability, so the constraints just specify player interaction
+			inventory = new SlotwiseItemHandler(List.of(
+					IOConstraint.NO_CONSTRAINT, IOConstraint.NO_CONSTRAINT,
+					new IOConstraint(true, FurnaceBlockEntity::isFuel), IOConstraint.OUTPUT
+			), ctx.getMarkDirtyRunnable());
+			cachedRecipe = CachedRecipe.cached(
+					AlloyRecipe::findRecipe,
+					ctx.levelSupplier(),
+					() -> inventory.getStackInSlot(0),
+					() -> inventory.getStackInSlot(1)
+			);
+		}
+
+		@Override
+		public void writeSaveNBT(CompoundTag nbt)
+		{
+			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("furnace", furnace.toNBT());
+		}
+
+		@Override
+		public void readSaveNBT(CompoundTag nbt)
+		{
+			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			furnace.readNBT(nbt.get("furnace"));
+		}
+
+		@Override
+		public IItemHandlerModifiable getInventory()
+		{
+			return inventory;
+		}
+
+		@Override
+		public @Nullable AlloyRecipe getRecipeForInput()
+		{
+			return cachedRecipe.get();
+		}
+
+		@Override
+		public int getBurnTimeOf(ItemStack fuel)
+		{
+			//TODO more specific type?
+			return ForgeHooks.getBurnTime(fuel, RecipeType.SMELTING);
+		}
+
+		public ContainerData getStateView()
+		{
+			return furnace.stateView;
+		}
+	}
+}

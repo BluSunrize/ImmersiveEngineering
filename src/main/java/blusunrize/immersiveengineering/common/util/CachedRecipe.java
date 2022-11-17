@@ -50,6 +50,13 @@ public class CachedRecipe
 		return k1 -> cached.apply(k1, get2.get());
 	}
 
+	public static <K1, K2, K3, R>
+	Function<K1, R> cachedSkip1(Function4<K1, K2, K3, R, R> getRecipeWithHint, Supplier<K2> get2, Supplier<K3> get3)
+	{
+		Function3<K1, K2, K3, R> cached = cached(getRecipeWithHint);
+		return k1 -> cached.apply(k1, get2.get(), get3.get());
+	}
+
 	public static <K1, K2, R>
 	BiFunction<K1, K2, R> cached(Function3<K1, K2, R, R> getRecipeWithHint)
 	{

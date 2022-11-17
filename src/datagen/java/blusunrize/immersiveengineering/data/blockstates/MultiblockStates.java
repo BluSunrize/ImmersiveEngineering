@@ -145,8 +145,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(
 				IEMultiblockLogic.COKE_OVEN.block(), cokeOvenOff, cokeOvenOn, IEProperties.ACTIVE
 		);
-		createMultiblock(Multiblocks.ALLOY_SMELTER, alloySmelterOff, alloySmelterOn,
-				IEProperties.ACTIVE);
+		createMultiblock(IEMultiblockLogic.ALLOY_SMELTER.block(), alloySmelterOff, alloySmelterOn, IEProperties.ACTIVE);
 		createMultiblock(Multiblocks.BLAST_FURNACE, blastFurnaceOff, blastFurnaceOn,
 				IEProperties.ACTIVE);
 	}

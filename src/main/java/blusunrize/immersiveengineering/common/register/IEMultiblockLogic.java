@@ -39,9 +39,21 @@ public class IEMultiblockLogic
 			.defaultBEs(BE_REGISTER)
 			.customBlock(
 					BLOCK_REGISTER, ITEM_REGISTER,
-					r -> new CokeOvenBlock(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get(), r), MultiblockItem::new
+					r -> new NonMirrorableWithActiveBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get(), r),
+					MultiblockItem::new
 			)
 			.structure(() -> IEMultiblocks.COKE_OVEN)
+			.build();
+
+	public static final MultiblockRegistration<AlloySmelterLogic.State> ALLOY_SMELTER = builder(new AlloySmelterLogic(), "alloy_smelter")
+			.notMirrored()
+			.defaultBEs(BE_REGISTER)
+			.customBlock(
+					BLOCK_REGISTER, ITEM_REGISTER,
+					r -> new NonMirrorableWithActiveBlock<>(IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get(), r),
+					MultiblockItem::new
+			)
+			.structure(() -> IEMultiblocks.ALLOY_SMELTER)
 			.build();
 
 	public static final MultiblockRegistration<CrusherLogic.State> CRUSHER = builder(new CrusherLogic(), "crusher")
