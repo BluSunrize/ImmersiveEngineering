@@ -513,6 +513,7 @@
   "subtitle.immersiveengineering.skyhook": "Skyhook slides along a wire",
   "subtitle.immersiveengineering.chute": "Item clunks through chute",
   "subtitle.immersiveengineering.glider": "Glider taking damage",
+  "subtitle.immersiveengineering.assembler": "Rhythmic Assembler clockwork",
   "recipe.immersiveengineering.hammerCrushing": "Crushing",
   "death.attack.ieRevolver_casull": "%1$s was shot by %2$s",
   "death.attack.ieRevolver_casull.item": "%1$s was shot by %2$s using %3$s",

@@ -49,6 +49,7 @@ public class IESounds
 	public static SoundEvent direSwitch = registerSound("dire_switch");
 	public static SoundEvent chute = registerSound("chute");
 	public static SoundEvent glider = registerSound("glider");
+	public static SoundEvent assembler = registerSound("assembler");
 
 	private static SoundEvent registerSound(String name)
 	{

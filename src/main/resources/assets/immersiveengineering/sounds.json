@@ -138,5 +138,12 @@
 			"immersiveengineering:glider_speed2"
 		],
 		"subtitle": "subtitle.immersiveengineering.glider"
+	},
+	"assembler": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:assembler"
+		],
+		"subtitle": "subtitle.immersiveengineering.assembler"
 	}
 }
