@@ -515,6 +515,7 @@
   "subtitle.immersiveengineering.glider": "Glider taking damage",
   "subtitle.immersiveengineering.assembler": "Rhythmic Assembler clockwork",
   "subtitle.immersiveengineering.refinery": "Refinery whirrs",
+  "subtitle.immersiveengineering.bottling": "Bottling Machine fills a container",
   "recipe.immersiveengineering.hammerCrushing": "Crushing",
   "death.attack.ieRevolver_casull": "%1$s was shot by %2$s",
   "death.attack.ieRevolver_casull.item": "%1$s was shot by %2$s using %3$s",

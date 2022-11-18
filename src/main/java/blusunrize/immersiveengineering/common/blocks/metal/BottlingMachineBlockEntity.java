@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
@@ -24,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -35,6 +37,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -114,9 +117,16 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	@Override
 	public void tickClient()
 	{
-		if(!shouldRenderAsActive())
+		if(isRSDisabled())
 			return;
-		// Todo: Maybe do sounds here?
+		for(MultiblockProcess<?> process : processQueue)
+		{
+			float fProcess = process.processTick;
+			Player localPlayer = ImmersiveEngineering.proxy.getClientPlayer();
+			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
+			if(fProcess >= (STANDARD_TRANSPORT_TIME-12)&&fProcess < (STANDARD_TRANSPORT_TIME-11))
+				level.playSound(localPlayer, getBlockPos(), IESounds.bottling, SoundSource.BLOCKS, .375F, 0.8F);
+		}
 	}
 
 	@Override

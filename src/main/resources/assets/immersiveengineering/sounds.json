@@ -152,5 +152,12 @@
 			"immersiveengineering:refinery"
 		],
 		"subtitle": "subtitle.immersiveengineering.refinery"
+	},
+	"bottling": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:bottling"
+		],
+		"subtitle": "subtitle.immersiveengineering.bottling"
 	}
 }
