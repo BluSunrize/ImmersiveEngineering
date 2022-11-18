@@ -177,7 +177,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	@Override
 	public void tickClient()
 	{
-		ImmersiveEngineering.proxy.handleTileSound(IESounds.assembler, this, !shouldRenderAsActive(), .5f, 1);
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.assembler, this, shouldRenderAsActive(), .5f, 1);
 	}
 
 	@Override
@@ -775,6 +775,6 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	@Override
 	public boolean shouldPlaySound(String sound)
 	{
-		return !shouldRenderAsActive();
+		return shouldRenderAsActive();
 	}
 }
