@@ -8,14 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessBE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -28,6 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
@@ -55,7 +55,7 @@ import java.util.function.Supplier;
 
 //TODO merge with blast furnace&alloy smelter to some degree?
 public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlockEntity> implements IIEInventory,
-		IActiveState, IInteractionObjectIE<CokeOvenBlockEntity>, IProcessBE, IBlockBounds
+		IActiveState, IInteractionObjectIE<CokeOvenBlockEntity>, IProcessBE, IBlockBounds, ISoundBE, IEClientTickableBE
 {
 	public static final int INPUT_SLOT = 0;
 	public static final int OUTPUT_SLOT = 1;
@@ -98,6 +98,12 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return Shapes.block();
+	}
+
+	@Override
+	public void tickClient()
+	{
+		ImmersiveEngineering.proxy.handleTileSound(SoundEvents.FIRE_AMBIENT, this, getIsActive(), .25f, 1);
 	}
 
 	@Override
@@ -333,5 +339,11 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 		{
 			return 2;
 		}
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return getIsActive();
 	}
 }
