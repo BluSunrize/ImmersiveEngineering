@@ -145,5 +145,12 @@
 			"immersiveengineering:assembler"
 		],
 		"subtitle": "subtitle.immersiveengineering.assembler"
+	},
+	"refinery": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:refinery"
+		],
+		"subtitle": "subtitle.immersiveengineering.refinery"
 	}
 }

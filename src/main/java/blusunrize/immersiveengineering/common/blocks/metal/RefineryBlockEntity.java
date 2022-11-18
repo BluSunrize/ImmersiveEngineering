@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
@@ -16,11 +17,14 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
+import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
@@ -54,7 +58,8 @@ import java.util.List;
 import java.util.Set;
 
 public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBlockEntity, RefineryRecipe> implements
-		ISelectionBounds, ICollisionBounds, IPlayerInteraction, IInteractionObjectIE<RefineryBlockEntity>, IBlockBounds
+		ISelectionBounds, ICollisionBounds, IPlayerInteraction, IInteractionObjectIE<RefineryBlockEntity>, IBlockBounds,
+		IEClientTickableBE, ISoundBE
 {
 	public FluidTank[] tanks = new FluidTank[]{
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
@@ -98,6 +103,12 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 			nbt.put("tank2", tanks[2].writeToNBT(new CompoundTag()));
 			ContainerHelper.saveAllItems(nbt, inventory);
 		}
+	}
+
+	@Override
+	public void tickClient()
+	{
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.refinery, this, shouldRenderAsActive(), .25f, 1);
 	}
 
 	@Override
@@ -395,5 +406,11 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	public BEContainer<RefineryBlockEntity, ?> getContainerType()
 	{
 		return IEContainerTypes.REFINERY;
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return shouldRenderAsActive();
 	}
 }

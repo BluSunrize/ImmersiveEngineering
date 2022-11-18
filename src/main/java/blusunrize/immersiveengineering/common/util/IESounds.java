@@ -50,6 +50,7 @@ public class IESounds
 	public static SoundEvent chute = registerSound("chute");
 	public static SoundEvent glider = registerSound("glider");
 	public static SoundEvent assembler = registerSound("assembler");
+	public static SoundEvent refinery = registerSound("refinery");
 
 	private static SoundEvent registerSound(String name)
 	{
