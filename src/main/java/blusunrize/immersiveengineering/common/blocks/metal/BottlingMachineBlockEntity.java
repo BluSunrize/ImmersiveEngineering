@@ -124,8 +124,8 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			float fProcess = process.processTick;
 			Player localPlayer = ImmersiveEngineering.proxy.getClientPlayer();
 			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
-			if(fProcess >= (STANDARD_TRANSPORT_TIME-12)&&fProcess < (STANDARD_TRANSPORT_TIME-11))
-				level.playSound(localPlayer, getBlockPos(), IESounds.bottling, SoundSource.BLOCKS, .375F, 0.8F);
+			if(fProcess >= (STANDARD_TRANSPORT_TIME-13)&&fProcess < (STANDARD_TRANSPORT_TIME-11))
+				level.playSound(localPlayer, getBlockPos(), IESounds.bottling, SoundSource.BLOCKS, .25F, 0.8F);
 		}
 	}
 
