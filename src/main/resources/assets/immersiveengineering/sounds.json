@@ -201,5 +201,12 @@
 			"immersiveengineering:fermenter"
 		],
 		"subtitle": "subtitle.immersiveengineering.fermenter"
+	},
+	"preheater": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:preheater"
+		],
+		"subtitle": "subtitle.immersiveengineering.preheater"
 	}
 }
