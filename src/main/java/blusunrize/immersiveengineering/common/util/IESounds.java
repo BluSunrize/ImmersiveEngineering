@@ -52,6 +52,10 @@ public class IESounds
 	public static SoundEvent assembler = registerSound("assembler");
 	public static SoundEvent refinery = registerSound("refinery");
 	public static SoundEvent bottling = registerSound("bottling");
+	public static SoundEvent saw_startup = registerSound("saw_startup");
+	public static SoundEvent saw_empty = registerSound("saw_empty");
+	public static SoundEvent saw_full = registerSound("saw_full");
+	public static SoundEvent saw_shutdown = registerSound("saw_shutdown");
 
 	private static SoundEvent registerSound(String name)
 	{

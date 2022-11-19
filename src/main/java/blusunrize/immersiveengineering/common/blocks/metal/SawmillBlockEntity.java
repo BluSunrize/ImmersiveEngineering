@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
@@ -17,12 +18,14 @@ import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -37,6 +40,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -68,13 +72,15 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBlockEntity, MultiblockRecipe>
-		implements IConveyorAttachable, IBlockBounds, IPlayerInteraction, IEClientTickableBE
+		implements IConveyorAttachable, IBlockBounds, IPlayerInteraction, IEClientTickableBE, ISoundBE
 {
 	public float animation_bladeRotation = 0;
 	public ItemStack sawblade = ItemStack.EMPTY;
 	public List<SawmillProcess> sawmillProcessQueue = new ArrayList<>();
 	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
 	private int combinedLogs = 0;
+	//Temporary counters for making sure sounds tick properly
+	private int count = 0;
 
 	public SawmillBlockEntity(BlockEntityType<SawmillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -143,6 +149,9 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 				Optional<SawmillProcess> process = sawmillProcessQueue.stream()
 						.filter(p -> p.isSawing(level))
 						.findFirst();
+				//Handle empty sound
+				ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, this, !isRSDisabled()&&!sawblade.isEmpty()&&!process.isPresent(), .4f, 1);
+				//Handle particles & full sound
 				if(process.isPresent())
 				{
 					Direction particleDir = getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise();
@@ -157,9 +166,17 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 							new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(level, true)),
 							posX, posY, posZ, vX, vY, vZ
 					);
+					//Arbitrary constant is arbitrary, but it's what sounded good in game, so we keep it. Actual length is supposed to be 10t...
+					count++;
+					if (count % 21 == 0) level.playSound(ImmersiveEngineering.proxy.getClientPlayer(), getBlockPos(), IESounds.saw_full, SoundSource.BLOCKS, .4F, 1);
+				}
+				else if (count != -1)
+				{
+					count = -1;
 				}
 			}
 		}
+
 	}
 
 	@Override
@@ -201,34 +218,49 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		SawmillBlockEntity master = master();
 		if(master!=null)
 		{
-			if(player.isShiftKeyDown()&&!master.sawblade.isEmpty())
+			if (!isRSDisabled() && !master.sawblade.isEmpty())
 			{
-				if(heldItem.isEmpty())
-					player.setItemInHand(hand, master.sawblade.copy());
-				else if(!level.isClientSide)
-					player.spawnAtLocation(master.sawblade.copy(), 0);
-				master.sawblade = ItemStack.EMPTY;
-				this.updateMasterBlock(null, true);
-				return true;
+				if(!player.getAbilities().invulnerable)
+				{
+					int consumed = master.energyStorage.extractEnergy(80, true);
+					if(consumed > 0)
+					{
+						master.energyStorage.extractEnergy(consumed, false);
+						player.hurt(IEDamageSources.sawmill, 7);
+					}
+				}
 			}
-			else if(heldItem.is(IETags.sawblades))
+			else
 			{
-				ItemStack tempBlade = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
-				master.sawblade = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
-				heldItem.shrink(1);
-				if(heldItem.getCount() <= 0)
-					heldItem = ItemStack.EMPTY;
-				else
-					player.setItemInHand(hand, heldItem);
-				if(!tempBlade.isEmpty())
+				if(player.isShiftKeyDown()&&!master.sawblade.isEmpty())
 				{
 					if(heldItem.isEmpty())
-						player.setItemInHand(hand, tempBlade);
+						player.setItemInHand(hand, master.sawblade.copy());
 					else if(!level.isClientSide)
-						player.spawnAtLocation(tempBlade, 0);
+						player.spawnAtLocation(master.sawblade.copy(), 0);
+					master.sawblade = ItemStack.EMPTY;
+					this.updateMasterBlock(null, true);
+					return true;
 				}
-				this.updateMasterBlock(null, true);
-				return true;
+				else if(heldItem.is(IETags.sawblades))
+				{
+					ItemStack tempBlade = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
+					master.sawblade = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
+					heldItem.shrink(1);
+					if(heldItem.getCount() <= 0)
+						heldItem = ItemStack.EMPTY;
+					else
+						player.setItemInHand(hand, heldItem);
+					if(!tempBlade.isEmpty())
+					{
+						if(heldItem.isEmpty())
+							player.setItemInHand(hand, tempBlade);
+						else if(!level.isClientSide)
+							player.spawnAtLocation(tempBlade, 0);
+					}
+					this.updateMasterBlock(null, true);
+					return true;
+				}
 			}
 		}
 		return false;
@@ -688,5 +720,11 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		private record RecipeDependentData(SawmillRecipe recipe, float maxProcessTicks, int energyPerTick)
 		{
 		}
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return !isRSDisabled()&&!this.sawblade.isEmpty();
 	}
 }

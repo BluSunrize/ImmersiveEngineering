@@ -159,5 +159,33 @@
 			"immersiveengineering:bottling"
 		],
 		"subtitle": "subtitle.immersiveengineering.bottling"
+	},
+	"saw_startup": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_startup"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_startup"
+	},
+	"saw_empty": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_empty"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_empty"
+	},
+	"saw_full": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_full"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_full"
+	},
+	"saw_shutdown": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_shutdown"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_shutdown"
 	}
 }
