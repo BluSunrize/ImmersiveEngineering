@@ -519,6 +519,7 @@
   "subtitle.immersiveengineering.saw_startup": "Sawmill blade spins up",
   "subtitle.immersiveengineering.saw_empty": "Sawmill whines without wood",
   "subtitle.immersiveengineering.saw_full": "Sawmill shrieks cutting wood",
+  "subtitle.immersiveengineering.mixer": "Mixer churns and scrapes",
   "subtitle.immersiveengineering.saw_shutdown": "Sawmill blade spins down",
   "recipe.immersiveengineering.hammerCrushing": "Crushing",
   "death.attack.ieRevolver_casull": "%1$s was shot by %2$s",

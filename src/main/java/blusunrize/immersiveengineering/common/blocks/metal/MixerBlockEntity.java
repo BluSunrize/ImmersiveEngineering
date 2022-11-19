@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -16,6 +17,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransfor
 import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -24,6 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -66,7 +69,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEntity, MixerRecipe> implements
-		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds, IEClientTickableBE
+		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds, IEClientTickableBE, ISoundBE
 {
 	public final MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
@@ -132,6 +135,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 					level.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 			}
 			animation_agitator = (animation_agitator+9)%360;
+			ImmersiveEngineering.proxy.handleTileSound(IESounds.mixer, this, shouldRenderAsActive(), 0.075f, 1f);
 		}
 	}
 
@@ -533,5 +537,11 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	public BEContainer<MixerBlockEntity, ?> getContainerType()
 	{
 		return IEContainerTypes.MIXER;
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return shouldRenderAsActive();
 	}
 }

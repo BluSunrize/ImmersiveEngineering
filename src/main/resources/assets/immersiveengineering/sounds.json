@@ -187,5 +187,12 @@
 			"immersiveengineering:saw_shutdown"
 		],
 		"subtitle": "subtitle.immersiveengineering.saw_shutdown"
+	},
+	"mixer": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:mixer"
+		],
+		"subtitle": "subtitle.immersiveengineering.mixer"
 	}
 }

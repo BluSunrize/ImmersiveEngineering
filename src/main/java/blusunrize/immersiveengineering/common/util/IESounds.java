@@ -56,6 +56,7 @@ public class IESounds
 	public static SoundEvent saw_empty = registerSound("saw_empty");
 	public static SoundEvent saw_full = registerSound("saw_full");
 	public static SoundEvent saw_shutdown = registerSound("saw_shutdown");
+	public static SoundEvent mixer = registerSound("mixer");
 
 	private static SoundEvent registerSound(String name)
 	{
