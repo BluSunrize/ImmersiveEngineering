@@ -2,10 +2,12 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -44,9 +46,10 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 		this.setChanged = setChanged;
 	}
 
-	public boolean tickServer(IFurnaceEnvironment<R> env)
+	public boolean tickServer(IMultiblockContext<? extends IFurnaceEnvironment<R>> ctx)
 	{
 		boolean active = false;
+		final var env = ctx.getState();
 
 		if(burnTime > 0)
 		{
@@ -68,7 +71,6 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 					{
 						processMax = 0;
 						process = 0;
-						active = false;
 					}
 					else
 					{
@@ -103,7 +105,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 		{
 			final var inv = env.getInventory();
 			final ItemStack fuel = inv.getStackInSlot(fuelSlot);
-			final int addedBurntime = env.getBurnTimeOf(fuel);
+			final int addedBurntime = env.getBurnTimeOf(ctx.getLevel().getRawLevel(), fuel);
 			if(addedBurntime > 0)
 			{
 				lastBurnTime = addedBurntime;
@@ -209,7 +211,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 		@Nullable
 		R getRecipeForInput();
 
-		int getBurnTimeOf(ItemStack fuel);
+		int getBurnTimeOf(Level level, ItemStack fuel);
 
 		default int getProcessSpeed()
 		{

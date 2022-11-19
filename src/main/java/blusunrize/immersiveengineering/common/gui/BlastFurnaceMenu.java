@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BlastFurnaceLogic.State;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;
@@ -40,6 +42,18 @@ public class BlastFurnaceMenu extends IEContainerMenu
 				blockCtx(type, id, be), invPlayer,
 				new ItemStackHandler(be.getInventory()), be.stateView,
 				heaterActive(be, true), heaterActive(be, false)
+		);
+	}
+
+	public static BlastFurnaceMenu makeServerNew(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+	)
+	{
+		final var state = ctx.getState();
+		return new BlastFurnaceMenu(
+				multiblockCtx(type, id, ctx), invPlayer,
+				state.getInventory(), state.getStateView(),
+				GetterAndSetter.constant(false), GetterAndSetter.constant(false)
 		);
 	}
 

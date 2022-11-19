@@ -223,6 +223,17 @@
     "immersiveengineering:conveyor_dropper",
     "immersiveengineering:conveyor_vertical",
     "immersiveengineering:conveyor_splitter",
-    "immersiveengineering:conveyor_extract"
+    "immersiveengineering:conveyor_extract",
+    "immersiveengineering:coke_oven_new",
+    "immersiveengineering:blast_furnace_new",
+    "immersiveengineering:alloy_smelter_new",
+    "immersiveengineering:lightning_rod_new",
+    "immersiveengineering:crusher_new",
+    "immersiveengineering:fermenter_new",
+    "immersiveengineering:diesel_generator_new",
+    "immersiveengineering:metal_press_new",
+    "immersiveengineering:assembler_new",
+    "immersiveengineering:auto_workbench_new",
+    "immersiveengineering:bottling_machine_new"
   ]
 }

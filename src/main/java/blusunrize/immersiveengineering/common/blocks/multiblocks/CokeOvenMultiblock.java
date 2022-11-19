@@ -37,6 +37,12 @@ public class CokeOvenMultiblock extends StoneMultiblock
 	}
 
 	@Override
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	{
+		return posInMultiblock;
+	}
+
+	@Override
 	public float getManualScale()
 	{
 		return 16;

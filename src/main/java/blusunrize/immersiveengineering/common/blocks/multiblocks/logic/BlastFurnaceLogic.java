@@ -1,12 +1,13 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
-import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BlastFurnaceLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.IFurnaceEnvironment;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.InputSlot;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.OutputSlot;
@@ -20,12 +21,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -35,19 +33,17 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class AlloySmelterLogic implements IServerTickableMultiblock<State>
+public class BlastFurnaceLogic implements IServerTickableMultiblock<State>
 {
-	public static final int NUM_SLOTS = 4;
-
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var level = context.getLevel();
-		final var wasActive = level.getBlock(IEMultiblocks.ALLOY_SMELTER.getMasterFromOriginOffset())
+		final var wasActive = level.getBlock(IEMultiblocks.BLAST_FURNACE.getMasterFromOriginOffset())
 				.getValue(NonMirrorableWithActiveBlock.ACTIVE);
 		final boolean active = context.getState().furnace.tickServer(context);
 		if(active!=wasActive)
-			NonMirrorableWithActiveBlock.setActive(level, IEMultiblocks.ALLOY_SMELTER, active);
+			NonMirrorableWithActiveBlock.setActive(level, IEMultiblocks.BLAST_FURNACE, active);
 	}
 
 	@Override
@@ -64,44 +60,44 @@ public class AlloySmelterLogic implements IServerTickableMultiblock<State>
 	}
 
 	@Override
+	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
+	{
+		if(!isClient)
+			player.openMenu(IEMenuTypes.BLAST_FURNACE_NEW.provide(ctx));
+		return InteractionResult.SUCCESS;
+	}
+
+	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter()
 	{
 		return $ -> Shapes.block();
 	}
 
-	@Override
-	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
-	{
-		if(!isClient)
-			player.openMenu(IEMenuTypes.ALLOY_SMELTER_NEW.provide(ctx));
-		return InteractionResult.SUCCESS;
-	}
-
-	public static class State implements IMultiblockState, IFurnaceEnvironment<AlloyRecipe>
+	public static class State implements IMultiblockState, IFurnaceEnvironment<BlastFurnaceRecipe>
 	{
 		private final SlotwiseItemHandler inventory;
-		private final FurnaceHandler<AlloyRecipe> furnace;
-		private final Supplier<AlloyRecipe> cachedRecipe;
+		private final FurnaceHandler<BlastFurnaceRecipe> furnace;
+
+		private final Supplier<BlastFurnaceRecipe> cachedRecipe;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			this.furnace = new FurnaceHandler<>(
-					2,
-					List.of(new InputSlot<>(a -> a.input0, 0), new InputSlot<>(a -> a.input1, 1)),
-					List.of(new OutputSlot<>(a -> a.output, 3)),
-					a -> a.time,
+			final var getLevel = ctx.levelSupplier();
+			inventory = new SlotwiseItemHandler(List.of(
+					new IOConstraint(true, i -> BlastFurnaceRecipe.findRecipe(getLevel.get(), i, null)!=null),
+					new IOConstraint(true, i -> BlastFurnaceFuel.isValidBlastFuel(getLevel.get(), i)),
+					IOConstraint.OUTPUT,
+					IOConstraint.OUTPUT
+			), ctx.getMarkDirtyRunnable());
+			furnace = new FurnaceHandler<>(
+					1,
+					List.of(new InputSlot<>(r -> r.input, 0)),
+					List.of(new OutputSlot<>(r -> r.output, 2), new OutputSlot<>(r -> r.slag, 3)),
+					r -> r.time,
 					ctx.getMarkDirtyRunnable()
 			);
-			// This inv is not exposed as a capability, so the constraints just specify player interaction
-			inventory = new SlotwiseItemHandler(List.of(
-					IOConstraint.NO_CONSTRAINT, IOConstraint.NO_CONSTRAINT,
-					new IOConstraint(true, FurnaceBlockEntity::isFuel), IOConstraint.OUTPUT
-			), ctx.getMarkDirtyRunnable());
 			cachedRecipe = CachedRecipe.cached(
-					AlloyRecipe::findRecipe,
-					ctx.levelSupplier(),
-					() -> inventory.getStackInSlot(0),
-					() -> inventory.getStackInSlot(1)
+					BlastFurnaceRecipe::findRecipe, getLevel, () -> inventory.getStackInSlot(0)
 			);
 		}
 
@@ -126,7 +122,7 @@ public class AlloySmelterLogic implements IServerTickableMultiblock<State>
 		}
 
 		@Override
-		public @Nullable AlloyRecipe getRecipeForInput()
+		public @Nullable BlastFurnaceRecipe getRecipeForInput()
 		{
 			return cachedRecipe.get();
 		}
@@ -134,8 +130,7 @@ public class AlloySmelterLogic implements IServerTickableMultiblock<State>
 		@Override
 		public int getBurnTimeOf(Level level, ItemStack fuel)
 		{
-			//TODO more specific type?
-			return ForgeHooks.getBurnTime(fuel, RecipeType.SMELTING);
+			return BlastFurnaceFuel.getBlastFuelTime(level, fuel);
 		}
 
 		public ContainerData getStateView()
