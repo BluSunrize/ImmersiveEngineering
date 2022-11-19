@@ -194,5 +194,12 @@
 			"immersiveengineering:mixer"
 		],
 		"subtitle": "subtitle.immersiveengineering.mixer"
+	},
+	"fermenter": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:fermenter"
+		],
+		"subtitle": "subtitle.immersiveengineering.fermenter"
 	}
 }
