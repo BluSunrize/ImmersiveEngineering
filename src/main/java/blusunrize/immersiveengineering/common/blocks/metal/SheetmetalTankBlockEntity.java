@@ -55,7 +55,7 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride, IBlockBounds
 {
 	public FluidTank tank = new FluidTank(512*FluidType.BUCKET_VOLUME);
-	private final LayeredComparatorOutput comparatorHelper = new LayeredComparatorOutput(
+	private final LayeredComparatorOutput<Void> comparatorHelper = LayeredComparatorOutput.make(
 			tank.getCapacity(),
 			4,
 			() -> level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock()),
@@ -120,7 +120,7 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 						}
 					}
 				}
-		comparatorHelper.update(tank.getFluidAmount());
+		comparatorHelper.update(null, tank.getFluidAmount());
 	}
 
 	@Override

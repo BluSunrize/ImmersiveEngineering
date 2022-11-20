@@ -48,7 +48,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 	private static final int MAX_STORAGE = 41472;
 	//TODO actually implement this, it looks like a nice feature
 	boolean lockItem = false;
-	private final LayeredComparatorOutput comparatorHelper = new LayeredComparatorOutput(
+	private final LayeredComparatorOutput<Void> comparatorHelper = LayeredComparatorOutput.make(
 			MAX_STORAGE,
 			6,
 			() -> level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock()),
@@ -95,7 +95,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 				}
 			}
 		}
-		comparatorHelper.update(storageAmount);
+		comparatorHelper.update(null, storageAmount);
 	}
 
 	@Override

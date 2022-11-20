@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
@@ -31,6 +33,7 @@ import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -514,7 +517,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						Component[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
 						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 					}
-					else
+					else if(!(tileEntity instanceof IMultiblockBE<?> multiblock)||!renderMultiblockOverlay(
+							multiblock, hammer, transform, scaledWidth, scaledHeight
+					))
 					{
 						List<ItemFrame> list = player.level.getEntitiesOfClass(ItemFrame.class,
 								new AABB(pos.relative(face)), entity -> entity!=null&&entity.getDirection()==face);
@@ -522,9 +527,24 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 							BlockOverlayUtils.renderOreveinMapOverlays(transform, list.get(0), mop, scaledWidth, scaledHeight);
 					}
 				}
-
 			}
 		}
+	}
+
+	private <S extends IMultiblockState> boolean renderMultiblockOverlay(
+			IMultiblockBE<S> be, boolean hammer, PoseStack transform, int scaledWidth, int scaledHeight
+	)
+	{
+		final var helper = be.getHelper();
+		if(!(helper.getMultiblock().logic() instanceof MBOverlayText<S> overlayHandler))
+			return false;
+		final var overlayText = overlayHandler.getOverlayText(
+				helper.getState(), ClientUtils.mc().player, hammer
+		);
+		if(overlayText==null)
+			return false;
+		BlockOverlayUtils.drawBlockOverlayText(transform, overlayText, scaledWidth, scaledHeight);
+		return true;
 	}
 
 	private void renderVoltmeterOverlay(Player player, float scaledWidth, float scaledHeight, PoseStack transform, MultiBufferSource buffer)

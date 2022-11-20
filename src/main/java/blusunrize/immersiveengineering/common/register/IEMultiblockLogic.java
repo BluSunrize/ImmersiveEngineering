@@ -84,6 +84,20 @@ public class IEMultiblockLogic
 			.redstoneAware()
 			.build();
 
+	public static final MultiblockRegistration<SiloLogic.State> SILO = metal(new SiloLogic(), "silo")
+			.structure(() -> IEMultiblocks.SILO)
+			.redstoneAware()
+			.withComparator()
+			.notMirrored()
+			.build();
+
+	public static final MultiblockRegistration<SheetmetalTankLogic.State> TANK = metal(new SheetmetalTankLogic(), "tank")
+			.structure(() -> IEMultiblocks.SHEETMETAL_TANK)
+			.redstoneAware()
+			.withComparator()
+			.notMirrored()
+			.build();
+
 	private static <S extends IMultiblockState>
 	MultiblockRegistrationBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{

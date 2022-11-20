@@ -161,8 +161,8 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(innerObj("block/metal_multiblock/arc_furnace.obj"), IEMultiblocks.ARC_FURNACE);
 
 		createMultiblock(Multiblocks.ADVANCED_BLAST_FURNACE, split(innerObj("block/blastfurnace_advanced.obj"), IEMultiblocks.ADVANCED_BLAST_FURNACE));
-		createMultiblock(Multiblocks.SILO, split(innerObj("block/metal_multiblock/silo.obj"), IEMultiblocks.SILO));
-		createMultiblock(Multiblocks.TANK, split(innerObj("block/metal_multiblock/tank.obj", cutoutMipped()), IEMultiblocks.SHEETMETAL_TANK));
+		createMultiblock(innerObj("block/metal_multiblock/silo.obj"), IEMultiblocks.SILO);
+		createMultiblock(innerObj("block/metal_multiblock/tank.obj", cutoutMipped()), IEMultiblocks.SHEETMETAL_TANK);
 		createDynamicMultiblock(
 				ieObjBuilder("block/metal_multiblock/bottling_machine.obj.ie", innerModels)
 						.callback(BottlingMachineCallbacks.INSTANCE)

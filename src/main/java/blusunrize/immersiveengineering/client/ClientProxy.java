@@ -437,8 +437,8 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEMultiblockLogic.METAL_PRESS.masterBE(), MetalPressRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.CRUSHER.masterBE(), CrusherRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SAWMILL.master(), SawmillRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SILO.master(), SiloRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.TANK.masterBE(), SheetmetalTankRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.SILO.masterBE(), SiloRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.SQUEEZER.master(), SqueezerRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.DIESEL_GENERATOR.masterBE(), DieselGeneratorRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.BUCKET_WHEEL.master(), BucketWheelRenderer::new);

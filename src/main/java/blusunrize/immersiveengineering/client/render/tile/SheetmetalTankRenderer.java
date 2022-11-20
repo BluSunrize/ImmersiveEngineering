@@ -8,9 +8,10 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SheetmetalTankLogic.State;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.util.Mth;
@@ -21,18 +22,17 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.fluids.FluidStack;
 
-public class SheetmetalTankRenderer extends IEBlockEntityRenderer<SheetmetalTankBlockEntity>
+public class SheetmetalTankRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {
 	@Override
-	public void render(SheetmetalTankBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MultiblockBlockEntityMaster<State> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
-			return;
+		final var state = tile.getHelper().getState();
 		matrixStack.pushPose();
 
 		matrixStack.translate(.5, 0, .5);
 
-		FluidStack fs = tile.tank.getFluid();
+		FluidStack fs = state.tank.getFluid();
 		matrixStack.translate(0, 3.5f, 0);
 		float baseScale = .0625f;
 		matrixStack.scale(baseScale, -baseScale, baseScale);
@@ -55,7 +55,7 @@ public class SheetmetalTankRenderer extends IEBlockEntityRenderer<SheetmetalTank
 
 			if(!fs.isEmpty())
 			{
-				float h = fs.getAmount()/(float)tile.tank.getCapacity();
+				float h = fs.getAmount()/(float)state.tank.getCapacity();
 				matrixStack.translate(0, 0, .004f);
 				GuiHelper.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.solid()), matrixStack, fs,
 						0, 0+(1-h)*16, 16, h*16);
