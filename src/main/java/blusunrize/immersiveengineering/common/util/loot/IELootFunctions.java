@@ -47,7 +47,7 @@ public class IELootFunctions
 	);
 	public static final RegistryObject<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.Serializer::new);
 	public static final RegistryObject<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.Serializer::new);
-	public static final RegistryObject<LootPoolEntryType> MULTIBLOCK_ORIGINAL_BLOCK = registerEntry("multiblock_original_block", MBOriginalBlockLootEntry.Serializer::new);
+	public static final RegistryObject<LootPoolEntryType> MULTIBLOCK_DROPS = registerEntry("multiblock", MultiblockDropsLootContainer.Serializer::new);
 
 	public static void init()
 	{

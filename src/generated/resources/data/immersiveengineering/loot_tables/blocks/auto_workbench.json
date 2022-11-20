@@ -10,21 +10,8 @@
       ],
       "entries": [
         {
-          "type": "immersiveengineering:drop_inv"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
-      "entries": [
-        {
-          "type": "immersiveengineering:multiblock_original_block"
+          "type": "minecraft:item",
+          "name": "immersiveengineering:auto_workbench"
         }
       ],
       "rolls": 1.0

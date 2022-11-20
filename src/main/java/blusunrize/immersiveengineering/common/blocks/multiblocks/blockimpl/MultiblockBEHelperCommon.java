@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
@@ -14,8 +14,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -34,6 +37,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	private final Map<RelativeBlockFace, Integer> cachedRedstoneValues = new EnumMap<>(RelativeBlockFace.class);
 	protected final MultiblockRegistration<State> multiblock;
 	protected final MultiblockOrientation orientation;
+	private IMultiblockBEHelperMaster<State> masterHelperDuringDisassembly;
 
 	protected MultiblockBEHelperCommon(BlockEntity be, MultiblockRegistration<State> multiblock, BlockState state)
 	{
@@ -80,10 +84,11 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	{
 		if(beingDisassembled)
 			return;
-		final var ctx = getContextWithChunkloads();
-		if(ctx==null)
+		this.masterHelperDuringDisassembly = getMasterHelperWithChunkloads();
+		if(masterHelperDuringDisassembly==null)
 			// Master BE went missing, can't do anything
 			return;
+		final var ctx = masterHelperDuringDisassembly.getContext();
 		final var levelWrapper = ctx.getLevel();
 		final var absolutePos = levelWrapper.toAbsolute(getPositionInMB());
 		final var levelRaw = levelWrapper.getRawLevel();
@@ -100,7 +105,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	}
 
 	@Nullable
-	protected abstract IMultiblockContext<State> getContextWithChunkloads();
+	protected abstract IMultiblockBEHelperMaster<State> getMasterHelperWithChunkloads();
 
 	@Nullable
 	protected abstract MultiblockBEHelperMaster<State> getMasterHelper();
@@ -143,6 +148,24 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 			final var neighbor = be.getBlockPos().relative(absoluteFace);
 			return updateRedstoneValue(absoluteFace, neighbor);
 		}
+	}
+
+	@Override
+	public BlockState getOriginalBlock(Level level)
+	{
+		for(StructureBlockInfo block : multiblock.getStructure().apply(level))
+			if(block.pos.equals(getPositionInMB()))
+				return block.state;
+		return Blocks.AIR.defaultBlockState();
+	}
+
+	@Nullable
+	public IMultiblockBEHelperMaster<State> getMasterHelperDuringDisassembly()
+	{
+		if(masterHelperDuringDisassembly!=null)
+			return masterHelperDuringDisassembly;
+		else
+			return getMasterHelperWithChunkloads();
 	}
 
 	private int updateRedstoneValue(Direction sideAbsolute, BlockPos neighborPos)

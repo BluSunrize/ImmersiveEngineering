@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic.State;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -37,6 +39,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class CokeOvenLogic implements IServerTickableMultiblock<State>
@@ -163,6 +166,12 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 		if(!isClient)
 			player.openMenu(IEMenuTypes.COKE_OVEN_NEW.provide(ctx));
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 
 	@Override

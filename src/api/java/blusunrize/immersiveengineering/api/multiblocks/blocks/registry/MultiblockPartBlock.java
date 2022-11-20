@@ -31,6 +31,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 
+/**
+ * TODO more documentation, this is just the things that seemed hard to discover while writing them<br>
+ * Loot table should be generated to include {@code blusunrize.immersiveengineering.data.loot.LootUtils#getMultiblockDropBuilder}
+ */
 public class MultiblockPartBlock<State extends IMultiblockState> extends Block implements EntityBlock
 {
 	private final MultiblockRegistration<State> multiblock;
@@ -188,7 +192,6 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			multiblockBE.getHelper().onNeighborChanged(fromPos);
 	}
 
-	// TODO loot table
 	// TODO pick block
 
 	public static class WithMirrorState<State extends IMultiblockState> extends MultiblockPartBlock<State>

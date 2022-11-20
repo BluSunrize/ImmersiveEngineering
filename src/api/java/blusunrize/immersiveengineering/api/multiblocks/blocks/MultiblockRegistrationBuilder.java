@@ -11,16 +11,19 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -39,6 +42,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	private boolean redstoneInputAware = false;
 	private Supplier<BlockPos> getMasterPosInMB;
 	private Disassembler disassemble;
+	private Function<Level, List<StructureBlockInfo>> structure;
 
 	private MultiblockRegistration<State> result;
 
@@ -111,6 +115,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 				// TODO may need front.getOpposite or similar
 				level, origin, orientation.mirrored(), orientation.front()
 		);
+		this.structure = l -> structure.get().getStructure(l);
 		return this;
 	}
 
@@ -123,11 +128,12 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(getMasterPosInMB);
 		Objects.requireNonNull(disassemble);
+		Objects.requireNonNull(structure);
 		Preconditions.checkState(this.result==null);
 		this.result = new MultiblockRegistration<>(
 				logic, masterBE, dummyBE, block, item,
 				mirrorable, hasComparatorOutput, redstoneInputAware,
-				getMasterPosInMB, disassemble
+				getMasterPosInMB, disassemble, structure
 		);
 		return this.result;
 	}

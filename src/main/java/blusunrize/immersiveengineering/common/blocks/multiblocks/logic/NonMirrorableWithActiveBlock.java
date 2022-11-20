@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
+import com.google.common.base.Preconditions;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -21,6 +22,7 @@ public class NonMirrorableWithActiveBlock<S extends IMultiblockState> extends Mu
 	public NonMirrorableWithActiveBlock(Properties properties, MultiblockRegistration<S> multiblock)
 	{
 		super(properties, multiblock);
+		Preconditions.checkState(!multiblock.mirrorable());
 	}
 
 	public static void setActive(

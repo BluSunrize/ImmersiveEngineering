@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data.loot;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.loot.*;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
@@ -134,27 +136,27 @@ public class BlockLoot implements LootTableSubProvider
 
 	private void registerMultiblocks()
 	{
-		registerMultiblock(Multiblocks.COKE_OVEN);
-		registerMultiblock(Multiblocks.BLAST_FURNACE);
-		registerMultiblock(Multiblocks.ALLOY_SMELTER);
+		registerMultiblock(IEMultiblockLogic.COKE_OVEN);
+		registerMultiblock(IEMultiblockLogic.BLAST_FURNACE);
+		registerMultiblock(IEMultiblockLogic.ALLOY_SMELTER);
 		registerMultiblock(Multiblocks.ADVANCED_BLAST_FURNACE);
 
-		registerMultiblock(Multiblocks.METAL_PRESS);
-		registerMultiblock(Multiblocks.CRUSHER);
+		registerMultiblock(IEMultiblockLogic.METAL_PRESS);
+		registerMultiblock(IEMultiblockLogic.CRUSHER);
 		registerMultiblock(Multiblocks.SAWMILL);
 		registerMultiblock(Multiblocks.TANK);
 		registerMultiblock(Multiblocks.SILO);
-		registerMultiblock(Multiblocks.ASSEMBLER);
-		registerMultiblock(Multiblocks.AUTO_WORKBENCH);
-		registerMultiblock(Multiblocks.BOTTLING_MACHINE);
+		registerMultiblock(IEMultiblockLogic.ASSEMBLER);
+		registerMultiblock(IEMultiblockLogic.AUTO_WORKBENCH);
+		registerMultiblock(IEMultiblockLogic.BOTTLING_MACHINE);
 		registerMultiblock(Multiblocks.SQUEEZER);
-		registerMultiblock(Multiblocks.FERMENTER);
+		registerMultiblock(IEMultiblockLogic.FERMENTER);
 		registerMultiblock(Multiblocks.REFINERY);
-		registerMultiblock(Multiblocks.DIESEL_GENERATOR);
+		registerMultiblock(IEMultiblockLogic.DIESEL_GENERATOR);
 		registerMultiblock(Multiblocks.EXCAVATOR);
 		registerMultiblock(Multiblocks.BUCKET_WHEEL);
 		registerMultiblock(Multiblocks.ARC_FURNACE);
-		registerMultiblock(Multiblocks.LIGHTNING_ROD);
+		registerMultiblock(IEMultiblockLogic.LIGHTNING_ROD);
 		registerMultiblock(Multiblocks.MIXER);
 	}
 
@@ -178,6 +180,11 @@ public class BlockLoot implements LootTableSubProvider
 				registerSelfDropping(b);
 	}
 
+	private void registerMultiblock(MultiblockRegistration<?> registration)
+	{
+		registerMultiblock(registration.block());
+	}
+
 	private void registerMultiblock(Supplier<? extends Block> b)
 	{
 		register(b, dropInv(), dropOriginalBlock());
@@ -198,7 +205,7 @@ public class BlockLoot implements LootTableSubProvider
 	private LootPool.Builder dropOriginalBlock()
 	{
 		return createPoolBuilder()
-				.add(MBOriginalBlockLootEntry.builder());
+				.add(LootUtils.getMultiblockDropBuilder());
 	}
 
 	private void register(Supplier<? extends Block> b, LootPool.Builder... pools)

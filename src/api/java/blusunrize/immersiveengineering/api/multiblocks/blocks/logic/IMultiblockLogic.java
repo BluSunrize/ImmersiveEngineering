@@ -10,12 +10,14 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public interface IMultiblockLogic<State extends IMultiblockState>
@@ -53,6 +55,10 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 	default InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
 	{
 		return InteractionResult.PASS;
+	}
+
+	default void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
 	}
 
 	interface IMultiblockState

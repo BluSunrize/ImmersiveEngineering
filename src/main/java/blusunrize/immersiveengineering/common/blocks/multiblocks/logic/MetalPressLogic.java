@@ -47,6 +47,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.getPressTime;
@@ -176,6 +177,13 @@ public class MetalPressLogic implements IServerTickableMultiblock<State>, IClien
 			return ctx.getState().energyCap.cast(ctx);
 		else
 			return LazyOptional.empty();
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		if(!state.mold.isEmpty())
+			drop.accept(state.mold.copy());
 	}
 
 	@Override

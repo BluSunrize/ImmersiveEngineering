@@ -48,10 +48,9 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 
 	@Nullable
 	@Override
-	protected IMultiblockContext<State> getContextWithChunkloads()
+	protected IMultiblockBEHelperMaster<State> getMasterHelperWithChunkloads()
 	{
-		final var masterHelper = getMasterHelper(level.forciblyGetBlockEntity(multiblock.masterPosInMB()));
-		return masterHelper!=null?masterHelper.getContext(): null;
+		return getMasterHelper(level.forciblyGetBlockEntity(multiblock.masterPosInMB()));
 	}
 
 	@Override

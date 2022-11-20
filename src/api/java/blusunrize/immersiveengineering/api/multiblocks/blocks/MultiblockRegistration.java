@@ -10,8 +10,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public record MultiblockRegistration<State extends IMultiblockState>(
@@ -24,7 +27,8 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 		boolean hasComparatorOutput,
 		boolean redstoneInputAware,
 		Supplier<BlockPos> getMasterPosInMB,
-		Disassembler disassemble
+		Disassembler disassemble,
+		Function<Level, List<StructureBlockInfo>> getStructure
 )
 {
 	public static <State extends IMultiblockState>

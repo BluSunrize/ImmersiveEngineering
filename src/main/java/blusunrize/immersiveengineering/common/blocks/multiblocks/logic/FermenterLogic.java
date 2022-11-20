@@ -6,11 +6,8 @@ import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.IComparatorValue;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -45,6 +42,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FermenterLogic implements IServerTickableMultiblock<State>
@@ -167,6 +165,12 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 				return ctx.getState().extractionHandler.cast(ctx);
 		}
 		return LazyOptional.empty();
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.IFurnaceEnvironment;
@@ -32,6 +33,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -75,6 +77,12 @@ public class AlloySmelterLogic implements IServerTickableMultiblock<State>
 		if(!isClient)
 			player.openMenu(IEMenuTypes.ALLOY_SMELTER_NEW.provide(ctx));
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 
 	public static class State implements IMultiblockState, IFurnaceEnvironment<AlloyRecipe>

@@ -7,10 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -40,6 +37,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity.*;
@@ -135,6 +133,12 @@ public class AutoWorkbenchLogic implements IServerTickableMultiblock<State>, ICl
 		if(!isClient)
 			player.openMenu(IEMenuTypes.AUTO_WORKBENCH_NEW.provide(ctx));
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 
 	@Override
