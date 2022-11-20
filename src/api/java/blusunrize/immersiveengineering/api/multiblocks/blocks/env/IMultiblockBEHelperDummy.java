@@ -5,7 +5,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
+@NonExtendable
 public interface IMultiblockBEHelperDummy<State extends IMultiblockState> extends IMultiblockBEHelper<State>
 {
 	SetRestrictedField<Factory> MAKE_HELPER = SetRestrictedField.common();

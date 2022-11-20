@@ -17,9 +17,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import javax.annotation.Nullable;
 
+@NonExtendable
 public interface IMultiblockBEHelper<State extends IMultiblockState>
 {
 	@Nullable

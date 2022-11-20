@@ -6,9 +6,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import javax.annotation.Nonnull;
 
+@NonExtendable
 public interface IMultiblockBEHelperMaster<State extends IMultiblockState> extends IMultiblockBEHelper<State>
 {
 	SetRestrictedField<Factory> MAKE_HELPER = SetRestrictedField.common();

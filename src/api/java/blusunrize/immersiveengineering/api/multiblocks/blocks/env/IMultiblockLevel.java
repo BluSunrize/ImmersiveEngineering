@@ -10,9 +10,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import javax.annotation.Nullable;
 
+@NonExtendable
 public interface IMultiblockLevel
 {
 	BlockState getBlock(BlockPos relativePosition);
