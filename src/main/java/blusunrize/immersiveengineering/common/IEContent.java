@@ -40,7 +40,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
@@ -61,7 +60,6 @@ import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.GrassDropModifier;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
-import blusunrize.immersiveengineering.common.world.IEBiomeModifier;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
@@ -135,7 +133,6 @@ public class IEContent
 		IEBlocks.init();
 		GrassDropModifier.init();
 		IERecipeTypes.init();
-		IEBiomeModifier.init();
 		IELootFunctions.init();
 		IEArgumentTypes.init();
 		IEBannerPatterns.init();
@@ -172,13 +169,7 @@ public class IEContent
 		IEWireTypes.setup();
 		IEStats.setup();
 		/*WORLDGEN*/
-		ev.enqueueWork(
-				() -> {
-					for(VeinType type : VeinType.VALUES)
-						IEWorldGen.addOreGen(type);
-					IEWorldGen.registerMineralVeinGen();
-				}
-		);
+		ev.enqueueWork(IEWorldGen::initLate);
 
 		ShaderRegistry.itemShader = IEItems.Misc.SHADER.get();
 		ShaderRegistry.itemShaderBag = IEItems.Misc.SHADER_BAG;

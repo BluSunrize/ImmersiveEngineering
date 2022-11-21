@@ -33,7 +33,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -42,7 +41,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
-import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -59,6 +57,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+
 public class IEWorldGen
 {
 	public static Map<String, Holder<PlacedFeature>> features = new HashMap<>();
@@ -74,18 +74,19 @@ public class IEWorldGen
 		);
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, type);
 		String name = type.getVeinName();
-		Holder<PlacedFeature> feature = register(ImmersiveEngineering.rl(name), IE_CONFIG_ORE, cfg, getOreModifiers(type));
+		Holder<PlacedFeature> feature = register(rl(name), IE_CONFIG_ORE, cfg, getOreModifiers(type));
 		features.put(name, feature);
 		retroFeatures.put(name, Pair.of(type, targetList));
 	}
 
 	public static void registerMineralVeinGen()
 	{
+		final var path = "mineral_veins";
 		Holder<PlacedFeature> veinFeature = register(
 				//TODO does this do what I want?
-				ImmersiveEngineering.rl("mineral_veins"), MINERAL_VEIN_FEATURE, new NoneFeatureConfiguration(), List.of()
+				rl(path), MINERAL_VEIN_FEATURE, new NoneFeatureConfiguration(), List.of()
 		);
-		features.put("veins", veinFeature);
+		features.put(path, veinFeature);
 	}
 
 	public static void onConfigUpdated()
@@ -93,12 +94,6 @@ public class IEWorldGen
 		anyRetrogenEnabled = false;
 		for(Pair<VeinType, List<TargetBlockState>> config : retroFeatures.values())
 			anyRetrogenEnabled |= IEServerConfig.ORES.ores.get(config.getFirst()).retrogenEnabled.get();
-	}
-
-	public static void addOresTo(BiomeGenerationSettingsBuilder generation)
-	{
-		for(Entry<String, Holder<PlacedFeature>> e : features.entrySet())
-			generation.addFeature(Decoration.UNDERGROUND_ORES, e.getValue());
 	}
 
 	private void generateOres(RandomSource random, int chunkX, int chunkZ, ServerLevel world)
@@ -236,6 +231,13 @@ public class IEWorldGen
 		FEATURE_REGISTER.register(bus);
 		PLACEMENT_REGISTER.register(bus);
 		HEIGHT_REGISTER.register(bus);
+	}
+
+	public static void initLate()
+	{
+		for(VeinType type : VeinType.VALUES)
+			IEWorldGen.addOreGen(type);
+		IEWorldGen.registerMineralVeinGen();
 	}
 
 	// TODO what's the right point/way of registering to builtin/dynamic registries?

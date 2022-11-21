@@ -55,6 +55,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, gen));
 			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, gen));
 			gen.addProvider(true, new DynamicModels(multiblocks, gen, exHelper));
+			BiomeModifierProvider.addTo(gen, exHelper, d -> gen.addProvider(true, d));
 			ManualDataGenerator.addProviders(gen, exHelper);
 			// Always keep this as the last provider!
 			gen.addProvider(true, new RunCompleteHelper());
