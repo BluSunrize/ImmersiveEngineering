@@ -356,6 +356,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	}
 
 	@Override
+	@Nonnull
 	public NonNullList<ItemStack> getInventory()
 	{
 		return inventory;
@@ -443,6 +444,15 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		return MixerRecipe.RECIPES.getById(level, id);
 	}
 
+	@Nullable
+	@Override
+	protected MultiblockProcess<MixerRecipe> loadProcessFromNBT(CompoundTag tag)
+	{
+		ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
+		int[] inputSlots = tag.getIntArray("process_inputSlots");
+		return new MultiblockProcessMixer(id, this::getRecipeForId, inputSlots);
+	}
+
 	public static class MultiblockProcessMixer extends MultiblockProcessInMachine<MixerRecipe>
 	{
 		public MultiblockProcessMixer(MixerRecipe recipe, BiFunction<Level, ResourceLocation, MixerRecipe> getRecipe, int... inputSlots)
@@ -506,11 +516,11 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 				{
 					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
 					for(int i = 0; i < components.size(); i++)
-						components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
+						components.set(i, mixer.getInventory().get(this.inputSlots[i]));
 					FluidStack output = levelData.recipe().getFluidOutput(drained, components);
 
 					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
-					((MixerBlockEntity)multiblock).tank.fill(fs, FluidAction.EXECUTE);
+					mixer.tank.fill(fs, FluidAction.EXECUTE);
 				}
 			}
 			super.doProcessTick(multiblock);
