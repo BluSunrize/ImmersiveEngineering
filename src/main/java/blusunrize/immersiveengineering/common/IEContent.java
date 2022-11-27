@@ -44,7 +44,6 @@ import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
-import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
@@ -127,6 +126,7 @@ public class IEContent
 		IEBlockEntities.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEMenuTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEEntityDataSerializers.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();
@@ -139,7 +139,6 @@ public class IEContent
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
-		EntityDataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
 		ClocheRenderFunctions.init();
 

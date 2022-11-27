@@ -108,7 +108,7 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 					Vec3 vecDir = v.add(ApiUtils.RANDOM.nextGaussian()*scatter, ApiUtils.RANDOM.nextGaussian()*scatter, ApiUtils.RANDOM.nextGaussian()*scatter);
 					Vec3 throwerPos = getGunPosition();
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(level, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
-							throwerPos.z+v.z*0.875, 0, 0, 0, fs);
+							throwerPos.z+v.z*0.875, fs);
 					chem.setDeltaMovement(vecDir.scale(range));
 					if(ignite)
 						chem.setSecondsOnFire(10);

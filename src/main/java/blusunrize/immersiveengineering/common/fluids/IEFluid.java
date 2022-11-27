@@ -15,7 +15,6 @@ import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
@@ -196,35 +195,28 @@ public class IEFluid extends FlowingFluid
 		}
 	}
 
-	public static final EntityDataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new EntityDataSerializer<>()
+	public static class EntityFluidSerializer implements EntityDataSerializer<FluidStack>
 	{
 		@Override
-		public void write(FriendlyByteBuf buf, Optional<FluidStack> value)
+		public void write(FriendlyByteBuf buf, @Nonnull FluidStack value)
 		{
-			buf.writeBoolean(value.isPresent());
-			value.ifPresent(fs -> buf.writeNbt(fs.writeToNBT(new CompoundTag())));
+			buf.writeFluidStack(value);
 		}
 
 		@Nonnull
 		@Override
-		public Optional<FluidStack> read(FriendlyByteBuf buf)
+		public FluidStack read(FriendlyByteBuf buf)
 		{
-			FluidStack fs = !buf.readBoolean()?null: FluidStack.loadFluidStackFromNBT(buf.readNbt());
-			return Optional.ofNullable(fs);
+			return buf.readFluidStack();
 		}
 
+		@Nonnull
 		@Override
-		public EntityDataAccessor<Optional<FluidStack>> createAccessor(int id)
+		public FluidStack copy(FluidStack value)
 		{
-			return new EntityDataAccessor<>(id, this);
+			return value.copy();
 		}
-
-		@Override
-		public Optional<FluidStack> copy(Optional<FluidStack> value)
-		{
-			return value.map(FluidStack::copy);
-		}
-	};
+	}
 
 	public static final DispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior()
 	{
