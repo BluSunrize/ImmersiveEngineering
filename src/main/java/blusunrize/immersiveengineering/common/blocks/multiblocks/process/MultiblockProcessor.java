@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundTag;
@@ -212,12 +213,20 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	// Convenience classes to deal with the lack of typedefs
 	public static class InWorldProcessor<R extends MultiblockRecipe> extends MultiblockProcessor<R, ProcessContextInWorld<R>>
 	{
-		public InWorldProcessor(int maxQueueLength, float minDelayAfter, int maxProcessPerTick, Runnable markDirty, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
+		public InWorldProcessor(int maxQueueLength, IntToDoubleFunction minDelayAfter, int maxProcessPerTick, Runnable markDirty, Runnable onQueueChange, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
+		{
+			super(maxQueueLength, minDelayAfter, maxProcessPerTick, markDirty, onQueueChange, getRecipeFromID);
+		}
+	}
+
+	public static class InMachineProcessor<R extends MultiblockRecipe> extends MultiblockProcessor<R, ProcessContextInMachine<R>>
+	{
+		public InMachineProcessor(int maxQueueLength, float minDelayAfter, int maxProcessPerTick, Runnable markDirty, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
 		{
 			super(maxQueueLength, minDelayAfter, maxProcessPerTick, markDirty, getRecipeFromID);
 		}
 
-		public InWorldProcessor(int maxQueueLength, IntToDoubleFunction minDelayAfter, int maxProcessPerTick, Runnable markDirty, Runnable onQueueChange, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
+		public InMachineProcessor(int maxQueueLength, IntToDoubleFunction minDelayAfter, int maxProcessPerTick, Runnable markDirty, Runnable onQueueChange, BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID)
 		{
 			super(maxQueueLength, minDelayAfter, maxProcessPerTick, markDirty, onQueueChange, getRecipeFromID);
 		}

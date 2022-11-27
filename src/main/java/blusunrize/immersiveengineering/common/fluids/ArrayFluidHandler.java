@@ -26,6 +26,16 @@ public record ArrayFluidHandler(
 		this(new IFluidTank[]{internal}, allowDrain, allowFill, afterTransfer);
 	}
 
+	public static ArrayFluidHandler drainOnly(IFluidTank internal, Runnable afterTransfer)
+	{
+		return new ArrayFluidHandler(internal, true, false, afterTransfer);
+	}
+
+	public static ArrayFluidHandler fillOnly(IFluidTank internal, Runnable afterTransfer)
+	{
+		return new ArrayFluidHandler(internal, false, true, afterTransfer);
+	}
+
 	@Override
 	public int getTanks()
 	{

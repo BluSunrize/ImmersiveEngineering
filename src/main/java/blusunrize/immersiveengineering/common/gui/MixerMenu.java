@@ -11,7 +11,10 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixingProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process_old.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process_old.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
@@ -54,6 +57,29 @@ public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContai
 				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.inventory), be.energyStorage, progress,
 				GetterAndSetter.getterOnly(() -> be.tank.fluids),
 				new GetterAndSetter<>(() -> be.outputAll, b -> be.outputAll = b)
+		);
+	}
+
+	public static MixerMenu makeServerNew(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+	)
+	{
+		final var state = ctx.getState();
+		final GetterAndSetter<List<SlotProgress>> progress = GetterAndSetter.getterOnly(() -> {
+			List<SlotProgress> result = new ArrayList<>();
+			for(final var process : state.processor.getQueue())
+				if(process instanceof MixingProcess inMachine)
+				{
+					final float mod = 1-(process.processTick/(float)process.getMaxTicks(ctx.getLevel().getRawLevel()));
+					for(final int inputSlot : inMachine.getInputSlots())
+						result.add(new SlotProgress(inputSlot, mod));
+				}
+			return result;
+		});
+		return new MixerMenu(
+				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.energy, progress,
+				GetterAndSetter.getterOnly(() -> state.tank.fluids),
+				new GetterAndSetter<>(() -> state.outputAll, b -> state.outputAll = b)
 		);
 	}
 

@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -96,6 +97,11 @@ public class IEMultiblockLogic
 			.redstoneAware()
 			.withComparator()
 			.notMirrored()
+			.build();
+
+	public static final MultiblockRegistration<MixerLogic.State> MIXER = metal(new MixerLogic(), "mixer")
+			.structure(() -> IEMultiblocks.MIXER)
+			.redstoneAware()
 			.build();
 
 	private static <S extends IMultiblockState>

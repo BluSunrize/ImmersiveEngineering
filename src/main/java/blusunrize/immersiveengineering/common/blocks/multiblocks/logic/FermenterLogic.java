@@ -107,9 +107,7 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 				FermenterRecipe recipe = FermenterRecipe.findRecipe(level, stack);
 				if(recipe!=null)
 				{
-					MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(
-							recipe, state.processor.recipeGetter(), slot
-					);
+					MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(recipe, slot);
 					if(state.processor.addProcessToQueue(process, level, false))
 						addedAny = true;
 				}

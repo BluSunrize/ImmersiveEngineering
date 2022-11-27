@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
@@ -112,6 +113,9 @@ public class IEMenuTypes
 	);
 	public static final ArgContainer<MixerBlockEntity, MixerMenu> MIXER = registerArg(
 			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient
+	);
+	public static final ArgContainer<IMultiblockContext<MixerLogic.State>, MixerMenu> MIXER_NEW = registerArg(
+			"mixer_new", MixerMenu::makeServerNew, MixerMenu::makeClient
 	);
 	public static final ArgContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerArg(
 			Lib.GUIID_Turret_Gun, GunTurretMenu::makeServer, GunTurretMenu::makeClient
