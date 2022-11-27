@@ -67,7 +67,7 @@ public class PotionBucketItem extends IEBaseItem
 		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
 		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
 		for(Potion p : sortedPotions)
-			if(p!=Potions.WATER)
+			if(p!=Potions.WATER&&p!=Potions.EMPTY)
 				items.add(forPotion(p));
 	}
 
