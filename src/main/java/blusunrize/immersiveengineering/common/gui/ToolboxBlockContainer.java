@@ -29,9 +29,14 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxBlockEntity> i
 	{
 		super(type, tile, id);
 		this.tile = tile;
-		inv = new ItemStackHandler(tile.getInventory());
-		if(inv instanceof IEItemStackHandler)
-			((IEItemStackHandler)inv).setTile(tile);
+		inv = new ItemStackHandler(tile.getInventory())
+		{
+			@Override
+			protected void onContentsChanged(int slot)
+			{
+				tile.setChanged();
+			}
+		};
 		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 48, 24));
 		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 30, 42));
 		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 48, 42));
