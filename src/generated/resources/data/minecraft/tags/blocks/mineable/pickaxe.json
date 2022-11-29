@@ -238,6 +238,7 @@
     "immersiveengineering:silo_new",
     "immersiveengineering:tank_new",
     "immersiveengineering:mixer_new",
-    "immersiveengineering:refinery_new"
+    "immersiveengineering:refinery_new",
+    "immersiveengineering:squeezer_new"
   ]
 }

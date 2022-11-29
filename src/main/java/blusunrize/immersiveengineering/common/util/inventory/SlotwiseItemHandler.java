@@ -136,6 +136,7 @@ public final class SlotwiseItemHandler implements IItemHandlerModifiable, Iterab
 		public static final IOConstraint ANY_INPUT = new IOConstraint(false, $ -> true);
 		public static final IOConstraint FLUID_INPUT = IOConstraint.input(Utils::isFluidRelatedItemStack);
 		public static final IOConstraint NO_CONSTRAINT = new IOConstraint(true, $ -> true);
+		public static final IOConstraint BLOCKED = new IOConstraint(false, $ -> false);
 
 		public static IOConstraint input(Predicate<ItemStack> allow)
 		{

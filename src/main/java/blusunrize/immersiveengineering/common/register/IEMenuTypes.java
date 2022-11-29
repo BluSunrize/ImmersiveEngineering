@@ -93,6 +93,9 @@ public class IEMenuTypes
 	public static final ArgContainer<SqueezerBlockEntity, SqueezerMenu> SQUEEZER = registerArg(
 			Lib.GUIID_Squeezer, SqueezerMenu::makeServer, SqueezerMenu::makeClient
 	);
+	public static final ArgContainer<IMultiblockContext<SqueezerLogic.State>, SqueezerMenu> SQUEEZER_NEW = registerArg(
+			"squeezer_new", SqueezerMenu::makeServerNew, SqueezerMenu::makeClient
+	);
 	public static final ArgContainer<FermenterBlockEntity, FermenterMenu> FERMENTER = registerArg(
 			Lib.GUIID_Fermenter, FermenterMenu::makeServer, FermenterMenu::makeClient
 	);

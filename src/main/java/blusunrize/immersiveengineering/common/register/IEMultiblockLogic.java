@@ -109,6 +109,11 @@ public class IEMultiblockLogic
 			.redstoneAware()
 			.build();
 
+	public static final MultiblockRegistration<SqueezerLogic.State> SQUEEZER = metal(new SqueezerLogic(), "squeezer")
+			.structure(() -> IEMultiblocks.SQUEEZER)
+			.redstoneAware()
+			.build();
+
 	private static <S extends IMultiblockState>
 	MultiblockRegistrationBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{
