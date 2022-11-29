@@ -38,9 +38,9 @@ public class RefineryScreen extends IEContainerScreen<RefineryMenu>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(menu.tanks[0], new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(menu.tanks[1], new Rect2i(leftPos+40, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(menu.tanks[2], new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(menu.tanks.leftInput(), new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(menu.tanks.rightInput(), new Rect2i(leftPos+40, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(menu.tanks.output(), new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
 				new EnergyInfoArea(leftPos+157, topPos+21, menu.energy)
 		);
 	}

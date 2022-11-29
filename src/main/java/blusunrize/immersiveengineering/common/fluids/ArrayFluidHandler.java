@@ -26,6 +26,11 @@ public record ArrayFluidHandler(
 		this(new IFluidTank[]{internal}, allowDrain, allowFill, afterTransfer);
 	}
 
+	public ArrayFluidHandler(boolean allowDrain, boolean allowFill, Runnable afterTransfer, IFluidTank... tanks)
+	{
+		this(tanks, allowDrain, allowFill, afterTransfer);
+	}
+
 	public static ArrayFluidHandler drainOnly(IFluidTank internal, Runnable afterTransfer)
 	{
 		return new ArrayFluidHandler(internal, true, false, afterTransfer);

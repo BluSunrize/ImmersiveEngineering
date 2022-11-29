@@ -11,6 +11,14 @@ public record CapabilityPosition(BlockPos posInMultiblock, @Nullable RelativeBlo
 		this(new BlockPos(x, y, z), side);
 	}
 
+	public static CapabilityPosition opposing(MultiblockFace multiblockPos)
+	{
+		return new CapabilityPosition(
+				multiblockPos.face().offsetRelative(multiblockPos.posInMultiblock(), 1),
+				multiblockPos.face().getOpposite()
+		);
+	}
+
 	public boolean equalsOrNullFace(CapabilityPosition other)
 	{
 		return other.side==null||equals(other);

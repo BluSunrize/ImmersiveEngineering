@@ -104,6 +104,11 @@ public class IEMultiblockLogic
 			.redstoneAware()
 			.build();
 
+	public static final MultiblockRegistration<RefineryLogic.State> REFINERY = metal(new RefineryLogic(), "refinery")
+			.structure(() -> IEMultiblocks.REFINERY)
+			.redstoneAware()
+			.build();
+
 	private static <S extends IMultiblockState>
 	MultiblockRegistrationBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{

@@ -102,6 +102,9 @@ public class IEMenuTypes
 	public static final ArgContainer<RefineryBlockEntity, RefineryMenu> REFINERY = registerArg(
 			Lib.GUIID_Refinery, RefineryMenu::makeServer, RefineryMenu::makeClient
 	);
+	public static final ArgContainer<IMultiblockContext<RefineryLogic.State>, RefineryMenu> REFINERY_NEW = registerArg(
+			"refinery_new", RefineryMenu::makeServerNew, RefineryMenu::makeClient
+	);
 	public static final ArgContainer<ArcFurnaceBlockEntity, ArcFurnaceMenu> ARC_FURNACE = registerArg(
 			Lib.GUIID_ArcFurnace, ArcFurnaceMenu::makeServer, ArcFurnaceMenu::makeClient
 	);

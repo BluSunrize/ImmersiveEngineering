@@ -237,6 +237,7 @@
     "immersiveengineering:bottling_machine_new",
     "immersiveengineering:silo_new",
     "immersiveengineering:tank_new",
-    "immersiveengineering:mixer_new"
+    "immersiveengineering:mixer_new",
+    "immersiveengineering:refinery_new"
   ]
 }
