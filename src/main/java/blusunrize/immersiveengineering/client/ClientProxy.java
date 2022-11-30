@@ -444,7 +444,7 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEMultiblockLogic.SILO.masterBE(), SiloRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.SQUEEZER.masterBE(), SqueezerRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.DIESEL_GENERATOR.masterBE(), DieselGeneratorRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.BUCKET_WHEEL.masterBE(), BucketWheelRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.AUTO_WORKBENCH.masterBE(), AutoWorkbenchRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.BOTTLING_MACHINE.masterBE(), BottlingMachineRenderer::new);

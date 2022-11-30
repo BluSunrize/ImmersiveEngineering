@@ -10,10 +10,12 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
-import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BucketWheelLogic.State;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -29,8 +31,7 @@ import net.minecraftforge.client.model.data.ModelData;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings("deprecation")
-public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockEntity>
+public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {
 	public static final String NAME = "bucket_wheel";
 	public static DynamicModel WHEEL;
@@ -41,31 +42,31 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 			.build();
 
 	@Override
-	public void render(BucketWheelBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MultiblockBlockEntityMaster<State> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.isDummy())
-			return;
+		final var helper = tile.getHelper();
+		final var facing = helper.getContext().getLevel().getOrientation().front();
+		final var state = helper.getState();
+		final var mirrored = state.renderReverse;
 		matrixStack.pushPose();
 
 		matrixStack.translate(.5, .5, .5);
 		matrixStack.mulPose(new Quaternionf().rotateY(Mth.HALF_PI)); //to mirror different plane. compensate on dir rotate
-		BERenderUtils.mirror(tile, matrixStack);
-		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?Mth.PI: tile.getFacing()==Direction.EAST?Mth.HALF_PI: -Mth.HALF_PI;
+		bufferIn = BERenderUtils.mirror(new MultiblockOrientation(facing, mirrored), matrixStack, bufferIn);
+		float dir = facing==Direction.SOUTH?0: facing==Direction.NORTH?Mth.PI: facing==Direction.EAST?Mth.HALF_PI: -Mth.HALF_PI;
 		matrixStack.mulPose(new Quaternionf().rotateY(dir));
-		float rot = tile.rotation+(float)(tile.active?IEServerConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
+		float rot = state.rotation+(float)(state.active?IEServerConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
 		matrixStack.mulPose(new Quaternionf().rotateX(rot * Mth.DEG_TO_RAD));
 
 		matrixStack.translate(-.5, -.5, -.5);
 		try
 		{
-			BucketWheelCallbacks.Key key = BucketWheelCallbacks.INSTANCE.extractKey(
-					tile.getLevelNonnull(), tile.getBlockPos(), tile.getState(), tile
-			);
+			BucketWheelCallbacks.Key key = BucketWheelCallbacks.INSTANCE.extractKey(null, null, null, tile);
 			ModelData extraData = ModelDataUtils.single(IEOBJCallbacks.getModelProperty(BucketWheelCallbacks.INSTANCE), key);
 
 			CACHED_BUFFERS.get(key, () -> IVertexBufferHolder.create(
 					() -> WHEEL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, extraData, RenderType.solid())
-			)).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
+			)).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, state.renderReverse);
 		} catch(ExecutionException ex)
 		{
 			throw new RuntimeException(ex);

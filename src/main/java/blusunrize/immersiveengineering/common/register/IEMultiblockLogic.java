@@ -114,6 +114,11 @@ public class IEMultiblockLogic
 			.redstoneAware()
 			.build();
 
+	public static final MultiblockRegistration<BucketWheelLogic.State> BUCKET_WHEEL = metal(new BucketWheelLogic(), "bucket_wheel")
+			.structure(() -> IEMultiblocks.BUCKET_WHEEL)
+			.notMirrored()
+			.build();
+
 	private static <S extends IMultiblockState>
 	MultiblockRegistrationBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{
