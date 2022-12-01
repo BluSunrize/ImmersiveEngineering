@@ -16,12 +16,14 @@ import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -30,14 +32,14 @@ import java.util.List;
 
 public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMachineRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "bottlingmachine");
+	public static final RecipeType<BottlingMachineRecipe> TYPE = RecipeType.create(Lib.MODID, "bottlingmachine", BottlingMachineRecipe.class);
 	private final IDrawableStatic tankOverlay;
 
 	public BottlingMachineRecipeCategory(IGuiHelper helper)
 	{
-		super(BottlingMachineRecipe.class, helper, UID, "block.immersiveengineering.bottling_machine");
+		super(TYPE, helper, "block.immersiveengineering.bottling_machine");
 		setBackground(helper.createBlankDrawable(120, 56));
-		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(IEBlocks.Multiblocks.BOTTLING_MACHINE)));
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IEBlocks.Multiblocks.BOTTLING_MACHINE)));
 		tankOverlay = helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png"), 177, 31, 20, 51).addPadding(-2, 2, -2, 2).build();
 	}
 
@@ -61,7 +63,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		int tankSize = Math.max(FluidAttributes.BUCKET_VOLUME, recipe.fluidInput.getAmount());
 		builder.addSlot(RecipeIngredientRole.INPUT, 24, 2)
 				.setFluidRenderer(tankSize, false, 16, 52)
-				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
+				.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 

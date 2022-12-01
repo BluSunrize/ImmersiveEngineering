@@ -19,18 +19,18 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 
 public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "metalpress");
+	public static final RecipeType<MetalPressRecipe> TYPE = RecipeType.create(Lib.MODID, "metalpress", MetalPressRecipe.class);
 
 	public MetalPressRecipeCategory(IGuiHelper helper)
 	{
-		super(MetalPressRecipe.class, helper, UID, "block.immersiveengineering.metal_press");
+		super(TYPE, helper, "block.immersiveengineering.metal_press");
 		setBackground(helper.createBlankDrawable(100, 50));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.METAL_PRESS));
 	}

@@ -19,18 +19,18 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 
 public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "cloche");
+	public static final RecipeType<ClocheRecipe> TYPE = RecipeType.create(Lib.MODID, "cloche", ClocheRecipe.class);
 
 	public ClocheRecipeCategory(IGuiHelper helper)
 	{
-		super(ClocheRecipe.class, helper, UID, "block.immersiveengineering.cloche");
+		super(TYPE, helper, "block.immersiveengineering.cloche");
 		setBackground(helper.createBlankDrawable(100, 50));
 		setIcon(new ItemStack(IEBlocks.MetalDevices.CLOCHE));
 	}

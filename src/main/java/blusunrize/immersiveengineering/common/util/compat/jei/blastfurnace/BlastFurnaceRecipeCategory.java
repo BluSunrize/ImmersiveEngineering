@@ -22,6 +22,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -30,16 +31,16 @@ import java.util.Arrays;
 
 public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "blastfurnace");
+	public static final RecipeType<BlastFurnaceRecipe> TYPE = RecipeType.create(Lib.MODID, "blastfurnace", BlastFurnaceRecipe.class);
 	private final IDrawableAnimated flame;
 	private final IDrawableAnimated arrow;
 
 	public BlastFurnaceRecipeCategory(IGuiHelper helper)
 	{
-		super(BlastFurnaceRecipe.class, helper, UID, "gui.immersiveengineering.blastFurnace");
+		super(TYPE, helper, "gui.immersiveengineering.blastFurnace");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/blast_furnace.png");
 		setBackground(helper.createDrawable(background, 42, 9, 100, 64));
-		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(IEBlocks.Multiblocks.BLAST_FURNACE)));
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IEBlocks.Multiblocks.BLAST_FURNACE)));
 		flame = helper.drawableBuilder(background, 177, 0, 14, 14).buildAnimated(300, IDrawableAnimated.StartDirection.TOP, true);
 		arrow = helper.drawableBuilder(background, 176, 14, 24, 17).buildAnimated(300, IDrawableAnimated.StartDirection.LEFT, false);
 	}

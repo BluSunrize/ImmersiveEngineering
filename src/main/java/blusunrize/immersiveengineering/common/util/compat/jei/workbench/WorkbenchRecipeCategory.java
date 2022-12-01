@@ -18,6 +18,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -25,11 +26,11 @@ import java.util.Arrays;
 
 public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "workbench");
+	public static final RecipeType<BlueprintCraftingRecipe> TYPE = RecipeType.create(Lib.MODID, "workbench", BlueprintCraftingRecipe.class);
 
 	public WorkbenchRecipeCategory(IGuiHelper helper)
 	{
-		super(BlueprintCraftingRecipe.class, helper, UID, "block.immersiveengineering.workbench");
+		super(TYPE, helper, "block.immersiveengineering.workbench");
 		setBackground(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/workbench.png"), 0, 11, 176, 54));
 		setIcon(new ItemStack(IEBlocks.WoodenDevices.WORKBENCH));
 	}

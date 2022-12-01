@@ -21,7 +21,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 
@@ -29,14 +29,14 @@ import java.util.Arrays;
 
 public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "sawmill");
+	public static final RecipeType<SawmillRecipe> TYPE = RecipeType.create(Lib.MODID, "sawmill", SawmillRecipe.class);
 	private final IDrawableStatic middle;
 	private final IDrawableAnimated arrowNormal;
 	private final IDrawableAnimated arrowSplit;
 
 	public SawmillRecipeCategory(IGuiHelper helper)
 	{
-		super(SawmillRecipe.class, helper, UID, "block.immersiveengineering.sawmill");
+		super(TYPE, helper, "block.immersiveengineering.sawmill");
 		setBackground(helper.drawableBuilder(
 				JEIHelper.JEI_GUI, 0, 0, 114, 26).setTextureSize(128, 128).addPadding(2, 36, 2, 12).build()
 		);

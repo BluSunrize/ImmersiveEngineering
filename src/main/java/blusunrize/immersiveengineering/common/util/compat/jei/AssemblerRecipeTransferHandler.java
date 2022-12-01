@@ -71,7 +71,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 						if(j > 0)
 						{
 							Optional<ItemStack> stackToUse = ingr.getAllIngredients()
-									.filter(t -> t.getType()==VanillaTypes.ITEM)
+									.filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
 									.map(t -> (ItemStack)t.getIngredient())
 									.findFirst();
 							if(stackToUse.isPresent())

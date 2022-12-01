@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -24,6 +24,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -33,13 +34,13 @@ import java.util.Arrays;
 
 public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "cokeoven");
+	public static final RecipeType<CokeOvenRecipe> TYPE = RecipeType.create(Lib.MODID, "cokeoven", CokeOvenRecipe.class);
 	private final IDrawableStatic tankOverlay;
 	private final IDrawableAnimated flame;
 
 	public CokeOvenRecipeCategory(IGuiHelper helper)
 	{
-		super(CokeOvenRecipe.class, helper, UID, "block.immersiveengineering.coke_oven");
+		super(TYPE, helper, "block.immersiveengineering.coke_oven");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/coke_oven.png");
 		setBackground(helper.createDrawable(background, 26, 16, 123, 55));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.COKE_OVEN.get()));
@@ -62,7 +63,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 4)
 					.setFluidRenderer(tankSize, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
-					.addIngredient(VanillaTypes.FLUID, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput))
+					.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput))
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 		}
 	}

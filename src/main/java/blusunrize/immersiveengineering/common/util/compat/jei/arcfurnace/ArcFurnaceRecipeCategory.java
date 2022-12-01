@@ -24,6 +24,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -35,26 +36,26 @@ import java.util.List;
 
 public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "arcfurnace");
-	public static final ResourceLocation UID_RECYCLING = new ResourceLocation(Lib.MODID, "arcfurnace_recycling");
+	public static final RecipeType<ArcFurnaceRecipe> TYPE = RecipeType.create(Lib.MODID, "arcfurnace", ArcFurnaceRecipe.class);
+	public static final RecipeType<ArcFurnaceRecipe> TYPE_RECYCLING = RecipeType.create(Lib.MODID, "arcfurnace_recycling", ArcRecyclingRecipe.class);
 	private final IDrawableStatic arrow;
 
-	public ArcFurnaceRecipeCategory(IGuiHelper helper, Class<? extends ArcFurnaceRecipe> recipeClass, ResourceLocation uid)
+	public ArcFurnaceRecipeCategory(IGuiHelper helper, RecipeType<ArcFurnaceRecipe> type)
 	{
-		super(recipeClass, helper, uid, "block.immersiveengineering.arc_furnace");
+		super(type, helper, "block.immersiveengineering.arc_furnace");
 		setBackground(helper.createBlankDrawable(148, 54));
-		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
 		arrow = helper.drawableBuilder(JEIHelper.JEI_GUI, 19, 4, 24, 18).setTextureSize(128, 128).build();
 	}
 
 	public static ArcFurnaceRecipeCategory getDefault(IGuiHelper helper)
 	{
-		return new ArcFurnaceRecipeCategory(helper, ArcFurnaceRecipe.class, UID);
+		return new ArcFurnaceRecipeCategory(helper, TYPE);
 	}
 
 	public static ArcFurnaceRecipeCategory getRecycling(IGuiHelper helper)
 	{
-		ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(helper, ArcRecyclingRecipe.class, UID_RECYCLING);
+		ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(helper, TYPE_RECYCLING);
 		cat.title.append(" - Recycling");
 		cat.setIcon(helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/recycle.png"), 0, 0, 16, 16).setTextureSize(16, 16).build());
 		return cat;

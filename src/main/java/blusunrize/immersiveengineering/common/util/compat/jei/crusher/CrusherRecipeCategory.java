@@ -22,7 +22,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ import java.util.List;
 
 public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "crusher");
+	public static final RecipeType<CrusherRecipe> TYPE = RecipeType.create(Lib.MODID, "crusher", CrusherRecipe.class);
 
 	public CrusherRecipeCategory(IGuiHelper helper)
 	{
-		super(CrusherRecipe.class, helper, UID, "block.immersiveengineering.crusher");
+		super(TYPE, helper, "block.immersiveengineering.crusher");
 		setBackground(helper.createBlankDrawable(140, 54));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.CRUSHER));
 	}

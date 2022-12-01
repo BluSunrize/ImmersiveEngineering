@@ -19,18 +19,19 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "alloysmelter");
+	public static final RecipeType<AlloyRecipe> TYPE = RecipeType.create(Lib.MODID, "alloysmelter", AlloyRecipe.class);
 	private final IDrawableAnimated flame;
 	private final IDrawableAnimated arrow;
 
 	public AlloySmelterRecipeCategory(IGuiHelper helper)
 	{
-		super(AlloyRecipe.class, helper, UID, "block.immersiveengineering.alloy_smelter");
+		super(TYPE, helper, "block.immersiveengineering.alloy_smelter");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/alloy_smelter.png");
 		setBackground(helper.createDrawable(background, 36, 15, 106, 56));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.ALLOY_SMELTER));

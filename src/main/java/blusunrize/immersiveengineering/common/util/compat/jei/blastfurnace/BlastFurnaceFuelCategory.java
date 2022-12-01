@@ -21,6 +21,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 
@@ -28,12 +29,12 @@ import java.util.Arrays;
 
 public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "blastfurnace_fuel");
+	public static final RecipeType<BlastFurnaceFuel> TYPE = RecipeType.create(Lib.MODID, "blastfurnace_fuel", BlastFurnaceFuel.class);
 	private final IDrawableAnimated flame;
 
 	public BlastFurnaceFuelCategory(IGuiHelper helper)
 	{
-		super(BlastFurnaceFuel.class, helper, UID, "gui.immersiveengineering.blastFurnace.fuel");
+		super(TYPE, helper, "gui.immersiveengineering.blastFurnace.fuel");
 		ResourceLocation furnaceBackgroundLocation = new ResourceLocation("minecraft", "textures/gui/container/furnace.png");
 		setBackground(helper.drawableBuilder(furnaceBackgroundLocation, 55, 36, 18, 36).addPadding(0, 0, 0, 68).build());
 		setIcon(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/blast_furnace.png"), 176, 0, 14, 14));
