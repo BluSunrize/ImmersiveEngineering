@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.client.utils;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -44,6 +45,17 @@ public class BakedQuadBuilder
 		data[next] |= ((int)(faceNormal.y*127)&255)<<8;
 		data[next] |= ((int)(faceNormal.z*127)&255)<<16;
 		++next;
+
+		// Optifine adds some extra elements when shaders are enabled (all marked as PADDING), skip those
+		int extraPaddingBytes = 0;
+		for(int i = 6; i < FORMAT.getElements().size(); ++i)
+		{
+			final var extraElement = FORMAT.getElements().get(i);
+			Preconditions.checkState(extraElement.getUsage()==Usage.PADDING);
+			extraPaddingBytes += extraElement.getByteSize();
+		}
+		Preconditions.checkState(extraPaddingBytes%Integer.BYTES==0);
+		next += extraPaddingBytes/Integer.BYTES;
 
 		++nextVertex;
 		Preconditions.checkState(next==nextVertex*FORMAT.getIntegerSize());
