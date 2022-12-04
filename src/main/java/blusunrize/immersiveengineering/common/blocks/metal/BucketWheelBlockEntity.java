@@ -123,8 +123,8 @@ public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWhee
 				((ServerLevel)w).sendParticles(
 						new ItemParticleOption(ParticleTypes.ITEM, stack),
 						x+axis.choose(fixPosOffset, 0, rndPosOffset), y, z+axis.choose(rndPosOffset, 0, fixPosOffset),
-						0,
-						mX, mY, mZ, 1
+						32,
+						mX, mY, mZ, 0.075
 				);
 			}
 		}
