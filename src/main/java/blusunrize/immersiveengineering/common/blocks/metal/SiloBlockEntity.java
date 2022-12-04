@@ -144,6 +144,17 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 					float zMax = pos.getZ()==0?.25f: 1;
 					return ImmutableList.of(new AABB(xMin, 0, zMin, xMax, 1, zMax));
 				}
+				if(pos.getY()==6&&(pos.getX()!=1||pos.getZ()!=1))
+				{
+					float xMin = pos.getX()==0?.5f: 0;
+					float xMax = pos.getX()==2?.5f: 1;
+					float zMin = pos.getZ()==0?.5f: 0;
+					float zMax = pos.getZ()==2?.5f: 1;
+					return ImmutableList.of(
+							new AABB(0, 0, 0, 1, .5, 1),
+							new AABB(xMin, .5, zMin, xMax, 1, zMax)
+					);
+				}
 				return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
 			}
 	);
