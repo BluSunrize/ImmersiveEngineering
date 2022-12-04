@@ -56,9 +56,14 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.modelLocation(rl("models/block/metal_multiblock/bucket_wheel.obj.ie"))
 				.callback(BucketWheelCallbacks.INSTANCE)
 				.end();
-		getBuilder(CrusherRenderer.NAME)
+		getBuilder(CrusherRenderer.NAME_LEFT)
 				.customLoader(OBJLoaderBuilder::begin)
-				.modelLocation(rl("models/block/metal_multiblock/crusher_drum.obj"))
+				.modelLocation(rl("models/block/metal_multiblock/crusher_drum_left.obj"))
+				.flipV(true)
+				.end();
+		getBuilder(CrusherRenderer.NAME_RIGHT)
+				.customLoader(OBJLoaderBuilder::begin)
+				.modelLocation(rl("models/block/metal_multiblock/crusher_drum_right.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(SawmillRenderer.NAME)
