@@ -68,7 +68,7 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 			FluidStack fs = te.tank.fluids.get(i);
 			if(fs!=null&&fs.getFluid()!=null)
 			{
-				float yy = fs.getAmount()/(float)te.tank.getCapacity()*1.125f;
+				float yy = fs.getAmount()/(float)te.tank.getCapacity()*1.0625f;
 				matrixStack.translate(0, 0, -yy);
 				float w = (i < te.tank.getFluidTypes()-1||yy >= .125)?26: 16+yy/.0125f;
 				GuiHelper.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.translucent()), matrixStack, fs,

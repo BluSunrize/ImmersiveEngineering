@@ -139,14 +139,14 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	{
 		tickCommon();
 		ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f, 1);
-		if(active&&level.getGameTime()%4==0)
+		if(active&&level.getGameTime()%2==0)
 		{
 			BlockPos exhaust = this.getBlockPosForPos(new BlockPos(2, 2, 2));
 			Direction fl = getFacing();
 			Direction fw = getFacing().getClockWise();
 			if(getIsMirrored())
 				fw = fw.getOpposite();
-			level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+			level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
 					exhaust.getX()+.5+(fl.getStepX()*.3125f)+(-fw.getStepX()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getStepZ()*.3125f)+(-fw.getStepZ()*.3125f), 0.015625-(0.03125*Math.random()), 0.0625, 0.015625-(0.03125*Math.random()));
 		}
 	}
