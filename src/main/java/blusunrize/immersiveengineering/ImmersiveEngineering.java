@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.CommonProxy;
@@ -76,7 +75,6 @@ import javax.annotation.Nonnull;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -242,6 +240,7 @@ public class ImmersiveEngineering
 		registerMessage(MessageRevolverRotate.class, MessageRevolverRotate::new, PLAY_TO_SERVER);
 		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageContainerData.class, MessageContainerData::new, PLAY_TO_CLIENT);
+		registerMessage(MessageOpenManual.class, MessageOpenManual::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));

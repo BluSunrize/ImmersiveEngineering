@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
@@ -28,7 +28,7 @@ import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
-import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.network.MessageOpenManual;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
@@ -41,14 +41,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -370,20 +367,23 @@ public class EventHandler
 	@SubscribeEvent
 	public void onBlockRightclick(RightClickBlock event)
 	{
+		if(event.getWorld().isClientSide)
+			return;
 		BlockPos pos = event.getPos();
 		BlockState state = event.getWorld().getBlockState(pos);
 		if(!(state.getBlock() instanceof LecternBlock)||event.getPlayer()==null)
 			return;
 		BlockEntity tile = event.getWorld().getBlockEntity(pos);
-		if(tile instanceof LecternBlockEntity&&((LecternBlockEntity)tile).getBook().getItem() instanceof ManualItem)
+		if(tile instanceof LecternBlockEntity lectern&&lectern.getBook().getItem() instanceof ManualItem)
 		{
 			if(!event.getPlayer().isShiftKeyDown())
 			{
-				if(event.getWorld().isClientSide)
-					ImmersiveEngineering.proxy.openManual();
-				event.setCanceled(true);
+				if(event.getPlayer() instanceof ServerPlayer serverPlayer)
+					ImmersiveEngineering.packetHandler.send(
+							PacketDistributor.PLAYER.with(() -> serverPlayer), new MessageOpenManual()
+					);
 			}
-			else if(!event.getWorld().isClientSide)
+			else
 			{
 				Direction direction = state.getValue(LecternBlock.FACING);
 				ItemStack itemstack = ((LecternBlockEntity)tile).getBook().copy();
@@ -392,10 +392,10 @@ public class EventHandler
 				ItemEntity itementity = new ItemEntity(event.getWorld(), pos.getX()+0.5D+f, pos.getY()+1, pos.getZ()+0.5D+f1, itemstack);
 				itementity.setDefaultPickUpDelay();
 				event.getWorld().addFreshEntity(itementity);
-				((LecternBlockEntity)tile).clearContent();
+				lectern.clearContent();
 				LecternBlock.resetBookState(event.getWorld(), pos, state, false);
-				event.setCanceled(true);
 			}
+			event.setCanceled(true);
 		}
 	}
 
