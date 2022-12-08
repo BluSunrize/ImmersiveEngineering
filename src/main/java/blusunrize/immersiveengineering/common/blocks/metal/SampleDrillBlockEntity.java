@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
@@ -29,11 +30,14 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -76,7 +80,13 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	public void tickClient()
 	{
 		if(isRunning)
+		{
 			process++;
+			if (process <= 0.5*IEServerConfig.MACHINES.coredrill_time.get())
+			    level.addAlwaysVisibleParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COBBLESTONE)),
+					getBlockPos().getX() + 0.5, getBlockPos().getY() + 1.125, getBlockPos().getZ() + 0.5,
+					Utils.RAND.nextDouble()*.125-.0625, 0.0625, Utils.RAND.nextDouble()*.125-.0625);
+		}
 	}
 
 	@Override

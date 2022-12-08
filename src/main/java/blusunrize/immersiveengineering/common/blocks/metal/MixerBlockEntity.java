@@ -113,7 +113,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	{
 		if(shouldRenderAsActive())
 		{
-			if(ApiUtils.RANDOM.nextInt(8)==0&&!tank.fluids.isEmpty())
+			if(!tank.fluids.isEmpty())
 			{
 				FluidStack fs = tank.fluids.get(0);
 				float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
@@ -122,9 +122,15 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 				float angleRad = (float)Math.toRadians(animation_agitator);
 				partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
 				if(ApiUtils.RANDOM.nextBoolean())
-					level.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+				{
+					level.addAlwaysVisibleParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y-0.25, partPos.z, 0, 0, 0);
+					level.addAlwaysVisibleParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y-0.25, partPos.z, 0, 0, 0);
+				}
 				else
-					level.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+				{
+					level.addAlwaysVisibleParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+					level.addAlwaysVisibleParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+				}
 			}
 			animation_agitator = (animation_agitator+9)%360;
 		}

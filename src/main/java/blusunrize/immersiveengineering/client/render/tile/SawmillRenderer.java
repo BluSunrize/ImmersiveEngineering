@@ -60,7 +60,7 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 			matrixStack.pushPose();
 			matrixStack.translate(1, .125, -.5);
 			float spin = te.animation_bladeRotation;
-			if(te.shouldRenderAsActive())
+			if(te.shouldRenderAsActive() && !te.isRSDisabled())
 				spin += 36f*partialTicks;
 			matrixStack.mulPose(new Quaternion(0, 0, spin, true));
 			RenderUtils.renderModelTESRFast(

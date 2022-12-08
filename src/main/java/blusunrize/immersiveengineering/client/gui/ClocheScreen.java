@@ -46,5 +46,11 @@ public class ClocheScreen extends IEContainerScreen<ClocheMenu>
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
+		float process = tile.getGuiProgress();
+		if(process > 0)
+		{
+			int w = (int)Math.max(1, process*12);
+			this.blit(transform, leftPos+101, topPos+36, 181, 2, w, 12);
+		}
 	}
 }

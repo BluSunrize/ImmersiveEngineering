@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -20,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -144,12 +146,29 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 		nbt.put("tank", tankTag);
 	}
 
+	private static final CachedShapesWithTransform<BlockPos, Direction> BLOCK_BOUNDS = CachedShapesWithTransform.createDirectional(
+			pos -> {
+				if(pos.getX()%2==0&&pos.getY()==0&&pos.getZ()%2==0)
+					return ImmutableList.of(new AABB(.375, 0, .375, .625, 1, .625));
+				if(pos.getY()==4&&(pos.getX()!=1||pos.getZ()!=1))
+				{
+					float xMin = pos.getX()==0?.5f: 0;
+					float xMax = pos.getX()==2?.5f: 1;
+					float zMin = pos.getZ()==0?.5f: 0;
+					float zMax = pos.getZ()==2?.5f: 1;
+					return ImmutableList.of(
+							new AABB(0, 0, 0, 1, .5, 1),
+							new AABB(xMin, .5, zMin, xMax, 1, zMax)
+					);
+				}
+				return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
+			}
+	);
+
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ()%2==0)
-			return Shapes.box(.375f, 0, .375f, .625f, 1, .625f);
-		return Shapes.block();
+		return BLOCK_BOUNDS.get(posInMultiblock, getFacing());
 	}
 
 	private static final BlockPos ioTopOffset = new BlockPos(1, 4, 1);

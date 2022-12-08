@@ -46,6 +46,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -270,6 +271,16 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 					}
 				}
 		}
+	}
+
+	public float getGuiProgress()
+	{
+		ItemStack seed = inventory.get(SLOT_SEED);
+		ItemStack soil = inventory.get(SLOT_SOIL);
+		ClocheRecipe recipe = cachedRecipe.get();
+		if(recipe==null)
+			return 0;
+		return Mth.clamp(renderGrowth/recipe.getTime(seed, soil), 0, 1);
 	}
 
 	protected void sendSyncPacket()

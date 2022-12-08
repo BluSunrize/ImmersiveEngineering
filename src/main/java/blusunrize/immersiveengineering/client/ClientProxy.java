@@ -189,7 +189,8 @@ public class ClientProxy extends CommonProxy
 		AutoWorkbenchRenderer.DYNAMIC = new DynamicModel(AutoWorkbenchRenderer.NAME);
 		BottlingMachineRenderer.DYNAMIC = new DynamicModel(BottlingMachineRenderer.NAME);
 		BucketWheelRenderer.WHEEL = new DynamicModel(BucketWheelRenderer.NAME);
-		CrusherRenderer.BARREL = new DynamicModel(CrusherRenderer.NAME);
+		CrusherRenderer.BARREL_LEFT = new DynamicModel(CrusherRenderer.NAME_LEFT);
+		CrusherRenderer.BARREL_RIGHT = new DynamicModel(CrusherRenderer.NAME_RIGHT);
 		SawmillRenderer.BLADE = new DynamicModel(SawmillRenderer.NAME);
 		DieselGeneratorRenderer.FAN = new DynamicModel(DieselGeneratorRenderer.NAME);
 		MetalPressRenderer.PISTON = new DynamicModel(MetalPressRenderer.NAME);

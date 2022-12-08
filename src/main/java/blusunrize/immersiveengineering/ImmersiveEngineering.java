@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
+import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import blusunrize.immersiveengineering.common.CommonProxy;
@@ -233,6 +234,7 @@ public class ImmersiveEngineering
 		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageContainerData.class, MessageContainerData::new, PLAY_TO_CLIENT);
 		registerMessage(MessageNoSpamChat.class, MessageNoSpamChat::new, PLAY_TO_CLIENT);
+		registerMessage(MessageOpenManual.class, MessageOpenManual::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));

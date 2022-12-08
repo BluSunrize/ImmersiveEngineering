@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
+import blusunrize.immersiveengineering.common.network.MessageOpenManual;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
@@ -368,20 +369,23 @@ public class EventHandler
 	@SubscribeEvent
 	public void onBlockRightclick(RightClickBlock event)
 	{
+		if(event.getLevel().isClientSide)
+			return;
 		BlockPos pos = event.getPos();
 		BlockState state = event.getLevel().getBlockState(pos);
 		if(!(state.getBlock() instanceof LecternBlock)||event.getEntity()==null)
 			return;
 		BlockEntity tile = event.getLevel().getBlockEntity(pos);
-		if(tile instanceof LecternBlockEntity&&((LecternBlockEntity)tile).getBook().getItem() instanceof ManualItem)
+		if(tile instanceof LecternBlockEntity lectern&&lectern.getBook().getItem() instanceof ManualItem)
 		{
 			if(!event.getEntity().isShiftKeyDown())
 			{
-				if(event.getLevel().isClientSide)
-					ImmersiveEngineering.proxy.openManual();
-				event.setCanceled(true);
+				if(event.getEntity() instanceof ServerPlayer serverPlayer)
+					ImmersiveEngineering.packetHandler.send(
+							PacketDistributor.PLAYER.with(() -> serverPlayer), new MessageOpenManual()
+					);
 			}
-			else if(!event.getLevel().isClientSide)
+			else
 			{
 				Direction direction = state.getValue(LecternBlock.FACING);
 				ItemStack itemstack = ((LecternBlockEntity)tile).getBook().copy();
@@ -390,10 +394,10 @@ public class EventHandler
 				ItemEntity itementity = new ItemEntity(event.getLevel(), pos.getX()+0.5D+f, pos.getY()+1, pos.getZ()+0.5D+f1, itemstack);
 				itementity.setDefaultPickUpDelay();
 				event.getLevel().addFreshEntity(itementity);
-				((LecternBlockEntity)tile).clearContent();
+				lectern.clearContent();
 				LecternBlock.resetBookState(event.getLevel(), pos, state, false);
-				event.setCanceled(true);
 			}
+			event.setCanceled(true);
 		}
 	}
 

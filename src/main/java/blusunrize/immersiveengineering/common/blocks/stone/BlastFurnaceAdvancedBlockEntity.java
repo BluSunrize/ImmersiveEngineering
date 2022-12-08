@@ -8,12 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -21,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,7 +43,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<BlastFurnaceAdvancedBlockEntity>
+public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<BlastFurnaceAdvancedBlockEntity> implements IEClientTickableBE
 {
 	public BlastFurnaceAdvancedBlockEntity(
 			BlockEntityType<BlastFurnaceAdvancedBlockEntity> type, BlockPos pos, BlockState state
@@ -61,6 +65,16 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 	public BEContainer<BlastFurnaceBlockEntity<?>, ?> getContainerType()
 	{
 		return IEMenuTypes.BLAST_FURNACE_ADV;
+	}
+
+	@Override
+	public void tickClient()
+	{
+		if(isDummy())
+			return;
+		if(getIsActive())
+			level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
+			ApiUtils.RANDOM.nextDouble()*.0125-.00625, .05, ApiUtils.RANDOM.nextDouble()*.0125-.00625);
 	}
 
 	@Override

@@ -2931,7 +2931,7 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(Ingredients.WOODEN_GRIP), has(Ingredients.WOODEN_GRIP))
 				.save(out, toRL(toPath(Misc.SKYHOOK)));
 		RevolverAssemblyRecipeBuilder.builder(Weapons.REVOLVER)
-				.setNBTCopyTargetRecipe(3, 4, 5)
+				.setNBTCopyTargetRecipe(1, 4, 6)
 				.pattern(" hg")
 				.pattern(" dc")
 				.pattern("b  ")
