@@ -27,7 +27,7 @@ public class GuiButtonManual extends Button
 
 	public GuiButtonManual(ManualScreen gui, int x, int y, int w, int h, Component text, OnPress handler)
 	{
-		super(x, y, w, h, text, handler);
+		super(x, y, w, h, text, handler, DEFAULT_NARRATION);
 		this.gui = gui;
 	}
 
@@ -49,15 +49,15 @@ public class GuiButtonManual extends Button
 		if(this.visible)
 		{
 			ManualUtils.bindTexture(gui.texture);
-			this.isHovered = mx >= this.x&&mx < (this.x+this.width)&&my >= this.y&&my < (this.y+this.height);
+			this.isHovered = mx >= this.getX()&&mx < (this.getX()+this.width)&&my >= this.getY()&&my < (this.getY()+this.height);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 
 			int col = colour[isHovered?1: 0];
-			fill(transform, x, y, x+width, y+height, col);
+			fill(transform, getX(), getY(), getX()+width, getY()+height, col);
 			int txtCol = textColour[isHovered?1: 0];
 			int sw = gui.manual.fontRenderer().width(getMessage().getString());
-			gui.manual.fontRenderer().draw(transform, getMessage().getString(), x+width/2-sw/2, y+height/2-gui.manual.fontRenderer().lineHeight/2, txtCol);
+			gui.manual.fontRenderer().draw(transform, getMessage().getString(), getX()+width/2-sw/2, getY()+height/2-gui.manual.fontRenderer().lineHeight/2, txtCol);
 			//TODO this.mouseDragged(mc, mx, my);
 		}
 	}

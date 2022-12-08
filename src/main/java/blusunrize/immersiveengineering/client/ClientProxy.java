@@ -231,6 +231,8 @@ public class ClientProxy extends CommonProxy
 	}
 
 	//TODO are these here rather than in ClientEventHandler for any particular reason???
+	/*
+	TODO use atlas info JSON instead
 	@SubscribeEvent
 	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
@@ -252,7 +254,7 @@ public class ClientProxy extends CommonProxy
 						if(layer.getTexture()!=null)
 							event.addSprite(layer.getTexture());
 
-	}
+	}*/
 
 	@SubscribeEvent
 	public static void textureStichPost(TextureStitchEvent.Post event)

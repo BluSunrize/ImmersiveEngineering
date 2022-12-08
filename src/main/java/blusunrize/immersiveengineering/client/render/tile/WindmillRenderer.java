@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.BakedModel;
@@ -60,8 +60,8 @@ public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		float rot = (float)(360*(tile.rotation+partialTicks*tile.getActualTurnSpeed()));
 
-		transform.mulPose(new Quaternion(new Vector3f(tile.getFacing().getAxis()==Axis.X?1: 0, 0, tile.getFacing().getAxis()==Axis.Z?1: 0), rot, true));
-		transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), dir, true));
+		transform.mulPose(new Quaternionf(new Vector3f(tile.getFacing().getAxis()==Axis.X?1: 0, 0, tile.getFacing().getAxis()==Axis.Z?1: 0), rot, true));
+		transform.mulPose(new Quaternionf(new Vector3f(0, 1, 0), dir, true));
 
 		transform.translate(-.5, -.5, -.5);
 		getBufferHolder(tile.sails)

@@ -42,7 +42,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -100,12 +101,6 @@ public class Villages
 
 	public static void init()
 	{
-		PlainVillagePools.bootstrap();
-		SnowyVillagePools.bootstrap();
-		SavannaVillagePools.bootstrap();
-		DesertVillagePools.bootstrap();
-		TaigaVillagePools.bootstrap();
-
 		// Register engineer's houses for each biome
 		for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"})
 			for(String type : new String[]{"engineer", "machinist", "electrician", "gunsmith", "outfitter"})
@@ -121,6 +116,8 @@ public class Villages
 
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
+		throw new UnsupportedOperationException();
+		/*
 		StructureTemplatePool old = BuiltinRegistries.TEMPLATE_POOL.get(pool);
 		int id = BuiltinRegistries.TEMPLATE_POOL.getId(old);
 
@@ -147,6 +144,7 @@ public class Villages
 				new StructureTemplatePool(pool, name, newPieceList),
 				Lifecycle.stable()
 		);
+		 */
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
@@ -227,7 +225,7 @@ public class Villages
 		public static void registerTrades(VillagerTradesEvent ev)
 		{
 			Int2ObjectMap<List<ItemListing>> trades = ev.getTrades();
-			final ResourceLocation typeName = Registry.VILLAGER_PROFESSION.getKey(ev.getType());
+			final ResourceLocation typeName = BuiltInRegistries.VILLAGER_PROFESSION.getKey(ev.getType());
 			if(ENGINEER.equals(typeName))
 			{
 				/* Structural Engineer
@@ -372,7 +370,7 @@ public class Villages
 
 		public EmeraldForItems(@Nonnull ResourceLocation tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
 		{
-			this(TagKey.create(Registry.ITEM_REGISTRY, tag), buyAmounts, maxUses, xp);
+			this(TagKey.create(Registries.ITEM, tag), buyAmounts, maxUses, xp);
 		}
 
 

@@ -438,7 +438,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 			Mutable<IClientFluidTypeExtensions> box = new MutableObject<>();
 			still.getFluidType().initializeClient(box::setValue);
 			ResourceLocation stillTexture = box.getValue().getStillTexture();
-			ModelFile model = models().getBuilder("block/fluid/"+Registry.FLUID.getKey(still).getPath())
+			ModelFile model = models().getBuilder("block/fluid/"+BuiltInRegistries.FLUID.getKey(still).getPath())
 					.texture("particle", stillTexture);
 			getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
 		}
@@ -481,7 +481,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 	{
 		super.fenceBlock(b.get(), texture);
 		itemModel(b,
-				models().withExistingParent(Registry.BLOCK.getKey(b.get()).getPath()+"_inventory", mcLoc("block/fence_inventory"))
+				models().withExistingParent(BuiltInRegistries.BLOCK.getKey(b.get()).getPath()+"_inventory", mcLoc("block/fence_inventory"))
 						.texture("texture", texture));
 	}
 
@@ -548,7 +548,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 			for(WallmountBlock.Orientation or : Orientation.values())
 			{
 				ResourceLocation modelLoc = rl("block/wooden_device/wallmount"+or.modelSuffix()+".obj");
-				ModelFile model = obj(Registry.BLOCK.getKey(b.get()).getPath()+or.modelSuffix(), modelLoc,
+				ModelFile model = obj(BuiltInRegistries.BLOCK.getKey(b.get()).getPath()+or.modelSuffix(), modelLoc,
 						ImmutableMap.of("texture", texture), models());
 				stateBuilder.partialState()
 						.with(IEProperties.FACING_HORIZONTAL, d)

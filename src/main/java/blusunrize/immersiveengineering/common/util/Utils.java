@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.mojang.math.Vector4f;
+import org.joml.Vector4f;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

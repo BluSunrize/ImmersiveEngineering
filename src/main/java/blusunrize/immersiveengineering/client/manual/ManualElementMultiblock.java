@@ -21,9 +21,9 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -81,9 +81,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 		transY = 35+diagLength/2;
 		additionalTransform = new Transformation(
 				null,
-				new Quaternion(25, 0, 0, true),
+				new Quaternionf(25, 0, 0, true),
 				null,
-				new Quaternion(0, -45, 0, true)
+				new Quaternionf(0, -45, 0, true)
 		);
 		scale = multiblock.getManualScale();
 		yOffTotal = (int)(transY+scale*diagLength/2);
@@ -207,7 +207,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 				transform.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				transform.scale(scale, -scale, 1);
 				additionalTransform.push(transform);
-				transform.mulPose(new Quaternion(0, 90, 0, true));
+				transform.mulPose(new Quaternionf(0, 90, 0, true));
 
 				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
 
@@ -296,7 +296,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			return Transformation.identity();
 		return new Transformation(
 				null,
-				new Quaternion(axis, angle, true),
+				new Quaternionf(axis, angle, true),
 				null,
 				null
 		);

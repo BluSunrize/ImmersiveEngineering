@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -46,13 +46,13 @@ public class CrusherRenderer extends IEBlockEntityRenderer<CrusherBlockEntity>
 		matrixStack.translate(te.getFacing().getStepX()*.5, 0, te.getFacing().getStepZ()*.5);
 
 		matrixStack.pushPose();
-		matrixStack.mulPose(new Quaternion(new Vector3f(-te.getFacing().getStepZ(), 0, te.getFacing().getStepX()), angle, true));
+		matrixStack.mulPose(new Quaternionf(new Vector3f(-te.getFacing().getStepZ(), 0, te.getFacing().getStepX()), angle, true));
 		renderBarrel(BARREL_LEFT, matrixStack, bufferIn, dir, combinedLightIn, combinedOverlayIn);
 		matrixStack.popPose();
 
 		matrixStack.pushPose();
 		matrixStack.translate(te.getFacing().getStepX()*-1, 0, te.getFacing().getStepZ()*-1);
-		matrixStack.mulPose(new Quaternion(new Vector3f(-te.getFacing().getStepZ(), 0, te.getFacing().getStepX()), -angle, true));
+		matrixStack.mulPose(new Quaternionf(new Vector3f(-te.getFacing().getStepZ(), 0, te.getFacing().getStepX()), -angle, true));
 		renderBarrel(BARREL_RIGHT, matrixStack, bufferIn, dir, combinedLightIn, combinedOverlayIn);
 		matrixStack.popPose();
 

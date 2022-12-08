@@ -9,6 +9,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -76,7 +78,7 @@ public class ArcRecyclingChecker
 	public static void allowPrefixedTagForRecycling(String prefix)
 	{
 		allowEnumeratedItemsForRecycling(
-				tags -> tags.registryOrThrow(Registry.ITEM_REGISTRY).getTags()
+				tags -> tags.registryOrThrow(Registries.ITEM).getTags()
 						.filter(e -> e.getFirst().location().getPath().startsWith(prefix))
 						.map(Pair::getSecond)
 						.flatMap(HolderSet::stream)
@@ -86,7 +88,7 @@ public class ArcRecyclingChecker
 
 	public static void allowItemTagForRecycling(TagKey<Item> tagKey)
 	{
-		allowEnumeratedItemsForRecycling(tags -> TagUtils.elementStream(tags.registryOrThrow(Registry.ITEM_REGISTRY), tagKey));
+		allowEnumeratedItemsForRecycling(tags -> TagUtils.elementStream(tags.registryOrThrow(Registries.ITEM), tagKey));
 	}
 
 	/**

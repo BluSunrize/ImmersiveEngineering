@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.item;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.mojang.math.Vector4f;
+import org.joml.Vector4f;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
-import com.mojang.math.Vector4f;
+import org.joml.Vector4f;
 
 import java.util.function.BiFunction;
 

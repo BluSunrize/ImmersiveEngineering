@@ -14,7 +14,7 @@ public class BannerTags extends TagsProvider<BannerPattern>
 {
 	public BannerTags(DataGenerator p_126546_, @Nullable ExistingFileHelper existingFileHelper)
 	{
-		super(p_126546_, Registry.BANNER_PATTERN, Lib.MODID, existingFileHelper);
+		super(p_126546_, BuiltInRegistries.BANNER_PATTERN, Lib.MODID, existingFileHelper);
 	}
 
 	@Override

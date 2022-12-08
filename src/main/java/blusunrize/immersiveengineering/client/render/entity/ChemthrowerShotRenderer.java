@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -48,8 +48,8 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 
 		matrixStackIn.pushPose();
 
-		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 180.0F-this.entityRenderDispatcher.camera.getYRot(), true));
-		matrixStackIn.mulPose(new Quaternion(new Vector3f(1.0F, 0.0F, 0.0F), -this.entityRenderDispatcher.camera.getXRot(), true));
+		matrixStackIn.mulPose(new Quaternionf(new Vector3f(0.0F, 1.0F, 0.0F), 180.0F-this.entityRenderDispatcher.camera.getYRot(), true));
+		matrixStackIn.mulPose(new Quaternionf(new Vector3f(1.0F, 0.0F, 0.0F), -this.entityRenderDispatcher.camera.getXRot(), true));
 
 		IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(f.getFluid());
 		TextureAtlasSprite sprite = ClientUtils.mc().getModelManager()

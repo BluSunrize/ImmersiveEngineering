@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
-import com.mojang.math.Vector4f;
+import org.joml.Vector4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;

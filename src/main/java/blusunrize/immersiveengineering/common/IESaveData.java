@@ -46,7 +46,7 @@ public class IESaveData extends SavedData
 			{
 				CompoundTag dimTag = dimensionList.getCompound(i);
 				ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
-				ResourceKey<Level> dimensionType = ResourceKey.create(Registry.DIMENSION_REGISTRY, rl);
+				ResourceKey<Level> dimensionType = ResourceKey.create(Registries.DIMENSION, rl);
 				ListTag mineralList = dimTag.getList("veins", Tag.TAG_COMPOUND);
 
 				ExcavatorHandler.getMineralVeinList().

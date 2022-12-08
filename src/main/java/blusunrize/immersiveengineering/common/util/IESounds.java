@@ -20,7 +20,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 public class IESounds
 {
 	private static final DeferredRegister<SoundEvent> REGISTER = DeferredRegister.create(
-			Registry.SOUND_EVENT_REGISTRY, MODID
+			Registries.SOUND_EVENT, MODID
 	);
 	public static final RegistryObject<SoundEvent> metalpress_piston = registerSound("metal_press_piston");
 	public static final RegistryObject<SoundEvent> metalpress_smash = registerSound("metal_press_smash");

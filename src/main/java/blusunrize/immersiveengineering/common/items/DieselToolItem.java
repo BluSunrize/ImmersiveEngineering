@@ -101,7 +101,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 			{
 				private final LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, CAPACITY));
 				private final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
-						new ShaderWrapper_Item(Registry.ITEM.getKey(DieselToolItem.this), stack)
+						new ShaderWrapper_Item(BuiltInRegistries.ITEM.getKey(DieselToolItem.this), stack)
 				);
 
 				@Nonnull

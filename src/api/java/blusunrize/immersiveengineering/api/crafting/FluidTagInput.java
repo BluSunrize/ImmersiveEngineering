@@ -20,6 +20,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -62,7 +64,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount, CompoundTag nbtTag)
 	{
-		this(TagKey.create(Registry.FLUID_REGISTRY, resourceLocation), amount, nbtTag);
+		this(TagKey.create(Registries.FLUID, resourceLocation), amount, nbtTag);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount)
@@ -109,7 +111,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 			return false;
 		if(!fluidTag.map(
 				t -> fluidStack.getFluid().is(t),
-				l -> l.contains(Registry.FLUID.getKey(fluidStack.getFluid()))
+				l -> l.contains(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()))
 		))
 			return false;
 		if(this.nbtTag!=null)
@@ -122,7 +124,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	{
 		return fluidTag.map(
 				// TODO less global?
-				t -> TagUtils.elementStream(Registry.FLUID, t),
+				t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t),
 				l -> l.stream().map(ForgeRegistries.FLUIDS::getValue)
 		)
 				.map(fluid -> new FluidStack(fluid, FluidTagInput.this.amount, FluidTagInput.this.nbtTag))
@@ -166,7 +168,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public void write(FriendlyByteBuf out)
 	{
 		List<ResourceLocation> matching = fluidTag.map(
-				f -> TagUtils.holderStream(Registry.FLUID, f)
+				f -> TagUtils.holderStream(BuiltInRegistries.FLUID, f)
 						.map(Holder::unwrapKey)
 						.map(Optional::orElseThrow)
 						.map(ResourceKey::location)

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.models.mirror;
 
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.client.resources.model.ModelState;
 
 import javax.annotation.Nonnull;

@@ -48,7 +48,7 @@ public class BlockEntityTags extends ForgeRegistryTagsProvider<BlockEntityType<?
 
 	private static TagKey<BlockEntityType<?>> tag(ResourceLocation name)
 	{
-		return TagKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY, name);
+		return TagKey.create(Registries.BLOCK_ENTITY_TYPE, name);
 	}
 
 	@Override

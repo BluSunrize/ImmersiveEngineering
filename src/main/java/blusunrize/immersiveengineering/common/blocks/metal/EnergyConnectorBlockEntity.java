@@ -102,7 +102,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public EnergyConnectorBlockEntity(BlockEntityType<? extends EnergyConnectorBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
-		Pair<String, Boolean> data = NAME_TO_SPEC.get(Registry.BLOCK_ENTITY_TYPE.getKey(type));
+		Pair<String, Boolean> data = NAME_TO_SPEC.get(BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type));
 		this.voltage = data.getFirst();
 		this.relay = data.getSecond();
 		this.storageToMachine = new MutableEnergyStorage(getMaxInput(), getMaxInput(), getMaxInput());

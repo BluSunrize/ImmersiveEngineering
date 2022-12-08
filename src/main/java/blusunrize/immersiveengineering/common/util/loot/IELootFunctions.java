@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 public class IELootFunctions
 {
 	private static final DeferredRegister<LootItemFunctionType> FUNCTION_REGISTER = DeferredRegister.create(
-			Registry.LOOT_FUNCTION_REGISTRY, ImmersiveEngineering.MODID
+			Registries.LOOT_FUNCTION, ImmersiveEngineering.MODID
 	);
 	public static final RegistryObject<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", () -> new SimpleSerializer<>(BluprintzLootFunction::new));
 	public static final RegistryObject<LootItemFunctionType> WINDMILL = registerFunction("windmill", () -> new SimpleSerializer<>(WindmillLootFunction::new));
@@ -41,7 +41,7 @@ public class IELootFunctions
 
 	private static final DeferredRegister<LootPoolEntryType> ENTRY_REGISTER = DeferredRegister.create(
 			// TODO why isn't there a REGISTRY field for this one?
-			Registry.LOOT_POOL_ENTRY_TYPE.key(), ImmersiveEngineering.MODID
+			BuiltInRegistries.LOOT_POOL_ENTRY_TYPE.key(), ImmersiveEngineering.MODID
 	);
 	public static final RegistryObject<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.Serializer::new);
 	public static final RegistryObject<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.Serializer::new);

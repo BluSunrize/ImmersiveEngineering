@@ -90,7 +90,7 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	@Override
 	public String getNameForFlavour()
 	{
-		return Registry.BLOCK.getKey(this).getPath();
+		return BuiltInRegistries.BLOCK.getKey(this).getPath();
 	}
 
 	@Override

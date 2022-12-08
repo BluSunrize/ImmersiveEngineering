@@ -10,7 +10,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -33,7 +33,7 @@ public class BasicClientProperties implements MultiblockManualData
 	@Nullable
 	private NonNullList<ItemStack> materials;
 	private final Supplier<DynamicModel> model;
-	private final Optional<Quaternion> rotation;
+	private final Optional<Quaternionf> rotation;
 
 	public BasicClientProperties(IETemplateMultiblock multiblock)
 	{
@@ -45,7 +45,7 @@ public class BasicClientProperties implements MultiblockManualData
 		this.multiblock = multiblock;
 		this.model = Suppliers.memoize(() -> MODELS.get(multiblock.getUniqueName()));
 		this.rotation = yRotationRadians.stream()
-				.mapToObj(r -> new Quaternion(0, (float)r, 0, false))
+				.mapToObj(r -> new Quaternionf(0, (float)r, 0, false))
 				.findAny();
 	}
 

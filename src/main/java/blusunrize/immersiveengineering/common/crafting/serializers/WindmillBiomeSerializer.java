@@ -51,7 +51,7 @@ public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 		else
 		{
 			ResourceLocation tagName = new ResourceLocation(json.get(BIOME_TAG_KEY).getAsString());
-			TagKey<Biome> tag = TagKey.create(Registry.BIOME_REGISTRY, tagName);
+			TagKey<Biome> tag = TagKey.create(Registries.BIOME, tagName);
 			return new WindmillBiome(recipeId, tag, temperature);
 		}
 	}
@@ -64,7 +64,7 @@ public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 		if(isTags)
 		{
 			ResourceLocation tagName = buffer.readResourceLocation();
-			TagKey<Biome> tag = TagKey.create(Registry.BIOME_REGISTRY, tagName);
+			TagKey<Biome> tag = TagKey.create(Registries.BIOME, tagName);
 			return new WindmillBiome(recipeId, tag, buffer.readFloat());
 		}
 		else

@@ -34,7 +34,7 @@ public class GuiButtonManualLink extends Button
 		super(x, y, w, h, Component.empty(), btn -> {
 			if(link!=null)
 				link.changePage(gui, true);
-		});
+		}, DEFAULT_NARRATION);
 		this.gui = gui;
 		this.link = link;
 		this.localized = localized;
@@ -45,8 +45,7 @@ public class GuiButtonManualLink extends Button
 	@Override
 	public void render(PoseStack transform, int mx, int my, float partialTicks)
 	{
-		Minecraft mc = Minecraft.getInstance();
-		isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
+		isHovered = mx >= this.getX()&&my >= this.getY()&&mx < this.getX()+this.width&&my < this.getY()+this.height;
 		if(isHovered)
 		{
 			drawHovered(transform, mx, my);
@@ -59,7 +58,7 @@ public class GuiButtonManualLink extends Button
 	private void drawHovered(PoseStack transform, int mx, int my)
 	{
 		Font font = gui.manual.fontRenderer();
-		font.draw(transform, localized, x, y, gui.manual.getHighlightColour());
+		font.draw(transform, localized, getX(), getY(), gui.manual.getHighlightColour());
 		String tooltip;
 		if(link!=null)
 			tooltip = gui.manual.formatLink(link);

@@ -193,7 +193,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 	public Component getName(@Nonnull ItemStack stack)
 	{
 		String s = "item.immersiveengineering.bullet.";
-		String key = Registry.ITEM.getKey(this).getPath();
+		String key = BuiltInRegistries.ITEM.getKey(this).getPath();
 		s += key;
 		s = type.getTranslationKey(stack, s);
 		return Component.translatable(s);

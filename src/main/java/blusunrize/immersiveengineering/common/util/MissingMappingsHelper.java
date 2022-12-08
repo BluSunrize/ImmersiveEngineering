@@ -17,9 +17,9 @@ public class MissingMappingsHelper
 	@SuppressWarnings("unchecked")
 	public static void handleRemapping(MissingMappingsEvent event)
 	{
-		handleRemapping(event, Registry.ITEM_REGISTRY);
-		handleRemapping(event, Registry.BLOCK_REGISTRY);
-		handleRemapping(event, Registry.FLUID_REGISTRY);
+		handleRemapping(event, Registries.ITEM);
+		handleRemapping(event, Registries.BLOCK);
+		handleRemapping(event, Registries.FLUID);
 	}
 
 	private static <T>

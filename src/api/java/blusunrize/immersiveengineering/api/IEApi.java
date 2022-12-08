@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
@@ -39,12 +41,7 @@ public class IEApi
 	/**
 	 * This map caches the preferred ores for the given OreDict name
 	 */
-	private static HashMap<TagKey<Item>, ItemStack> oreOutputPreference = new HashMap<>();
-
-	/**
-	 * The TextureSheet id for the revolver's icons
-	 */
-	public static int revolverTextureSheetID;
+	private static final HashMap<TagKey<Item>, ItemStack> oreOutputPreference = new HashMap<>();
 
 	/**
 	 * This map stores a list of OreDict prefixes (ingot, plate, gear, nugget) and their ingot relation (ingot:component) <br>
@@ -71,7 +68,7 @@ public class IEApi
 		// TODO caching should not be global, tags can change!
 		return oreOutputPreference.computeIfAbsent(
 				tag, rl -> getPreferredElementbyMod(
-						TagUtils.elementStream(tags, rl), tags.registryOrThrow(Registry.ITEM_REGISTRY)
+						TagUtils.elementStream(tags, rl), tags.registryOrThrow(Registries.ITEM)
 				).orElse(Items.AIR).getDefaultInstance()
 		).copy();
 	}
@@ -98,7 +95,7 @@ public class IEApi
 
 	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
 	{
-		return getPreferredElementbyMod(Arrays.stream(array), stack -> Registry.ITEM.getKey(stack.getItem()))
+		return getPreferredElementbyMod(Arrays.stream(array), stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()))
 				.orElseThrow(() -> new RuntimeException("Empty array?"));
 	}
 

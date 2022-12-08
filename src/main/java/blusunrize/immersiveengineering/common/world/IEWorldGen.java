@@ -21,7 +21,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -212,14 +212,14 @@ public class IEWorldGen
 	);
 
 	private static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_REGISTER = DeferredRegister.create(
-			Registry.PLACEMENT_MODIFIER_REGISTRY, ImmersiveEngineering.MODID
+			Registries.PLACEMENT_MODIFIER, ImmersiveEngineering.MODID
 	);
 	public static RegistryObject<PlacementModifierType<IECountPlacement>> IE_COUNT_PLACEMENT = PLACEMENT_REGISTER.register(
 			"ie_count", () -> () -> IECountPlacement.CODEC
 	);
 
 	private static final DeferredRegister<HeightProviderType<?>> HEIGHT_REGISTER = DeferredRegister.create(
-			Registry.HEIGHT_PROVIDER_TYPE_REGISTRY, ImmersiveEngineering.MODID
+			Registries.HEIGHT_PROVIDER_TYPE, ImmersiveEngineering.MODID
 	);
 	public static RegistryObject<HeightProviderType<IEHeightProvider>> IE_HEIGHT_PROVIDER = HEIGHT_REGISTER.register(
 			"ie_range", () -> () -> IEHeightProvider.CODEC
@@ -244,11 +244,15 @@ public class IEWorldGen
 	private static <Cfg extends FeatureConfiguration, F extends Feature<Cfg>>
 	Holder<PlacedFeature> register(ResourceLocation rl, RegistryObject<F> feature, Cfg cfg, List<PlacementModifier> oreModifiers)
 	{
+		// TODO
+		throw new UnsupportedOperationException();
+		/*
 		Holder<ConfiguredFeature<?, ?>> configured = BuiltinRegistries.register(
 				BuiltinRegistries.CONFIGURED_FEATURE, rl, new ConfiguredFeature<>(feature.get(), cfg)
 		);
 		return BuiltinRegistries.register(
 				BuiltinRegistries.PLACED_FEATURE, rl, new PlacedFeature(configured, oreModifiers)
 		);
+		 */
 	}
 }

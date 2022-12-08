@@ -238,7 +238,7 @@ public class JEIHelper implements IModPlugin
 				ItemStack bucket = f.getBucket().getDefaultInstance();
 				if(!bucket.isEmpty()&&tag.isPresent())
 					recipes.add(new BottlingMachineRecipe(
-							new ResourceLocation(Lib.MODID, "jei_bucket_"+Registry.FLUID.getKey(f).getPath()),
+							new ResourceLocation(Lib.MODID, "jei_bucket_"+BuiltInRegistries.FLUID.getKey(f).getPath()),
 							List.of(Lazy.of(() -> bucket)),
 							IngredientWithSize.of(new ItemStack(Items.BUCKET)),
 							new FluidTagInput(tag.get(), 1000)

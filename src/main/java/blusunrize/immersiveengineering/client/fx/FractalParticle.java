@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -23,8 +22,10 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.*;
 
 import javax.annotation.Nullable;
+import java.lang.Math;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -107,7 +108,7 @@ public class FractalParticle extends Particle
 		matrixStack.pushPose();
 		matrixStack.translate(x, y, z);
 		matrixStack.scale(mod, mod, mod);
-		matrixStack.mulPose(new Quaternion(0, 180*mod, 0, true));
+		matrixStack.mulPose(new Quaternionf().rotateXYZ(0, Mth.PI*mod, 0));
 		Matrix4f transform = matrixStack.last().pose();
 		Matrix3f transformN = matrixStack.last().normal();
 		matrixStack.popPose();
@@ -160,7 +161,7 @@ public class FractalParticle extends Particle
 	)
 	{
 		Vector3f normal = new Vector3f(start.x()-end.x(), start.y()-end.y(), start.z()-end.z());
-		normal.transform(transformN);
+		normal.mul(transformN);
 		normal.normalize();
 		Vector3f here = atStart?start: end;
 		buffer.vertex(transform, here.x(), here.y(), here.z())
@@ -179,8 +180,8 @@ public class FractalParticle extends Particle
 	private void drawPoint(VertexConsumer builder, Matrix4f transform, Vector3f center, float size, float[] color)
 	{
 		Vector4f vector4f = new Vector4f(center.x(), center.y(), center.z(), 1.0F);
-		vector4f.transform(transform);
-		vector4f.perspectiveDivide();
+		vector4f.mul(transform);
+		vector4f.div(vector4f.w);
 		for(Vector3f normal : POINT_NORMALS)
 			builder.vertex(vector4f.x(), vector4f.y(), vector4f.z())
 					.color(color[0], color[1], color[2], color[3])

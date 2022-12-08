@@ -80,7 +80,7 @@ public class FluidInfoArea extends InfoArea
 			else
 			{
 				//TODO translation keys
-				tooltip.accept(applyFormat(Component.literal("Fluid Registry: "+Registry.FLUID.getKey(fluid.getFluid())), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(Component.literal("Fluid Registry: "+BuiltInRegistries.FLUID.getKey(fluid.getFluid())), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Density: "+fluid.getFluid().getFluidType().getDensity(fluid)), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Temperature: "+fluid.getFluid().getFluidType().getTemperature(fluid)), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Viscosity: "+fluid.getFluid().getFluidType().getViscosity(fluid)), ChatFormatting.DARK_GRAY));

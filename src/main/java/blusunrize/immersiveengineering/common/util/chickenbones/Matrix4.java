@@ -9,9 +9,9 @@
 
 package blusunrize.immersiveengineering.common.util.chickenbones;
 
-import com.mojang.math.Matrix4f;
+import org.joml.Matrix4f;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 

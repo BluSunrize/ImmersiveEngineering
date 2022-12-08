@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.mixin.accessors.client.SimpleModelAccess;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransform;
@@ -71,12 +71,12 @@ public class ModelUtils
 			leftRY = -leftRY;
 			leftRZ = -leftRZ;
 		}
-		Quaternion leftRotation = new Quaternion(leftRX, leftRY, leftRZ, true);
+		Quaternionf leftRotation = new Quaternionf(leftRX, leftRY, leftRZ, true);
 
 		float rightRX = transform.rightRotation.x();
 		float rightRY = transform.rightRotation.y()*(leftHand?-1: 1);
 		float rightRZ = transform.rightRotation.z()*(leftHand?-1: 1);
-		Quaternion rightRotation = new Quaternion(rightRX, rightRY, rightRZ, true);
+		Quaternionf rightRotation = new Quaternionf(rightRX, rightRY, rightRZ, true);
 
 		return new Transformation(translate, leftRotation, transform.scale, rightRotation);
 	}

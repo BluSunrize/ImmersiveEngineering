@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillBlockEntit
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -46,7 +46,7 @@ public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillBlockE
 			float currentProcess = tile.process;
 			if (tile.isRunning)
 				currentProcess += partialTicks;
-			matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), (currentProcess*22.5f)%360f, true));
+			matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), (currentProcess*22.5f)%360f, true));
 			float push = tile.process/(float)max;
 			if(tile.process > max/2)
 				push = 1-push;

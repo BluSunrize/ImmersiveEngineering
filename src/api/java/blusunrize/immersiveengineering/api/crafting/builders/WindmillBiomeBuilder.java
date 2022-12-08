@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -21,10 +20,10 @@ public class WindmillBiomeBuilder extends IEFinishedRecipe<WindmillBiomeBuilder>
 	public static final String BIOME_TAG_KEY = "biomeTag";
 	public static final String MODIFIER_KEY = "modifier";
 
-	private WindmillBiomeBuilder(Biome matching)
+	private WindmillBiomeBuilder(ResourceKey<Biome> matching)
 	{
 		super(WindmillBiome.SERIALIZER.get());
-		addWriter(obj -> obj.addProperty(SINGLE_BIOME_KEY, BuiltinRegistries.BIOME.getKey(matching).toString()));
+		addWriter(obj -> obj.addProperty(SINGLE_BIOME_KEY, matching.toString()));
 	}
 
 	private WindmillBiomeBuilder(TagKey<Biome> matching)
@@ -40,7 +39,7 @@ public class WindmillBiomeBuilder extends IEFinishedRecipe<WindmillBiomeBuilder>
 
 	public static WindmillBiomeBuilder builder(ResourceKey<Biome> biome)
 	{
-		return new WindmillBiomeBuilder(BuiltinRegistries.BIOME.get(biome));
+		return new WindmillBiomeBuilder(biome);
 	}
 
 	public WindmillBiomeBuilder modifier(float v)

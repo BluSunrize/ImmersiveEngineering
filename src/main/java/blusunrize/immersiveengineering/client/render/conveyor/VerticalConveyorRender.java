@@ -10,9 +10,9 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -64,7 +64,7 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 	public Transformation modifyBaseRotationMatrix(Transformation matrix)
 	{
 		return matrix.compose(new Transformation(
-				new Vector3f(0, 1, 0), new Quaternion((float)Math.PI/2, 0, 0, false), null, null
+				new Vector3f(0, 1, 0), new Quaternionf((float)Math.PI/2, 0, 0, false), null, null
 		));
 	}
 

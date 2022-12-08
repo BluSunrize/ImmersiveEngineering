@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class IEArgumentTypes
 {
 	private static final DeferredRegister<ArgumentTypeInfo<?, ?>> REGISTER = DeferredRegister.create(
-			Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, Lib.MODID
+			Registries.COMMAND_ARGUMENT_TYPE, Lib.MODID
 	);
 	public static final RegistryObject<SingletonArgumentInfo<MineralArgument>> MINERAL = REGISTER.register(
 			"mineral", () -> ArgumentTypeInfos.registerByClass(

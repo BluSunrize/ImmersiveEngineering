@@ -54,7 +54,7 @@ public class DeviceProvider extends AbstractBlockDeviceProvider
 		BlockEntity blockEntity = blockDeviceQuery.getLevel().getBlockEntity(blockDeviceQuery.getQueryPosition());
 		if(!(blockEntity instanceof IEBaseBlockEntity ieBE))
 			return Invalidatable.empty();
-		WrappedOwner<?> owner = wrappedOwners.get(Registry.BLOCK_ENTITY_TYPE.getKey(ieBE.getType()));
+		WrappedOwner<?> owner = wrappedOwners.get(BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(ieBE.getType()));
 		Invalidatable<Device> result = getDevice(owner, ieBE);
 		if(result.isPresent())
 			ieBE.addCapInvalidateHook(result::invalidate);

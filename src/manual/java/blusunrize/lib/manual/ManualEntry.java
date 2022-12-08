@@ -181,13 +181,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 		ManualUtils.addLinkButtons(this, manual, gui, p.text, x,
 				y+p.special.getPixelsTaken(), pageButtons);
 		List<Button> tempButtons = new ArrayList<>();
-		pages.get(gui.page).special.onOpened(gui, 0, 0, tempButtons);
-		for(Button btn : tempButtons)
-		{
-			btn.x += x;
-			btn.y += y;
-			pageButtons.add(btn);
-		}
+		pages.get(gui.page).special.onOpened(gui, x, y, tempButtons);
+        pageButtons.addAll(tempButtons);
 	}
 
 	public String getSubtext()

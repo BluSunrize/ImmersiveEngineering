@@ -18,7 +18,7 @@ import java.util.List;
 public class IEBannerPatterns
 {
 	private static final DeferredRegister<BannerPattern> REGISTER = DeferredRegister.create(
-			Registry.BANNER_PATTERN_REGISTRY, Lib.MODID
+			Registries.BANNER_PATTERN, Lib.MODID
 	);
 	public static final List<BannerEntry> ALL_BANNERS = new ArrayList<>();
 	public static final BannerEntry HAMMER = addBanner("hammer", "hmr");
@@ -38,7 +38,7 @@ public class IEBannerPatterns
 	private static BannerEntry addBanner(String name, String hashName)
 	{
 		RegistryObject<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
-		TagKey<BannerPattern> tag = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, pattern.getId());
+		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, pattern.getId());
 		ItemRegObject<BannerPatternItem> item = IEItems.register("bannerpattern_"+name, () -> new BannerPatternItem(
 				tag, new Properties().tab(ImmersiveEngineering.ITEM_GROUP)
 		));

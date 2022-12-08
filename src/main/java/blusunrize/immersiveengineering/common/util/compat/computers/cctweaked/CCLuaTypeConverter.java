@@ -37,7 +37,7 @@ public class CCLuaTypeConverter extends LuaTypeConverter
 	public Object serialize(ItemStack stack)
 	{
 		Map<String, Object> result = new HashMap<>();
-		result.put("name", getNameOrNull(stack.getItem(), Registry.ITEM));
+		result.put("name", getNameOrNull(stack.getItem(), BuiltInRegistries.ITEM));
 		result.put("count", stack.getCount());
 		result.put("damage", stack.getDamageValue());
 		result.put("maxDamage", stack.getMaxDamage());
@@ -47,7 +47,7 @@ public class CCLuaTypeConverter extends LuaTypeConverter
 	public Object serialize(FluidStack stack)
 	{
 		Map<String, Object> result = new HashMap<>();
-		result.put("name", getNameOrNull(stack.getFluid(), Registry.FLUID));
+		result.put("name", getNameOrNull(stack.getFluid(), BuiltInRegistries.FLUID));
 		result.put("amount", stack.getAmount());
 		return result;
 	}

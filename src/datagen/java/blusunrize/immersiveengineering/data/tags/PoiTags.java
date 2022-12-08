@@ -14,7 +14,7 @@ public class PoiTags extends TagsProvider<PoiType>
 {
 	public PoiTags(DataGenerator pGenerator, @Nullable ExistingFileHelper existingFileHelper)
 	{
-		super(pGenerator, Registry.POINT_OF_INTEREST_TYPE, Lib.MODID, existingFileHelper);
+		super(pGenerator, BuiltInRegistries.POINT_OF_INTEREST_TYPE, Lib.MODID, existingFileHelper);
 	}
 
 	@Override

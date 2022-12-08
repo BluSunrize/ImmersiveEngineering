@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +54,7 @@ public class GeneratorFuel extends IESerializableRecipe
 
 	public List<Fluid> getFluids()
 	{
-		return fluids.map(t -> TagUtils.elementStream(Registry.FLUID, t).toList(), Function.identity());
+		return fluids.map(t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t).toList(), Function.identity());
 	}
 
 	public int getBurnTime()

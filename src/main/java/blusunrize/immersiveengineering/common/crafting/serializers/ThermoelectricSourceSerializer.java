@@ -51,7 +51,7 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 		else
 		{
 			ResourceLocation tagName = new ResourceLocation(json.get(BLOCK_TAG_KEY).getAsString());
-			TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, tagName);
+			TagKey<Block> tag = TagKey.create(Registries.BLOCK, tagName);
 			return new ThermoelectricSource(recipeId, tag, temperature);
 		}
 	}

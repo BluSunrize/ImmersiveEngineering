@@ -17,9 +17,9 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector4f;
+import org.joml.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.FontManager;
@@ -114,14 +114,14 @@ public class ClientUtils
 		return sound;
 	}
 
-	public static Quaternion degreeToQuaterion(double x, double y, double z)
+	public static Quaternionf degreeToQuaterion(double x, double y, double z)
 	{
 		x = Math.toRadians(x);
 		y = Math.toRadians(y);
 		z = Math.toRadians(z);
-		Quaternion qYaw = new Quaternion(0, (float)Math.sin(y/2), 0, (float)Math.cos(y/2));
-		Quaternion qPitch = new Quaternion((float)Math.sin(x/2), 0, 0, (float)Math.cos(x/2));
-		Quaternion qRoll = new Quaternion(0, 0, (float)Math.sin(z/2), (float)Math.cos(z/2));
+		Quaternionf qYaw = new Quaternionf(0, (float)Math.sin(y/2), 0, (float)Math.cos(y/2));
+		Quaternionf qPitch = new Quaternionf((float)Math.sin(x/2), 0, 0, (float)Math.cos(x/2));
+		Quaternionf qRoll = new Quaternionf(0, 0, (float)Math.sin(z/2), (float)Math.cos(z/2));
 
 		qYaw.mul(qRoll);
 		qYaw.mul(qPitch);

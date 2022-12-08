@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
@@ -23,7 +24,7 @@ public class ThermoelectricSourceBuilder extends IEFinishedRecipe<Thermoelectric
 	private ThermoelectricSourceBuilder(Block matching)
 	{
 		super(ThermoelectricSource.SERIALIZER.get());
-		addWriter(obj -> obj.addProperty(SINGLE_BLOCK_KEY, Registry.BLOCK.getKey(matching).toString()));
+		addWriter(obj -> obj.addProperty(SINGLE_BLOCK_KEY, BuiltInRegistries.BLOCK.getKey(matching).toString()));
 	}
 
 	private ThermoelectricSourceBuilder(TagKey<Block> matching)

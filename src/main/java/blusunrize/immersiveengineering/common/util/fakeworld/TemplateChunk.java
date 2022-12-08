@@ -26,7 +26,7 @@ public class TemplateChunk extends LevelChunk
 	public TemplateChunk(Level worldIn, ChunkPos chunkPos, List<StructureBlockInfo> blocksInChunk, Predicate<BlockPos> shouldShow)
 	{
 		super(worldIn, chunkPos);
-		Registry<Biome> biomeRegistry = worldIn.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
+		Registry<Biome> biomeRegistry = worldIn.registryAccess().registryOrThrow(Registries.BIOME);
 		for(int i = 0; i < getSections().length; ++i)
 			getSections()[i] = new TemplateChunkSection(i, biomeRegistry, shouldShow);
 		this.shouldShow = shouldShow;

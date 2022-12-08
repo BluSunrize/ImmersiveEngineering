@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -50,10 +50,10 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	{
 		matrixStackIn.pushPose();
 		matrixStackIn.translate(0, 1, 0);
-		matrixStackIn.mulPose(new Quaternion(0, entityYaw+90, 0, true));
+		matrixStackIn.mulPose(new Quaternionf(0, entityYaw+90, 0, true));
 		matrixStackIn.pushPose();
 		matrixStackIn.translate(0, 0, .03125);
-		matrixStackIn.mulPose(new Quaternion(entity.angleHorizontal, 0, 0, true));
+		matrixStackIn.mulPose(new Quaternionf(entity.angleHorizontal, 0, 0, true));
 		matrixStackIn.translate(0, -entity.TUBE_LENGTH/2, 0);
 		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
 		matrixStackIn.popPose();

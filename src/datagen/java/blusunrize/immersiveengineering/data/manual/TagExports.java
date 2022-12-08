@@ -42,7 +42,7 @@ public record TagExports(DataGenerator gen, ExistingFileHelper helper, Path outP
 	{
 		TagLoader<Item> loader = new TagLoader<>(
 				rl -> Optional.ofNullable(ForgeRegistries.ITEMS.getValue(rl)),
-				TagManager.getTagDir(Registry.ITEM_REGISTRY)
+				TagManager.getTagDir(Registries.ITEM)
 		);
 		try(ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(
 				PackType.SERVER_DATA, gen, helper
@@ -53,7 +53,7 @@ public record TagExports(DataGenerator gen, ExistingFileHelper helper, Path outP
 			{
 				JsonArray elements = new JsonArray();
 				for(Item item : entry.getValue())
-					elements.add(Registry.ITEM.getKey(item).toString());
+					elements.add(BuiltInRegistries.ITEM.getKey(item).toString());
 				ResourceLocation tagName = entry.getKey();
 				Path tagPath = outPath.resolve(tagName.getNamespace()).resolve(tagName.getPath()+".json");
 				Files.createDirectories(tagPath.getParent());

@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.common.blocks.metal.BreakerSwitchBlockEntity;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -40,7 +40,7 @@ public class BreakerSwitchCallbacks implements BlockCallback<Integer>
 	{
 		return transform.compose(new Transformation(
 				null,
-				new Quaternion(0, 90*rotation, 0, true),
+				new Quaternionf(0, 90*rotation, 0, true),
 				null, null
 		));
 	}

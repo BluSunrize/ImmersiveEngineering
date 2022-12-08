@@ -244,7 +244,7 @@ public class CoresampleItem extends IEBaseItem
 		if(stack.hasTag()&&stack.getOrCreateTag().contains("dimension"))
 		{
 			ResourceLocation name = new ResourceLocation(stack.getOrCreateTag().getString("dimension"));
-			return ResourceKey.create(Registry.DIMENSION_REGISTRY, name);
+			return ResourceKey.create(Registries.DIMENSION, name);
 		}
 		return null;
 	}

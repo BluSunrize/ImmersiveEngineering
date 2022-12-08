@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem.SpecialRevolver;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -43,6 +43,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 	public static HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
 	public static TextureAtlasSprite revolverDefaultTexture;
 
+	/*TODO move to JSON
 	public static void addRevolverTextures(TextureStitchEvent.Pre evt)
 	{
 		evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver"));
@@ -54,7 +55,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 					split = key.length();
 				evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver_"+key.substring(0, split).toLowerCase(Locale.US)));
 			}
-	}
+	}*/
 
 	public static void retrieveRevolverTextures(TextureAtlas map)
 	{
@@ -148,7 +149,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 					if(left)
 						angle *= -1;
 					mat.translate(0, 1.5-f, 0);
-					mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), angle, false));
+					mat.mulPose(new Quaternionf(new Vector3f(0, 0, 1), angle, false));
 				}
 			}
 
@@ -160,33 +161,33 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 					if(f < .5)
 					{
 						mat.translate((.35-f)*2, 0, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(f-.35F), false));
+						mat.mulPose(new Quaternionf(new Vector3f(0, 0, left?-1: 1), 2.64F*(f-.35F), false));
 					}
 					else if(f < .6)
 					{
 						mat.translate((f-.5)*6, (.5-f)*1, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternionf(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 					}
 					else if(f < 1.7)
 					{
 						mat.translate(0, -.6, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternionf(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 					}
 					else if(f < 1.8)
 					{
 						mat.translate((1.8-f)*6, (f-1.8)*1, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternionf(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 					}
 					else
 					{
 						mat.translate((f-1.95f)*2, 0, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(1.95F-f), false));
+						mat.mulPose(new Quaternionf(new Vector3f(0, 0, left?-1: 1), 2.64F*(1.95F-f), false));
 					}
 			}
 			else if(player.containerMenu instanceof RevolverContainer)
 			{
 				mat.translate(left?.4: -.4, .4, 0);
-				mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+				mat.mulPose(new Quaternionf(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 			}
 		}
 	}
@@ -209,7 +210,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 												float partialTicks)
 	{
 		if(matOpen==null)
-			matOpen = new Transformation(new Vector3f(-.625F, .25F, 0), new Quaternion(0, 0, -.87266f, false), null, null);
+			matOpen = new Transformation(new Vector3f(-.625F, .25F, 0), new Quaternionf(0, 0, -.87266f, false), null, null);
 		if(matClose==null)
 			matClose = new Transformation(new Vector3f(-.625F, .25F, 0), null, null, null);
 		if(matCylinder==null)
@@ -230,14 +231,14 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 					else if(f < .5)
 						return new Transformation(
 								new Vector3f(-.625f, .25f, 0),
-								new Quaternion(0, 0, -2.64F*(f-.35F), false),
+								new Quaternionf(0, 0, -2.64F*(f-.35F), false),
 								null, null);
 					else if(f < 1.8)
 						return matOpen;
 					else
 						return new Transformation(
 								new Vector3f(-.625f, .25f, 0),
-								new Quaternion(0, 0, -2.64f*(1.95f-f), false),
+								new Quaternionf(0, 0, -2.64f*(1.95f-f), false),
 								null, null);
 				}
 				else if(f > 2.5&&f < 2.9)
@@ -245,7 +246,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 					float angle = (left?-1: 1)*-15.70795f*(f-2.5f);
 					return new Transformation(
 							new Vector3f(0, .6875f, 0),
-							new Quaternion(angle, 0, 0, false),
+							new Quaternionf(angle, 0, 0, false),
 							null, null);
 				}
 			}

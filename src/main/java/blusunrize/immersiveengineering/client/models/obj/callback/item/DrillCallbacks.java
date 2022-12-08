@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.DieselToolItem;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -121,19 +121,19 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 		if(groups==FIXED.get(0))
 			return MAT_AUGERS;
 		float angle = (entity.tickCount%60+partialTicks)/60f*(float)(2*Math.PI);
-		Quaternion rotation = null;
+		Quaternionf rotation = null;
 		Vector3f translation = null;
 		if("drill_head".equals(groups.get(0)))
-			rotation = new Quaternion(angle, 0, 0, false);
+			rotation = new Quaternionf(angle, 0, 0, false);
 		else if("upgrade_damage1".equals(groups.get(0)))
 		{
 			translation = new Vector3f(.441f, 0, 0);
-			rotation = new Quaternion(0, angle, 0, false);
+			rotation = new Quaternionf(0, angle, 0, false);
 		}
 		else if("upgrade_damage3".equals(groups.get(0)))
 		{
 			translation = new Vector3f(.441f, 0, 0);
-			rotation = new Quaternion(0, 0, angle, false);
+			rotation = new Quaternionf(0, 0, angle, false);
 		}
 		return new Transformation(translation, rotation, null, null);
 	}

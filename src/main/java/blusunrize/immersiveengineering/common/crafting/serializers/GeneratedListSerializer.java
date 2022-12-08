@@ -50,7 +50,7 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 		int length = buffer.readVarInt();
 		List<IESerializableRecipe> subRecipes = new ArrayList<>(length);
 		ResourceLocation recipeCategory = buffer.readResourceLocation();
-		RecipeSerializer<?> deserializer = Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(recipeCategory));
+		RecipeSerializer<?> deserializer = Objects.requireNonNull(BuiltInRegistries.RECIPE_SERIALIZER.get(recipeCategory));
 		for(int i = 0; i < length; ++i)
 		{
 			ResourceLocation recipeName = buffer.readResourceLocation();

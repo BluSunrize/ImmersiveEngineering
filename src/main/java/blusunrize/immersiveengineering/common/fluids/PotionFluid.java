@@ -59,7 +59,7 @@ public class PotionFluid extends Fluid
 		if(type==Potions.WATER||type==null)
 			return new FluidStack(Fluids.WATER, amount);
 		FluidStack stack = new FluidStack(IEFluids.POTION.get(), amount);
-		stack.getOrCreateTag().putString("Potion", Registry.POTION.getKey(type).toString());
+		stack.getOrCreateTag().putString("Potion", BuiltInRegistries.POTION.getKey(type).toString());
 		return stack;
 	}
 
@@ -181,7 +181,7 @@ public class PotionFluid extends Fluid
 			Potion potionType = PotionUtils.getPotion(fluidStack.getTag());
 			if(potionType!=Potions.EMPTY)
 			{
-				String modID = Registry.POTION.getKey(potionType).getNamespace();
+				String modID = BuiltInRegistries.POTION.getKey(potionType).getNamespace();
 				tooltip.accept(Component.translatable(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
 			}
 		}

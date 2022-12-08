@@ -23,7 +23,7 @@ import java.util.List;
 public class IEStats
 {
 	private static final DeferredRegister<ResourceLocation> REGISTER = DeferredRegister.create(
-			Registry.CUSTOM_STAT_REGISTRY, ImmersiveEngineering.MODID
+			Registries.CUSTOM_STAT, ImmersiveEngineering.MODID
 	);
 	private static final List<Runnable> RUN_IN_SETUP = new ArrayList<>();
 

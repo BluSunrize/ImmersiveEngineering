@@ -36,7 +36,7 @@ public class PotionHelper
 		else
 		{
 			CompoundTag nbt = new CompoundTag();
-			nbt.putString("Potion", Registry.POTION.getKey(type).toString());
+			nbt.putString("Potion", BuiltInRegistries.POTION.getKey(type).toString());
 			return new FluidTagInput(IETags.fluidPotion, amount, nbt);
 		}
 	}

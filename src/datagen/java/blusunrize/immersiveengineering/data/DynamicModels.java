@@ -130,7 +130,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.flipV(true)
 				.end();
 		for(Entry<Block, ModelFile> multiblock : multiblocks.unsplitModels.entrySet())
-			withExistingParent(Registry.BLOCK.getKey(multiblock.getKey()).getPath(), multiblock.getValue().getLocation());
+			withExistingParent(BuiltInRegistries.BLOCK.getKey(multiblock.getKey()).getPath(), multiblock.getValue().getLocation());
 	}
 
 	@Nonnull

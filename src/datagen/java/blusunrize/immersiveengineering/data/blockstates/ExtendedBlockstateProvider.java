@@ -59,7 +59,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected String name(Block b)
 	{
-		return Registry.BLOCK.getKey(b).getPath();
+		return BuiltInRegistries.BLOCK.getKey(b).getPath();
 	}
 
 	public void simpleBlockAndItem(Supplier<? extends Block> b, ModelFile model)
@@ -123,7 +123,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 			@Nullable RenderType layer
 	)
 	{
-		SlabBlock b = IEBlocks.TO_SLAB.get(Registry.BLOCK.getKey(full.get())).get();
+		SlabBlock b = IEBlocks.TO_SLAB.get(BuiltInRegistries.BLOCK.getKey(full.get())).get();
 		ModelBuilder<?> mainModel = models().slab(name(b)+"_bottom", side, bottom, top);
 		ModelBuilder<?> topModel = models().slabTop(name(b)+"_top", side, bottom, top);
 		ModelBuilder<?> doubleModel = models().cubeBottomTop(name(b)+"_double", side, bottom, top);
@@ -143,7 +143,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 			@Nullable RenderType layer
 	)
 	{
-		final IEStairsBlock b = IEBlocks.TO_STAIRS.get(Registry.BLOCK.getKey(full.get())).get();
+		final IEStairsBlock b = IEBlocks.TO_STAIRS.get(BuiltInRegistries.BLOCK.getKey(full.get())).get();
 		String baseName = name(b);
 		ModelBuilder<?> stairs = models().stairs(baseName, side, bottom, top);
 		ModelBuilder<?> stairsInner = models().stairsInner(baseName+"_inner", side, bottom, top);

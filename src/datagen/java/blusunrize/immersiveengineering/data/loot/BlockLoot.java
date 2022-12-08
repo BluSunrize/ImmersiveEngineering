@@ -209,7 +209,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 
 	private void register(Supplier<? extends Block> b, LootTable.Builder table)
 	{
-		register(Registry.BLOCK.getKey(b.get()), table);
+		register(BuiltInRegistries.BLOCK.getKey(b.get()), table);
 	}
 
 	private void register(ResourceLocation name, LootTable.Builder table)

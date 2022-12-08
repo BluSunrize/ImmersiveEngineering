@@ -41,7 +41,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable(Lib.DESC_FLAVOUR+Registry.ITEM.getKey(this).getPath()).withStyle(ChatFormatting.GRAY));
+		list.add(Component.translatable(Lib.DESC_FLAVOUR+BuiltInRegistries.ITEM.getKey(this).getPath()).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override

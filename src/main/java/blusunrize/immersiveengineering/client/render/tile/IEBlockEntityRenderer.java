@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
+import org.joml.Quaternionf;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,7 +18,7 @@ public abstract class IEBlockEntityRenderer<T extends BlockEntity> implements Bl
 
 	protected static void rotateForFacingNoCentering(PoseStack stack, Direction facing)
 	{
-		stack.mulPose(new Quaternion(0, 180-facing.toYRot(), 0, true));
+		stack.mulPose(new Quaternionf(0, 180-facing.toYRot(), 0, true));
 	}
 
 	protected static void rotateForFacing(PoseStack stack, Direction facing)

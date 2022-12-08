@@ -41,7 +41,7 @@ public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 	public GeneratorFuel readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		ResourceLocation tagName = new ResourceLocation(json.get(FLUID_TAG_KEY).getAsString());
-		TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, tagName);
+		TagKey<Fluid> tag = TagKey.create(Registries.FLUID, tagName);
 		int amount = json.get(BURN_TIME_KEY).getAsInt();
 		return new GeneratorFuel(recipeId, tag, amount);
 	}

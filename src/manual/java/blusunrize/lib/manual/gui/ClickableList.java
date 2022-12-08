@@ -48,7 +48,7 @@ public class ClickableList extends Button
 				  Consumer<Tree.AbstractNode<ResourceLocation, ManualEntry>> handler)
 	{
 		super(x, y, w, h, Component.empty(), btn -> {
-		});
+		}, DEFAULT_NARRATION);
 		this.gui = gui;
 		this.textScale = textScale;
 		this.handler = handler;
@@ -68,11 +68,11 @@ public class ClickableList extends Button
 			return;
 		Font fr = gui.manual.fontRenderer();
 
-		int mmY = my-this.y;
+		int mmY = my-this.getY();
 		transform.pushPose();
 		transform.scale(textScale, textScale, textScale);
-		transform.translate(x/textScale, y/textScale, 0);
-		isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
+		transform.translate(getX()/textScale, getY()/textScale, 0);
+		isHovered = mx >= getX()&&mx < getX()+width&&my >= getY()&&my < getY()+height;
 		for(int i = 0; i < Math.min(perPage, headers.length); i++)
 		{
 			int col = gui.manual.getTextColour();
@@ -105,8 +105,8 @@ public class ClickableList extends Button
 			final float heightBottomRel = (offset*getFontHeight()+height)/totalHeight;
 			final int heightTopAbs = (int)(heightTopRel*height);
 			final int heightBottomAbs = (int)(heightBottomRel*height);
-			fill(transform, x+width, y, x+width+8, y+height, minVisibleBlack);
-			fill(transform, x+width+1, y+heightTopAbs, x+width+7, y+heightBottomAbs, mainBarBlack);
+			fill(transform, getX()+width, getY(), getX()+width+8, getY()+height, minVisibleBlack);
+			fill(transform, getX()+width+1, getY()+heightTopAbs, getX()+width+7, getY()+heightBottomAbs, mainBarBlack);
 		}
 	}
 
@@ -132,7 +132,7 @@ public class ClickableList extends Button
 	{
 		if(!super.clicked(mx, my))
 			return null;
-		double mmY = my-this.y;
+		double mmY = my-this.getY();
 		for(int i = 0; i < Math.min(perPage, headers.length); i++)
 			if(mmY >= i*getFontHeight()&&mmY < (i+1)*getFontHeight())
 				return nodes.get(offset+i);

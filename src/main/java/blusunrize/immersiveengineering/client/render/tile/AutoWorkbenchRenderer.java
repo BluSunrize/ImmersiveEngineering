@@ -25,8 +25,8 @@ import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -192,7 +192,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		float tz = -.9375f;
 		matrixStack.pushPose();
 		matrixStack.translate(tx, 0, tz);
-		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), drill, true));
+		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), drill, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "drill");
 		matrixStack.popPose();
 
@@ -200,7 +200,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		tz = -.59375f;
 		matrixStack.pushPose();
 		matrixStack.translate(tx, -.21875, tz);
-		matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), press*90, true));
+		matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), press*90, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "press");
 		matrixStack.popPose();
 
@@ -224,7 +224,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 					{
 						matrixStack.pushPose();
 						matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
-						matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), itemDisplays[i][4], true));
+						matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), itemDisplays[i][4], true));
 						matrixStack.scale(scale, scale, .5f);
 						ClientUtils.mc().getItemRenderer().renderStatic(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 						matrixStack.popPose();
@@ -261,7 +261,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 							}
 							matrixStack.pushPose();
 							matrixStack.translate(localItemX, localItemY, localItemZ);
-							matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), localAngle, true));
+							matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), localAngle, true));
 							matrixStack.scale(scale, scale, .5f);
 							ClientUtils.mc().getItemRenderer().renderStatic(dList.get(d), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 							matrixStack.popPose();
@@ -281,7 +281,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			{
 				matrixStack.pushPose();
 				matrixStack.translate(-.195, .125, .97);
-				matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -45, true));
+				matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), -45, true));
 				float scale = .5f/blueprint.textureScale;
 				matrixStack.scale(scale, -scale, scale);
 				matrixStack.translate(0.5, 0.5, 0.5);

@@ -36,10 +36,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.server.packs.resources.*;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -502,8 +499,12 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 				for(PackResources subResource : subResources.getOrDefault(path.getNamespace(), List.of()))
 					getActuallyAllResources(path, subResource, out);
 			}
-			else if(resources.hasResource(type, path))
-				out.add(new Resource(resources.getName(), () -> resources.getResource(type, path)));
+			else
+			{
+				final IoSupplier<InputStream> resource = resources.getResource(type, path);
+				if(resource!=null)
+					out.add(new Resource(resources, resource));
+			}
 		} catch(Exception e)
 		{
 			throw new RuntimeException(e);

@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.common.blocks.cloth.BalloonBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.math.Vector4f;
+import org.joml.Vector4f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;

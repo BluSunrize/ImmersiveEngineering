@@ -412,7 +412,7 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private String name(ItemLike item)
 	{
-		return Registry.ITEM.getKey(item.asItem()).getPath();
+		return BuiltInRegistries.ITEM.getKey(item.asItem()).getPath();
 	}
 
 	@Nonnull
@@ -465,7 +465,7 @@ public class ItemModels extends TRSRItemModelProvider
 	private void addItemModels(String texturePrefix, ResourceLocation parent, Collection<? extends ItemLike> items)
 	{
 		for(ItemLike item : items)
-			addItemModel(texturePrefix==null?null: (texturePrefix+Registry.ITEM.getKey(item.asItem()).getPath()), item, parent);
+			addItemModel(texturePrefix==null?null: (texturePrefix+BuiltInRegistries.ITEM.getKey(item.asItem()).getPath()), item, parent);
 	}
 
 	private void addItemModel(String texture, ItemLike item)

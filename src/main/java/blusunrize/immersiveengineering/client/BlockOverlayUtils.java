@@ -12,8 +12,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
+import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -41,6 +41,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderHighlightEvent;
+import org.joml.Quaternionf;
 
 import java.util.Collection;
 
@@ -154,13 +155,13 @@ public class BlockOverlayUtils
 		int[] vertexOrder;
 		if(flip)
 		{
-			transform.mulPose(new Quaternion(0, -rotation, 0, false));
+			transform.mulPose(new Quaternionf().rotateXYZ(0, -rotation, 0));
 			transform.scale(1, 1, -1);
 			vertexOrder = new int[]{2, 3, 1, 0};
 		}
 		else
 		{
-			transform.mulPose(new Quaternion(0, rotation, 0, false));
+			transform.mulPose(new Quaternionf().rotateXYZ(0, rotation, 0));
 			vertexOrder = new int[]{0, 1, 3, 2};
 		}
 		transform.pushPose();
@@ -179,7 +180,7 @@ public class BlockOverlayUtils
 							.normal(transform.last().normal(), diff.x, 0, diff.y)
 							.endVertex();
 			}
-			transform.mulPose(new Quaternion(0, 180, 0, true));
+			transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.PI, 0));
 		}
 		transform.popPose();
 		transform.pushPose();
@@ -195,7 +196,7 @@ public class BlockOverlayUtils
 							.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
 							.endVertex();
 				}
-			transform.mulPose(new Quaternion(0, 180, 0, true));
+			transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.PI, 0));
 		}
 		transform.popPose();
 		transform.popPose();
@@ -349,8 +350,8 @@ public class BlockOverlayUtils
 							// Map coordinates require some pretty funky maths. I tried to simplify this,
 							// and ran into issues that made highlighting fail on certain markers.
 							// This implementation works, so I just won't touch it again.
-							float f = (float)(sampleX-(double)mapData.x)/(float)mapScale;
-							float f1 = (float)(sampleZ-(double)mapData.z)/(float)mapScale;
+							float f = (float)(sampleX-(double)mapData.centerX)/(float)mapScale;
+							float f1 = (float)(sampleZ-(double)mapData.centerZ)/(float)mapScale;
 							byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
 							byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
 							// Make it a vector, rotate it around the map center

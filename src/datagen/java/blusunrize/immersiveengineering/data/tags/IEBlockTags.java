@@ -288,7 +288,7 @@ public class IEBlockTags extends BlockTagsProvider
 		Set<ResourceLocation> registered = IEBlocks.REGISTER.getEntries().stream()
 				.map(RegistryObject::get)
 				.filter(b -> !(b instanceof IEFluidBlock))
-				.map(Registry.BLOCK::getKey)
+				.map(BuiltInRegistries.BLOCK::getKey)
 				.filter(name -> !knownNonHarvestable.contains(name))
 				.collect(Collectors.toSet());
 		Set<ResourceLocation> notHarvestable = Sets.difference(registered, harvestable);

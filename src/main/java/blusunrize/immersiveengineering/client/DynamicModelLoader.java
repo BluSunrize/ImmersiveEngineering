@@ -23,10 +23,12 @@ import java.util.Set;
 
 //Loads models not referenced in any blockstates for rendering in TE(S)Rs
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
+@Deprecated(forRemoval = true)
 public class DynamicModelLoader
 {
 	private static final Set<ResourceLocation> manualTextureRequests = new HashSet<>();
 
+	/* TODO move to JSON
 	@SubscribeEvent
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
@@ -35,7 +37,7 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Stitching textures!");
 		for(ResourceLocation rl : manualTextureRequests)
 			evt.addSprite(rl);
-	}
+	}*/
 
 	public static void requestTexture(ResourceLocation name)
 	{

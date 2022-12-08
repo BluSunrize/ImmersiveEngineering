@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockE
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -120,7 +120,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		matrixStack.popPose();
 
 		float dir = facing==Direction.SOUTH?180: facing==Direction.NORTH?0: facing==Direction.EAST?-90: 90;
-		matrixStack.mulPose(new Quaternion(0, dir, 0, true));
+		matrixStack.mulPose(new Quaternionf(0, dir, 0, true));
 
 		float scale = pixelHeight;
 		FluidStack fs = te.tanks[0].getFluid();
@@ -140,12 +140,12 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 				matrixStack.translate(0, 0, -tankWidth/2);
 				GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, 0, tankWidth, h);
 				matrixStack.popPose();
-				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
+				matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 90, true));
 			}
 
-			matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
+			matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), -90, true));
 			GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
-			matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), 180, true));
+			matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), 180, true));
 			matrixStack.translate(0, 0, -h);
 			GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
 
@@ -212,7 +212,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 				baseBuffer,
 				vertexBuilder -> {
 					innerStack.pushPose();
-					innerStack.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getEntityRenderDispatcher().camera.getYRot(), true));
+					innerStack.mulPose(new Quaternionf(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getEntityRenderDispatcher().camera.getYRot(), true));
 					RenderUtils.renderBox(vertexBuilder, innerStack, -.5f, minY, -.5f, .5f, maxY, .5f);
 					innerStack.popPose();
 				},

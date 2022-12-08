@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.data.models;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.common.base.Preconditions;
 import com.google.gson.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransform.Deserializer;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -33,7 +33,7 @@ public class TransformationMap
 {
 	private final Map<ItemTransforms.TransformType, ItemTransform> transforms = new EnumMap<>(ItemTransforms.TransformType.class);
 
-	public static Vector3f toXYZDegrees(Quaternion q)
+	public static Vector3f toXYZDegrees(Quaternionf q)
 	{
 		// Based on https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
 		// However some signs don't seem to be correct for MC coordinates, not sure if this is just a different

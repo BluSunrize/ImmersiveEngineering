@@ -77,7 +77,7 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 	public static ItemStack makeCovered(ItemLike conveyor, Block cover)
 	{
 		ItemStack covered = new ItemStack(conveyor, 1);
-		covered.getOrCreateTag().putString(DEFAULT_COVER, Registry.BLOCK.getKey(cover).toString());
+		covered.getOrCreateTag().putString(DEFAULT_COVER, BuiltInRegistries.BLOCK.getKey(cover).toString());
 		return covered;
 	}
 

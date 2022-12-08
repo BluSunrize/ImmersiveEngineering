@@ -728,7 +728,7 @@ public final class IEBlocks
 		public BlockEntry(T existing)
 		{
 			this.properties = () -> Properties.copy(existing);
-			this.regObject = RegistryObject.create(Registry.BLOCK.getKey(existing), ForgeRegistries.BLOCKS);
+			this.regObject = RegistryObject.create(BuiltInRegistries.BLOCK.getKey(existing), ForgeRegistries.BLOCKS);
 		}
 
 		@SuppressWarnings("unchecked")

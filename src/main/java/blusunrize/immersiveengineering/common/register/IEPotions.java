@@ -144,7 +144,7 @@ public class IEPotions
 				BlockState state = living.level.getBlockState(living.blockPosition());
 				if(!concrete.contains(state.getBlock())&&
 						concrete.stream()
-								.map(Registry.BLOCK::getKey)
+								.map(BuiltInRegistries.BLOCK::getKey)
 								.map(IEBlocks.TO_SLAB::get)
 								.filter(Objects::nonNull)
 								.noneMatch(b -> b.get()==state.getBlock()))

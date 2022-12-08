@@ -3231,7 +3231,7 @@ public class Recipes extends RecipeProvider
 
 	private void addStairs(ItemLike block, Consumer<FinishedRecipe> out)
 	{
-		ItemLike stairs = IEBlocks.TO_STAIRS.get(Registry.ITEM.getKey(block.asItem()));
+		ItemLike stairs = IEBlocks.TO_STAIRS.get(BuiltInRegistries.ITEM.getKey(block.asItem()));
 		ShapedRecipeBuilder.shaped(stairs, 4)
 				.define('s', block)
 				.pattern("s  ")
@@ -3302,7 +3302,7 @@ public class Recipes extends RecipeProvider
 
 	private String toPath(ItemLike src)
 	{
-		return Registry.ITEM.getKey(src.asItem()).getPath();
+		return BuiltInRegistries.ITEM.getKey(src.asItem()).getPath();
 	}
 
 	private ResourceLocation toRL(String s)

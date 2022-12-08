@@ -158,7 +158,6 @@ public class ManualScreen extends Screen
 
 		if(textField)
 		{
-			mc.keyboardHandler.setSendRepeatsToGui(true);
 			searchField = new EditBox(font, guiLeft+166, guiTop+78, 120, 12, Component.empty());
 			searchField.setTextColor(-1);
 			searchField.setTextColorUneditable(-1);

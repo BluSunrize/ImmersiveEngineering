@@ -20,8 +20,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -82,7 +82,7 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEnt
 				hotMetal_still = blockMap.getSprite(HOT_METLA_STILL);
 				hotMetal_flow = blockMap.getSprite(HOT_METLA_FLOW);
 			}
-			matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), -te.getFacing().toYRot()+180, true));
+			matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), -te.getFacing().toYRot()+180, true));
 			int process = 40;
 			float speed = 5f;
 			int pour = process-te.pouringMetal;

@@ -95,7 +95,7 @@ public class ComputerCraftCompatModule extends StandardIECompatModule
 		if(PERIPHERAL_CAPABILITY==null)
 			return;
 		BlockEntity te = ev.getObject();
-		PeripheralCreator<?> creator = knownPeripherals.get(Registry.BLOCK_ENTITY_TYPE.getKey(te.getType()));
+		PeripheralCreator<?> creator = knownPeripherals.get(BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(te.getType()));
 		if(creator!=null)
 		{
 			ev.addCapability(CAP_NAME, new ICapabilityProvider()

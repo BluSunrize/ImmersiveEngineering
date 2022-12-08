@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -58,15 +58,15 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		BlockState state = tile.getBlockState();
 		if(state.getBlock()!=MetalDevices.TURRET_CHEM.get()&&state.getBlock()!=MetalDevices.TURRET_GUN.get())
 			return;
-		BakedModel model = MODELS_BY_BLOCK.get(Registry.BLOCK.getKey(state.getBlock())).get();
+		BakedModel model = MODELS_BY_BLOCK.get(BuiltInRegistries.BLOCK.getKey(state.getBlock())).get();
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 
 		float defaultYaw = 180-tile.getFacing().toYRot();
-		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), tile.rotationYaw+defaultYaw, true));
-		matrixStack.mulPose(new Quaternion(new Vector3f(-1, 0, 0), tile.rotationPitch, true));
+		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), tile.rotationYaw+defaultYaw, true));
+		matrixStack.mulPose(new Quaternionf(new Vector3f(-1, 0, 0), tile.rotationPitch, true));
 
 		renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");
 		if(tile instanceof TurretGunBlockEntity gunTurret)

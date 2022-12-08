@@ -37,12 +37,12 @@ public class BiomeModifierProvider
 		final RegistryAccess registryAccess = RegistryAccess.builtinCopy();
 		final RegistryOps<JsonElement> jsonOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
 		ImmutableMap.Builder<ResourceLocation, BiomeModifier> modifiers = ImmutableMap.builder();
-		final Registry<Biome> biomeReg = registryAccess.registryOrThrow(Registry.BIOME_REGISTRY);
-		final Registry<PlacedFeature> featureReg = registryAccess.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+		final Registry<Biome> biomeReg = registryAccess.registryOrThrow(Registries.BIOME);
+		final Registry<PlacedFeature> featureReg = registryAccess.registryOrThrow(Registries.PLACED_FEATURE);
 		for(final String name : IEWorldGen.features.keySet())
 		{
 			final ResourceLocation nameRL = ImmersiveEngineering.rl(name);
-			final ResourceKey<PlacedFeature> key = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, nameRL);
+			final ResourceKey<PlacedFeature> key = ResourceKey.create(Registries.PLACED_FEATURE, nameRL);
 			modifiers.put(nameRL, new AddFeaturesBiomeModifier(
 					new Named<>(biomeReg, BiomeTags.IS_OVERWORLD),
 					HolderSet.direct(featureReg.getHolderOrThrow(key)),

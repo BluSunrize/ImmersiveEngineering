@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -25,7 +26,7 @@ import java.util.function.Supplier;
 public class IERecipeTypes
 {
 	private static final DeferredRegister<RecipeType<?>> REGISTER = DeferredRegister.create(
-			Registry.RECIPE_TYPE_REGISTRY, Lib.MODID
+			Registries.RECIPE_TYPE, Lib.MODID
 	);
 	public static final TypeWithClass<AlloyRecipe> ALLOY = register("alloy", AlloyRecipe.class);
 	public static final TypeWithClass<ArcFurnaceRecipe> ARC_FURNACE = register("arc_furnace", ArcFurnaceRecipe.class);

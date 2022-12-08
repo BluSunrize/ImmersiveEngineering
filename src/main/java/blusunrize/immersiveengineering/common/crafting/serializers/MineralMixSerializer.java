@@ -84,7 +84,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		List<ResourceKey<Level>> dimensions = new ArrayList<>();
 		for(int i = 0; i < array.size(); i++)
 			dimensions.add(ResourceKey.create(
-					Registry.DIMENSION_REGISTRY,
+					Registries.DIMENSION,
 					new ResourceLocation(array.get(i).getAsString())
 			));
 		ResourceLocation rl = new ResourceLocation(GsonHelper.getAsString(json, "sample_background", "minecraft:stone"));
@@ -112,7 +112,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		List<ResourceKey<Level>> dimensions = new ArrayList<>();
 		for(int i = 0; i < count; i++)
 			dimensions.add(ResourceKey.create(
-					Registry.DIMENSION_REGISTRY,
+					Registries.DIMENSION,
 					buffer.readResourceLocation()
 			));
 		Block bg = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());

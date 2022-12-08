@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -51,7 +52,7 @@ public class ApiUtils
 		if(fluidStack==null)
 			return JsonNull.INSTANCE;
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("fluid", Registry.FLUID.getKey(fluidStack.getFluid()).toString());
+		jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).toString());
 		jsonObject.addProperty("amount", fluidStack.getAmount());
 		if(fluidStack.hasTag())
 			jsonObject.addProperty("tag", fluidStack.getTag().toString());

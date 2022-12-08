@@ -50,7 +50,7 @@ public class PotionBucketItem extends IEBaseItem
 		if(type==Potions.WATER||type==null)
 			return new ItemStack(Items.WATER_BUCKET);
 		ItemStack result = new ItemStack(Misc.POTION_BUCKET);
-		result.getOrCreateTag().putString("Potion", Registry.POTION.getKey(type).toString());
+		result.getOrCreateTag().putString("Potion", BuiltInRegistries.POTION.getKey(type).toString());
 		return result;
 	}
 
