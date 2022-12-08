@@ -35,6 +35,7 @@ public class ClocheMenu extends IEContainerMenu
 	public final FluidTank tank;
 	public final GetterAndSetter<Integer> fertilizerAmount;
 	public final GetterAndSetter<Float> fertilizerMod;
+	public final GetterAndSetter<Float> guiProgress;
 
 	public static ClocheMenu makeServer(
 			MenuType<?> type, int id, Inventory invPlayer, ClocheBlockEntity be
@@ -43,8 +44,9 @@ public class ClocheMenu extends IEContainerMenu
 		return new ClocheMenu(
 				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()),
 				be.energyStorage, be.tank,
-				new GetterAndSetter<>(() -> be.fertilizerAmount, i -> be.fertilizerAmount = i),
-				new GetterAndSetter<>(() -> be.fertilizerMod, i -> be.fertilizerMod = i)
+				GetterAndSetter.getterOnly(() -> be.fertilizerAmount),
+				GetterAndSetter.getterOnly(() -> be.fertilizerMod),
+				GetterAndSetter.getterOnly(be::getGuiProgress)
 		);
 	}
 
@@ -53,14 +55,16 @@ public class ClocheMenu extends IEContainerMenu
 		return new ClocheMenu(
 				clientCtx(type, id), invPlayer, new ItemStackHandler(NUM_SLOTS),
 				new MutableEnergyStorage(ENERGY_CAPACITY), new FluidTank(TANK_CAPACITY),
-				GetterAndSetter.standalone(0), GetterAndSetter.standalone(0f)
+				GetterAndSetter.standalone(0), GetterAndSetter.standalone(0f),
+				GetterAndSetter.standalone(0f)
 		);
 	}
 
 	private ClocheMenu(
 			MenuContext ctx, Inventory inventoryPlayer, IItemHandler inv,
 			MutableEnergyStorage energyStorage, FluidTank tank,
-			GetterAndSetter<Integer> fertilizerAmount, GetterAndSetter<Float> fertilizerMod
+			GetterAndSetter<Integer> fertilizerAmount, GetterAndSetter<Float> fertilizerMod,
+			GetterAndSetter<Float> guiProgress
 	)
 	{
 		super(ctx);
@@ -68,6 +72,7 @@ public class ClocheMenu extends IEContainerMenu
 		this.tank = tank;
 		this.fertilizerAmount = fertilizerAmount;
 		this.fertilizerMod = fertilizerMod;
+		this.guiProgress = guiProgress;
 		Level level = inventoryPlayer.player.level;
 		this.addSlot(new Cloche(SLOT_SOIL, inv, SLOT_SOIL, 62, 54, level));
 		this.addSlot(new Cloche(SLOT_SEED, inv, SLOT_SEED, 62, 34, level));
@@ -96,5 +101,6 @@ public class ClocheMenu extends IEContainerMenu
 		addGenericData(GenericContainerData.fluid(tank));
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.INT32, fertilizerAmount));
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.FLOAT, fertilizerMod));
+		addGenericData(new GenericContainerData<>(GenericDataSerializers.FLOAT, guiProgress));
 	}
 }

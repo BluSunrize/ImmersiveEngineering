@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
@@ -22,7 +23,6 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
@@ -83,9 +83,9 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 		{
 			process++;
 			if (process <= 0.5*IEServerConfig.MACHINES.coredrill_time.get())
-			    level.addAlwaysVisibleParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COBBLESTONE)),
-					getBlockPos().getX() + 0.5, getBlockPos().getY() + 1.125, getBlockPos().getZ() + 0.5,
-					Utils.RAND.nextDouble()*.125-.0625, 0.0625, Utils.RAND.nextDouble()*.125-.0625);
+				level.addAlwaysVisibleParticle(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.COBBLESTONE)),
+						getBlockPos().getX()+0.5, getBlockPos().getY()+1.125, getBlockPos().getZ()+0.5,
+						ApiUtils.RANDOM.nextDouble()*.125-.0625, 0.0625, ApiUtils.RANDOM.nextDouble()*.125-.0625);
 		}
 	}
 

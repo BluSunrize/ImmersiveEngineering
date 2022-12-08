@@ -1,5 +1,5 @@
 {
+  "flip_v": true,
   "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_multiblock/crusher_drum_right.obj",
-  "flip-v": true
+  "model": "immersiveengineering:models/block/metal_multiblock/crusher_drum_right.obj"
 }

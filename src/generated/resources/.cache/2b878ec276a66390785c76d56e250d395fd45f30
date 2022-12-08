@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-08T14:16:26.34058927	Dynamic models
+// 1.19.2	2022-12-08T09:20:09.79171216	Dynamic models
 795d331732ebfdd8d4570da015590f8ef990c951 assets/immersiveengineering/models/dynamic/advanced_blast_furnace.json
 86e862861b2deb9b5e69bc5aef963b07debfbece assets/immersiveengineering/models/dynamic/alloy_smelter.json
 5c8e897ab8dd0a9e6824b4cc18a2a9078d610c47 assets/immersiveengineering/models/dynamic/arc_furnace.json
@@ -17,7 +17,8 @@ a403e8a5e5d49e9de76071fdc19bb8a318112d46 assets/immersiveengineering/models/dyna
 d6c9c57eae6423474c258945aa95539c241c6de9 assets/immersiveengineering/models/dynamic/coke_oven.json
 9f4c299c2e199442a2001adda77864b3993d7fff assets/immersiveengineering/models/dynamic/conveyor_redstone_panel.json
 abfdbb219c7c008c8cd273254318305b18df6802 assets/immersiveengineering/models/dynamic/crusher.json
-ff1ccbbf7a60d30d7ec00616b9bf551c0bd8b7c5 assets/immersiveengineering/models/dynamic/crusher_barrel.json
+926ffdfdc5bd8e6ebfc0937f8651b5624cd87a73 assets/immersiveengineering/models/dynamic/crusher_barrel_left.json
+47b7f6524ef9cd83541bfeb48b14b670b3cab1c8 assets/immersiveengineering/models/dynamic/crusher_barrel_right.json
 9bdff2cc0074bfc2237356aba3e1b4d205243d2a assets/immersiveengineering/models/dynamic/diesel_gen_fan.json
 b8786fe6f4fc412be600a54205af001bccadd713 assets/immersiveengineering/models/dynamic/diesel_generator.json
 fb6e507d28000d48e51b6ea5f9548d9d6015c9f1 assets/immersiveengineering/models/dynamic/excavator.json
