@@ -39,21 +39,21 @@ public class TransformationMap
 		// However some signs don't seem to be correct for MC coordinates, not sure if this is just a different
 		// coordinate system or the article has errors
 		// The vanilla function doesn't seem to work at all?
-		float iSq = q.i()*q.i();
-		float jSq = q.j()*q.j();
-		float kSq = q.k()*q.k();
+		float iSq = q.y*q.y;
+		float jSq = q.z*q.z;
+		float kSq = q.w*q.w;
 		float angleX = (float)Math.atan2(
-				2*(q.r()*q.i()-q.j()*q.k()),
+				2*(q.x*q.y-q.z*q.w),
 				1-2*(iSq+jSq)
 		);
-		float sinOfY = 2*(q.r()*q.j()+q.i()*q.k());
+		float sinOfY = 2*(q.x*q.z+q.y*q.w);
 		float angleY;
 		if(Math.abs(sinOfY) >= 0.999999)
 			angleY = Math.copySign(Mth.HALF_PI, sinOfY);
 		else
 			angleY = (float)Math.asin(sinOfY);
 		float angleZ = (float)Math.atan2(
-				2*(q.r()*q.k()-q.j()*q.i()),
+				2*(q.x*q.w-q.z*q.y),
 				1-2*(jSq+kSq)
 		);
 		Preconditions.checkState(Float.isFinite(angleX), q);
@@ -114,7 +114,7 @@ public class TransformationMap
 			Transformation transform = composeForgeLike(e.getValue(), baseTransform);
 			if(!transform.isIdentity())
 			{
-				var translation = transform.getTranslation().copy();
+				var translation = new Vector3f(transform.getTranslation());
 				translation.mul(16);
 				this.transforms.put(e.getKey(), new ItemTransform(
 						toXYZDegrees(transform.getLeftRotation()),
@@ -136,7 +136,7 @@ public class TransformationMap
 		if(a.isIdentity()) return b;
 		if(b.isIdentity()) return a;
 		Matrix4f m = a.getMatrix();
-		m.multiply(b.getMatrix());
+		m.mul(b.getMatrix());
 		return new Transformation(m);
 	}
 

@@ -28,6 +28,8 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -62,7 +64,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>
+public class BlockLoot implements LootTableSubProvider
 {
 	private final Set<ResourceLocation> generatedTables = new HashSet<>();
 	private BiConsumer<ResourceLocation, LootTable.Builder> out;
@@ -73,7 +75,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 	}
 
 	@Override
-	public void accept(BiConsumer<ResourceLocation, Builder> out)
+	public void generate(BiConsumer<ResourceLocation, Builder> out)
 	{
 		this.out = out;
 		registerHemp();

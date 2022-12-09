@@ -9,13 +9,12 @@
 package blusunrize.immersiveengineering.data.manual;
 
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.data.manual.icon.RenderedItemModelDataProvider;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.util.Unit;
@@ -54,7 +53,8 @@ public class ManualDataGenerator
 			{
 				readmeWriter.write(README_CONTENTS, 0, README_CONTENTS.length());
 			}
-			gen.addProvider(true, new RenderedItemModelDataProvider(gen, exHelper, mainOutput.resolve("icons")));
+			// TODO fix all of that
+			//gen.addProvider(true, new RenderedItemModelDataProvider(gen, exHelper, mainOutput.resolve("icons")));
 			gen.addProvider(true, new TagExports(gen, exHelper, mainOutput.resolve("tags")));
 		} catch(IOException xcp)
 		{
@@ -73,7 +73,7 @@ public class ManualDataGenerator
 				type==PackType.CLIENT_RESOURCES?"clientResources": "serverData"
 		);
 		List<PackResources> allSources = nonGeneratedManager.listPacks().collect(Collectors.toList());
-		allSources.add(new FolderPackResources(gen.getOutputFolder().toFile()));
+		allSources.add(new PathPackResources("generated", gen.getPackOutput().getOutputFolder(), true));
 		ReloadableResourceManager resourceManager = new ReloadableResourceManager(type);
 		resourceManager.createReload(
 				Util.backgroundExecutor(), Minecraft.getInstance(), CompletableFuture.completedFuture(Unit.INSTANCE), allSources

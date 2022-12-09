@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data;
 import com.google.common.hash.Hashing;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerUpper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -32,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
 public class StructureUpdater implements DataProvider
 {
@@ -61,11 +63,17 @@ public class StructureUpdater implements DataProvider
 	}
 
 	@Override
-	public void run(@Nonnull CachedOutput cache) throws IOException
+	public CompletableFuture<?> run(@Nonnull CachedOutput cache)
 	{
-		for(var entry : resources.listResources(basePath, $ -> true).entrySet())
-			if(entry.getKey().getNamespace().equals(modid))
-				process(entry.getKey(), entry.getValue(), cache);
+		try
+		{
+			for(var entry : resources.listResources(basePath, $ -> true).entrySet())
+				if(entry.getKey().getNamespace().equals(modid))
+					process(entry.getKey(), entry.getValue(), cache);
+			return CompletableFuture.completedFuture(null);
+		} catch(IOException x) {
+			return CompletableFuture.failedFuture(x);
+		}
 	}
 
 	private void process(ResourceLocation loc, Resource resource, CachedOutput cache) throws IOException
@@ -86,7 +94,7 @@ public class StructureUpdater implements DataProvider
 		ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
 		NbtIo.writeCompressed(data, bytearrayoutputstream);
 		byte[] bytes = bytearrayoutputstream.toByteArray();
-		Path outputPath = gen.getOutputFolder().resolve("data/"+loc.getNamespace()+"/"+loc.getPath());
+		Path outputPath = gen.getPackOutput().getOutputFolder().resolve("data/"+loc.getNamespace()+"/"+loc.getPath());
 		cache.writeIfNeeded(outputPath, bytes, Hashing.sha1().hashBytes(bytes));
 	}
 
@@ -96,7 +104,7 @@ public class StructureUpdater implements DataProvider
 				DataFixers.getDataFixer(), DataFixTypes.STRUCTURE, nbt, nbt.getInt("DataVersion")
 		);
 		StructureTemplate template = new StructureTemplate();
-		template.load(updatedNBT);
+		template.load(BuiltInRegistries.BLOCK.asLookup(), updatedNBT);
 		return template.save(new CompoundTag());
 	}
 

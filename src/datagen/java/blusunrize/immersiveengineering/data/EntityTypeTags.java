@@ -11,34 +11,35 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.EntityTypeTagsProvider;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
-public class EntityTypeTags extends ForgeRegistryTagsProvider<EntityType<?>>
+public class EntityTypeTags extends EntityTypeTagsProvider
 {
 
-	public EntityTypeTags(DataGenerator generatorIn, @Nullable ExistingFileHelper existingFileHelper)
+	public EntityTypeTags(PackOutput output, CompletableFuture<Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper)
 	{
-		super(generatorIn, ForgeRegistries.ENTITY_TYPES, Lib.MODID, existingFileHelper);
-	}
-
-	private static TagKey<BlockEntityType<?>> tag(ResourceLocation name)
-	{
-		return TagKey.create(Registries.BLOCK_ENTITY_TYPE, name);
+		super(output, lookupProvider, Lib.MODID, existingFileHelper);
 	}
 
 	@Override
-	protected void addTags()
+	protected void addTags(Provider p_255894_)
 	{
 		tag(IETags.shaderbagBlacklist).add(EntityType.WITHER).add(EntityType.IRON_GOLEM);
 	}

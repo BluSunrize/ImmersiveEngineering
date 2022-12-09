@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Metals;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction;
 import blusunrize.immersiveengineering.common.world.Villages;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -41,10 +42,10 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
-public class GeneralLoot implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>
+public class GeneralLoot implements LootTableSubProvider
 {
 	@Override
-	public void accept(BiConsumer<ResourceLocation, LootTable.Builder> out)
+	public void generate(BiConsumer<ResourceLocation, LootTable.Builder> out)
 	{
 		LootPool.Builder mainPool = LootPool.lootPool();
 		mainPool

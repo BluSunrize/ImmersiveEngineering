@@ -17,14 +17,19 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.mixin.accessors.BETypeAccess;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
 import net.minecraftforge.fml.config.ConfigTracker;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -32,13 +37,17 @@ import net.minecraftforge.registries.RegistryObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-public class BlockEntityTags extends ForgeRegistryTagsProvider<BlockEntityType<?>>
+public class BlockEntityTags extends IntrinsicHolderTagsProvider<BlockEntityType<?>>
 {
-
-	public BlockEntityTags(DataGenerator generatorIn, @Nullable ExistingFileHelper existingFileHelper)
+	public BlockEntityTags(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper)
 	{
-		super(generatorIn, ForgeRegistries.BLOCK_ENTITY_TYPES, Lib.MODID, existingFileHelper);
+		super(
+				output, Registries.BLOCK_ENTITY_TYPE, provider,
+				bet -> BuiltInRegistries.BLOCK_ENTITY_TYPE.getResourceKey(bet).orElseThrow(),
+				Lib.MODID, existingFileHelper
+		);
 	}
 
 	private static final List<TagKey<BlockEntityType<?>>> IMMOVABLE_TAGS = ImmutableList.of(
@@ -52,7 +61,7 @@ public class BlockEntityTags extends ForgeRegistryTagsProvider<BlockEntityType<?
 	}
 
 	@Override
-	protected void addTags()
+	protected void addTags(Provider p_256380_)
 	{
 		// Some tiles needs to config to be available in the constructor, so just load the default values
 		ConfigTracker.INSTANCE.loadDefaultServerConfigs();

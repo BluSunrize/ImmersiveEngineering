@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import blusunrize.immersiveengineering.data.tags.*;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,31 +34,32 @@ public class IEDataGenerator
 		ExistingFileHelper exHelper = event.getExistingFileHelper();
 		StaticTemplateManager.EXISTING_HELPER = exHelper;
 		DataGenerator gen = event.getGenerator();
+		final var output = gen.getPackOutput();
+		final var lookup = event.getLookupProvider();
 		if(event.includeServer())
 		{
-			BlockTagsProvider blockTags = new IEBlockTags(gen, exHelper);
+			BlockTagsProvider blockTags = new IEBlockTags(output, lookup, exHelper);
 			gen.addProvider(true, blockTags);
-			gen.addProvider(true, new IEItemTags(gen, blockTags, exHelper));
-			gen.addProvider(true, new FluidTags(gen, exHelper));
-			gen.addProvider(true, new BlockEntityTags(gen, exHelper));
-			gen.addProvider(true, new BannerTags(gen, exHelper));
-			gen.addProvider(true, new PoiTags(gen, exHelper));
-			gen.addProvider(true, new EntityTypeTags(gen, exHelper));
-			gen.addProvider(true, new Recipes(gen));
-			gen.addProvider(true, new AllLoot(gen));
+			gen.addProvider(true, new IEItemTags(output, lookup, blockTags, exHelper));
+			gen.addProvider(true, new FluidTags(output, lookup, exHelper));
+			gen.addProvider(true, new BlockEntityTags(output, lookup, exHelper));
+			gen.addProvider(true, new BannerTags(output, lookup, exHelper));
+			gen.addProvider(true, new PoiTags(output, lookup, exHelper));
+			gen.addProvider(true, new EntityTypeTags(output, lookup, exHelper));
+			gen.addProvider(true, new Recipes(output));
+			gen.addProvider(true, new AllLoot(output));
 			gen.addProvider(true, new BlockStates(gen, exHelper));
 			MultiblockStates multiblocks = new MultiblockStates(gen, exHelper);
 			gen.addProvider(true, multiblocks);
 			gen.addProvider(true, new ConnectorBlockStates(gen, exHelper));
 			gen.addProvider(true, new ItemModels(gen, exHelper, multiblocks));
-			gen.addProvider(true, new Advancements(gen));
+			gen.addProvider(true, new Advancements(output, lookup, exHelper));
 			gen.addProvider(true, new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, gen));
 			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, gen));
 			gen.addProvider(true, new DynamicModels(multiblocks, gen, exHelper));
 			BiomeModifierProvider.addTo(gen, exHelper, d -> gen.addProvider(true, d));
 			ManualDataGenerator.addProviders(gen, exHelper);
-			// Always keep this as the last provider!
-			gen.addProvider(true, new RunCompleteHelper());
+			// TODO find a new way to detect crashes in datagen
 		}
 	}
 }

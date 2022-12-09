@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -30,7 +31,7 @@ public class ShapedNBTBuilder extends ShapedRecipeBuilder
 
 	public ShapedNBTBuilder(ItemStack stack)
 	{
-		super(stack.getItem(), stack.getCount());
+		super(RecipeCategory.MISC, stack.getItem(), stack.getCount());
 		this.nbt = stack.getTag();
 	}
 

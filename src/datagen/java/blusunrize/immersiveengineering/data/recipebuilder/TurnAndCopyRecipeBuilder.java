@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -29,7 +30,7 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 
 	public TurnAndCopyRecipeBuilder(ItemLike result, int count)
 	{
-		super(result, count);
+		super(RecipeCategory.MISC, result, count);
 	}
 
 	public static TurnAndCopyRecipeBuilder builder(ItemLike result, int count)

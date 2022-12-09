@@ -10,7 +10,8 @@ package blusunrize.immersiveengineering.data.manual;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -32,13 +33,24 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public record TagExports(DataGenerator gen, ExistingFileHelper helper, Path outPath) implements DataProvider
 {
 	private static final Gson GSON = new Gson();
 
 	@Override
-	public void run(@Nonnull CachedOutput cache) throws IOException
+	public CompletableFuture<?> run(@Nonnull CachedOutput cache)
+	{
+		try {
+			actuallyRun();
+			return CompletableFuture.completedFuture(null);
+		} catch(IOException x) {
+			return CompletableFuture.failedFuture(x);
+		}
+	}
+
+	private void actuallyRun() throws IOException
 	{
 		TagLoader<Item> loader = new TagLoader<>(
 				rl -> Optional.ofNullable(ForgeRegistries.ITEMS.getValue(rl)),

@@ -26,9 +26,12 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -40,12 +43,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,13 +58,13 @@ import java.util.stream.Stream;
 public class IEBlockTags extends BlockTagsProvider
 {
 
-	public IEBlockTags(DataGenerator gen, ExistingFileHelper existing)
+	public IEBlockTags(PackOutput output, CompletableFuture<Provider> lookupProvider, ExistingFileHelper existing)
 	{
-		super(gen, Lib.MODID, existing);
+		super(output, lookupProvider, Lib.MODID, existing);
 	}
 
 	@Override
-	protected void addTags()
+	protected void addTags(Provider p_256380_)
 	{
 		tag(BlockTags.FENCES)
 				.add(MetalDecoration.ALU_FENCE.get())
@@ -186,7 +191,7 @@ public class IEBlockTags extends BlockTagsProvider
 
 	private void registerHammerMineable()
 	{
-		TagAppender<Block> tag = tag(IETags.hammerHarvestable);
+		IntrinsicTagAppender<Block> tag = tag(IETags.hammerHarvestable);
 		MetalDecoration.METAL_LADDER.values().forEach(b -> tag.add(b.get()));
 		tag.addTag(IETags.scaffoldingSteel);
 		tag.addTag(IETags.scaffoldingAlu);
@@ -203,7 +208,7 @@ public class IEBlockTags extends BlockTagsProvider
 
 	private void registerAxeMineable()
 	{
-		TagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
+		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
 		IEBlocks.REGISTER.getEntries().stream()
 				.map(RegistryObject::get)
 				.filter(b -> b.defaultBlockState().getMaterial()==Material.WOOD)
@@ -214,7 +219,7 @@ public class IEBlockTags extends BlockTagsProvider
 
 	private void registerPickaxeMineable()
 	{
-		TagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_PICKAXE);
+		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_PICKAXE);
 		IEBlocks.REGISTER.getEntries().stream()
 				.map(RegistryObject::get)
 				.filter(b -> {

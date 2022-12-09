@@ -33,6 +33,7 @@ public class BiomeModifierProvider
 			DataGenerator dataGenerator, ExistingFileHelper existingFileHelper, Consumer<DataProvider> add
 	)
 	{
+		/*TODO
 		IEWorldGen.initLate();
 		final RegistryAccess registryAccess = RegistryAccess.builtinCopy();
 		final RegistryOps<JsonElement> jsonOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
@@ -52,5 +53,6 @@ public class BiomeModifierProvider
 		add.accept(JsonCodecProvider.forDatapackRegistry(
 				dataGenerator, existingFileHelper, Lib.MODID, jsonOps, Keys.BIOME_MODIFIERS, modifiers.build()
 		));
+		 */
 	}
 }

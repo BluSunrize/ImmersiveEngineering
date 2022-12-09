@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data.recipebuilder;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
@@ -22,7 +23,7 @@ public class FluidAwareShapelessRecipeBuilder extends ShapelessRecipeBuilder
 {
 	public FluidAwareShapelessRecipeBuilder(ItemLike resultIn, int countIn)
 	{
-		super(resultIn, countIn);
+		super(RecipeCategory.MISC, resultIn, countIn);
 	}
 
 	public static ShapelessRecipeBuilder builder(ItemLike resultIn, int countIn)
