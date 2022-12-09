@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:turn_and_copy",
+  "category": "misc",
   "copy_nbt": 4,
   "key": {
     "c": {

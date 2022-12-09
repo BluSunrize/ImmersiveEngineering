@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:turn_and_copy",
+  "category": "misc",
   "key": {
     "c": {
       "tag": "forge:ingots/copper"

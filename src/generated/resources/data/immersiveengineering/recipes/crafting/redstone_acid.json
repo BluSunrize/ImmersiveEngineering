@@ -2,6 +2,7 @@
   "type": "immersiveengineering:no_container_item",
   "baseRecipe": {
     "type": "minecraft:crafting_shapeless",
+    "category": "misc",
     "ingredients": [
       {
         "tag": "forge:dusts/redstone"

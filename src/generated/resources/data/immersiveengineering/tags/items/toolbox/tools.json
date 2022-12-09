@@ -15,6 +15,11 @@
     "immersiveengineering:earmuffs",
     "immersiveengineering:skyhook",
     "#forge:tools",
+    "minecraft:spyglass",
+    "minecraft:clock",
+    "minecraft:compass",
+    "minecraft:flint_and_steel",
+    "minecraft:fishing_rod",
     {
       "id": "#forge:buckets/empty",
       "required": false
@@ -22,11 +27,6 @@
     {
       "id": "#forge:tools/wrench",
       "required": false
-    },
-    "minecraft:spyglass",
-    "minecraft:clock",
-    "minecraft:compass",
-    "minecraft:flint_and_steel",
-    "minecraft:fishing_rod"
+    }
   ]
 }

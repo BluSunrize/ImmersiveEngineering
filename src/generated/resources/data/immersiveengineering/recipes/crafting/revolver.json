@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:revolver_assembly",
+  "category": "misc",
   "copy_nbt": [
     1,
     4,

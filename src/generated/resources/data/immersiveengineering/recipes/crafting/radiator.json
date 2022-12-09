@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:turn_and_copy",
+  "category": "misc",
   "key": {
     "b": {
       "type": "immersiveengineering:fluid",

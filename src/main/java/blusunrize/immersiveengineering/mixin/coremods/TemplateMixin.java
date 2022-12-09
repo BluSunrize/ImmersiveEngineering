@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.mixin.coremods;
 import blusunrize.immersiveengineering.api.wires.IConnectionTemplate;
 import blusunrize.immersiveengineering.common.wires.WireTemplateHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
@@ -59,7 +60,7 @@ public abstract class TemplateMixin implements IConnectionTemplate
 	}
 
 	@Inject(method = "load", at = @At("RETURN"))
-	public void readConnectionsFromNBT(CompoundTag compound, CallbackInfo ci)
+	public void readConnectionsFromNBT(HolderGetter<Block> blockAccess, CompoundTag compound, CallbackInfo ci)
 	{
 		WireTemplateHelper.readConnectionsFromNBT(compound, this);
 	}

@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:shaped_fluid",
+  "category": "misc",
   "key": {
     "i": {
       "tag": "forge:plates/iron"

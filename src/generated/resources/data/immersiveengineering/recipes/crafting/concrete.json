@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:turn_and_copy",
+  "category": "misc",
   "group": "ie_concrete",
   "key": {
     "b": {

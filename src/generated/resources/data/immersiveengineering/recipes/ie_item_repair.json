@@ -1,3 +1,4 @@
 {
-  "type": "immersiveengineering:ie_item_repair"
+  "type": "immersiveengineering:ie_item_repair",
+  "category": "misc"
 }
