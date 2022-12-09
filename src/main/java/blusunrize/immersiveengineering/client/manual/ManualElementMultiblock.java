@@ -21,10 +21,7 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -36,11 +33,14 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -104,7 +104,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 			boolean canRenderFormed = renderProperties.canRenderFormedStructure();
 
 			yOff = (int)(transY+scale*Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+renderInfo.structureWidth*renderInfo.structureWidth+renderInfo.structureLength*renderInfo.structureLength)/2);
-			pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY-(canRenderFormed?11: 5), 10, 10, 4, btn -> {
+			pageButtons.add(new GuiButtonManualNavigation(gui, x+4, y+(int)transY-(canRenderFormed?11: 5), 10, 10, 4, btn -> {
 				GuiButtonManualNavigation btnNav = (GuiButtonManualNavigation)btn;
 				canTick = !canTick;
 				lastStep = -1;
@@ -112,14 +112,14 @@ public class ManualElementMultiblock extends SpecialManualElements
 			}));
 			if(this.renderInfo.structureHeight > 1)
 			{
-				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY-(canRenderFormed?14: 8)-16, 10, 16, 3,
+				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, y+(int)transY-(canRenderFormed?14: 8)-16, 10, 16, 3,
 						btn -> renderInfo.setShowLayer(Math.min(renderInfo.showLayer+1, renderInfo.structureHeight-1))
 				));
-				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY+(canRenderFormed?14: 8), 10, 16, 2,
+				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, y+(int)transY+(canRenderFormed?14: 8), 10, 16, 2,
 						btn -> renderInfo.setShowLayer(Math.max(renderInfo.showLayer-1, -1))));
 			}
 			if(canRenderFormed)
-				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY+1, 10, 10, 6,
+				pageButtons.add(new GuiButtonManualNavigation(gui, x+4, y+(int)transY+1, 10, 10, 6,
 						btn -> showCompleted = !showCompleted));
 		}
 
@@ -293,14 +293,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 	private Transformation forRotation(double rX, double rY)
 	{
 		Vector3f axis = new Vector3f((float)rY, (float)rX, 0);
+		if(axis.lengthSquared() < 1e-3)
+			return Transformation.identity();
 		float angle = (float)Math.sqrt(axis.dot(axis));
 		axis.normalize();
-		return new Transformation(
-				null,
-				new Quaternionf().rotateAxis((float)Math.toRadians(angle), axis),
-				null,
-				null
-		);
+		return new Transformation(null, new Quaternionf().rotateAxis((float)Math.toRadians(angle), axis), null, null);
 	}
 
 	@Override
