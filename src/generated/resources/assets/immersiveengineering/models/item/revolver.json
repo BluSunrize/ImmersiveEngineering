@@ -2,11 +2,6 @@
   "callbacks": "immersiveengineering:revolver",
   "display": {
     "firstperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
         0.0,
         90.0,
@@ -24,13 +19,8 @@
       ]
     },
     "firstperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -0.0,
+        0.0,
         -90.0,
         0.0
       ],
@@ -46,15 +36,10 @@
       ]
     },
     "fixed": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -139.99998,
+        -180.0,
         7.016709E-15,
-        -5.6872746E-22
+        139.99998
       ],
       "scale": [
         0.18750006,
@@ -68,16 +53,6 @@
       ]
     },
     "ground": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "scale": [
         0.125,
         0.125,
@@ -90,15 +65,10 @@
       ]
     },
     "gui": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        35.0,
+        2.2290444E-6,
         -39.99999,
-        179.99998
+        -35.0
       ],
       "scale": [
         0.2,
@@ -112,15 +82,10 @@
       ]
     },
     "thirdperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
         159.44394,
         90.0,
-        159.44394
+        -159.44394
       ],
       "scale": [
         0.12500004,
@@ -134,13 +99,8 @@
       ]
     },
     "thirdperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -159.44394,
+        159.44394,
         -90.0,
         159.44394
       ],

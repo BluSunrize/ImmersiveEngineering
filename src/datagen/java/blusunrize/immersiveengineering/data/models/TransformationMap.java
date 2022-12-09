@@ -39,21 +39,21 @@ public class TransformationMap
 		// However some signs don't seem to be correct for MC coordinates, not sure if this is just a different
 		// coordinate system or the article has errors
 		// The vanilla function doesn't seem to work at all?
-		float iSq = q.y*q.y;
-		float jSq = q.z*q.z;
-		float kSq = q.w*q.w;
+		float iSq = q.x*q.x;
+		float jSq = q.y*q.y;
+		float kSq = q.z*q.z;
 		float angleX = (float)Math.atan2(
-				2*(q.x*q.y-q.z*q.w),
+				2*(q.w*q.x-q.y*q.z),
 				1-2*(iSq+jSq)
 		);
-		float sinOfY = 2*(q.x*q.z+q.y*q.w);
+		float sinOfY = 2*(q.w*q.y+q.x*q.z);
 		float angleY;
 		if(Math.abs(sinOfY) >= 0.999999)
 			angleY = Math.copySign(Mth.HALF_PI, sinOfY);
 		else
 			angleY = (float)Math.asin(sinOfY);
 		float angleZ = (float)Math.atan2(
-				2*(q.x*q.w-q.z*q.y),
+				2*(q.w*q.z-q.y*q.x),
 				1-2*(jSq+kSq)
 		);
 		Preconditions.checkState(Float.isFinite(angleX), q);

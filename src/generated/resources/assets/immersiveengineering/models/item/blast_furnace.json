@@ -2,15 +2,10 @@
   "parent": "immersiveengineering:block/blast_furnace_on_split",
   "display": {
     "firstperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        180.0,
+        -180.0,
         -44.99999,
-        -0.0
+        -180.0
       ],
       "scale": [
         0.13200001,
@@ -19,15 +14,10 @@
       ]
     },
     "firstperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
         0.0,
         45.000004,
-        180.0
+        0.0
       ],
       "scale": [
         0.13200001,
@@ -36,16 +26,6 @@
       ]
     },
     "fixed": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "scale": [
         0.165,
         0.165,
@@ -53,16 +33,6 @@
       ]
     },
     "ground": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "scale": [
         0.0825,
         0.0825,
@@ -75,15 +45,10 @@
       ]
     },
     "gui": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        180.0,
+        -149.99998,
         -44.999977,
-        -29.999992
+        180.0
       ],
       "scale": [
         0.20625,
@@ -92,16 +57,6 @@
       ]
     },
     "head": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "scale": [
         0.33,
         0.33,
@@ -109,16 +64,6 @@
       ]
     },
     "none": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "scale": [
         0.33,
         0.33,
@@ -126,16 +71,6 @@
       ]
     },
     "thirdperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "scale": [
         0.33,
         0.33,
@@ -143,15 +78,10 @@
       ]
     },
     "thirdperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -7.244509E-6,
+        74.99996,
         44.99999,
-        104.999985
+        7.244509E-6
       ],
       "scale": [
         0.123749994,

@@ -2,13 +2,8 @@
   "callbacks": "immersiveengineering:chemthrower",
   "display": {
     "firstperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -0.0,
+        0.0,
         -90.0,
         0.0
       ],
@@ -24,11 +19,6 @@
       ]
     },
     "firstperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
         0.0,
         90.0,
@@ -46,15 +36,10 @@
       ]
     },
     "fixed": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        135.0,
+        180.0,
         7.01671E-15,
-        0.0
+        -135.0
       ],
       "scale": [
         0.31250012,
@@ -68,16 +53,6 @@
       ]
     },
     "ground": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "scale": [
         0.25,
         0.25,
@@ -90,15 +65,10 @@
       ]
     },
     "gui": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -157.49998,
+        -180.0,
         -56.24999,
-        -1.5367515E-6
+        157.49998
       ],
       "scale": [
         0.43750006,
@@ -112,15 +82,10 @@
       ]
     },
     "thirdperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -8.006271,
+        81.99374,
         -74.14153,
-        98.00624
+        8.006271
       ],
       "scale": [
         0.5,
@@ -134,15 +99,10 @@
       ]
     },
     "thirdperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        180.0
-      ],
       "rotation": [
-        -171.99373,
+        -98.00627,
         74.14156,
-        -81.99376
+        171.99373
       ],
       "scale": [
         0.50000006,
