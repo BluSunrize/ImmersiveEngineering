@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -27,13 +28,17 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 {
 	private final int recipeWidth;
 	private final int recipeHeight;
+	private final CraftingBookCategory category;
 
-	public AbstractShapedRecipe(ResourceLocation idIn, String groupIn, int recipeWidth, int recipeHeight,
-								NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn)
+	public AbstractShapedRecipe(
+			ResourceLocation idIn, String groupIn, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn,
+			CraftingBookCategory category
+	)
 	{
 		super(idIn, groupIn, recipeItemsIn, recipeOutputIn);
 		this.recipeWidth = recipeWidth;
 		this.recipeHeight = recipeHeight;
+		this.category = category;
 	}
 
 	public int getWidth()
@@ -61,7 +66,13 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 
 	public ShapedRecipe toVanilla()
 	{
-		return new ShapedRecipe(getId(), getGroup(), getWidth(), getHeight(), getIngredients(), getResultItem());
+		return new ShapedRecipe(getId(), getGroup(), category, getWidth(), getHeight(), getIngredients(), getResultItem());
+	}
+
+	@Override
+	public CraftingBookCategory category()
+	{
+		return category;
 	}
 
 	@Override

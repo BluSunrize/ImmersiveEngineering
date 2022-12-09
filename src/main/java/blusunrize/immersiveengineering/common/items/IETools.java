@@ -42,6 +42,6 @@ public class IETools
 
 	private static Item.Properties toolProperties()
 	{
-		return new Item.Properties().tab(ImmersiveEngineering.ITEM_GROUP).stacksTo(1);
+		return new Item.Properties().stacksTo(1);
 	}
 }

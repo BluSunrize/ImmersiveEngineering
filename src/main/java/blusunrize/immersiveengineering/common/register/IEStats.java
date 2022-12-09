@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;

@@ -33,7 +33,7 @@ public class GuiSelectingList extends GuiReactiveList
 		{
 			Font fr = ClientUtils.mc().font;
 			int yOff = (selectedOption-offset)*fr.lineHeight;
-			fill(transform, x, y+yOff, x+width, y+yOff+fr.lineHeight, Lib.COLOUR_I_ImmersiveOrange&0x88ffffff);
+			fill(transform, getX(), getY()+yOff, getX()+width, getY()+yOff+fr.lineHeight, Lib.COLOUR_I_ImmersiveOrange&0x88ffffff);
 		}
 	}
 

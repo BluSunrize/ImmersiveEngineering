@@ -49,17 +49,17 @@ public class GuiSliderIE extends ForgeSlider
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 		RenderSystem.blendFunc(770, 771);
-		this.blit(transform, x, y, 8, 128, 4, height);
-		this.blit(transform, x+width-4, y, 16, 128, 4, height);
+		this.blit(transform, getX(), getY(), 8, 128, 4, height);
+		this.blit(transform, getX()+width-4, getY(), 16, 128, 4, height);
 		for(int i = 0; i < width-8; i += 2)
-			this.blit(transform, x+4+i, y, 13, 128, 2, height);
-		this.blit(transform, this.x+2+(int)(value*(float)(this.width-2))-2, this.y, 20, 128, 4, 8);
+			this.blit(transform, getX()+4+i, getY(), 13, 128, 2, height);
+		this.blit(transform, this.getX()+2+(int)(value*(float)(this.width-2))-2, this.getY(), 20, 128, 4, 8);
 		int color = 0xe0e0e0;
 		if(!this.active)
 			color = 0xa0a0a0;
 		else if(this.isHovered)
 			color = 0xffffa0;
-		drawCenteredString(transform, fontrenderer, getMessage(), x+width/2, y-10+height/2-3, color);
+		drawCenteredString(transform, fontrenderer, getMessage(), getX()+width/2, getY()-10+height/2-3, color);
 	}
 
 	@Override

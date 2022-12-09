@@ -53,7 +53,7 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 
 	@Override
 	public BakedModel bake(
-			IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+			IGeometryBakingContext context, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter,
 			ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation
 	)
 	{
@@ -80,7 +80,7 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 				for(BakedQuad baseQuad : baseQuads)
 				{
 					BakedQuad newQuad;
-					if(baseQuad.getSprite().getName().equals(fluidMaskLocation))
+					if(baseQuad.getSprite().atlasLocation().equals(fluidMaskLocation))
 						newQuad = recolorTransformer.process(baseQuad);
 					else
 						newQuad = baseQuad;
@@ -89,14 +89,6 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 			}
 		}
 		return builder.build();
-	}
-
-	@Override
-	public Collection<Material> getMaterials(
-			IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors
-	)
-	{
-		return baseGeometry.getMaterials(owner, modelGetter, missingTextureErrors);
 	}
 
 	public static class Loader implements IGeometryLoader<PotionBucketModel>
@@ -117,13 +109,13 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 	{
 		private final Int2ObjectMap<BakedModel> coloredModels = new Int2ObjectOpenHashMap<>();
 		private final ItemOverrides nested;
-		private final ModelBakery bakery;
+		private final ModelBaker bakery;
 		private final IGeometryBakingContext owner;
 		private final Function<Material, TextureAtlasSprite> textureGetter;
 
 		private OverrideHandler(
 				ItemOverrides nested,
-				ModelBakery bakery,
+				ModelBaker bakery,
 				IGeometryBakingContext owner,
 				Function<Material, TextureAtlasSprite> textureGetter
 		)

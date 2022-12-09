@@ -42,7 +42,6 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 	public void init()
 	{
 		super.init();
-		mc().keyboardHandler.setSendRepeatsToGui(true);
 
 		clearWidgets();
 

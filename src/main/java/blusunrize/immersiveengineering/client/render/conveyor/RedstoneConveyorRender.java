@@ -46,10 +46,11 @@ public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 		{
 			ModelState transform = BlockModelRotation.by(0, (int)d.toYRot()+180);
-			BakedModel baked = model.bake(
-					ev.getModelBakery(), ev.getModelBakery().getAtlasSet()::getSprite, transform, modelName
-			);
-			ROTATED_MODELS.put(d, baked);
+			// TODO
+			//BakedModel baked = model.bake(
+			//		ev.getModelBakery(), ev.getModelBakery().getAtlasSet()::getSprite, transform, modelName
+			//);
+			ROTATED_MODELS.put(d, ev.getModelManager().getMissingModel());
 		}
 	}
 

@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -164,7 +165,7 @@ public class ItemOverlayUtils
 				float cap = (float)capacity;
 				float angle = 83-(166*amount/cap);
 				transform.pushPose();
-				transform.mulPose(new Quaternionf(0, 0, angle, true));
+				transform.mulPose(new Quaternionf().rotateZ(angle *Mth.DEG_TO_RAD));
 				GuiHelper.drawTexturedColoredRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
 				transform.popPose();
 				transform.translate(23, 37, 0);

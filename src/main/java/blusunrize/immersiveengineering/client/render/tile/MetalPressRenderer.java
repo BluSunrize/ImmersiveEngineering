@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -85,7 +86,9 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 				}
 		}
 
-		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.WEST?90: te.getFacing()==Direction.EAST?-90: 0, true));
+		matrixStack.mulPose(new Quaternionf().rotateY(
+				te.getFacing()==Direction.SOUTH?Mth.PI: te.getFacing()==Direction.WEST?Mth.HALF_PI: te.getFacing()==Direction.EAST?-Mth.HALF_PI: 0
+		));
 		matrixStack.pushPose();
 		matrixStack.translate(0, -piston*.6875f, 0);
 		matrixStack.pushPose();
@@ -100,7 +103,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 		if(!te.mold.isEmpty())
 		{
 			matrixStack.translate(0, .34, 0);
-			matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), -90, true));
+			matrixStack.mulPose(new Quaternionf().rotateX(-Mth.HALF_PI));
 			float scale = .75f;
 			matrixStack.scale(scale, scale, 1);
 			ClientUtils.mc().getItemRenderer().renderStatic(te.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
@@ -121,7 +124,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 			if(piston > .92)
 				matrixStack.translate(0, .92-piston, 0);
 
-			matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), -90, true));
+			matrixStack.mulPose(new Quaternionf().rotateX(-Mth.HALF_PI));
 			float scale = .625f;
 			matrixStack.scale(scale, scale, 1);
 			ClientUtils.mc().getItemRenderer().renderStatic(displays.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,

@@ -40,7 +40,7 @@ public record IEOBJModel(
 	@Override
 	public BakedModel bake(
 			IGeometryBakingContext context,
-			ModelBakery bakery,
+			ModelBaker bakery,
 			Function<Material, TextureAtlasSprite> spriteGetter,
 			ModelState modelState,
 			ItemOverrides overrides,
@@ -67,19 +67,5 @@ public record IEOBJModel(
 				callback, base, context, spriteGetter, modelState, dynamic,
 				ChunkRenderTypeSet.of(blockTypes), itemTypes, fabulousItemTypes
 		);
-	}
-
-	@Override
-	public Collection<Material> getMaterials(
-			IGeometryBakingContext context,
-			Function<ResourceLocation, UnbakedModel> modelGetter,
-			Set<Pair<String, String>> missingTextureErrors
-	)
-	{
-		return base.getFaces().stream()
-				.map(Polygon::getTexture)
-				.distinct()
-				.map(mat -> UnbakedGeometryHelper.resolveDirtyMaterial(mat.map_Kd(), context))
-				.collect(Collectors.toList());
 	}
 }

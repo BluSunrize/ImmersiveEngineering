@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.ticks.ScheduledTick;
+import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 
 import javax.annotation.Nullable;
 
@@ -165,10 +167,9 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		super.setPlacedBy(worldIn, pos, state, placer, stack);
 	}
 
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
+	public DisplayItemsAdapter getCreativeTabFiller()
 	{
-		items.add(new ItemStack(this, 1));
+		return (enabledFlags, populator, hasPermissions) -> populator.accept(this);
 	}
 
 	@Override

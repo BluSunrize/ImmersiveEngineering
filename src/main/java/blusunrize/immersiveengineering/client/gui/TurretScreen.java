@@ -54,7 +54,6 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 	public void init()
 	{
 		super.init();
-		mc().keyboardHandler.setSendRepeatsToGui(true);
 		this.nameField = new EditBox(this.font, leftPos+11, topPos+88, 58, 12, Component.empty());
 		this.nameField.setTextColor(-1);
 		this.nameField.setTextColorUneditable(-1);
@@ -126,13 +125,6 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 	{
 		super.render(transform, mx, my, partial);
 		this.nameField.render(transform, mx, my, partial);
-	}
-
-	@Override
-	public void removed()
-	{
-		super.removed();
-		mc().keyboardHandler.setSendRepeatsToGui(false);
 	}
 
 	@Override

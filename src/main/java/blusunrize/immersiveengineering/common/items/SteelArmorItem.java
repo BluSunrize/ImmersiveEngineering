@@ -28,7 +28,7 @@ public class SteelArmorItem extends ArmorItem
 
 	public SteelArmorItem(EquipmentSlot type)
 	{
-		super(mat, type, new Properties().stacksTo(1).tab(ImmersiveEngineering.ITEM_GROUP));
+		super(mat, type, new Properties().stacksTo(1));
 	}
 
 	@Override
@@ -43,34 +43,26 @@ public class SteelArmorItem extends ArmorItem
 		@Override
 		public int getDurabilityForSlot(@Nonnull EquipmentSlot slotIn)
 		{
-			switch(slotIn)
-			{
-				case FEET:
-					return 273;
-				case LEGS:
-					return 315;
-				case CHEST:
-					return 336;
-				case HEAD:
-					return 231;
-			}
-			return 0;
+			return switch(slotIn)
+					{
+						case FEET -> 273;
+						case LEGS -> 315;
+						case CHEST -> 336;
+						case HEAD -> 231;
+						default -> 0;
+					};
 		}
 
 		@Override
 		public int getDefenseForSlot(EquipmentSlot slotIn)
 		{
-			switch(slotIn)
-			{
-				case FEET:
-				case HEAD:
-					return 2;
-				case LEGS:
-					return 6;
-				case CHEST:
-					return 7;
-			}
-			return 0;
+			return switch(slotIn)
+					{
+						case FEET, HEAD -> 2;
+						case LEGS -> 6;
+						case CHEST -> 7;
+						default -> 0;
+					};
 		}
 
 		@Override

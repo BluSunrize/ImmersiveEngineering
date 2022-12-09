@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEnt
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -37,9 +38,9 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 
 		Direction facing = te.getFacing();
 
-		float angle = facing==Direction.NORTH?0: facing==Direction.WEST?90: facing==Direction.EAST?-90: 180;
+		float angle = facing==Direction.NORTH?0: facing==Direction.WEST?Mth.HALF_PI: facing==Direction.EAST?-Mth.HALF_PI: Mth.PI;
 
-		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), angle, true));
+		matrixStack.mulPose(new Quaternionf().rotateY(angle));
 
 		ItemStack stack = te.getInventory().get(0);
 		boolean showIngredients = true;
@@ -56,8 +57,10 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 					int l = recipes.length;
 					int perRow = l > 6?l-3: l > 4?l-2: l==1?2: l==2?3: l;
 					matrixStack.translate(0, .501, 0);
-					matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), -90, true));
-					matrixStack.mulPose(new Quaternionf(new Vector3f(0, 0, 1), -22.5f, true));
+					matrixStack.mulPose(new Quaternionf()
+							.rotateX(-Mth.HALF_PI)
+							.rotateZ(-Mth.PI / 8)
+					);
 					matrixStack.translate(0.39, l > 4?.72: .78, 0);
 					float scale = l > 4?.009375f: .012f;
 					matrixStack.scale(scale, -scale, scale);
@@ -90,8 +93,10 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				matrixStack.pushPose();
 				matrixStack.translate(0, .5625, 0);
 
-				matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 180, true));
-				matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), 90, true));
+				matrixStack.mulPose(new Quaternionf()
+						.rotateY(Mth.PI)
+						.rotateX(Mth.HALF_PI)
+				);
 				matrixStack.translate(-.875, 0, 0);
 				matrixStack.scale(.75f, .75f, .75f);
 				ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
@@ -119,8 +124,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				if(!stack.isEmpty())
 				{
 					matrixStack.pushPose();
-					matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 180, true));
-					matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), 90, true));
+					matrixStack.mulPose(new Quaternionf().rotateY(Mth.PI).rotateX(Mth.HALF_PI));
 					matrixStack.translate(dX, dZ, -.515);
 					matrixStack.scale(.25f, .25f, .25f);
 					{

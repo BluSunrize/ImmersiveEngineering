@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -108,7 +110,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				Entity shooter = null;
 				if(shooterId!=null)
 					shooter = world.getPlayerByUUID(shooterId);
-				world.explode(shooter, projectile.getX(), projectile.getY(), projectile.getZ(), 2, BlockInteraction.NONE);
+				world.explode(shooter, projectile.getX(), projectile.getY(), projectile.getZ(), 2, ExplosionInteraction.MOB);
 			}
 
 			@Override

@@ -15,12 +15,14 @@ import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.network.MessageMultiblockSync;
 import blusunrize.immersiveengineering.common.network.MessageMultiblockSync.SyncedTemplate;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -86,17 +88,18 @@ public class StaticTemplateManager
 					.map(ResourcePackLoader::getPackFor)
 					.filter(Optional::isPresent)
 					.map(Optional::get)
-					.filter(mfrp -> mfrp.hasResource(type, name))
-					.map(mfrp -> getInputStreamOrThrow(type, name, mfrp))
+					.map(mfrp -> mfrp.getResource(type, name))
+					.filter(Objects::nonNull)
+					.map(StaticTemplateManager::getOrRethrow)
 					.findAny();
 		}
 	}
 
-	private static InputStream getInputStreamOrThrow(PackType type, ResourceLocation name, PathPackResources source)
+	private static <T> T getOrRethrow(IoSupplier<T> supplier)
 	{
 		try
 		{
-			return source.getResource(type, name);
+			return supplier.get();
 		} catch(IOException e)
 		{
 			throw new RuntimeException(e);
@@ -122,7 +125,7 @@ public class StaticTemplateManager
 	{
 		CompoundTag compoundnbt = NbtIo.readCompressed(inputStreamIn);
 		StructureTemplate template = new StructureTemplate();
-		template.load(compoundnbt);
+		template.load(BuiltInRegistries.BLOCK.asLookup(), compoundnbt);
 		return template;
 	}
 

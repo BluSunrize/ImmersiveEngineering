@@ -107,7 +107,7 @@ public class ConcreteFluid extends IEFluid
 
 	@Nonnull
 	@Override
-	protected FluidState getNewLiquid(LevelReader worldIn, BlockPos pos, @Nonnull BlockState blockStateIn)
+	protected FluidState getNewLiquid(Level worldIn, BlockPos pos, @Nonnull BlockState blockStateIn)
 	{
 		//Based on super version, respects timer/decay
 		int maxNeighborLevel = 0;

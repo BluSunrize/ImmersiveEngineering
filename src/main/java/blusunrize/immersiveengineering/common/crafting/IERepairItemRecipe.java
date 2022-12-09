@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -29,7 +30,7 @@ public class IERepairItemRecipe extends CustomRecipe
 {
 	public IERepairItemRecipe(ResourceLocation name)
 	{
-		super(name);
+		super(name, CraftingBookCategory.MISC);
 	}
 
 	@Override

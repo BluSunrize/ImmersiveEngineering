@@ -37,7 +37,7 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 
 	public FaradaySuitItem(EquipmentSlot type)
 	{
-		super(mat, type, new Properties().stacksTo(1).tab(ImmersiveEngineering.ITEM_GROUP));
+		super(mat, type, new Properties().stacksTo(1));
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -45,8 +46,10 @@ public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGenerat
 		matrixStack.translate(0, .6875, 0);
 		matrixStack.translate(0.5, 0, 0.5);
 
-		matrixStack.mulPose(new Quaternionf(new Vector3f(Vec3.atLowerCornerOf(te.getFacing().getNormal())),
-				te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), true));
+		matrixStack.mulPose(new Quaternionf().rotateAxis(
+				(te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks))*Mth.DEG_TO_RAD,
+				Vec3.atLowerCornerOf(te.getFacing().getNormal()).toVector3f()
+		));
 		matrixStack.translate(-0.5, 0, -0.5);
 
 		List<BakedQuad> quads = FAN.get().getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);

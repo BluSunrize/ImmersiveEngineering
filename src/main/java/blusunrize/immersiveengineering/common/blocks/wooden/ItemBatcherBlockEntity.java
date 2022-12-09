@@ -133,7 +133,8 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 
 	protected boolean isFilterMatched(int slot)
 	{
-		return ItemStack.isSameIgnoreDurability(this.filters.get(slot), this.buffers.get(slot))
+		// TODO may be wrong
+		return ItemStack.matches(this.filters.get(slot), this.buffers.get(slot))
 				&&this.buffers.get(slot).getCount() >= this.filters.get(slot).getCount();
 	}
 
@@ -225,7 +226,8 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return ItemStack.isSameIgnoreDurability(this.filters.get(slot), stack);
+		// TODO check
+		return ItemStack.isSame(this.filters.get(slot), stack);
 	}
 
 	@Override

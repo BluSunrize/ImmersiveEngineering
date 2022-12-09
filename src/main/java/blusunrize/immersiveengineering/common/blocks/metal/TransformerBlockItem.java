@@ -24,7 +24,7 @@ public class TransformerBlockItem extends BlockItemIE
 {
 	public TransformerBlockItem(Block b)
 	{
-		super(b, new Item.Properties().tab(ImmersiveEngineering.ITEM_GROUP));
+		super(b);
 	}
 
 	@Nullable

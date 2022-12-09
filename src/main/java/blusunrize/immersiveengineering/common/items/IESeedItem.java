@@ -24,14 +24,7 @@ public class IESeedItem extends BlockItem implements IPlantable
 {
 	public IESeedItem(Block cropBlock)
 	{
-		super(cropBlock, new Properties().tab(ImmersiveEngineering.ITEM_GROUP));
-	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
-	{
-		if(this.allowedIn(group))
-			items.add(new ItemStack(this));
+		super(cropBlock, new Properties());
 	}
 
 	@Override

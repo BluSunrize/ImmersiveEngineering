@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.api.utils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
 import java.util.List;
@@ -19,5 +21,5 @@ public interface TemplateWorldCreator
 {
 	SetRestrictedField<TemplateWorldCreator> CREATOR = SetRestrictedField.common();
 
-	Level makeWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow);
+	Level makeWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow, Holder<DimensionType> type);
 }

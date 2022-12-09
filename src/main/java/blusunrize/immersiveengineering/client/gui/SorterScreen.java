@@ -89,7 +89,7 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 
 		public ButtonSorter(int x, int y, FilterBit type, IntSupplier state, OnPress handler)
 		{
-			super(x, y, 18, 18, Component.empty(), handler);
+			super(x, y, 18, 18, Component.empty(), handler, DEFAULT_NARRATION);
 			this.type = type;
 			this.state = state;
 		}
@@ -100,11 +100,11 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 			if(this.visible)
 			{
 				ClientUtils.bindTexture(TEXTURE);
-				isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
+				isHovered = mx >= this.getX()&&my >= this.getY()&&mx < this.getX()+this.width&&my < this.getY()+this.height;
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 				final boolean active = (state.getAsInt()&type.mask())!=0;
-				this.blit(transform, this.x, this.y, 176+type.ordinal()*18, (active?3: 21), this.width, this.height);
+				this.blit(transform, this.getX(), this.getY(), 176+type.ordinal()*18, (active?3: 21), this.width, this.height);
 			}
 		}
 

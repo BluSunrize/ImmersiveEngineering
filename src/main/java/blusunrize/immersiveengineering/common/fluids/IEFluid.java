@@ -152,7 +152,7 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
-	protected boolean canConvertToSource()
+	public boolean canConvertToSource(Level level)
 	{
 		return false;
 	}

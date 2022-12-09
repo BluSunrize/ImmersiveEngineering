@@ -49,7 +49,7 @@ public class BlockItemIE extends BlockItem
 
 	public BlockItemIE(Block b)
 	{
-		this(b, new Item.Properties().tab(ImmersiveEngineering.ITEM_GROUP));
+		this(b, new Item.Properties());
 	}
 
 	@Override

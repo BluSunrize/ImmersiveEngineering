@@ -382,10 +382,10 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								world.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
 							}
 							else
-								world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1f, 1f);
+								world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.get(), SoundSource.PLAYERS, 1f, 1f);
 						}
 						else
-							world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1f, 1f);
+							world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.get(), SoundSource.PLAYERS, 1f, 1f);
 
 						rotateCylinder(revolver, player, true, bullets);
 						ItemNBTHelper.putInt(revolver, "cooldown", getMaxShootCooldown(revolver));

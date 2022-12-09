@@ -80,13 +80,13 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 		{
 			ClientUtils.bindTexture(texture);
 			Font fontrenderer = mc.font;
-			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
+			this.isHovered = mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 			RenderSystem.blendFunc(770, 771);
 			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state.getAsInt();
 			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state.getAsInt();
-			this.blit(transform, x, y, u, v, width, height);
+			this.blit(transform, getX(), getY(), u, v, width, height);
 			if(!getMessage().getString().isEmpty())
 			{
 				int txtCol = 0xE0E0E0;
@@ -95,7 +95,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 				else if(this.isHovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
 				int[] offset = getTextOffset(fontrenderer);
-				this.drawString(transform, fontrenderer, getMessage(), x+offset[0], y+offset[1], txtCol);
+				this.drawString(transform, fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], txtCol);
 			}
 		}
 	}

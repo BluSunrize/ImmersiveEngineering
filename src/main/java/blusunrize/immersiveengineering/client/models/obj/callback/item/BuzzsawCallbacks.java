@@ -104,7 +104,7 @@ public class BuzzsawCallbacks implements ItemCallback<BuzzsawCallbacks.Key>
 		float angle = (entity.tickCount%ticksPerRotation+partialTicks)/ticksPerRotation*(float)(2*Math.PI);
 		return new Transformation(
 				new Vector3f(0.60945f, 0, 0),
-				new Quaternionf(0, angle, 0, false),
+				new Quaternionf().rotateXYZ(0, angle, 0),
 				null, null);
 	}
 

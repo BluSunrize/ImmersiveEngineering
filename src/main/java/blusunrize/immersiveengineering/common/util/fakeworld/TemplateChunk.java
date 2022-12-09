@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.util.fakeworld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;

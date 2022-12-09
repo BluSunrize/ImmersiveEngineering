@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -125,6 +126,13 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 	private int getInventoryIndex(CraftingContainer inv, int x, int y)
 	{
 		return x+y*inv.getWidth();
+	}
+
+	@Override
+	public CraftingBookCategory category()
+	{
+		// TODO?
+		return CraftingBookCategory.MISC;
 	}
 
 	public interface IMatchLocation

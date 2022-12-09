@@ -20,6 +20,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,16 +69,18 @@ public class EngineersBlueprintItem extends IEBaseItem
 
 
 	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
+	public DisplayItemsAdapter getCreativeTabFiller()
 	{
-		final Level level = ImmersiveEngineering.proxy.getClientWorld();
-		if(this.allowedIn(tab)&&level!=null)
-			for(String key : BlueprintCraftingRecipe.getCategoriesWithRecipes(level))
-			{
-				ItemStack stack = new ItemStack(this);
-				ItemNBTHelper.putString(stack, "blueprint", key);
-				list.add(stack);
-			}
+		return (enabledFlags, populator, hasPermissions) -> {
+			final Level level = ImmersiveEngineering.proxy.getClientWorld();
+			if(level!=null)
+				for(String key : BlueprintCraftingRecipe.getCategoriesWithRecipes(level))
+				{
+					ItemStack stack = new ItemStack(this);
+					ItemNBTHelper.putString(stack, "blueprint", key);
+					populator.accept(stack);
+				}
+		};
 	}
 
 	@Nonnull

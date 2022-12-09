@@ -48,8 +48,10 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 
 		matrixStackIn.pushPose();
 
-		matrixStackIn.mulPose(new Quaternionf(new Vector3f(0.0F, 1.0F, 0.0F), 180.0F-this.entityRenderDispatcher.camera.getYRot(), true));
-		matrixStackIn.mulPose(new Quaternionf(new Vector3f(1.0F, 0.0F, 0.0F), -this.entityRenderDispatcher.camera.getXRot(), true));
+		matrixStackIn.mulPose(new Quaternionf()
+				.rotateXYZ(0.0F, (float) Math.toRadians(180.0F-this.entityRenderDispatcher.camera.getYRot()), 0)
+				.rotateXYZ((float) Math.toRadians(-this.entityRenderDispatcher.camera.getXRot()), 0, 0)
+		);
 
 		IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(f.getFluid());
 		TextureAtlasSprite sprite = ClientUtils.mc().getModelManager()

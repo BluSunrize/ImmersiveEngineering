@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 
 public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? super T>> extends IEEntityBlock<T>
 {
@@ -71,8 +72,8 @@ public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? su
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
+	public DisplayItemsAdapter getCreativeTabFiller()
 	{
-		//Don't add multiblocks to the creative tab/JEI
+		return (enabledFlags, populator, hasPermissions) -> {};
 	}
 }

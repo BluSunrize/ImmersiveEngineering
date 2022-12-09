@@ -28,7 +28,7 @@ public class GuiButtonIE extends Button
 
 	public GuiButtonIE(int x, int y, int w, int h, Component name, ResourceLocation texture, int u, int v, IIEPressable handler)
 	{
-		super(x, y, w, h, name, handler);
+		super(x, y, w, h, name, handler, DEFAULT_NARRATION);
 		this.texture = texture;
 		this.texU = u;
 		this.texV = v;
@@ -44,7 +44,7 @@ public class GuiButtonIE extends Button
 
 	private boolean isPressable(double mouseX, double mouseY)
 	{
-		return this.active&&this.visible&&mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
+		return this.active&&this.visible&&mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
 	}
 
 	@Override
@@ -60,9 +60,9 @@ public class GuiButtonIE extends Button
 			RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 			RenderSystem.blendFunc(770, 771);
 			if(hoverOffset!=null&&this.isHovered)
-				this.blit(transform, x, y, texU+hoverOffset[0], texV+hoverOffset[1], width, height);
+				this.blit(transform, getX(), getY(), texU+hoverOffset[0], texV+hoverOffset[1], width, height);
 			else
-				this.blit(transform, x, y, texU, texV, width, height);
+				this.blit(transform, getX(), getY(), texU, texV, width, height);
 			if(!getMessage().getString().isEmpty())
 			{
 				int txtCol = 0xE0E0E0;
@@ -70,7 +70,7 @@ public class GuiButtonIE extends Button
 					txtCol = 0xA0A0A0;
 				else if(this.isHovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
-				this.drawCenteredString(transform, fontrenderer, getMessage(), this.x+this.width/2, this.y+(this.height-8)/2, txtCol);
+				this.drawCenteredString(transform, fontrenderer, getMessage(), this.getX()+this.width/2, this.getY()+(this.height-8)/2, txtCol);
 			}
 		}
 	}

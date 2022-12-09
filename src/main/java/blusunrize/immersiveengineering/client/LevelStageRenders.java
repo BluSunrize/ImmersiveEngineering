@@ -153,7 +153,7 @@ public class LevelStageRenders
 				{
 					Vector3f pointA = positions.get(p);
 					Vector3f pointB = positions.get((p+1)%positions.size());
-					Vector3f diff = pointB.copy();
+					Vector3f diff = new Vector3f(pointB);
 					diff.sub(pointA);
 					diff.normalize();
 					for(Vector3f point : List.of(pointA, pointB))

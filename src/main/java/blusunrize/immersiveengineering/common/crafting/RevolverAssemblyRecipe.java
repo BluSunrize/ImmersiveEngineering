@@ -17,6 +17,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
@@ -25,7 +26,7 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 {
 	public RevolverAssemblyRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingr, ItemStack output)
 	{
-		super(id, group, width, height, ingr, output);
+		super(id, group, width, height, ingr, output, CraftingBookCategory.EQUIPMENT);
 	}
 
 	@Nonnull

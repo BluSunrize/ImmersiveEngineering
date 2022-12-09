@@ -23,15 +23,15 @@ public class IEGLShaders
 	public static void registerShaders(RegisterShadersEvent ev) throws IOException
 	{
 		ev.registerShader(
-				new ShaderInstance(ev.getResourceManager(), ImmersiveEngineering.rl("block_fullbright"), DefaultVertexFormat.BLOCK),
+				new ShaderInstance(ev.getResourceProvider(), ImmersiveEngineering.rl("block_fullbright"), DefaultVertexFormat.BLOCK),
 				shader -> blockFullbrightShader = shader
 		);
 		ev.registerShader(
-				new ShaderInstance(ev.getResourceManager(), ImmersiveEngineering.rl("rendertype_vbo"), VertexBufferHolder.BUFFER_FORMAT),
+				new ShaderInstance(ev.getResourceProvider(), ImmersiveEngineering.rl("rendertype_vbo"), VertexBufferHolder.BUFFER_FORMAT),
 				shader -> vboShader = shader
 		);
 		ev.registerShader(
-				new ShaderInstance(ev.getResourceManager(), ImmersiveEngineering.rl("rendertype_point"), DefaultVertexFormat.POSITION_COLOR_NORMAL),
+				new ShaderInstance(ev.getResourceProvider(), ImmersiveEngineering.rl("rendertype_point"), DefaultVertexFormat.POSITION_COLOR_NORMAL),
 				shader -> pointShader = shader
 		);
 	}

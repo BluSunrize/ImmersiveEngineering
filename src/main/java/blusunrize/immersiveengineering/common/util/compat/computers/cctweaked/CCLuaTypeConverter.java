@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.LuaTypeConverter;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;

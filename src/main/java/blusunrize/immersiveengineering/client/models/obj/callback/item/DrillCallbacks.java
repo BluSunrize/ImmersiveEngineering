@@ -124,16 +124,16 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 		Quaternionf rotation = null;
 		Vector3f translation = null;
 		if("drill_head".equals(groups.get(0)))
-			rotation = new Quaternionf(angle, 0, 0, false);
+			rotation = new Quaternionf().rotateXYZ(angle, 0, 0);
 		else if("upgrade_damage1".equals(groups.get(0)))
 		{
 			translation = new Vector3f(.441f, 0, 0);
-			rotation = new Quaternionf(0, angle, 0, false);
+			rotation = new Quaternionf().rotateXYZ(0, angle, 0);
 		}
 		else if("upgrade_damage3".equals(groups.get(0)))
 		{
 			translation = new Vector3f(.441f, 0, 0);
-			rotation = new Quaternionf(0, 0, angle, false);
+			rotation = new Quaternionf().rotateXYZ(0, 0, angle);
 		}
 		return new Transformation(translation, rotation, null, null);
 	}

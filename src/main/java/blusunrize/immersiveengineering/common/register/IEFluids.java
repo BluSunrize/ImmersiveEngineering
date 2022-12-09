@@ -224,7 +224,6 @@ public class IEFluids
 			return new BucketItem(
 					still, new Item.Properties()
 					.stacksTo(1)
-					.tab(ImmersiveEngineering.ITEM_GROUP)
 					.craftRemainder(Items.BUCKET))
 			{
 				@Override

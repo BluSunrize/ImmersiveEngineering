@@ -526,7 +526,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		@Override
 		public BakedModel bake(
 				IGeometryBakingContext context,
-				ModelBakery bakery,
+				ModelBaker bakery,
 				Function<Material, TextureAtlasSprite> spriteGetter,
 				ModelState modelState,
 				ItemOverrides overrides,
@@ -534,13 +534,6 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		)
 		{
 			return new ModelConveyor<>(type, Blocks.AIR);
-		}
-
-		@Override
-		public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
-		{
-			//TODO?
-			return ImmutableList.of();
 		}
 	}
 

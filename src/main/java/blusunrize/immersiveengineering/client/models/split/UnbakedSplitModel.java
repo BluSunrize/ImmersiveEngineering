@@ -42,7 +42,7 @@ public class UnbakedSplitModel implements IUnbakedGeometry<UnbakedSplitModel>
 	@Override
 	public BakedModel bake(
 			IGeometryBakingContext owner,
-			ModelBakery bakery,
+			ModelBaker bakery,
 			Function<Material, TextureAtlasSprite> spriteGetter,
 			ModelState modelTransform,
 			ItemOverrides overrides,
@@ -56,15 +56,5 @@ public class UnbakedSplitModel implements IUnbakedGeometry<UnbakedSplitModel>
 			);
 		else
 			return new BakedBasicSplitModel(bakedBase, parts, modelTransform, size, owner.getTransforms());
-	}
-
-	@Override
-	public Collection<Material> getMaterials(
-			IGeometryBakingContext owner,
-			Function<ResourceLocation, UnbakedModel> modelGetter,
-			Set<Pair<String, String>> missingTextureErrors
-	)
-	{
-		return baseModel.getMaterials(modelGetter, missingTextureErrors);
 	}
 }

@@ -102,8 +102,8 @@ public class GuiHelper
 		IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(fluid.getFluid());
 		TextureAtlasSprite sprite = getSprite(props.getStillTexture(fluid));
 		int col = props.getTintColor(fluid);
-		int iW = sprite.getWidth();
-		int iH = sprite.getHeight();
+		int iW = sprite.contents().width();
+		int iH = sprite.contents().height();
 		if(iW > 0&&iH > 0)
 			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH,
 					sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(),

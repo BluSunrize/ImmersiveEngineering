@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

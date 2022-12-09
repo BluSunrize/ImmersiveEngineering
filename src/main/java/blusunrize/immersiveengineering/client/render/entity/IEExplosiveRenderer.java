@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -46,9 +47,9 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 			float f1 = 1.0F+f*0.3F;
 			matrixStackIn.scale(f1, f1, f1);
 		}
-		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+		matrixStackIn.mulPose(new Quaternionf().rotateXYZ(0, -Mth.HALF_PI, 0));
 		matrixStackIn.translate(-0.5D, -0.5D, 0.5D);
-		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+		matrixStackIn.mulPose(new Quaternionf().rotateXYZ(0, Mth.HALF_PI, 0));
 
 		int overlay;
 		if(entity.getFuse()/5%2==0)

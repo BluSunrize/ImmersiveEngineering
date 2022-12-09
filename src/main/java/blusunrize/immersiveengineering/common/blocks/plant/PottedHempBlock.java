@@ -28,10 +28,4 @@ public class PottedHempBlock extends FlowerPotBlock
 	{
 		super(() -> (FlowerPotBlock)Blocks.FLOWER_POT, Misc.HEMP_PLANT, props);
 	}
-
-	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
-	{
-		//NOP
-	}
 }

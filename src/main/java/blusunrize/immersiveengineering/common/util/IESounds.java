@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -48,6 +49,7 @@ public class IESounds
 
 	private static RegistryObject<SoundEvent> registerSound(String name)
 	{
-		return REGISTER.register(name, () -> new SoundEvent(ImmersiveEngineering.rl(name)));
+		// TODO is this correct?
+		return REGISTER.register(name, () -> SoundEvent.createVariableRangeEvent(ImmersiveEngineering.rl(name)));
 	}
 }

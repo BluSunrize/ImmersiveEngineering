@@ -23,7 +23,7 @@ public class GuiButtonItem extends Button
 
 	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, OnPress handler)
 	{
-		super(x, y, 18, 18, Component.empty(), handler);
+		super(x, y, 18, 18, Component.empty(), handler, DEFAULT_NARRATION);
 		this.state = state;
 		this.item = stack;
 	}
@@ -34,20 +34,20 @@ public class GuiButtonItem extends Button
 		if(this.visible)
 		{
 			ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
-			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
+			this.isHovered = mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
 			RenderSystem.defaultBlendFunc();
-			this.blit(transform, x, y, 24+(state?18: 0), 128, width, height);
+			this.blit(transform, getX(), getY(), 24+(state?18: 0), 128, width, height);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				mc.getItemRenderer().renderAndDecorateItem(item, x+1, y+1);
+				mc.getItemRenderer().renderAndDecorateItem(item, getX()+1, getY()+1);
 
 				if(!state)
 				{
 					RenderSystem.disableDepthTest();
-					fill(transform, x+1, y+1, x+17, y+17, 0x77444444);
+					fill(transform, getX()+1, getY()+1, getX()+17, getY()+17, 0x77444444);
 					RenderSystem.enableDepthTest();
 				}
 			}

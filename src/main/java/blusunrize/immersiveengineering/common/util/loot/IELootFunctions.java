@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.common.util.loot;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
@@ -32,7 +34,7 @@ import java.util.function.Supplier;
 public class IELootFunctions
 {
 	private static final DeferredRegister<LootItemFunctionType> FUNCTION_REGISTER = DeferredRegister.create(
-			Registries.LOOT_FUNCTION, ImmersiveEngineering.MODID
+			Registries.LOOT_FUNCTION_TYPE, ImmersiveEngineering.MODID
 	);
 	public static final RegistryObject<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", () -> new SimpleSerializer<>(BluprintzLootFunction::new));
 	public static final RegistryObject<LootItemFunctionType> WINDMILL = registerFunction("windmill", () -> new SimpleSerializer<>(WindmillLootFunction::new));

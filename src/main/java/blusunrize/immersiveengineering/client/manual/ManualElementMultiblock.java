@@ -21,6 +21,7 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
 import org.joml.Vector3f;
@@ -69,21 +70,22 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public ManualElementMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
 		super(manual);
+		final var level = Minecraft.getInstance().level;
 		this.multiblock = multiblock;
 		this.renderProperties = ClientMultiblocks.get(multiblock);
-		List<StructureBlockInfo> structure = multiblock.getStructure(Minecraft.getInstance().level);
+		List<StructureBlockInfo> structure = multiblock.getStructure(level);
 		renderInfo = new MultiblockRenderInfo(structure);
 		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+
 				renderInfo.structureWidth*renderInfo.structureWidth+
 				renderInfo.structureLength*renderInfo.structureLength);
-		structureWorld = new TemplateWorld(structure, renderInfo);
+		structureWorld = new TemplateWorld(structure, renderInfo, level.dimensionTypeRegistration());
 		transX = 60+renderInfo.structureWidth/2F;
 		transY = 35+diagLength/2;
 		additionalTransform = new Transformation(
 				null,
-				new Quaternionf(25, 0, 0, true),
+				new Quaternionf().rotateXYZ((float)Math.toRadians(25), 0, 0),
 				null,
-				new Quaternionf(0, -45, 0, true)
+				new Quaternionf().rotateXYZ(0, (float)Math.toRadians(-45), 0)
 		);
 		scale = multiblock.getManualScale();
 		yOffTotal = (int)(transY+scale*diagLength/2);
@@ -206,8 +208,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 				transform.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				transform.scale(scale, -scale, 1);
-				additionalTransform.push(transform);
-				transform.mulPose(new Quaternionf(0, 90, 0, true));
+				transform.pushTransformation(additionalTransform);
+				transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.HALF_PI, 0));
 
 				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
 
@@ -292,11 +294,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 	{
 		Vector3f axis = new Vector3f((float)rY, (float)rX, 0);
 		float angle = (float)Math.sqrt(axis.dot(axis));
-		if(!axis.normalize())
-			return Transformation.identity();
+		axis.normalize();
 		return new Transformation(
 				null,
-				new Quaternionf(axis, angle, true),
+				new Quaternionf().rotateAxis((float)Math.toRadians(angle), axis),
 				null,
 				null
 		);

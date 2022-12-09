@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -47,12 +48,12 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 		matrixStack.pushPose();
 
 		matrixStack.translate(.5, .5, .5);
-		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 90, true)); //to mirror different plane. compensate on dir rotate
+		matrixStack.mulPose(new Quaternionf().rotateY(Mth.HALF_PI)); //to mirror different plane. compensate on dir rotate
 		BERenderUtils.mirror(tile, matrixStack);
-		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
-		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), dir, true));
+		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?Mth.PI: tile.getFacing()==Direction.EAST?Mth.HALF_PI: -Mth.HALF_PI;
+		matrixStack.mulPose(new Quaternionf().rotateY(dir));
 		float rot = tile.rotation+(float)(tile.active?IEServerConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
-		matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), rot, true));
+		matrixStack.mulPose(new Quaternionf().rotateX(rot * Mth.DEG_TO_RAD));
 
 		matrixStack.translate(-.5, -.5, -.5);
 		try

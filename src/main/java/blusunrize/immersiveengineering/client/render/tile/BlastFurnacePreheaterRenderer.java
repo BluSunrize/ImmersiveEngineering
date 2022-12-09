@@ -26,7 +26,7 @@ public class BlastFurnacePreheaterRenderer extends IEBlockEntityRenderer<BlastFu
 		rotateForFacingNoCentering(transform, bEntity.getFacing());
 		final float angle = bEntity.angle+BlastFurnacePreheaterBlockEntity.ANGLE_PER_TICK*(bEntity.active?partial: 0);
 		Vector3f axis = new Vector3f(0, 0, 1);
-		transform.mulPose(new Quaternionf(axis, angle, false));
+		transform.mulPose(new Quaternionf().rotateAxis(angle, axis));
 		transform.translate(-0.5, -0.5, -0.5);
 		RenderUtils.renderModelTESRFast(
 				MODEL.getNullQuads(), buffers.getBuffer(RenderType.solid()), transform, light, overlay

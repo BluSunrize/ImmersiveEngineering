@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ChargingStationBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,15 +31,15 @@ public class ChargingStationRenderer extends IEBlockEntityRenderer<ChargingStati
 			switch(te.getFacing())
 			{
 				case NORTH:
-					matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 180, true));
+					matrixStack.mulPose(new Quaternionf().rotateY(Mth.PI));
 					break;
 				case SOUTH:
 					break;
 				case WEST:
-					matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), -90, true));
+					matrixStack.mulPose(new Quaternionf().rotateY(-Mth.HALF_PI));
 					break;
 				case EAST:
-					matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 90, true));
+					matrixStack.mulPose(new Quaternionf().rotateY(Mth.HALF_PI));
 					break;
 			}
 			if(!te.inventory.get(0).isEmpty())

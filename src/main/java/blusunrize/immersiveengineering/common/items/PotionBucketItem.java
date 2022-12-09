@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +26,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -42,7 +44,7 @@ public class PotionBucketItem extends IEBaseItem
 {
 	public PotionBucketItem()
 	{
-		super(new Properties().stacksTo(1), CreativeModeTab.TAB_BREWING);
+		super(new Properties().stacksTo(1));
 	}
 
 	public static ItemStack forPotion(Potion type)
@@ -60,15 +62,15 @@ public class PotionBucketItem extends IEBaseItem
 	}
 
 	@Override
-	public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items)
+	public DisplayItemsAdapter getCreativeTabFiller()
 	{
-		if(!allowedIn(group))
-			return;
-		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
-		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
-		for(Potion p : sortedPotions)
-			if(p!=Potions.WATER&&p!=Potions.EMPTY)
-				items.add(forPotion(p));
+		return (enabledFlags, populator, hasPermissions) -> {
+			List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
+			sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
+			for(Potion p : sortedPotions)
+				if(p!=Potions.WATER&&p!=Potions.EMPTY)
+					populator.accept(forPotion(p));
+		};
 	}
 
 	@Nullable

@@ -52,6 +52,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -288,7 +289,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						PoseStack transform = event.getPoseStack();
 						transform.pushPose();
 						MultiBufferSource buffer = event.getMultiBufferSource();
-						transform.mulPose(new Quaternionf(0, 0, -i*45, true));
+						transform.mulPose(new Quaternionf().rotateXYZ(0, 0, -i*Mth.PI / 4));
 						transform.translate(-.5, .5, -.001);
 						VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
 						GuiHelper.drawTexturedColoredRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
@@ -705,8 +706,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				{
 					transform.pushPose();
 					transform.translate(0.5, 0.5, 0.5);
-					ClientUtils.toModelRotation(side).getRotation().push(transform);
-					transform.mulPose(new Quaternionf(-90, 0, 0, true));
+					transform.pushTransformation(ClientUtils.toModelRotation(side).getRotation());
+					transform.mulPose(new Quaternionf().rotateXYZ(-Mth.HALF_PI, 0, 0));
 					Rotation rotation = turntableTile.getRotationFromSide(side);
 					boolean cw180 = rotation==Rotation.CLOCKWISE_180;
 					double angle;

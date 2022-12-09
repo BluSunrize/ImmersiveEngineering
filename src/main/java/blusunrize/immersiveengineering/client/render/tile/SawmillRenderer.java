@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.SawmillBlockEntity.Sa
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -50,8 +51,8 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());
 
 		Direction facing = te.getFacing();
-		float dir = facing==Direction.SOUTH?180: facing==Direction.NORTH?0: facing==Direction.EAST?-90: 90;
-		matrixStack.mulPose(new Quaternionf(0, dir, 0, true));
+		float dir = facing==Direction.SOUTH?Mth.PI: facing==Direction.NORTH?0: facing==Direction.EAST?-Mth.HALF_PI: Mth.HALF_PI;
+		matrixStack.mulPose(new Quaternionf().rotateY(dir));
 
 		// Sawblade
 		boolean sawblade = !te.sawblade.isEmpty();
@@ -62,7 +63,7 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 			float spin = te.animation_bladeRotation;
 			if(te.shouldRenderAsActive() && !te.isRSDisabled())
 				spin += 36f*partialTicks;
-			matrixStack.mulPose(new Quaternionf(0, 0, spin, true));
+			matrixStack.mulPose(new Quaternionf().rotateZ(spin * Mth.DEG_TO_RAD));
 			RenderUtils.renderModelTESRFast(
 					BLADE.getNullQuads(), solidBuilder, matrixStack, combinedLightIn, combinedOverlayIn
 			);
@@ -84,7 +85,7 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 		float xOffset = -2.5f+progress*5;
 		matrixStack.pushPose();
 		matrixStack.translate(xOffset, .375, 0);
-		matrixStack.mulPose(new Quaternionf(0, 0, 90, true));
+		matrixStack.mulPose(new Quaternionf().rotateZ(Mth.HALF_PI));
 		ClientUtils.mc().getItemRenderer().renderStatic(stack, TransformType.FIXED,
 				combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 		matrixStack.popPose();

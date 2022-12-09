@@ -21,6 +21,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -199,5 +200,11 @@ public class EarmuffsRecipe implements CraftingRecipe
 	public NonNullList<Ingredient> getIngredients()
 	{
 		return NonNullList.withSize(1, Ingredient.of(Misc.EARMUFFS));
+	}
+
+	@Override
+	public CraftingBookCategory category()
+	{
+		return CraftingBookCategory.MISC;
 	}
 }

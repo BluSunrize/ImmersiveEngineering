@@ -217,7 +217,8 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	{
 		boolean b = ItemStack.isSame(filterStack, stack);
 		if(!b&&fuzzy)
-			b = ItemStack.isSameIgnoreDurability(filterStack, stack);
+			// TODO probably correct here, but what should the call above be?
+			b = ItemStack.isSame(filterStack, stack);
 		if(!b&&oredict)
 			 b = stack.getItem().builtInRegistryHolder().tags().anyMatch(filterStack::is);
 		if(nbt)

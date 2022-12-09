@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.SiloBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -49,9 +50,7 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 
 				matrixStack.pushPose();
 				// Do not multiply the normal matrix here, it messes up lighting for some reason
-				matrixStack.last().pose().multiply(
-						Matrix4f.createScaleMatrix(itemScale/baseScale, itemScale/baseScale, flatScale)
-				);
+				matrixStack.last().pose().scale(itemScale/baseScale, itemScale/baseScale, flatScale);
 				matrixStack.translate(0, -0.75, 0);
 				ClientUtils.mc().getItemRenderer().renderStatic(
 						tile.identStack, TransformType.GUI, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0
@@ -67,7 +66,7 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 				matrixStack.popPose();
 
 				matrixStack.popPose();
-				matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 90, true));
+				matrixStack.mulPose(new Quaternionf().rotateY(Mth.HALF_PI));
 			}
 		}
 		matrixStack.popPose();

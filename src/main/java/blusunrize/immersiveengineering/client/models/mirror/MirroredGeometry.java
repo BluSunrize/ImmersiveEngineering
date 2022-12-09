@@ -30,7 +30,7 @@ public record MirroredGeometry(UnbakedModel inner) implements IUnbakedGeometry<M
 {
 	@Override
 	public BakedModel bake(
-			IGeometryBakingContext owner, ModelBakery bakery,
+			IGeometryBakingContext owner, ModelBaker bakery,
 			Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
 			ItemOverrides overrides, ResourceLocation modelLoc
 	)
@@ -53,15 +53,5 @@ public record MirroredGeometry(UnbakedModel inner) implements IUnbakedGeometry<M
 			return new CachedMirroredModel<>(cachedModel);
 		else
 			throw new RuntimeException("Tried to mirror model "+inner+" which is neither simple nor cacheable");
-	}
-
-	@Override
-	public Collection<Material> getMaterials(
-			IGeometryBakingContext context,
-			Function<ResourceLocation, UnbakedModel> modelGetter,
-			Set<Pair<String, String>> missingTextureErrors
-	)
-	{
-		return inner.getMaterials(modelGetter, missingTextureErrors);
 	}
 }

@@ -98,7 +98,6 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 	public void init()
 	{
 		super.init();
-		mc().keyboardHandler.setSendRepeatsToGui(true);
 
 		this.operatorList = (GuiSelectingList)this.addRenderableWidget(new GuiSelectingList(leftPos+58, topPos+16, 36, 56, btn -> {
 			this.minecraft.tell(this::updateButtons);
@@ -164,35 +163,12 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 		{
 			int inputCount = operator.getArgumentCount();
 			int inputStart = 130-(inputCount*10-1);
-			if(inputCount < this.inputButtons.size())
-			{
-				Iterator<GuiButtonLogicCircuitRegister> it = this.inputButtons.iterator();
-				int i = 0;
-				// Reposition buttons and remove excess
-				while(it.hasNext())
-				{
-					GuiButtonState<?> btn = it.next();
-					btn.x = leftPos+inputStart+20*i;
-					if(++i > inputCount)
-					{
-						removeWidget(btn);
-						it.remove();
-					}
-				}
-			}
-			else
-			{
-				for(int i = 0; i < inputCount; i++)
-				{
-					if(i < this.inputButtons.size()) // Reposition buttons
-						this.inputButtons.get(i).x = leftPos+inputStart+20*i;
-					else // Add new ones
-						this.inputButtons.add(this.addRenderableWidget(GuiButtonLogicCircuitRegister.create(
-								leftPos+inputStart+20*i, topPos+18,
-								Component.literal("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
-						));
-				}
-			}
+			this.inputButtons.clear();
+			for(int i = 0; i < inputCount; i++)
+				this.inputButtons.add(this.addRenderableWidget(GuiButtonLogicCircuitRegister.create(
+						leftPos+inputStart+20*i, topPos+18,
+						Component.literal("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
+				));
 		}
 		LogicCircuitInstruction editInstr = getEditInstruction();
 		if(editInstr!=null)

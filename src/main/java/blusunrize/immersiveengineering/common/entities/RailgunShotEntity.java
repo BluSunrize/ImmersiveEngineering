@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -157,8 +158,9 @@ public class RailgunShotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket()
+	public Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
-		return NetworkHooks.getEntitySpawningPacket(this);
+		// TODO see fluorescent tube
+		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 }

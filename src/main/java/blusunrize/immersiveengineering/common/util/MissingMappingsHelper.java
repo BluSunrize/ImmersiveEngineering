@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.MissingMappingsEvent;

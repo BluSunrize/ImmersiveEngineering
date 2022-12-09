@@ -50,7 +50,6 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 	public void init()
 	{
 		super.init();
-		mc().keyboardHandler.setSendRepeatsToGui(true);
 
 		clearWidgets();
 
@@ -134,7 +133,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 						onClick.accept((GuiButtonBoolean)btn);
 					for(int j = 0; j < buttons.length; j++)
 						if(j!=color.ordinal()&&buttons[j].getState())
-							buttons[j].onClick(buttons[j].x, buttons[j].y);
+							buttons[j].onClick(buttons[j].getX(), buttons[j].getY());
 				})
 		{
 			@Override
@@ -153,7 +152,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 					if(!getState())
 						col = ClientUtils.getDarkenedTextColour(col);
 					col = 0xff000000|col;
-					this.fillGradient(transform, x+3, y+3, x+9, y+9, col, col);
+					this.fillGradient(transform, getX()+3, getY()+3, getX()+9, getY()+9, col, col);
 				}
 			}
 		};

@@ -14,6 +14,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -21,15 +22,15 @@ import javax.annotation.Nullable;
 
 public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 {
-	public BasicShapedRecipe(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn)
+	public BasicShapedRecipe(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn, CraftingBookCategory category)
 	{
-		super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
+		super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn, category);
 	}
 
 	public BasicShapedRecipe(ShapedRecipe vanillaBase)
 	{
 		this(vanillaBase.getId(), vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
-				vanillaBase.getIngredients(), vanillaBase.getResultItem());
+				vanillaBase.getIngredients(), vanillaBase.getResultItem(), vanillaBase.category());
 	}
 
 	protected boolean checkMatch(CraftingContainer craftingInventory, MatchLocation loc)

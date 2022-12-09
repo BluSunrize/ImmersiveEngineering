@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -60,7 +61,7 @@ public class SheetmetalTankRenderer extends IEBlockEntityRenderer<SheetmetalTank
 						0, 0+(1-h)*16, 16, h*16);
 			}
 			matrixStack.popPose();
-			matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), 90, true));
+			matrixStack.mulPose(new Quaternionf().rotateY(Mth.HALF_PI));
 		}
 		matrixStack.popPose();
 	}

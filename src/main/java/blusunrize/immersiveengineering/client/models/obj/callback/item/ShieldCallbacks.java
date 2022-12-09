@@ -49,13 +49,13 @@ public class ShieldCallbacks implements ItemCallback<ShieldCallbacks.Key>
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
 				{
-					mat.mulPose(new Quaternionf(-.15F, 0, 0, false));
+					mat.mulPose(new Quaternionf().rotateXYZ(-.15F, 0, 0));
 					mat.translate(-.25, .5, -.4375);
 				}
 				else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)
 				{
-					mat.mulPose(new Quaternionf(0.52359F, 0, 0, false));
-					mat.mulPose(new Quaternionf(0, 0.78539F, 0, false));
+					mat.mulPose(new Quaternionf().rotateXYZ(0.52359F, 0, 0));
+					mat.mulPose(new Quaternionf().rotateXYZ(0, 0.78539F, 0));
 					mat.translate(.40625, -.125, -.125);
 				}
 			}
@@ -63,12 +63,12 @@ public class ShieldCallbacks implements ItemCallback<ShieldCallbacks.Key>
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
 				{
-					mat.mulPose(new Quaternionf(.15F, 0, 0, false));
+					mat.mulPose(new Quaternionf().rotateXYZ(.15F, 0, 0));
 					mat.translate(.25, .375, .4375);
 				}
 				else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
 				{
-					mat.mulPose(new Quaternionf(-0.52359F, 1, 0, false));
+					mat.mulPose(new Quaternionf().rotateXYZ(-0.52359F, 1, 0));
 					mat.translate(.1875, .3125, .75);
 				}
 			}

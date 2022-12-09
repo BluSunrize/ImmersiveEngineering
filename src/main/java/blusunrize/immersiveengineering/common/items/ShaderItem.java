@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.WallBannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
@@ -165,15 +166,16 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
+	public DisplayItemsAdapter getCreativeTabFiller()
 	{
-		if(this.allowedIn(tab))
+		return (enabledFlags, populator, hasPermissions) -> {
 			for(ResourceLocation key : ShaderRegistry.shaderRegistry.keySet())
 			{
 				ItemStack s = new ItemStack(this);
 				ItemNBTHelper.putString(s, "shader_name", key.toString());
-				list.add(s);
+				populator.accept(s);
 			}
+		};
 	}
 
 	@Override

@@ -134,8 +134,8 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 					double sampleZ = coords.z()+.5;
 
 					int mapScale = 1<<mapData.scale;
-					float distX = (float)(sampleX-mapData.x)/(float)mapScale;
-					float distZ = (float)(sampleZ-mapData.z)/(float)mapScale;
+					float distX = (float)(sampleX-mapData.centerX)/(float)mapScale;
+					float distZ = (float)(sampleZ-mapData.centerZ)/(float)mapScale;
 					if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
 					{
 						CompoundTag tagCompound = new CompoundTag();

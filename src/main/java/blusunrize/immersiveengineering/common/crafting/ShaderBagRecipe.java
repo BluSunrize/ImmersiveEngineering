@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -26,7 +27,7 @@ public class ShaderBagRecipe extends CustomRecipe
 {
 	public ShaderBagRecipe(ResourceLocation id)
 	{
-		super(id);
+		super(id, CraftingBookCategory.MISC);
 	}
 
 	@Override
@@ -39,6 +40,7 @@ public class ShaderBagRecipe extends CustomRecipe
 			if(!stackInSlot.isEmpty())
 				if(stack.isEmpty())
 				{
+					// TODO broken, also needs fixing on 1.18
 					if(Misc.SHADER_BAG.containsValue(stackInSlot.getItem()))
 						stack = stackInSlot;
 					else

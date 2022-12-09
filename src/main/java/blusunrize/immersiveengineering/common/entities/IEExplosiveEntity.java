@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -40,7 +41,7 @@ import java.util.Optional;
 public class IEExplosiveEntity extends PrimedTnt
 {
 	private float size;
-	private Explosion.BlockInteraction mode = BlockInteraction.BREAK;
+	private Explosion.BlockInteraction mode = BlockInteraction.DESTROY;
 	private boolean isFlaming = false;
 	private float explosionDropChance;
 	public BlockState block;
@@ -192,9 +193,10 @@ public class IEExplosiveEntity extends PrimedTnt
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket()
+	public Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
-		return NetworkHooks.getEntitySpawningPacket(this);
+		// TODO see fluorescent tube
+		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 }

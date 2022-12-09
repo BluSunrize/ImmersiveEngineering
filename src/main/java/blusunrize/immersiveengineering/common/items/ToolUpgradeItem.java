@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;

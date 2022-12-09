@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BannerPatternItem;
 import net.minecraft.world.item.Item.Properties;
@@ -40,7 +41,7 @@ public class IEBannerPatterns
 		RegistryObject<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
 		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, pattern.getId());
 		ItemRegObject<BannerPatternItem> item = IEItems.register("bannerpattern_"+name, () -> new BannerPatternItem(
-				tag, new Properties().tab(ImmersiveEngineering.ITEM_GROUP)
+				tag, new Properties()
 		));
 		BannerEntry result = new BannerEntry(pattern, tag, item);
 		ALL_BANNERS.add(result);

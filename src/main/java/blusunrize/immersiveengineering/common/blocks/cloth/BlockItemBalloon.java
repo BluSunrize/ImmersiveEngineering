@@ -32,7 +32,7 @@ public class BlockItemBalloon extends BlockItemIE
 {
 	public BlockItemBalloon(Block b)
 	{
-		super(b, new Item.Properties().tab(ImmersiveEngineering.ITEM_GROUP));
+		super(b);
 	}
 
 	@Override

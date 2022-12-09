@@ -12,10 +12,12 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -408,7 +410,9 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 		super.readAdditionalSaveData(nbt);
 		if(nbt.contains("inTile", Tag.TAG_COMPOUND))
 		{
-			inBlockState = NbtUtils.readBlockState(nbt.getCompound("inTile"));
+			inBlockState = NbtUtils.readBlockState(
+					level.holderLookup(Registries.BLOCK), nbt.getCompound("inTile")
+			);
 			stuckIn = NbtUtils.readBlockPos(nbt.getCompound("inPos"));
 		}
 		else
@@ -430,9 +434,10 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket()
+	public Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
-		return NetworkHooks.getEntitySpawningPacket(this);
+		// TODO see fluorescent tube
+		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	public void setOwner(@Nullable Entity entityIn)

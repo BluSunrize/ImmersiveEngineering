@@ -64,7 +64,7 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 	public Transformation modifyBaseRotationMatrix(Transformation matrix)
 	{
 		return matrix.compose(new Transformation(
-				new Vector3f(0, 1, 0), new Quaternionf((float)Math.PI/2, 0, 0, false), null, null
+				new Vector3f(0, 1, 0), new Quaternionf().rotateXYZ((float)Math.PI/2, 0, 0), null, null
 		));
 	}
 

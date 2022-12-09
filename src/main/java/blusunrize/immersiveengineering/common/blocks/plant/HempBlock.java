@@ -48,12 +48,6 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
-	{
-		//NOP
-	}
-
-	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
 		super.createBlockStateDefinition(builder);
@@ -147,7 +141,7 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(BlockGetter world, BlockPos pos, BlockState state, boolean isClient)
+	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, boolean isClient)
 	{
 		EnumHempGrowth growth = state.getValue(GROWTH);
 		if(growth!=growth.getMax())

@@ -58,7 +58,7 @@ public class GunpowderBarrelBlock extends TntBlock
 		super.onBlockExploded(state, world, pos, explosion);
 		if(!world.isClientSide)
 		{
-			IEExplosiveEntity explosive = spawnExplosive(world, pos, state, explosion.getSourceMob());
+			IEExplosiveEntity explosive = spawnExplosive(world, pos, state, explosion.getIndirectSourceEntity());
 			explosive.setFuse((short)(world.random.nextInt(explosive.getFuse()/4)+explosive.getFuse()/8));
 		}
 	}

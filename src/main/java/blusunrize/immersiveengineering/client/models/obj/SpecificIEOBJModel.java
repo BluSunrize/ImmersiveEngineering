@@ -137,7 +137,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			return baseModel.getRenderTypes(itemStack, fabulous);
 	}
 
-	private static final Matrix4f INVERT = Matrix4f.createScaleMatrix(-1, -1, -1);
+	private static final Matrix4f INVERT = new Matrix4f().scale(-1, -1, -1);
 	private static final Matrix3f INVERT_NORMAL = new Matrix3f(INVERT);
 
 	@Nonnull
@@ -150,12 +150,12 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		Vector3f scale = baseItemTransform.scale;
 		if(scale.x()*scale.y()*scale.z() < 0)
 		{
-			Vector3f newScale = scale.copy();
+			Vector3f newScale = new Vector3f(scale);
 			newScale.mul(-1);
 			new ItemTransform(
 					baseItemTransform.rotation, baseItemTransform.translation, newScale, baseItemTransform.rightRotation
 			).apply(applyLeftHandTransform, transforms);
-			transforms.last().pose().multiply(INVERT);
+			transforms.last().pose().mul(INVERT);
 			transforms.last().normal().mul(INVERT_NORMAL);
 		}
 		else

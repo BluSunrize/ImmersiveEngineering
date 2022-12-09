@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -60,13 +61,16 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 
 		double yaw = entity.yRotO+(entity.getYRot()-entity.yRotO)*partialTicks-90.0F;
 		double pitch = entity.xRotO+(entity.getXRot()-entity.xRotO)*partialTicks;
-		matrixStackIn.mulPose(new Quaternionf(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
-		matrixStackIn.mulPose(new Quaternionf(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
+		matrixStackIn.mulPose(
+				new Quaternionf()
+						.rotateY((float)Math.toRadians(yaw))
+						.rotateZ((float)Math.toRadians(pitch))
+		);
 
 		if(!entity.inGround)
 		{
-			float spin = ((entity.tickCount+partialTicks)%10)/10f*360;
-			matrixStackIn.mulPose(new Quaternionf(new Vector3f(0, 1, 0), spin, true));
+			float spin = ((entity.tickCount+partialTicks)%10)/10f*Mth.TWO_PI;
+			matrixStackIn.mulPose(new Quaternionf().rotateY(spin));
 		}
 
 		blockRenderer.getModelRenderer().renderModel(

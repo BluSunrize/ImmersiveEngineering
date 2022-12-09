@@ -324,15 +324,9 @@ public class ModelCoresample extends BakedIEModel
 	public static class RawCoresampleModel implements IUnbakedGeometry<RawCoresampleModel>
 	{
 		@Override
-		public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext owner, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
 			return new ModelCoresample(null);
-		}
-
-		@Override
-		public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors)
-		{
-			return ImmutableList.of();
 		}
 	}
 

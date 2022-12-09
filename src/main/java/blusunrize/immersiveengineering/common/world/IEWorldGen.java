@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -69,8 +71,8 @@ public class IEWorldGen
 	{
 		EnumMetals metal = type.metal;
 		List<TargetBlockState> targetList = ImmutableList.of(
-				OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, Metals.ORES.get(metal).defaultBlockState()),
-				OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, Metals.DEEPSLATE_ORES.get(metal).defaultBlockState())
+				OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Metals.ORES.get(metal).defaultBlockState()),
+				OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), Metals.DEEPSLATE_ORES.get(metal).defaultBlockState())
 		);
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, type);
 		String name = type.getVeinName();
@@ -212,7 +214,7 @@ public class IEWorldGen
 	);
 
 	private static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_REGISTER = DeferredRegister.create(
-			Registries.PLACEMENT_MODIFIER, ImmersiveEngineering.MODID
+			Registries.PLACEMENT_MODIFIER_TYPE, ImmersiveEngineering.MODID
 	);
 	public static RegistryObject<PlacementModifierType<IECountPlacement>> IE_COUNT_PLACEMENT = PLACEMENT_REGISTER.register(
 			"ie_count", () -> () -> IECountPlacement.CODEC

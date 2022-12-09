@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
@@ -89,7 +90,7 @@ public class UnionMBManualData implements MultiblockManualData
 	{
 		MultiblockManualData data = ClientMultiblocks.get(mb.multiblock());
 		Vec3i offset = mb.offset().subtract(min);
-		Quaternionf rotation = new Quaternionf(0, getAngle(mb.rotation()), 0, true);
+		Quaternionf rotation = new Quaternionf().rotationY(getAngle(mb.rotation()) *Mth.DEG_TO_RAD);
 		return new ClientSubMultiblock(data, offset, rotation);
 	}
 

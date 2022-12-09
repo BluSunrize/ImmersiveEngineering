@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -152,9 +153,10 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	public @Nonnull Packet<?> getAddEntityPacket()
+	public @Nonnull Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
-		return NetworkHooks.getEntitySpawningPacket(this);
+		// TODO see fluorescent tube
+		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	// This is only used by the super impl of destroy, which does not allow attaching NBT to the drop. So it's actually

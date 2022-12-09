@@ -41,15 +41,9 @@ public class FeedthroughLoader implements IGeometryLoader<FeedthroughModelRaw>
 	{
 
 		@Override
-		public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext context, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
 			return new FeedthroughModel();
-		}
-
-		@Override
-		public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
-		{
-			return ImmutableList.of();
 		}
 	}
 }

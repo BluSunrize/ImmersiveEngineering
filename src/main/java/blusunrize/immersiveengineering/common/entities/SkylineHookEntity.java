@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -458,9 +459,10 @@ public class SkylineHookEntity extends Entity
 
 	@Nonnull
 	@Override
-	public Packet<?> getAddEntityPacket()
+	public Packet<ClientGamePacketListener> getAddEntityPacket()
 	{
-		return NetworkHooks.getEntitySpawningPacket(this);
+		// TODO see fluorescent tube
+		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	private void handleDismount(Entity passenger)

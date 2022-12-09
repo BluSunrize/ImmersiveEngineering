@@ -137,7 +137,7 @@ public class ClientUtils
 		{
 			Vector4f vec = new Vector4f((float)vertices[i].x, (float)vertices[i].y, (float)vertices[i].z, 1);
 			matrix.transformPosition(vec);
-			vec.perspectiveDivide();
+			vec.mul(1 / vec.w);
 			ret[i] = new Vec3(vec.x(), vec.y(), vec.z());
 		}
 		return ret;

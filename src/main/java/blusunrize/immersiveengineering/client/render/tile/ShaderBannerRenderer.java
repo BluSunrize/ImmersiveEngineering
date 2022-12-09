@@ -63,7 +63,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 			int orientation = te.getState().getValue(ShaderBannerStandingBlock.ROTATION);
 			matrixStack.translate(0.5F, 0.5F, 0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
-			matrixStack.mulPose(new Quaternionf(new Vector3f(0.0F, 1.0F, 0.0F), -f1, true));
+			matrixStack.mulPose(new Quaternionf().rotateY(-f1 * Mth.DEG_TO_RAD));
 			standingModel.visible = true;
 		}
 		else
@@ -75,7 +75,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 			float rotation = facing.toYRot();
 
 			matrixStack.translate(0.5F, -1/6f, 0.5F);
-			matrixStack.mulPose(new Quaternionf(new Vector3f(0.0F, 1.0F, 0.0F), -rotation, true));
+			matrixStack.mulPose(new Quaternionf().rotateY(-rotation * Mth.DEG_TO_RAD));
 			matrixStack.translate(0.0F, -0.3125F, -0.4375F);
 			standingModel.visible = false;
 		}

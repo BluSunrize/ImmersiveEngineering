@@ -42,7 +42,6 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherMenu>
 	public void init()
 	{
 		super.init();
-		mc().keyboardHandler.setSendRepeatsToGui(true);
 
 		this.clearWidgets();
 		this.addRenderableWidget(new GuiButtonState<>(leftPos+7, topPos+92, 18, 18, Component.empty(),

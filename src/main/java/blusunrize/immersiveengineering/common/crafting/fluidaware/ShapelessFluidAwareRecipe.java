@@ -79,7 +79,7 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	public ShapelessRecipe toVanilla()
 	{
-		return new ShapelessRecipe(getId(), getGroup(), getResultItem(), getIngredients());
+		return new ShapelessRecipe(getId(), getGroup(), category(), getResultItem(), getIngredients());
 	}
 
 	@Override

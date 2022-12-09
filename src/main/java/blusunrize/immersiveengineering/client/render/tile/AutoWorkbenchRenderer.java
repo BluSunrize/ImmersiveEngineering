@@ -89,11 +89,11 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			float itemX = -1;
 			float itemY = -.34375f;
 			float itemZ = -.9375f;
-			float itemAngle = 90f;
+			float itemAngle = Mth.HALF_PI;
 
 			if(processTimer <= 24)//slide
 			{
-				itemAngle = 67.5f;
+				itemAngle = 67.5f * Mth.PI / 180;
 				if(processTimer <= 19)
 				{
 					itemZ += .25+(19-processTimer)/10f*.5f;
@@ -129,7 +129,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 					drillStep = 4+(processTimer-80)*4;
 				}
 				if(drillStep > 0)
-					drill = processTimer%drillStep/drillStep*360;
+					drill = processTimer%drillStep/drillStep*2 * Mth.PI;
 				itemY += Math.max(0, lift-.0625);
 			}
 			else if(processTimer <= 116)
@@ -192,7 +192,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		float tz = -.9375f;
 		matrixStack.pushPose();
 		matrixStack.translate(tx, 0, tz);
-		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), drill, true));
+		matrixStack.mulPose(new Quaternionf().rotateXYZ(0, drill, 0));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "drill");
 		matrixStack.popPose();
 
@@ -200,7 +200,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		tz = -.59375f;
 		matrixStack.pushPose();
 		matrixStack.translate(tx, -.21875, tz);
-		matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), press*90, true));
+		matrixStack.mulPose(new Quaternionf().rotateXYZ(press*Mth.HALF_PI, 0, 0));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "press");
 		matrixStack.popPose();
 
@@ -224,7 +224,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 					{
 						matrixStack.pushPose();
 						matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
-						matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), itemDisplays[i][4], true));
+						matrixStack.mulPose(new Quaternionf().rotateXYZ(itemDisplays[i][4], 0, 0));
 						matrixStack.scale(scale, scale, .5f);
 						ClientUtils.mc().getItemRenderer().renderStatic(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 						matrixStack.popPose();
@@ -261,7 +261,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 							}
 							matrixStack.pushPose();
 							matrixStack.translate(localItemX, localItemY, localItemZ);
-							matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), localAngle, true));
+							matrixStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(localAngle), 0, 0));
 							matrixStack.scale(scale, scale, .5f);
 							ClientUtils.mc().getItemRenderer().renderStatic(dList.get(d), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 							matrixStack.popPose();
@@ -281,7 +281,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			{
 				matrixStack.pushPose();
 				matrixStack.translate(-.195, .125, .97);
-				matrixStack.mulPose(new Quaternionf(new Vector3f(1, 0, 0), -45, true));
+				matrixStack.mulPose(new Quaternionf().rotateXYZ(-Mth.PI / 4, 0, 0));
 				float scale = .5f/blueprint.textureScale;
 				matrixStack.scale(scale, -scale, scale);
 				matrixStack.translate(0.5, 0.5, 0.5);
@@ -337,7 +337,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, ModelData.EMPTY, null);
 			for(BakedQuad quad : quads)
 				if(quad!=null)
-					textures.add(quad.getSprite().getName().toString());
+					textures.add(quad.getSprite().atlasLocation().toString());
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);

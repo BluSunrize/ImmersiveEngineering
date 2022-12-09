@@ -22,15 +22,15 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Vec3i;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -85,7 +85,10 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 		super.readCustomNBT(nbt, descPacket);
 		reference = WireType.getValue(nbt.getString(WIRE));
 		offset = nbt.getInt(OFFSET);
-		stateForMiddle = NbtUtils.readBlockState(nbt.getCompound(MIDDLE_STATE));
+		HolderGetter<Block> lookup = this.level != null ?
+				this.level.holderLookup(Registries.BLOCK) :
+				BuiltInRegistries.BLOCK.asLookup();
+		stateForMiddle = NbtUtils.readBlockState(lookup, nbt.getCompound(MIDDLE_STATE));
 	}
 
 	@Override
@@ -168,7 +171,9 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
 	{
 		reference = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-		stateForMiddle = NbtUtils.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+		stateForMiddle = NbtUtils.readBlockState(
+				getLevelNonnull().holderLookup(Registries.BLOCK), ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE)
+		);
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -27,7 +28,7 @@ public class DamageToolRecipe extends ShapelessRecipe
 {
 	public DamageToolRecipe(ResourceLocation id, String group, ItemStack result, Ingredient tool, NonNullList<Ingredient> input)
 	{
-		super(id, group, result, addTo(tool, input));
+		super(id, group, CraftingBookCategory.MISC, result, addTo(tool, input));
 	}
 
 	private static NonNullList<Ingredient> addTo(Ingredient additional, NonNullList<Ingredient> old)

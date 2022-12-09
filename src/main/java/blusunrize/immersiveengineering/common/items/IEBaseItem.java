@@ -25,6 +25,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -42,12 +44,7 @@ public class IEBaseItem extends Item
 
 	public IEBaseItem(Properties props)
 	{
-		this(props, ImmersiveEngineering.ITEM_GROUP);
-	}
-
-	public IEBaseItem(Properties props, CreativeModeTab group)
-	{
-		super(props.tab(group));
+		super(props);
 	}
 
 	public IEBaseItem setBurnTime(int burnTime)
@@ -70,6 +67,10 @@ public class IEBaseItem extends Item
 	protected void openGui(Player player, InteractionHand hand)
 	{
 		openGui(player, hand==InteractionHand.MAIN_HAND?EquipmentSlot.MAINHAND: EquipmentSlot.OFFHAND);
+	}
+
+	public CreativeModeTabEvent.DisplayItemsAdapter getCreativeTabFiller() {
+		return (enabledFlags, populator, hasPermissions) -> populator.accept(this);
 	}
 
 	protected void openGui(Player player, EquipmentSlot slot)

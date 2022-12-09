@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +93,8 @@ public class FeedthroughBlock extends ConnectorBlock<FeedthroughBlockEntity>
 	}
 
 	@Override
-	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
+	public DisplayItemsAdapter getCreativeTabFiller()
 	{
-		//NOP
+		return (enabledFlags, populator, hasPermissions) -> {};
 	}
 }

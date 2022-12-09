@@ -94,13 +94,13 @@ public class PolygonUtils
 			normal.set(toArray(v.normal(), 3));
 			rotation.transformPosition(pos);
 			rotation.transformNormal(normal);
-			pos.perspectiveDivide();
+			pos.mul(1 / pos.w);
 			final double epsilon = 1e-5;
 			for(int i = 0; i < 2; ++i)
 			{
-				if(Math.abs(i-pos.x()) < epsilon) pos.setX(i);
-				if(Math.abs(i-pos.y()) < epsilon) pos.setY(i);
-				if(Math.abs(i-pos.z()) < epsilon) pos.setZ(i);
+				if(Math.abs(i-pos.x()) < epsilon) pos.setComponent(0, i);
+				if(Math.abs(i-pos.y()) < epsilon) pos.setComponent(1, i);
+				if(Math.abs(i-pos.z()) < epsilon) pos.setComponent(2, i);
 			}
 			quadBuilder.putVertexData(
 					new Vec3(pos.x(), pos.y(), pos.z()),

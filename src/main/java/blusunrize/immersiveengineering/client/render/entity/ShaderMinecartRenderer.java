@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -154,15 +155,20 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 		}
 
 		matrixStackIn.translate(0.0D, 0.375D, 0.0D);
-		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F-entityYaw));
-		matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(-f3));
+		matrixStackIn.mulPose(
+				new Quaternionf()
+						.rotateY(Mth.PI - Mth.DEG_TO_RAD * entityYaw)
+						.rotateZ(- Mth.DEG_TO_RAD * f3)
+		);
 		float f5 = (float)entityIn.getHurtTime()-partialTicks;
 		float f6 = entityIn.getDamage()-partialTicks;
 		if(f6 < 0.0F)
 			f6 = 0.0F;
 
 		if(f5 > 0.0F)
-			matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(Mth.sin(f5)*f5*f6/10.0F*(float)entityIn.getHurtDir()));
+			matrixStackIn.mulPose(
+					new Quaternionf().rotateZ(Mth.DEG_TO_RAD * Mth.sin(f5)*f5*f6/10.0F*(float)entityIn.getHurtDir())
+			);
 		matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
 	}
 

@@ -155,15 +155,15 @@ public class IEExplosion extends Explosion
 							if(!iblockstate.isAir()||!ifluidstate.isEmpty())
 							{
 								float f2 = Math.max(iblockstate.getExplosionResistance(world, blockpos, this), ifluidstate.getExplosionResistance(world, blockpos, this));
-								if(this.getSourceMob()!=null)
+								if(this.getDirectSourceEntity()!=null)
 								{
-									f2 = this.getSourceMob().getBlockExplosionResistance(this, this.world, blockpos, iblockstate, ifluidstate, f2);
+									f2 = this.getDirectSourceEntity().getBlockExplosionResistance(this, this.world, blockpos, iblockstate, ifluidstate, f2);
 								}
 
 								f -= (f2+0.3F)*0.3F;
 							}
 
-							if(f > 0.0F&&(this.getSourceMob()==null||this.getSourceMob().shouldBlockExplode(this, this.world, blockpos, iblockstate, f)))
+							if(f > 0.0F&&(this.getDirectSourceEntity()==null||this.getDirectSourceEntity().shouldBlockExplode(this, this.world, blockpos, iblockstate, f)))
 							{
 								set.add(blockpos);
 							}
@@ -184,7 +184,7 @@ public class IEExplosion extends Explosion
 		int i1 = Mth.floor(getPosition().y+(double)f3+1.0D);
 		int j2 = Mth.floor(getPosition().z-(double)f3-1.0D);
 		int j1 = Mth.floor(getPosition().z+(double)f3+1.0D);
-		List<Entity> list = this.world.getEntities(this.getSourceMob(), new AABB(k1, i2, j2, l1, i1, j1));
+		List<Entity> list = this.world.getEntities(this.getDirectSourceEntity(), new AABB(k1, i2, j2, l1, i1, j1));
 		net.minecraftforge.event.ForgeEventFactory.onExplosionDetonate(this.world, this, list, f3);
 		Vec3 vec3 = new Vec3(getPosition().x, getPosition().y, getPosition().z);
 
@@ -228,7 +228,7 @@ public class IEExplosion extends Explosion
 		if(this.world.isClientSide)
 			this.world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL, 4.0F, (1.0F+(ApiUtils.RANDOM.nextFloat()-ApiUtils.RANDOM.nextFloat())*0.2F)*0.7F, true);
 
-		if(this.size >= 2.0F&&this.damagesTerrain!=BlockInteraction.NONE)
+		if(this.size >= 2.0F&&this.damagesTerrain!=BlockInteraction.KEEP)
 			this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
 		else
 			this.world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);

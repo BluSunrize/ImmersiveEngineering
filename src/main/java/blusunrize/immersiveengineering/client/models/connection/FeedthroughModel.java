@@ -30,6 +30,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.joml.Vector3f;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -319,7 +320,9 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		public SpecificFeedthroughModel(ItemStack stack)
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-			BlockState state = NbtUtils.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+			BlockState state = NbtUtils.readBlockState(
+					BuiltInRegistries.BLOCK.asLookup(), ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE)
+			);
 			if(state.getBlock()==Blocks.AIR)
 				state = Blocks.BOOKSHELF.defaultBlockState();
 			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),

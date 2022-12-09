@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -28,7 +29,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	{
 		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json);
 		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem());
+				basic.getIngredients(), basic.getResultItem(), CraftingBookCategory.MISC);
 		if(GsonHelper.getAsBoolean(json, "quarter_turn", false))
 			recipe.allowQuarterTurn();
 		if(GsonHelper.getAsBoolean(json, "eighth_turn", false))
@@ -57,7 +58,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	{
 		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer);
 		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem());
+				basic.getIngredients(), basic.getResultItem(), CraftingBookCategory.MISC);
 		if(buffer.readBoolean())
 			recipe.allowQuarterTurn();
 		if(buffer.readBoolean())

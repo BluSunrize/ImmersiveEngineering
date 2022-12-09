@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 {
 	private static final RailgunRenderColors DEFAULT_RENDER_COLORS = new RailgunRenderColors(
-			new int[]{0x686868, 0xa4a4a4, 0xa4a4a4, 0xa4a4a4, 0x686868}
+			0x686868, 0xa4a4a4, 0xa4a4a4, 0xa4a4a4, 0x686868
 	);
 
 	public RailgunShotRenderer(Context renderManager)
@@ -58,8 +58,10 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 											   PoseStack matrixStackIn, MultiBufferSource bufferIn, int light)
 	{
 		matrixStackIn.pushPose();
-		matrixStackIn.mulPose(new Quaternionf(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
-		matrixStackIn.mulPose(new Quaternionf(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
+		matrixStackIn.mulPose(new Quaternionf()
+				.rotateY((float)Math.toRadians(yaw))
+				.rotateZ((float) Math.toRadians(pitch))
+		);
 
 		matrixStackIn.scale(.25f, .25f, .25f);
 

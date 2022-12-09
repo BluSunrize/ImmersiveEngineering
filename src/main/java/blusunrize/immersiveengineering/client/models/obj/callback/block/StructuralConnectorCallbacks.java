@@ -41,7 +41,7 @@ public class StructuralConnectorCallbacks implements BlockCallback<Float>
 	{
 		return transform.compose(new Transformation(
 				new Vector3f(0, 0, 0),
-				new Quaternionf(0, rotation, 0, true),
+				new Quaternionf().rotateXYZ(0, (float)Math.toRadians(rotation), 0),
 				null, null
 		));
 	}

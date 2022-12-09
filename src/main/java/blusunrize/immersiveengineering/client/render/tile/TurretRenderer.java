@@ -21,6 +21,8 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -65,8 +67,10 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		matrixStack.translate(.5, .5, .5);
 
 		float defaultYaw = 180-tile.getFacing().toYRot();
-		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), tile.rotationYaw+defaultYaw, true));
-		matrixStack.mulPose(new Quaternionf(new Vector3f(-1, 0, 0), tile.rotationPitch, true));
+		matrixStack.mulPose(new Quaternionf()
+				.rotateY((tile.rotationYaw+defaultYaw) *Mth.DEG_TO_RAD)
+				.rotateX(-tile.rotationPitch * Mth.DEG_TO_RAD)
+		);
 
 		renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");
 		if(tile instanceof TurretGunBlockEntity gunTurret)

@@ -45,7 +45,7 @@ public class BasicClientProperties implements MultiblockManualData
 		this.multiblock = multiblock;
 		this.model = Suppliers.memoize(() -> MODELS.get(multiblock.getUniqueName()));
 		this.rotation = yRotationRadians.stream()
-				.mapToObj(r -> new Quaternionf(0, (float)r, 0, false))
+				.mapToObj(r -> new Quaternionf().rotateY((float)r))
 				.findAny();
 	}
 

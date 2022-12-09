@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -48,7 +49,7 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 		matrixStack.pushPose();
 		matrixStack.translate(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, 0, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		float agitator = te.animation_agitator-(!te.shouldRenderAsActive()?0: (1-partialTicks)*9f);
-		matrixStack.mulPose(new Quaternionf(new Vector3f(0, 1, 0), agitator, true));
+		matrixStack.mulPose(new Quaternionf().rotateY(agitator *Mth.DEG_TO_RAD));
 
 		matrixStack.translate(-0.5, -0.5, -0.5);
 		blockRenderer.getModelRenderer().renderModel(
@@ -61,7 +62,7 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 
 		matrixStack.translate(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, -.625f, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		matrixStack.scale(.0625f, 1, .0625f);
-		matrixStack.mulPose(new Quaternionf(90, 0, 0, true));
+		matrixStack.mulPose(new Quaternionf().rotateX(Mth.HALF_PI));
 
 		for(int i = te.tank.getFluidTypes()-1; i >= 0; i--)
 		{

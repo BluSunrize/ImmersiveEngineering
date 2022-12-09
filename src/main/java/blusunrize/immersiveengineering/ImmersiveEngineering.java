@@ -300,16 +300,6 @@ public class ImmersiveEngineering
 		return new ResourceLocation(MODID, path);
 	}
 
-	public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(MODID)
-	{
-		@Override
-		@Nonnull
-		public ItemStack makeIcon()
-		{
-			return new ItemStack(Misc.WIRE_COILS.get(WireType.COPPER));
-		}
-	};
-
 	public static class ThreadContributorSpecialsDownloader extends Thread
 	{
 		public static ThreadContributorSpecialsDownloader activeThread;
