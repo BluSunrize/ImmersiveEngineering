@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
-import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -660,6 +659,5 @@ public class IEServerConfig
 		ExcavatorHandler.mineralVeinYield = IEServerConfig.MACHINES.excavator_yield.get();
 		ExcavatorHandler.initialVeinDepletion = IEServerConfig.MACHINES.excavator_initial_depletion.get();
 		ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
-		IEWorldGen.onConfigUpdated();
 	}
 }

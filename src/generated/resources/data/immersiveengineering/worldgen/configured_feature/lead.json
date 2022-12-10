@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:ie_ore",
+  "config": {
+    "type": 1,
+    "targets": [
+      {
+        "state": {
+          "Name": "immersiveengineering:ore_lead"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:stone_ore_replaceables"
+        }
+      },
+      {
+        "state": {
+          "Name": "immersiveengineering:deepslate_ore_lead"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:deepslate_ore_replaceables"
+        }
+      }
+    ]
+  }
+}

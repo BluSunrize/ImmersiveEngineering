@@ -23,7 +23,10 @@
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin",
-    "coremods.TempMixin"
+    "coremods.temp.DatagenRegistryAccess",
+    "coremods.temp.MappedRegistryMixin",
+    "coremods.temp.RegistryStubMixin",
+    "coremods.temp.RegSetBuilderAccess"
   ],
   "client": [
     "accessors.client.CompiledChunkAccess",

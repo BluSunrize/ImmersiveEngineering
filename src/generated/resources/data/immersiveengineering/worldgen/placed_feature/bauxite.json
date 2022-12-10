@@ -1,0 +1,19 @@
+{
+  "feature": "immersiveengineering:bauxite",
+  "placement": [
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "immersiveengineering:ie_range",
+        "value": 0
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "immersiveengineering:ie_count",
+      "value": 0
+    }
+  ]
+}

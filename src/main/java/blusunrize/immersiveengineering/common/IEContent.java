@@ -59,13 +59,11 @@ import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.GrassDropModifier;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
-import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
@@ -167,8 +165,6 @@ public class IEContent
 	{
 		IEWireTypes.setup();
 		IEStats.setup();
-		/*WORLDGEN*/
-		ev.enqueueWork(IEWorldGen::initLate);
 
 		ShaderRegistry.itemShader = IEItems.Misc.SHADER.get();
 		ShaderRegistry.itemShaderBag = IEItems.Misc.SHADER_BAG;

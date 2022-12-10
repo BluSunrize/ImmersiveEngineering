@@ -57,7 +57,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, gen));
 			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, gen));
 			gen.addProvider(true, new DynamicModels(multiblocks, gen, exHelper));
-			BiomeModifierProvider.addTo(gen, exHelper, d -> gen.addProvider(true, d));
+			gen.addProvider(true, new WorldGenerationProvider(gen, exHelper));
 			ManualDataGenerator.addProviders(gen, exHelper);
 			// TODO find a new way to detect crashes in datagen
 		}

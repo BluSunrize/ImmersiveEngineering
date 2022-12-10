@@ -25,7 +25,7 @@ import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 
 import javax.annotation.Nonnull;
 
-class FeatureMineralVein extends Feature<NoneFeatureConfiguration>
+public class FeatureMineralVein extends Feature<NoneFeatureConfiguration>
 {
 	public static HashMultimap<ResourceKey<Level>, ChunkPos> veinGeneratedChunks = HashMultimap.create();
 
