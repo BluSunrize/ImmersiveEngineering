@@ -7,7 +7,6 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -34,9 +33,7 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketModel>
@@ -80,7 +77,7 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 				for(BakedQuad baseQuad : baseQuads)
 				{
 					BakedQuad newQuad;
-					if(baseQuad.getSprite().atlasLocation().equals(fluidMaskLocation))
+					if(baseQuad.getSprite().contents().name().equals(fluidMaskLocation))
 						newQuad = recolorTransformer.process(baseQuad);
 					else
 						newQuad = baseQuad;
