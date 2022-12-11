@@ -3,6 +3,9 @@ package blusunrize.immersiveengineering.api.tool.conveyor;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Function;
 
 public interface IConveyorModelRender<T extends IConveyorBelt>
 {
@@ -70,6 +74,10 @@ public interface IConveyorModelRender<T extends IConveyorBelt>
 		Direction side = wall.getWallSide(facing);
 		BlockPos pos = instance.getBlockEntity().getBlockPos().relative(side);
 		return ConveyorHandler.connectsToConveyor(instance.getBlockEntity().getLevel(), pos, side);
+	}
+
+	default void updateCachedModels(ModelBaker baker, Function<Material, TextureAtlasSprite> getTexture)
+	{
 	}
 
 	record RenderContext<T extends IConveyorBelt>(
