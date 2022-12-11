@@ -9,11 +9,11 @@
 
 package blusunrize.immersiveengineering.common.util.chickenbones;
 
-import org.joml.Matrix4f;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -356,10 +356,10 @@ public class Matrix4
 	public Matrix4f toMatrix4f()
 	{
 		return new Matrix4f(
-				(float)m00, (float)m01, (float)m02, (float)m03,
-				(float)m10, (float)m11, (float)m12, (float)m13,
-				(float)m20, (float)m21, (float)m22, (float)m23,
-				(float)m30, (float)m31, (float)m32, (float)m33
+				(float)m00, (float)m10, (float)m20, (float)m30,
+				(float)m01, (float)m11, (float)m21, (float)m31,
+				(float)m02, (float)m12, (float)m22, (float)m32,
+				(float)m03, (float)m13, (float)m23, (float)m33
 		);
 	}
 
