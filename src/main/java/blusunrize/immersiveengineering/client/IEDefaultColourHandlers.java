@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
@@ -20,33 +21,42 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 
-import static blusunrize.immersiveengineering.client.ClientUtils.mc;
-
 /**
  * @author BluSunrize - 03.10.2016
  */
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.MOD)
 public class IEDefaultColourHandlers implements ItemColor, BlockColor
 {
 	public static IEDefaultColourHandlers INSTANCE = new IEDefaultColourHandlers();
 
-	public static void register()
+	@SubscribeEvent
+	public static void registerItemColors(RegisterColorHandlersEvent.Item ev)
 	{
-		/*Colours*/
 		for(RegistryObject<Item> itemRO : IEItems.REGISTER.getEntries())
 		{
 			Item item = itemRO.get();
 			if(item instanceof IColouredItem)
-				mc().getItemColors().register(INSTANCE, item);
+				ev.register(INSTANCE, item);
 		}
+	}
+
+	@SubscribeEvent
+	public static void registerBlockColors(RegisterColorHandlersEvent.Block ev)
+	{
 		for(BlockEntry<?> blockEntry : BlockEntry.ALL_ENTRIES)
 		{
 			Block block = blockEntry.get();
 			if(block instanceof IColouredBlock colouredBlock&&colouredBlock.hasCustomBlockColours())
-				mc().getBlockColors().register(INSTANCE, block);
+				ev.register(INSTANCE, block);
 		}
 	}
 

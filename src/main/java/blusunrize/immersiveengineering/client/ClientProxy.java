@@ -12,9 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.client.gui.*;
@@ -62,7 +59,6 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
@@ -212,8 +208,6 @@ public class ClientProxy extends CommonProxy
 		if(IEClientConfig.stencilBufferEnabled.get())
 			ev.enqueueWork(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
 		registerContainersAndScreens();
-		ShaderHelper.initShaders();
-		IEDefaultColourHandlers.register();
 
 		IEManual.addIEManualEntries();
 		IEBannerPatterns.ALL_BANNERS.forEach(entry -> {

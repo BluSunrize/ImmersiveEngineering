@@ -29,12 +29,6 @@ public class ShaderHelper
 	private static final int FRAG = ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
 	private static final String PREFIX = "/assets/immersiveengineering/shader/";
 
-	public static void initShaders()
-	{
-		if(!useShaders())
-			return;
-	}
-
 	public static void useShader(int shader, IntConsumer callback)
 	{
 		if(!useShaders())
