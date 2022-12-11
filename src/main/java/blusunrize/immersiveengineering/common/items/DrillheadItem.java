@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -43,8 +42,8 @@ import java.util.List;
 public class DrillheadItem extends IEBaseItem implements IDrillHead
 {
 	//Maximal damage is slightly proportionate to pickaxes
-	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, Tiers.DIAMOND, 10, 7, 10000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_diesel"));
-	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, Tiers.IRON, 9, 6, 6000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"));
+	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, Tiers.DIAMOND, 10, 7, 10000, ImmersiveEngineering.rl("item/drill_diesel"));
+	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, Tiers.IRON, 9, 6, 6000, ImmersiveEngineering.rl("item/drill_iron"));
 
 	public static final String DAMAGE_KEY_OLD = "headDamage";
 	public static final String DAMAGE_KEY = "Damage";
@@ -183,7 +182,6 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 			this.drillAttack = drillAttack;
 			this.maxDamage = maxDamage;
 			this.texture = texture;
-			DynamicModelLoader.requestTexture(texture);
 		}
 	}
 

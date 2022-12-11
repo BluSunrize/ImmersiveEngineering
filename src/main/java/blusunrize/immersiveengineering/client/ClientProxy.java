@@ -12,14 +12,16 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
-import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
-import blusunrize.immersiveengineering.client.models.*;
+import blusunrize.immersiveengineering.client.models.ModelConfigurableSides;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
+import blusunrize.immersiveengineering.client.models.ModelCoresample;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
+import blusunrize.immersiveengineering.client.models.ModelPowerpack;
+import blusunrize.immersiveengineering.client.models.PotionBucketModel;
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
@@ -34,7 +36,6 @@ import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
-import blusunrize.immersiveengineering.client.render.conveyor.SplitConveyorRender;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverClientTooltip;
@@ -45,15 +46,9 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
-import blusunrize.immersiveengineering.common.items.GrindingDiskItem;
-import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
@@ -152,7 +147,6 @@ public class ClientProxy extends CommonProxy
 	public static void initWithMC()
 	{
 		populateAPI();
-		requestModelsAndTextures();
 
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
@@ -223,32 +217,6 @@ public class ClientProxy extends CommonProxy
 	{
 		ev.registerEntityRenderer(type.get(), renderer);
 	}
-
-	//TODO are these here rather than in ClientEventHandler for any particular reason???
-	/*
-	TODO use atlas info JSON instead
-	@SubscribeEvent
-	public static void textureStichPre(TextureStitchEvent.Pre event)
-	{
-		ResourceLocation sheet = event.getAtlas().location();
-		if(sheet.equals(Sheets.BANNER_SHEET)||sheet.equals(Sheets.SHIELD_SHEET))
-			IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
-				ResourceKey<BannerPattern> pattern = Objects.requireNonNull(entry.pattern().getKey());
-				event.addSprite(BannerPattern.location(pattern, sheet.equals(Sheets.BANNER_SHEET)));
-			});
-
-		if(!sheet.equals(InventoryMenu.BLOCK_ATLAS))
-			return;
-		IELogger.info("Stitching Revolver Textures!");
-		RevolverCallbacks.addRevolverTextures(event);
-		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
-			for(ShaderCase sCase : entry.getCases())
-				if(sCase.stitchIntoSheet())
-					for(ShaderLayer layer : sCase.getLayers())
-						if(layer.getTexture()!=null)
-							event.addSprite(layer.getTexture());
-
-	}*/
 
 	@SubscribeEvent
 	public static void textureStichPost(TextureStitchEvent.Post event)
@@ -496,33 +464,6 @@ public class ClientProxy extends CommonProxy
 	void registerTileScreen(BEContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
 		MenuScreens.register(type.getType(), factory);
-	}
-
-	private static void requestModelsAndTextures()
-	{
-		DynamicModelLoader.requestTexture(SawbladeRenderer.SAWBLADE);
-		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_FLOW);
-		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_STILL);
-		DynamicModelLoader.requestTexture(RockcutterItem.TEXTURE);
-		DynamicModelLoader.requestTexture(GrindingDiskItem.TEXTURE);
-		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/wire"));
-		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
-
-		for(ResourceLocation rl : ModelConveyor.rl_casing)
-			DynamicModelLoader.requestTexture(rl);
-		DynamicModelLoader.requestTexture(ConveyorHandler.textureConveyorColour);
-		DynamicModelLoader.requestTexture(ConveyorBase.texture_off);
-		DynamicModelLoader.requestTexture(ConveyorBase.texture_on);
-		DynamicModelLoader.requestTexture(DropConveyor.texture_off);
-		DynamicModelLoader.requestTexture(DropConveyor.texture_on);
-		DynamicModelLoader.requestTexture(VerticalConveyor.texture_off);
-		DynamicModelLoader.requestTexture(VerticalConveyor.texture_on);
-		DynamicModelLoader.requestTexture(SplitConveyor.texture_off);
-		DynamicModelLoader.requestTexture(SplitConveyor.texture_on);
-		DynamicModelLoader.requestTexture(SplitConveyorRender.texture_casing);
-		DynamicModelLoader.requestTexture(RedstoneConveyorRender.texture_panel);
-
-		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "item/shader_slot"));
 	}
 
 	public static void populateAPI()

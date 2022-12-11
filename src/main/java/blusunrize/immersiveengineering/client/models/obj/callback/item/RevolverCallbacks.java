@@ -9,16 +9,13 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem.SpecialRevolver;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -29,11 +26,13 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.items.RevolverItem.specialRevolversByTag;
 
 public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
@@ -43,31 +42,22 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 	public static HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
 	public static TextureAtlasSprite revolverDefaultTexture;
 
-	/*TODO move to JSON
-	public static void addRevolverTextures(TextureStitchEvent.Pre evt)
-	{
-		evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver"));
-		for(String key : specialRevolversByTag.keySet())
-			if(!key.isEmpty()&&!specialRevolversByTag.get(key).tag.isEmpty())
-			{
-				int split = key.lastIndexOf("_");
-				if(split < 0)
-					split = key.length();
-				evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver_"+key.substring(0, split).toLowerCase(Locale.US)));
-			}
-	}*/
-
 	public static void retrieveRevolverTextures(TextureAtlas map)
 	{
-		revolverDefaultTexture = map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver"));
+		revolverDefaultTexture = map.getSprite(revolverRL("revolver"));
 		for(String key : specialRevolversByTag.keySet())
 			if(!key.isEmpty()&&!specialRevolversByTag.get(key).tag.isEmpty())
 			{
 				int split = key.lastIndexOf("_");
 				if(split < 0)
 					split = key.length();
-				revolverIcons.put(key, map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase(Locale.US))));
+				revolverIcons.put(key, map.getSprite(revolverRL("revolver_"+key.substring(0, split).toLowerCase(Locale.US))));
 			}
+	}
+
+	private static ResourceLocation revolverRL(String revolverName)
+	{
+		return rl("item/revolvers/"+revolverName);
 	}
 
 	@Override
