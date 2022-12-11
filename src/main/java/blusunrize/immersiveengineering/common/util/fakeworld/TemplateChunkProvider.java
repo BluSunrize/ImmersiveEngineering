@@ -34,9 +34,7 @@ public class TemplateChunkProvider extends ChunkSource
 		this.lightManager = new LevelLightEngine(this, true, true);
 		Map<ChunkPos, List<StructureBlockInfo>> byChunk = new HashMap<>();
 		for(StructureBlockInfo info : blocks)
-		{
 			byChunk.computeIfAbsent(new ChunkPos(info.pos), $ -> new ArrayList<>()).add(info);
-		}
 		chunks = byChunk.entrySet().stream()
 				.map(e -> Pair.of(e.getKey(), new TemplateChunk(world, e.getKey(), e.getValue(), shouldShow)))
 				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
