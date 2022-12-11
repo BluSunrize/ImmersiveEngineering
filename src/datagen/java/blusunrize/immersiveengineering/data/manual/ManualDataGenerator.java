@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data.manual;
 
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.data.manual.icon.RenderedItemModelDataProvider;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
@@ -53,8 +54,7 @@ public class ManualDataGenerator
 			{
 				readmeWriter.write(README_CONTENTS, 0, README_CONTENTS.length());
 			}
-			// TODO fix all of that
-			//gen.addProvider(true, new RenderedItemModelDataProvider(gen, exHelper, mainOutput.resolve("icons")));
+			gen.addProvider(true, new RenderedItemModelDataProvider(gen, exHelper, mainOutput.resolve("icons")));
 			gen.addProvider(true, new TagExports(gen, exHelper, mainOutput.resolve("tags")));
 		} catch(IOException xcp)
 		{

@@ -28,12 +28,14 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import sun.misc.Unsafe;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 public class MinecraftInstanceManager
@@ -75,7 +77,15 @@ public class MinecraftInstanceManager
 		initializeDataFixer();
 		initializeGameSettings();
 
-		Minecraft.getInstance().gameRenderer.reloadShaders(resourceManager);
+		try
+		{
+			ObfuscationReflectionHelper.findMethod(
+					GameRenderer.class, "reloadShaders", ResourceProvider.class
+			).invoke(Minecraft.getInstance().gameRenderer, resourceManager);
+		} catch(IllegalAccessException|InvocationTargetException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void createMinecraft()

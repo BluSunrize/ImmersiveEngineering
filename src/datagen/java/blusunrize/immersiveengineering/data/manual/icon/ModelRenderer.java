@@ -16,8 +16,6 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,8 +26,8 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
@@ -83,14 +81,12 @@ public class ModelRenderer implements AutoCloseable
 
         // In an ideal world this would be 16 (size of a slot), but some items are slightly bigger
         final float viewSize = 20;
-        Matrix4f matrix4f = Matrix4f.orthographic(0, viewSize, 0, viewSize, -200, 3000);
+        Matrix4f matrix4f = new Matrix4f().setOrtho(0, viewSize, 0, viewSize, -200, 3000);
         RenderSystem.setProjectionMatrix(matrix4f);
 
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(viewSize/2, viewSize/2, 100);
-        modelViewStack.scale(-1, 1, 1);
-        modelViewStack.mulPose(new Quaternionf(0, 0, Mth.PI, false));
         modelViewStack.scale(1, -1, 1);
         modelViewStack.scale(16, 16, 16);
         RenderSystem.applyModelViewMatrix();

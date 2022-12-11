@@ -58,8 +58,14 @@ public class GameInitializationManager
 		GeometryLoaderManager.init();
 		NamedRenderTypeManager.init();
 
-		final ExtendedModelManager extendedModelManager = (ExtendedModelManager)Minecraft.getInstance().getModelManager();
-		extendedModelManager.loadModels();
+		try
+		{
+			final ExtendedModelManager extendedModelManager = (ExtendedModelManager)Minecraft.getInstance().getModelManager();
+			extendedModelManager.loadModels();
+		} catch(ClassNotFoundException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	private static <R, P> void initClient(IForgeRegistry<R> reg, BiConsumer<R, Consumer<P>> initialize, Class<R> type)
