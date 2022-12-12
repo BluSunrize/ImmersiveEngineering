@@ -17,16 +17,13 @@ import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +90,8 @@ public class FeedthroughBlock extends ConnectorBlock<FeedthroughBlockEntity>
 	}
 
 	@Override
-	public DisplayItemsAdapter getCreativeTabFiller()
+	public void fillCreativeTab(Output out)
 	{
-		return (enabledFlags, populator, hasPermissions) -> {};
+		// Feedthrough item is only for display
 	}
 }

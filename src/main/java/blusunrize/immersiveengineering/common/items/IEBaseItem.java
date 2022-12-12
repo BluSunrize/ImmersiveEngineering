@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerTypeNew;
@@ -21,12 +20,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.event.CreativeModeTabEvent;
-import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -69,8 +66,9 @@ public class IEBaseItem extends Item
 		openGui(player, hand==InteractionHand.MAIN_HAND?EquipmentSlot.MAINHAND: EquipmentSlot.OFFHAND);
 	}
 
-	public CreativeModeTabEvent.DisplayItemsAdapter getCreativeTabFiller() {
-		return (enabledFlags, populator, hasPermissions) -> populator.accept(this);
+	public void fillCreativeTab(Output out)
+	{
+		out.accept(this);
 	}
 
 	protected void openGui(Player player, EquipmentSlot slot)

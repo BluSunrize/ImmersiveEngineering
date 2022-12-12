@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IETags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -21,7 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -43,7 +41,6 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.ticks.ScheduledTick;
-import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 
 import javax.annotation.Nullable;
 
@@ -167,9 +164,9 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		super.setPlacedBy(worldIn, pos, state, placer, stack);
 	}
 
-	public DisplayItemsAdapter getCreativeTabFiller()
+	public void fillCreativeTab(Output out)
 	{
-		return (enabledFlags, populator, hasPermissions) -> populator.accept(this);
+		out.accept(this);
 	}
 
 	@Override

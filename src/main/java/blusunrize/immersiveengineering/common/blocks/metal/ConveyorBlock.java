@@ -20,12 +20,10 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -43,7 +41,6 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -69,15 +66,13 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 	}
 
 	@Override
-	public DisplayItemsAdapter getCreativeTabFiller()
+	public void fillCreativeTab(Output out)
 	{
-		return (enabledFlags, populator, hasPermissions) -> {
-			populator.accept(this);
-			if(type.acceptsCovers())
-				populator.accept(makeCovered(
-						this, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD).get()
-				));
-		};
+		out.accept(this);
+		if(type.acceptsCovers())
+			out.accept(makeCovered(
+					this, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD).get()
+			));
 	}
 
 	public static ItemStack makeCovered(ItemLike conveyor, Block cover)

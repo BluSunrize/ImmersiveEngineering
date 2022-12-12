@@ -32,18 +32,20 @@ public class CreativeTabManager
 	public static void fillTab(CreativeModeTabEvent.BuildContents ev)
 	{
 		if(ev.getTab()==CreativeModeTabs.FOOD_AND_DRINKS)
-			ev.register(Misc.POTION_BUCKET.get().getCreativeTabFiller());
+			Misc.POTION_BUCKET.get().fillCreativeTab(ev);
 		if(ev.getTab()!=TAB)
 			return;
 		for(final var itemRef : IEItems.REGISTER.getEntries())
 		{
 			final var item = itemRef.get();
+			if(item==Misc.POTION_BUCKET.get())
+				continue;
 			if(item instanceof IEBaseItem ieItem)
-				ev.register(ieItem.getCreativeTabFiller());
+				ieItem.fillCreativeTab(ev);
 			else if(item instanceof BlockItem blockItem&&blockItem.getBlock() instanceof IEBaseBlock ieBlock)
-				ev.register(ieBlock.getCreativeTabFiller());
+				ieBlock.fillCreativeTab(ev);
 			else
-				ev.register((enabledFlags, populator, hasPermissions) -> populator.accept(item));
+				ev.accept(itemRef);
 		}
 	}
 }

@@ -12,9 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 
 public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? super T>> extends IEEntityBlock<T>
 {
@@ -72,8 +70,8 @@ public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? su
 	}
 
 	@Override
-	public DisplayItemsAdapter getCreativeTabFiller()
+	public void fillCreativeTab(Output out)
 	{
-		return (enabledFlags, populator, hasPermissions) -> {};
+		// Do not add multiblock items to creative menu
 	}
 }

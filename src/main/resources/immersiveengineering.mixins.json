@@ -25,7 +25,6 @@
     "coremods.TemplateMixin",
     "coremods.temp.DatagenRegistryAccess",
     "coremods.temp.MappedRegistryMixin",
-    "coremods.temp.ObjLoaderMixin",
     "coremods.temp.RegistryStubMixin",
     "coremods.temp.RegSetBuilderAccess"
   ],

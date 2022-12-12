@@ -4,15 +4,13 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
@@ -26,7 +24,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -62,15 +59,13 @@ public class PotionBucketItem extends IEBaseItem
 	}
 
 	@Override
-	public DisplayItemsAdapter getCreativeTabFiller()
+	public void fillCreativeTab(Output out)
 	{
-		return (enabledFlags, populator, hasPermissions) -> {
-			List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
-			sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
-			for(Potion p : sortedPotions)
-				if(p!=Potions.WATER&&p!=Potions.EMPTY)
-					populator.accept(forPotion(p));
-		};
+		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
+		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
+		for(Potion p : sortedPotions)
+			if(p!=Potions.WATER&&p!=Potions.EMPTY)
+				out.accept(forPotion(p));
 	}
 
 	@Nullable

@@ -8,10 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.CreativeModeTabEvent.DisplayItemsAdapter;
+import net.minecraft.world.item.CreativeModeTab.Output;
 
 public class FakeIconItem extends IEBaseItem
 {
@@ -21,8 +18,7 @@ public class FakeIconItem extends IEBaseItem
 	}
 
 	@Override
-	public DisplayItemsAdapter getCreativeTabFiller()
+	public void fillCreativeTab(Output out)
 	{
-		return (enabledFlags, populator, hasPermissions) -> {};
 	}
 }
