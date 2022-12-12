@@ -83,4 +83,26 @@ public class ItemUtils
 			}
 		});
 	}
+
+	public static boolean isSameIgnoreDurability(ItemStack stackA, ItemStack stackB)
+	{
+		if(stackA==stackB)
+			// Stack is same as itself
+			return true;
+		else if(stackA.isEmpty()!=stackB.isEmpty())
+			// Empty and non-empty are never the same
+			return false;
+		else if(stackA.isEmpty())
+			// If one is empty at this point, the other is as well, and all empty stacks should be equivalent
+			return true;
+		else if(!stackA.is(stackB.getItem()))
+			// Different items => never the same
+			return false;
+		else if(!stackA.isDamageableItem())
+			// Not damageable, same item => always the same
+			return true;
+		else
+			// Damageable, same item => same if damage matches
+			return stackA.getDamageValue()==stackB.getDamageValue();
+	}
 }

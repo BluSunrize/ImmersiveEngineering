@@ -131,7 +131,6 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 	@Override
 	public CraftingBookCategory category()
 	{
-		// TODO?
 		return CraftingBookCategory.MISC;
 	}
 

@@ -40,7 +40,6 @@ public class ShaderBagRecipe extends CustomRecipe
 			if(!stackInSlot.isEmpty())
 				if(stack.isEmpty())
 				{
-					// TODO broken, also needs fixing on 1.18
 					if(Misc.SHADER_BAG.containsValue(stackInSlot.getItem()))
 						stack = stackInSlot;
 					else

@@ -14,7 +14,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +21,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.util.Lazy;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -57,7 +55,6 @@ public class ManualElementEntity extends SpecialManualElements
 		float pitch = (yOff/2)-my;
 		float yaw = 60-mx;
 
-        // TODO test
         mobPoseStack.mulPose(new Quaternionf().rotateAxis((float)Math.atan(pitch/40f), -1, 0, 0));
 		entity.yo = (float)Math.atan(yaw/40f)*20f;
 		float yRot = (float)Math.atan(yaw/40f)*40f;

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -133,8 +134,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 
 	protected boolean isFilterMatched(int slot)
 	{
-		// TODO may be wrong
-		return ItemStack.matches(this.filters.get(slot), this.buffers.get(slot))
+		return ItemUtils.isSameIgnoreDurability(this.filters.get(slot), this.buffers.get(slot))
 				&&this.buffers.get(slot).getCount() >= this.filters.get(slot).getCount();
 	}
 
@@ -226,8 +226,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		// TODO check
-		return ItemStack.isSame(this.filters.get(slot), stack);
+		return ItemUtils.isSameIgnoreDurability(this.filters.get(slot), stack);
 	}
 
 	@Override

@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
-import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -48,16 +47,13 @@ import blusunrize.immersiveengineering.data.resources.SecondaryOutput;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.*;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.*;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.item.DyeColor;
@@ -74,7 +70,6 @@ import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.Tags.Biomes;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
@@ -85,22 +80,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
-import static blusunrize.immersiveengineering.api.IETags.getNugget;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
 public class Recipes extends RecipeProvider
 {
-	private final Path ADV_ROOT;
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
 
 	private static final int standardSmeltingTime = 200;
@@ -109,15 +100,6 @@ public class Recipes extends RecipeProvider
 	public Recipes(PackOutput output)
 	{
 		super(output);
-		ADV_ROOT = output.getOutputFolder().resolve("data/minecraft/advancements/recipes/root.json");
-	}
-
-	@Override
-	protected CompletableFuture<?> saveAdvancement(CachedOutput output, FinishedRecipe finishedRecipe, JsonObject advancementJson)
-	{
-		//TODO
-		//if(path.equals(ADV_ROOT)) return CompletableFuture.completedFuture(null); //We NEVER care about this.
-		return super.saveAdvancement(output, finishedRecipe, advancementJson);
 	}
 
 	@Override
