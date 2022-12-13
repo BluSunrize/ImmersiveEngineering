@@ -8,16 +8,17 @@ import blusunrize.immersiveengineering.common.world.IECountPlacement;
 import blusunrize.immersiveengineering.common.world.IEHeightProvider;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import blusunrize.immersiveengineering.mixin.coremods.temp.DatagenRegistryAccess;
-import blusunrize.immersiveengineering.mixin.coremods.temp.RegSetBuilderAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.*;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
@@ -55,7 +56,6 @@ import java.util.concurrent.CompletableFuture;
 public class WorldGenerationProvider implements DataProvider
 {
 	private final PackOutput output;
-	private final HolderLookup.Provider ownLookupProvider;
 	private final ExistingFileHelper existingFileHelper;
 	private final Map<VeinType, FeatureRegistration> oreFeatures = new EnumMap<>(VeinType.class);
 	private final FeatureRegistration mineralVeins;
@@ -71,19 +71,6 @@ public class WorldGenerationProvider implements DataProvider
 			oreFeatures.put(type, typeReg);
 		}
 		this.mineralVeins = new FeatureRegistration(ImmersiveEngineering.rl("mineral_veins"));
-
-		final var registryBuilder = new RegistrySetBuilder();
-		for(final var stub : ((RegSetBuilderAccess)DatagenRegistryAccess.getBUILDER()).getEntries())
-		{
-			if(stub.key().equals(Registries.CONFIGURED_FEATURE))
-				stub.addTo(registryBuilder, this::bootstrapConfiguredFeatures);
-			else if(stub.key().equals(Registries.PLACED_FEATURE))
-				stub.addTo(registryBuilder, this::bootstrapPlacedFeatures);
-			else
-				stub.addTo(registryBuilder);
-		}
-		RegistryAccess.Frozen regAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-		this.ownLookupProvider = registryBuilder.build(regAccess);
 	}
 
 	private void bootstrapConfiguredFeatures(BootstapContext<ConfiguredFeature<?, ?>> ctx)
@@ -125,7 +112,15 @@ public class WorldGenerationProvider implements DataProvider
 	@Override
 	public CompletableFuture<?> run(CachedOutput output)
 	{
-		final var providers = generate(this.ownLookupProvider);
+		final var registryBuilder = new RegistrySetBuilder();
+		registryBuilder.add(Registries.CONFIGURED_FEATURE, this::bootstrapConfiguredFeatures);
+		registryBuilder.add(Registries.PLACED_FEATURE, this::bootstrapPlacedFeatures);
+		// We need the BIOME registry to be present so we can use a biome tag, doesn't matter that it's empty
+		registryBuilder.add(Registries.BIOME, $ -> {
+		});
+		RegistryAccess.Frozen regAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+		final var providerWithIE = registryBuilder.build(regAccess);//registryBuilder.buildPatch(regAccess, vanillaProvider);
+		final var providers = generate(providerWithIE);
 		final var futures = providers.stream().map(jcp -> jcp.run(output)).toArray(CompletableFuture[]::new);
 		return CompletableFuture.allOf(futures);
 	}

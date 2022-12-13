@@ -22,10 +22,7 @@
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin",
-    "coremods.TemplateMixin",
-    "coremods.temp.DatagenRegistryAccess",
-    "coremods.temp.RegistryStubMixin",
-    "coremods.temp.RegSetBuilderAccess"
+    "coremods.TemplateMixin"
   ],
   "client": [
     "accessors.client.CompiledChunkAccess",
