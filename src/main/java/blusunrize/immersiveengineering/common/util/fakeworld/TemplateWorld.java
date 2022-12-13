@@ -202,4 +202,10 @@ public class TemplateWorld extends Level
 	{
 		return 15;
 	}
+
+	@Override
+	public int getMinBuildHeight()
+	{
+		return 0;
+	}
 }

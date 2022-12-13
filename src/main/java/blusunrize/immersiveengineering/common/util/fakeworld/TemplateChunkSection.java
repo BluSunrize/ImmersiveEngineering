@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.fakeworld;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,11 +22,13 @@ import java.util.function.Predicate;
 public class TemplateChunkSection extends LevelChunkSection
 {
 	private final Predicate<BlockPos> shouldShow;
+	private final ChunkPos chunkPos;
 
-	public TemplateChunkSection(int sectionY, Registry<Biome> biomeRegistry, Predicate<BlockPos> shouldShow)
+	public TemplateChunkSection(int sectionY, Registry<Biome> biomeRegistry, Predicate<BlockPos> shouldShow, ChunkPos chunkPos)
 	{
 		super(sectionY, biomeRegistry);
 		this.shouldShow = shouldShow;
+		this.chunkPos = chunkPos;
 	}
 
 	@Nonnull
@@ -44,7 +47,7 @@ public class TemplateChunkSection extends LevelChunkSection
 	@Override
 	public BlockState getBlockState(int x, int y, int z)
 	{
-		if(!shouldShow.test(new BlockPos(x, y, z)))
+		if(!shouldShow.test(new BlockPos(chunkPos.getMinBlockX()+x, bottomBlockY()+y, chunkPos.getMinBlockZ()+z)))
 			return Blocks.AIR.defaultBlockState();
 		return super.getBlockState(x, y, z);
 	}

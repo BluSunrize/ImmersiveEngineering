@@ -29,7 +29,7 @@ public class TemplateChunk extends LevelChunk
 		super(worldIn, chunkPos);
 		Registry<Biome> biomeRegistry = worldIn.registryAccess().registryOrThrow(Registries.BIOME);
 		for(int i = 0; i < getSections().length; ++i)
-			getSections()[i] = new TemplateChunkSection(i, biomeRegistry, shouldShow);
+			getSections()[i] = new TemplateChunkSection(i, biomeRegistry, shouldShow, chunkPos);
 		this.shouldShow = shouldShow;
 		this.biome = worldIn.getUncachedNoiseBiome(0, 0, 0);
 		for(StructureBlockInfo info : blocksInChunk)
