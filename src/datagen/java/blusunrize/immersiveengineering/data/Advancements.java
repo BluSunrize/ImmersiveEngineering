@@ -29,21 +29,15 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.register.IEPotions;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.world.Villages;
-import com.google.common.collect.Sets;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.advancements.critereon.EntityPredicate.Composite;
 import net.minecraft.advancements.critereon.PlacedBlockTrigger.TriggerInstance;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -53,25 +47,26 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.ForgeAdvancementProvider;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class Advancements extends AdvancementProvider
+public class Advancements extends ForgeAdvancementProvider
 {
-	private final Path output;
-
 	public Advancements(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper exFileHelper)
 	{
-		super(output, provider, List.of(), exFileHelper);
-		this.output = output.getOutputFolder();
+		super(output, provider, exFileHelper, List.of(Advancements::registerAdvancements));
 	}
 
-	@Override
-	protected void registerAdvancements(Provider registries, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper)
+	private static void registerAdvancements(
+			HolderLookup.Provider lookup, Consumer<Advancement> consumer, ExistingFileHelper existingFileHelper
+	)
 	{
 		/* MAIN */
 		AdvBuilder.setPage("main");

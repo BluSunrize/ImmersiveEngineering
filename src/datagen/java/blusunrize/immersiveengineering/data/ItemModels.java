@@ -30,9 +30,8 @@ import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.*;
 import com.google.common.base.Preconditions;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.Item;
@@ -53,9 +52,9 @@ public class ItemModels extends TRSRItemModelProvider
 {
 	private final MultiblockStates blockStates;
 
-	public ItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper, MultiblockStates blockStates)
+	public ItemModels(PackOutput output, ExistingFileHelper existingFileHelper, MultiblockStates blockStates)
 	{
-		super(generator, existingFileHelper);
+		super(output, existingFileHelper);
 		this.blockStates = blockStates;
 	}
 

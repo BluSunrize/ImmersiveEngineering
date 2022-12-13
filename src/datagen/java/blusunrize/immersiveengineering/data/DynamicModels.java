@@ -9,9 +9,8 @@ import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.data.DynamicModels.SimpleModelBuilder;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ModelBuilder;
@@ -29,9 +28,9 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 {
 	private final MultiblockStates multiblocks;
 
-	public DynamicModels(MultiblockStates multiblocks, DataGenerator generator, ExistingFileHelper existingFileHelper)
+	public DynamicModels(MultiblockStates multiblocks, PackOutput output, ExistingFileHelper existingFileHelper)
 	{
-		super(generator, Lib.MODID, "dynamic", rl -> new SimpleModelBuilder(rl, existingFileHelper), existingFileHelper);
+		super(output, Lib.MODID, "dynamic", rl -> new SimpleModelBuilder(rl, existingFileHelper), existingFileHelper);
 		this.multiblocks = multiblocks;
 	}
 

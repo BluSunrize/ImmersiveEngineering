@@ -24,7 +24,6 @@
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin",
     "coremods.temp.DatagenRegistryAccess",
-    "coremods.temp.MappedRegistryMixin",
     "coremods.temp.RegistryStubMixin",
     "coremods.temp.RegSetBuilderAccess"
   ],

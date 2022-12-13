@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -53,7 +53,7 @@ public class MinecraftInstanceManager
 	{
 	}
 
-	void initialize(final ExistingFileHelper helper, DataGenerator gen)
+	void initialize(final ExistingFileHelper helper, PackOutput output)
 	{
 		if(isInitialized)
 			return;
@@ -64,7 +64,7 @@ public class MinecraftInstanceManager
 		initializeTimer();
 		initializeRenderSystem();
 
-		ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(PackType.CLIENT_RESOURCES, gen, helper);
+		ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(PackType.CLIENT_RESOURCES, output, helper);
 
 		initializeResourceManager(resourceManager);
 		initializeTextureManager(resourceManager);

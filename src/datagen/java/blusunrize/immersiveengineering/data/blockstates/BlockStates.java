@@ -39,10 +39,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
@@ -77,9 +76,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 	private static final ResourceLocation TREATED_FENCE_TEXTURE = rl("block/wooden_decoration/treated_wood_horizontal");
 	private final ConfiguredModel EMPTY_MODEL;
 
-	public BlockStates(DataGenerator gen, ExistingFileHelper exHelper)
+	public BlockStates(PackOutput output, ExistingFileHelper exHelper)
 	{
-		super(gen, exHelper);
+		super(output, exHelper);
 		EMPTY_MODEL = new ConfiguredModel(
 				new ExistingModelFile(modLoc("block/ie_empty"), existingFileHelper)
 		);

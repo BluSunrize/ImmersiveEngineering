@@ -14,10 +14,9 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
@@ -46,11 +45,11 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	protected final ExistingFileHelper existingFileHelper;
 	protected final NongeneratedModels innerModels;
 
-	public ExtendedBlockstateProvider(DataGenerator gen, ExistingFileHelper exFileHelper)
+	public ExtendedBlockstateProvider(PackOutput output, ExistingFileHelper exFileHelper)
 	{
-		super(gen, Lib.MODID, exFileHelper);
+		super(output, Lib.MODID, exFileHelper);
 		this.existingFileHelper = exFileHelper;
-		this.innerModels = new NongeneratedModels(gen, existingFileHelper);
+		this.innerModels = new NongeneratedModels(output, existingFileHelper);
 	}
 
 	protected String name(Supplier<? extends Block> b)

@@ -21,8 +21,8 @@ import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
@@ -54,16 +54,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class WorldGenerationProvider implements DataProvider
 {
-	private final DataGenerator dataGenerator;
+	private final PackOutput output;
 	private final HolderLookup.Provider ownLookupProvider;
 	private final ExistingFileHelper existingFileHelper;
 	private final Map<VeinType, FeatureRegistration> oreFeatures = new EnumMap<>(VeinType.class);
 	private final FeatureRegistration mineralVeins;
 	private final List<FeatureRegistration> allFeatures = new ArrayList<>();
 
-	public WorldGenerationProvider(DataGenerator dataGenerator, ExistingFileHelper existingFileHelper)
+	public WorldGenerationProvider(PackOutput output, ExistingFileHelper existingFileHelper)
 	{
-		this.dataGenerator = dataGenerator;
+		this.output = output;
 		this.existingFileHelper = existingFileHelper;
 		for(VeinType type : VeinType.VALUES)
 		{
@@ -160,9 +160,7 @@ public class WorldGenerationProvider implements DataProvider
 			RegistryOps<JsonElement> jsonOps, ResourceKey<Registry<T>> key, Map<ResourceLocation, T> entries
 	)
 	{
-		return JsonCodecProvider.forDatapackRegistry(
-				dataGenerator, existingFileHelper, Lib.MODID, jsonOps, key, entries
-		);
+		return JsonCodecProvider.forDatapackRegistry(output, existingFileHelper, Lib.MODID, jsonOps, key, entries);
 	}
 
 	@Override

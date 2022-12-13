@@ -13,8 +13,8 @@ import com.google.gson.JsonArray;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -35,17 +35,19 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public record TagExports(DataGenerator gen, ExistingFileHelper helper, Path outPath) implements DataProvider
+public record TagExports(PackOutput output, ExistingFileHelper helper, Path outPath) implements DataProvider
 {
 	private static final Gson GSON = new Gson();
 
 	@Override
 	public CompletableFuture<?> run(@Nonnull CachedOutput cache)
 	{
-		try {
+		try
+		{
 			actuallyRun();
 			return CompletableFuture.completedFuture(null);
-		} catch(IOException x) {
+		} catch(IOException x)
+		{
 			return CompletableFuture.failedFuture(x);
 		}
 	}
@@ -57,7 +59,7 @@ public record TagExports(DataGenerator gen, ExistingFileHelper helper, Path outP
 				TagManager.getTagDir(Registries.ITEM)
 		);
 		try(ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(
-				PackType.SERVER_DATA, gen, helper
+				PackType.SERVER_DATA, output, helper
 		))
 		{
 			Map<ResourceLocation, Collection<Item>> tags = loader.loadAndBuild(resourceManager);

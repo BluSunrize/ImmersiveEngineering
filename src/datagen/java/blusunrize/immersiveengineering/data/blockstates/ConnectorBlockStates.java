@@ -11,7 +11,7 @@ import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
@@ -27,9 +27,9 @@ import static net.minecraft.client.renderer.RenderType.*;
 
 public class ConnectorBlockStates extends ExtendedBlockstateProvider
 {
-	public ConnectorBlockStates(DataGenerator gen, ExistingFileHelper exFileHelper)
+	public ConnectorBlockStates(PackOutput output, ExistingFileHelper exFileHelper)
 	{
-		super(gen, exFileHelper);
+		super(output, exFileHelper);
 	}
 
 	@Override

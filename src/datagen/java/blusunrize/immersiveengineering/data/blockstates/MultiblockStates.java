@@ -19,7 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -60,9 +60,9 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 	public ModelFile alloySmelterOff;
 	public ModelFile alloySmelterOn;
 
-	public MultiblockStates(DataGenerator gen, ExistingFileHelper exFileHelper)
+	public MultiblockStates(PackOutput output, ExistingFileHelper exFileHelper)
 	{
-		super(gen, exFileHelper);
+		super(output, exFileHelper);
 	}
 
 	@Override

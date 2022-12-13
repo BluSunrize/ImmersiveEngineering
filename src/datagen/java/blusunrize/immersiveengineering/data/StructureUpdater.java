@@ -13,8 +13,8 @@ import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerUpper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
@@ -25,8 +25,6 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
@@ -37,20 +35,18 @@ import java.util.concurrent.CompletableFuture;
 
 public class StructureUpdater implements DataProvider
 {
-	private static final Logger LOGGER = LogManager.getLogger();
-
 	private final String basePath;
 	private final String modid;
-	private final DataGenerator gen;
+	private final PackOutput output;
 	private final MultiPackResourceManager resources;
 
 	public StructureUpdater(
-			String basePath, String modid, ExistingFileHelper helper, DataGenerator gen
+			String basePath, String modid, ExistingFileHelper helper, PackOutput output
 	)
 	{
 		this.basePath = basePath;
 		this.modid = modid;
-		this.gen = gen;
+		this.output = output;
 		try
 		{
 			Field serverData = ExistingFileHelper.class.getDeclaredField("serverData");
@@ -94,7 +90,7 @@ public class StructureUpdater implements DataProvider
 		ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
 		NbtIo.writeCompressed(data, bytearrayoutputstream);
 		byte[] bytes = bytearrayoutputstream.toByteArray();
-		Path outputPath = gen.getPackOutput().getOutputFolder().resolve("data/"+loc.getNamespace()+"/"+loc.getPath());
+		Path outputPath = output.getOutputFolder().resolve("data/"+loc.getNamespace()+"/"+loc.getPath());
 		cache.writeIfNeeded(outputPath, bytes, Hashing.sha1().hashBytes(bytes));
 	}
 

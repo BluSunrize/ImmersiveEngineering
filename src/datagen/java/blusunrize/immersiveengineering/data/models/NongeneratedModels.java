@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.data.models;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelProvider;
@@ -23,9 +23,9 @@ import net.minecraftforge.common.data.ExistingFileHelper;
  */
 public class NongeneratedModels extends ModelProvider<NongeneratedModel>
 {
-	public NongeneratedModels(DataGenerator generator, ExistingFileHelper existingFileHelper)
+	public NongeneratedModels(PackOutput output, ExistingFileHelper existingFileHelper)
 	{
-		super(generator, Lib.MODID, "block", NongeneratedModel::new, existingFileHelper);
+		super(output, Lib.MODID, "block", NongeneratedModel::new, existingFileHelper);
 	}
 
 	@Override
