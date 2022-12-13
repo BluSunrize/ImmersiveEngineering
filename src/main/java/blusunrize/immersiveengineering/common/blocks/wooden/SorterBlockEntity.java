@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IReadOnPlacement;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
@@ -219,16 +218,44 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		return ItemStack.EMPTY;
 	}
 
+	private static final CompoundTag EMPTY_NBT = new CompoundTag();
+
 	private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean oredict, boolean nbt)
 	{
-		boolean b = ItemStack.isSame(filterStack, stack);
-		if(!b&&fuzzy)
-			b = ItemStack.isSameIgnoreDurability(filterStack, stack);
-		if(!b&&oredict)
-			 b = stack.getItem().builtInRegistryHolder().tags().anyMatch(filterStack::is);
+		// "Item level" tests
+		if(oredict)
+		{
+			if(!stack.getItem().builtInRegistryHolder().tags().anyMatch(filterStack::is))
+				return false;
+		}
+		else if(!ItemStack.isSame(filterStack, stack))
+			return false;
+		// "NBT level" tests
+		if(!fuzzy&&(stack.isDamageableItem()||filterStack.isDamageableItem()))
+		{
+			final int damageStack = stack.getDamageValue();
+			final int damageFilter = filterStack.getDamageValue();
+			if(damageStack!=damageFilter)
+				return false;
+		}
 		if(nbt)
-			b &= Utils.compareItemNBT(filterStack, stack);
-		return b;
+		{
+			final CompoundTag stackTag = getTagWithoutDamage(stack);
+			final CompoundTag filterTag = getTagWithoutDamage(filterStack);
+			if(!stackTag.equals(filterTag))
+				return false;
+		}
+		return true;
+	}
+
+	private static CompoundTag getTagWithoutDamage(ItemStack stack)
+	{
+		final CompoundTag directTag = stack.getTag();
+		if(directTag==null)
+			return EMPTY_NBT;
+		final CompoundTag tagCopy = directTag.copy();
+		tagCopy.remove(ItemStack.TAG_DAMAGE);
+		return tagCopy;
 	}
 
 	/**
