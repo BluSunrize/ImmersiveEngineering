@@ -15,7 +15,12 @@ public class ComparatorManager<State extends IMultiblockState>
 {
 	private final List<ComparatorPosition<State>> comparators = new ArrayList<>();
 
-	public ComparatorManager<State> addComparator(IComparatorValue<State> value, BlockPos... positions)
+	public ComparatorManager<State> addSimpleComparator(SimpleComparatorValue<State> value, BlockPos... positions)
+	{
+		return addComparator(value, positions);
+	}
+
+	public ComparatorManager<State> addComparator(ComparatorValue<State> value, BlockPos... positions)
 	{
 		comparators.add(new ComparatorPosition<>(value, List.of(positions)));
 		return this;
@@ -27,9 +32,9 @@ public class ComparatorManager<State extends IMultiblockState>
 			comparator.updateValue(ctx);
 	}
 
-	public interface IComparatorValue<State extends IMultiblockState>
+	public interface SimpleComparatorValue<State extends IMultiblockState> extends ComparatorValue<State>
 	{
-		static <State extends IMultiblockState> IComparatorValue<State> inventory(
+		static <State extends IMultiblockState> SimpleComparatorValue<State> inventory(
 				Function<State, IItemHandler> getInv, int minSlot, int numSlots
 		)
 		{
@@ -52,15 +57,26 @@ public class ComparatorManager<State extends IMultiblockState>
 		}
 
 		int getComparatorValue(State state);
+
+		@Override
+		default int getComparatorValue(IMultiblockContext<State> state)
+		{
+			return getComparatorValue(state.getState());
+		}
+	}
+
+	public interface ComparatorValue<State extends IMultiblockState>
+	{
+		int getComparatorValue(IMultiblockContext<State> state);
 	}
 
 	private static class ComparatorPosition<State extends IMultiblockState>
 	{
-		private final IComparatorValue<State> valueGetter;
+		private final ComparatorValue<State> valueGetter;
 		private final List<BlockPos> positions;
 		private int lastValue = -1;
 
-		public ComparatorPosition(IComparatorValue<State> valueGetter, List<BlockPos> positions)
+		public ComparatorPosition(ComparatorValue<State> valueGetter, List<BlockPos> positions)
 		{
 			this.valueGetter = valueGetter;
 			this.positions = positions;
@@ -68,7 +84,7 @@ public class ComparatorManager<State extends IMultiblockState>
 
 		public void updateValue(IMultiblockContext<State> ctx)
 		{
-			final int newValue = valueGetter.getComparatorValue(ctx.getState());
+			final int newValue = valueGetter.getComparatorValue(ctx);
 			if(newValue==lastValue)
 				return;
 			this.lastValue = newValue;

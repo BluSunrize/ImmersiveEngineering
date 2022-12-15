@@ -41,7 +41,7 @@ public class BlastFurnaceLogic implements IServerTickableMultiblock<State>
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var level = context.getLevel();
-		final var wasActive = level.getBlock(IEMultiblocks.BLAST_FURNACE.getMasterFromOriginOffset())
+		final var wasActive = level.getBlockState(IEMultiblocks.BLAST_FURNACE.getMasterFromOriginOffset())
 				.getValue(NonMirrorableWithActiveBlock.ACTIVE);
 		final boolean active = context.getState().furnace.tickServer(context);
 		if(active!=wasActive)

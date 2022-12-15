@@ -29,7 +29,7 @@ public record MultiblockLevel(
 	}
 
 	@Override
-	public BlockState getBlock(BlockPos relativePosition)
+	public BlockState getBlockState(BlockPos relativePosition)
 	{
 		return SafeChunkUtils.getBlockState(level(), toAbsolute(relativePosition));
 	}

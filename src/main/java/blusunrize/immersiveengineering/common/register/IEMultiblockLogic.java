@@ -119,6 +119,12 @@ public class IEMultiblockLogic
 			.notMirrored()
 			.build();
 
+	public static final MultiblockRegistration<ExcavatorLogic.State> EXCAVATOR = metal(new ExcavatorLogic(), "excavator")
+			.structure(() -> IEMultiblocks.EXCAVATOR)
+			.redstoneAware()
+			.withComparator()
+			.build();
+
 	private static <S extends IMultiblockState>
 	MultiblockRegistrationBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{

@@ -20,13 +20,12 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +46,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEn
 		final var helper = tile.getHelper();
 		final var facing = helper.getContext().getLevel().getOrientation().front();
 		final var state = helper.getState();
-		final var mirrored = state.renderReverse;
+		final var mirrored = state.reverseRotation;
 		matrixStack.pushPose();
 
 		matrixStack.translate(.5, .5, .5);
@@ -66,7 +65,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEn
 
 			CACHED_BUFFERS.get(key, () -> IVertexBufferHolder.create(
 					() -> WHEEL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, extraData, RenderType.solid())
-			)).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, state.renderReverse);
+			)).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, state.reverseRotation);
 		} catch(ExecutionException ex)
 		{
 			throw new RuntimeException(ex);

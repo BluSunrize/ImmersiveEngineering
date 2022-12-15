@@ -63,7 +63,7 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		final var masterBlockState = context.getLevel().getBlock(MASTER_OFFSET);
+		final var masterBlockState = context.getLevel().getBlockState(MASTER_OFFSET);
 		final boolean activeBeforeTick = masterBlockState.getValue(NonMirrorableWithActiveBlock.ACTIVE);
 		boolean active = activeBeforeTick;
 		if(state.process > 0)

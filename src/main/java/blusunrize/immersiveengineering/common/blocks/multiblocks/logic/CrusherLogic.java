@@ -168,7 +168,7 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 					capabilitySource.levelSupplier(), processor, CrusherRecipe::findRecipe
 			).setProcessStacking(true);
 			this.insertionHandler = new StoredCapability<>(insertionHandler);
-			this.comparators.addComparator(
+			this.comparators.addSimpleComparator(
 					state -> {
 						float fill = processor.getQueueSize()/(float)processor.getMaxQueueSize();
 						return Mth.ceil(fill*14.0F)+(fill > 0?1: 0);

@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 @NonExtendable
 public interface IMultiblockLevel
 {
-	BlockState getBlock(BlockPos relativePosition);
+	BlockState getBlockState(BlockPos relativePosition);
 
 	void setBlock(BlockPos relativePosition, BlockState state);
 

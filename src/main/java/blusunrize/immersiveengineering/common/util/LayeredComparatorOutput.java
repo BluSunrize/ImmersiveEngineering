@@ -61,7 +61,7 @@ public class LayeredComparatorOutput<CTX>
 			final var level = ctx.getLevel();
 			ctx.setComparatorOutputFor(pos, value);
 			final var absPos = level.toAbsolute(masterPos);
-			final var stateAt = level.getBlock(masterPos);
+			final var stateAt = level.getBlockState(masterPos);
 			level.getRawLevel().updateNeighborsAt(absPos, stateAt.getBlock());
 		};
 		return new LayeredComparatorOutput<>(

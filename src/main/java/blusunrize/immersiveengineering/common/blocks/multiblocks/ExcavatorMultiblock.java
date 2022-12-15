@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/excavator"),
 				new BlockPos(1, 1, 5), new BlockPos(1, 1, 5), new BlockPos(3, 3, 6),
-				Multiblocks.EXCAVATOR);
+				IEMultiblockLogic.EXCAVATOR.block());
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.IComparatorValue;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.SimpleComparatorValue;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -228,7 +228,7 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 					tank, true, false, ctx.getMarkDirtyRunnable()
 			));
 			this.energyHandler = new StoredCapability<>(energy);
-			this.comparators.addComparator(IComparatorValue.inventory(state -> state.inventory, 0, 8), REDSTONE_POS);
+			this.comparators.addSimpleComparator(SimpleComparatorValue.inventory(state -> state.inventory, 0, 8), REDSTONE_POS);
 		}
 
 		@Override

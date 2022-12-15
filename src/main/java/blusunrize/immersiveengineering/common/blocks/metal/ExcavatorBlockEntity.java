@@ -216,55 +216,40 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 		}
 	}
 
-	ItemStack digBlocksInTheWay(BucketWheelBlockEntity wheel)
+	private ItemStack digBlocksInTheWay(BucketWheelBlockEntity wheel)
 	{
 		BlockPos pos = wheel.getBlockPos().offset(0, -4, 0);
-		ItemStack s = digBlock(pos);
-		if(!s.isEmpty())
-			return s;
-		//Backward 1
-		s = digBlock(pos.relative(getFacing(), -1));
-		if(!s.isEmpty())
-			return s;
-		//Backward 2
-		s = digBlock(pos.relative(getFacing(), -2));
-		if(!s.isEmpty())
-			return s;
-		//Forward 1
-		s = digBlock(pos.relative(getFacing(), 1));
-		if(!s.isEmpty())
-			return s;
-		//Forward 2
-		s = digBlock(pos.relative(getFacing(), 2));
-		if(!s.isEmpty())
-			return s;
-
-		//Backward+Sides
-		s = digBlock(pos.relative(getFacing(), -1).relative(getFacing().getClockWise()));
-		if(!s.isEmpty())
-			return s;
-		s = digBlock(pos.relative(getFacing(), -1).relative(getFacing().getCounterClockWise()));
-		if(!s.isEmpty())
-			return s;
-		//Center Sides
-		s = digBlock(pos.relative(getFacing().getClockWise()));
-		if(!s.isEmpty())
-			return s;
-		s = digBlock(pos.relative(getFacing().getCounterClockWise()));
-		if(!s.isEmpty())
-			return s;
-		//Forward+Sides
-		s = digBlock(pos.relative(getFacing(), 1).relative(getFacing().getClockWise()));
-		if(!s.isEmpty())
-			return s;
-		s = digBlock(pos.relative(getFacing(), 1).relative(getFacing().getCounterClockWise()));
-		if(!s.isEmpty())
-			return s;
+		List<BlockPos> digPositions = List.of(
+				pos,
+				//Backward 1
+				pos.relative(getFacing(), -1),
+				//Backward 2
+				pos.relative(getFacing(), -2),
+				//Forward 1
+				pos.relative(getFacing(), 1),
+				//Forward 2
+				pos.relative(getFacing(), 2),
+				//Backward+Sides
+				pos.relative(getFacing(), -1).relative(getFacing().getClockWise()),
+				pos.relative(getFacing(), -1).relative(getFacing().getCounterClockWise()),
+				//Center Sides
+				pos.relative(getFacing().getClockWise()),
+				pos.relative(getFacing().getCounterClockWise()),
+				//Forward+Sides
+				pos.relative(getFacing(), 1).relative(getFacing().getClockWise()),
+				pos.relative(getFacing(), 1).relative(getFacing().getCounterClockWise())
+		);
+		for(final BlockPos attemptPos : digPositions)
+		{
+			final ItemStack dug = digBlock(attemptPos);
+			if(!dug.isEmpty())
+				return dug;
+		}
 		return ItemStack.EMPTY;
 	}
 
 
-	ItemStack digBlock(BlockPos pos)
+	private ItemStack digBlock(BlockPos pos)
 	{
 		if(!(level instanceof ServerLevel))
 			return ItemStack.EMPTY;
