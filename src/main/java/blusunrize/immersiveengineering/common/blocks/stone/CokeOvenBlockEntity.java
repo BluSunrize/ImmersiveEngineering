@@ -28,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
@@ -55,7 +56,7 @@ import java.util.function.Supplier;
 
 //TODO merge with blast furnace&alloy smelter to some degree?
 public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlockEntity> implements IIEInventory,
-		IActiveState, IInteractionObjectIE<CokeOvenBlockEntity>, IProcessBE, IBlockBounds, ISoundBE, IEClientTickableBE
+		IActiveState, IInteractionObjectIE<CokeOvenBlockEntity>, IProcessBE, IBlockBounds, IEClientTickableBE
 {
 	public static final int INPUT_SLOT = 0;
 	public static final int OUTPUT_SLOT = 1;
@@ -103,7 +104,9 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	@Override
 	public void tickClient()
 	{
-		ImmersiveEngineering.proxy.handleTileSound(SoundEvents.FIRE_AMBIENT, this, getIsActive(), .25f, 1);
+		if (getLevelNonnull().random.nextInt(24) == 0 && getIsActive())
+			getLevelNonnull().playLocalSound((double)getBlockPos().getX() + 0.5D, (double)getBlockPos().getY() + 0.5D, (double)getBlockPos().getZ() + 0.5D,
+			SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 0.5F + getLevelNonnull().random.nextFloat()*0.5F, getLevelNonnull().random.nextFloat() * 0.7F + 0.3F, false);
 	}
 
 	@Override
@@ -339,11 +342,5 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 		{
 			return 2;
 		}
-	}
-
-	@Override
-	public boolean shouldPlaySound(String sound)
-	{
-		return getIsActive();
 	}
 }
