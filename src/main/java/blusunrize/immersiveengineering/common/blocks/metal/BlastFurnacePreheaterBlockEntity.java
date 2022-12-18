@@ -8,16 +8,19 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -39,7 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional,
-		IHasDummyBlocks, IModelOffsetProvider, IEClientTickableBE
+		IHasDummyBlocks, IModelOffsetProvider, IEClientTickableBE, ISoundBE
 {
 	public static final float ANGLE_PER_TICK = (float)Math.toRadians(20);
 	public boolean active;
@@ -78,6 +81,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	{
 		if(active)
 			angle = (angle+ANGLE_PER_TICK)%Mth.PI;
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.preheater, this, active, 0.5f, 1f);
 	}
 
 	public Void turnOff()
@@ -185,5 +189,11 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		return new BlockPos(0, dummy, 0);
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return active;
 	}
 }
