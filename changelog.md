@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.2.3-pre
+##### Version 1.18.2-8.3.0-155
 - Add process indicator to the Cloche's GUI (BluSunrize)
 - Add sounds for Assembler, Bottling Machine, Coke Oven, Fermenter, Mixer, Preheaters, Refinery and Sawmill (Silfryi)
 - Add additional items to be recycled by the Arc Furnace (Silfryi)
