@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-21T09:48:33.221794004	Tags for minecraft:item
+// 1.19.2	2022-12-18T14:15:19.8495488	Tags for minecraft:item
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/charcoal.json
@@ -47,7 +47,6 @@ f2e3544ce176352f85129bd1a956e3c32f7213d6 data/forge/tags/items/nuggets/copper.js
 6caa44724480042a9f115326034f7ac497d41f1b data/forge/tags/items/nuggets/silver.json
 ff70749ed7436c3421de143e996e3c5161af1d82 data/forge/tags/items/nuggets/steel.json
 688bfc4df0c1d2bfa47d34a2eac474ea7b4cfbda data/forge/tags/items/nuggets/uranium.json
-03803ad3e358573f495ef5a2b28fff69483d9903 data/forge/tags/items/ore_rates/singular.json
 096b05ce0e1511fdf1f849355b7214fd71c6727d data/forge/tags/items/ores.json
 996364607181408578d2a18b0cd5941fe3251ffd data/forge/tags/items/ores/aluminum.json
 2d5302798c26775d656807ac1d209b4b7430ff17 data/forge/tags/items/ores/lead.json
@@ -56,6 +55,7 @@ ff70749ed7436c3421de143e996e3c5161af1d82 data/forge/tags/items/nuggets/steel.jso
 e10e19eb1ecd0d4fbd2270995a9c4b14c981af49 data/forge/tags/items/ores/uranium.json
 ad7cc89e6b8ad6b0c7c3544c0abd3446c612060c data/forge/tags/items/ores_in_ground/deepslate.json
 81467f7c9399b301ac496bf424b8c8b807db752a data/forge/tags/items/ores_in_ground/stone.json
+03803ad3e358573f495ef5a2b28fff69483d9903 data/forge/tags/items/ore_rates/singular.json
 25979f85ffe3a60f6a6ff1a9393146fa407f233c data/forge/tags/items/plates.json
 acf6b113ec54a56762cde07b98764c3b8ae28754 data/forge/tags/items/plates/aluminum.json
 4070924cacbdf8cd04656525b43f3dbe1b43e009 data/forge/tags/items/plates/constantan.json
@@ -97,6 +97,7 @@ ff543a6161432e4e8dd2bd8775ab99af16c0315c data/forge/tags/items/sheetmetals/nicke
 bc8cb8d4f41333ae547eb75f529beb92a7a62dd9 data/forge/tags/items/sheetmetals/silver.json
 44df194bae79ecbc6ba642f28825d7d55f640865 data/forge/tags/items/sheetmetals/steel.json
 517af5879eee0eaacb6ec77424a19790f680f6bd data/forge/tags/items/sheetmetals/uranium.json
+f8407d8b86459d08f321ad472e23df8b11f04807 data/forge/tags/items/sheetmetal_slabs.json
 0e4aefbc2ed6059d8a6577044f12f658c39b57d1 data/forge/tags/items/slag.json
 c0afad8eab5f9b2dac5ccf01d9dbec3d9c080202 data/forge/tags/items/storage_blocks.json
 a252494dc3a9a5b9aab17e82ae7ff504ca84a099 data/forge/tags/items/storage_blocks/aluminum.json
@@ -132,9 +133,16 @@ d6dd4d8bc65e07b1262b11dc0177d1fe5fbf9680 data/immersiveengineering/tags/items/ci
 1fe9d2f525aae99bcd22b42ce0a5601f493e62b6 data/immersiveengineering/tags/items/circuits/pcb.json
 c1d78e3fa5f5148f12a3f9c5eefe3940a3779908 data/immersiveengineering/tags/items/circuits/solder.json
 1244a238b6a335816b5f32e9a3e4448ac2e48dac data/immersiveengineering/tags/items/connector_insulator.json
+9f68aab51771ffcf2d804182251d3e06913ef5bc data/immersiveengineering/tags/items/cut_blocks/copper.json
+3e4fc91069da2d49ed9c3bd132c947b9879bdd0c data/immersiveengineering/tags/items/cut_slabs/copper.json
+240d783ca901747689edbff6ec068e1ebafd3dc6 data/immersiveengineering/tags/items/cut_stairs/copper.json
 760547229cd962c162d51cb04c941ef73537db0b data/immersiveengineering/tags/items/recycling/ignored_components.json
 586d8c57de0cdcef9e768494366ce79e22d75223 data/immersiveengineering/tags/items/scaffoldings/aluminum.json
 8f3e0a730467c3941f6d1bc9e6c02d4dac7200f0 data/immersiveengineering/tags/items/scaffoldings/steel.json
+c3d387e89fbb8dfb53e5e91ad3b45e07f5202650 data/immersiveengineering/tags/items/scaffolding_slabs/aluminum.json
+56c051f4ddf6a8bfb51631d88f7553d13e908a69 data/immersiveengineering/tags/items/scaffolding_slabs/steel.json
+b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/items/scaffolding_stairs/aluminum.json
+58bcbaec9e8e1403838cbc28eb4bae9fdfa0dc3d data/immersiveengineering/tags/items/scaffolding_stairs/steel.json
 c7b0919920e44d64b18de4df00c7c77f4b9f03f5 data/immersiveengineering/tags/items/toolbox/tools.json
 e5c3944c2ae80d9e04025f18f44f3f7f45e17818 data/immersiveengineering/tags/items/toolbox/wiring.json
 6e2720545b691b7dd962c68ecb9715cab8583fb9 data/immersiveengineering/tags/items/tools/hammers.json
