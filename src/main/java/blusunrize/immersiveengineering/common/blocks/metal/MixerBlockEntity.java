@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
@@ -17,6 +18,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransfor
 import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -25,6 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -65,7 +68,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEntity, MixerRecipe> implements
-		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds, IEClientTickableBE
+		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds, IEClientTickableBE, ISoundBE
 {
 	public static final int NUM_SLOTS = 8;
 	public static final int ENERGY_CAPACITY = 16000;
@@ -105,7 +108,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	@Override
 	public boolean canTickAny()
 	{
-		return super.canTickAny() && !isRSDisabled();
+		return super.canTickAny()&&!isRSDisabled();
 	}
 
 	@Override
@@ -133,6 +136,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 				}
 			}
 			animation_agitator = (animation_agitator+9)%360;
+			ImmersiveEngineering.proxy.handleTileSound(IESounds.mixer, this, shouldRenderAsActive(), 0.075f, 1f);
 		}
 	}
 
@@ -175,7 +179,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		}
 
 		int fluidTypes = this.tank.getFluidTypes();
-		if(fluidTypes>0 &&(fluidTypes> 1||!foundRecipe||outputAll))
+		if(fluidTypes > 0&&(fluidTypes > 1||!foundRecipe||outputAll))
 		{
 			BlockPos outputPos = this.getBlockPos().below().relative(getFacing().getOpposite(), 2);
 			update |= FluidUtil.getFluidHandler(level, outputPos, getFacing()).map(output ->
@@ -482,7 +486,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		public boolean canProcess(PoweredMultiblockBlockEntity<?, MixerRecipe> multiblock)
 		{
 			LevelDependentData<MixerRecipe> levelData = getLevelData(multiblock.getLevel());
-			if (levelData.recipe() == null)
+			if(levelData.recipe()==null)
 				return true;
 			if(!(multiblock instanceof MixerBlockEntity mixer))
 				return false;
@@ -495,7 +499,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		public void doProcessTick(PoweredMultiblockBlockEntity<?, MixerRecipe> multiblock)
 		{
 			LevelDependentData<MixerRecipe> levelData = getLevelData(multiblock.getLevel());
-			if (levelData.recipe() == null)
+			if(levelData.recipe()==null)
 			{
 				this.clearProcess = true;
 				return;
@@ -544,5 +548,11 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	public BEContainer<MixerBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.MIXER;
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return shouldRenderAsActive();
 	}
 }

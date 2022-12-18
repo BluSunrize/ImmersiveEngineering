@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -15,12 +16,15 @@ import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -33,6 +37,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +67,7 @@ import java.util.List;
 import java.util.Set;
 
 public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<FermenterBlockEntity, FermenterRecipe> implements
-		IBlockBounds, IInteractionObjectIE<FermenterBlockEntity>
+		IBlockBounds, IInteractionObjectIE<FermenterBlockEntity>, IEClientTickableBE, ISoundBE
 {
 	public static final int TANK_CAPACITY = 24*FluidType.BUCKET_VOLUME;
 	public static final int ENERGY_CAPACITY = 16000;
@@ -103,6 +108,12 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 				Direction fw = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
 				return new DirectionalBlockPos(this.getBlockPos().relative(fw), fw.getOpposite());
 			}, ForgeCapabilities.ITEM_HANDLER);
+
+	@Override
+	public void tickClient()
+	{
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.fermenter, this, shouldRenderAsActive(), .0625f, 1);
+	}
 
 	@Override
 	public void tickServer()
@@ -392,5 +403,11 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	public BEContainer<FermenterBlockEntity, ?> getContainerType()
 	{
 		return IEMenuTypes.FERMENTER;
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return shouldRenderAsActive();
 	}
 }

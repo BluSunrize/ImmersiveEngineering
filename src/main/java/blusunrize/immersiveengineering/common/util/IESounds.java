@@ -40,6 +40,17 @@ public class IESounds
 	public static final RegistryObject<SoundEvent> direSwitch = registerSound("dire_switch");
 	public static final RegistryObject<SoundEvent> chute = registerSound("chute");
 	public static RegistryObject<SoundEvent> glider = registerSound("glider");
+	public static final RegistryObject<SoundEvent> assembler = registerSound("assembler");
+	public static final RegistryObject<SoundEvent> refinery = registerSound("refinery");
+	public static final RegistryObject<SoundEvent> bottling = registerSound("bottling");
+	public static final RegistryObject<SoundEvent> saw_startup = registerSound("saw_startup");
+	public static final RegistryObject<SoundEvent> saw_empty = registerSound("saw_empty");
+	public static final RegistryObject<SoundEvent> saw_full = registerSound("saw_full");
+	public static final RegistryObject<SoundEvent> saw_shutdown = registerSound("saw_shutdown");
+	public static final RegistryObject<SoundEvent> mixer = registerSound("mixer");
+	public static final RegistryObject<SoundEvent> fermenter = registerSound("fermenter");
+	public static final RegistryObject<SoundEvent> preheater = registerSound("preheater");
+
 
 	public static void init()
 	{

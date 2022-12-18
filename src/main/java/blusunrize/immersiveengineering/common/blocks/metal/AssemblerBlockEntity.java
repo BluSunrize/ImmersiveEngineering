@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
@@ -16,12 +17,15 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
@@ -71,7 +75,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<AssemblerBlockEntity, MultiblockRecipe>
-		implements IInteractionObjectIE<AssemblerBlockEntity>, IConveyorAttachable, IBlockBounds, ComputerControllable
+		implements IInteractionObjectIE<AssemblerBlockEntity>, IConveyorAttachable, IBlockBounds, ComputerControllable,
+		IEClientTickableBE, ISoundBE
 {
 	public static final int NUM_PATTERNS = 3;
 	public static final int NUM_TANKS = 3;
@@ -138,6 +143,12 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing().getOpposite()),
 			ForgeCapabilities.ITEM_HANDLER);
+
+	@Override
+	public void tickClient()
+	{
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.assembler, this, shouldRenderAsActive(), .5f, 1);
+	}
 
 	@Override
 	public void tickServer()
@@ -729,5 +740,11 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 			}
 			recalculateOutput();
 		}
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return shouldRenderAsActive();
 	}
 }
