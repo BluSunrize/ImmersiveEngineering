@@ -1,10 +1,11 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/immersive-engineering",
     "promos": {
-        "1.19.2-latest": "1.19.2-9.0.0-153",
-        "1.19.2-recommended": "1.19.2-9.0.0-153"
+        "1.19.2-latest": "1.19.2-9.1.0-156",
+        "1.19.2-recommended": "1.19.2-9.1.0-156"
     },
     "1.19.2": {
-        "1.19.2-9.0.0-153": "- Initial release for 1.19.2"
+        "1.19.2-9.0.0-153": "- Initial release for 1.19.2",
+        "1.19.2-9.1.0-156": "- All features from 8.3.0\n- Allow dynamic addition of Blueprints, not possible on 1.18 (Malte)\n- Fix issue with chat messages (Malte)\n- Fix sound attenuation issues (Malte)\n- Fix syncing of shaders on minecarts (Malte)\n- Fix render issues, and an optifine related crash (Malte)"
     }
 }

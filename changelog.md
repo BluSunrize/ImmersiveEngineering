@@ -1,3 +1,11 @@
+##### Version 1.19.2-9.1.0-156
+- All features from 8.3.0
+- Allow dynamic addition of Blueprints, not possible on 1.18 (Malte)
+- Fix issue with chat messages (Malte)
+- Fix sound attenuation issues (Malte)
+- Fix syncing of shaders on minecarts (Malte)
+- Fix render issues, and an optifine related crash (Malte)
+
 ##### Version 1.18.2-8.3.0-155
 - Add process indicator to the Cloche's GUI (BluSunrize)
 - Add sounds for Assembler, Bottling Machine, Coke Oven, Fermenter, Mixer, Preheaters, Refinery and Sawmill (Silfryi)
