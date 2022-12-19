@@ -20,7 +20,6 @@ import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
-import org.joml.Vector4f;
 import malte0811.modelsplitter.model.Group;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
 import net.minecraft.client.Minecraft;
@@ -36,6 +35,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -99,7 +99,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		{
 			Transformation mat = callback.getTransformForGroups(stack, groups, transformType, entity,
 					partialTicks);
-			mat.push(matrixStackIn);
+			matrixStackIn.pushTransformation(mat);
 			renderQuadsForGroups(groups, model, callback, stack, matrixStackIn, bufferIn, visible,
 					combinedLightIn, combinedOverlayIn);
 			matrixStackIn.popPose();
