@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
@@ -9,23 +10,16 @@ import blusunrize.immersiveengineering.common.world.IEHeightProvider;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
+import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstapContext;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -41,46 +35,47 @@ import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.JsonCodecProvider;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
-public class WorldGenerationProvider implements DataProvider
+public class WorldGenerationProvider
 {
-	private final PackOutput output;
-	private final ExistingFileHelper existingFileHelper;
-	private final Map<VeinType, FeatureRegistration> oreFeatures = new EnumMap<>(VeinType.class);
-	private final FeatureRegistration mineralVeins;
-	private final List<FeatureRegistration> allFeatures = new ArrayList<>();
-
-	public WorldGenerationProvider(PackOutput output, ExistingFileHelper existingFileHelper)
+	public static DataProvider makeProvider(
+			PackOutput output, CompletableFuture<HolderLookup.Provider> vanillaRegistries
+	)
 	{
-		this.output = output;
-		this.existingFileHelper = existingFileHelper;
+		final Map<VeinType, FeatureRegistration> oreFeatures = new EnumMap<>(VeinType.class);
 		for(VeinType type : VeinType.VALUES)
 		{
-			final var typeReg = new FeatureRegistration(ImmersiveEngineering.rl(type.getVeinName()));
+			final FeatureRegistration typeReg = new FeatureRegistration(ImmersiveEngineering.rl(type.getVeinName()));
 			oreFeatures.put(type, typeReg);
 		}
-		this.mineralVeins = new FeatureRegistration(ImmersiveEngineering.rl("mineral_veins"));
+		final Registrations registrations = new Registrations(
+				oreFeatures, new FeatureRegistration(ImmersiveEngineering.rl("mineral_veins"))
+		);
+		final RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
+		registryBuilder.add(Registries.CONFIGURED_FEATURE, ctx -> bootstrapConfiguredFeatures(ctx, registrations));
+		registryBuilder.add(Registries.PLACED_FEATURE, ctx -> bootstrapPlacedFeatures(ctx, registrations));
+		registryBuilder.add(Keys.BIOME_MODIFIERS, ctx -> bootstrapBiomeModifiers(ctx, registrations));
+		return new DatapackBuiltinEntriesProvider(output, vanillaRegistries, registryBuilder, Set.of(Lib.MODID));
 	}
 
-	private void bootstrapConfiguredFeatures(BootstapContext<ConfiguredFeature<?, ?>> ctx)
+	private static void bootstrapConfiguredFeatures(
+			BootstapContext<ConfiguredFeature<?, ?>> ctx, Registrations registrations
+	)
 	{
-		final var replaceDeepslate = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
-		final var replaceStone = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
-		for(final var entry : oreFeatures.entrySet())
+		final TagMatchTest replaceDeepslate = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+		final TagMatchTest replaceStone = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+		for(final Entry<VeinType, FeatureRegistration> entry : registrations.oreFeatures.entrySet())
 		{
-			final var type = entry.getKey();
-			final var metal = entry.getKey().metal;
+			final VeinType type = entry.getKey();
+			final EnumMetals metal = entry.getKey().metal;
 			List<TargetBlockState> targetList = ImmutableList.of(
 					OreConfiguration.target(replaceStone, Metals.ORES.get(metal).defaultBlockState()),
 					OreConfiguration.target(replaceDeepslate, Metals.DEEPSLATE_ORES.get(metal).defaultBlockState())
@@ -89,82 +84,41 @@ public class WorldGenerationProvider implements DataProvider
 					ctx, new ConfiguredFeature<>(IEWorldGen.IE_CONFIG_ORE.get(), new IEOreFeatureConfig(targetList, type))
 			);
 		}
-		this.mineralVeins.registerConfigured(
+		registrations.mineralVeins.registerConfigured(
 				ctx, new ConfiguredFeature<>(IEWorldGen.MINERAL_VEIN_FEATURE.get(), new NoneFeatureConfiguration())
 		);
 	}
 
-	private void bootstrapPlacedFeatures(BootstapContext<PlacedFeature> ctx)
+	private static void bootstrapPlacedFeatures(BootstapContext<PlacedFeature> ctx, Registrations registrations)
 	{
-		for(final var entry : oreFeatures.entrySet())
+		for(final Entry<VeinType, FeatureRegistration> entry : registrations.oreFeatures.entrySet())
 		{
-			final var type = entry.getKey();
-			final var placements = List.of(
+			final VeinType type = entry.getKey();
+			final List<PlacementModifier> placements = List.of(
 					HeightRangePlacement.of(new IEHeightProvider(type)),
 					InSquarePlacement.spread(),
 					new IECountPlacement(type)
 			);
 			entry.getValue().registerPlaced(ctx, placements);
 		}
-		this.mineralVeins.registerPlaced(ctx, List.of());
+		registrations.mineralVeins.registerPlaced(ctx, List.of());
 	}
 
-	@Override
-	public CompletableFuture<?> run(CachedOutput output)
+	private static void bootstrapBiomeModifiers(BootstapContext<BiomeModifier> ctx, Registrations registrations)
 	{
-		final var registryBuilder = new RegistrySetBuilder();
-		registryBuilder.add(Registries.CONFIGURED_FEATURE, this::bootstrapConfiguredFeatures);
-		registryBuilder.add(Registries.PLACED_FEATURE, this::bootstrapPlacedFeatures);
-		// We need the BIOME registry to be present so we can use a biome tag, doesn't matter that it's empty
-		registryBuilder.add(Registries.BIOME, $ -> {
-		});
-		RegistryAccess.Frozen regAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-		final var providerWithIE = registryBuilder.build(regAccess);//registryBuilder.buildPatch(regAccess, vanillaProvider);
-		final var providers = generate(providerWithIE);
-		final var futures = providers.stream().map(jcp -> jcp.run(output)).toArray(CompletableFuture[]::new);
-		return CompletableFuture.allOf(futures);
+		final HolderGetter<Biome> biomeReg = ctx.lookup(Registries.BIOME);
+		for(final FeatureRegistration entry : registrations.allFeatures)
+			ctx.register(
+					ResourceKey.create(Keys.BIOME_MODIFIERS, entry.name),
+					new AddFeaturesBiomeModifier(
+							biomeReg.getOrThrow(BiomeTags.IS_OVERWORLD),
+							HolderSet.direct(entry.placed),
+							Decoration.UNDERGROUND_ORES
+					)
+			);
 	}
 
-	private List<JsonCodecProvider<?>> generate(Provider provider)
-	{
-		final RegistryOps<JsonElement> jsonOps = RegistryOps.create(JsonOps.INSTANCE, provider);
-		ImmutableMap.Builder<ResourceLocation, BiomeModifier> modifiers = ImmutableMap.builder();
-		ImmutableMap.Builder<ResourceLocation, PlacedFeature> placedFeatures = ImmutableMap.builder();
-		ImmutableMap.Builder<ResourceLocation, ConfiguredFeature<?, ?>> configuredFeatures = ImmutableMap.builder();
-
-		final RegistryLookup<Biome> biomeReg = provider.lookupOrThrow(Registries.BIOME);
-		for(final var entry : allFeatures)
-		{
-			configuredFeatures.put(entry.name, entry.configured.value());
-			placedFeatures.put(entry.name, entry.placed.value());
-			modifiers.put(entry.name, new AddFeaturesBiomeModifier(
-					HolderSet.emptyNamed(biomeReg, BiomeTags.IS_OVERWORLD),
-					HolderSet.direct(entry.placed),
-					Decoration.UNDERGROUND_ORES
-			));
-		}
-		return List.of(
-				makeProvider(jsonOps, Keys.BIOME_MODIFIERS, modifiers.build()),
-				makeProvider(jsonOps, Registries.PLACED_FEATURE, placedFeatures.build()),
-				makeProvider(jsonOps, Registries.CONFIGURED_FEATURE, configuredFeatures.build())
-		);
-	}
-
-	private <T>
-	JsonCodecProvider<T> makeProvider(
-			RegistryOps<JsonElement> jsonOps, ResourceKey<Registry<T>> key, Map<ResourceLocation, T> entries
-	)
-	{
-		return JsonCodecProvider.forDatapackRegistry(output, existingFileHelper, Lib.MODID, jsonOps, key, entries);
-	}
-
-	@Override
-	public String getName()
-	{
-		return "IE world generation";
-	}
-
-	private class FeatureRegistration
+	private static class FeatureRegistration
 	{
 		public Reference<ConfiguredFeature<?, ?>> configured;
 		public Reference<PlacedFeature> placed;
@@ -173,7 +127,6 @@ public class WorldGenerationProvider implements DataProvider
 		private FeatureRegistration(ResourceLocation name)
 		{
 			this.name = name;
-			allFeatures.add(this);
 		}
 
 		private void registerConfigured(
@@ -187,6 +140,24 @@ public class WorldGenerationProvider implements DataProvider
 		{
 			this.placed = ctx.register(
 					ResourceKey.create(Registries.PLACED_FEATURE, this.name), new PlacedFeature(configured, placement)
+			);
+		}
+	}
+
+	private record Registrations(
+			List<FeatureRegistration> allFeatures,
+			Map<VeinType, FeatureRegistration> oreFeatures,
+			FeatureRegistration mineralVeins
+	)
+	{
+		public Registrations(
+				Map<VeinType, FeatureRegistration> oreFeatures, FeatureRegistration mineralVeins
+		)
+		{
+			this(
+					Util.make(new ArrayList<>(oreFeatures.values()), l -> l.add(mineralVeins)),
+					oreFeatures,
+					mineralVeins
 			);
 		}
 	}
