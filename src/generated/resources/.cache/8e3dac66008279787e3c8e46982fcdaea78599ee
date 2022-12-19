@@ -1,4 +1,4 @@
-// 1.19.3	2022-12-09T15:33:43.384217739	Tags for minecraft:item mod id immersiveengineering
+// 1.19.3	2022-12-19T18:29:06.898776719	Tags for minecraft:item mod id immersiveengineering
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/charcoal.json
@@ -85,6 +85,7 @@ c0ba8fbc5bb958978c15dbbbf9109c2f235e20ec data/forge/tags/items/sandstone/colorle
 6a91d4acdb80541d81cbf2ccc3347b0749b64363 data/forge/tags/items/sandstone/red.json
 de1d550cd16eb974c4908a0707d28c459d7100cc data/forge/tags/items/sawblades.json
 e1fcb72ddbe4430266625044432e9752bb0890e6 data/forge/tags/items/seeds.json
+f8407d8b86459d08f321ad472e23df8b11f04807 data/forge/tags/items/sheetmetal_slabs.json
 edecb36d2c51c53656e146c80bbf300e4d52de39 data/forge/tags/items/sheetmetals.json
 685fe54ad50bcb90d1857662c38ad1e2e89bb8a6 data/forge/tags/items/sheetmetals/aluminum.json
 208b8916c3964147d79703c1eb7096e8775aa78f data/forge/tags/items/sheetmetals/constantan.json
@@ -132,7 +133,14 @@ d6dd4d8bc65e07b1262b11dc0177d1fe5fbf9680 data/immersiveengineering/tags/items/ci
 1fe9d2f525aae99bcd22b42ce0a5601f493e62b6 data/immersiveengineering/tags/items/circuits/pcb.json
 c1d78e3fa5f5148f12a3f9c5eefe3940a3779908 data/immersiveengineering/tags/items/circuits/solder.json
 1244a238b6a335816b5f32e9a3e4448ac2e48dac data/immersiveengineering/tags/items/connector_insulator.json
+9f68aab51771ffcf2d804182251d3e06913ef5bc data/immersiveengineering/tags/items/cut_blocks/copper.json
+3e4fc91069da2d49ed9c3bd132c947b9879bdd0c data/immersiveengineering/tags/items/cut_slabs/copper.json
+240d783ca901747689edbff6ec068e1ebafd3dc6 data/immersiveengineering/tags/items/cut_stairs/copper.json
 760547229cd962c162d51cb04c941ef73537db0b data/immersiveengineering/tags/items/recycling/ignored_components.json
+c3d387e89fbb8dfb53e5e91ad3b45e07f5202650 data/immersiveengineering/tags/items/scaffolding_slabs/aluminum.json
+56c051f4ddf6a8bfb51631d88f7553d13e908a69 data/immersiveengineering/tags/items/scaffolding_slabs/steel.json
+b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/items/scaffolding_stairs/aluminum.json
+58bcbaec9e8e1403838cbc28eb4bae9fdfa0dc3d data/immersiveengineering/tags/items/scaffolding_stairs/steel.json
 586d8c57de0cdcef9e768494366ce79e22d75223 data/immersiveengineering/tags/items/scaffoldings/aluminum.json
 8f3e0a730467c3941f6d1bc9e6c02d4dac7200f0 data/immersiveengineering/tags/items/scaffoldings/steel.json
 ffd1e0a7fd1c1915b8c905faadd6b3aab3f99f99 data/immersiveengineering/tags/items/toolbox/tools.json

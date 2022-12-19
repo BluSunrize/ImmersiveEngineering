@@ -1,5 +1,15 @@
-##### Version 1.18.2-8.2.3-pre
+##### Version 1.19.2-9.1.0-156
+- All features from 8.3.0
+- Allow dynamic addition of Blueprints, not possible on 1.18 (Malte)
+- Fix issue with chat messages (Malte)
+- Fix sound attenuation issues (Malte)
+- Fix syncing of shaders on minecarts (Malte)
+- Fix render issues, and an optifine related crash (Malte)
+
+##### Version 1.18.2-8.3.0-155
 - Add process indicator to the Cloche's GUI (BluSunrize)
+- Add sounds for Assembler, Bottling Machine, Coke Oven, Fermenter, Mixer, Preheaters, Refinery and Sawmill (Silfryi)
+- Add additional items to be recycled by the Arc Furnace (Silfryi)
 - Update and fix computer compat (Malte)
 - Overhaul of particles (Silfryi)
     - Add and expand particles for Crusher, Sample Drill & Excavator
@@ -10,6 +20,7 @@
 - Update Crusher model to have interlocking wheels (TeamSpen210)
 - Update manual entry for the Tesla coil to note use of the screwdriver (gorberto)
 - Change bounding boxes on Silo and Tank to be stepped at the top (BluSunrize)
+- Increase chances for Lead, Silver and Deepslate Nickel Ores to spawn (BluSunrize)
 - Fix CraftTweaker integration for the Cloche (Witixin1512)
 - Fix rounding errors in comparator output (Malte)
 - Fix some JEI issues (Malte)
@@ -19,6 +30,10 @@
 - Fix diesel generator running infinitely on too little fuel (BluSunrize)
 - Fix issues with Spanish translations (Quezler)
 - Fix issues with Italian translations (Skeevert)
+- Fix manual not opening when on a lectern (Malte)
+- Fix very large multiblocks not displaying well in the manual (Malte)
+- Fix shader bag conversion recipe (Malte)
+- Fix incorrect item router behavior (Malte)
 - Translations Added/Updated: zh_cn (IdealNightOcean), ja_jp (karakufire)
 
 ##### Version 1.18.2-8.2.2-154

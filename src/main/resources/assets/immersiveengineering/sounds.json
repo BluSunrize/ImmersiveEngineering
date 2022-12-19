@@ -138,5 +138,75 @@
 			"immersiveengineering:glider_speed2"
 		],
 		"subtitle": "subtitle.immersiveengineering.glider"
+	},
+	"assembler": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:assembler"
+		],
+		"subtitle": "subtitle.immersiveengineering.assembler"
+	},
+	"refinery": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:refinery"
+		],
+		"subtitle": "subtitle.immersiveengineering.refinery"
+	},
+	"bottling": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:bottling"
+		],
+		"subtitle": "subtitle.immersiveengineering.bottling"
+	},
+	"saw_startup": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_startup"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_startup"
+	},
+	"saw_empty": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_empty"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_empty"
+	},
+	"saw_full": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_full"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_full"
+	},
+	"saw_shutdown": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:saw_shutdown"
+		],
+		"subtitle": "subtitle.immersiveengineering.saw_shutdown"
+	},
+	"mixer": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:mixer"
+		],
+		"subtitle": "subtitle.immersiveengineering.mixer"
+	},
+	"fermenter": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:fermenter"
+		],
+		"subtitle": "subtitle.immersiveengineering.fermenter"
+	},
+	"preheater": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:preheater"
+		],
+		"subtitle": "subtitle.immersiveengineering.preheater"
 	}
 }

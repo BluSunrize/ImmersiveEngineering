@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.IESaveData;
+import blusunrize.immersiveengineering.common.blocks.BlockIESlab;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -30,6 +31,8 @@ import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.common.register.IEItems.Metals;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
@@ -151,6 +154,9 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("gears", new Integer[]{4, 1});
 		IEApi.prefixToIngotMap.put("rods", new Integer[]{1, 2});
 		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
+		IEApi.prefixToIngotMap.put("cut_blocks", new Integer[]{9, 4});
+		IEApi.prefixToIngotMap.put("cut_stairs", new Integer[]{9, 4});
+		IEApi.prefixToIngotMap.put("cut_slabs", new Integer[]{9, 8});
 
 		/* ARC FURNACE RECYCLING */
 		ArcRecyclingChecker.allowRecipeTypeForRecycling(RecipeType.CRAFTING);
@@ -175,7 +181,12 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("wires/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("gears/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffoldings/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffolding_stairs/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffolding_slabs/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("fences/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_blocks/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_stairs/");
+		ArcRecyclingChecker.allowPrefixedTagForRecycling("cut_slabs/");
 
 		// Decoration blocks & Sheetmetal
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
@@ -184,20 +195,22 @@ public class ImmersiveEngineering
 		));
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDecoration.ALU_WALLMOUNT, MetalDecoration.STEEL_WALLMOUNT, MetalDecoration.STEEL_SLOPE,
-				MetalDecoration.ALU_POST, MetalDecoration.STEEL_POST
+				MetalDecoration.ALU_SLOPE, MetalDecoration.ALU_POST, MetalDecoration.STEEL_POST
 		));
 		for(EnumMetals metal : EnumMetals.values())
 			ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.getTagsFor(metal).sheetmetal));
+		ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.sheetmetalSlabs));
 		// Metal devices & Chutes
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDevices.RAZOR_WIRE, MetalDevices.BARREL, MetalDevices.FLUID_PIPE
 		));
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> MetalDevices.CHUTES.values().stream());
 
-		// Vanilla
+		// Vanilla Metals
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.LIGHT_WEIGHTED_PRESSURE_PLATE,
-				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON
+				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON,
+				Items.MINECART, Items.ANVIL, Items.CHIPPED_ANVIL, Items.DAMAGED_ANVIL, Items.LIGHTNING_ROD
 		));
 
 		// Whitelisted with tag

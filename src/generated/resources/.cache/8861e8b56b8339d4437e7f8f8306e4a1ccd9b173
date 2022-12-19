@@ -1,4 +1,4 @@
-// 1.19.3	2022-12-09T15:33:43.429751454	Tags for minecraft:block mod id immersiveengineering
+// 1.19.3	2022-12-19T18:29:06.938321814	Tags for minecraft:block mod id immersiveengineering
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -14,6 +14,7 @@ ad7cc89e6b8ad6b0c7c3544c0abd3446c612060c data/forge/tags/blocks/ores_in_ground/d
 81467f7c9399b301ac496bf424b8c8b807db752a data/forge/tags/blocks/ores_in_ground/stone.json
 c0ba8fbc5bb958978c15dbbbf9109c2f235e20ec data/forge/tags/blocks/sandstone/colorless.json
 6a91d4acdb80541d81cbf2ccc3347b0749b64363 data/forge/tags/blocks/sandstone/red.json
+f8407d8b86459d08f321ad472e23df8b11f04807 data/forge/tags/blocks/sheetmetal_slabs.json
 edecb36d2c51c53656e146c80bbf300e4d52de39 data/forge/tags/blocks/sheetmetals.json
 685fe54ad50bcb90d1857662c38ad1e2e89bb8a6 data/forge/tags/blocks/sheetmetals/aluminum.json
 208b8916c3964147d79703c1eb7096e8775aa78f data/forge/tags/blocks/sheetmetals/constantan.json
@@ -49,6 +50,10 @@ fb960fb69ed7f923b8ddb20685e869b6cfeb1a55 data/immersiveengineering/tags/blocks/b
 f7dc293929a2176bc6e428c765f6bf49fbeccdb5 data/immersiveengineering/tags/blocks/mineable/drill.json
 7204f37efe73e4ab8e5d05aef0e7c1fc973a8771 data/immersiveengineering/tags/blocks/mineable/hammer.json
 22c291dd8a303b2f6629a7430880a0678e679ac4 data/immersiveengineering/tags/blocks/mineable/wirecutter.json
+c3d387e89fbb8dfb53e5e91ad3b45e07f5202650 data/immersiveengineering/tags/blocks/scaffolding_slabs/aluminum.json
+56c051f4ddf6a8bfb51631d88f7553d13e908a69 data/immersiveengineering/tags/blocks/scaffolding_slabs/steel.json
+b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/blocks/scaffolding_stairs/aluminum.json
+58bcbaec9e8e1403838cbc28eb4bae9fdfa0dc3d data/immersiveengineering/tags/blocks/scaffolding_stairs/steel.json
 586d8c57de0cdcef9e768494366ce79e22d75223 data/immersiveengineering/tags/blocks/scaffoldings/aluminum.json
 8f3e0a730467c3941f6d1bc9e6c02d4dac7200f0 data/immersiveengineering/tags/blocks/scaffoldings/steel.json
 3cd6a3f387dbdf003ef362dd1a6c26b1d8322e17 data/minecraft/tags/blocks/climbable.json

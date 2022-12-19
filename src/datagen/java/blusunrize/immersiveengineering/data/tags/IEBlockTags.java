@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.IEStairsBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
@@ -118,9 +119,13 @@ public class IEBlockTags extends BlockTagsProvider
 			}
 			tag(tags.sheetmetal).add(IEBlocks.Metals.SHEETMETAL.get(metal).get());
 			tag(IETags.sheetmetals).addTag(tags.sheetmetal);
+			tag(IETags.sheetmetalSlabs).add(IEBlocks.TO_SLAB.get(Metals.SHEETMETAL.get(metal).getId()).get());
 		}
 		for(DyeColor dye : DyeColor.values())
+		{
 			tag(IETags.sheetmetals).add(MetalDecoration.COLORED_SHEETMETAL.get(dye).get());
+			tag(IETags.sheetmetalSlabs).add(IEBlocks.TO_SLAB.get(MetalDecoration.COLORED_SHEETMETAL.get(dye).getId()).get());
+		}
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
 			tag(IETags.treatedWood).add(WoodenDecoration.TREATED_WOOD.get(style).get());
@@ -131,6 +136,18 @@ public class IEBlockTags extends BlockTagsProvider
 			tag(IETags.scaffoldingSteel).add(MetalDecoration.STEEL_SCAFFOLDING.get(t).get());
 			tag(IETags.scaffoldingAlu).add(MetalDecoration.ALU_SCAFFOLDING.get(t).get());
 		}
+		//Scaffolding stairs & such
+		for (final BlockEntry<ScaffoldingBlock> entry : IEBlocks.MetalDecoration.STEEL_SCAFFOLDING.values())
+		{
+			tag(IETags.scaffoldingSteelStair).add(IEBlocks.TO_STAIRS.get(entry.getId()).get());
+			tag(IETags.scaffoldingSteelSlab).add(IEBlocks.TO_SLAB.get(entry.getId()).get());
+		}
+		for (final BlockEntry<ScaffoldingBlock> entry : IEBlocks.MetalDecoration.ALU_SCAFFOLDING.values())
+		{
+			tag(IETags.scaffoldingAluStair).add(IEBlocks.TO_STAIRS.get(entry.getId()).get());
+			tag(IETags.scaffoldingAluSlab).add(IEBlocks.TO_SLAB.get(entry.getId()).get());
+		}
+
 		tag(IETags.coalCokeBlock)
 				.add(StoneDecoration.COKE.get());
 		tag(Tags.Blocks.GRAVEL)
