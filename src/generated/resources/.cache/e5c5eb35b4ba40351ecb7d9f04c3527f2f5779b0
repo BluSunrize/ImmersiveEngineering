@@ -1,4 +1,4 @@
-// 1.19.3	2022-12-20T08:46:51.511475646	Advancements
+// 1.19.3	2022-12-20T14:25:50.1386108	Advancements
 4eb7b593905374d0f8c4b5bf0399f27ac270ec43 data/immersiveengineering/advancements/main/buy_oremap.json
 a4960d01e55deb2776143ded099867575eedf5b4 data/immersiveengineering/advancements/main/buy_shaderbag.json
 e5df5372bdec9de7c77204617522d65c9ecb9672 data/immersiveengineering/advancements/main/chorus_cloche.json
@@ -27,7 +27,7 @@ d62073f665132dd5d285f12485dd28efab5b1eaa data/immersiveengineering/advancements/
 bc7eeaecc79c6b8b7d2c7b0cb567887ced46030a data/immersiveengineering/advancements/multiblocks/craft_duroplast.json
 ab31226cc2bad85b7592b6ca6f6a7a0ccc9e8b6e data/immersiveengineering/advancements/multiblocks/craft_sheetmetal.json
 9fcc686e02c4d5ecbbc4e7c6269a8fde34c0024e data/immersiveengineering/advancements/multiblocks/liquid_concrete.json
-8ac7ae6e06a5eef1834fe360e963f4e63473a50d data/immersiveengineering/advancements/multiblocks/mb_arcfurnace.json
+3ef8f42dd2299b8b644ce2532dbd92697f24e08c data/immersiveengineering/advancements/multiblocks/mb_arcfurnace.json
 8919fd36a591420f836349ce129e6b2c3914c6e3 data/immersiveengineering/advancements/multiblocks/mb_crusher.json
 1d4717ba1b848677215eae24220c1cfa0d09efc0 data/immersiveengineering/advancements/multiblocks/mb_dieselgen.json
 c45f7250bc1e188778b4febbacf3fa0562a150da data/immersiveengineering/advancements/multiblocks/mb_excavator.json

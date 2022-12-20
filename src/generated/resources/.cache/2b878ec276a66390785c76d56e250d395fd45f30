@@ -1,8 +1,8 @@
-// 1.19.3	2022-12-20T10:33:47.756559113	Dynamic models
+// 1.19.3	2022-12-20T14:25:50.135641711	Dynamic models
 795d331732ebfdd8d4570da015590f8ef990c951 assets/immersiveengineering/models/dynamic/advanced_blast_furnace.json
 86e862861b2deb9b5e69bc5aef963b07debfbece assets/immersiveengineering/models/dynamic/alloy_smelter_new.json
-5c8e897ab8dd0a9e6824b4cc18a2a9078d610c47 assets/immersiveengineering/models/dynamic/arc_furnace.json
 f25c187f5e361d97db392626131d9763901ff172 assets/immersiveengineering/models/dynamic/arc_furnace_electrodes.json
+5c8e897ab8dd0a9e6824b4cc18a2a9078d610c47 assets/immersiveengineering/models/dynamic/arc_furnace_new.json
 15b784f36113a2802dc620355912bb0c9b0d0706 assets/immersiveengineering/models/dynamic/assembler_new.json
 5c70fcca25e6db633c4449c30bd9324d04d3481d assets/immersiveengineering/models/dynamic/auto_workbench_animated.json
 f7d307bcaed9c07c8841aaad1f8a3a3cb753b082 assets/immersiveengineering/models/dynamic/auto_workbench_new.json

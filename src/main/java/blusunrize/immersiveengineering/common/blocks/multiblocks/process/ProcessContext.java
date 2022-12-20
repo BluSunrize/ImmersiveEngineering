@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -24,12 +25,12 @@ public interface ProcessContext<R extends MultiblockRecipe>
 		return EMPTY_TANKS;
 	}
 
-	default boolean additionalCanProcessCheck(MultiblockProcess<R, ?> process)
+	default boolean additionalCanProcessCheck(MultiblockProcess<R, ?> process, Level level)
 	{
 		return true;
 	}
 
-	default void onProcessFinish(MultiblockProcess<R, ?> process)
+	default void onProcessFinish(MultiblockProcess<R, ?> process, Level level)
 	{
 	}
 

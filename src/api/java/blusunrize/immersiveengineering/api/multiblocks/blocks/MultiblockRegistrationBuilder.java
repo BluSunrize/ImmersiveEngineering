@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.Disassembler;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
@@ -18,11 +19,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -40,6 +44,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	private boolean mirrorable = true;
 	private boolean hasComparatorOutput = false;
 	private boolean redstoneInputAware = false;
+	private boolean postProcessesShape = false;
 	private Supplier<BlockPos> getMasterPosInMB;
 	private Disassembler disassemble;
 	private Function<Level, List<StructureBlockInfo>> structure;
@@ -61,6 +66,12 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	public MultiblockRegistrationBuilder<State> withComparator()
 	{
 		this.hasComparatorOutput = true;
+		return this;
+	}
+
+	public MultiblockRegistrationBuilder<State> postProcessesShape()
+	{
+		this.postProcessesShape = true;
 		return this;
 	}
 
@@ -130,9 +141,28 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Objects.requireNonNull(disassemble);
 		Objects.requireNonNull(structure);
 		Preconditions.checkState(this.result==null);
+		if(!postProcessesShape)
+		{
+			try
+			{
+				final Method postProcessMethod = logic.getClass().getMethod(
+						"postProcessAbsoluteShape",
+						IMultiblockContext.class, VoxelShape.class, CollisionContext.class, BlockPos.class
+				);
+				final Class<?> declaringClass = postProcessMethod.getDeclaringClass();
+				Preconditions.checkState(
+						declaringClass==IMultiblockLogic.class,
+						"Multiblock overrides postProcessAbsoluteShape, but is not marked as post processing! ID: %s",
+						name
+				);
+			} catch(NoSuchMethodException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
 		this.result = new MultiblockRegistration<>(
 				logic, masterBE, dummyBE, block, item,
-				mirrorable, hasComparatorOutput, redstoneInputAware,
+				mirrorable, hasComparatorOutput, redstoneInputAware, postProcessesShape,
 				getMasterPosInMB, disassemble, structure
 		);
 		return this.result;

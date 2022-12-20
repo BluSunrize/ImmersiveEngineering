@@ -394,6 +394,7 @@ public class ClientProxy extends CommonProxy
 		MenuScreens.register(IEMenuTypes.REFINERY.getType(), RefineryScreen::new);
 		MenuScreens.register(IEMenuTypes.REFINERY_NEW.getType(), RefineryScreen::new);
 		MenuScreens.register(IEMenuTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
+		MenuScreens.register(IEMenuTypes.ARC_FURNACE_NEW.getType(), ArcFurnaceScreen::new);
 		MenuScreens.register(IEMenuTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
 		MenuScreens.register(IEMenuTypes.AUTO_WORKBENCH_NEW.getType(), AutoWorkbenchScreen::new);
 		MenuScreens.register(IEMenuTypes.MIXER.getType(), MixerScreen::new);
@@ -445,7 +446,7 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEMultiblockLogic.SQUEEZER.masterBE(), SqueezerRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.DIESEL_GENERATOR.masterBE(), DieselGeneratorRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.BUCKET_WHEEL.masterBE(), BucketWheelRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.ARC_FURNACE.masterBE(), ArcFurnaceRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.AUTO_WORKBENCH.masterBE(), AutoWorkbenchRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.BOTTLING_MACHINE.masterBE(), BottlingMachineRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.MIXER.masterBE(), MixerRenderer::new);

@@ -10,14 +10,29 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public final class SlotwiseItemHandler implements IItemHandlerModifiable, Iterable<ItemStack>
+public class SlotwiseItemHandler implements IItemHandlerModifiable, Iterable<ItemStack>
 {
 	private final ItemStackHandler rawHandler;
 	private final List<IOConstraint> slotConstraints;
+
+	public static SlotwiseItemHandler makeWithGroups(Runnable onChanged, IOConstraintGroup... constraintGroups)
+	{
+		return makeWithGroups(Arrays.asList(constraintGroups), onChanged);
+	}
+
+	public static SlotwiseItemHandler onSlotRange(IOConstraint constraint, int min, int count, Runnable onChanged)
+	{
+		return SlotwiseItemHandler.makeWithGroups(
+				onChanged,
+				new IOConstraintGroup(IOConstraint.BLOCKED, min),
+				new IOConstraintGroup(IOConstraint.ANY_INPUT, count)
+		);
+	}
 
 	public static SlotwiseItemHandler makeWithGroups(List<IOConstraintGroup> constraintGroups, Runnable onChanged)
 	{
@@ -58,7 +73,7 @@ public final class SlotwiseItemHandler implements IItemHandlerModifiable, Iterab
 	@NotNull
 	public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate)
 	{
-		if(!this.slotConstraints.get(slot).allowInsert.test(stack))
+		if(slot >= this.slotConstraints.size()||!this.slotConstraints.get(slot).allowInsert.test(stack))
 			return stack;
 		return rawHandler.insertItem(slot, stack, simulate);
 	}
@@ -67,7 +82,7 @@ public final class SlotwiseItemHandler implements IItemHandlerModifiable, Iterab
 	@NotNull
 	public ItemStack extractItem(int slot, int amount, boolean simulate)
 	{
-		if(!this.slotConstraints.get(slot).allowExtract())
+		if(slot >= this.slotConstraints.size()||!this.slotConstraints.get(slot).allowExtract())
 			return ItemStack.EMPTY;
 		return rawHandler.extractItem(slot, amount, simulate);
 	}

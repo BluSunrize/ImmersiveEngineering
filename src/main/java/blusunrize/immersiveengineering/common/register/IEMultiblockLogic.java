@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic;
@@ -63,6 +64,7 @@ public class IEMultiblockLogic
 	public static final MultiblockRegistration<DieselGeneratorLogic.State> DIESEL_GENERATOR = metal(new DieselGeneratorLogic(), "diesel_generator")
 			.structure(() -> IEMultiblocks.DIESEL_GENERATOR)
 			.redstoneAware()
+			.postProcessesShape()
 			.build();
 
 	public static final MultiblockRegistration<MetalPressLogic.State> METAL_PRESS = metal(new MetalPressLogic(), "metal_press")
@@ -128,6 +130,12 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<SawmillLogic.State> SAWMILL = metal(new SawmillLogic(), "sawmill")
 			.structure(() -> IEMultiblocks.SAWMILL)
+			.redstoneAware()
+			.withComparator()
+			.build();
+
+	public static final MultiblockRegistration<ArcFurnaceLogic.State> ARC_FURNACE = metal(new ArcFurnaceLogic(), "arc_furnace")
+			.structure(() -> IEMultiblocks.ARC_FURNACE)
 			.redstoneAware()
 			.withComparator()
 			.build();

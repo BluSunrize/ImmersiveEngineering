@@ -26,6 +26,7 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 		boolean mirrorable,
 		boolean hasComparatorOutput,
 		boolean redstoneInputAware,
+		boolean postProcessesShape,
 		Supplier<BlockPos> getMasterPosInMB,
 		Disassembler disassemble,
 		Function<Level, List<StructureBlockInfo>> getStructure

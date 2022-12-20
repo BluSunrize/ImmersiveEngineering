@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class InsertOnlyInventory implements IItemHandler
 {
 	@Override
-	public final int getSlots()
+	public int getSlots()
 	{
 		return 1;
 	}

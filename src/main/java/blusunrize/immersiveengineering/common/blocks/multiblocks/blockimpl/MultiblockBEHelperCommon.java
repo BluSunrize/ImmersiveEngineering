@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
@@ -29,6 +30,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> implements IMultiblockBEHelper<State>
 {
@@ -38,6 +40,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	protected final MultiblockRegistration<State> multiblock;
 	protected final MultiblockOrientation orientation;
 	private IMultiblockBEHelperMaster<State> masterHelperDuringDisassembly;
+	private final CachedShape cachedShape = new CachedShape();
 
 	protected MultiblockBEHelperCommon(BlockEntity be, MultiblockRegistration<State> multiblock, BlockState state)
 	{
@@ -49,15 +52,16 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	@Override
 	public VoxelShape getShape(CollisionContext ctx)
 	{
-		// TODO cache!
-		final var logic = multiblock.logic();
-		final var relativeShape = logic.shapeGetter().apply(getPositionInMB());
-		final var absoluteShape = orientation.transformRelativeShape(relativeShape);
-		final var multiblockCtx = getContext();
-		if(multiblockCtx!=null)
-			return logic.postProcessAbsoluteShape(multiblockCtx, absoluteShape, ctx, getPositionInMB());
-		else
-			return absoluteShape;
+		final BlockPos posInMB = getPositionInMB();
+		final IMultiblockLogic<State> logic = multiblock.logic();
+		final VoxelShape absoluteShape = cachedShape.get(logic.shapeGetter(), posInMB, orientation);
+		if(multiblock.postProcessesShape())
+		{
+			final var multiblockCtx = getContext();
+			if(multiblockCtx!=null)
+				return logic.postProcessAbsoluteShape(multiblockCtx, absoluteShape, ctx, posInMB);
+		}
+		return absoluteShape;
 	}
 
 	@Override
@@ -175,5 +179,24 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		final var sideRelative = RelativeBlockFace.from(orientation, sideAbsolute);
 		cachedRedstoneValues.put(sideRelative, rsStrength);
 		return rsStrength;
+	}
+
+	private class CachedShape
+	{
+		@Nullable
+		private VoxelShape shape;
+		private BlockPos posInMB = BlockPos.ZERO;
+		private MultiblockOrientation facing = new MultiblockOrientation(Direction.NORTH, false);
+
+		public VoxelShape get(Function<BlockPos, VoxelShape> getRelative, BlockPos pos, MultiblockOrientation facing)
+		{
+			if(shape!=null&&posInMB.equals(pos)&&this.facing.equals(facing))
+				return shape;
+			final VoxelShape relativeShape = getRelative.apply(pos);
+			shape = orientation.transformRelativeShape(relativeShape);
+			posInMB = pos;
+			this.facing = facing;
+			return shape;
+		}
 	}
 }

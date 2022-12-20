@@ -126,11 +126,11 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	}
 
 	@Override
-	protected List<ItemStack> getRecipeItemOutputs(Level level)
+	protected List<ItemStack> getRecipeItemOutputs(Level level, ProcessContextInWorld<BottlingMachineRecipe> context)
 	{
 		if(isFilling)
 			return List.of(filledContainer);
-		return super.getRecipeItemOutputs(level);
+		return super.getRecipeItemOutputs(level, context);
 	}
 
 	@Override

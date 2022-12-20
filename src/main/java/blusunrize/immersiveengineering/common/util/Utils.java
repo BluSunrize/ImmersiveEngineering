@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import org.joml.Vector4f;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -85,6 +85,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -92,6 +93,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiPredicate;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 public class Utils
@@ -790,27 +792,35 @@ public class Utils
 		}
 	}
 
+	@Deprecated
 	public static int calcRedstoneFromInventory(IIEInventory inv)
 	{
-		if(inv==null)
+		if(inv==null||inv.getInventory()==null)
 			return 0;
 		else
+			return calcRedstoneFromInventory(inv.getComparatedSize(), inv.getInventory()::get, inv::getSlotLimit);
+	}
+
+	public static int calcRedstoneFromInventory(int maxSlot, IItemHandler inv)
+	{
+		return calcRedstoneFromInventory(maxSlot, inv::getStackInSlot, inv::getSlotLimit);
+	}
+
+	private static int calcRedstoneFromInventory(int maxSlot, IntFunction<ItemStack> getStack, Int2IntFunction getSlotLimit)
+	{
+		int i = 0;
+		float f = 0.0F;
+		for(int j = 0; j < maxSlot; ++j)
 		{
-			int max = inv.getComparatedSize();
-			int i = 0;
-			float f = 0.0F;
-			for(int j = 0; j < max; ++j)
+			ItemStack itemstack = getStack.apply(j);
+			if(!itemstack.isEmpty())
 			{
-				ItemStack itemstack = inv.getInventory().get(j);
-				if(!itemstack.isEmpty())
-				{
-					f += (float)itemstack.getCount()/(float)Math.min(inv.getSlotLimit(j), itemstack.getMaxStackSize());
-					++i;
-				}
+				f += (float)itemstack.getCount()/(float)Math.min(getSlotLimit.get(j), itemstack.getMaxStackSize());
+				++i;
 			}
-			f = f/(float)max;
-			return Mth.floor(f*14.0F)+(i > 0?1: 0);
 		}
+		f = f/(float)maxSlot;
+		return Mth.floor(f*14.0F)+(i > 0?1: 0);
 	}
 
 	public static List<ItemStack> getDrops(BlockState state, Builder builder)

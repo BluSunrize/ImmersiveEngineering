@@ -56,7 +56,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 		this.processTick = data.getInt("process_processTick");
 	}
 
-	protected List<ItemStack> getRecipeItemOutputs(Level level)
+	protected List<ItemStack> getRecipeItemOutputs(Level level, CTX context)
 	{
 		R recipe = getLevelData(level).recipe;
 		if(recipe==null)
@@ -79,7 +79,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 			return true;
 		if(context.getEnergy().extractEnergy(levelData.energyPerTick, true)==levelData.energyPerTick)
 		{
-			List<ItemStack> outputs = getRecipeItemOutputs(level);
+			List<ItemStack> outputs = getRecipeItemOutputs(level, context);
 			if(outputs!=null)
 				for(ItemStack output : outputs)
 					if(!output.isEmpty()&&!canOutputItem(context, output))
@@ -89,7 +89,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 				for(FluidStack output : fluidOutputs)
 					if(!canOutputFluid(context, output))
 						return false;
-			return context.additionalCanProcessCheck(this);
+			return context.additionalCanProcessCheck(this, level);
 		}
 		return false;
 	}
@@ -144,7 +144,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 	protected void processFinish(CTX context, IMultiblockLevel level)
 	{
 		final var rawLevel = level.getRawLevel();
-		List<ItemStack> outputs = getRecipeItemOutputs(rawLevel);
+		List<ItemStack> outputs = getRecipeItemOutputs(rawLevel, context);
 		if(outputs!=null)
 			for(ItemStack output : outputs)
 				outputItem(context, output, level);
@@ -153,7 +153,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 			for(FluidStack output : fluidOutputs)
 				outputFluid(context, output);
 
-		context.onProcessFinish(this);
+		context.onProcessFinish(this, level.getRawLevel());
 		this.clearProcess = true;
 	}
 

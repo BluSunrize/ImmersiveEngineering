@@ -31,8 +31,8 @@ public interface IMultiblockLogic<State extends IMultiblockState>
 	Function<BlockPos, VoxelShape> shapeGetter();
 
 	default VoxelShape postProcessAbsoluteShape(
-			IMultiblockContext<State> ctx, VoxelShape defaultShape, CollisionContext shapeCtx,
-			BlockPos posInMultiblock)
+			IMultiblockContext<State> ctx, VoxelShape defaultShape, CollisionContext shapeCtx, BlockPos posInMultiblock
+	)
 	{
 		return defaultShape;
 	}
