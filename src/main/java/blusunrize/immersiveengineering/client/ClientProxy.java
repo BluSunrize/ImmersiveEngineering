@@ -378,6 +378,7 @@ public class ClientProxy extends CommonProxy
 		MenuScreens.register(IEMenuTypes.BLAST_FURNACE.getType(), BlastFurnaceScreen::new);
 		MenuScreens.register(IEMenuTypes.BLAST_FURNACE_NEW.getType(), BlastFurnaceScreen::new);
 		MenuScreens.register(IEMenuTypes.BLAST_FURNACE_ADV.getType(), BlastFurnaceScreen.Advanced::new);
+		MenuScreens.register(IEMenuTypes.BLAST_FURNACE_ADV_NEW.getType(), BlastFurnaceScreen.Advanced::new);
 		MenuScreens.register(IEMenuTypes.CRAFTING_TABLE.getType(), CraftingTableScreen::new);
 		MenuScreens.register(IEMenuTypes.WOODEN_CRATE.get(), CrateScreen.StandardCrate::new);
 		registerTileScreen(IEMenuTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);

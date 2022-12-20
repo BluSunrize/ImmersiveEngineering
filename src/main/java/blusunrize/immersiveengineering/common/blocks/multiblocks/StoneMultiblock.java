@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
@@ -34,28 +33,5 @@ public abstract class StoneMultiblock extends IETemplateMultiblock
 	public boolean canBeMirrored()
 	{
 		return false;
-	}
-
-	// TODO get rid of
-	@Override
-	public Direction transformDirection(Direction original)
-	{
-		return original.getOpposite();
-	}
-
-	@Override
-	public Direction untransformDirection(Direction transformed)
-	{
-		return transformed.getOpposite();
-	}
-
-	@Override
-	public BlockPos multiblockToModelPos(BlockPos posInMultiblock, @Nonnull Level level)
-	{
-		return super.multiblockToModelPos(new BlockPos(
-				getSize(level).getX()-posInMultiblock.getX()-1,
-				posInMultiblock.getY(),
-				getSize(level).getZ()-posInMultiblock.getZ()-1
-		), level);
 	}
 }

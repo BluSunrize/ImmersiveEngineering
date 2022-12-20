@@ -40,6 +40,10 @@ public class IEMultiblockLogic
 			.structure(() -> IEMultiblocks.BLAST_FURNACE)
 			.build();
 
+	public static final MultiblockRegistration<AdvBlastFurnaceLogic.State> ADV_BLAST_FURNACE = stone(new AdvBlastFurnaceLogic(), "adv_blast_furnace", false)
+			.structure(() -> IEMultiblocks.ADVANCED_BLAST_FURNACE)
+			.build();
+
 	public static final MultiblockRegistration<AlloySmelterLogic.State> ALLOY_SMELTER = stone(new AlloySmelterLogic(), "alloy_smelter", true)
 			.structure(() -> IEMultiblocks.ALLOY_SMELTER)
 			.build();

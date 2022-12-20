@@ -13,10 +13,9 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
-import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
-import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -73,8 +72,11 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 		if(isDummy())
 			return;
 		if(getIsActive())
-			level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
-			ApiUtils.RANDOM.nextDouble()*.0125-.00625, .05, ApiUtils.RANDOM.nextDouble()*.0125-.00625);
+			level.addAlwaysVisibleParticle(
+					ParticleTypes.CAMPFIRE_COSY_SMOKE,
+					getBlockPos().getX()+.5, getBlockPos().getY()+2.9, getBlockPos().getZ()+.5,
+					ApiUtils.RANDOM.nextDouble(-0.00625, 0.00625), .05, ApiUtils.RANDOM.nextDouble(-0.00625, 0.00625)
+			);
 	}
 
 	@Override

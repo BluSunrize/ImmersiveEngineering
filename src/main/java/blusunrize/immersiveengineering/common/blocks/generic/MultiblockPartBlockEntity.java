@@ -169,7 +169,7 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 		{
 			tempMasterBE = master();
 			BlockPos startPos = getOrigin();
-			multiblockInstance.disassemble(level, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
+			multiblockInstance.disassemble(level, startPos, getIsMirrored(), getFacing());
 			level.removeBlock(worldPosition, false);
 		}
 	}
@@ -177,13 +177,13 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 	public BlockPos getOrigin()
 	{
 		return TemplateMultiblock.withSettingsAndOffset(worldPosition, BlockPos.ZERO.subtract(posInMultiblock),
-				getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
+				getIsMirrored(), getFacing());
 	}
 
 	public BlockPos getBlockPosForPos(BlockPos targetPos)
 	{
 		BlockPos origin = getOrigin();
-		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
+		return TemplateMultiblock.withSettingsAndOffset(origin, targetPos, getIsMirrored(), getFacing());
 	}
 
 	//	=================================
@@ -268,7 +268,7 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 					mirroredPosInMB.getY(),
 					mirroredPosInMB.getZ()
 			);
-		return multiblockInstance.multiblockToModelPos(mirroredPosInMB, level);
+		return mirroredPosInMB;
 	}
 
 	public VoxelShape getShape(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache)

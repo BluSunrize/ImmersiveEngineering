@@ -65,7 +65,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		if(state.hasProperty(IEProperties.MIRRORED))
 			state = state.setValue(IEProperties.MIRRORED, mirrored);
 		if(state.hasProperty(IEProperties.FACING_HORIZONTAL))
-			state = state.setValue(IEProperties.FACING_HORIZONTAL, transformDirection(clickDirection.getOpposite()));
+			state = state.setValue(IEProperties.FACING_HORIZONTAL, clickDirection.getOpposite());
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
 		if(curr instanceof MultiblockPartBlockEntity<?> tile)
@@ -80,21 +80,6 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			dummy.getHelper().setPositionInMB(info.pos);
 		else if(!(curr instanceof MultiblockBlockEntityMaster<?>))
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
-	}
-
-	public Direction transformDirection(Direction original)
-	{
-		return original;
-	}
-
-	public Direction untransformDirection(Direction transformed)
-	{
-		return transformed;
-	}
-
-	public BlockPos multiblockToModelPos(BlockPos posInMultiblock, @Nonnull Level level)
-	{
-		return posInMultiblock.subtract(masterFromOrigin);
 	}
 
 	@Override

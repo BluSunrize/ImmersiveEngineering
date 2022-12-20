@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 public class AlloySmelterMultiblock extends StoneMultiblock
@@ -27,23 +26,5 @@ public class AlloySmelterMultiblock extends StoneMultiblock
 	public float getManualScale()
 	{
 		return 20;
-	}
-
-	@Override
-	public Direction transformDirection(Direction original)
-	{
-		return original;
-	}
-
-	@Override
-	public Direction untransformDirection(Direction transformed)
-	{
-		return transformed;
-	}
-
-	@Override
-	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
-	{
-		return posInMultiblock;
 	}
 }

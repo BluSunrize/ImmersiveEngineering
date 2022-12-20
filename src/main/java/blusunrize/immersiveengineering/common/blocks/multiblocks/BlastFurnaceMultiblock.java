@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 public class BlastFurnaceMultiblock extends StoneMultiblock
@@ -21,24 +20,6 @@ public class BlastFurnaceMultiblock extends StoneMultiblock
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/blast_furnace"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 3, 3),
 				IEMultiblockLogic.BLAST_FURNACE.block());
-	}
-
-	@Override
-	public Direction transformDirection(Direction original)
-	{
-		return original;
-	}
-
-	@Override
-	public Direction untransformDirection(Direction transformed)
-	{
-		return transformed;
-	}
-
-	@Override
-	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
-	{
-		return posInMultiblock;
 	}
 
 	@Override

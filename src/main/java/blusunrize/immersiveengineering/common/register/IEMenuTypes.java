@@ -68,6 +68,9 @@ public class IEMenuTypes
 	public static final ArgContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerArg(
 			Lib.GUIID_BlastFurnaceAdv, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
 	);
+	public static final ArgContainer<IMultiblockContext<AdvBlastFurnaceLogic.State>, BlastFurnaceMenu> BLAST_FURNACE_ADV_NEW = registerArg(
+			"blastfurnace_advanced_new", BlastFurnaceMenu::makeServerNewAdv, BlastFurnaceMenu::makeClient
+	);
 	public static final ArgContainer<CraftingTableBlockEntity, CraftingTableMenu> CRAFTING_TABLE = registerArg(
 			Lib.GUIID_CraftingTable, CraftingTableMenu::makeServer, CraftingTableMenu::makeClient
 	);

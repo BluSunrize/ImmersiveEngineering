@@ -84,11 +84,11 @@ public class BlastFurnaceLogic implements IServerTickableMultiblock<State>
 	public static class State implements IMultiblockState, IFurnaceEnvironment<BlastFurnaceRecipe>
 	{
 		private final SlotwiseItemHandler inventory;
-		private final FurnaceHandler<BlastFurnaceRecipe> furnace;
+		final FurnaceHandler<BlastFurnaceRecipe> furnace;
 
 		private final Supplier<BlastFurnaceRecipe> cachedRecipe;
 
-		public State(IInitialMultiblockContext<State> ctx)
+		public State(IInitialMultiblockContext<?> ctx)
 		{
 			final var getLevel = ctx.levelSupplier();
 			inventory = new SlotwiseItemHandler(List.of(

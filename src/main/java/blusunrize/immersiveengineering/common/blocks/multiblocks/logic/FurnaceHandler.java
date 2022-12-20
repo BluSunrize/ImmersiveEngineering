@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.ContainerData;
@@ -55,7 +56,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 		{
 			int processSpeed = 1;
 			if(process > 0)
-				processSpeed = env.getProcessSpeed();
+				processSpeed = env.getProcessSpeed(ctx.getLevel());
 			burnTime -= processSpeed;
 			if(process > 0)
 			{
@@ -118,6 +119,8 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 			}
 		}
 
+		if(!active)
+			env.turnOff(ctx.getLevel());
 		return active;
 	}
 
@@ -213,12 +216,12 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 
 		int getBurnTimeOf(Level level, ItemStack fuel);
 
-		default int getProcessSpeed()
+		default int getProcessSpeed(IMultiblockLevel level)
 		{
 			return 1;
 		}
 
-		default void turnOff()
+		default void turnOff(IMultiblockLevel level)
 		{
 		}
 	}

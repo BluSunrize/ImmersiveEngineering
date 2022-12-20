@@ -162,11 +162,9 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		if(!isDummy())
 		{
 			BlockPos nullPos = this.getOrigin();
-			return new AABB(nullPos,
-					TemplateMultiblock.withSettingsAndOffset(
-							nullPos, new BlockPos(structureDimensions.get()), getIsMirrored(),
-							multiblockInstance.untransformDirection(getFacing())
-					));
+			return new AABB(nullPos, TemplateMultiblock.withSettingsAndOffset(
+					nullPos, new BlockPos(structureDimensions.get()), getIsMirrored(), getFacing()
+			));
 		}
 		return super.getRenderBoundingBox();
 	}
