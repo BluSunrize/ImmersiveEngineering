@@ -107,4 +107,10 @@ public record MultiblockContext<State extends IMultiblockState>(
 			result = Math.max(result, beAtPos.getHelper().getRedstoneInput(face));
 		return result;
 	}
+
+	@Override
+	public BlockEntity getRawMasterBE()
+	{
+		return masterHelper.getMasterBE();
+	}
 }

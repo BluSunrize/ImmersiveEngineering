@@ -241,6 +241,7 @@
     "immersiveengineering:refinery_new",
     "immersiveengineering:squeezer_new",
     "immersiveengineering:bucket_wheel_new",
-    "immersiveengineering:excavator_new"
+    "immersiveengineering:excavator_new",
+    "immersiveengineering:sawmill_new"
   ]
 }

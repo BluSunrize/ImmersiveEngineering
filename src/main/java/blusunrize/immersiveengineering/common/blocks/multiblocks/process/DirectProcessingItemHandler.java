@@ -3,16 +3,15 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.InsertOnlyInventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements IItemHandler
+public class DirectProcessingItemHandler<R extends MultiblockRecipe> extends InsertOnlyInventory
 {
 	private static final float TRANSFORMATION_POINT = .5f;
 	private boolean doProcessStacking = false;
@@ -38,21 +37,7 @@ public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements 
 	}
 
 	@Override
-	public int getSlots()
-	{
-		return 1;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack getStackInSlot(int slot)
-	{
-		return ItemStack.EMPTY;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+	protected ItemStack insert(ItemStack stack, boolean simulate)
 	{
 		stack = stack.copy();
 		R recipe = getRecipeOnInsert.apply(level.get(), stack);
@@ -66,24 +51,5 @@ public class DirectProcessingItemHandler<R extends MultiblockRecipe> implements 
 		), level.get(), simulate, doProcessStacking))
 			stack.shrink(displayStack.getCount());
 		return stack;
-	}
-
-	@Nonnull
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate)
-	{
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public int getSlotLimit(int slot)
-	{
-		return 64;
-	}
-
-	@Override
-	public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-	{
-		return true;//TODO
 	}
 }

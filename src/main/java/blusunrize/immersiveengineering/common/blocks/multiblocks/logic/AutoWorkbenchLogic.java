@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InWorldProcessor;
@@ -17,7 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.AutoWork
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
@@ -157,7 +156,7 @@ public class AutoWorkbenchLogic implements IServerTickableMultiblock<State>, ICl
 		// Only used on client
 		public boolean active;
 
-		private final CapabilityReference<IItemHandler> output;
+		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> input;
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 
@@ -168,7 +167,7 @@ public class AutoWorkbenchLogic implements IServerTickableMultiblock<State>, ICl
 					ctx.getMarkDirtyRunnable(), ctx.getSyncRunnable(),
 					BlueprintCraftingRecipe.RECIPES::getById
 			);
-			this.output = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, OUTPUT_POS);
+			this.output = new DroppingMultiblockOutput(OUTPUT_POS, ctx);
 			this.inventory = SlotwiseItemHandler.makeWithGroups(
 					List.of(
 							new IOConstraintGroup(new IOConstraint(true, i -> i.is(Misc.BLUEPRINT.asItem())), 1),
@@ -226,14 +225,7 @@ public class AutoWorkbenchLogic implements IServerTickableMultiblock<State>, ICl
 		@Override
 		public void doProcessOutput(ItemStack result, IMultiblockLevel level)
 		{
-			result = Utils.insertStackIntoInventory(this.output, result, false);
-			if(!result.isEmpty())
-				Utils.dropStackAtPos(
-						level.getRawLevel(),
-						level.toAbsolute(OUTPUT_POS.posInMultiblock()),
-						result,
-						OUTPUT_POS.face().forFront(level.getOrientation()).getOpposite()
-				);
+			this.output.insertOrDrop(result, level);
 		}
 	}
 }

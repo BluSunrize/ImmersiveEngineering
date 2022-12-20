@@ -8,7 +8,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
@@ -16,9 +15,9 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.CrusherShapes;
+import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -153,14 +152,14 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		private float barrelAngle;
 		private final ComparatorManager<State> comparators = new ComparatorManager<>();
 
-		private final CapabilityReference<IItemHandler> output;
+		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> insertionHandler;
 		private final StoredCapability<IEnergyStorage> energyHandler = new StoredCapability<>(energy);
 		private BooleanSupplier isPlayingSound = () -> false;
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
-			this.output = capabilitySource.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, OUTPUT_POS);
+			this.output = new DroppingMultiblockOutput(OUTPUT_POS, capabilitySource);
 			this.processor = new MultiblockProcessor<>(
 					2048, 0, 1, capabilitySource.getMarkDirtyRunnable(), CrusherRecipe.RECIPES::getById
 			);
@@ -206,14 +205,7 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		@Override
 		public void doProcessOutput(ItemStack output, IMultiblockLevel level)
 		{
-			output = Utils.insertStackIntoInventory(this.output, output, false);
-			if(!output.isEmpty())
-				Utils.dropStackAtPos(
-						level.getRawLevel(),
-						level.toAbsolute(OUTPUT_POS.posInMultiblock()),
-						output,
-						OUTPUT_POS.face().forFront(level.getOrientation()).getOpposite()
-				);
+			this.output.insertOrDrop(output, level);
 		}
 
 		@Override

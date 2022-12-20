@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InWorldProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.BottlingMachineShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
+import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
@@ -175,7 +175,7 @@ public class BottlingMachineLogic implements IServerTickableMultiblock<State>
 		// Only used on the client
 		public boolean active;
 
-		private final CapabilityReference<IItemHandler> output;
+		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> itemInput;
 		private final StoredCapability<IFluidHandler> fluidInput;
 		private final StoredCapability<IEnergyStorage> energyInput;
@@ -189,7 +189,7 @@ public class BottlingMachineLogic implements IServerTickableMultiblock<State>
 					markDirty, sync,
 					BottlingMachineRecipe.RECIPES::getById
 			);
-			output = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, OUTPUT_POS);
+			output = new DroppingMultiblockOutput(OUTPUT_POS, ctx);
 			itemInput = new StoredCapability<>(new BottlingInsertionHandler(ctx.levelSupplier(), processor, this));
 			fluidInput = new StoredCapability<>(new ArrayFluidHandler(tank, false, true, () -> {
 				markDirty.run();
@@ -242,14 +242,7 @@ public class BottlingMachineLogic implements IServerTickableMultiblock<State>
 		@Override
 		public void doProcessOutput(ItemStack result, IMultiblockLevel level)
 		{
-			result = Utils.insertStackIntoInventory(this.output, result, false);
-			if(!result.isEmpty())
-				Utils.dropStackAtPos(
-						level.getRawLevel(),
-						level.toAbsolute(OUTPUT_POS.posInMultiblock()),
-						result,
-						OUTPUT_POS.face().forFront(level.getOrientation()).getOpposite()
-				);
+			this.output.insertOrDrop(result, level);
 		}
 	}
 }

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -23,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process_old.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -58,7 +58,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -197,12 +196,12 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		while(processIterator.hasNext()&&i++ < max)
 		{
 			SawmillProcess process = processIterator.next();
-			if(process.processStep(this, secondaries))
+			if(process.processStep(level, energyStorage, sawblade, secondaries))
 			{
 				tickedProcesses++;
 				this.updateMasterBlock(null, true);
 			}
-			if(process.processFinished)
+			if(process.isProcessFinished())
 			{
 				doProcessOutput(process.getCurrentStack(level, !this.sawblade.isEmpty()).copy());
 				processIterator.remove();
@@ -373,7 +372,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 				{
 					dist = p.getRelativeProcessStep(level);
 					// either it's a different item or we have 3 together already
-					if(!stack.sameItem(p.input)||combinedLogs > 2)
+					if(!stack.sameItem(p.getInput())||combinedLogs > 2)
 					{
 						if(!simulate)
 							combinedLogs = 0;
@@ -608,124 +607,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	{
 		Direction shiftDir = getFacing().getOpposite();
 		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(3, 0, 2)).relative(shiftDir), shiftDir.getOpposite());
-	}
-
-	public static class SawmillProcess
-	{
-		private final ItemStack input;
-		private RecipeDependentData recipeDependentData;
-		private int processTick;
-		private boolean stripped = false;
-		private boolean sawed = false;
-		private boolean processFinished = false;
-
-		public SawmillProcess(ItemStack input)
-		{
-			this.input = input;
-		}
-
-		private RecipeDependentData getRecipeDependentData(Level level)
-		{
-			if(this.recipeDependentData==null)
-			{
-				SawmillRecipe recipe = SawmillRecipe.findRecipe(level, input);
-				if(recipe!=null)
-					this.recipeDependentData = new RecipeDependentData(
-							recipe,
-							recipe.getTotalProcessTime(),
-							recipe.getTotalProcessEnergy()/recipe.getTotalProcessTime()
-					);
-				else
-					this.recipeDependentData = new RecipeDependentData(null, 80, 40);
-			}
-			return this.recipeDependentData;
-		}
-
-		public boolean processStep(SawmillBlockEntity tile, Set<ItemStack> secondaries)
-		{
-			RecipeDependentData data = getRecipeDependentData(tile.level);
-			if(tile.energyStorage.extractEnergy(data.energyPerTick, true) >= data.energyPerTick)
-			{
-				tile.energyStorage.extractEnergy(data.energyPerTick, false);
-				this.processTick++;
-				float relative = getRelativeProcessStep(tile.level);
-				if(data.recipe!=null)
-				{
-					if(!this.stripped&&relative >= .3125)
-					{
-						this.stripped = true;
-						data.recipe.secondaryStripping.stream()
-								.map(Lazy::get)
-								.forEach(secondaries::add);
-					}
-					if(!this.sawed&&relative >= .8625)
-					{
-						this.sawed = true;
-						if(!tile.sawblade.isEmpty())
-							data.recipe.secondaryOutputs.stream()
-									.map(Lazy::get)
-									.forEach(secondaries::add);
-					}
-				}
-				if(relative >= 1)
-					this.processFinished = true;
-				return true;
-			}
-			return false;
-		}
-
-		public float getRelativeProcessStep(Level level)
-		{
-			return this.processTick/getRecipeDependentData(level).maxProcessTicks;
-		}
-
-		public ItemStack getCurrentStack(Level level, boolean sawblade)
-		{
-			RecipeDependentData data = getRecipeDependentData(level);
-			if(data.recipe==null)
-				return this.input;
-			// Early exit before stripping
-			if(!this.stripped)
-				return this.input;
-			// After stripping
-			ItemStack stripped = data.recipe.stripped.get();
-			if(stripped.isEmpty())
-				stripped = this.input;
-			// Before sawing
-			if(!this.sawed)
-				return stripped;
-			// Finally, if there is a sawblade
-			return sawblade?data.recipe.output.get(): stripped;
-		}
-
-		public boolean isSawing(Level level)
-		{
-			return getRelativeProcessStep(level) > .5375&&!this.sawed;
-		}
-
-		public CompoundTag writeToNBT()
-		{
-			CompoundTag nbt = new CompoundTag();
-			nbt.put("input", this.input.save(new CompoundTag()));
-			nbt.putInt("processTick", this.processTick);
-			nbt.putBoolean("stripped", this.stripped);
-			nbt.putBoolean("sawed", this.sawed);
-			return nbt;
-		}
-
-		public static SawmillProcess readFromNBT(CompoundTag nbt)
-		{
-			ItemStack input = ItemStack.of(nbt.getCompound("input"));
-			SawmillProcess process = new SawmillProcess(input);
-			process.processTick = nbt.getInt("processTick");
-			process.stripped = nbt.getBoolean("stripped");
-			process.sawed = nbt.getBoolean("sawed");
-			return process;
-		}
-
-		private record RecipeDependentData(SawmillRecipe recipe, float maxProcessTicks, int energyPerTick)
-		{
-		}
 	}
 
 	@Override

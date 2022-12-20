@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -22,8 +21,8 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Process
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.MetalPressShapes;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes.RecipeDelegate;
+import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -199,7 +198,7 @@ public class MetalPressLogic implements IServerTickableMultiblock<State>, IClien
 		public final MultiblockProcessor<MetalPressRecipe, ProcessContextInWorld<MetalPressRecipe>> processor;
 		private boolean renderAsActive;
 
-		private final CapabilityReference<IItemHandler> outputCap;
+		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> inputCap;
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 
@@ -211,7 +210,7 @@ public class MetalPressLogic implements IServerTickableMultiblock<State>, IClien
 					ctx.getSyncRunnable(),
 					MetalPressRecipe.STANDARD_RECIPES::getById
 			);
-			this.outputCap = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, OUTPUT_POS);
+			this.output = new DroppingMultiblockOutput(OUTPUT_POS, ctx);
 			this.inputCap = new StoredCapability<>(new DirectProcessingItemHandler<>(
 					ctx.levelSupplier(), processor, (level, input) -> MetalPressRecipe.findRecipe(mold, input, level)
 			));
@@ -268,14 +267,7 @@ public class MetalPressLogic implements IServerTickableMultiblock<State>, IClien
 		@Override
 		public void doProcessOutput(ItemStack result, IMultiblockLevel level)
 		{
-			result = Utils.insertStackIntoInventory(this.outputCap, result, false);
-			if(!result.isEmpty())
-				Utils.dropStackAtPos(
-						level.getRawLevel(),
-						level.toAbsolute(OUTPUT_POS.posInMultiblock()),
-						result,
-						OUTPUT_POS.face().forFront(level.getOrientation()).getOpposite()
-				);
+			this.output.insertOrDrop(result, level);
 		}
 
 		public static MultiblockProcessInWorld<MetalPressRecipe> loadProcess(

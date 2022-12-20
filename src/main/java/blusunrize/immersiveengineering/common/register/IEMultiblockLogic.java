@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -121,6 +122,12 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<ExcavatorLogic.State> EXCAVATOR = metal(new ExcavatorLogic(), "excavator")
 			.structure(() -> IEMultiblocks.EXCAVATOR)
+			.redstoneAware()
+			.withComparator()
+			.build();
+
+	public static final MultiblockRegistration<SawmillLogic.State> SAWMILL = metal(new SawmillLogic(), "sawmill")
+			.structure(() -> IEMultiblocks.SAWMILL)
 			.redstoneAware()
 			.withComparator()
 			.build();

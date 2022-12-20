@@ -13,12 +13,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ExcavatorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -44,11 +43,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -151,7 +148,7 @@ public class ExcavatorLogic implements IServerTickableMultiblock<State>
 			}
 			if(!wheel.digStacks.get(target).isEmpty())
 			{
-				outputStack(wheel.digStacks.get(target).copy(), level, state.outputCap);
+				state.output.insertOrDrop(wheel.digStacks.get(target).copy(), level);
 				Block b = Block.byItem(wheel.digStacks.get(target).getItem());
 				if(b!=Blocks.AIR)
 					spawnParticles(wheel.digStacks.get(target), level);
@@ -301,18 +298,6 @@ public class ExcavatorLogic implements IServerTickableMultiblock<State>
 		return true;
 	}
 
-	private void outputStack(ItemStack output, IMultiblockLevel level, CapabilityReference<IItemHandler> outputCap)
-	{
-		output = Utils.insertStackIntoInventory(outputCap, output, false);
-		if(!output.isEmpty())
-			Utils.dropStackAtPos(
-					level.getRawLevel(),
-					level.toAbsolute(ITEM_OUTPUT.posInMultiblock()),
-					output,
-					ITEM_OUTPUT.face().forFront(level.getOrientation()).getOpposite()
-			);
-	}
-
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
@@ -360,12 +345,12 @@ public class ExcavatorLogic implements IServerTickableMultiblock<State>
 		private boolean active = false;
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(64000);
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
-		private final CapabilityReference<IItemHandler> outputCap;
+		private final DroppingMultiblockOutput output;
 		private final ComparatorManager<State> comparators;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			this.outputCap = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, ITEM_OUTPUT);
+			this.output = new DroppingMultiblockOutput(ITEM_OUTPUT, ctx);
 			this.comparators = new ComparatorManager<>();
 			this.comparators.addComparator(c -> computeComparatorValue(c.getLevel()), REDSTONE_POS);
 		}

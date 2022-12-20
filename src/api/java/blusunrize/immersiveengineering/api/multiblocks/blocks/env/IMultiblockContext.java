@@ -4,12 +4,19 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 @NonExtendable
 public interface IMultiblockContext<State extends IMultiblockState> extends ICommonMultiblockContext
 {
+	default void markDirtyAndSync()
+	{
+		markMasterDirty();
+		requestMasterBESync();
+	}
+
 	void markMasterDirty();
 
 	State getState();
@@ -32,4 +39,6 @@ public interface IMultiblockContext<State extends IMultiblockState> extends ICom
 	int getRedstoneInputValue(BlockPos posInMultiblock, RelativeBlockFace side, int fallback);
 
 	int getRedstoneInputValue(BlockPos posInMultiblock, int fallback);
+
+	BlockEntity getRawMasterBE();
 }

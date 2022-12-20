@@ -439,7 +439,7 @@ public class ClientProxy extends CommonProxy
 		// MULTIBLOCKS
 		registerBERenderNoContext(event, IEMultiblockLogic.METAL_PRESS.masterBE(), MetalPressRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.CRUSHER.masterBE(), CrusherRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SAWMILL.master(), SawmillRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.SAWMILL.masterBE(), SawmillRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.TANK.masterBE(), SheetmetalTankRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.SILO.masterBE(), SiloRenderer::new);
 		registerBERenderNoContext(event, IEMultiblockLogic.SQUEEZER.masterBE(), SqueezerRenderer::new);
