@@ -47,7 +47,7 @@ public final class TaskCallback implements ILuaCallback
 			throw new LuaException("error");
 	}
 
-	public static MethodResult make(ILuaContext context, ILuaTask func) throws LuaException
+	public static MethodResult make(ILuaContext context, LuaTask func) throws LuaException
 	{
 		long task = context.issueMainThreadTask(func);
 		return new TaskCallback(task).pull;
