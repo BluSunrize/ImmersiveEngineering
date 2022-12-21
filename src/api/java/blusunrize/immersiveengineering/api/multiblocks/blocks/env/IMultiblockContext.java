@@ -7,6 +7,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
+import java.util.function.BooleanSupplier;
+
 @NonExtendable
 public interface IMultiblockContext<State extends IMultiblockState> extends ICommonMultiblockContext
 {
@@ -24,7 +26,7 @@ public interface IMultiblockContext<State extends IMultiblockState> extends ICom
 
 	<T> LazyOptional<T> registerCapability(T value);
 
-	boolean isValid();
+	BooleanSupplier isValid();
 
 	void requestMasterBESync();
 

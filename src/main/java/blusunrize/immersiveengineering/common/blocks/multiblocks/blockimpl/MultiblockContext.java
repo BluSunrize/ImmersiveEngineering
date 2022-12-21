@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+import java.util.function.BooleanSupplier;
+
 public record MultiblockContext<State extends IMultiblockState>(
 		MultiblockBEHelperMaster<State> masterHelper,
 		MultiblockRegistration<State> multiblock,
@@ -48,9 +50,10 @@ public record MultiblockContext<State extends IMultiblockState>(
 	}
 
 	@Override
-	public boolean isValid()
+	public BooleanSupplier isValid()
 	{
-		return !masterHelper.getMasterBE().isRemoved();
+		final BlockEntity masterBE = masterHelper.getMasterBE();
+		return () -> !masterBE.isRemoved();
 	}
 
 	@Override
@@ -106,11 +109,5 @@ public record MultiblockContext<State extends IMultiblockState>(
 		for(final var face : RelativeBlockFace.values())
 			result = Math.max(result, beAtPos.getHelper().getRedstoneInput(face));
 		return result;
-	}
-
-	@Override
-	public BlockEntity getRawMasterBE()
-	{
-		return masterHelper.getMasterBE();
 	}
 }

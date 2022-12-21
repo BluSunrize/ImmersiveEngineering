@@ -22,11 +22,13 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.MixerSha
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEParticles;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.core.BlockPos;
@@ -51,6 +53,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 public class MixerLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
@@ -162,28 +165,33 @@ public class MixerLogic implements IServerTickableMultiblock<State>, IClientTick
 	public void tickClient(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		if(state.isActive)
+		if(!state.isActive)
+			return;
+		state.animation_agitator = (state.animation_agitator+9)%360;
+		final var level = context.getLevel();
+		if(!state.isSoundPlaying.getAsBoolean())
 		{
-			if(!state.tank.fluids.isEmpty())
-			{
-				final var level = context.getLevel();
-				FluidStack fs = state.tank.fluids.get(0);
-				float amount = fs.getAmount()/(float)state.tank.getCapacity()*1.125f;
-				// TODO why are the particles spawned client-side?
-				final var relativePos = new Vec3(2, 0.9375+amount, 1);
-				Vec3 partPos = level.toAbsolute(relativePos);
-				float r = ApiUtils.RANDOM.nextFloat()*.8125f;
-				float angleRad = (float)Math.toRadians(state.animation_agitator);
-				partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
-				final var rawLevel = level.getRawLevel();
-				for(int i = 0; i < 2; ++i)
-					if(ApiUtils.RANDOM.nextBoolean())
-						rawLevel.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-					else
-						rawLevel.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-			}
-			state.animation_agitator = (state.animation_agitator+9)%360;
+			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isSoundPlaying = MultiblockSound.startSound(
+					() -> state.isActive, context.isValid(), soundPos, IESounds.mixer
+			);
 		}
+		if(state.tank.fluids.isEmpty())
+			return;
+		FluidStack fs = state.tank.fluids.get(0);
+		float amount = fs.getAmount()/(float)state.tank.getCapacity()*1.125f;
+		// TODO why are the particles spawned client-side?
+		final var relativePos = new Vec3(2, 0.9375+amount, 1);
+		Vec3 partPos = level.toAbsolute(relativePos);
+		float r = ApiUtils.RANDOM.nextFloat()*.8125f;
+		float angleRad = (float)Math.toRadians(state.animation_agitator);
+		partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
+		final var rawLevel = level.getRawLevel();
+		for(int i = 0; i < 2; ++i)
+			if(ApiUtils.RANDOM.nextBoolean())
+				rawLevel.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+			else
+				rawLevel.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 	}
 
 	@Override
@@ -235,6 +243,7 @@ public class MixerLogic implements IServerTickableMultiblock<State>, IClientTick
 		// Client only
 		public boolean isActive;
 		public float animation_agitator = 0;
+		private BooleanSupplier isSoundPlaying = () -> false;
 
 		// Util
 		private final CapabilityReference<IFluidHandler> outputRef;

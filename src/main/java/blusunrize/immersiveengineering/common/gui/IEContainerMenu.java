@@ -227,7 +227,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 	)
 	{
 		return new MenuContext(pMenuType, pContainerId, ctx::markMasterDirty, p -> {
-			if(!ctx.isValid())
+			if(!ctx.isValid().getAsBoolean())
 				return false;
 			// TODO should not be origin
 			final var pos = ctx.getLevel().getAbsoluteOrigin();

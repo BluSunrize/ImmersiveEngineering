@@ -1,9 +1,11 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
@@ -18,11 +20,14 @@ import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -121,6 +126,18 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 		))
 			context.markMasterDirty();
 
+		if(active&&ApiUtils.RANDOM.nextInt(24)==0)
+		{
+			final IMultiblockLevel level = context.getLevel();
+			final Level rawLevel = level.getRawLevel();
+			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			rawLevel.playSound(
+					null,
+					soundPos.x, soundPos.y, soundPos.z,
+					SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS,
+					0.5F+ApiUtils.RANDOM.nextFloat()*0.5F, ApiUtils.RANDOM.nextFloat()*0.7F+0.3F
+			);
+		}
 		if(activeBeforeTick!=active)
 			NonMirrorableWithActiveBlock.setActive(context.getLevel(), IEMultiblocks.COKE_OVEN, active);
 	}

@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.SimpleComparatorValue;
@@ -16,16 +17,19 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Process
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.FermenterShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -42,10 +46,11 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class FermenterLogic implements IServerTickableMultiblock<State>
+public class FermenterLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
 {
 	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
 	private static final CapabilityPosition FLUID_OUTPUT = new CapabilityPosition(2, 0, 1, RelativeBlockFace.LEFT);
@@ -62,9 +67,12 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var rsDisabled = isRSDisabled(context);
-		state.processor.tickServer(state, context.getLevel(), !rsDisabled);
+		final State state = context.getState();
+		final boolean rsDisabled = isRSDisabled(context);
+		final boolean wasActive = state.active;
+		state.active = state.processor.tickServer(state, context.getLevel(), !rsDisabled);
+		if(wasActive!=state.active)
+			context.requestMasterBESync();
 		state.comparators.updateComparators(context);
 		if(rsDisabled)
 			return;
@@ -79,6 +87,19 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 
 		if(changed)
 			context.markMasterDirty();
+	}
+
+	@Override
+	public void tickClient(IMultiblockContext<State> context)
+	{
+		final State state = context.getState();
+		if(!state.isPlayingSound.getAsBoolean())
+		{
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isPlayingSound = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.fermenter
+			);
+		}
 	}
 
 	private boolean enqueueNewProcesses(IMultiblockContext<State> ctx)
@@ -200,6 +221,10 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 		private final StoredCapability<IFluidHandler> fluidHandler;
 		private final StoredCapability<IEnergyStorage> energyHandler;
 
+		// Client/sync field
+		private boolean active;
+		private BooleanSupplier isPlayingSound = () -> false;
+
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.processor = new MultiblockProcessor<>(
@@ -247,6 +272,18 @@ public class FermenterLogic implements IServerTickableMultiblock<State>
 			tank.readFromNBT(nbt.getCompound("tank"));
 			inventory.deserializeNBT(nbt.getCompound("inventory"));
 			processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
+		}
+
+		@Override
+		public void writeSyncNBT(CompoundTag nbt)
+		{
+			nbt.putBoolean("active", active);
+		}
+
+		@Override
+		public void readSyncNBT(CompoundTag nbt)
+		{
+			active = nbt.getBoolean("active");
 		}
 
 		@Override

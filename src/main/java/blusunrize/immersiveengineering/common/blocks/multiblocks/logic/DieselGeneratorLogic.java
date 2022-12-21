@@ -126,7 +126,7 @@ public class DieselGeneratorLogic implements IServerTickableMultiblock<State>, I
 		{
 			final var soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
 			state.isSoundPlaying = MultiblockSound.startSound(
-					() -> state.active, context::isValid, soundPos, IESounds.dieselGenerator
+					() -> state.active, context.isValid(), soundPos, IESounds.dieselGenerator
 			);
 		}
 		if(state.active&&context.getLevel().shouldTickModulo(2))

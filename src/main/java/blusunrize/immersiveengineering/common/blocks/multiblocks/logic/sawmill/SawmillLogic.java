@@ -114,7 +114,7 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 		{
 			final var soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
 			state.playingEmptySound = MultiblockSound.startSound(
-					() -> state.active, ctx::isValid, soundPos, IESounds.saw_empty
+					() -> state.active, ctx.isValid(), soundPos, IESounds.saw_empty
 			);
 		}
 		//Handle particles & full sound

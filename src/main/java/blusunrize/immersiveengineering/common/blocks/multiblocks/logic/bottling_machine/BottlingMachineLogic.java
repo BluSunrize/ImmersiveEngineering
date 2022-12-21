@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
@@ -7,30 +8,35 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InWorldProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.BottlingMachineShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -50,8 +56,11 @@ import java.util.function.Function;
 import static blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.getLiftTime;
 import static blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.getTransportTime;
 
-public class BottlingMachineLogic implements IServerTickableMultiblock<State>
+public class BottlingMachineLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
 {
+	public static final float TRANSLATION_DISTANCE = 2.5f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(3, 1, 1, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition ITEM_INPUT_POS = new CapabilityPosition(0, 1, 1, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition FLUID_INPUT_POS_BACK = new CapabilityPosition(0, 0, 0, RelativeBlockFace.FRONT);
@@ -70,6 +79,28 @@ public class BottlingMachineLogic implements IServerTickableMultiblock<State>
 			// TODO syncing every tick while the machine is active is a hack. This was how it worked in the old system,
 			//  but should be avoided
 			context.requestMasterBESync();
+	}
+
+	@Override
+	public void tickClient(IMultiblockContext<State> context)
+	{
+		final State state = context.getState();
+		if(!state.active)
+			return;
+		final IMultiblockLevel level = context.getLevel();
+		final Level rawLevel = level.getRawLevel();
+		for(final MultiblockProcess<BottlingMachineRecipe, ProcessContextInWorld<BottlingMachineRecipe>> process : state.processor.getQueue())
+		{
+			float fProcess = process.processTick;
+			Player localPlayer = ImmersiveEngineering.proxy.getClientPlayer();
+			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
+			if(fProcess >= (STANDARD_TRANSPORT_TIME-13)&&fProcess < (STANDARD_TRANSPORT_TIME-11))
+			{
+				final BlockPos soundPos = level.toAbsolute(new BlockPos(1, 1, 1));
+				rawLevel.playSound(localPlayer, soundPos, IESounds.bottling.get(), SoundSource.BLOCKS, .125F, 0.8F);
+				break;
+			}
+		}
 	}
 
 	@Override

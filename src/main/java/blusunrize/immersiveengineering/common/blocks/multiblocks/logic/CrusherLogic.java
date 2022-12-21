@@ -102,7 +102,7 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		{
 			final var soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
 			state.isPlayingSound = MultiblockSound.startSound(
-					() -> state.renderAsActive, context::isValid, soundPos, IESounds.crusher
+					() -> state.renderAsActive, context.isValid(), soundPos, IESounds.crusher
 			);
 		}
 	}

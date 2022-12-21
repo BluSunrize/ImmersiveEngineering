@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
@@ -18,9 +19,11 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Process
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.RefineryShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -29,6 +32,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -41,10 +45,11 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class RefineryLogic implements IServerTickableMultiblock<State>
+public class RefineryLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
 {
 	private static final BlockPos REDSTONE_POS = new BlockPos(4, 1, 2);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(2, 1, 0, RelativeBlockFace.UP);
@@ -74,6 +79,19 @@ public class RefineryLogic implements IServerTickableMultiblock<State>
 		FluidUtils.multiblockFluidOutput(
 				state.fluidOutput, state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
 		);
+	}
+
+	@Override
+	public void tickClient(IMultiblockContext<State> context)
+	{
+		final State state = context.getState();
+		if(!state.isSoundPlaying.getAsBoolean())
+		{
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isSoundPlaying = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.refinery
+			);
+		}
 	}
 
 	private void tryEnqueueProcess(State state, Level level)
@@ -165,6 +183,10 @@ public class RefineryLogic implements IServerTickableMultiblock<State>
 		private final StoredCapability<IFluidHandler> inputCap;
 		private final StoredCapability<IFluidHandler> outputCap;
 
+		// Sync/client fields
+		private boolean active;
+		private BooleanSupplier isSoundPlaying = () -> false;
+
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			final var markDirty = ctx.getMarkDirtyRunnable();
@@ -196,6 +218,18 @@ public class RefineryLogic implements IServerTickableMultiblock<State>
 			tanks.readNBT(nbt.getCompound("tanks"));
 			processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
 			inventory.deserializeNBT(nbt.getCompound("inventory"));
+		}
+
+		@Override
+		public void writeSyncNBT(CompoundTag nbt)
+		{
+			nbt.putBoolean("active", active);
+		}
+
+		@Override
+		public void readSyncNBT(CompoundTag nbt)
+		{
+			active = nbt.getBoolean("active");
 		}
 
 		@Override
