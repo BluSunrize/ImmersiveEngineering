@@ -13,6 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -192,7 +193,15 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			multiblockBE.getHelper().onNeighborChanged(fromPos);
 	}
 
-	// TODO pick block
+	@Override
+	@Nonnull
+	public ItemStack getCloneItemStack(@Nonnull BlockGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state)
+	{
+		if(level.getBlockEntity(pos) instanceof IMultiblockBE<?> multiblockBE)
+			return multiblockBE.getHelper().getPickBlock();
+		else
+			return ItemStack.EMPTY;
+	}
 
 	public static class WithMirrorState<State extends IMultiblockState> extends MultiblockPartBlock<State>
 	{

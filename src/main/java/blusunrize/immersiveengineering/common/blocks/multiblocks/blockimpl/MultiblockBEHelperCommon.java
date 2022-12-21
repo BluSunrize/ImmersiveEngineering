@@ -8,6 +8,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -161,6 +163,15 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 			if(block.pos.equals(getPositionInMB()))
 				return block.state;
 		return Blocks.AIR.defaultBlockState();
+	}
+
+	@Override
+	public ItemStack getPickBlock()
+	{
+		final Level level = be.getLevel();
+		if(level==null)
+			return ItemStack.EMPTY;
+		return Utils.getPickBlock(getOriginalBlock(level));
 	}
 
 	@Nullable
