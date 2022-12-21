@@ -51,6 +51,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.getLiftTime;
@@ -189,6 +190,14 @@ public class BottlingMachineLogic implements IServerTickableMultiblock<State>, I
 			return ctx.getState().energyInput.cast(ctx);
 		else
 			return LazyOptional.empty();
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		for(final MultiblockProcess<BottlingMachineRecipe, ?> process : state.processor.getQueue())
+			if(process instanceof BottlingProcess bottlingProcess)
+				bottlingProcess.inputItems.forEach(drop);
 	}
 
 	@Override

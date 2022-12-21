@@ -7,10 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -48,6 +45,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SqueezerLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
@@ -174,6 +172,12 @@ public class SqueezerLogic implements IServerTickableMultiblock<State>, IClientT
 		if(!isClient)
 			player.openMenu(IEMenuTypes.SQUEEZER_NEW.provide(ctx));
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 
 	@Override

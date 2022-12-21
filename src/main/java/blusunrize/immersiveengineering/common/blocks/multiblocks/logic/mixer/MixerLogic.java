@@ -7,10 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
@@ -54,6 +51,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class MixerLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
@@ -224,6 +222,12 @@ public class MixerLogic implements IServerTickableMultiblock<State>, IClientTick
 		if(!isClient)
 			player.openMenu(IEMenuTypes.MIXER_NEW.provide(ctx));
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 
 	@Override

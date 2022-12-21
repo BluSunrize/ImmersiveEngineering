@@ -47,6 +47,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
@@ -284,6 +285,13 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 		}
 		stack.shrink(1);
 		return true;
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		if(!state.sawblade.isEmpty())
+			drop.accept(state.sawblade);
 	}
 
 	@Override

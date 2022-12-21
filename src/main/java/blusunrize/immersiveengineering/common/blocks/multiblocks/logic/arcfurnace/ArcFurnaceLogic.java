@@ -42,6 +42,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
@@ -257,6 +258,12 @@ public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClien
 		if(!isClient)
 			player.openMenu(IEMenuTypes.ARC_FURNACE_NEW.provide(ctx));
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void dropExtraItems(State state, Consumer<ItemStack> drop)
+	{
+		MBInventoryUtils.dropItems(state.inventory, drop);
 	}
 
 	@Override
