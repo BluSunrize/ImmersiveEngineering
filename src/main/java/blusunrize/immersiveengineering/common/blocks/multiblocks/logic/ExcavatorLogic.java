@@ -203,8 +203,8 @@ public class ExcavatorLogic implements IServerTickableMultiblock<State>
 					topCenterAbs.x+axis.choose(rndPosOffset, 0, fixPosOffset),
 					topCenterAbs.y,
 					topCenterAbs.z+axis.choose(fixPosOffset, 0, rndPosOffset),
-					0,
-					mX, mY, mZ, 1
+					32,
+					mX, mY, mZ, 0.075
 			);
 		}
 	}

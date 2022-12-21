@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
@@ -128,18 +129,20 @@ public class DieselGeneratorLogic implements IServerTickableMultiblock<State>, I
 					() -> state.active, context::isValid, soundPos, IESounds.dieselGenerator
 			);
 		}
-		if(state.active&&context.getLevel().shouldTickModulo(4))
+		if(state.active&&context.getLevel().shouldTickModulo(2))
 		{
 			final var absoluteSmokePosition = context.getLevel().toAbsolute(SMOKE_POSITION);
-			context.getLevel().getRawLevel().addParticle(
+			context.getLevel().getRawLevel().addAlwaysVisibleParticle(
 					ParticleTypes.CAMPFIRE_COSY_SMOKE,
-					absoluteSmokePosition.x,
-					absoluteSmokePosition.y,
-					absoluteSmokePosition.z,
-					0.015625-(0.03125*Math.random()),
-					0.0625, 0.015625-(0.03125*Math.random())
+					absoluteSmokePosition.x, absoluteSmokePosition.y, absoluteSmokePosition.z,
+					particleXZSpeed(), 0.0625, particleXZSpeed()
 			);
 		}
+	}
+
+	private double particleXZSpeed()
+	{
+		return ApiUtils.RANDOM.nextDouble(-0.015625, 0.015625);
 	}
 
 	@Override

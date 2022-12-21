@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
@@ -20,7 +21,10 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,6 +49,11 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(2, 0, 3, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(4, 1, 1, RelativeBlockFace.UP);
+	private static final Vec3[] PARTICLE_POSITIONS = {
+			new Vec3(2, 2.125, 1.5),
+			new Vec3(2.5, 2.125, 1.5),
+			new Vec3(3, 2.125, 1.5),
+	};
 
 	@Override
 	public State createInitialState(IInitialMultiblockContext<State> capabilitySource)
@@ -56,12 +65,31 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		// TODO sound
 		final var wasActive = state.renderAsActive;
 		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), canWorkFromRS(context));
 		if(wasActive!=state.renderAsActive)
 			context.requestMasterBESync();
 		state.comparators.updateComparators(context);
+		if(state.renderAsActive)
+			spawnParticles(context.getLevel(), state);
+	}
+
+	public void spawnParticles(IMultiblockLevel level, State state)
+	{
+		if(state.processor.getQueueSize()==0||!(level.getRawLevel() instanceof ServerLevel serverLevel))
+			return;
+		final MultiblockProcess<CrusherRecipe, ?> particleProcess = state.processor.getQueue().get(0);
+		if(!(particleProcess instanceof MultiblockProcessInWorld<?> inWorld)||inWorld.inputItems.isEmpty())
+			return;
+		final ItemStack particleStack = inWorld.inputItems.get(0);
+		final ItemParticleOption particleData = new ItemParticleOption(ParticleTypes.ITEM, particleStack);
+		for(final Vec3 relativeOffset : PARTICLE_POSITIONS)
+		{
+			final Vec3 absolutePos = level.toAbsolute(relativeOffset);
+			serverLevel.sendParticles(
+					particleData, absolutePos.x, absolutePos.y, absolutePos.z, 8, 0, 0, 0, 0.0625
+			);
+		}
 	}
 
 	@Override
@@ -98,7 +126,6 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 
 	private static boolean canWorkFromRS(IMultiblockContext<State> ctx)
 	{
-		// TODO relative sides seem to be broken a bit...
 		return ctx.getRedstoneInputValue(REDSTONE_POS, RelativeBlockFace.BACK, 15) <= 0;
 	}
 

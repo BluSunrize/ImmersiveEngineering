@@ -164,7 +164,7 @@ public class MixerLogic implements IServerTickableMultiblock<State>, IClientTick
 		final var state = context.getState();
 		if(state.isActive)
 		{
-			if(ApiUtils.RANDOM.nextInt(8)==0&&!state.tank.fluids.isEmpty())
+			if(!state.tank.fluids.isEmpty())
 			{
 				final var level = context.getLevel();
 				FluidStack fs = state.tank.fluids.get(0);
@@ -176,10 +176,11 @@ public class MixerLogic implements IServerTickableMultiblock<State>, IClientTick
 				float angleRad = (float)Math.toRadians(state.animation_agitator);
 				partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
 				final var rawLevel = level.getRawLevel();
-				if(ApiUtils.RANDOM.nextBoolean())
-					rawLevel.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-				else
-					rawLevel.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+				for(int i = 0; i < 2; ++i)
+					if(ApiUtils.RANDOM.nextBoolean())
+						rawLevel.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+					else
+						rawLevel.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 			}
 			state.animation_agitator = (state.animation_agitator+9)%360;
 		}

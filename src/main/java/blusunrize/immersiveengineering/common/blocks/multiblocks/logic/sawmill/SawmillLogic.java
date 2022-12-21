@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.inventory.InsertOnlyInventory;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -35,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -44,6 +46,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.*;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
@@ -107,7 +110,13 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 				.filter(p -> p.isSawing(rawLevel))
 				.findFirst();
 		//Handle empty sound
-		ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, ctx.getRawMasterBE(), process.isEmpty(), .4f, 1);
+		if(!state.playingEmptySound.getAsBoolean())
+		{
+			final var soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
+			state.playingEmptySound = MultiblockSound.startSound(
+					() -> state.active, ctx::isValid, soundPos, IESounds.saw_empty
+			);
+		}
 		//Handle particles & full sound
 		if(process.isPresent())
 		{
@@ -308,6 +317,7 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 		//Temporary counter for making sure sounds tick properly
 		private int count = 0;
 		public float animation_bladeRotation = 0;
+		private BooleanSupplier playingEmptySound = () -> false;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
