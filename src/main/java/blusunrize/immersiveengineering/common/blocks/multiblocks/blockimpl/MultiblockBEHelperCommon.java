@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> implements IMultiblockBEHelper<State>
 {
@@ -42,13 +42,17 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	protected final MultiblockRegistration<State> multiblock;
 	protected final MultiblockOrientation orientation;
 	private IMultiblockBEHelperMaster<State> masterHelperDuringDisassembly;
-	private final CachedShape cachedShape = new CachedShape();
+	private final CachedValue<BlockPos, MultiblockOrientation, VoxelShape> cachedShape;
 
 	protected MultiblockBEHelperCommon(BlockEntity be, MultiblockRegistration<State> multiblock, BlockState state)
 	{
 		this.be = be;
 		this.multiblock = multiblock;
 		this.orientation = new MultiblockOrientation(state, multiblock.mirrorable());
+		this.cachedShape = new CachedValue<>((pos, orientation) -> {
+			final VoxelShape relative = multiblock.logic().shapeGetter().apply(pos);
+			return orientation.transformRelativeShape(relative);
+		});
 	}
 
 	@Override
@@ -56,7 +60,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	{
 		final BlockPos posInMB = getPositionInMB();
 		final IMultiblockLogic<State> logic = multiblock.logic();
-		final VoxelShape absoluteShape = cachedShape.get(logic.shapeGetter(), posInMB, orientation);
+		final VoxelShape absoluteShape = cachedShape.get(posInMB, orientation);
 		if(multiblock.postProcessesShape())
 		{
 			final var multiblockCtx = getContext();
@@ -192,22 +196,28 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		return rsStrength;
 	}
 
-	private class CachedShape
+	protected static class CachedValue<K1, K2, T>
 	{
+		private final BiFunction<K1, K2, T> computeValue;
 		@Nullable
-		private VoxelShape shape;
-		private BlockPos posInMB = BlockPos.ZERO;
-		private MultiblockOrientation facing = new MultiblockOrientation(Direction.NORTH, false);
+		private T value;
+		private K1 key1;
+		private K2 key2;
 
-		public VoxelShape get(Function<BlockPos, VoxelShape> getRelative, BlockPos pos, MultiblockOrientation facing)
+		protected CachedValue(BiFunction<K1, K2, T> computeValue)
 		{
-			if(shape!=null&&posInMB.equals(pos)&&this.facing.equals(facing))
-				return shape;
-			final VoxelShape relativeShape = getRelative.apply(pos);
-			shape = orientation.transformRelativeShape(relativeShape);
-			posInMB = pos;
-			this.facing = facing;
-			return shape;
+			this.computeValue = computeValue;
+		}
+
+		public T get(K1 first, K2 second)
+		{
+			if(value==null||!Objects.equals(first, key1)||!Objects.equals(second, key2))
+			{
+				value = computeValue.apply(first, second);
+				this.key1 = first;
+				this.key2 = second;
+			}
+			return value;
 		}
 	}
 }

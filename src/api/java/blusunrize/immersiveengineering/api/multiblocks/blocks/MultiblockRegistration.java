@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,6 +29,7 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 		boolean redstoneInputAware,
 		boolean postProcessesShape,
 		Supplier<BlockPos> getMasterPosInMB,
+		Function<Level, Vec3i> getSize,
 		Disassembler disassemble,
 		Function<Level, List<StructureBlockInfo>> getStructure
 )
@@ -42,6 +44,11 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 	public BlockPos masterPosInMB()
 	{
 		return getMasterPosInMB.get();
+	}
+
+	public Vec3i size(Level level)
+	{
+		return getSize.apply(level);
 	}
 
 	public interface Disassembler

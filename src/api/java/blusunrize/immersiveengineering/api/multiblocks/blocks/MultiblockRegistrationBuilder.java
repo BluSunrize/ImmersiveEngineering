@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -46,6 +47,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 	private boolean redstoneInputAware = false;
 	private boolean postProcessesShape = false;
 	private Supplier<BlockPos> getMasterPosInMB;
+	private Function<Level, Vec3i> getSize;
 	private Disassembler disassemble;
 	private Function<Level, List<StructureBlockInfo>> structure;
 
@@ -122,6 +124,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Preconditions.checkState(this.getMasterPosInMB==null);
 		Preconditions.checkState(this.disassemble==null);
 		this.getMasterPosInMB = () -> structure.get().getMasterFromOriginOffset();
+		this.getSize = l -> structure.get().getSize(l);
 		this.disassemble = (level, origin, orientation) -> structure.get().disassemble(
 				// TODO may need front.getOpposite or similar
 				level, origin, orientation.mirrored(), orientation.front()
@@ -138,6 +141,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Objects.requireNonNull(block);
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(getMasterPosInMB);
+		Objects.requireNonNull(getSize);
 		Objects.requireNonNull(disassemble);
 		Objects.requireNonNull(structure);
 		Preconditions.checkState(this.result==null);
@@ -163,7 +167,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		this.result = new MultiblockRegistration<>(
 				logic, masterBE, dummyBE, block, item,
 				mirrorable, hasComparatorOutput, redstoneInputAware, postProcessesShape,
-				getMasterPosInMB, disassemble, structure
+				getMasterPosInMB, getSize, disassemble, structure
 		);
 		return this.result;
 	}

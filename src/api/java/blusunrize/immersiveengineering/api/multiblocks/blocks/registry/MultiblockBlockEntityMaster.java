@@ -16,6 +16,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
@@ -103,5 +104,11 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 	public BlockPos getModelOffset(BlockState state, @javax.annotation.Nullable Vec3i size)
 	{
 		return BlockPos.ZERO;
+	}
+
+	@Override
+	public AABB getRenderBoundingBox()
+	{
+		return helper.getRenderBoundingBox();
 	}
 }

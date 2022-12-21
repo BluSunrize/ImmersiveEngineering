@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import javax.annotation.Nonnull;
@@ -26,6 +27,8 @@ public interface IMultiblockBEHelperMaster<State extends IMultiblockState> exten
 	IMultiblockContext<State> getContext();
 
 	Packet<ClientGamePacketListener> getUpdatePacket();
+
+	AABB getRenderBoundingBox();
 
 	interface Factory
 	{
