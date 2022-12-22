@@ -74,7 +74,11 @@ public class MultiblockBlockEntityDummy<State extends IMultiblockState>
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
-		return helper.getCapability(cap, side);
+		final LazyOptional<T> ownCap = helper.getCapability(cap, side);
+		if(ownCap.isPresent())
+			return ownCap;
+		else
+			return super.getCapability(cap, side);
 	}
 
 	@Override
