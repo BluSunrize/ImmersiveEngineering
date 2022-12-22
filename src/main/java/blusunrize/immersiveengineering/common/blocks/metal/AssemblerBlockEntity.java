@@ -147,6 +147,9 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	@Override
 	public void tickClient()
 	{
+		// Note: This sound is currently never played, since "shouldRenderAsActive" checks for a non-empty process
+		// queue. See https://discord.com/channels/270295681829306369/539145317547900938/1055049673653633095 and related
+		// discussion.
 		ImmersiveEngineering.proxy.handleTileSound(IESounds.assembler, this, shouldRenderAsActive(), .5f, 1);
 	}
 
