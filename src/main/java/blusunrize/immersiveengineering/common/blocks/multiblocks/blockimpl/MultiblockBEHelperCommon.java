@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
@@ -73,19 +73,36 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
 	{
-		final var ctx = getContext();
-		if(ctx==null)
+		final var masterHelper = getMasterHelper();
+		if(masterHelper==null)
 			return LazyOptional.empty();
-		final var relativeSide = RelativeBlockFace.from(orientation, side);
-		return multiblock.logic().getCapability(ctx, new CapabilityPosition(getPositionInMB(), relativeSide), cap);
+		final var ctx = masterHelper.getContext();
+		final RelativeBlockFace relativeSide = RelativeBlockFace.from(orientation, side);
+		final CapabilityPosition position = new CapabilityPosition(getPositionInMB(), relativeSide);
+		for(final ComponentInstance<?> component : masterHelper.getComponentInstances())
+		{
+			final LazyOptional<T> fromComponent = component.getCapability(position, cap);
+			if(fromComponent.isPresent())
+				return fromComponent;
+		}
+		return multiblock.logic().getCapability(ctx, position, cap);
 	}
 
 	@Override
 	public InteractionResult click(Player player, InteractionHand hand, BlockHitResult hit)
 	{
-		final var ctx = getContext();
-		if(ctx==null)
+		final MultiblockBEHelperMaster<State> helper = getMasterHelper();
+		if(helper==null)
 			return InteractionResult.FAIL;
+		final MultiblockContext<State> ctx = helper.getContext();
+		for(final ComponentInstance<?> component : helper.getComponentInstances())
+		{
+			final InteractionResult componentResult = component.click(
+					getPositionInMB(), player, hand, hit, player.level.isClientSide
+			);
+			if(componentResult!=InteractionResult.PASS)
+				return componentResult;
+		}
 		return multiblock.logic().click(ctx, getPositionInMB(), player, hand, hit, player.level.isClientSide);
 	}
 
@@ -111,7 +128,12 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	@Override
 	public void onEntityCollided(Entity collided)
 	{
-		getMultiblock().logic().onEntityCollision(getContext(), getPositionInMB(), collided);
+		final var helper = getMasterHelper();
+		if(helper==null)
+			return;
+		getMultiblock().logic().onEntityCollision(helper.getContext(), getPositionInMB(), collided);
+		for(final ComponentInstance<?> component : helper.getComponentInstances())
+			component.onEntityCollision(getPositionInMB(), collided);
 	}
 
 	@Nullable

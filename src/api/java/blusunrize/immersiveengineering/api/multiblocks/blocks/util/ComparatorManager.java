@@ -1,38 +1,58 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks.util;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent.StateWrapper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.WrappedState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class ComparatorManager<State extends IMultiblockState>
+public class ComparatorManager<State>
+		implements IServerTickableComponent<WrappedState<State>>, StateWrapper<State, WrappedState<State>>
 {
-	private final List<ComparatorPosition<State>> comparators = new ArrayList<>();
+	private final ComparatorValue<State> valueGetter;
+	private final List<BlockPos> positions;
 
-	public ComparatorManager<State> addSimpleComparator(SimpleComparatorValue<State> value, BlockPos... positions)
+	public static <State>
+	ComparatorManager<State> makeSimple(SimpleComparatorValue<State> value, BlockPos... positions)
 	{
-		return addComparator(value, positions);
+		return new ComparatorManager<>(value, positions);
 	}
 
-	public ComparatorManager<State> addComparator(ComparatorValue<State> value, BlockPos... positions)
+	public ComparatorManager(ComparatorValue<State> value, BlockPos... positions)
 	{
-		comparators.add(new ComparatorPosition<>(value, List.of(positions)));
-		return this;
+		this.valueGetter = value;
+		this.positions = Arrays.asList(positions);
 	}
 
-	public void updateComparators(IMultiblockContext<State> ctx)
+	@Override
+	public void tickServer(IMultiblockContext<WrappedState<State>> ctx)
 	{
-		for(final var comparator : comparators)
-			comparator.updateValue(ctx);
+		final WrappedState<State> state = ctx.getState();
+		final int newValue = valueGetter.getComparatorValue(state.inner, ctx.getLevel());
+		if(newValue!=state.lastValue)
+		{
+			for(final var position : positions)
+				ctx.setComparatorOutputFor(position, newValue);
+			state.lastValue = newValue;
+		}
 	}
 
-	public interface SimpleComparatorValue<State extends IMultiblockState> extends ComparatorValue<State>
+	@Override
+	public WrappedState<State> wrapState(State outer)
+	{
+		return new WrappedState<>(outer);
+	}
+
+	public interface SimpleComparatorValue<State> extends ComparatorValue<State>
 	{
 		static <State extends IMultiblockState> SimpleComparatorValue<State> inventory(
 				Function<State, IItemHandler> getInv, int minSlot, int numSlots
@@ -59,37 +79,25 @@ public class ComparatorManager<State extends IMultiblockState>
 		int getComparatorValue(State state);
 
 		@Override
-		default int getComparatorValue(IMultiblockContext<State> state)
+		default int getComparatorValue(State state, IMultiblockLevel level)
 		{
-			return getComparatorValue(state.getState());
+			return getComparatorValue(state);
 		}
 	}
 
-	public interface ComparatorValue<State extends IMultiblockState>
+	public interface ComparatorValue<State>
 	{
-		int getComparatorValue(IMultiblockContext<State> state);
+		int getComparatorValue(State state, IMultiblockLevel level);
 	}
 
-	private static class ComparatorPosition<State extends IMultiblockState>
+	public static class WrappedState<T>
 	{
-		private final ComparatorValue<State> valueGetter;
-		private final List<BlockPos> positions;
+		private final T inner;
 		private int lastValue = -1;
 
-		public ComparatorPosition(ComparatorValue<State> valueGetter, List<BlockPos> positions)
+		public WrappedState(T inner)
 		{
-			this.valueGetter = valueGetter;
-			this.positions = positions;
-		}
-
-		public void updateValue(IMultiblockContext<State> ctx)
-		{
-			final int newValue = valueGetter.getComparatorValue(ctx);
-			if(newValue==lastValue)
-				return;
-			this.lastValue = newValue;
-			for(final var position : positions)
-				ctx.setComparatorOutputFor(position, newValue);
+			this.inner = inner;
 		}
 	}
 }

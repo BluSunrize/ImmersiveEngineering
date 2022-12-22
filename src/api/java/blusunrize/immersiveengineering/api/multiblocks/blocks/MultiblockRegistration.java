@@ -1,7 +1,9 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent.StateWrapper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
@@ -20,6 +22,7 @@ import java.util.function.Supplier;
 
 public record MultiblockRegistration<State extends IMultiblockState>(
 		IMultiblockLogic<State> logic,
+		List<ExtraComponent<State, ?>> extraComponents,
 		RegistryObject<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE,
 		RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE,
 		RegistryObject<? extends MultiblockPartBlock<State>> block,
@@ -35,10 +38,23 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 )
 {
 	public static <State extends IMultiblockState>
-	MultiblockRegistrationBuilder<State> builder(IMultiblockLogic<State> logic, String name)
+	MultiblockRegistrationBuilder<State, ?> builder(IMultiblockLogic<State> logic, String name)
 	{
+		class Impl extends MultiblockRegistrationBuilder<State, Impl>
+		{
+			public Impl(IMultiblockLogic<State> logic, String name)
+			{
+				super(logic, name);
+			}
+
+			@Override
+			protected Impl self()
+			{
+				return this;
+			}
+		}
 		// TODO remove _new suffix
-		return new MultiblockRegistrationBuilder<>(logic, name+"_new");
+		return new Impl(logic, name+"_new");
 	}
 
 	public BlockPos masterPosInMB()
@@ -54,5 +70,11 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 	public interface Disassembler
 	{
 		void disassemble(Level world, BlockPos origin, MultiblockOrientation orientation);
+	}
+
+	public record ExtraComponent<State, ComponentState>(
+			IMultiblockComponent<ComponentState> component, StateWrapper<State, ComponentState> makeWrapper
+	)
+	{
 	}
 }

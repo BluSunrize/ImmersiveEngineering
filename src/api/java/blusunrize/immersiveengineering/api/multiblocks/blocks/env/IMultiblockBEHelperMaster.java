@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import net.minecraft.network.protocol.Packet;
@@ -29,6 +29,10 @@ public interface IMultiblockBEHelperMaster<State extends IMultiblockState> exten
 	Packet<ClientGamePacketListener> getUpdatePacket();
 
 	AABB getRenderBoundingBox();
+
+	void tickServer();
+
+	void tickClient();
 
 	interface Factory
 	{

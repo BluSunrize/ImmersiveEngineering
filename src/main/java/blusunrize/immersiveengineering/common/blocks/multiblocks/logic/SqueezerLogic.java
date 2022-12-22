@@ -5,8 +5,10 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic.State;
@@ -16,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SqueezerShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
@@ -25,8 +26,6 @@ import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -48,7 +47,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class SqueezerLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
+public class SqueezerLogic
+		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
 	private static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(2, 1, 1, RelativeBlockFace.RIGHT);
@@ -164,14 +164,6 @@ public class SqueezerLogic implements IServerTickableMultiblock<State>, IClientT
 				return state.itemOutputCap.cast(ctx);
 		}
 		return LazyOptional.empty();
-	}
-
-	@Override
-	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
-	{
-		if(!isClient)
-			player.openMenu(IEMenuTypes.SQUEEZER_NEW.provide(ctx));
-		return InteractionResult.SUCCESS;
 	}
 
 	@Override

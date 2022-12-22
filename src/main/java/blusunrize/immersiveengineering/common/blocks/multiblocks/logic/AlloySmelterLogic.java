@@ -3,22 +3,20 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.IFurnaceEnvironment;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.InputSlot;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.OutputSlot;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -27,8 +25,6 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class AlloySmelterLogic implements IServerTickableMultiblock<State>
+public class AlloySmelterLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
 	public static final int NUM_SLOTS = 4;
 
@@ -59,24 +55,9 @@ public class AlloySmelterLogic implements IServerTickableMultiblock<State>
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
-	{
-		return LazyOptional.empty();
-	}
-
-	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter()
 	{
 		return $ -> Shapes.block();
-	}
-
-	@Override
-	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
-	{
-		if(!isClient)
-			player.openMenu(IEMenuTypes.ALLOY_SMELTER_NEW.provide(ctx));
-		return InteractionResult.SUCCESS;
 	}
 
 	@Override

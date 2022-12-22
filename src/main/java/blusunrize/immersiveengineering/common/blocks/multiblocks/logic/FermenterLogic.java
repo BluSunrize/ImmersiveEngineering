@@ -5,8 +5,10 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.SimpleComparatorValue;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -16,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.FermenterShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
@@ -26,8 +27,6 @@ import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -50,9 +49,10 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class FermenterLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
+public class FermenterLogic
+		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
-	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
 	private static final CapabilityPosition FLUID_OUTPUT = new CapabilityPosition(2, 0, 1, RelativeBlockFace.LEFT);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
 
@@ -73,7 +73,6 @@ public class FermenterLogic implements IServerTickableMultiblock<State>, IClient
 		state.active = state.processor.tickServer(state, context.getLevel(), !rsDisabled);
 		if(wasActive!=state.active)
 			context.requestMasterBESync();
-		state.comparators.updateComparators(context);
 		if(rsDisabled)
 			return;
 		boolean changed = false;
@@ -198,12 +197,11 @@ public class FermenterLogic implements IServerTickableMultiblock<State>, IClient
 		return FermenterShapes.SHAPE_GETTER;
 	}
 
-	@Override
-	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
+	public static ComparatorManager<State> makeComparator()
 	{
-		if(!isClient)
-			player.openMenu(IEMenuTypes.FERMENTER_NEW.provide(ctx));
-		return InteractionResult.SUCCESS;
+		return ComparatorManager.makeSimple(
+				SimpleComparatorValue.inventory(State::getInventory, 0, 8), FermenterLogic.REDSTONE_POS
+		);
 	}
 
 	public static class State implements IMultiblockState, ProcessContextInMachine<FermenterRecipe>
@@ -213,7 +211,6 @@ public class FermenterLogic implements IServerTickableMultiblock<State>, IClient
 		private final SlotwiseItemHandler inventory;
 		private final MultiblockProcessor<FermenterRecipe, ProcessContextInMachine<FermenterRecipe>> processor;
 
-		private final ComparatorManager<State> comparators = new ComparatorManager<>();
 		private final CapabilityReference<IFluidHandler> fluidOutput;
 		private final CapabilityReference<IItemHandler> itemOutput;
 		private final StoredCapability<IItemHandler> insertionHandler;
@@ -253,7 +250,6 @@ public class FermenterLogic implements IServerTickableMultiblock<State>, IClient
 					tank, true, false, ctx.getMarkDirtyRunnable()
 			));
 			this.energyHandler = new StoredCapability<>(energy);
-			this.comparators.addSimpleComparator(SimpleComparatorValue.inventory(state -> state.inventory, 0, 8), REDSTONE_POS);
 		}
 
 		@Override

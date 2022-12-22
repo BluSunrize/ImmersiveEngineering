@@ -6,7 +6,9 @@ import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
@@ -14,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic.State;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEFluids;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
@@ -22,8 +23,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -47,7 +46,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class CokeOvenLogic implements IServerTickableMultiblock<State>
+public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(1, 1, 1);
 
@@ -175,14 +174,6 @@ public class CokeOvenLogic implements IServerTickableMultiblock<State>
 			return state.fluidCap.cast(ctx);
 		else
 			return LazyOptional.empty();
-	}
-
-	@Override
-	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
-	{
-		if(!isClient)
-			player.openMenu(IEMenuTypes.COKE_OVEN_NEW.provide(ctx));
-		return InteractionResult.SUCCESS;
 	}
 
 	@Override

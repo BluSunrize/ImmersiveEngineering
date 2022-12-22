@@ -4,8 +4,10 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
@@ -46,7 +48,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class DieselGeneratorLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
+public class DieselGeneratorLogic
+		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final Vec3 SMOKE_POSITION = new Vec3(2.1875, 3.25, 2.1875);
 	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);

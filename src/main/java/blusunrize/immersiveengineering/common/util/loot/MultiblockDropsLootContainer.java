@@ -11,8 +11,10 @@ package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.ComponentInstance;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperCommon;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -60,6 +62,9 @@ public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 		if(!(iHelper instanceof MultiblockBEHelperCommon<S> helper))
 			return;
 		final var masterHelper = helper.getMasterHelperDuringDisassembly();
+		if(masterHelper instanceof MultiblockBEHelperMaster<S> nonAPI)
+			for(final ComponentInstance<?> component : nonAPI.getComponentInstances())
+				component.dropExtraItems(drop);
 		if(masterHelper!=null)
 			helper.getMultiblock().logic().dropExtraItems(masterHelper.getState(), drop);
 	}

@@ -10,7 +10,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic.State;
@@ -52,7 +54,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-public class ExcavatorLogic implements IServerTickableMultiblock<State>
+public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
 	private static final Set<CapabilityPosition> ENERGY_INPUTS = Set.of(
 			new CapabilityPosition(2, 0, 4, RelativeBlockFace.LEFT),
@@ -92,7 +94,6 @@ public class ExcavatorLogic implements IServerTickableMultiblock<State>
 	{
 		final var level = context.getLevel();
 		final var state = context.getState();
-		state.comparators.updateComparators(context);
 
 		float rot;
 		int target = -1;
@@ -306,7 +307,7 @@ public class ExcavatorLogic implements IServerTickableMultiblock<State>
 		return LazyOptional.empty();
 	}
 
-	private static int computeComparatorValue(IMultiblockLevel level)
+	public static int computeComparatorValue(State state, IMultiblockLevel level)
 	{
 		if(getWheel(level)==null)
 			return 0;
@@ -346,13 +347,10 @@ public class ExcavatorLogic implements IServerTickableMultiblock<State>
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(64000);
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 		private final DroppingMultiblockOutput output;
-		private final ComparatorManager<State> comparators;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.output = new DroppingMultiblockOutput(ITEM_OUTPUT, ctx);
-			this.comparators = new ComparatorManager<>();
-			this.comparators.addComparator(c -> computeComparatorValue(c.getLevel()), REDSTONE_POS);
 		}
 
 		@Override

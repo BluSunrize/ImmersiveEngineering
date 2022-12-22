@@ -2,9 +2,10 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BucketWheelLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.BucketWheelShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -15,12 +16,11 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.function.Function;
 
-public class BucketWheelLogic implements IClientTickableMultiblock<State>, IServerTickableMultiblock<State>
+public class BucketWheelLogic
+		implements IMultiblockLogic<State>, IClientTickableComponent<State>, IServerTickableComponent<State>
 {
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
@@ -45,12 +45,6 @@ public class BucketWheelLogic implements IClientTickableMultiblock<State>, IServ
 	public State createInitialState(IInitialMultiblockContext<State> ctx)
 	{
 		return new State();
-	}
-
-	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
-	{
-		return LazyOptional.empty();
 	}
 
 	@Override

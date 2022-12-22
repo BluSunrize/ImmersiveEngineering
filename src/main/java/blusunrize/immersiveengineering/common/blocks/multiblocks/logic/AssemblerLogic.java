@@ -3,7 +3,9 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -12,7 +14,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.Assembler
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.AssemblerShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
@@ -25,8 +26,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -49,7 +48,7 @@ import java.util.stream.IntStream;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity.*;
 
-public class AssemblerLogic implements IServerTickableMultiblock<State>
+public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
 	private static final CapabilityPosition ITEM_INPUT = new CapabilityPosition(1, 1, 2, RelativeBlockFace.BACK);
 	private static final CapabilityPosition FLUID_INPUT = new CapabilityPosition(1, 0, 2, RelativeBlockFace.BACK);
@@ -77,14 +76,6 @@ public class AssemblerLogic implements IServerTickableMultiblock<State>
 				state.inventory.setStackInSlot(
 						18+i, Utils.insertStackIntoInventory(state.output, state.inventory.getStackInSlot(18+i), false)
 				);
-	}
-
-	@Override
-	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
-	{
-		if(!isClient)
-			player.openMenu(IEMenuTypes.ASSEMBLER_NEW.provide(ctx));
-		return InteractionResult.SUCCESS;
 	}
 
 	private List<OutputBuffer> craftRecipes(IMultiblockContext<State> ctx)

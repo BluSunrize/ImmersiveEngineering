@@ -6,8 +6,10 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
@@ -52,7 +54,8 @@ import java.util.function.Function;
 import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.getPressTime;
 import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.getTransportTime;
 
-public class MetalPressLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
+public class MetalPressLogic
+		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 0);
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(3, 1, 0, RelativeBlockFace.RIGHT);

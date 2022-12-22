@@ -6,8 +6,10 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SawmillShapes;
@@ -50,7 +52,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
+public class SawmillLogic
+		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final int MAX_PROCESSES = 6;
 	private static final CapabilityPosition INPUT = new CapabilityPosition(0, 1, 1, RelativeBlockFace.RIGHT);
@@ -66,7 +69,6 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 		final var state = context.getState();
 		final var level = context.getLevel();
 		final var rawLevel = level.getRawLevel();
-		state.comparators.updateComparators(context);
 		final var rsAllowed = !isRSDisabled(context);
 		int i = 0;
 		Iterator<SawmillProcess> processIterator = state.sawmillProcessQueue.iterator();
@@ -306,6 +308,14 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 		return new State(capabilitySource);
 	}
 
+	public static ComparatorManager<State> makeComparator()
+	{
+		return ComparatorManager.makeSimple(state -> {
+			float damage = 1-(state.sawblade.getDamageValue()/(float)state.sawblade.getMaxDamage());
+			return Mth.ceil(damage*15);
+		}, REDSTONE_POS);
+	}
+
 	public static class State implements IMultiblockState
 	{
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(32000);
@@ -316,7 +326,6 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 
 		private final DroppingMultiblockOutput output;
 		private final DroppingMultiblockOutput secondaryOutput;
-		private final ComparatorManager<State> comparators;
 		private final StoredCapability<IItemHandler> insertionHandler;
 		private final StoredCapability<IEnergyStorage> energyCap;
 
@@ -331,14 +340,6 @@ public class SawmillLogic implements IServerTickableMultiblock<State>, IClientTi
 		{
 			this.output = new DroppingMultiblockOutput(PRIMARY_OUTPUT, ctx);
 			this.secondaryOutput = new DroppingMultiblockOutput(SIDE_OUTPUT, ctx);
-			this.comparators = new ComparatorManager<>();
-			this.comparators.addSimpleComparator(
-					state -> {
-						float damage = 1-(state.sawblade.getDamageValue()/(float)state.sawblade.getMaxDamage());
-						return Mth.ceil(damage*15);
-					},
-					REDSTONE_POS
-			);
 			final var levelGetter = ctx.levelSupplier();
 			final var markDirty = ctx.getMarkDirtyRunnable();
 			final var sync = ctx.getSyncRunnable();

@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import java.util.function.BooleanSupplier;
 
 @NonExtendable
-public interface IMultiblockContext<State extends IMultiblockState> extends ICommonMultiblockContext
+public interface IMultiblockContext<State> extends ICommonMultiblockContext
 {
 	default void markDirtyAndSync()
 	{

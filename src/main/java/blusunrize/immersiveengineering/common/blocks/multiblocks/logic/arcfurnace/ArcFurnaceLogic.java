@@ -5,8 +5,10 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.State;
@@ -14,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ArcFurnaceShapes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
@@ -26,8 +27,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -45,7 +44,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
+public class ArcFurnaceLogic
+		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final Set<CapabilityPosition> ENERGY_INPUTS = Set.of(
 			new CapabilityPosition(1, 1, 0, RelativeBlockFace.FRONT),
@@ -87,7 +87,6 @@ public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClien
 	{
 		final var state = context.getState();
 		final var level = context.getLevel();
-		state.comparators.updateComparators(context);
 		final var canWork = context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0;
 		final var tickedAny = state.processor.tickServer(state, level, canWork);
 		if(state.active!=tickedAny||state.updateElectrodePresence())
@@ -101,7 +100,6 @@ public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClien
 			for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 				if(state.inventory.getStackInSlot(i).hurt(1, ApiUtils.RANDOM_SOURCE, null))
 					state.inventory.setStackInSlot(i, ItemStack.EMPTY);
-		state.comparators.updateComparators(context);
 
 		if(state.processor.getQueueSize() < state.processor.getMaxQueueSize())
 			enqueueProcesses(state, level.getRawLevel());
@@ -253,14 +251,6 @@ public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClien
 	}
 
 	@Override
-	public InteractionResult clickSimple(IMultiblockContext<State> ctx, Player player, boolean isClient)
-	{
-		if(!isClient)
-			player.openMenu(IEMenuTypes.ARC_FURNACE_NEW.provide(ctx));
-		return InteractionResult.SUCCESS;
-	}
-
-	@Override
 	public void dropExtraItems(State state, Consumer<ItemStack> drop)
 	{
 		MBInventoryUtils.dropItems(state.inventory, drop);
@@ -278,6 +268,18 @@ public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClien
 		return ArcFurnaceShapes.SHAPE_GETTER;
 	}
 
+	public static ComparatorManager<State> makeInventoryComparator()
+	{
+		return ComparatorManager.makeSimple(
+				state -> Utils.calcRedstoneFromInventory(IN_SLOT_COUNT, state.inventory), REDSTONE_POS
+		);
+	}
+
+	public static ComparatorManager<State> makeElectrodeComparator()
+	{
+		return ComparatorManager.makeSimple(State::getElectrodeComparatorValue, ELECTRODE_COMPARATOR_POS);
+	}
+
 	public static class State implements IMultiblockState, ProcessContextInMachine<ArcFurnaceRecipe>
 	{
 		private final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
@@ -285,7 +287,6 @@ public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClien
 		private final InMachineProcessor<ArcFurnaceRecipe> processor;
 
 		// Utilities
-		private final ComparatorManager<State> comparators;
 		private final CapabilityReference<IItemHandler> output;
 		private final CapabilityReference<IItemHandler> slagOutput;
 		private final StoredCapability<IEnergyStorage> energyCap;
@@ -305,11 +306,6 @@ public class ArcFurnaceLogic implements IServerTickableMultiblock<State>, IClien
 			this.processor = new InMachineProcessor<>(
 					12, $ -> 0, 12, ctx.getMarkDirtyRunnable(), ctx.getSyncRunnable(), ArcFurnaceRecipe.RECIPES::getById
 			);
-			this.comparators = new ComparatorManager<>();
-			this.comparators.addSimpleComparator(
-					state -> Utils.calcRedstoneFromInventory(IN_SLOT_COUNT, inventory), REDSTONE_POS
-			);
-			this.comparators.addSimpleComparator(State::getElectrodeComparatorValue, ELECTRODE_COMPARATOR_POS);
 			this.output = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, MAIN_OUT_POS);
 			this.slagOutput = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, SLAG_OUT_POS);
 			this.energyCap = new StoredCapability<>(energy);

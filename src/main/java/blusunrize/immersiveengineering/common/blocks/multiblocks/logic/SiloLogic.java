@@ -2,7 +2,9 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
@@ -27,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-public class SiloLogic implements IServerTickableMultiblock<State>
+public class SiloLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
 	private static final int MAX_STORAGE = 41472;
 	private static final BlockPos OUTPUT_POS = new BlockPos(1, 0, 1);

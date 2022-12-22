@@ -2,9 +2,12 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.Disassembler;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent.StateWrapper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
@@ -28,16 +31,21 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class MultiblockRegistrationBuilder<State extends IMultiblockState>
+public abstract class MultiblockRegistrationBuilder<
+		State extends IMultiblockState,
+		Self extends MultiblockRegistrationBuilder<State, Self>
+		>
 {
 	private final IMultiblockLogic<State> logic;
 	private final String name;
+	private final List<ExtraComponent<State, ?>> extraComponents = new ArrayList<>();
 	private RegistryObject<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE;
 	private RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE;
 	private RegistryObject<? extends MultiblockPartBlock<State>> block;
@@ -59,40 +67,40 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		this.name = name;
 	}
 
-	public MultiblockRegistrationBuilder<State> notMirrored()
+	public Self notMirrored()
 	{
 		this.mirrorable = false;
-		return this;
+		return self();
 	}
 
-	public MultiblockRegistrationBuilder<State> withComparator()
+	public Self withComparator()
 	{
 		this.hasComparatorOutput = true;
-		return this;
+		return self();
 	}
 
-	public MultiblockRegistrationBuilder<State> postProcessesShape()
+	public Self postProcessesShape()
 	{
 		this.postProcessesShape = true;
-		return this;
+		return self();
 	}
 
-	public MultiblockRegistrationBuilder<State> redstoneAware()
+	public Self redstoneAware()
 	{
 		this.redstoneInputAware = true;
-		return this;
+		return self();
 	}
 
-	public MultiblockRegistrationBuilder<State> defaultBEs(DeferredRegister<BlockEntityType<?>> register)
+	public Self defaultBEs(DeferredRegister<BlockEntityType<?>> register)
 	{
 		Preconditions.checkState(this.masterBE==null);
 		Preconditions.checkState(this.dummyBE==null);
 		this.masterBE = register.register(name+"_master", () -> makeBEType(MultiblockBlockEntityMaster::new));
 		this.dummyBE = register.register(name+"_dummy", () -> makeBEType(MultiblockBlockEntityDummy::new));
-		return this;
+		return self();
 	}
 
-	public MultiblockRegistrationBuilder<State> defaultBlock(
+	public Self defaultBlock(
 			DeferredRegister<Block> register,
 			DeferredRegister<Item> blockItemRegister,
 			BlockBehaviour.Properties properties
@@ -106,7 +114,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		}, MultiblockItem::new);
 	}
 
-	public MultiblockRegistrationBuilder<State> customBlock(
+	public Self customBlock(
 			DeferredRegister<Block> register,
 			DeferredRegister<Item> blockItemRegister,
 			Function<MultiblockRegistration<State>, ? extends MultiblockPartBlock<State>> make,
@@ -116,21 +124,37 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		Preconditions.checkState(this.block==null);
 		this.block = register.register(name, () -> make.apply(this.result));
 		this.item = blockItemRegister.register(name, () -> makeItem.apply(this.result.block().get()));
-		return this;
+		return self();
 	}
 
-	public MultiblockRegistrationBuilder<State> structure(Supplier<TemplateMultiblock> structure)
+	public Self structure(Supplier<TemplateMultiblock> structure)
 	{
 		Preconditions.checkState(this.getMasterPosInMB==null);
 		Preconditions.checkState(this.disassemble==null);
 		this.getMasterPosInMB = () -> structure.get().getMasterFromOriginOffset();
 		this.getSize = l -> structure.get().getSize(l);
 		this.disassemble = (level, origin, orientation) -> structure.get().disassemble(
-				// TODO may need front.getOpposite or similar
 				level, origin, orientation.mirrored(), orientation.front()
 		);
 		this.structure = l -> structure.get().getStructure(l);
-		return this;
+		return self();
+	}
+
+	public Self component(IMultiblockComponent<State> extraComponent)
+	{
+		return component(extraComponent, s -> s);
+	}
+
+	public <CS> Self component(IMultiblockComponent<CS> extraComponent, StateWrapper<State, CS> makeState)
+	{
+		extraComponents.add(new ExtraComponent<>(extraComponent, makeState));
+		return self();
+	}
+
+	public <CS, C extends IMultiblockComponent<CS> & StateWrapper<State, CS>>
+	Self selfWrappingComponent(C extraComponent)
+	{
+		return component(extraComponent, extraComponent);
 	}
 
 	public MultiblockRegistration<State> build()
@@ -165,7 +189,7 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 			}
 		}
 		this.result = new MultiblockRegistration<>(
-				logic, masterBE, dummyBE, block, item,
+				logic, extraComponents, masterBE, dummyBE, block, item,
 				mirrorable, hasComparatorOutput, redstoneInputAware, postProcessesShape,
 				getMasterPosInMB, getSize, disassemble, structure
 		);
@@ -185,6 +209,8 @@ public class MultiblockRegistrationBuilder<State extends IMultiblockState>
 		));
 		return resultBox.getValue();
 	}
+
+	protected abstract Self self();
 
 	private interface BEConstructor<State extends IMultiblockState, T extends BlockEntity>
 	{

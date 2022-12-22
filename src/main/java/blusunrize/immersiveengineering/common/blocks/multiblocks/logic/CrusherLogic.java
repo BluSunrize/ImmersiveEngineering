@@ -5,8 +5,10 @@ import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
@@ -43,7 +45,8 @@ import net.minecraftforge.items.IItemHandler;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTickableMultiblock<State>
+public class CrusherLogic implements
+		IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(2, 1, 1);
 	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
@@ -69,7 +72,6 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), canWorkFromRS(context));
 		if(wasActive!=state.renderAsActive)
 			context.requestMasterBESync();
-		state.comparators.updateComparators(context);
 		if(state.renderAsActive)
 			spawnParticles(context.getLevel(), state);
 	}
@@ -171,36 +173,36 @@ public class CrusherLogic implements IServerTickableMultiblock<State>, IClientTi
 		}
 	}
 
+	public static ComparatorManager<State> makeComparator()
+	{
+		return ComparatorManager.makeSimple(state -> {
+			float fill = state.processor.getQueueSize()/(float)state.processor.getMaxQueueSize();
+			return Mth.ceil(fill*14.0F)+(fill > 0?1: 0);
+		}, REDSTONE_POS);
+	}
+
 	public static class State implements IMultiblockState, ProcessContextInWorld<CrusherRecipe>
 	{
 		private final AveragingEnergyStorage energy = new AveragingEnergyStorage(32000);
 		private final MultiblockProcessor<CrusherRecipe, ProcessContextInWorld<CrusherRecipe>> processor;
 		private boolean renderAsActive;
 		private float barrelAngle;
-		private final ComparatorManager<State> comparators = new ComparatorManager<>();
 
 		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> insertionHandler;
 		private final StoredCapability<IEnergyStorage> energyHandler = new StoredCapability<>(energy);
 		private BooleanSupplier isPlayingSound = () -> false;
 
-		public State(IInitialMultiblockContext<State> capabilitySource)
+		public State(IInitialMultiblockContext<State> ctx)
 		{
-			this.output = new DroppingMultiblockOutput(OUTPUT_POS, capabilitySource);
+			this.output = new DroppingMultiblockOutput(OUTPUT_POS, ctx);
 			this.processor = new MultiblockProcessor<>(
-					2048, 0, 1, capabilitySource.getMarkDirtyRunnable(), CrusherRecipe.RECIPES::getById
+					2048, 0, 1, ctx.getMarkDirtyRunnable(), CrusherRecipe.RECIPES::getById
 			);
 			final var insertionHandler = new DirectProcessingItemHandler<>(
-					capabilitySource.levelSupplier(), processor, CrusherRecipe::findRecipe
+					ctx.levelSupplier(), processor, CrusherRecipe::findRecipe
 			).setProcessStacking(true);
 			this.insertionHandler = new StoredCapability<>(insertionHandler);
-			this.comparators.addSimpleComparator(
-					state -> {
-						float fill = processor.getQueueSize()/(float)processor.getMaxQueueSize();
-						return Mth.ceil(fill*14.0F)+(fill > 0?1: 0);
-					},
-					REDSTONE_POS
-			);
 		}
 
 		@Override

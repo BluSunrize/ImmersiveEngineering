@@ -2,11 +2,12 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.registry;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -39,6 +40,8 @@ import java.util.function.BiConsumer;
 public class MultiblockPartBlock<State extends IMultiblockState> extends Block implements EntityBlock
 {
 	private final MultiblockRegistration<State> multiblock;
+	private final boolean needsServerTicker;
+	private final boolean needsClientTicker;
 
 	public MultiblockPartBlock(Properties properties, MultiblockRegistration<State> multiblock)
 	{
@@ -46,6 +49,18 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		this.multiblock = multiblock;
 		final var hasMirrorProperty = getStateDefinition().getProperties().contains(IEProperties.MIRRORED);
 		Preconditions.checkState(this.multiblock.mirrorable()==hasMirrorProperty);
+		if(multiblock.logic() instanceof IServerTickableComponent<?>)
+			needsServerTicker = true;
+		else
+			needsServerTicker = multiblock.extraComponents().stream()
+					.map(ExtraComponent::component)
+					.anyMatch(c -> c instanceof IServerTickableComponent<?>);
+		if(multiblock.logic() instanceof IClientTickableComponent<?>)
+			needsClientTicker = true;
+		else
+			needsClientTicker = multiblock.extraComponents().stream()
+					.map(ExtraComponent::component)
+					.anyMatch(c -> c instanceof IClientTickableComponent<?>);
 	}
 
 	@Override
@@ -74,21 +89,29 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	{
 		if(state.getValue(IEProperties.MULTIBLOCKSLAVE))
 			return null;
-		if(level.isClientSide&&multiblock.logic() instanceof IClientTickableMultiblock<State> clientTickable)
-			return makeTicker(actual, IClientTickableMultiblock::tickClient, clientTickable);
-		if(!level.isClientSide&&multiblock.logic() instanceof IServerTickableMultiblock<State> serverTickable)
-			return makeTicker(actual, IServerTickableMultiblock::tickServer, serverTickable);
+		if(level.isClientSide&&needsClientTicker)
+			return createTickerHelper(actual, ($1, $2, $3, blockEntity) -> blockEntity.getHelper().tickClient());
+		if(!level.isClientSide&&needsServerTicker)
+			return createTickerHelper(actual, ($1, $2, $3, blockEntity) -> blockEntity.getHelper().tickServer());
 		return null;
+	}
+
+	private <O, A extends BlockEntity> BlockEntityTicker<A> makeTicker(
+			BlockEntityType<A> actual, BiConsumer<O, IMultiblockContext<State>> tick, O obj
+	)
+	{
+		return createTickerHelper(
+				actual,
+				($1, $2, $3, be) -> tick.accept(obj, be.getHelper().getContext())
+		);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	protected static <E extends BlockEntity, A extends BlockEntity>
-	BlockEntityTicker<A> createTickerHelper(
-			BlockEntityType<A> actual, BlockEntityType<E> expected, BlockEntityTicker<? super E> ticker
-	)
+	protected <A extends BlockEntity>
+	BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> actual, BlockEntityTicker<MultiblockBlockEntityMaster<State>> ticker)
 	{
-		return expected==actual?(BlockEntityTicker<A>)ticker: null;
+		return multiblock.masterBE().get()==actual?(BlockEntityTicker<A>)ticker: null;
 	}
 
 	@Nonnull
@@ -149,17 +172,6 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		final var bEntity = level.getBlockEntity(pos);
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
 			multiblockBE.getHelper().onEntityCollided(entity);
-	}
-
-	private <O, A extends BlockEntity> BlockEntityTicker<A> makeTicker(
-			BlockEntityType<A> actual, BiConsumer<O, IMultiblockContext<State>> tick, O obj
-	)
-	{
-		return createTickerHelper(
-				actual,
-				multiblock.masterBE().get(),
-				($1, $2, $3, be) -> tick.accept(obj, be.getHelper().getContext())
-		);
 	}
 
 	@SuppressWarnings("deprecation")
