@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.common.items.ShaderBagItem;
+import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -42,8 +43,8 @@ public class ShaderBagRecipe extends CustomRecipe
 			if(!stack.isEmpty())
 				return false;
 			final Rarity rarity = stackInSlot.getRarity();
-			final Item shaderBagForRarity = Misc.SHADER_BAG.get(rarity).asItem();
-			if(stackInSlot.is(shaderBagForRarity))
+			final ItemRegObject<ShaderBagItem> shaderBagForRarity = Misc.SHADER_BAG.get(rarity);
+			if(shaderBagForRarity!=null&&stackInSlot.is(shaderBagForRarity.asItem()))
 				stack = stackInSlot;
 			else
 				return false;
