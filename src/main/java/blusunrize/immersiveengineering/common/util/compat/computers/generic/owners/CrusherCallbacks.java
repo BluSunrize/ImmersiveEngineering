@@ -7,10 +7,16 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Call
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 import net.minecraft.world.item.ItemStack;
 
 public class CrusherCallbacks extends Callback<State>
 {
+	public CrusherCallbacks()
+	{
+		addAdditional(MBEnergyCallbacks.INSTANCE, State::getEnergy);
+	}
+
 	@ComputerCallable
 	public boolean isRunning(CallbackEnvironment<State> env)
 	{

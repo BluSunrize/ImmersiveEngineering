@@ -8,25 +8,24 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.impl;
 
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import net.minecraftforge.energy.IEnergyStorage;
 
-public class PoweredMBCallbacks extends Callback<PoweredMultiblockBlockEntity<?, ?>>
+public class MBEnergyCallbacks extends Callback<IEnergyStorage>
 {
-	public static final PoweredMBCallbacks INSTANCE = new PoweredMBCallbacks();
+	public static final MBEnergyCallbacks INSTANCE = new MBEnergyCallbacks();
 
 	@ComputerCallable
-	public boolean isRunning(CallbackEnvironment<PoweredMultiblockBlockEntity<?, ?>> env)
+	public int getMaxEnergyStored(CallbackEnvironment<IEnergyStorage> env)
 	{
-		return env.object().shouldRenderAsActive();
+		return env.object().getMaxEnergyStored();
 	}
 
-	public PoweredMBCallbacks()
+	@ComputerCallable
+	public int getEnergyStored(CallbackEnvironment<IEnergyStorage> env)
 	{
-		addAdditional(EnergyCallbacks.INSTANCE);
-		addAdditional(MultiblockCallbacks.INSTANCE);
+		return env.object().getEnergyStored();
 	}
-	//TODO general access to recipes?
 }

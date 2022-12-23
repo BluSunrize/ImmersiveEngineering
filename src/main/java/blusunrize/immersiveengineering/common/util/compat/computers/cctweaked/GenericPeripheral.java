@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public class GenericPeripheral<T> implements IDynamicPeripheral
+public class GenericPeripheral<T extends BlockEntity> implements IDynamicPeripheral
 {
 	private final PeripheralCreator<T> creator;
 	private final T object;
@@ -89,9 +89,9 @@ public class GenericPeripheral<T> implements IDynamicPeripheral
 	{
 		if(object instanceof ComputerControllable controllable)
 			controllable.getAllComputerControlStates().forEach(runner);
-		if(!(object instanceof IMultiblockBE<?> multiblockBE)||!(object instanceof BlockEntity be))
+		if(!(object instanceof IMultiblockBE<?> multiblockBE))
 			return;
-		ApiUtils.addFutureServerTask(be.getLevel(), () -> {
+		ApiUtils.addFutureServerTask(object.getLevel(), () -> {
 			final IMultiblockBEHelper<?> helper = multiblockBE.getHelper();
 			for(final ExtraComponent<?, ?> component : helper.getMultiblock().extraComponents())
 				if(component.makeWrapper() instanceof RedstoneControl<?> control)

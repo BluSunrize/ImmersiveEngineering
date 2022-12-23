@@ -20,7 +20,6 @@ import com.google.common.base.Suppliers;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -82,7 +81,9 @@ public class ComputerCraftCompatModule extends StandardIECompatModule
 		try
 		{
 			for(Entry<ResourceLocation, CallbackOwner<?>> entry : Callbacks.getCallbacks().entrySet())
-				knownPeripherals.put(entry.getKey(), new PeripheralCreator<>(entry.getValue()));
+				knownPeripherals.put(
+						entry.getKey(), new PeripheralCreator<>((CallbackOwner<? extends BlockEntity>)entry.getValue())
+				);
 		} catch(IllegalAccessException e)
 		{
 			throw new RuntimeException(e);

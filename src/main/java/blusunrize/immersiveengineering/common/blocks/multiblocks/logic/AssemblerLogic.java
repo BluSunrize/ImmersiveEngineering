@@ -345,6 +345,11 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			inventory.deserializeNBT(nbt.getCompound("inventory"));
 			energy.deserializeNBT(nbt.get("energy"));
 		}
+
+		public IItemHandler getInventory()
+		{
+			return inventory;
+		}
 	}
 
 	private record OutputBuffer(NonNullList<ItemStack> results, int id)

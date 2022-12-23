@@ -18,12 +18,13 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
-public class PeripheralCreator<T>
+public class PeripheralCreator<T extends BlockEntity>
 {
 	private final List<ComputerCallback<? super T>> methods;
 	private final String[] methodNames;
@@ -82,7 +83,8 @@ public class PeripheralCreator<T>
 		try
 		{
 			return callback.invoke(
-					otherArgs.getAll(), new CallbackEnvironment<>(owner.preprocess(mainArgument), mainArgument)
+					otherArgs.getAll(),
+					new CallbackEnvironment<>(owner.preprocess(mainArgument), mainArgument.getLevel())
 			);
 		} catch(RuntimeException x)
 		{

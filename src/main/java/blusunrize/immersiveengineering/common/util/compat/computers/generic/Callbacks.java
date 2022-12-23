@@ -12,9 +12,12 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -25,6 +28,8 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static blusunrize.immersiveengineering.common.register.IEMultiblockLogic.*;
 
 public class Callbacks
 {
@@ -56,26 +61,29 @@ public class Callbacks
 	{
 		if(initialized)
 			return;
-		registerMB(IEMultiblockLogic.CRUSHER, new CrusherCallbacks(), "crusher", CrusherLogic.REDSTONE_POS);
-		registerMB(IEBlockEntities.ARC_FURNACE, new ArcFurnaceCallbacks());
-		registerMB(IEBlockEntities.BOTTLING_MACHINE, new BottlingMachineCallbacks());
+		registerMB(CRUSHER, new CrusherCallbacks(), "crusher", CrusherLogic.REDSTONE_POS);
+		registerMB(ARC_FURNACE, new ArcFurnaceCallbacks(), "arc_furnace", ArcFurnaceLogic.REDSTONE_POS);
+		registerMB(BOTTLING_MACHINE, new BottlingMachineCallbacks(), "bottling_machine", BottlingMachineLogic.REDSTONE_POS);
+		registerMB(DIESEL_GENERATOR, new DieselGenCallbacks(), "diesel_generator", DieselGeneratorLogic.REDSTONE_POS);
+		registerMB(EXCAVATOR, new ExcavatorCallbacks(), "exavator", ExcavatorLogic.REDSTONE_POS);
+		registerMB(FERMENTER, new FermenterCallbacks(), "fermenter", FermenterLogic.REDSTONE_POS);
+		registerMB(SQUEEZER, new SqueezerCallbacks(), "squeezer", SqueezerLogic.REDSTONE_POS);
+		registerMB(MIXER, new MixerCallbacks(), "mixer", MixerLogic.REDSTONE_POS);
+		registerMB(REFINERY, new RefineryCallbacks(), "refinery", RefineryLogic.REDSTONE_POS);
+		registerMB(ASSEMBLER, new AssemblerCallbacks(), "assembler", AssemblerLogic.REDSTONE_PORTS);
+		registerMB(AUTO_WORKBENCH, new AutoWorkbenchCallbacks(), "auto_workbench", AutoWorkbenchLogic.REDSTONE_POS);
+		registerMB(SILO, new SiloCallbacks(), "silo", SiloLogic.OUTPUT_POS);
+		registerMB(SAWMILL, new SawmillCallbacks(), "sawmill", SawmillLogic.REDSTONE_POS);
+
 		register(IEBlockEntities.CAPACITOR_LV, new CapacitorCallbacks("lv"));
 		register(IEBlockEntities.CAPACITOR_MV, new CapacitorCallbacks("mv"));
 		register(IEBlockEntities.CAPACITOR_HV, new CapacitorCallbacks("hv"));
-		registerMB(IEBlockEntities.DIESEL_GENERATOR, new DieselGenCallbacks());
-		registerMB(IEBlockEntities.ENERGY_METER, new EnergyMeterCallbacks());
-		registerMB(IEBlockEntities.EXCAVATOR, new ExcavatorCallbacks());
-		registerMB(IEBlockEntities.FERMENTER, new FermenterCallbacks());
-		registerMB(IEBlockEntities.SQUEEZER, new SqueezerCallbacks());
-		registerMB(IEBlockEntities.MIXER, new MixerCallbacks());
-		registerMB(IEBlockEntities.REFINERY, new RefineryCallbacks());
 		register(IEBlockEntities.FLOODLIGHT, new FloodlightCallbacks());
+
+		registerMB(IEBlockEntities.ENERGY_METER, new EnergyMeterCallbacks());
 		registerMB(IEBlockEntities.SAMPLE_DRILL, new SampleDrillCallbacks());
 		registerMB(IEBlockEntities.TESLACOIL, new TeslaCoilCallbacks());
-		registerMB(IEBlockEntities.ASSEMBLER, new AssemblerCallbacks());
-		registerMB(IEBlockEntities.AUTO_WORKBENCH, new AutoWorkbenchCallbacks());
-		registerMB(IEBlockEntities.SILO, new SiloCallbacks());
-		registerMB(IEBlockEntities.SAWMILL, new SawmillCallbacks());
+
 		initialized = true;
 	}
 

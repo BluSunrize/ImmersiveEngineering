@@ -102,8 +102,7 @@ public class ComputerCallback<T>
 			);
 		Object[] realArguments = new Object[arguments.length+1];
 		System.arraycopy(arguments, 0, realArguments, 1, arguments.length);
-		// TODO fix beforePreprocess stuff
-		realArguments[0] = new CallbackEnvironment<>(remapOwner.apply(env.object()), remapOwner.apply(env.beforePreprocess()));
+		realArguments[0] = new CallbackEnvironment<>(remapOwner.apply(env.object()), env.level());
 		for(int i = 0; i < arguments.length; ++i)
 		{
 			int realIndex = i+1;

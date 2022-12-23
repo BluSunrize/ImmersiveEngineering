@@ -8,21 +8,17 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.SiloBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class SiloCallbacks extends MultiblockCallbackOwner<SiloBlockEntity>
+public class SiloCallbacks extends Callback<State>
 {
-	public SiloCallbacks()
-	{
-		super(SiloBlockEntity.class, "silo");
-	}
-
 	@ComputerCallable
-	public ItemStack getContents(CallbackEnvironment<SiloBlockEntity> env)
+	public ItemStack getContents(CallbackEnvironment<State> env)
 	{
 		// This stack will be converted to a lua object immediately, so using a large stack size is ok
 		return ItemHandlerHelper.copyStackWithSize(env.object().identStack, env.object().storageAmount);

@@ -404,5 +404,10 @@ public class SawmillLogic
 			for(int i = 0; i < processes.size(); ++i)
 				sawmillProcessQueue.add(SawmillProcess.readFromNBT(processes.getCompound(i)));
 		}
+
+		public IEnergyStorage getEnergy()
+		{
+			return energy;
+		}
 	}
 }

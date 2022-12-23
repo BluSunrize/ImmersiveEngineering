@@ -77,7 +77,7 @@ public class RefineryLogic
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
+		state.active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		tryEnqueueProcess(state, context.getLevel().getRawLevel());
 		FluidUtils.multiblockFluidOutput(
 				state.fluidOutput, state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
@@ -188,7 +188,7 @@ public class RefineryLogic
 		private final StoredCapability<IFluidHandler> outputCap;
 
 		// Sync/client fields
-		private boolean active;
+		public boolean active;
 		private BooleanSupplier isSoundPlaying = () -> false;
 
 		public State(IInitialMultiblockContext<State> ctx)

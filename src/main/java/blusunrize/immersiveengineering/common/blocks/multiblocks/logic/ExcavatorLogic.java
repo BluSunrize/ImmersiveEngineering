@@ -343,7 +343,6 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 
 	public static class State implements IMultiblockState
 	{
-		// TODO make local?
 		private boolean active = false;
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(64000);
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
@@ -365,6 +364,16 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		public void readSaveNBT(CompoundTag nbt)
 		{
 			energy.deserializeNBT(nbt.get("energy"));
+		}
+
+		public IEnergyStorage getEnergy()
+		{
+			return energy;
+		}
+
+		public boolean isActive()
+		{
+			return active;
 		}
 	}
 }

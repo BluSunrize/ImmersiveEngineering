@@ -28,6 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -66,7 +67,7 @@ public class AutoWorkbenchLogic
 		if(!isRSEnabled||state.inventory.getStackInSlot(BLUEPRINT_SLOT).isEmpty())
 			return;
 
-		BlueprintCraftingRecipe[] recipes = getAvailableRecipes(context);
+		BlueprintCraftingRecipe[] recipes = getAvailableRecipes(context.getLevel().getRawLevel(), state);
 		if(state.selectedRecipe >= 0&&state.selectedRecipe < recipes.length)
 		{
 			BlueprintCraftingRecipe recipe = recipes[state.selectedRecipe];
@@ -102,11 +103,9 @@ public class AutoWorkbenchLogic
 				++process.processTick;
 	}
 
-	public BlueprintCraftingRecipe[] getAvailableRecipes(IMultiblockContext<State> ctx)
+	public static BlueprintCraftingRecipe[] getAvailableRecipes(Level level, State state)
 	{
-		return EngineersBlueprintItem.getRecipes(
-				ctx.getLevel().getRawLevel(), ctx.getState().inventory.getStackInSlot(BLUEPRINT_SLOT)
-		);
+		return EngineersBlueprintItem.getRecipes(level, state.inventory.getStackInSlot(BLUEPRINT_SLOT));
 	}
 
 	@Override

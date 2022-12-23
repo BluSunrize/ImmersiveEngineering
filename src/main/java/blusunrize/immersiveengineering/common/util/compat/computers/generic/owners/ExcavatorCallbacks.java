@@ -8,14 +8,23 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorBlockEntity;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic.State;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 
-public class ExcavatorCallbacks extends MultiblockCallbackOwner<ExcavatorBlockEntity>
+public class ExcavatorCallbacks extends Callback<State>
 {
 	public ExcavatorCallbacks()
 	{
-		super(ExcavatorBlockEntity.class, "exavator");
-		addAdditional(PoweredMBCallbacks.INSTANCE);
+		addAdditional(MBEnergyCallbacks.INSTANCE, State::getEnergy);
 	}
+
+	@ComputerCallable
+	public boolean isRunning(CallbackEnvironment<State> env)
+	{
+		return env.object().isActive();
+	}
+
 }

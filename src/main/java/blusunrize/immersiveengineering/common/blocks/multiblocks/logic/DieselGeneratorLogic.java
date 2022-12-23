@@ -190,7 +190,7 @@ public class DieselGeneratorLogic
 	public static class State implements IMultiblockState
 	{
 		// Server fields
-		private final FluidTank tank = new FluidTank(24*FluidType.BUCKET_VOLUME);
+		public final FluidTank tank = new FluidTank(24*FluidType.BUCKET_VOLUME);
 		private boolean active = false;
 		private int consumeTick = 0;
 		public final RSState rsState = RSState.enabledByDefault();
