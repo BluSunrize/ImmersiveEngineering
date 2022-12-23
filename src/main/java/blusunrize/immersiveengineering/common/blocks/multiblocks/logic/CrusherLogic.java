@@ -43,6 +43,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
@@ -248,6 +249,11 @@ public class CrusherLogic implements
 		public float getBarrelAngle()
 		{
 			return barrelAngle;
+		}
+
+		public List<MultiblockProcess<CrusherRecipe, ProcessContextInWorld<CrusherRecipe>>> getProcessQueue()
+		{
+			return processor.getQueue();
 		}
 	}
 }

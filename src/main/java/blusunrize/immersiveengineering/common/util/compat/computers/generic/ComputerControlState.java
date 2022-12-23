@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ComputerControlState
 {
-	private AtomicInteger refCount = new AtomicInteger(0);
+	private final AtomicInteger refCount = new AtomicInteger(0);
 	private boolean isEnabled = true;
 
 	public boolean isAttached()

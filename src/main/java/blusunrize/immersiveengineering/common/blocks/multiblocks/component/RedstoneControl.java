@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockC
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent.StateWrapper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -23,8 +24,14 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 {
 	private final StateWrapper<S, RSState> getState;
 	private final List<BlockPos> positions;
+	private final boolean allowComputerControl;
 
 	public RedstoneControl(StateWrapper<S, RSState> getState, BlockPos... positions)
+	{
+		this(getState, true, positions);
+	}
+
+	public RedstoneControl(StateWrapper<S, RSState> getState, boolean allowComputerControl, BlockPos... positions)
 	{
 		this.positions = Arrays.asList(positions);
 		this.getState = s -> {
@@ -32,6 +39,12 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 			rsState.positions = this.positions;
 			return rsState;
 		};
+		this.allowComputerControl = allowComputerControl;
+	}
+
+	public boolean allowComputerControl()
+	{
+		return allowComputerControl;
 	}
 
 	@Override
@@ -69,6 +82,7 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 	{
 		private boolean rsEnablesMachine;
 		private List<BlockPos> positions = List.of();
+		private final ComputerControlState computerControlState = new ComputerControlState();
 
 		public static RSState enabledByDefault()
 		{
@@ -87,6 +101,8 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 
 		public boolean isEnabled(IMultiblockContext<?> ctx)
 		{
+			if(computerControlState.isAttached()&&!computerControlState.isEnabled())
+				return false;
 			for(final BlockPos rsPos : positions)
 			{
 				final boolean hasRS = ctx.getRedstoneInputValue(rsPos, 0) > 0;
@@ -106,6 +122,11 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 		public void readSaveNBT(CompoundTag nbt)
 		{
 			rsEnablesMachine = nbt.getBoolean("rsEnablesMachine");
+		}
+
+		public ComputerControlState getComputerControlState()
+		{
+			return computerControlState;
 		}
 	}
 }

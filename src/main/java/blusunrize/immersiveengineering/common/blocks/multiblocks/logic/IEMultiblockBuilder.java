@@ -27,6 +27,12 @@ public class IEMultiblockBuilder<S extends IMultiblockState>
 		return component(new MultiblockGui<>(menu));
 	}
 
+	public IEMultiblockBuilder<S> redstoneNoComputer(StateWrapper<S, RSState> getState, BlockPos... positions)
+	{
+		redstoneAware();
+		return selfWrappingComponent(new RedstoneControl<>(getState, false, positions));
+	}
+
 	public IEMultiblockBuilder<S> redstone(StateWrapper<S, RSState> getState, BlockPos... positions)
 	{
 		redstoneAware();

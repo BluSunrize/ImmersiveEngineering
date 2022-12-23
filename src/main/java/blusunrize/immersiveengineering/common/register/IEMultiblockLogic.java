@@ -83,7 +83,7 @@ public class IEMultiblockLogic
 	public static final MultiblockRegistration<AssemblerLogic.State> ASSEMBLER = metal(new AssemblerLogic(), "assembler")
 			.structure(() -> IEMultiblocks.ASSEMBLER)
 			.notMirrored()
-			.redstone(s -> s.rsState, AssemblerLogic.REDSTONE_PORTS)
+			.redstoneNoComputer(s -> s.rsState, AssemblerLogic.REDSTONE_PORTS)
 			.gui(IEMenuTypes.ASSEMBLER_NEW)
 			.build();
 

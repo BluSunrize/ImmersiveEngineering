@@ -8,6 +8,12 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import dan200.computercraft.api.lua.IArguments;
@@ -17,9 +23,11 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public class GenericPeripheral<T> implements IDynamicPeripheral
 {
@@ -68,14 +76,36 @@ public class GenericPeripheral<T> implements IDynamicPeripheral
 	@Override
 	public void attach(@Nonnull IComputerAccess computer)
 	{
-		if(object instanceof ComputerControllable controllable)
-			controllable.getAllComputerControlStates().forEach(ComputerControlState::addReference);
+		forControlStates(ComputerControlState::addReference);
 	}
 
 	@Override
 	public void detach(@Nonnull IComputerAccess computer)
 	{
+		forControlStates(ComputerControlState::removeReference);
+	}
+
+	private void forControlStates(Consumer<ComputerControlState> runner)
+	{
 		if(object instanceof ComputerControllable controllable)
-			controllable.getAllComputerControlStates().forEach(ComputerControlState::removeReference);
+			controllable.getAllComputerControlStates().forEach(runner);
+		if(!(object instanceof IMultiblockBE<?> multiblockBE)||!(object instanceof BlockEntity be))
+			return;
+		ApiUtils.addFutureServerTask(be.getLevel(), () -> {
+			final IMultiblockBEHelper<?> helper = multiblockBE.getHelper();
+			for(final ExtraComponent<?, ?> component : helper.getMultiblock().extraComponents())
+				if(component.makeWrapper() instanceof RedstoneControl<?> control)
+					callOn(runner, control, helper.getState());
+		});
+	}
+
+	private <S>
+	void callOn(Consumer<ComputerControlState> runner, RedstoneControl<S> control, Object state)
+	{
+		if(state!=null)
+		{
+			final RSState rsState = control.wrapState((S)state);
+			runner.accept(rsState.getComputerControlState());
+		}
 	}
 }

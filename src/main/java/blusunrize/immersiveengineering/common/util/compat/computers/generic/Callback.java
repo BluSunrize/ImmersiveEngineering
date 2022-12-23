@@ -8,25 +8,34 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 public class Callback<T>
 {
-	private final List<Callback<? super T>> additional = new ArrayList<>();
+	private final List<RemappedCallback<T, ?>> additional = new ArrayList<>();
 
 	public String renameMethod(String javaName)
 	{
 		return javaName;
 	}
 
-	protected final void addAdditional(Callback<? super T> toAdd)
+	protected final <T2>
+	void addAdditional(Callback<T2> toAdd, Function<T, T2> remap)
 	{
-		additional.add(toAdd);
+		additional.add(new RemappedCallback<>(toAdd, remap));
 	}
 
-	public final List<Callback<? super T>> getAdditionalCallbacks()
+	protected final void addAdditional(Callback<? super T> toAdd)
+	{
+		addAdditional(toAdd, t -> t);
+	}
+
+	public final List<RemappedCallback<? super T, ?>> getAdditionalCallbacks()
 	{
 		return Collections.unmodifiableList(this.additional);
 	}
@@ -52,5 +61,19 @@ public class Callback<T>
 			result.append(word.substring(1));
 		}
 		return result.toString();
+	}
+
+	public record RemappedCallback<OuterT, InnerT>(
+			Callback<InnerT> inner, Function<OuterT, InnerT> remap
+	)
+	{
+		@Nonnull
+		public <T0>
+		Collection<ComputerCallback<? super T0>> getCallbacks(
+				LuaTypeConverter converters, Function<T0, OuterT> remap0
+		) throws IllegalAccessException
+		{
+			return ComputerCallback.getInClass(inner, converters, remap0.andThen(remap));
+		}
 	}
 }
