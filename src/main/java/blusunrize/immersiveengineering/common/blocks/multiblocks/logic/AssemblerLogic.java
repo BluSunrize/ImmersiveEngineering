@@ -6,10 +6,14 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.metal.CrafterPatternInventory;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.AssemblerShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -53,21 +57,17 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	private static final CapabilityPosition ITEM_INPUT = new CapabilityPosition(1, 1, 2, RelativeBlockFace.BACK);
 	private static final CapabilityPosition FLUID_INPUT = new CapabilityPosition(1, 0, 2, RelativeBlockFace.BACK);
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(1, 2, 1, RelativeBlockFace.UP);
-	private static final List<MultiblockFace> REDSTONE_PORTS = List.of(
-			new MultiblockFace(0, 0, 1, RelativeBlockFace.RIGHT),
-			new MultiblockFace(2, 0, 1, RelativeBlockFace.LEFT)
-	);
+	public static final BlockPos[] REDSTONE_PORTS = {
+			new BlockPos(0, 0, 1), new BlockPos(2, 0, 1)
+	};
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		if(!context.getLevel().shouldTickModulo(16))
-			return;
-		for(final var redstonePort : REDSTONE_PORTS)
-			if(context.getRedstoneInputValue(redstonePort, 0) > 0)
-				return;
-		final List<OutputBuffer> outputs = craftRecipes(context);
 		final var state = context.getState();
+		if(!context.getLevel().shouldTickModulo(16)||!state.rsState.isEnabled(context))
+			return;
+		final List<OutputBuffer> outputs = craftRecipes(context);
 		for(OutputBuffer buffer : outputs)
 			for(int i = 0; i < buffer.results.size(); ++i)
 				outputStack(state, buffer.results.get(i), buffer.id, i==0);
@@ -298,6 +298,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 				.toArray(CrafterPatternInventory[]::new);
 		public boolean recursiveIngredients = false;
 		public final MutableEnergyStorage energy = new MutableEnergyStorage(ENERGY_CAPACITY);
+		public final RSState rsState = RSState.enabledByDefault();
 
 		private final CapabilityReference<IItemHandler> output;
 		private final StoredCapability<IItemHandler> itemInput;

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -57,7 +58,7 @@ import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBloc
 public class MetalPressLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
-	private static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 0);
+	public static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 0);
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(3, 1, 0, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition INPUT_POS = new CapabilityPosition(0, 1, 0, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(1, 2, 0, RelativeBlockFace.UP);
@@ -92,9 +93,7 @@ public class MetalPressLogic
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		final var active = state.processor.tickServer(
-				state, context.getLevel(), context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0
-		);
+		final var active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		if(active!=state.renderAsActive)
 		{
 			state.renderAsActive = active;
@@ -200,6 +199,7 @@ public class MetalPressLogic
 		private final AveragingEnergyStorage energy = new AveragingEnergyStorage(16000);
 		public final MultiblockProcessor<MetalPressRecipe, ProcessContextInWorld<MetalPressRecipe>> processor;
 		private boolean renderAsActive;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> inputCap;

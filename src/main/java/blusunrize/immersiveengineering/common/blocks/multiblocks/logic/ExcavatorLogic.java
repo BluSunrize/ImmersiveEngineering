@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ExcavatorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -61,7 +62,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			new CapabilityPosition(2, 1, 4, RelativeBlockFace.LEFT),
 			new CapabilityPosition(2, 2, 4, RelativeBlockFace.LEFT)
 	);
-	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 5);
+	public static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 5);
 	private static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(1, 1, 6, RelativeBlockFace.BACK);
 	private static final BlockPos WHEEL_CENTER = new BlockPos(1, 1, 1);
 	private static final Vec3 WHEEL_CENTER_TOP = Vec3.atCenterOf(WHEEL_CENTER.above(2));
@@ -108,7 +109,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		if(rot%45 > 40)
 			target = Math.round(rot/360f*8)%8;
 
-		if(context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0)
+		if(state.rsState.isEnabled(context))
 		{
 			state.active = false;
 			return;
@@ -347,6 +348,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(64000);
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 		private final DroppingMultiblockOutput output;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{

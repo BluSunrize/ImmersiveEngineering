@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFac
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -54,7 +55,7 @@ import java.util.stream.Collectors;
 public class RefineryLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
-	private static final BlockPos REDSTONE_POS = new BlockPos(4, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(4, 1, 2);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(2, 1, 0, RelativeBlockFace.UP);
 	private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(2, 0, 3, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition FLUID_OUTPUT_CAP = CapabilityPosition.opposing(FLUID_OUTPUT);
@@ -76,8 +77,7 @@ public class RefineryLogic
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		final var canRun = context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0;
-		state.processor.tickServer(state, context.getLevel(), canRun);
+		state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		tryEnqueueProcess(state, context.getLevel().getRawLevel());
 		FluidUtils.multiblockFluidOutput(
 				state.fluidOutput, state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
@@ -178,6 +178,7 @@ public class RefineryLogic
 		public final RefineryTanks tanks = new RefineryTanks();
 		private final InMachineProcessor<RefineryRecipe> processor;
 		public final SlotwiseItemHandler inventory;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		// Utils
 		private final IFluidTank[] tankArray = {tanks.leftInput, tanks.rightInput, tanks.output};

@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -50,7 +51,7 @@ import java.util.function.Function;
 public class SqueezerLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
-	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
 	private static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(2, 1, 1, RelativeBlockFace.RIGHT);
 	private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(3, 0, 1, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition ITEM_OUTPUT_CAP = CapabilityPosition.opposing(ITEM_OUTPUT);
@@ -67,8 +68,7 @@ public class SqueezerLogic
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final var state = context.getState();
-		final var canWork = context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0;
-		final var active = state.processor.tickServer(state, context.getLevel(), canWork);
+		final var active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		if(active!=state.active)
 		{
 			state.active = active;
@@ -184,6 +184,7 @@ public class SqueezerLogic
 		private final FluidTank tank = new FluidTank(TANK_CAPACITY);
 		private final SlotwiseItemHandler inventory;
 		private final InMachineProcessor<SqueezerRecipe> processor;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		// Only used on client
 		private boolean active;

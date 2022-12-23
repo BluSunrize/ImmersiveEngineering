@@ -2,13 +2,11 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistrationBuilder;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.component.MultiblockGui;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
@@ -36,12 +34,12 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<CokeOvenLogic.State> COKE_OVEN = stone(new CokeOvenLogic(), "coke_oven", true)
 			.structure(() -> IEMultiblocks.COKE_OVEN)
-			.component(new MultiblockGui<>(IEMenuTypes.COKE_OVEN_NEW))
+			.gui(IEMenuTypes.COKE_OVEN_NEW)
 			.build();
 
 	public static final MultiblockRegistration<BlastFurnaceLogic.State> BLAST_FURNACE = stone(new BlastFurnaceLogic(), "blast_furnace", true)
 			.structure(() -> IEMultiblocks.BLAST_FURNACE)
-			.component(new MultiblockGui<>(IEMenuTypes.BLAST_FURNACE_NEW))
+			.gui(IEMenuTypes.BLAST_FURNACE_NEW)
 			.build();
 
 	public static final MultiblockRegistration<AdvBlastFurnaceLogic.State> ADV_BLAST_FURNACE = stone(new AdvBlastFurnaceLogic(), "adv_blast_furnace", false)
@@ -50,7 +48,7 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<AlloySmelterLogic.State> ALLOY_SMELTER = stone(new AlloySmelterLogic(), "alloy_smelter", true)
 			.structure(() -> IEMultiblocks.ALLOY_SMELTER)
-			.component(new MultiblockGui<>(IEMenuTypes.ALLOY_SMELTER_NEW))
+			.gui(IEMenuTypes.ALLOY_SMELTER_NEW)
 			.build();
 
 	public static final MultiblockRegistration<LightningRodLogic.State> LIGHTNING_ROD = metal(new LightningRodLogic(), "lightning_rod")
@@ -60,77 +58,75 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<CrusherLogic.State> CRUSHER = metal(new CrusherLogic(), "crusher")
 			.structure(() -> IEMultiblocks.CRUSHER)
-			.withComparator()
-			.selfWrappingComponent(CrusherLogic.makeComparator())
-			.redstoneAware()
+			.redstone(s -> s.rsState, CrusherLogic.REDSTONE_POS)
+			.comparator(CrusherLogic.makeComparator())
 			.build();
 
 	public static final MultiblockRegistration<FermenterLogic.State> FERMENTER = metal(new FermenterLogic(), "fermenter")
 			.structure(() -> IEMultiblocks.FERMENTER)
-			.withComparator()
-			.redstoneAware()
-			.component(new MultiblockGui<>(IEMenuTypes.FERMENTER_NEW))
-			.selfWrappingComponent(FermenterLogic.makeComparator())
+			.redstone(s -> s.rsState, FermenterLogic.REDSTONE_POS)
+			.gui(IEMenuTypes.FERMENTER_NEW)
+			.comparator(FermenterLogic.makeComparator())
 			.build();
 
 	public static final MultiblockRegistration<DieselGeneratorLogic.State> DIESEL_GENERATOR = metal(new DieselGeneratorLogic(), "diesel_generator")
 			.structure(() -> IEMultiblocks.DIESEL_GENERATOR)
-			.redstoneAware()
 			.postProcessesShape()
+			.redstone(s -> s.rsState, DieselGeneratorLogic.REDSTONE_POS)
 			.build();
 
 	public static final MultiblockRegistration<MetalPressLogic.State> METAL_PRESS = metal(new MetalPressLogic(), "metal_press")
 			.structure(() -> IEMultiblocks.METAL_PRESS)
-			.redstoneAware()
+			.redstone(s -> s.rsState, MetalPressLogic.REDSTONE_POS)
 			.build();
 
 	public static final MultiblockRegistration<AssemblerLogic.State> ASSEMBLER = metal(new AssemblerLogic(), "assembler")
 			.structure(() -> IEMultiblocks.ASSEMBLER)
-			.redstoneAware()
 			.notMirrored()
-			.component(new MultiblockGui<>(IEMenuTypes.ASSEMBLER_NEW))
+			.redstone(s -> s.rsState, AssemblerLogic.REDSTONE_PORTS)
+			.gui(IEMenuTypes.ASSEMBLER_NEW)
 			.build();
 
 	public static final MultiblockRegistration<AutoWorkbenchLogic.State> AUTO_WORKBENCH = metal(new AutoWorkbenchLogic(), "auto_workbench")
 			.structure(() -> IEMultiblocks.AUTO_WORKBENCH)
-			.component(new MultiblockGui<>(IEMenuTypes.AUTO_WORKBENCH_NEW))
-			.redstoneAware()
+			.redstone(s -> s.rsState, AutoWorkbenchLogic.REDSTONE_POS)
+			.gui(IEMenuTypes.AUTO_WORKBENCH_NEW)
 			.build();
 
 	public static final MultiblockRegistration<BottlingMachineLogic.State> BOTTLING_MACHINE = metal(new BottlingMachineLogic(), "bottling_machine")
 			.structure(() -> IEMultiblocks.BOTTLING_MACHINE)
-			.redstoneAware()
+			.redstone(s -> s.rsState, BottlingMachineLogic.REDSTONE_POS)
 			.build();
 
 	public static final MultiblockRegistration<SiloLogic.State> SILO = metal(new SiloLogic(), "silo")
 			.structure(() -> IEMultiblocks.SILO)
-			.redstoneAware()
+			.redstone(s -> s.rsState, SiloLogic.OUTPUT_POS)
 			.withComparator()
 			.notMirrored()
 			.build();
 
 	public static final MultiblockRegistration<SheetmetalTankLogic.State> TANK = metal(new SheetmetalTankLogic(), "tank")
 			.structure(() -> IEMultiblocks.SHEETMETAL_TANK)
-			.redstoneAware()
+			.redstone(s -> s.rsState, SheetmetalTankLogic.IO_POS)
 			.withComparator()
 			.notMirrored()
 			.build();
 
 	public static final MultiblockRegistration<MixerLogic.State> MIXER = metal(new MixerLogic(), "mixer")
 			.structure(() -> IEMultiblocks.MIXER)
-			.redstoneAware()
-			.component(new MultiblockGui<>(IEMenuTypes.MIXER_NEW))
+			.redstone(s -> s.rsState, MixerLogic.REDSTONE_POS)
+			.gui(IEMenuTypes.MIXER_NEW)
 			.build();
 
 	public static final MultiblockRegistration<RefineryLogic.State> REFINERY = metal(new RefineryLogic(), "refinery")
 			.structure(() -> IEMultiblocks.REFINERY)
-			.redstoneAware()
+			.redstone(s -> s.rsState, RefineryLogic.REDSTONE_POS)
 			.build();
 
 	public static final MultiblockRegistration<SqueezerLogic.State> SQUEEZER = metal(new SqueezerLogic(), "squeezer")
 			.structure(() -> IEMultiblocks.SQUEEZER)
-			.redstoneAware()
-			.component(new MultiblockGui<>(IEMenuTypes.SQUEEZER_NEW))
+			.redstone(s -> s.rsState, SqueezerLogic.REDSTONE_POS)
+			.gui(IEMenuTypes.SQUEEZER_NEW)
 			.build();
 
 	public static final MultiblockRegistration<BucketWheelLogic.State> BUCKET_WHEEL = metal(new BucketWheelLogic(), "bucket_wheel")
@@ -140,31 +136,28 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<ExcavatorLogic.State> EXCAVATOR = metal(new ExcavatorLogic(), "excavator")
 			.structure(() -> IEMultiblocks.EXCAVATOR)
-			.redstoneAware()
-			.withComparator()
-			.selfWrappingComponent(new ComparatorManager<>(ExcavatorLogic::computeComparatorValue))
+			.redstone(s -> s.rsState, ExcavatorLogic.REDSTONE_POS)
+			.comparator(new ComparatorManager<>(ExcavatorLogic::computeComparatorValue))
 			.build();
 
 	public static final MultiblockRegistration<SawmillLogic.State> SAWMILL = metal(new SawmillLogic(), "sawmill")
 			.structure(() -> IEMultiblocks.SAWMILL)
-			.redstoneAware()
-			.withComparator()
-			.selfWrappingComponent(SawmillLogic.makeComparator())
+			.comparator(SawmillLogic.makeComparator())
+			.redstone(s -> s.rsState, SawmillLogic.REDSTONE_POS)
 			.build();
 
 	public static final MultiblockRegistration<ArcFurnaceLogic.State> ARC_FURNACE = metal(new ArcFurnaceLogic(), "arc_furnace")
 			.structure(() -> IEMultiblocks.ARC_FURNACE)
-			.redstoneAware()
-			.withComparator()
-			.selfWrappingComponent(ArcFurnaceLogic.makeElectrodeComparator())
-			.selfWrappingComponent(ArcFurnaceLogic.makeInventoryComparator())
-			.component(new MultiblockGui<>(IEMenuTypes.ARC_FURNACE_NEW))
+			.comparator(ArcFurnaceLogic.makeElectrodeComparator())
+			.comparator(ArcFurnaceLogic.makeInventoryComparator())
+			.redstone(s -> s.rsControl, ArcFurnaceLogic.REDSTONE_POS)
+			.gui(IEMenuTypes.ARC_FURNACE_NEW)
 			.build();
 
 	private static <S extends IMultiblockState>
-	MultiblockRegistrationBuilder<S, ?> stone(IMultiblockLogic<S> logic, String name, boolean solid)
+	IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{
-		return MultiblockRegistration.builder(logic, name)
+		return new IEMultiblockBuilder<>(logic, name)
 				.notMirrored()
 				.customBlock(
 						BLOCK_REGISTER, ITEM_REGISTER,
@@ -175,9 +168,9 @@ public class IEMultiblockLogic
 	}
 
 	private static <S extends IMultiblockState>
-	MultiblockRegistrationBuilder<S, ?> metal(IMultiblockLogic<S> logic, String name)
+	IEMultiblockBuilder<S> metal(IMultiblockLogic<S> logic, String name)
 	{
-		return MultiblockRegistration.builder(logic, name)
+		return new IEMultiblockBuilder<>(logic, name)
 				.defaultBEs(BE_REGISTER)
 				.defaultBlock(BLOCK_REGISTER, ITEM_REGISTER, IEBlocks.METAL_PROPERTIES_NO_OCCLUSION.get());
 	}

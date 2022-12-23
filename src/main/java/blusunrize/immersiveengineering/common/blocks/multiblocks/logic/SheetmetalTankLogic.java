@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SheetmetalTankLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
@@ -37,7 +38,7 @@ import java.util.function.Function;
 
 public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBOverlayText<State>
 {
-	private static final BlockPos IO_POS = new BlockPos(1, 0, 1);
+	public static final BlockPos IO_POS = new BlockPos(1, 0, 1);
 	private static final BlockPos INPUT_POS = new BlockPos(1, 4, 1);
 
 	@Override
@@ -45,7 +46,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	{
 		final var state = context.getState();
 		state.comparatorHelper.update(context, state.tank.getFluidAmount());
-		if(context.getRedstoneInputValue(IO_POS, 0) <= 0||state.tank.isEmpty())
+		if(!state.rsState.isEnabled(context)||state.tank.isEmpty())
 			return;
 		for(CapabilityReference<IFluidHandler> outputRef : state.outputs)
 		{
@@ -113,6 +114,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		private final List<CapabilityReference<IFluidHandler>> outputs;
 		private final StoredCapability<IFluidHandler> inputHandler;
 		private final StoredCapability<IFluidHandler> ioHandler;
+		public final RSState rsState = RSState.disabledByDefault();
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{

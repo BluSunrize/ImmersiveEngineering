@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SiloShapes;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
@@ -32,7 +33,7 @@ import java.util.function.Function;
 public class SiloLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
 	private static final int MAX_STORAGE = 41472;
-	private static final BlockPos OUTPUT_POS = new BlockPos(1, 0, 1);
+	public static final BlockPos OUTPUT_POS = new BlockPos(1, 0, 1);
 	private static final Set<BlockPos> IO_OFFSETS = Set.of(OUTPUT_POS, new BlockPos(1, 6, 1));
 
 	@Override
@@ -43,7 +44,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		if(state.identStack.isEmpty()||state.storageAmount <= 0)
 			return;
 		final var level = context.getLevel();
-		if(!level.shouldTickModulo(8)||context.getRedstoneInputValue(OUTPUT_POS, 0) <= 0)
+		if(!level.shouldTickModulo(8)||!state.rsState.isEnabled(context))
 			return;
 		for(CapabilityReference<IItemHandler> output : state.outputs)
 		{
@@ -87,7 +88,9 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 	{
 		public ItemStack identStack = ItemStack.EMPTY;
 		public int storageAmount = 0;
+		public final RSState rsState = RSState.disabledByDefault();
 
+		// TODO integrate into component system?
 		private final LayeredComparatorOutput<IMultiblockContext<?>> comparatorHelper;
 		private final List<CapabilityReference<IItemHandler>> outputs;
 		private final StoredCapability<IItemHandler> inputHandler;

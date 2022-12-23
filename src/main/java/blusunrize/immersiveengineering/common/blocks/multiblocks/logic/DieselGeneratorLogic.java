@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapabil
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.DieselGeneratorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -52,7 +53,7 @@ public class DieselGeneratorLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final Vec3 SMOKE_POSITION = new Vec3(2.1875, 3.25, 2.1875);
-	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
 	private static final CapabilityPosition FLUID_INPUT_A = new CapabilityPosition(0, 0, 4, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition FLUID_INPUT_B = new CapabilityPosition(2, 0, 4, RelativeBlockFace.LEFT);
 
@@ -62,7 +63,7 @@ public class DieselGeneratorLogic
 		final var state = context.getState();
 		boolean active = context.getState().active;
 		// TODO screwdriver redstone inversion
-		if(context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0&&!state.tank.getFluid().isEmpty())
+		if(state.rsState.isEnabled(context)&&!state.tank.getFluid().isEmpty())
 		{
 			int output = IEServerConfig.MACHINES.dieselGen_output.get();
 			List<IEnergyStorage> presentOutputs = state.energyOutputs.stream()
@@ -192,6 +193,7 @@ public class DieselGeneratorLogic
 		private final FluidTank tank = new FluidTank(24*FluidType.BUCKET_VOLUME);
 		private boolean active = false;
 		private int consumeTick = 0;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		// Client fields
 		public float animation_fanRotationStep = 0;

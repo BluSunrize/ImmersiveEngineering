@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -70,14 +71,13 @@ public class BottlingMachineLogic
 	private static final CapabilityPosition FLUID_INPUT_POS_BACK = new CapabilityPosition(0, 0, 0, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition FLUID_INPUT_POS_SIDE = new CapabilityPosition(0, 0, 0, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition ENERGY_INPUT_POS = new CapabilityPosition(2, 1, 0, RelativeBlockFace.UP);
-	private static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 1);
+	public static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 1);
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		boolean canWork = context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0;
 		final var state = context.getState();
-		boolean active = state.processor.tickServer(state, context.getLevel(), canWork);
+		boolean active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		state.active = active;
 		if(active)
 			// TODO syncing every tick while the machine is active is a hack. This was how it worked in the old system,
@@ -218,6 +218,7 @@ public class BottlingMachineLogic
 		// Only used on the client
 		public boolean active;
 
+		public final RSState rsState = RSState.enabledByDefault();
 		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> itemInput;
 		private final StoredCapability<IFluidHandler> fluidInput;

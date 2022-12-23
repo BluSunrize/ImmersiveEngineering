@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTicka
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -57,7 +58,7 @@ public class MixerLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(1, 0, 3, RelativeBlockFace.FRONT);
-	private static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
 	private static final CapabilityPosition FLUID_OUTPUT = new CapabilityPosition(1, 0, 2, RelativeBlockFace.BACK);
 	private static final CapabilityPosition FLUID_INPUT = new CapabilityPosition(0, 0, 1, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
@@ -72,7 +73,7 @@ public class MixerLogic
 	{
 		final var state = context.getState();
 		final var level = context.getLevel();
-		final var rsEnabled = context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0;
+		final var rsEnabled = state.rsState.isEnabled(context);
 
 		final var active = state.processor.tickServer(state, level, rsEnabled);
 		final var enqueueState = enqueueNewRecipes(state, level.getRawLevel());
@@ -235,6 +236,7 @@ public class MixerLogic
 		public final SlotwiseItemHandler inventory;
 		public boolean outputAll;
 		public final InMachineProcessor<MixerRecipe> processor;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		// Client only
 		public boolean isActive;

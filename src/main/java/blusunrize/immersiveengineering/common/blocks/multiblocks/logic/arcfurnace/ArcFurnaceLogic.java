@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -59,7 +60,7 @@ public class ArcFurnaceLogic
 	);
 	private static final Vec3 SMOKE_OFFSET = new Vec3(2.5, 3.9, 2.5);
 	private static final double[] PARTICLE_Y_SPEEDS = {0.025, 0.05};
-	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 4);
+	public static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 4);
 	private static final BlockPos ELECTRODE_COMPARATOR_POS = new BlockPos(2, 4, 2);
 
 	public static final int FIRST_IN_SLOT = 0;
@@ -87,8 +88,8 @@ public class ArcFurnaceLogic
 	{
 		final var state = context.getState();
 		final var level = context.getLevel();
-		final var canWork = context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0;
-		final var tickedAny = state.processor.tickServer(state, level, canWork);
+		final boolean canWork = state.rsControl.isEnabled(context);
+		final boolean tickedAny = state.processor.tickServer(state, level, canWork);
 		if(state.active!=tickedAny||state.updateElectrodePresence())
 		{
 			state.active = tickedAny;
@@ -294,6 +295,7 @@ public class ArcFurnaceLogic
 		private final StoredCapability<IItemHandler> additiveHandler;
 		private final StoredCapability<IItemHandler> outputHandler;
 		private final StoredCapability<IItemHandler> slagHandler;
+		public final RSState rsControl = RSState.enabledByDefault();
 
 		// Client/sync fields
 		private boolean active;

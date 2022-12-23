@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -49,7 +50,7 @@ public class CrusherLogic implements
 		IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	public static final BlockPos MASTER_OFFSET = new BlockPos(2, 1, 1);
-	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(2, 0, 3, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(4, 1, 1, RelativeBlockFace.UP);
 	private static final Vec3[] PARTICLE_POSITIONS = {
@@ -69,7 +70,7 @@ public class CrusherLogic implements
 	{
 		final var state = context.getState();
 		final var wasActive = state.renderAsActive;
-		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), canWorkFromRS(context));
+		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		if(wasActive!=state.renderAsActive)
 			context.requestMasterBESync();
 		if(state.renderAsActive)
@@ -126,11 +127,6 @@ public class CrusherLogic implements
 		return CrusherShapes.SHAPE_GETTER;
 	}
 
-	private static boolean canWorkFromRS(IMultiblockContext<State> ctx)
-	{
-		return ctx.getRedstoneInputValue(REDSTONE_POS, RelativeBlockFace.BACK, 15) <= 0;
-	}
-
 	private static boolean isInInput(BlockPos posInMultiblock, boolean allowMiddleLayer)
 	{
 		if(posInMultiblock.getY()==2||(allowMiddleLayer&&posInMultiblock.getY()==1))
@@ -143,9 +139,9 @@ public class CrusherLogic implements
 	{
 		if(collided.level.isClientSide||!isInInput(posInMultiblock, true))
 			return;
-		if(!collided.isAlive()||!canWorkFromRS(ctx))
-			return;
 		final var state = ctx.getState();
+		if(!collided.isAlive()||!state.rsState.isEnabled(ctx))
+			return;
 		final var level = ctx.getLevel();
 		final var internalBB = new AABB(1.9375, 1.25, 0.9375, 3.0625, 2.5, 2.0625);
 		final var crusherInternal = level.toAbsolute(internalBB);
@@ -187,6 +183,7 @@ public class CrusherLogic implements
 		private final MultiblockProcessor<CrusherRecipe, ProcessContextInWorld<CrusherRecipe>> processor;
 		private boolean renderAsActive;
 		private float barrelAngle;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		private final DroppingMultiblockOutput output;
 		private final StoredCapability<IItemHandler> insertionHandler;

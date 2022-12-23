@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SawmillShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -60,7 +61,7 @@ public class SawmillLogic
 	private static final MultiblockFace PRIMARY_OUTPUT = new MultiblockFace(5, 1, 1, RelativeBlockFace.RIGHT);
 	private static final MultiblockFace SIDE_OUTPUT = new MultiblockFace(3, 0, 3, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(2, 1, 0, RelativeBlockFace.UP);
-	private static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
 	private static final AABB SAWBLADE_AABB = new AABB(2.6875, 1, 1.375, 4.3125, 2, 1.625);
 
 	@Override
@@ -69,7 +70,7 @@ public class SawmillLogic
 		final var state = context.getState();
 		final var level = context.getLevel();
 		final var rawLevel = level.getRawLevel();
-		final var rsAllowed = !isRSDisabled(context);
+		final var rsAllowed = state.rsState.isEnabled(context);
 		int i = 0;
 		Iterator<SawmillProcess> processIterator = state.sawmillProcessQueue.iterator();
 		Set<ItemStack> secondaries = new HashSet<>();
@@ -165,7 +166,7 @@ public class SawmillLogic
 		final var state = ctx.getState();
 		final var level = ctx.getLevel();
 		final var rawLevel = level.getRawLevel();
-		if(rawLevel.isClientSide||collided==null||!collided.isAlive()||isRSDisabled(ctx))
+		if(rawLevel.isClientSide||collided==null||!collided.isAlive()||!state.rsState.isEnabled(ctx))
 			return;
 		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&collided instanceof ItemEntity itemEntity)
 		{
@@ -194,7 +195,7 @@ public class SawmillLogic
 	)
 	{
 		final var state = ctx.getState();
-		if(!isRSDisabled(ctx)&&!state.sawblade.isEmpty())
+		if(state.rsState.isEnabled(ctx)&&!state.sawblade.isEmpty())
 		{
 			if(!isClient)
 				hurtEntity(player, ctx);
@@ -234,7 +235,7 @@ public class SawmillLogic
 	{
 		if(toHurt instanceof Player player&&player.getAbilities().invulnerable)
 			return;
-		if(isRSDisabled(ctx))
+		if(!ctx.getState().rsState.isEnabled(ctx))
 			return;
 
 		int consumed = ctx.getState().energy.extractEnergy(80, false);
@@ -243,11 +244,6 @@ public class SawmillLogic
 			toHurt.hurt(IEDamageSources.sawmill, 7);
 			ctx.markMasterDirty();
 		}
-	}
-
-	private boolean isRSDisabled(IMultiblockContext<State> ctx)
-	{
-		return ctx.getRedstoneInputValue(REDSTONE_POS, 0) > 0;
 	}
 
 	private static boolean insertItemToProcess(
@@ -323,6 +319,7 @@ public class SawmillLogic
 		public final List<SawmillProcess> sawmillProcessQueue = new ArrayList<>();
 		// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
 		private int combinedLogs = 0;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		private final DroppingMultiblockOutput output;
 		private final DroppingMultiblockOutput secondaryOutput;

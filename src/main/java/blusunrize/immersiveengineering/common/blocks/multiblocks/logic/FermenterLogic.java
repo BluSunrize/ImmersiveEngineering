@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTicka
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.SimpleComparatorValue;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
@@ -68,12 +69,12 @@ public class FermenterLogic
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final State state = context.getState();
-		final boolean rsDisabled = isRSDisabled(context);
+		final boolean rsEnabled = state.rsState.isEnabled(context);
 		final boolean wasActive = state.active;
-		state.active = state.processor.tickServer(state, context.getLevel(), !rsDisabled);
+		state.active = state.processor.tickServer(state, context.getLevel(), rsEnabled);
 		if(wasActive!=state.active)
 			context.requestMasterBESync();
-		if(rsDisabled)
+		if(!rsEnabled)
 			return;
 		boolean changed = false;
 		if(state.energy.getEnergyStored() > 0&&state.processor.getQueueSize() < state.processor.getMaxQueueSize())
@@ -155,11 +156,6 @@ public class FermenterLogic
 		return false;
 	}
 
-	private static boolean isRSDisabled(IMultiblockContext<State> ctx)
-	{
-		return ctx.getRedstoneInputValue(REDSTONE_POS, 15) > 0;
-	}
-
 	@Override
 	public State createInitialState(IInitialMultiblockContext<State> capabilitySource)
 	{
@@ -210,6 +206,7 @@ public class FermenterLogic
 		private final FluidTank tank = new FluidTank(TANK_CAPACITY);
 		private final SlotwiseItemHandler inventory;
 		private final MultiblockProcessor<FermenterRecipe, ProcessContextInMachine<FermenterRecipe>> processor;
+		public final RSState rsState = RSState.enabledByDefault();
 
 		private final CapabilityReference<IFluidHandler> fluidOutput;
 		private final CapabilityReference<IItemHandler> itemOutput;

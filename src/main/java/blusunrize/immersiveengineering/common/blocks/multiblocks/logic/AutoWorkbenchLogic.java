@@ -10,6 +10,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InWorldProcessor;
@@ -47,13 +48,13 @@ public class AutoWorkbenchLogic
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(3, 1, 1, RelativeBlockFace.RIGHT);
 	private static final BlockPos INPUT_POS = new BlockPos(0, 1, 2);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
-	private static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 2);
+	public static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 2);
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		boolean isRSEnabled = context.getRedstoneInputValue(REDSTONE_POS, 0) <= 0;
 		final var state = context.getState();
+		boolean isRSEnabled = state.rsState.isEnabled(context);
 		boolean active = state.processor.tickServer(state, context.getLevel(), isRSEnabled);
 		if(active!=state.active)
 		{
@@ -144,6 +145,7 @@ public class AutoWorkbenchLogic
 		public int selectedRecipe = -1;
 		public final InWorldProcessor<BlueprintCraftingRecipe> processor;
 		private final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
+		public final RSState rsState = RSState.enabledByDefault();
 
 		// Only used on client
 		public boolean active;
