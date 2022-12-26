@@ -230,7 +230,6 @@ public class FermenterLogic
 					new IOConstraintGroup(IOConstraint.FLUID_INPUT, 1),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1)
 			), ctx.getMarkDirtyRunnable());
-			// TODO check pos and orientation
 			this.fluidOutput = ctx.getCapabilityAt(
 					ForgeCapabilities.FLUID_HANDLER, new BlockPos(3, 0, 1), RelativeBlockFace.LEFT
 			);

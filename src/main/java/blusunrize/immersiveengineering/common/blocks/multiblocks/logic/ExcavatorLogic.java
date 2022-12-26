@@ -199,7 +199,6 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			else
 				mZ += fixVelOffset;
 
-			// TODO batch-spawn? Also port Silf's changes to this.
 			rawLevel.sendParticles(
 					new ItemParticleOption(ParticleTypes.ITEM, stack),
 					topCenterAbs.x+axis.choose(rndPosOffset, 0, fixPosOffset),

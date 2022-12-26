@@ -28,7 +28,6 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	private final IntToDoubleFunction minDelayAfter;
 	private final int maxProcessPerTick;
 	private final Runnable markDirty;
-	// TODO rename
 	private final Runnable onQueueChange;
 	private final BiFunction<Level, ResourceLocation, @Nullable R> getRecipeFromID;
 
@@ -89,7 +88,6 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		return tickedAny;
 	}
 
-	// TODO write to/read from NBT
 	public Tag toNBT()
 	{
 		ListTag processList = new ListTag();

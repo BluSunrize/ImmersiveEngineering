@@ -179,7 +179,6 @@ public class MixerLogic
 			return;
 		FluidStack fs = state.tank.fluids.get(0);
 		float amount = fs.getAmount()/(float)state.tank.getCapacity()*1.125f;
-		// TODO why are the particles spawned client-side?
 		final var relativePos = new Vec3(2, 0.9375+amount, 1);
 		Vec3 partPos = level.toAbsolute(relativePos);
 		float r = ApiUtils.RANDOM.nextFloat()*.8125f;

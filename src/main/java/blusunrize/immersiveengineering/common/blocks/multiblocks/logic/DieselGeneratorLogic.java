@@ -62,7 +62,6 @@ public class DieselGeneratorLogic
 	{
 		final var state = context.getState();
 		boolean active = context.getState().active;
-		// TODO screwdriver redstone inversion
 		if(state.rsState.isEnabled(context)&&!state.tank.getFluid().isEmpty())
 		{
 			int output = IEServerConfig.MACHINES.dieselGen_output.get();
