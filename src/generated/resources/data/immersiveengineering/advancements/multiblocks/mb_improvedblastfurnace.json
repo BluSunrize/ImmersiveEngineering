@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:adv_blast_furnace_new"
+      "item": "immersiveengineering:adv_blast_furnace"
     },
     "show_toast": true,
     "title": {

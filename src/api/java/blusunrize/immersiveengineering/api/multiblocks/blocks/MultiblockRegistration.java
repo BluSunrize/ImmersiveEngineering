@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOri
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
@@ -53,8 +54,7 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 				return this;
 			}
 		}
-		// TODO remove _new suffix
-		return new Impl(logic, name+"_new");
+		return new Impl(logic, name);
 	}
 
 	public BlockPos masterPosInMB()
@@ -65,6 +65,11 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 	public Vec3i size(Level level)
 	{
 		return getSize.apply(level);
+	}
+
+	public ItemStack iconStack()
+	{
+		return blockItem().get().getDefaultInstance();
 	}
 
 	public interface Disassembler

@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:coke_oven_new"
+      "item": "immersiveengineering:coke_oven"
     },
     "show_toast": true,
     "title": {

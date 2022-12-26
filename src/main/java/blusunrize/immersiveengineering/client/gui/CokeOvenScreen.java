@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity.CokeOvenData;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.gui.CokeOvenMenu;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -43,8 +43,8 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenMenu>
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		int processMax = menu.data.get(CokeOvenData.MAX_BURN_TIME);
-		int process = menu.data.get(CokeOvenData.BURN_TIME);
+		int processMax = menu.data.get(CokeOvenLogic.State.MAX_BURN_TIME);
+		int process = menu.data.get(CokeOvenLogic.State.BURN_TIME);
 		if(processMax > 0&&process > 0)
 		{
 			int h = (int)(12*(process/(float)processMax));

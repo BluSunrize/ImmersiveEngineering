@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
-import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic;
 import blusunrize.immersiveengineering.common.gui.AssemblerMenu;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -64,7 +64,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 						() -> Component.translatable(Lib.GUI_CONFIG+"assembler."+(menu.recursiveIngredients.get()?"recursiveIngredients": "nonRecursiveIngredients"))
 				)
 		);
-		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
+		for(int i = 0; i < AssemblerLogic.NUM_PATTERNS; i++)
 		{
 			final int offset = 58*i;
 			areas.add(new TooltipArea(
@@ -116,7 +116,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
+		for(int i = 0; i < AssemblerLogic.NUM_PATTERNS; i++)
 			if(menu.inv.getStackInSlot(18+i).isEmpty()&&!menu.patterns.get(i).getStackInSlot(9).isEmpty())
 			{
 				ItemStack stack = menu.patterns.get(i).getStackInSlot(9);

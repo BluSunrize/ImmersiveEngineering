@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.util.compat.jei.cokeoven;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
@@ -26,7 +26,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -42,7 +41,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		super(helper, JEIRecipeTypes.COKE_OVEN, "block.immersiveengineering.coke_oven");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/coke_oven.png");
 		setBackground(helper.createDrawable(background, 26, 16, 123, 55));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.COKE_OVEN.get()));
+		setIcon(IEMultiblockLogic.COKE_OVEN.iconStack());
 		tankOverlay = helper.createDrawable(background, 178, 33, 16, 47);
 		flame = helper.drawableBuilder(background, 177, 0, 14, 14).buildAnimated(500, IDrawableAnimated.StartDirection.TOP, true);
 	}

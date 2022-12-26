@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
@@ -25,8 +24,8 @@ public class BottlingMachineCallbacks extends Callback<State>
 	}
 
 	@ComputerCallable
-	public boolean isRunning(CallbackEnvironment<PoweredMultiblockBlockEntity<?, ?>> env)
+	public boolean isRunning(CallbackEnvironment<State> env)
 	{
-		return env.object().shouldRenderAsActive();
+		return env.object().active;
 	}
 }

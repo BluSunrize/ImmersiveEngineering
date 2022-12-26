@@ -21,7 +21,7 @@
     "frame": "goal",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:crusher_new"
+      "item": "immersiveengineering:crusher"
     },
     "show_toast": true,
     "title": {

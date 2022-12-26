@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -25,8 +25,6 @@ import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -44,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -174,7 +173,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 		matrixStack.translate(0.5, 0.5, 0.5);
 
 		matrixStack.pushPose();
-		ItemStack blueprintStack = state.inventory.getStackInSlot(AutoWorkbenchBlockEntity.BLUEPRINT_SLOT);
+		ItemStack blueprintStack = state.inventory.getStackInSlot(AutoWorkbenchLogic.BLUEPRINT_SLOT);
 		if(!blueprintStack.isEmpty())
 			renderModelPart(matrixStack, blockRenderer, bufferIn, model, combinedLightIn, combinedOverlayIn, "blueprint");
 

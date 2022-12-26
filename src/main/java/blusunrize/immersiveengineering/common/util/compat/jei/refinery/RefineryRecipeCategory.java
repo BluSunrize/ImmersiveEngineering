@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.refinery;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
@@ -21,7 +21,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.Arrays;
@@ -35,7 +34,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 		super(helper, JEIRecipeTypes.REFINERY, "block.immersiveengineering.refinery");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/refinery.png");
 		setBackground(helper.createDrawable(background, 6, 10, 125, 62));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.REFINERY));
+		setIcon(IEMultiblockLogic.REFINERY.iconStack());
 		tankOverlay = helper.createDrawable(background, 179, 33, 16, 47);
 	}
 

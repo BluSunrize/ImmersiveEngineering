@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockB
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
@@ -68,15 +67,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			state = state.setValue(IEProperties.FACING_HORIZONTAL, clickDirection.getOpposite());
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
-		if(curr instanceof MultiblockPartBlockEntity<?> tile)
-		{
-			tile.formed = true;
-			tile.offsetToMaster = new BlockPos(offsetFromMaster);
-			tile.posInMultiblock = info.pos;
-			tile.setChanged();
-			world.blockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
-		}
-		else if(curr instanceof MultiblockBlockEntityDummy<?> dummy)
+		if(curr instanceof MultiblockBlockEntityDummy<?> dummy)
 			dummy.getHelper().setPositionInMB(info.pos);
 		else if(!(curr instanceof MultiblockBlockEntityMaster<?>))
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
@@ -106,9 +97,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	protected void prepareBlockForDisassembly(Level world, BlockPos pos)
 	{
 		BlockEntity be = world.getBlockEntity(pos);
-		if(be instanceof MultiblockPartBlockEntity<?> multiblockBE)
-			multiblockBE.formed = false;
-		else if(be instanceof IMultiblockBE<?> multiblockBE)
+		if(be instanceof IMultiblockBE<?> multiblockBE)
 			multiblockBE.getHelper().markDisassembling();
 		else if(be!=null)
 			IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, be);

@@ -187,7 +187,7 @@ public class SqueezerLogic
 		public final RSState rsState = RSState.enabledByDefault();
 
 		// Only used on client
-		private boolean active;
+		public boolean active;
 		public float animation_piston = 0;
 		public boolean animation_down = true;
 

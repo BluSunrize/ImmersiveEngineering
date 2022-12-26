@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:mixer_new"
+      "item": "immersiveengineering:mixer"
     },
     "show_toast": true,
     "title": {

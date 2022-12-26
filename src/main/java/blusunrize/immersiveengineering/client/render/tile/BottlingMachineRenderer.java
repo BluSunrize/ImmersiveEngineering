@@ -17,22 +17,21 @@ import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingProcess;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
+import org.joml.Quaternionf;
 
 import java.util.List;
 
@@ -70,8 +69,8 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 			if(process==null)
 				continue;
 			float processMaxTicks = process.getMaxTicks(te.getLevel());
-			float transportTime = BottlingMachineBlockEntity.getTransportTime(processMaxTicks);
-			float liftTime = BottlingMachineBlockEntity.getLiftTime(processMaxTicks);
+			float transportTime = BottlingMachineLogic.getTransportTime(processMaxTicks);
+			float liftTime = BottlingMachineLogic.getLiftTime(processMaxTicks);
 			float fProcess = process.processTick;
 
 			float itemX;
@@ -104,7 +103,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 				itemX = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 				itemFill = 1;
 			}
-			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineBlockEntity.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
+			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineLogic.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
 		}
 
 		matrixStack.pushPose();

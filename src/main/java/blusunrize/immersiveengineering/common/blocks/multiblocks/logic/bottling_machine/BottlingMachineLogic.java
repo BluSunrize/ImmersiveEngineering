@@ -57,14 +57,13 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.getLiftTime;
-import static blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.getTransportTime;
-
 public class BottlingMachineLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	public static final float TRANSLATION_DISTANCE = 2.5f;
 	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_LIFT_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_LIFT_TIME+STANDARD_TRANSPORT_TIME)
 
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(3, 1, 1, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition ITEM_INPUT_POS = new CapabilityPosition(0, 1, 1, RelativeBlockFace.RIGHT);
@@ -207,6 +206,22 @@ public class BottlingMachineLogic
 	public Function<BlockPos, VoxelShape> shapeGetter()
 	{
 		return BottlingMachineShapes.SHAPE_GETTER;
+	}
+
+	public static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
+		else
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
+	}
+
+	public static float getLiftTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_LIFT_TIME;
+		else
+			return processMaxTicks*STANDARD_LIFT_TIME/MIN_CYCLE_TIME;
 	}
 
 	public static class State implements IMultiblockState, ProcessContextInWorld<BottlingMachineRecipe>

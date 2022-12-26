@@ -64,7 +64,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	);
 	public static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 5);
 	private static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(1, 1, 6, RelativeBlockFace.BACK);
-	private static final BlockPos WHEEL_CENTER = new BlockPos(1, 1, 1);
+	public static final BlockPos WHEEL_CENTER = new BlockPos(1, 1, 1);
 	private static final Vec3 WHEEL_CENTER_TOP = Vec3.atCenterOf(WHEEL_CENTER.above(2));
 	private static final List<BlockPos> DIG_POSITIONS = Util.make(() -> {
 		BlockPos belowWheelCenter = WHEEL_CENTER.offset(0, -4, 0);

@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:silo_new"
+      "item": "immersiveengineering:silo"
     },
     "show_toast": true,
     "title": {

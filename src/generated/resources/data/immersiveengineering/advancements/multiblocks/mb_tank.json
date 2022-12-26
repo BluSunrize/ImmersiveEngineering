@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:tank_new"
+      "item": "immersiveengineering:tank"
     },
     "show_toast": true,
     "title": {

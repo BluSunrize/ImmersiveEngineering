@@ -11,9 +11,8 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +34,7 @@ public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.DIESEL_GENERATOR);
+		return IEMultiblockLogic.DIESEL_GENERATOR.iconStack();
 	}
 
 	@Override

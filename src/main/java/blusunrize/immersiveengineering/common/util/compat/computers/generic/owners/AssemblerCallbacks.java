@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
@@ -34,22 +33,23 @@ public class AssemblerCallbacks extends Callback<State>
 	}
 
 	@ComputerCallable
-	public boolean isValidRecipe(CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe)
+	public boolean isValidRecipe(CallbackEnvironment<State> env, @IndexArgument int recipe)
 	{
 		checkRecipeIndex(recipe);
 		return !env.object().patterns[recipe].inv.get(9).isEmpty();
 	}
 
-	@ComputerCallable
-	public void setRecipeEnabled(CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe, boolean enabled)
+	//TODO
+	/*@ComputerCallable
+	public void setRecipeEnabled(CallbackEnvironment<State> env, @IndexArgument int recipe, boolean enabled)
 	{
 		checkRecipeIndex(recipe);
 		env.object().computerControlByRecipe[recipe].setEnabled(enabled);
-	}
+	}*/
 
 	@ComputerCallable
 	public ItemStack getRecipeInputStack(
-			CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe, @IndexArgument int slot
+			CallbackEnvironment<State> env, @IndexArgument int recipe, @IndexArgument int slot
 	)
 	{
 		checkRecipeIndex(recipe);

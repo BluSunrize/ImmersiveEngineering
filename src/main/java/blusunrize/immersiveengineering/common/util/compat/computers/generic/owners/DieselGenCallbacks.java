@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
@@ -23,8 +22,8 @@ public class DieselGenCallbacks extends Callback<State>
 	}
 
 	@ComputerCallable
-	public boolean isRunning(CallbackEnvironment<DieselGeneratorBlockEntity> env)
+	public boolean isRunning(CallbackEnvironment<State> env)
 	{
-		return env.object().active;
+		return env.object().isActive();
 	}
 }

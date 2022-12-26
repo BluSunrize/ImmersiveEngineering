@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.common.blocks.metal.RefineryBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.RefineryTanks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.State;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
@@ -26,15 +26,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class RefineryMenu extends IEContainerMenu
 {
-	public static RefineryMenu makeServer(MenuType<?> type, int id, Inventory invPlayer, RefineryBlockEntity be)
-	{
-		return new RefineryMenu(
-				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.inventory), be.energyStorage,
-				new RefineryTanks(be.tanks[0], be.tanks[1], be.tanks[2])
-		);
-	}
-
-	public static RefineryMenu makeServerNew(
+	public static RefineryMenu makeServer(
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
@@ -49,8 +41,8 @@ public class RefineryMenu extends IEContainerMenu
 		return new RefineryMenu(
 				clientCtx(type, id),
 				invPlayer,
-				new ItemStackHandler(RefineryBlockEntity.NUM_SLOTS),
-				new MutableEnergyStorage(RefineryBlockEntity.ENERGY_CAPACITY),
+				new ItemStackHandler(RefineryLogic.NUM_SLOTS),
+				new MutableEnergyStorage(RefineryLogic.ENERGY_CAPACITY),
 				new RefineryTanks()
 		);
 	}

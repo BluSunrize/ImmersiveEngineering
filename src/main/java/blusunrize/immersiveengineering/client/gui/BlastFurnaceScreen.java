@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.StateView;
 import blusunrize.immersiveengineering.common.gui.BlastFurnaceMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.screens.Screen;

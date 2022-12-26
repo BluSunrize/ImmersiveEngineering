@@ -21,7 +21,7 @@
     "frame": "challenge",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:excavator_new"
+      "item": "immersiveengineering:excavator"
     },
     "show_toast": true,
     "title": {

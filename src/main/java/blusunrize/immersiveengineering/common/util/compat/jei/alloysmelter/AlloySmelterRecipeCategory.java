@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,7 +21,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 {
@@ -33,7 +32,7 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 		super(helper, JEIRecipeTypes.ALLOY, "block.immersiveengineering.alloy_smelter");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/alloy_smelter.png");
 		setBackground(helper.createDrawable(background, 36, 15, 106, 56));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.ALLOY_SMELTER));
+		setIcon(IEMultiblockLogic.ALLOY_SMELTER.iconStack());
 		flame = helper.drawableBuilder(background, 177, 0, 14, 14).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, true);
 		arrow = helper.drawableBuilder(background, 176, 14, 24, 17).buildAnimated(200, IDrawableAnimated.StartDirection.LEFT, false);
 	}

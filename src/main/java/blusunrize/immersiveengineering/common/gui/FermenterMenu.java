@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.common.blocks.metal.FermenterBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
@@ -29,16 +29,6 @@ public class FermenterMenu extends IEContainerMenu
 	public final FluidTank tank;
 
 	public static FermenterMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, FermenterBlockEntity be
-	)
-	{
-		return new FermenterMenu(
-				blockCtx(type, id, be), invPlayer,
-				new ItemStackHandler(be.getInventory()), be.energyStorage, be.tanks[0]
-		);
-	}
-
-	public static FermenterMenu makeServerNew(
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
@@ -52,9 +42,9 @@ public class FermenterMenu extends IEContainerMenu
 	{
 		return new FermenterMenu(
 				clientCtx(type, id), invPlayer,
-				new ItemStackHandler(FermenterBlockEntity.NUM_SLOTS),
-				new MutableEnergyStorage(FermenterBlockEntity.ENERGY_CAPACITY),
-				new FluidTank(FermenterBlockEntity.TANK_CAPACITY)
+				new ItemStackHandler(FermenterLogic.NUM_SLOTS),
+				new MutableEnergyStorage(FermenterLogic.ENERGY_CAPACITY),
+				new FluidTank(FermenterLogic.TANK_CAPACITY)
 		);
 	}
 

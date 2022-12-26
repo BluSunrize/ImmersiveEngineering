@@ -249,5 +249,10 @@ public class DieselGeneratorLogic
 			else if(!active&&oldActive)
 				animation_fanFadeOut = 80;
 		}
+
+		public boolean isActive()
+		{
+			return active;
+		}
 	}
 }

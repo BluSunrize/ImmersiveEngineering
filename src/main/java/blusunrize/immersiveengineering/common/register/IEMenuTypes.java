@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ToolboxBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretChemBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
-import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.gui.TurretMenu.ChemTurretMenu;
@@ -47,29 +47,17 @@ public class IEMenuTypes
 {
 	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Lib.MODID);
 
-	public static final ArgContainer<CokeOvenBlockEntity, CokeOvenMenu> COKE_OVEN = registerArg(
+	public static final ArgContainer<IMultiblockContext<CokeOvenLogic.State>, CokeOvenMenu> COKE_OVEN = registerArg(
 			Lib.GUIID_CokeOven, CokeOvenMenu::makeServer, CokeOvenMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<CokeOvenLogic.State>, CokeOvenMenu> COKE_OVEN_NEW = registerArg(
-			"cokeoven_new", CokeOvenMenu::makeServerNew, CokeOvenMenu::makeClient
-	);
-	public static final ArgContainer<AlloySmelterBlockEntity, AlloySmelterMenu> ALLOY_SMELTER = registerArg(
+	public static final ArgContainer<IMultiblockContext<AlloySmelterLogic.State>, AlloySmelterMenu> ALLOY_SMELTER = registerArg(
 			Lib.GUIID_AlloySmelter, AlloySmelterMenu::makeServer, AlloySmelterMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<AlloySmelterLogic.State>, AlloySmelterMenu> ALLOY_SMELTER_NEW = registerArg(
-			"alloysmelter_new", AlloySmelterMenu::makeServerNew, AlloySmelterMenu::makeClient
-	);
-	public static final ArgContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE = registerArg(
+	public static final ArgContainer<IMultiblockContext<BlastFurnaceLogic.State>, BlastFurnaceMenu> BLAST_FURNACE = registerArg(
 			Lib.GUIID_BlastFurnace, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<BlastFurnaceLogic.State>, BlastFurnaceMenu> BLAST_FURNACE_NEW = registerArg(
-			"blastfurnace_new", BlastFurnaceMenu::makeServerNew, BlastFurnaceMenu::makeClient
-	);
-	public static final ArgContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerArg(
-			Lib.GUIID_BlastFurnaceAdv, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
-	);
-	public static final ArgContainer<IMultiblockContext<AdvBlastFurnaceLogic.State>, BlastFurnaceMenu> BLAST_FURNACE_ADV_NEW = registerArg(
-			"blastfurnace_advanced_new", BlastFurnaceMenu::makeServerNewAdv, BlastFurnaceMenu::makeClient
+	public static final ArgContainer<IMultiblockContext<AdvBlastFurnaceLogic.State>, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerArg(
+			Lib.GUIID_BlastFurnaceAdv, BlastFurnaceMenu::makeServerAdv, BlastFurnaceMenu::makeClient
 	);
 	public static final ArgContainer<CraftingTableBlockEntity, CraftingTableMenu> CRAFTING_TABLE = registerArg(
 			Lib.GUIID_CraftingTable, CraftingTableMenu::makeServer, CraftingTableMenu::makeClient
@@ -79,11 +67,8 @@ public class IEMenuTypes
 	public static final ArgContainer<CircuitTableBlockEntity, CircuitTableMenu> CIRCUIT_TABLE = registerArg(
 			Lib.GUIID_CircuitTable, CircuitTableMenu::makeServer, CircuitTableMenu::makeClient
 	);
-	public static final ArgContainer<AssemblerBlockEntity, AssemblerMenu> ASSEMBLER = registerArg(
+	public static final ArgContainer<IMultiblockContext<AssemblerLogic.State>, AssemblerMenu> ASSEMBLER = registerArg(
 			Lib.GUIID_Assembler, AssemblerMenu::makeServer, AssemblerMenu::makeClient
-	);
-	public static final ArgContainer<IMultiblockContext<AssemblerLogic.State>, AssemblerMenu> ASSEMBLER_NEW = registerArg(
-			"assembler_new", AssemblerMenu::makeServerNew, AssemblerMenu::makeClient
 	);
 	public static final ArgContainer<SorterBlockEntity, SorterMenu> SORTER = registerArg(
 			Lib.GUIID_Sorter, SorterMenu::makeServer, SorterMenu::makeClient
@@ -94,41 +79,23 @@ public class IEMenuTypes
 	public static final ArgContainer<LogicUnitBlockEntity, LogicUnitMenu> LOGIC_UNIT = registerArg(
 			Lib.GUIID_LogicUnit, LogicUnitMenu::makeServer, LogicUnitMenu::makeClient
 	);
-	public static final ArgContainer<SqueezerBlockEntity, SqueezerMenu> SQUEEZER = registerArg(
+	public static final ArgContainer<IMultiblockContext<SqueezerLogic.State>, SqueezerMenu> SQUEEZER = registerArg(
 			Lib.GUIID_Squeezer, SqueezerMenu::makeServer, SqueezerMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<SqueezerLogic.State>, SqueezerMenu> SQUEEZER_NEW = registerArg(
-			"squeezer_new", SqueezerMenu::makeServerNew, SqueezerMenu::makeClient
-	);
-	public static final ArgContainer<FermenterBlockEntity, FermenterMenu> FERMENTER = registerArg(
+	public static final ArgContainer<IMultiblockContext<FermenterLogic.State>, FermenterMenu> FERMENTER = registerArg(
 			Lib.GUIID_Fermenter, FermenterMenu::makeServer, FermenterMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<FermenterLogic.State>, FermenterMenu> FERMENTER_NEW = registerArg(
-			"fermenter_new", FermenterMenu::makeServerNew, FermenterMenu::makeClient
-	);
-	public static final ArgContainer<RefineryBlockEntity, RefineryMenu> REFINERY = registerArg(
+	public static final ArgContainer<IMultiblockContext<RefineryLogic.State>, RefineryMenu> REFINERY = registerArg(
 			Lib.GUIID_Refinery, RefineryMenu::makeServer, RefineryMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<RefineryLogic.State>, RefineryMenu> REFINERY_NEW = registerArg(
-			"refinery_new", RefineryMenu::makeServerNew, RefineryMenu::makeClient
-	);
-	public static final ArgContainer<ArcFurnaceBlockEntity, ArcFurnaceMenu> ARC_FURNACE = registerArg(
+	public static final ArgContainer<IMultiblockContext<ArcFurnaceLogic.State>, ArcFurnaceMenu> ARC_FURNACE = registerArg(
 			Lib.GUIID_ArcFurnace, ArcFurnaceMenu::makeServer, ArcFurnaceMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<ArcFurnaceLogic.State>, ArcFurnaceMenu> ARC_FURNACE_NEW = registerArg(
-			"arc_furnace_new", ArcFurnaceMenu::makeServerNew, ArcFurnaceMenu::makeClient
-	);
-	public static final ArgContainer<AutoWorkbenchBlockEntity, AutoWorkbenchMenu> AUTO_WORKBENCH = registerArg(
+	public static final ArgContainer<IMultiblockContext<AutoWorkbenchLogic.State>, AutoWorkbenchMenu> AUTO_WORKBENCH = registerArg(
 			Lib.GUIID_AutoWorkbench, AutoWorkbenchMenu::makeServer, AutoWorkbenchMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<AutoWorkbenchLogic.State>, AutoWorkbenchMenu> AUTO_WORKBENCH_NEW = registerArg(
-			"auto_workbench_new", AutoWorkbenchMenu::makeServerNew, AutoWorkbenchMenu::makeClient
-	);
-	public static final ArgContainer<MixerBlockEntity, MixerMenu> MIXER = registerArg(
+	public static final ArgContainer<IMultiblockContext<MixerLogic.State>, MixerMenu> MIXER = registerArg(
 			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient
-	);
-	public static final ArgContainer<IMultiblockContext<MixerLogic.State>, MixerMenu> MIXER_NEW = registerArg(
-			"mixer_new", MixerMenu::makeServerNew, MixerMenu::makeClient
 	);
 	public static final ArgContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerArg(
 			Lib.GUIID_Turret_Gun, GunTurretMenu::makeServer, GunTurretMenu::makeClient
@@ -146,7 +113,7 @@ public class IEMenuTypes
 			Lib.GUIID_ToolboxBlock, ToolboxMenu::makeFromBE, ToolboxMenu::makeClient
 	);
 
-	public static final ItemContainerTypeNew<ToolboxMenu> TOOLBOX = registerItemNew(
+	public static final ItemContainerTypeNew<ToolboxMenu> TOOLBOX = registerItem(
 			Lib.GUIID_Toolbox, ToolboxMenu::makeFromItem, ToolboxMenu::makeClient
 	);
 	public static final ItemContainerType<RevolverContainer> REVOLVER = register(Lib.GUIID_Revolver, RevolverContainer::new);
@@ -164,7 +131,7 @@ public class IEMenuTypes
 	}
 
 	public static <C extends IEContainerMenu>
-	ItemContainerTypeNew<C> registerItemNew(
+	ItemContainerTypeNew<C> registerItem(
 			String name, NewItemContainerConstructor<C> container, ClientContainerConstructor<C> client
 	)
 	{

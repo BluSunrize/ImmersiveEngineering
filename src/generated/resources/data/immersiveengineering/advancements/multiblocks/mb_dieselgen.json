@@ -21,7 +21,7 @@
     "frame": "challenge",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:diesel_generator_new"
+      "item": "immersiveengineering:diesel_generator"
     },
     "show_toast": true,
     "title": {

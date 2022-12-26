@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jade;
 
-import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -21,6 +21,6 @@ public class IEWailaPlugin implements IWailaPlugin
 	public void registerClient(IWailaClientRegistration registrar)
 	{
 		registrar.registerBlockComponent(new HempDataProvider(), HempBlock.class);
-		registrar.registerBlockIcon(new MultiblockIconProvider(), IEMultiblockBlock.class);
+		registrar.registerBlockIcon(new MultiblockIconProvider(), MultiblockPartBlock.class);
 	}
 }

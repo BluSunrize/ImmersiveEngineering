@@ -52,12 +52,14 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.getPressTime;
-import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.getTransportTime;
-
 public class MetalPressLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
+	public static final float TRANSLATION_DISTANCE = 2.5f;
+	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
+	private static final float STANDARD_PRESS_TIME = 3.75f;
+	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_PRESS_TIME+STANDARD_TRANSPORT_TIME)
+
 	public static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 0);
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(3, 1, 0, RelativeBlockFace.RIGHT);
 	private static final CapabilityPosition INPUT_POS = new CapabilityPosition(0, 1, 0, RelativeBlockFace.RIGHT);
@@ -191,6 +193,22 @@ public class MetalPressLogic
 	public Function<BlockPos, VoxelShape> shapeGetter()
 	{
 		return MetalPressShapes.SHAPE_GETTER;
+	}
+
+	public static float getTransportTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_TRANSPORT_TIME;
+		else
+			return processMaxTicks*STANDARD_TRANSPORT_TIME/MIN_CYCLE_TIME;
+	}
+
+	public static float getPressTime(float processMaxTicks)
+	{
+		if(processMaxTicks >= MIN_CYCLE_TIME)
+			return STANDARD_PRESS_TIME;
+		else
+			return processMaxTicks*STANDARD_PRESS_TIME/MIN_CYCLE_TIME;
 	}
 
 	public static class State implements IMultiblockState, ProcessContextInWorld<MetalPressRecipe>

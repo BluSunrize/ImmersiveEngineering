@@ -11,25 +11,24 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
 
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.*;
+import static blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.*;
 
 public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {

@@ -322,13 +322,13 @@ public class ItemModels extends TRSRItemModelProvider
 	{
 		obj(StoneDecoration.CONCRETE_SPRAYED, rl("block/sprayed_concrete.obj"))
 				.transforms(rl("item/block"));
-		getBuilder(Multiblocks.ALLOY_SMELTER)
+		getBuilder(IEMultiblockLogic.ALLOY_SMELTER.blockItem().get())
 				.parent(blockStates.alloySmelterOn)
 				.transforms(rl("item/alloysmelter"));
-		getBuilder(Multiblocks.BLAST_FURNACE)
+		getBuilder(IEMultiblockLogic.BLAST_FURNACE.blockItem().get())
 				.parent(blockStates.blastFurnaceOn)
 				.transforms(rl("item/blastfurnace"));
-		getBuilder(Multiblocks.COKE_OVEN)
+		getBuilder(IEMultiblockLogic.COKE_OVEN.blockItem().get())
 				.parent(blockStates.cokeOvenOn)
 				.transforms(rl("item/blastfurnace"));
 		obj(IEMultiblockLogic.ADV_BLAST_FURNACE.blockItem().get(), rl("block/blastfurnace_advanced.obj"))

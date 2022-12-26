@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:refinery_new"
+      "item": "immersiveengineering:refinery"
     },
     "show_toast": true,
     "title": {

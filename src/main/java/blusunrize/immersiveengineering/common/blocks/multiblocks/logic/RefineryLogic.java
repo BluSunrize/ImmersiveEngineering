@@ -162,7 +162,7 @@ public class RefineryLogic
 			ctx.markMasterDirty();
 		}
 		else
-			player.openMenu(IEMenuTypes.REFINERY_NEW.provide(ctx));
+			player.openMenu(IEMenuTypes.REFINERY.provide(ctx));
 		return InteractionResult.SUCCESS;
 	}
 

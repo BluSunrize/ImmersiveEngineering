@@ -37,6 +37,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
@@ -50,10 +51,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity.*;
-
 public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
+	public static final int NUM_PATTERNS = 3;
+	public static final int NUM_TANKS = 3;
+	public static final int TANK_CAPACITY = 8*FluidType.BUCKET_VOLUME;
+	public static final int ENERGY_CAPACITY = 32000;
+	public static final int INVENTORY_SIZE = 18+NUM_PATTERNS;
+
 	private static final CapabilityPosition ITEM_INPUT = new CapabilityPosition(1, 1, 2, RelativeBlockFace.BACK);
 	private static final CapabilityPosition FLUID_INPUT = new CapabilityPosition(1, 0, 2, RelativeBlockFace.BACK);
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(1, 2, 1, RelativeBlockFace.UP);

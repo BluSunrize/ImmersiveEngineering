@@ -29,7 +29,6 @@ import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -63,7 +62,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BlockLoot implements LootTableSubProvider
@@ -139,25 +137,25 @@ public class BlockLoot implements LootTableSubProvider
 		registerMultiblock(IEMultiblockLogic.COKE_OVEN);
 		registerMultiblock(IEMultiblockLogic.BLAST_FURNACE);
 		registerMultiblock(IEMultiblockLogic.ALLOY_SMELTER);
-		registerMultiblock(Multiblocks.ADVANCED_BLAST_FURNACE);
+		registerMultiblock(IEMultiblockLogic.ADV_BLAST_FURNACE);
 
 		registerMultiblock(IEMultiblockLogic.METAL_PRESS);
 		registerMultiblock(IEMultiblockLogic.CRUSHER);
-		registerMultiblock(Multiblocks.SAWMILL);
-		registerMultiblock(Multiblocks.TANK);
-		registerMultiblock(Multiblocks.SILO);
+		registerMultiblock(IEMultiblockLogic.SAWMILL);
+		registerMultiblock(IEMultiblockLogic.TANK);
+		registerMultiblock(IEMultiblockLogic.SILO);
 		registerMultiblock(IEMultiblockLogic.ASSEMBLER);
 		registerMultiblock(IEMultiblockLogic.AUTO_WORKBENCH);
 		registerMultiblock(IEMultiblockLogic.BOTTLING_MACHINE);
-		registerMultiblock(Multiblocks.SQUEEZER);
+		registerMultiblock(IEMultiblockLogic.SQUEEZER);
 		registerMultiblock(IEMultiblockLogic.FERMENTER);
-		registerMultiblock(Multiblocks.REFINERY);
+		registerMultiblock(IEMultiblockLogic.REFINERY);
 		registerMultiblock(IEMultiblockLogic.DIESEL_GENERATOR);
-		registerMultiblock(Multiblocks.EXCAVATOR);
-		registerMultiblock(Multiblocks.BUCKET_WHEEL);
-		registerMultiblock(Multiblocks.ARC_FURNACE);
+		registerMultiblock(IEMultiblockLogic.EXCAVATOR);
+		registerMultiblock(IEMultiblockLogic.BUCKET_WHEEL);
+		registerMultiblock(IEMultiblockLogic.ARC_FURNACE);
 		registerMultiblock(IEMultiblockLogic.LIGHTNING_ROD);
-		registerMultiblock(Multiblocks.MIXER);
+		registerMultiblock(IEMultiblockLogic.MIXER);
 	}
 
 	private void registerSlabs()

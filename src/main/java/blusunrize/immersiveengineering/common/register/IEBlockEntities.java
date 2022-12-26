@@ -18,10 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.cloth.BalloonBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity.CrudeBlastFurnaceBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -55,20 +51,8 @@ public class IEBlockEntities
 			"shaderbanner",
 			makeTypeMultipleBlocks(ShaderBannerBlockEntity::new, ImmutableSet.of(Cloth.SHADER_BANNER, Cloth.SHADER_BANNER_WALL))
 	);
-	public static final MultiblockBEType<CokeOvenBlockEntity> COKE_OVEN = makeMultiblock(
-			"cokeoven", CokeOvenBlockEntity::new, Multiblocks.COKE_OVEN
-	);
-	public static final MultiblockBEType<CrudeBlastFurnaceBlockEntity> BLAST_FURNACE = makeMultiblock(
-			"blastfurnace", CrudeBlastFurnaceBlockEntity::new, Multiblocks.BLAST_FURNACE
-	);
-	public static final MultiblockBEType<BlastFurnaceAdvancedBlockEntity> BLAST_FURNACE_ADVANCED = makeMultiblock(
-			"blastfurnaceadvanced", BlastFurnaceAdvancedBlockEntity::new, Multiblocks.ADVANCED_BLAST_FURNACE
-	);
 	public static final RegistryObject<BlockEntityType<CoresampleBlockEntity>> CORE_SAMPLE = REGISTER.register(
 			"coresample", makeType(CoresampleBlockEntity::new, StoneDecoration.CORESAMPLE)
-	);
-	public static final MultiblockBEType<AlloySmelterBlockEntity> ALLOY_SMELTER = makeMultiblock(
-			"alloysmelter", AlloySmelterBlockEntity::new, Multiblocks.ALLOY_SMELTER
 	);
 	public static final RegistryObject<BlockEntityType<CraftingTableBlockEntity>> CRAFTING_TABLE = REGISTER.register(
 			"craftingtable", makeType(CraftingTableBlockEntity::new, WoodenDevices.CRAFTING_TABLE)
@@ -211,57 +195,6 @@ public class IEBlockEntities
 	);
 	public static final RegistryObject<BlockEntityType<ChuteBlockEntity>> CHUTE = REGISTER.register(
 			"chute", makeTypeMultipleBlocks(ChuteBlockEntity::new, MetalDevices.CHUTES.values())
-	);
-	public static final MultiblockBEType<MetalPressBlockEntity> METAL_PRESS = makeMultiblock(
-			"metalpress", MetalPressBlockEntity::new, Multiblocks.METAL_PRESS
-	);
-	public static final MultiblockBEType<CrusherBlockEntity> CRUSHER = makeMultiblock(
-			"crusher", CrusherBlockEntity::new, Multiblocks.CRUSHER
-	);
-	public static final MultiblockBEType<SawmillBlockEntity> SAWMILL = makeMultiblock(
-			"sawmill", SawmillBlockEntity::new, Multiblocks.SAWMILL
-	);
-	public static final MultiblockBEType<SheetmetalTankBlockEntity> SHEETMETAL_TANK = makeMultiblock(
-			"sheetmetaltank", SheetmetalTankBlockEntity::new, Multiblocks.TANK
-	);
-	public static final MultiblockBEType<SiloBlockEntity> SILO = makeMultiblock(
-			"silo", SiloBlockEntity::new, Multiblocks.SILO
-	);
-	public static final MultiblockBEType<AssemblerBlockEntity> ASSEMBLER = makeMultiblock(
-			"assembler", AssemblerBlockEntity::new, Multiblocks.ASSEMBLER
-	);
-	public static final MultiblockBEType<AutoWorkbenchBlockEntity> AUTO_WORKBENCH = makeMultiblock(
-			"autoworkbench", AutoWorkbenchBlockEntity::new, Multiblocks.AUTO_WORKBENCH
-	);
-	public static final MultiblockBEType<BottlingMachineBlockEntity> BOTTLING_MACHINE = makeMultiblock(
-			"bottlingmachine", BottlingMachineBlockEntity::new, Multiblocks.BOTTLING_MACHINE
-	);
-	public static final MultiblockBEType<SqueezerBlockEntity> SQUEEZER = makeMultiblock(
-			"squeezer", SqueezerBlockEntity::new, Multiblocks.SQUEEZER
-	);
-	public static final MultiblockBEType<FermenterBlockEntity> FERMENTER = makeMultiblock(
-			"fermenter", FermenterBlockEntity::new, Multiblocks.FERMENTER
-	);
-	public static final MultiblockBEType<RefineryBlockEntity> REFINERY = makeMultiblock(
-			"refinery", RefineryBlockEntity::new, Multiblocks.REFINERY
-	);
-	public static final MultiblockBEType<DieselGeneratorBlockEntity> DIESEL_GENERATOR = makeMultiblock(
-			"dieselgenerator", DieselGeneratorBlockEntity::new, Multiblocks.DIESEL_GENERATOR
-	);
-	public static final MultiblockBEType<BucketWheelBlockEntity> BUCKET_WHEEL = makeMultiblock(
-			"bucketwheel", BucketWheelBlockEntity::new, Multiblocks.BUCKET_WHEEL
-	);
-	public static final MultiblockBEType<ExcavatorBlockEntity> EXCAVATOR = makeMultiblock(
-			"excavator", ExcavatorBlockEntity::new, Multiblocks.EXCAVATOR
-	);
-	public static final MultiblockBEType<ArcFurnaceBlockEntity> ARC_FURNACE = makeMultiblock(
-			"arcfurnace", ArcFurnaceBlockEntity::new, Multiblocks.ARC_FURNACE
-	);
-	public static final MultiblockBEType<LightningrodBlockEntity> LIGHTNING_ROD = makeMultiblock(
-			"lightningrod", LightningrodBlockEntity::new, Multiblocks.LIGHTNING_ROD
-	);
-	public static final MultiblockBEType<MixerBlockEntity> MIXER = makeMultiblock(
-			"mixer", MixerBlockEntity::new, Multiblocks.MIXER
 	);
 	public static final RegistryObject<BlockEntityType<FakeLightBlockEntity>> FAKE_LIGHT = REGISTER.register(
 			"fakelight", makeType(FakeLightBlockEntity::new, Misc.FAKE_LIGHT)

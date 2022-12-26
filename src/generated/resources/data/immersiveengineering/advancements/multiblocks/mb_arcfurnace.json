@@ -21,7 +21,7 @@
     "frame": "challenge",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:arc_furnace_new"
+      "item": "immersiveengineering:arc_furnace"
     },
     "show_toast": true,
     "title": {

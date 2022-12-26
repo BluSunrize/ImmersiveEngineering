@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.bottlingmachine;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
@@ -38,7 +38,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	{
 		super(helper, JEIRecipeTypes.BOTTLING_MACHINE, "block.immersiveengineering.bottling_machine");
 		setBackground(helper.createBlankDrawable(120, 56));
-		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IEBlocks.Multiblocks.BOTTLING_MACHINE)));
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, IEMultiblockLogic.BOTTLING_MACHINE.iconStack()));
 		tankOverlay = helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png"), 177, 31, 20, 51)
 				.addPadding(-2, 2, -2, 2)
 				.build();

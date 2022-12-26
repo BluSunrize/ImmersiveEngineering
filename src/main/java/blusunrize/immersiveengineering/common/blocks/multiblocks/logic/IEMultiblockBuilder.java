@@ -19,7 +19,7 @@ public class IEMultiblockBuilder<S extends IMultiblockState>
 {
 	public IEMultiblockBuilder(IMultiblockLogic<S> logic, String name)
 	{
-		super(logic, name+"_new");
+		super(logic, name);
 	}
 
 	public IEMultiblockBuilder<S> gui(ArgContainer<IMultiblockContext<S>, ?> menu)

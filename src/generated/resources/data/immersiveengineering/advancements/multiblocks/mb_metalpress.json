@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:metal_press_new"
+      "item": "immersiveengineering:metal_press"
     },
     "show_toast": true,
     "title": {

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
@@ -36,17 +36,6 @@ public class AutoWorkbenchMenu extends IEContainerMenu
 	public final GetterAndSetter<Integer> selectedRecipe;
 
 	public static AutoWorkbenchMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, AutoWorkbenchBlockEntity be
-	)
-	{
-		return new AutoWorkbenchMenu(
-				blockCtx(type, id, be), invPlayer,
-				new ItemStackHandler(be.getInventory()), be.energyStorage,
-				new GetterAndSetter<>(() -> be.selectedRecipe, i -> be.selectedRecipe = i)
-		);
-	}
-
-	public static AutoWorkbenchMenu makeServerNew(
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
@@ -63,8 +52,8 @@ public class AutoWorkbenchMenu extends IEContainerMenu
 		return new AutoWorkbenchMenu(
 				clientCtx(type, id),
 				invPlayer,
-				new ItemStackHandler(AutoWorkbenchBlockEntity.NUM_SLOTS),
-				new MutableEnergyStorage(AutoWorkbenchBlockEntity.ENERGY_CAPACITY),
+				new ItemStackHandler(AutoWorkbenchLogic.NUM_SLOTS),
+				new MutableEnergyStorage(AutoWorkbenchLogic.ENERGY_CAPACITY),
 				GetterAndSetter.standalone(0)
 		);
 	}

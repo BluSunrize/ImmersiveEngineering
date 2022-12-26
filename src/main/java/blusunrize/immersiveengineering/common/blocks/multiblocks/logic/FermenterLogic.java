@@ -216,7 +216,7 @@ public class FermenterLogic
 		private final StoredCapability<IEnergyStorage> energyHandler;
 
 		// Client/sync field
-		private boolean active;
+		public boolean active;
 		private BooleanSupplier isPlayingSound = () -> false;
 
 		public State(IInitialMultiblockContext<State> ctx)

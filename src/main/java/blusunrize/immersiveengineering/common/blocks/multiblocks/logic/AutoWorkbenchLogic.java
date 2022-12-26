@@ -40,12 +40,15 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity.*;
-import static blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.NUM_INPUT_SLOTS;
-
 public class AutoWorkbenchLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
+	public static final int BLUEPRINT_SLOT = 0;
+	public static final int FIRST_INPUT_SLOT = 1;
+	public static final int NUM_INPUT_SLOTS = 16;
+	public static final int NUM_SLOTS = 1+NUM_INPUT_SLOTS;
+	public static final int ENERGY_CAPACITY = 32000;
+
 	private static final MultiblockFace OUTPUT_POS = new MultiblockFace(3, 1, 1, RelativeBlockFace.RIGHT);
 	private static final BlockPos INPUT_POS = new BlockPos(0, 1, 2);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);

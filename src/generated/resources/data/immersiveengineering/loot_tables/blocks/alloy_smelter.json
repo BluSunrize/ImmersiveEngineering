@@ -10,8 +10,21 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "immersiveengineering:alloy_smelter"
+          "type": "immersiveengineering:drop_inv"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "immersiveengineering:multiblock"
         }
       ],
       "rolls": 1.0

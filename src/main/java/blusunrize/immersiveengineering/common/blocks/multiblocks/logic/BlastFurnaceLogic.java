@@ -33,6 +33,8 @@ import java.util.function.Supplier;
 
 public class BlastFurnaceLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
+	public static final int NUM_SLOTS = 4;
+
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{

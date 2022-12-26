@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
@@ -42,12 +42,12 @@ public class AssemblerMenu extends IEContainerMenu
 	public final EnergyStorage energy;
 	public final GetterAndSetter<Boolean> recursiveIngredients;
 
-	public static AssemblerMenu makeServerNew(
+	public static AssemblerMenu makeServer(
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
 		final var state = ctx.getState();
-		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerBlockEntity.NUM_PATTERNS);
+		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerLogic.NUM_PATTERNS);
 		for(final var pattern : state.patterns)
 			patterns.add(new ItemStackHandler(pattern.inv)
 			{
@@ -70,45 +70,18 @@ public class AssemblerMenu extends IEContainerMenu
 		);
 	}
 
-	public static AssemblerMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, AssemblerBlockEntity be
-	)
-	{
-		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerBlockEntity.NUM_PATTERNS);
-		for(final var pattern : be.patterns)
-			patterns.add(new ItemStackHandler(pattern.inv)
-			{
-				@Override
-				protected void onContentsChanged(int slot)
-				{
-					pattern.recalculateOutput(be.getLevel());
-				}
-
-				@Override
-				public int getSlotLimit(int slot)
-				{
-					return 1;
-				}
-			});
-		return new AssemblerMenu(
-				blockCtx(type, id, be), invPlayer,
-				patterns, new ItemStackHandler(be.inventory), be.tanks, be.energyStorage,
-				new GetterAndSetter<>(() -> be.recursiveIngredients, b -> be.recursiveIngredients = b)
-		);
-	}
-
 	public static AssemblerMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
 	{
-		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerBlockEntity.NUM_PATTERNS);
-		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; ++i)
+		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerLogic.NUM_PATTERNS);
+		for(int i = 0; i < AssemblerLogic.NUM_PATTERNS; ++i)
 			patterns.add(new ItemStackHandler(10));
-		FluidTank[] tanks = new FluidTank[AssemblerBlockEntity.NUM_TANKS];
+		FluidTank[] tanks = new FluidTank[AssemblerLogic.NUM_TANKS];
 		for(int i = 0; i < tanks.length; ++i)
-			tanks[i] = new FluidTank(AssemblerBlockEntity.TANK_CAPACITY);
+			tanks[i] = new FluidTank(AssemblerLogic.TANK_CAPACITY);
 		return new AssemblerMenu(
 				clientCtx(type, id), invPlayer,
-				patterns, new ItemStackHandler(AssemblerBlockEntity.INVENTORY_SIZE), tanks,
-				new MutableEnergyStorage(AssemblerBlockEntity.ENERGY_CAPACITY), GetterAndSetter.standalone(false)
+				patterns, new ItemStackHandler(AssemblerLogic.INVENTORY_SIZE), tanks,
+				new MutableEnergyStorage(AssemblerLogic.ENERGY_CAPACITY), GetterAndSetter.standalone(false)
 		);
 	}
 
@@ -124,7 +97,7 @@ public class AssemblerMenu extends IEContainerMenu
 		this.tanks = tanks;
 		this.energy = energy;
 		this.recursiveIngredients = recursiveIngredients;
-		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
+		for(int i = 0; i < AssemblerLogic.NUM_PATTERNS; i++)
 		{
 			IItemHandler itemHandler = patterns.get(i);
 			for(int j = 0; j < 9; j++)
@@ -145,7 +118,7 @@ public class AssemblerMenu extends IEContainerMenu
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 13+i*18, 195));
 		addGenericData(GenericContainerData.energy(energy));
-		for(int i = 0; i < AssemblerBlockEntity.NUM_TANKS; ++i)
+		for(int i = 0; i < AssemblerLogic.NUM_TANKS; ++i)
 			addGenericData(GenericContainerData.fluid(tanks[i]));
 		for(IItemHandlerModifiable pattern : patterns)
 			addGenericData(new GenericContainerData<>(

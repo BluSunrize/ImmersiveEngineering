@@ -19,10 +19,10 @@ import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.gui.CraftingTableMenu;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter.AlloySmelterRecipeCategory;
@@ -49,7 +49,6 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -61,7 +60,6 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -171,24 +169,24 @@ public class JEIHelper implements IModPlugin
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
 	{
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ASSEMBLER), RecipeTypes.CRAFTING);
+		registration.addRecipeCatalyst(IEMultiblockLogic.ASSEMBLER.iconStack(), RecipeTypes.CRAFTING);
 
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.COKE_OVEN), JEIRecipeTypes.COKE_OVEN);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ALLOY_SMELTER), JEIRecipeTypes.ALLOY);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ADVANCED_BLAST_FURNACE), JEIRecipeTypes.BLAST_FURNACE, JEIRecipeTypes.BLAST_FUEL);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.BLAST_FURNACE), JEIRecipeTypes.BLAST_FURNACE, JEIRecipeTypes.BLAST_FUEL);
+		registration.addRecipeCatalyst(IEMultiblockLogic.COKE_OVEN.iconStack(), JEIRecipeTypes.COKE_OVEN);
+		registration.addRecipeCatalyst(IEMultiblockLogic.ALLOY_SMELTER.iconStack(), JEIRecipeTypes.ALLOY);
+		registration.addRecipeCatalyst(IEMultiblockLogic.ADV_BLAST_FURNACE.iconStack(), JEIRecipeTypes.BLAST_FURNACE, JEIRecipeTypes.BLAST_FUEL);
+		registration.addRecipeCatalyst(IEMultiblockLogic.BLAST_FURNACE.iconStack(), JEIRecipeTypes.BLAST_FURNACE, JEIRecipeTypes.BLAST_FUEL);
 		registration.addRecipeCatalyst(new ItemStack(MetalDevices.CLOCHE), JEIRecipeTypes.CLOCHE);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.METAL_PRESS), JEIRecipeTypes.METAL_PRESS);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.CRUSHER), JEIRecipeTypes.CRUSHER);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.SAWMILL), JEIRecipeTypes.SAWMILL);
+		registration.addRecipeCatalyst(IEMultiblockLogic.METAL_PRESS.iconStack(), JEIRecipeTypes.METAL_PRESS);
+		registration.addRecipeCatalyst(IEMultiblockLogic.CRUSHER.iconStack(), JEIRecipeTypes.CRUSHER);
+		registration.addRecipeCatalyst(IEMultiblockLogic.SAWMILL.iconStack(), JEIRecipeTypes.SAWMILL);
 		registration.addRecipeCatalyst(new ItemStack(WoodenDevices.WORKBENCH), JEIRecipeTypes.BLUEPRINT);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.AUTO_WORKBENCH), JEIRecipeTypes.BLUEPRINT);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.SQUEEZER), JEIRecipeTypes.SQUEEZER);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.FERMENTER), JEIRecipeTypes.FERMENTER);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.REFINERY), JEIRecipeTypes.REFINERY);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ARC_FURNACE), JEIRecipeTypes.ARC_FURNACE, JEIRecipeTypes.ARC_FURNACE_RECYCLING);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.BOTTLING_MACHINE), JEIRecipeTypes.BOTTLING_MACHINE);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.MIXER), JEIRecipeTypes.MIXER);
+		registration.addRecipeCatalyst(IEMultiblockLogic.AUTO_WORKBENCH.iconStack(), JEIRecipeTypes.BLUEPRINT);
+		registration.addRecipeCatalyst(IEMultiblockLogic.SQUEEZER.iconStack(), JEIRecipeTypes.SQUEEZER);
+		registration.addRecipeCatalyst(IEMultiblockLogic.FERMENTER.iconStack(), JEIRecipeTypes.FERMENTER);
+		registration.addRecipeCatalyst(IEMultiblockLogic.REFINERY.iconStack(), JEIRecipeTypes.REFINERY);
+		registration.addRecipeCatalyst(IEMultiblockLogic.ARC_FURNACE.iconStack(), JEIRecipeTypes.ARC_FURNACE, JEIRecipeTypes.ARC_FURNACE_RECYCLING);
+		registration.addRecipeCatalyst(IEMultiblockLogic.BOTTLING_MACHINE.iconStack(), JEIRecipeTypes.BOTTLING_MACHINE);
+		registration.addRecipeCatalyst(IEMultiblockLogic.MIXER.iconStack(), JEIRecipeTypes.MIXER);
 	}
 
 	@Override

@@ -21,7 +21,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:fermenter_new"
+      "item": "immersiveengineering:fermenter"
     },
     "show_toast": true,
     "title": {
