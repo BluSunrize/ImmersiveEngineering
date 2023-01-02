@@ -26,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
 import javax.annotation.Nonnull;
@@ -79,7 +78,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		return transformed;
 	}
 
-	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock, @Nonnull Level level)
 	{
 		return posInMultiblock.subtract(masterFromOrigin);
 	}
@@ -92,13 +91,14 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 
 	@Nonnull
 	@Override
-	protected StructureTemplate getTemplate(@Nullable Level world)
+	public TemplateData getTemplate(@Nonnull Level world)
 	{
-		StructureTemplate result = super.getTemplate(world);
+		TemplateData result = super.getTemplate(world);
+		final Vec3i resultSize = result.template().getSize();
 		Preconditions.checkState(
-				result.getSize().equals(size),
+				resultSize.equals(size),
 				"Wrong template size for multiblock %s, template size: %s",
-				getTemplateLocation(), result.getSize()
+				getTemplateLocation(), resultSize
 		);
 		return result;
 	}

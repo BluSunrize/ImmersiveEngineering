@@ -10,10 +10,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.mixin.accessors.PaletteAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.core.BlockPos;
@@ -61,11 +58,8 @@ public class MessageMultiblockSync implements IMessage
 				TemplateAccess access = (TemplateAccess)template;
 				access.setSize(synced.size);
 				access.getPalettes().add(synced.parts);
-				StaticTemplateManager.SYNCED_CLIENT_TEMPLATES.put(synced.name, template);
+				TemplateMultiblock.SYNCED_CLIENT_TEMPLATES.put(synced.name, template);
 			}
-			for(IMultiblock mb : MultiblockHandler.getMultiblocks())
-				if(mb instanceof TemplateMultiblock)
-					((TemplateMultiblock)mb).reset();
 			ImmersiveEngineering.proxy.resetManual();
 		});
 	}

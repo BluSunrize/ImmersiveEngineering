@@ -10,7 +10,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.joml.Quaternionf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,6 +20,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -61,7 +62,7 @@ public class BasicClientProperties implements MultiblockManualData
 	{
 		if(materials==null)
 		{
-			List<StructureBlockInfo> structure = multiblock.getStructure(null);
+			List<StructureBlockInfo> structure = multiblock.getStructure(Minecraft.getInstance().level);
 			materials = NonNullList.create();
 			for(StructureBlockInfo info : structure)
 			{

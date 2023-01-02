@@ -19,11 +19,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
@@ -32,6 +38,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -298,6 +306,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
 		{
+			loadTemplateFor(mb);
 			Vec3i size = mb.getSize(null);
 			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 		}
@@ -308,14 +317,41 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 			NongeneratedModel name, TemplateMultiblock multiblock, UnaryOperator<BlockPos> transform, boolean dynamic
 	)
 	{
+		loadTemplateFor(multiblock);
 		final Vec3i offset = multiblock.getMasterFromOriginOffset();
-		Stream<Vec3i> partsStream = multiblock.getStructure(null)
+		Stream<Vec3i> partsStream = multiblock.getTemplate(null).blocksWithoutAir()
 				.stream()
-				.filter(info -> !info.state.isAir())
 				.map(info -> info.pos)
 				.map(transform)
 				.map(p -> p.subtract(offset));
 		return split(name, partsStream.collect(Collectors.toList()), dynamic);
 	}
 
+	private void loadTemplateFor(TemplateMultiblock multiblock)
+	{
+		final ResourceLocation name = multiblock.getUniqueName();
+		if(TemplateMultiblock.SYNCED_CLIENT_TEMPLATES.containsKey(name))
+			return;
+		final String filePath = "structures/"+name.getPath()+".nbt";
+		int slash = filePath.indexOf('/');
+		String prefix = filePath.substring(0, slash);
+		ResourceLocation shortLoc = new ResourceLocation(
+				name.getNamespace(),
+				filePath.substring(slash+1)
+		);
+		try
+		{
+			final Resource resource = existingFileHelper.getResource(shortLoc, PackType.SERVER_DATA, "", prefix);
+			try(final InputStream input = resource.open())
+			{
+				final CompoundTag nbt = NbtIo.readCompressed(input);
+				final StructureTemplate template = new StructureTemplate();
+				template.load(BuiltInRegistries.BLOCK.asLookup(), nbt);
+				TemplateMultiblock.SYNCED_CLIENT_TEMPLATES.put(name, template);
+			}
+		} catch(IOException e)
+		{
+			throw new RuntimeException("Failed on "+name, e);
+		}
+	}
 }

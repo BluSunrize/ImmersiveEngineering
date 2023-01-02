@@ -25,6 +25,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class MultiblockHandler
 		 * Check whether the given block can be used to trigger the structure creation of the multiblock.<br>
 		 * Basically, a less resource-intensive preliminary check to avoid checking every structure.
 		 */
-		boolean isBlockTrigger(BlockState state, Direction side, @Nullable Level world);
+		boolean isBlockTrigger(BlockState state, Direction side, @Nonnull Level world);
 
 		/**
 		 * This method checks the structure and sets the new one.
@@ -85,14 +86,14 @@ public class MultiblockHandler
 		 * @param world
 		 * @return
 		 */
-		List<StructureBlockInfo> getStructure(@Nullable Level world);
+		List<StructureBlockInfo> getStructure(@Nonnull Level world);
 
 		/**
 		 * returns the scale modifier to be applied when rendering the structure in the IE manual
 		 */
 		float getManualScale();
 
-		Vec3i getSize(@Nullable Level world);
+		Vec3i getSize(@Nonnull Level world);
 
 		void disassemble(Level world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
 

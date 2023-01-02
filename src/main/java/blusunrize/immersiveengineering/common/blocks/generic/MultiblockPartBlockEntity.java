@@ -268,7 +268,7 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 					mirroredPosInMB.getY(),
 					mirroredPosInMB.getZ()
 			);
-		return multiblockInstance.multiblockToModelPos(mirroredPosInMB);
+		return multiblockInstance.multiblockToModelPos(mirroredPosInMB, level);
 	}
 
 	public VoxelShape getShape(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache)

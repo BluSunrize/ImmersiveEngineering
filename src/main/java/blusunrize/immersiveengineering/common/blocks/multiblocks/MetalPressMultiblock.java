@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
@@ -56,13 +57,13 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	}
 
 	@Override
-	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock, @NotNull Level level)
 	{
 		return super.multiblockToModelPos(new BlockPos(
 				posInMultiblock.getZ()+1,
 				posInMultiblock.getY(),
 				1-posInMultiblock.getX()
-		));
+		), level);
 	}
 
 	@Override

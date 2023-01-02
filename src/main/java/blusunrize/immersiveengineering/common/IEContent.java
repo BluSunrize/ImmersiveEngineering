@@ -37,7 +37,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltBlockEnti
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
@@ -80,8 +79,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.NewRegistryEvent;
-
-import java.io.IOException;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
@@ -263,15 +260,6 @@ public class IEContent
 		ExcavatorHandler.setSetDirtyCallback(IESaveData::markInstanceDirty);
 		TemplateMultiblock.setCallbacks(
 				Utils::getPickBlock,
-				(loc, server) -> {
-					try
-					{
-						return StaticTemplateManager.loadStaticTemplate(loc, server);
-					} catch(IOException e)
-					{
-						throw new RuntimeException(e);
-					}
-				},
 				template -> ((TemplateAccess)template).getPalettes()
 		);
 		defaultAdapter = new DefaultAssemblerAdapter();

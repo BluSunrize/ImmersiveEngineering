@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.data.blockstates.BlockStates;
 import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
@@ -32,7 +31,6 @@ public class IEDataGenerator
 	public static void gatherData(GatherDataEvent event)
 	{
 		ExistingFileHelper exHelper = event.getExistingFileHelper();
-		StaticTemplateManager.EXISTING_HELPER = exHelper;
 		DataGenerator gen = event.getGenerator();
 		final var output = gen.getPackOutput();
 		final var lookup = event.getLookupProvider();

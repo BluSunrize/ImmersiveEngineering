@@ -20,7 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -34,24 +34,21 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.Palette;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraftforge.data.loading.DatagenModLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiFunction;
+import java.util.*;
 import java.util.function.Function;
 
 public abstract class TemplateMultiblock implements IMultiblock
 {
 	private static final SetRestrictedField<Function<BlockState, ItemStack>> PICK_BLOCK = SetRestrictedField.common();
-	private static final SetRestrictedField<BiFunction<ResourceLocation, MinecraftServer, StructureTemplate>>
-			LOAD_TEMPLATE = SetRestrictedField.common();
 	private static final SetRestrictedField<Function<StructureTemplate, List<Palette>>>
 			GET_PALETTES = SetRestrictedField.common();
+	public static final Map<ResourceLocation, StructureTemplate> SYNCED_CLIENT_TEMPLATES = new HashMap<>();
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ResourceLocation loc;
@@ -60,8 +57,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 	protected final BlockPos size;
 	protected final List<MatcherPredicate> additionalPredicates;
 	@Nullable
-	private StructureTemplate template;
-	private BlockState trigger = Blocks.AIR.defaultBlockState();
+	private TemplateData template;
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
 							  List<MatcherPredicate> additionalPredicates)
@@ -96,45 +92,50 @@ public abstract class TemplateMultiblock implements IMultiblock
 		));
 	}
 
-	@Nonnull
-	protected StructureTemplate getTemplate(@Nullable Level world)
-	{
-		return getTemplate(world==null?null: world.getServer());
-	}
-
 	public ResourceLocation getTemplateLocation()
 	{
 		return loc;
 	}
 
 	@Nonnull
-	public StructureTemplate getTemplate(@Nullable MinecraftServer server)
+	public TemplateData getTemplate(@Nonnull Level level)
 	{
-		if(template==null)//TODO reset on resource reload
-		{
-			template = LOAD_TEMPLATE.getValue().apply(loc, server);
-			List<StructureBlockInfo> blocks = getStructureFromTemplate(template);
-			for(int i = 0; i < blocks.size(); i++)
-			{
-				StructureBlockInfo info = blocks.get(i);
-				if(info.pos.equals(triggerFromOrigin))
-					trigger = info.state;
-				if(info.state==Blocks.AIR.defaultBlockState())
-				{
-					blocks.remove(i);
-					i--;
-				}
-				else if(info.state.isAir())
-					// Usually means it contains a block that has been renamed
-					LOGGER.error("Found non-default air block in template {}", loc);
-			}
-		}
+		ensureStructureInitialized(level);
 		return Objects.requireNonNull(template);
 	}
 
-	public void reset()
+	private void ensureStructureInitialized(@Nonnull Level level)
 	{
-		template = null;
+		final StructureTemplate newTemplate;
+		if(level instanceof ServerLevel serverLevel)
+			newTemplate = serverLevel.getStructureManager().get(loc).orElse(null);
+		else
+		{
+			//noinspection ConstantValue: We pass null during datagen, but should not do so anywhere else
+			if(!DatagenModLoader.isRunningDataGen()&&(level==null||!level.isClientSide))
+				throw new RuntimeException("Unexpected level parameter: "+level);
+			newTemplate = SYNCED_CLIENT_TEMPLATES.get(loc);
+		}
+		if(newTemplate==null)
+			throw new RuntimeException("Template "+loc+" does not exist!");
+		if(this.template!=null&&newTemplate==template.template)
+			return;
+		List<StructureBlockInfo> blocksWithoutAir = new ArrayList<>(getStructureFromTemplate(newTemplate));
+		final Iterator<StructureBlockInfo> it = blocksWithoutAir.iterator();
+		BlockState trigger = null;
+		while(it.hasNext())
+		{
+			StructureBlockInfo info = it.next();
+			if(info.pos.equals(triggerFromOrigin))
+				trigger = info.state;
+			if(info.state==Blocks.AIR.defaultBlockState())
+				it.remove();
+			else if(info.state.isAir())
+				// Usually means it contains a block that has been renamed
+				LOGGER.error("Found non-default air block in template {}", loc);
+		}
+		Preconditions.checkState(trigger!=null, "Trigger state was not found in template for "+loc);
+		this.template = new TemplateData(newTemplate, blocksWithoutAir, trigger);
 	}
 
 	@Override
@@ -144,12 +145,13 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state, Direction d, @Nullable Level world)
+	public boolean isBlockTrigger(BlockState state, Direction d, @Nonnull Level world)
 	{
 		getTemplate(world);
 		Rotation rot = DirectionUtils.getRotationBetweenFacings(Direction.NORTH, d.getOpposite());
 		if(rot==null)
 			return false;
+		final BlockState trigger = getTemplate(world).triggerState;
 		for(Mirror mirror : getPossibleMirrorStates())
 		{
 			BlockState modifiedTrigger = applyToState(trigger, mirror, rot);
@@ -219,9 +221,9 @@ public abstract class TemplateMultiblock implements IMultiblock
 	protected abstract void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster);
 
 	@Override
-	public List<StructureBlockInfo> getStructure(@Nullable Level world)
+	public List<StructureBlockInfo> getStructure(@Nonnull Level world)
 	{
-		return getStructureFromTemplate(getTemplate(world));
+		return getTemplate(world).blocksWithoutAir();
 	}
 
 	private static List<StructureBlockInfo> getStructureFromTemplate(StructureTemplate template)
@@ -230,9 +232,9 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	@Override
-	public Vec3i getSize(@Nullable Level world)
+	public Vec3i getSize(@Nonnull Level world)
 	{
-		return getTemplate(world).getSize();
+		return getTemplate(world).template().getSize();
 	}
 
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, Mirror mirror, Rotation rot)
@@ -260,7 +262,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 		{
 			BlockPos actualPos = withSettingsAndOffset(origin, block.pos, mirror, rot);
 			prepareBlockForDisassembly(world, actualPos);
-			world.setBlockAndUpdate(actualPos, block.state.mirror(mirror).rotate(rot));
+			world.setBlockAndUpdate(actualPos, applyToState(block.state, mirror, rot));
 		}
 	}
 
@@ -280,13 +282,18 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	public static void setCallbacks(
-			Function<BlockState, ItemStack> pickBlock,
-			BiFunction<ResourceLocation, MinecraftServer, StructureTemplate> loadTemplate,
-			Function<StructureTemplate, List<Palette>> getPalettes
+			Function<BlockState, ItemStack> pickBlock, Function<StructureTemplate, List<Palette>> getPalettes
 	)
 	{
 		PICK_BLOCK.setValue(pickBlock);
-		LOAD_TEMPLATE.setValue(loadTemplate);
 		GET_PALETTES.setValue(getPalettes);
+	}
+
+	public record TemplateData(
+			StructureTemplate template,
+			List<StructureBlockInfo> blocksWithoutAir,
+			BlockState triggerState
+	)
+	{
 	}
 }

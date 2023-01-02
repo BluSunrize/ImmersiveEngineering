@@ -25,6 +25,7 @@ import com.mojang.math.Transformation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -63,6 +64,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	private final MultiblockRenderInfo renderInfo;
 	private final TemplateWorld structureWorld;
 	private final int yOffTotal;
+	private final ClientLevel level;
 
 	private long lastStep = -1;
 	private long lastPrintedErrorTimeMs = -1;
@@ -70,7 +72,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public ManualElementMultiblock(ManualInstance manual, IMultiblock multiblock)
 	{
 		super(manual);
-		final var level = Minecraft.getInstance().level;
+		level = Objects.requireNonNull(Minecraft.getInstance().level);
 		this.multiblock = multiblock;
 		this.renderProperties = ClientMultiblocks.get(multiblock);
 		List<StructureBlockInfo> structure = multiblock.getStructure(level);
@@ -99,7 +101,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
 	{
 		int yOff = 0;
-		if(multiblock.getStructure(null)!=null)
+		if(multiblock.getStructure(level)!=null)
 		{
 			boolean canRenderFormed = renderProperties.canRenderFormedStructure();
 
@@ -183,7 +185,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	@Override
 	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		if(multiblock.getStructure(null)!=null)
+		if(multiblock.getStructure(level)!=null)
 		{
 			MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 			PoseStack.Pose lastEntryBeforeTry = transform.last();

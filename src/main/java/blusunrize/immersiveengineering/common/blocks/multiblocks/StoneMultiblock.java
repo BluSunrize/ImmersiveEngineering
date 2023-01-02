@@ -12,6 +12,9 @@ import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+
+import javax.annotation.Nonnull;
 
 public abstract class StoneMultiblock extends IETemplateMultiblock
 {
@@ -39,12 +42,12 @@ public abstract class StoneMultiblock extends IETemplateMultiblock
 	}
 
 	@Override
-	public BlockPos multiblockToModelPos(BlockPos posInMultiblock)
+	public BlockPos multiblockToModelPos(BlockPos posInMultiblock, @Nonnull Level level)
 	{
 		return super.multiblockToModelPos(new BlockPos(
-				getSize(null).getX()-posInMultiblock.getX()-1,
+				getSize(level).getX()-posInMultiblock.getX()-1,
 				posInMultiblock.getY(),
-				getSize(null).getZ()-posInMultiblock.getZ()-1
-		));
+				getSize(level).getZ()-posInMultiblock.getZ()-1
+		), level);
 	}
 }
