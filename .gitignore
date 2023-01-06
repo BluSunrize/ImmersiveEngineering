@@ -11,7 +11,9 @@ out
 *.ipr
 *.iws
 *.iml
-.idea
+.idea/*
+!.idea/codeStyles
+!.idea/copyright
 classes
 
 # gradle
