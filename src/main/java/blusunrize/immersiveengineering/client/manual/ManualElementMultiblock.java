@@ -80,7 +80,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+
 				renderInfo.structureWidth*renderInfo.structureWidth+
 				renderInfo.structureLength*renderInfo.structureLength);
-		structureWorld = new TemplateWorld(structure, renderInfo, level.dimensionTypeRegistration());
+		structureWorld = new TemplateWorld(structure, renderInfo);
 		transX = 60+renderInfo.structureWidth/2F;
 		transY = 35+diagLength/2;
 		additionalTransform = new Transformation(

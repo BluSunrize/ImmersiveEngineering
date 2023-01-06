@@ -21,5 +21,5 @@ public interface TemplateWorldCreator
 {
 	SetRestrictedField<TemplateWorldCreator> CREATOR = SetRestrictedField.common();
 
-	Level makeWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow, Holder<DimensionType> type);
+	Level makeWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow);
 }
