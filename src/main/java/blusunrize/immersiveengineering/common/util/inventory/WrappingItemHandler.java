@@ -66,7 +66,7 @@ public record WrappingItemHandler(
 
 	private boolean isAcessible(int slot)
 	{
-		for(final var range : allowedRanges)
+		for(final IntRange range : allowedRanges)
 			if(range.contains(slot))
 				return true;
 		return false;

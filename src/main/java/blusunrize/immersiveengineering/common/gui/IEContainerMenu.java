@@ -230,7 +230,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 			if(!ctx.isValid().getAsBoolean())
 				return false;
 			// TODO should not be origin
-			final var pos = ctx.getLevel().getAbsoluteOrigin();
+			final BlockPos pos = ctx.getLevel().getAbsoluteOrigin();
 			return p.distanceToSqr(Vec3.atCenterOf(pos)) <= 64.0D;
 		});
 	}

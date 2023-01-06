@@ -60,17 +60,17 @@ public record MultiblockLevel(
 			Capability<T> capability, BlockPos relativePosition, @Nullable RelativeBlockFace face
 	)
 	{
-		final var blockEntity = getBlockEntity(relativePosition);
+		final BlockEntity blockEntity = getBlockEntity(relativePosition);
 		if(blockEntity==null)
 			return null;
-		final var absoluteFace = toAbsolute(face);
+		final Direction absoluteFace = toAbsolute(face);
 		return CapabilityUtils.getCapability(blockEntity, capability, absoluteFace);
 	}
 
 	@Override
 	public boolean shouldTickModulo(int interval)
 	{
-		final var posRandom = 0x7f_ff_ff_ff&origin.hashCode();
+		final int posRandom = 0x7f_ff_ff_ff&origin.hashCode();
 		return posRandom%interval==level().getGameTime()%interval;
 	}
 
@@ -104,8 +104,8 @@ public record MultiblockLevel(
 	@Override
 	public AABB toAbsolute(AABB relative)
 	{
-		final var minPos = new Vec3(relative.minX, relative.minY, relative.minZ);
-		final var maxPos = new Vec3(relative.maxX, relative.maxY, relative.maxZ);
+		final Vec3 minPos = new Vec3(relative.minX, relative.minY, relative.minZ);
+		final Vec3 maxPos = new Vec3(relative.maxX, relative.maxY, relative.maxZ);
 		return new AABB(toAbsolute(minPos), toAbsolute(maxPos));
 	}
 
@@ -118,7 +118,7 @@ public record MultiblockLevel(
 	@Override
 	public BlockPos toRelative(BlockPos absolute)
 	{
-		final var absoluteOffset = absolute.subtract(getAbsoluteOrigin());
+		final BlockPos absoluteOffset = absolute.subtract(getAbsoluteOrigin());
 		return orientation.getPosInMB(absoluteOffset);
 	}
 
@@ -155,10 +155,10 @@ public record MultiblockLevel(
 	@Override
 	public void updateNeighbourForOutputSignal(BlockPos posInMultiblock)
 	{
-		final var absolutePos = toAbsolute(posInMultiblock);
+		final BlockPos absolutePos = toAbsolute(posInMultiblock);
 		if(!SafeChunkUtils.isChunkSafe(level(), absolutePos))
 			return;
-		final var stateAt = level().getBlockState(absolutePos);
+		final BlockState stateAt = level().getBlockState(absolutePos);
 		level().updateNeighbourForOutputSignal(absolutePos, stateAt.getBlock());
 	}
 

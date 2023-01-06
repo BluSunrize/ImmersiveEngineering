@@ -45,10 +45,10 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 		this.state = multiblock.logic().createInitialState(new InitialMultiblockContext<>(
 				be, orientation, multiblock.masterPosInMB()
 		));
-		final var multiblockOrigin = be.getBlockPos().subtract(
+		final BlockPos multiblockOrigin = be.getBlockPos().subtract(
 				orientation.getAbsoluteOffset(multiblock.masterPosInMB())
 		);
-		final var level = new MultiblockLevel(be::getLevel, this.orientation, multiblockOrigin);
+		final MultiblockLevel level = new MultiblockLevel(be::getLevel, this.orientation, multiblockOrigin);
 		this.context = new MultiblockContext<>(this, multiblock, level);
 		this.componentInstances = new ArrayList<>();
 		for(ExtraComponent<State, ?> c : multiblock.extraComponents())

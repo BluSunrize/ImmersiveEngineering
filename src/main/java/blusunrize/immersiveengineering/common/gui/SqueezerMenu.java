@@ -32,7 +32,7 @@ public class SqueezerMenu extends IEContainerMenu
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		return new SqueezerMenu(
 				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.getEnergy(), state.getTank()
 		);

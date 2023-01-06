@@ -12,19 +12,17 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.util.Mth;
+import org.joml.Quaternionf;
 
 public class SiloRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {
 	@Override
 	public void render(MultiblockBlockEntityMaster<State> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final var state = tile.getHelper().getState();
+		final State state = tile.getHelper().getState();
 		if(state.identStack.isEmpty())
 			return;
 		matrixStack.pushPose();

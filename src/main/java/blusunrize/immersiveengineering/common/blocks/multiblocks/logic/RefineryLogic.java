@@ -33,6 +33,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -41,6 +42,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -76,7 +78,7 @@ public class RefineryLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		state.active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		tryEnqueueProcess(state, context.getLevel().getRawLevel());
 		FluidUtils.multiblockFluidOutput(
@@ -101,11 +103,11 @@ public class RefineryLogic
 	{
 		if(state.energy.getEnergyStored() <= 0||state.processor.getQueueSize() >= state.processor.getMaxQueueSize())
 			return;
-		final var leftInput = state.tanks.leftInput.getFluid();
-		final var rightInput = state.tanks.rightInput.getFluid();
+		final FluidStack leftInput = state.tanks.leftInput.getFluid();
+		final FluidStack rightInput = state.tanks.rightInput.getFluid();
 		if(leftInput.isEmpty()&&rightInput.isEmpty())
 			return;
-		final var catalyst = state.inventory.getStackInSlot(SLOT_CATALYST);
+		final ItemStack catalyst = state.inventory.getStackInSlot(SLOT_CATALYST);
 		RefineryRecipe recipe = RefineryRecipe.findRecipe(level, leftInput, rightInput, catalyst);
 		if(recipe==null)
 			return;
@@ -129,7 +131,7 @@ public class RefineryLogic
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return state.energyCap.cast(ctx);
 		else if(cap==ForgeCapabilities.FLUID_HANDLER)
@@ -150,7 +152,7 @@ public class RefineryLogic
 	{
 		if(isClient)
 			return InteractionResult.SUCCESS;
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		IFluidHandler tank = null;
 		if(FLUID_INPUTS.contains(posInMultiblock))
 			tank = posInMultiblock.getX() < 2?state.tanks.leftInput: state.tanks.rightInput;
@@ -193,7 +195,7 @@ public class RefineryLogic
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			final var markDirty = ctx.getMarkDirtyRunnable();
+			final Runnable markDirty = ctx.getMarkDirtyRunnable();
 			this.processor = new InMachineProcessor<>(1, 0, 1, markDirty, RefineryRecipe.RECIPES::getById);
 			this.inventory = SlotwiseItemHandler.makeWithGroups(
 					List.of(new IOConstraintGroup(IOConstraint.NO_CONSTRAINT, NUM_SLOTS)), ctx.getMarkDirtyRunnable()

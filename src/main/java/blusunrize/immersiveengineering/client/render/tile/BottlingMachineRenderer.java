@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
@@ -43,9 +45,9 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 	@Override
 	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final var helper = te.getHelper();
-		final var orientation = helper.getContext().getLevel().getOrientation();
-		final var state = helper.getState();
+		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
+		final MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
+		final State state = helper.getState();
 		Direction facing = orientation.front();
 
 		final float pixelHeight = 1f/16f;
@@ -56,16 +58,15 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		final MultiBufferSource originalBuffer = bufferIn;
 		bufferIn = BERenderUtils.mirror(orientation, matrixStack, bufferIn);
 
-		final var processQueue = state.processor.getQueue();
 		//Item Displacement
-		float[][] itemDisplays = new float[processQueue.size()][];
+		float[][] itemDisplays = new float[state.processor.getQueueSize()][];
 		//Animations
 		float lift = 0;
 
 		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
-			BottlingProcess process = (BottlingProcess)processQueue.get(i);
+			BottlingProcess process = (BottlingProcess)state.processor.getQueue().get(i);
 			if(process==null)
 				continue;
 			float processMaxTicks = process.getMaxTicks(te.getLevel());
@@ -153,7 +154,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
-				BottlingProcess process = (BottlingProcess)processQueue.get(i);
+				BottlingProcess process = (BottlingProcess)state.processor.getQueue().get(i);
 				if(process==null)
 					continue;
 

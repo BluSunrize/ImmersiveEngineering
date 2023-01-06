@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
@@ -57,12 +59,11 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 	{
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BakedModel model = DYNAMIC.get();
-		final var helper = blockEntity.getHelper();
-		final var state = helper.getState();
+		final IMultiblockBEHelperMaster<State> helper = blockEntity.getHelper();
+		final State state = helper.getState();
 
 		//Item Displacement
-		final var queue = state.processor.getQueue();
-		float[][] itemDisplays = new float[queue.size()][];
+		float[][] itemDisplays = new float[state.processor.getQueueSize()][];
 		//Animations
 		float drill = 0;
 		float lift = 0;
@@ -71,7 +72,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
-			MultiblockProcess<?, ?> process = queue.get(i);
+			MultiblockProcess<?, ?> process = state.processor.getQueue().get(i);
 			if(process==null||process.processTick <= 0||process.processTick==process.getMaxTicks(blockEntity.getLevel()))
 				continue;
 			//+partialTicks
@@ -157,7 +158,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 
 		}
 
-		final var orientation = helper.getContext().getLevel().getOrientation();
+		final MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
 		bufferIn = BERenderUtils.mirror(orientation, matrixStack, bufferIn);
@@ -207,7 +208,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
-				MultiblockProcess<?, ?> process = queue.get(i);
+				MultiblockProcess<?, ?> process = state.processor.getQueue().get(i);
 				if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 					continue;
 

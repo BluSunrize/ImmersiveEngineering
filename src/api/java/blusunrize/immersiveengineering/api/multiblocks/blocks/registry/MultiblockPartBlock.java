@@ -47,7 +47,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	{
 		super(properties.dynamicShape());
 		this.multiblock = multiblock;
-		final var hasMirrorProperty = getStateDefinition().getProperties().contains(IEProperties.MIRRORED);
+		final boolean hasMirrorProperty = getStateDefinition().getProperties().contains(IEProperties.MIRRORED);
 		Preconditions.checkState(this.multiblock.mirrorable()==hasMirrorProperty);
 		if(multiblock.logic() instanceof IServerTickableComponent<?>)
 			needsServerTicker = true;
@@ -123,7 +123,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			@Nonnull CollisionContext context
 	)
 	{
-		final var bEntity = level.getBlockEntity(pos);
+		final BlockEntity bEntity = level.getBlockEntity(pos);
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
 			return multiblockBE.getHelper().getShape(context);
 		else
@@ -159,7 +159,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			@Nonnull BlockHitResult hit
 	)
 	{
-		final var bEntity = level.getBlockEntity(pos);
+		final BlockEntity bEntity = level.getBlockEntity(pos);
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
 			return multiblockBE.getHelper().click(player, hand, hit);
 		else
@@ -169,7 +169,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	@Override
 	public void entityInside(@Nonnull BlockState state, Level level, @Nonnull BlockPos pos, @Nonnull Entity entity)
 	{
-		final var bEntity = level.getBlockEntity(pos);
+		final BlockEntity bEntity = level.getBlockEntity(pos);
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
 			multiblockBE.getHelper().onEntityCollided(entity);
 	}

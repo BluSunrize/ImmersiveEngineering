@@ -55,8 +55,8 @@ public class AdvBlastFurnaceLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var level = context.getLevel();
-		final var wasActive = isActive(level);
+		final IMultiblockLevel level = context.getLevel();
+		final boolean wasActive = isActive(level);
 		final boolean active = context.getState().innerState.furnace.tickServer(context);
 		if(active!=wasActive)
 			NonMirrorableWithActiveBlock.setActive(level, IEMultiblocks.ADVANCED_BLAST_FURNACE, active);

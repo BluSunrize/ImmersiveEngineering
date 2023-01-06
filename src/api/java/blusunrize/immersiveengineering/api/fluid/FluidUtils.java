@@ -134,7 +134,7 @@ public class FluidUtils
 
 			// Then try to output into pipes or similar
 			FluidStack out = copyFluidStackWithAmount(tank.getFluid(), Math.min(tank.getFluidAmount(), FluidType.BUCKET_VOLUME), false);
-			final var output = outputCap.getNullable();
+			final IFluidHandler output = outputCap.getNullable();
 			if(output!=null)
 			{
 				int accepted = output.fill(out, FluidAction.EXECUTE);

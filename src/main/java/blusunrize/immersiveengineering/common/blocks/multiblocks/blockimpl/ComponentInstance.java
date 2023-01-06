@@ -23,7 +23,7 @@ public record ComponentInstance<S>(IMultiblockComponent<S> component, IMultibloc
 	public static <S, O>
 	ComponentInstance<S> make(ExtraComponent<O, S> c, O state, IMultiblockContext<?> ctx)
 	{
-		final var wrappedState = c.makeWrapper().wrapState(state);
+		final S wrappedState = c.makeWrapper().wrapState(state);
 		IMultiblockContext<S> wrapped;
 		if(wrappedState==state)
 			//noinspection unchecked

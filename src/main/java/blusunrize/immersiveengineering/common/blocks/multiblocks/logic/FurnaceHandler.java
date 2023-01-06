@@ -50,7 +50,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 	public boolean tickServer(IMultiblockContext<? extends IFurnaceEnvironment<R>> ctx)
 	{
 		boolean active = false;
-		final var env = ctx.getState();
+		final IFurnaceEnvironment<R> env = ctx.getState();
 
 		if(burnTime > 0)
 		{
@@ -104,7 +104,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 
 		if(burnTime <= 0&&getRecipe(env)!=null)
 		{
-			final var inv = env.getInventory();
+			final IItemHandlerModifiable inv = env.getInventory();
 			final ItemStack fuel = inv.getStackInSlot(fuelSlot);
 			final int addedBurntime = env.getBurnTimeOf(ctx.getLevel().getRawLevel(), fuel);
 			if(addedBurntime > 0)
@@ -126,7 +126,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 
 	public Tag toNBT()
 	{
-		final var result = new CompoundTag();
+		final CompoundTag result = new CompoundTag();
 		result.putInt("process", process);
 		result.putInt("processMax", processMax);
 		result.putInt("burnTime", burnTime);
@@ -158,7 +158,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 		R recipe = env.getRecipeForInput();
 		if(recipe==null)
 			return null;
-		final var inv = env.getInventory();
+		final IItemHandlerModifiable inv = env.getInventory();
 		for(OutputSlot<R> out : outputs)
 		{
 			ItemStack currentStack = inv.getStackInSlot(out.slotIndex);
@@ -179,7 +179,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 		R recipe = getRecipe(env);
 		if(recipe==null)
 			return;
-		final var inv = env.getInventory();
+		final IItemHandlerModifiable inv = env.getInventory();
 		for(InputSlot<R> slot : inputs)
 		{
 			int reqSize = inputs.stream()

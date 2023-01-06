@@ -9,18 +9,21 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -38,9 +41,9 @@ public class CrusherRenderer extends IEBlockEntityRenderer<MultiblockBlockEntity
 			int combinedLightIn, int combinedOverlayIn
 	)
 	{
-		final var ctx = te.getHelper().getContext();
-		final var state = ctx.getState();
-		final var orientation = ctx.getLevel().getOrientation();
+		final IMultiblockContext<State> ctx = te.getHelper().getContext();
+		final State state = ctx.getState();
+		final MultiblockOrientation orientation = ctx.getLevel().getOrientation();
 		Direction dir = orientation.front();
 
 		boolean active = state.shouldRenderActive();

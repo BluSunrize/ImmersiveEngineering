@@ -69,8 +69,8 @@ public class CrusherLogic implements
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var wasActive = state.renderAsActive;
+		final State state = context.getState();
+		final boolean wasActive = state.renderAsActive;
 		state.renderAsActive = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		if(wasActive!=state.renderAsActive)
 			context.requestMasterBESync();
@@ -99,12 +99,12 @@ public class CrusherLogic implements
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(state.renderAsActive)
 			state.barrelAngle = (state.barrelAngle+18)%360;
 		if(!state.isPlayingSound.getAsBoolean())
 		{
-			final var soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
 			state.isPlayingSound = MultiblockSound.startSound(
 					() -> state.renderAsActive, context.isValid(), soundPos, IESounds.crusher
 			);
@@ -114,7 +114,7 @@ public class CrusherLogic implements
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(cap==ForgeCapabilities.ITEM_HANDLER&&isInInput(position.posInMultiblock(), false))
 			return state.insertionHandler.cast(ctx);
 		if(cap==ForgeCapabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
@@ -140,12 +140,12 @@ public class CrusherLogic implements
 	{
 		if(collided.level.isClientSide||!isInInput(posInMultiblock, true))
 			return;
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(!collided.isAlive()||!state.rsState.isEnabled(ctx))
 			return;
-		final var level = ctx.getLevel();
-		final var internalBB = new AABB(1.9375, 1.25, 0.9375, 3.0625, 2.5, 2.0625);
-		final var crusherInternal = level.toAbsolute(internalBB);
+		final IMultiblockLevel level = ctx.getLevel();
+		final AABB internalBB = new AABB(1.9375, 1.25, 0.9375, 3.0625, 2.5, 2.0625);
+		final AABB crusherInternal = level.toAbsolute(internalBB);
 		if(!collided.getBoundingBox().intersects(crusherInternal))
 			return;
 		if(collided instanceof ItemEntity itemEntity)
@@ -153,7 +153,7 @@ public class CrusherLogic implements
 			ItemStack stack = itemEntity.getItem();
 			if(stack.isEmpty())
 				return;
-			final var remaining = state.insertionHandler.getValue().insertItem(0, stack, false);
+			final ItemStack remaining = state.insertionHandler.getValue().insertItem(0, stack, false);
 			if(remaining.isEmpty())
 				itemEntity.discard();
 			else
@@ -197,7 +197,7 @@ public class CrusherLogic implements
 			this.processor = new MultiblockProcessor<>(
 					2048, 0, 1, ctx.getMarkDirtyRunnable(), CrusherRecipe.RECIPES::getById
 			);
-			final var insertionHandler = new DirectProcessingItemHandler<>(
+			final DirectProcessingItemHandler<CrusherRecipe> insertionHandler = new DirectProcessingItemHandler<>(
 					ctx.levelSupplier(), processor, CrusherRecipe::findRecipe
 			).setProcessStacking(true);
 			this.insertionHandler = new StoredCapability<>(insertionHandler);

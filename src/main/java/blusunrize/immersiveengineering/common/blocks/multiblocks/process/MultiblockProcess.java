@@ -96,7 +96,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 
 	public void doProcessTick(CTX context, IMultiblockLevel level)
 	{
-		final var rawLevel = level.getRawLevel();
+		final Level rawLevel = level.getRawLevel();
 		LevelDependentData<R> levelData = getLevelData(rawLevel);
 		if(levelData.recipe==null)
 		{
@@ -143,7 +143,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 
 	protected void processFinish(CTX context, IMultiblockLevel level)
 	{
-		final var rawLevel = level.getRawLevel();
+		final Level rawLevel = level.getRawLevel();
 		List<ItemStack> outputs = getRecipeItemOutputs(rawLevel, context);
 		if(outputs!=null)
 			for(ItemStack output : outputs)

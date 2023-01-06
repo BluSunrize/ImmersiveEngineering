@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
@@ -86,8 +87,8 @@ public class ArcFurnaceLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var level = context.getLevel();
+		final State state = context.getState();
+		final IMultiblockLevel level = context.getLevel();
 		final boolean canWork = state.rsControl.isEnabled(context);
 		final boolean tickedAny = state.processor.tickServer(state, level, canWork);
 		if(state.active!=tickedAny||state.updateElectrodePresence())
@@ -112,13 +113,13 @@ public class ArcFurnaceLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(state.pouringMetal > 0)
 			state.pouringMetal--;
 		if(!state.active)
 			return;
-		final var level = context.getLevel();
-		final var rawLevel = level.getRawLevel();
+		final IMultiblockLevel level = context.getLevel();
+		final Level rawLevel = level.getRawLevel();
 		for(int i = 0; i < Math.max(1, state.queueSize*0.51); i++)
 		{
 			if(ApiUtils.RANDOM.nextInt(6)==0)
@@ -151,7 +152,7 @@ public class ArcFurnaceLogic
 	private void enqueueProcesses(State state, Level level)
 	{
 		Int2IntOpenHashMap usedInvSlots = new Int2IntOpenHashMap();
-		for(var process : state.processor.getQueue())
+		for(MultiblockProcess<ArcFurnaceRecipe, ProcessContextInMachine<ArcFurnaceRecipe>> process : state.processor.getQueue())
 			if(process instanceof ArcFurnaceProcess arcProcess)
 			{
 				int[] inputSlots = arcProcess.getInputSlots();
@@ -208,7 +209,7 @@ public class ArcFurnaceLogic
 		if(outputHandler!=null)
 			for(int j : OUTPUT_SLOTS)
 			{
-				final var nextStack = state.inventory.getStackInSlot(j);
+				final ItemStack nextStack = state.inventory.getStackInSlot(j);
 				if(nextStack.isEmpty())
 					continue;
 				ItemStack stack = ItemHandlerHelper.copyStackWithSize(nextStack, 1);
@@ -216,7 +217,7 @@ public class ArcFurnaceLogic
 				if(stack.isEmpty())
 					nextStack.shrink(1);
 			}
-		final var slagStack = state.inventory.getStackInSlot(SLAG_SLOT);
+		final ItemStack slagStack = state.inventory.getStackInSlot(SLAG_SLOT);
 		if(slagStack.isEmpty())
 			return;
 		IItemHandler slagOutputHandler = state.slagOutput.getNullable();

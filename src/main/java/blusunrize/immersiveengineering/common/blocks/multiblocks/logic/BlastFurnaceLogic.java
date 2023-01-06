@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
@@ -38,8 +39,8 @@ public class BlastFurnaceLogic implements IMultiblockLogic<State>, IServerTickab
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var level = context.getLevel();
-		final var wasActive = level.getBlockState(IEMultiblocks.BLAST_FURNACE.getMasterFromOriginOffset())
+		final IMultiblockLevel level = context.getLevel();
+		final Boolean wasActive = level.getBlockState(IEMultiblocks.BLAST_FURNACE.getMasterFromOriginOffset())
 				.getValue(NonMirrorableWithActiveBlock.ACTIVE);
 		final boolean active = context.getState().furnace.tickServer(context);
 		if(active!=wasActive)
@@ -73,7 +74,7 @@ public class BlastFurnaceLogic implements IMultiblockLogic<State>, IServerTickab
 
 		public State(IInitialMultiblockContext<?> ctx)
 		{
-			final var getLevel = ctx.levelSupplier();
+			final Supplier<@Nullable Level> getLevel = ctx.levelSupplier();
 			inventory = new SlotwiseItemHandler(List.of(
 					new IOConstraint(true, i -> BlastFurnaceRecipe.findRecipe(getLevel.get(), i, null)!=null),
 					new IOConstraint(true, i -> BlastFurnaceFuel.isValidBlastFuel(getLevel.get(), i)),

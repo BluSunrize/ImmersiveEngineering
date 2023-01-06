@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
@@ -40,8 +41,8 @@ public class AlloySmelterLogic implements IMultiblockLogic<State>, IServerTickab
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var level = context.getLevel();
-		final var wasActive = level.getBlockState(IEMultiblocks.ALLOY_SMELTER.getMasterFromOriginOffset())
+		final IMultiblockLevel level = context.getLevel();
+		final Boolean wasActive = level.getBlockState(IEMultiblocks.ALLOY_SMELTER.getMasterFromOriginOffset())
 				.getValue(NonMirrorableWithActiveBlock.ACTIVE);
 		final boolean active = context.getState().furnace.tickServer(context);
 		if(active!=wasActive)

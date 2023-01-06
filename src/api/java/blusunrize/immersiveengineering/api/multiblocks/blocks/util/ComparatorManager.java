@@ -40,7 +40,7 @@ public class ComparatorManager<State>
 		final int newValue = valueGetter.getComparatorValue(state.inner, ctx.getLevel());
 		if(newValue!=state.lastValue)
 		{
-			for(final var position : positions)
+			for(final BlockPos position : positions)
 				ctx.setComparatorOutputFor(position, newValue);
 			state.lastValue = newValue;
 		}
@@ -61,7 +61,7 @@ public class ComparatorManager<State>
 			return state -> {
 				int i = 0;
 				float f = 0.0F;
-				final var inv = getInv.apply(state);
+				final IItemHandler inv = getInv.apply(state);
 				for(int j = minSlot; j < minSlot+numSlots; ++j)
 				{
 					ItemStack itemstack = inv.getStackInSlot(j);

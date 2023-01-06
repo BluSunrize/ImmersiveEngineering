@@ -29,7 +29,7 @@ public class AlloySmelterMenu extends IEContainerMenu
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		return new AlloySmelterMenu(
 				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.getStateView()
 		);

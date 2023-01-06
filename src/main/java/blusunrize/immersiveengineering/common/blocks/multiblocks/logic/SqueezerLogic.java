@@ -67,8 +67,8 @@ public class SqueezerLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
+		final State state = context.getState();
+		final boolean active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		if(active!=state.active)
 		{
 			state.active = active;
@@ -108,12 +108,12 @@ public class SqueezerLogic
 
 	private void handleItemOutput(IMultiblockContext<State> ctx)
 	{
-		final var state = ctx.getState();
-		final var fullOutputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
+		final State state = ctx.getState();
+		final ItemStack fullOutputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
 		if(fullOutputStack.isEmpty())
 			return;
 		ItemStack stack = ItemHandlerHelper.copyStackWithSize(fullOutputStack, 1);
-		final var remaining = Utils.insertStackIntoInventory(state.itemOutput, stack, false);
+		final ItemStack remaining = Utils.insertStackIntoInventory(state.itemOutput, stack, false);
 		if(remaining.isEmpty())
 		{
 			fullOutputStack.shrink(1);
@@ -124,7 +124,7 @@ public class SqueezerLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(!state.active&&state.animation_piston < .6875)
 			state.animation_piston = Math.min(.6875f, state.animation_piston+.03125f);
 		else if(state.active)
@@ -150,7 +150,7 @@ public class SqueezerLogic
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return state.energyCap.cast(ctx);
 
@@ -201,7 +201,7 @@ public class SqueezerLogic
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			final var markDirty = ctx.getMarkDirtyRunnable();
+			final Runnable markDirty = ctx.getMarkDirtyRunnable();
 			this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
 					new IOConstraintGroup(IOConstraint.ANY_INPUT, 8),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1),

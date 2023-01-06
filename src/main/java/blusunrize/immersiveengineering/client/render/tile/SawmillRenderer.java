@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
@@ -31,9 +33,9 @@ public class SawmillRenderer extends IEBlockEntityRenderer<MultiblockBlockEntity
 	@Override
 	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final var helper = te.getHelper();
-		final var level = helper.getContext().getLevel();
-		final var state = helper.getState();
+		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
+		final IMultiblockLevel level = helper.getContext().getLevel();
+		final State state = helper.getState();
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();

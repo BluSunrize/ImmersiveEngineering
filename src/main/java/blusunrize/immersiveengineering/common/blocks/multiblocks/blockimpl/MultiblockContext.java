@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -64,7 +65,7 @@ public record MultiblockContext<State extends IMultiblockState>(
 
 	static void requestBESync(BlockEntity be)
 	{
-		final var level = be.getLevel();
+		final Level level = be.getLevel();
 		if(level!=null&&level.getChunkSource() instanceof ServerChunkCache chunkCache)
 			chunkCache.blockChanged(be.getBlockPos());
 	}
@@ -73,7 +74,7 @@ public record MultiblockContext<State extends IMultiblockState>(
 	public void setComparatorOutputFor(BlockPos posInMultiblock, int newValue)
 	{
 		Preconditions.checkState(masterHelper.multiblock.hasComparatorOutput());
-		final var oldValue = masterHelper.getCurrentComparatorOutputs().put(posInMultiblock, newValue);
+		final int oldValue = masterHelper.getCurrentComparatorOutputs().put(posInMultiblock, newValue);
 		if(oldValue!=newValue)
 			level.updateNeighbourForOutputSignal(posInMultiblock);
 	}
@@ -106,7 +107,7 @@ public record MultiblockContext<State extends IMultiblockState>(
 		if(!(level.getBlockEntity(posInMultiblock) instanceof IMultiblockBE<?> beAtPos))
 			return fallback;
 		int result = 0;
-		for(final var face : RelativeBlockFace.values())
+		for(final RelativeBlockFace face : RelativeBlockFace.values())
 			result = Math.max(result, beAtPos.getHelper().getRedstoneInput(face));
 		return result;
 	}

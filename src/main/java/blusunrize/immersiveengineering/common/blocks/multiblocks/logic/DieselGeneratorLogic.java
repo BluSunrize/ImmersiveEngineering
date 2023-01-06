@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -60,7 +61,7 @@ public class DieselGeneratorLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		boolean active = context.getState().active;
 		if(state.rsState.isEnabled(context)&&!state.tank.getFluid().isEmpty())
 		{
@@ -106,7 +107,7 @@ public class DieselGeneratorLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(state.active||state.animation_fanFadeIn > 0||state.animation_fanFadeOut > 0)
 		{
 			float base = 18f;
@@ -127,14 +128,14 @@ public class DieselGeneratorLogic
 		}
 		if(!state.isSoundPlaying.getAsBoolean())
 		{
-			final var soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
 			state.isSoundPlaying = MultiblockSound.startSound(
 					() -> state.active, context.isValid(), soundPos, IESounds.dieselGenerator
 			);
 		}
 		if(state.active&&context.getLevel().shouldTickModulo(2))
 		{
-			final var absoluteSmokePosition = context.getLevel().toAbsolute(SMOKE_POSITION);
+			final Vec3 absoluteSmokePosition = context.getLevel().toAbsolute(SMOKE_POSITION);
 			context.getLevel().getRawLevel().addAlwaysVisibleParticle(
 					ParticleTypes.CAMPFIRE_COSY_SMOKE,
 					absoluteSmokePosition.x, absoluteSmokePosition.y, absoluteSmokePosition.z,
@@ -174,10 +175,10 @@ public class DieselGeneratorLogic
 			IMultiblockContext<State> ctx, VoxelShape defaultShape, CollisionContext shapeCtx, BlockPos posInMultiblock
 	)
 	{
-		final var absolutePos = ctx.getLevel().toAbsolute(posInMultiblock);
+		final BlockPos absolutePos = ctx.getLevel().toAbsolute(posInMultiblock);
 		if(posInMultiblock.equals(REDSTONE_POS)&&!shapeCtx.isAbove(ScaffoldingBlock.CHECK_SHAPE, absolutePos, false))
 		{
-			final var orientation = ctx.getLevel().getOrientation();
+			final MultiblockOrientation orientation = ctx.getLevel().getOrientation();
 			AABB box = CachedShapesWithTransform.withFacingAndMirror(
 					new AABB(0.9375, 0, 0, 1, 1, 1), orientation.front(), orientation.mirrored()
 			);
@@ -241,7 +242,7 @@ public class DieselGeneratorLogic
 		@Override
 		public void readSyncNBT(CompoundTag nbt)
 		{
-			final var oldActive = active;
+			final boolean oldActive = active;
 			active = nbt.getBoolean("active");
 			if(active&&!oldActive)
 				animation_fanFadeIn = 80;

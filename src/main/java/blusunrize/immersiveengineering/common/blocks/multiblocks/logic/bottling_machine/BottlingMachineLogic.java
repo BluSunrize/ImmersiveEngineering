@@ -75,7 +75,7 @@ public class BottlingMachineLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		boolean active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		state.active = active;
 		if(active)
@@ -115,13 +115,13 @@ public class BottlingMachineLogic
 	@Override
 	public void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
 	{
-		final var level = collided.level;
+		final Level level = collided.level;
 		if(!new BlockPos(0, 1, 1).equals(posInMultiblock)||level.isClientSide)
 			return;
 		else if(!(collided instanceof ItemEntity)||!collided.isAlive())
 			return;
-		final var state = ctx.getState();
-		final var absoluteCollisionPos = ctx.getLevel().toAbsolute(posInMultiblock);
+		final State state = ctx.getState();
+		final BlockPos absoluteCollisionPos = ctx.getLevel().toAbsolute(posInMultiblock);
 		List<Pair<ItemEntity, ItemStack>> itemsOnConveyor = level.getEntitiesOfClass(
 				ItemEntity.class, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(absoluteCollisionPos))
 		).stream().map(itemEntity1 -> Pair.of(itemEntity1, itemEntity1.getItem())).toList();
@@ -170,7 +170,7 @@ public class BottlingMachineLogic
 			return InteractionResult.PASS;
 		if(!isClient)
 		{
-			final var state = ctx.getState();
+			final State state = ctx.getState();
 			state.allowPartialFill = !state.allowPartialFill;
 			player.displayClientMessage(Component.translatable(
 					Lib.CHAT_INFO+"bottling_machine."+(state.allowPartialFill?"partialFill": "completeFill")
@@ -241,8 +241,8 @@ public class BottlingMachineLogic
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			final var markDirty = ctx.getMarkDirtyRunnable();
-			final var sync = ctx.getSyncRunnable();
+			final Runnable markDirty = ctx.getMarkDirtyRunnable();
+			final Runnable sync = ctx.getSyncRunnable();
 			processor = new InWorldProcessor<>(
 					2, maxTicks -> 1f-(getTransportTime(maxTicks)+getLiftTime(maxTicks))/maxTicks, 2,
 					markDirty, sync,

@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.IntConsumer;
 import java.util.function.ObjIntConsumer;
@@ -56,12 +58,12 @@ public class LayeredComparatorOutput<CTX>
 		{
 			void update(IMultiblockContext<?> ctx, BlockPos pos, int value);
 		}
-		final var masterPos = new BlockPos(1, 0, 1);
+		final BlockPos masterPos = new BlockPos(1, 0, 1);
 		final Updater update = (ctx, pos, value) -> {
-			final var level = ctx.getLevel();
+			final IMultiblockLevel level = ctx.getLevel();
 			ctx.setComparatorOutputFor(pos, value);
-			final var absPos = level.toAbsolute(masterPos);
-			final var stateAt = level.getBlockState(masterPos);
+			final BlockPos absPos = level.toAbsolute(masterPos);
+			final BlockState stateAt = level.getBlockState(masterPos);
 			level.getRawLevel().updateNeighborsAt(absPos, stateAt.getBlock());
 		};
 		return new LayeredComparatorOutput<>(

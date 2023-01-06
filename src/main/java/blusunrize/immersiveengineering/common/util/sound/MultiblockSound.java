@@ -34,7 +34,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound
 	)
 	{
-		final var instance = new MultiblockSound(active, valid, pos, sound.get());
+		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get());
 		Minecraft.getInstance().getSoundManager().play(instance);
 		return () -> !instance.isStopped();
 	}

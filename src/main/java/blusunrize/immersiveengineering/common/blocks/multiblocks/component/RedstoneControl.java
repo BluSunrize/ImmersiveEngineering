@@ -35,7 +35,7 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 	{
 		this.positions = Arrays.asList(positions);
 		this.getState = s -> {
-			final var rsState = getState.wrapState(s);
+			final RSState rsState = getState.wrapState(s);
 			rsState.positions = this.positions;
 			return rsState;
 		};

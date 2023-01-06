@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -535,10 +536,10 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			IMultiblockBE<S> be, boolean hammer, PoseStack transform, int scaledWidth, int scaledHeight
 	)
 	{
-		final var helper = be.getHelper();
+		final IMultiblockBEHelper<S> helper = be.getHelper();
 		if(!(helper.getMultiblock().logic() instanceof MBOverlayText<S> overlayHandler))
 			return false;
-		final var overlayText = overlayHandler.getOverlayText(
+		final List<Component> overlayText = overlayHandler.getOverlayText(
 				helper.getState(), ClientUtils.mc().player, hammer
 		);
 		if(overlayText==null)

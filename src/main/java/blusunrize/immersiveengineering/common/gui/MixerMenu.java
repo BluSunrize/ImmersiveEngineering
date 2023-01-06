@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixingProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -39,10 +40,10 @@ public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContai
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		final GetterAndSetter<List<SlotProgress>> progress = GetterAndSetter.getterOnly(() -> {
 			List<SlotProgress> result = new ArrayList<>();
-			for(final var process : state.processor.getQueue())
+			for(final MultiblockProcess<?, ?> process : state.processor.getQueue())
 				if(process instanceof MixingProcess inMachine)
 				{
 					final float mod = 1-(process.processTick/(float)process.getMaxTicks(ctx.getLevel().getRawLevel()));
@@ -106,7 +107,7 @@ public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContai
 	@Override
 	public boolean canInsert(ItemStack stack, int slotNumber, Slot slotObject)
 	{
-		for(final var progress : this.progress.get())
+		for(final SlotProgress progress : this.progress.get())
 			if(progress.slot==slotNumber)
 				return false;
 		return true;

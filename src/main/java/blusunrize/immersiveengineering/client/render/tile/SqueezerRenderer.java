@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic.State;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -29,8 +31,8 @@ public class SqueezerRenderer extends IEBlockEntityRenderer<MultiblockBlockEntit
 	{
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BakedModel model = PISTON.get();
-		final var helper = te.getHelper();
-		final var orientation = helper.getContext().getLevel().getOrientation();
+		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
+		final MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
 
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);

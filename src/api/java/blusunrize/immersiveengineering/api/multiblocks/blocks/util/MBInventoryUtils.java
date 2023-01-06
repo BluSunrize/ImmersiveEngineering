@@ -11,7 +11,7 @@ public class MBInventoryUtils
 	{
 		for(int slot = 0; slot < inv.getSlots(); slot++)
 		{
-			final var stack = inv.getStackInSlot(slot);
+			final ItemStack stack = inv.getStackInSlot(slot);
 			if(!stack.isEmpty())
 				drop.accept(stack.copy());
 		}

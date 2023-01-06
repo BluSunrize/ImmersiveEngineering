@@ -93,7 +93,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	{
 		super.doProcessTick(context, level);
 
-		final var rawLevel = level.getRawLevel();
+		final Level rawLevel = level.getRawLevel();
 		float transPoint = getMaxTicks(rawLevel)*transformationPoint;
 		if(processTick >= transPoint&&processTick < 1+transPoint)
 		{

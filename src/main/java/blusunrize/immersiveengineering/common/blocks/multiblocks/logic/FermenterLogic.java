@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorMan
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
@@ -29,6 +30,7 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -104,11 +106,11 @@ public class FermenterLogic
 
 	private boolean enqueueNewProcesses(IMultiblockContext<State> ctx)
 	{
-		final var state = ctx.getState();
-		final var level = ctx.getLevel().getRawLevel();
+		final State state = ctx.getState();
+		final Level level = ctx.getLevel().getRawLevel();
 		boolean addedAny = false;
 		final int[] usedInvSlots = new int[NUM_INPUT_SLOTS];
-		for(final var process : state.processor.getQueue())
+		for(final MultiblockProcess<FermenterRecipe, ProcessContextInMachine<FermenterRecipe>> process : state.processor.getQueue())
 			if(process instanceof MultiblockProcessInMachine)
 				for(int i : ((MultiblockProcessInMachine<FermenterRecipe>)process).getInputSlots())
 					usedInvSlots[i]++;
@@ -139,8 +141,8 @@ public class FermenterLogic
 
 	private boolean outputItem(IMultiblockContext<State> ctx)
 	{
-		final var state = ctx.getState();
-		final var outputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
+		final State state = ctx.getState();
+		final ItemStack outputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
 		if(outputStack.isEmpty()||!ctx.getLevel().shouldTickModulo(8))
 			return false;
 		IItemHandler outputHandler = state.itemOutput.getNullable();

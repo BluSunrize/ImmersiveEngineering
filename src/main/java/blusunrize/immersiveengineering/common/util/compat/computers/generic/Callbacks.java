@@ -46,7 +46,7 @@ public class Callbacks
 	private static <S extends IMultiblockState>
 	void registerMB(MultiblockRegistration<S> type, Callback<S> owner, String name, BlockPos... valid)
 	{
-		final var wrapped = new MultiblockCallbackWrapper<>(owner, type, name, valid);
+		final MultiblockCallbackWrapper<S> wrapped = new MultiblockCallbackWrapper<>(owner, type, name, valid);
 		CALLBACKS.put(type.masterBE().getId(), wrapped);
 		CALLBACKS.put(type.dummyBE().getId(), wrapped);
 	}

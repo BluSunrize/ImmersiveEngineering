@@ -33,7 +33,7 @@ public class BucketWheelLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(state.active)
 		{
 			state.rotation += IEServerConfig.MACHINES.excavator_speed.get();
@@ -67,7 +67,7 @@ public class BucketWheelLogic
 		{
 			nbt.putFloat("rotation", rotation);
 			ListTag stacksNBT = new ListTag();
-			for(final var stack : digStacks)
+			for(final ItemStack stack : digStacks)
 				stacksNBT.add(stack.save(new CompoundTag()));
 			nbt.put("stacks", stacksNBT);
 			nbt.putBoolean("active", active);
@@ -79,7 +79,7 @@ public class BucketWheelLogic
 		public void readSaveNBT(CompoundTag nbt)
 		{
 			rotation = nbt.getFloat("rotation");
-			final var stacksNBT = nbt.getList("stacks", Tag.TAG_COMPOUND);
+			final ListTag stacksNBT = nbt.getList("stacks", Tag.TAG_COMPOUND);
 			for(int i = 0; i < stacksNBT.size(); ++i)
 				digStacks.set(i, ItemStack.of(stacksNBT.getCompound(i)));
 			active = nbt.getBoolean("active");

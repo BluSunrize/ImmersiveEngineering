@@ -26,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -45,6 +46,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
@@ -66,8 +68,8 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var masterBlockState = context.getLevel().getBlockState(MASTER_OFFSET);
+		final State state = context.getState();
+		final BlockState masterBlockState = context.getLevel().getBlockState(MASTER_OFFSET);
 		final boolean activeBeforeTick = masterBlockState.getValue(NonMirrorableWithActiveBlock.ACTIVE);
 		boolean active = activeBeforeTick;
 		if(state.process > 0)
@@ -99,7 +101,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 				if(recipe!=null)
 				{
 					state.inventory.getStackInSlot(INPUT_SLOT).grow(-recipe.input.getCount());
-					final var outputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
+					final ItemStack outputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
 					if(!outputStack.isEmpty())
 						outputStack.grow(recipe.output.get().copy().getCount());
 					else if(outputStack.isEmpty())
@@ -144,12 +146,12 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 	@Nullable
 	public CokeOvenRecipe getRecipe(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		CokeOvenRecipe recipe = state.cachedRecipe.apply(context.getLevel().getRawLevel());
 		if(recipe==null)
 			return null;
 
-		final var currentOutputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
+		final ItemStack currentOutputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
 		final boolean canOutputItem;
 		if(currentOutputStack.isEmpty())
 			canOutputItem = true;
@@ -167,7 +169,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
 	)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(cap==ForgeCapabilities.ITEM_HANDLER)
 			return state.invCap.cast(ctx);
 		else if(cap==ForgeCapabilities.FLUID_HANDLER)
@@ -206,7 +208,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			final var levelGetter = ctx.levelSupplier();
+			final Supplier<@org.jetbrains.annotations.Nullable Level> levelGetter = ctx.levelSupplier();
 			inventory = new SlotwiseItemHandler(
 					List.of(
 							IOConstraint.input(i -> CokeOvenRecipe.findRecipe(levelGetter.get(), i)!=null),

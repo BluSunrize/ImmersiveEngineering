@@ -6,6 +6,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
@@ -47,11 +48,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class SawmillLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
@@ -67,10 +70,10 @@ public class SawmillLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var level = context.getLevel();
-		final var rawLevel = level.getRawLevel();
-		final var rsAllowed = state.rsState.isEnabled(context);
+		final State state = context.getState();
+		final IMultiblockLevel level = context.getLevel();
+		final Level rawLevel = level.getRawLevel();
+		final boolean rsAllowed = state.rsState.isEnabled(context);
 		int i = 0;
 		Iterator<SawmillProcess> processIterator = state.sawmillProcessQueue.iterator();
 		Set<ItemStack> secondaries = new HashSet<>();
@@ -101,22 +104,22 @@ public class SawmillLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> ctx)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(!state.active)
 			return;
 		state.animation_bladeRotation += 36f;
 		state.animation_bladeRotation %= 360f;
 		state.sawmillProcessQueue.forEach(SawmillProcess::incrementProcessOnClient);
 
-		final var level = ctx.getLevel();
-		final var rawLevel = level.getRawLevel();
+		final IMultiblockLevel level = ctx.getLevel();
+		final Level rawLevel = level.getRawLevel();
 		Optional<SawmillProcess> process = state.sawmillProcessQueue.stream()
 				.filter(p -> p.isSawing(rawLevel))
 				.findFirst();
 		//Handle empty sound
 		if(!state.playingEmptySound.getAsBoolean())
 		{
-			final var soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
+			final Vec3 soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
 			state.playingEmptySound = MultiblockSound.startSound(
 					() -> state.active, ctx.isValid(), soundPos, IESounds.saw_empty
 			);
@@ -163,9 +166,9 @@ public class SawmillLogic
 	@Override
 	public void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
 	{
-		final var state = ctx.getState();
-		final var level = ctx.getLevel();
-		final var rawLevel = level.getRawLevel();
+		final State state = ctx.getState();
+		final IMultiblockLevel level = ctx.getLevel();
+		final Level rawLevel = level.getRawLevel();
 		if(rawLevel.isClientSide||collided==null||!collided.isAlive()||!state.rsState.isEnabled(ctx))
 			return;
 		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&collided instanceof ItemEntity itemEntity)
@@ -182,7 +185,7 @@ public class SawmillLogic
 				itemEntity.setItem(stack);
 			return;
 		}
-		final var absoluteBladeBB = level.toAbsolute(SAWBLADE_AABB);
+		final AABB absoluteBladeBB = level.toAbsolute(SAWBLADE_AABB);
 		if(collided instanceof LivingEntity&&!state.sawblade.isEmpty()
 				&&absoluteBladeBB.intersects(collided.getBoundingBox()))
 			hurtEntity(collided, ctx);
@@ -194,14 +197,14 @@ public class SawmillLogic
 			Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient
 	)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(state.rsState.isEnabled(ctx)&&!state.sawblade.isEmpty())
 		{
 			if(!isClient)
 				hurtEntity(player, ctx);
 			return InteractionResult.FAIL;
 		}
-		final var heldItem = player.getItemInHand(hand);
+		final ItemStack heldItem = player.getItemInHand(hand);
 		if(player.isShiftKeyDown()&&!state.sawblade.isEmpty())
 		{
 			if(heldItem.isEmpty())
@@ -337,9 +340,9 @@ public class SawmillLogic
 		{
 			this.output = new DroppingMultiblockOutput(PRIMARY_OUTPUT, ctx);
 			this.secondaryOutput = new DroppingMultiblockOutput(SIDE_OUTPUT, ctx);
-			final var levelGetter = ctx.levelSupplier();
-			final var markDirty = ctx.getMarkDirtyRunnable();
-			final var sync = ctx.getSyncRunnable();
+			final Supplier<@Nullable Level> levelGetter = ctx.levelSupplier();
+			final Runnable markDirty = ctx.getMarkDirtyRunnable();
+			final Runnable sync = ctx.getSyncRunnable();
 			this.insertionHandler = new StoredCapability<>(new InsertOnlyInventory()
 			{
 				@Override
@@ -391,7 +394,7 @@ public class SawmillLogic
 		{
 			nbt.put("sawblade", sawblade.save(new CompoundTag()));
 			ListTag processes = new ListTag();
-			for(final var process : sawmillProcessQueue)
+			for(final SawmillProcess process : sawmillProcessQueue)
 				processes.add(process.writeToNBT());
 			nbt.put("processes", processes);
 		}

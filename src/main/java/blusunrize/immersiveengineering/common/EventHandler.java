@@ -215,7 +215,7 @@ public class EventHandler
 	{
 		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getMsgId()))
 		{
-			final var crusher = crusherMap.get(event.getEntity().getUUID());
+			final Consumer<ItemStack> crusher = crusherMap.get(event.getEntity().getUUID());
 			if(crusher!=null)
 			{
 				for(ItemEntity item : event.getDrops())

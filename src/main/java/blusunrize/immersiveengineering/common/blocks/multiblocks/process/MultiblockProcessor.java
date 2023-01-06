@@ -91,7 +91,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	public Tag toNBT()
 	{
 		ListTag processList = new ListTag();
-		for(final var process : processQueue)
+		for(final MultiblockProcess<R, CTX> process : processQueue)
 		{
 			CompoundTag tag = new CompoundTag();
 			tag.putString("recipe", process.getRecipeId().toString());
@@ -107,10 +107,10 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		if(!(nbt instanceof ListTag list))
 			return;
 		this.processQueue.clear();
-		for(final var tag : list)
+		for(final Tag tag : list)
 			if(tag instanceof CompoundTag processTag)
 			{
-				final var loadedProcess = loader.fromNBT(getRecipeFromID, processTag);
+				final MultiblockProcess<R, CTX> loadedProcess = loader.fromNBT(getRecipeFromID, processTag);
 				if(loadedProcess!=null)
 					this.processQueue.add(loadedProcess);
 			}
@@ -173,7 +173,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 			if(processQueue.size() > 0)
 			{
 				MultiblockProcess<R, CTX> previousProcess = processQueue.get(processQueue.size()-1);
-				final var maxTime = previousProcess.getMaxTicks(level);
+				final int maxTime = previousProcess.getMaxTicks(level);
 				float dist = previousProcess.processTick/(float)maxTime;
 				if(dist < minDelayAfter.applyAsDouble(maxTime))
 					return false;

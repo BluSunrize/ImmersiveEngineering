@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -52,9 +53,9 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 	)
 	{
 		return CapabilityReference.forBlockEntityAt(masterBE, () -> {
-			final var offset = orientation.getAbsoluteOffset(posRelativeToMB.subtract(masterOffset));
-			final var pos = masterBE.getBlockPos().offset(offset);
-			final var absoluteFace = face.forFront(orientation);
+			final BlockPos offset = orientation.getAbsoluteOffset(posRelativeToMB.subtract(masterOffset));
+			final BlockPos pos = masterBE.getBlockPos().offset(offset);
+			final Direction absoluteFace = face.forFront(orientation);
 			return new DirectionalBlockPos(pos, absoluteFace);
 		}, capability);
 	}

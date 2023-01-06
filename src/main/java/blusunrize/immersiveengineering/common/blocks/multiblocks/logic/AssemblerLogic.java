@@ -69,7 +69,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(!context.getLevel().shouldTickModulo(16)||!state.rsState.isEnabled(context))
 			return;
 		final List<OutputBuffer> outputs = craftRecipes(context);
@@ -85,7 +85,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 
 	private List<OutputBuffer> craftRecipes(IMultiblockContext<State> ctx)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		List<OutputBuffer> outputBuffer = new ArrayList<>();
 		for(int patternId = 0; patternId < state.patterns.length; patternId++)
 		{
@@ -236,7 +236,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	{
 		if(!canInsertOnto(state, slot, toAdd))
 			return false;
-		final var present = state.inventory.getStackInSlot(slot);
+		final ItemStack present = state.inventory.getStackInSlot(slot);
 		if(present.isEmpty())
 			state.inventory.setStackInSlot(slot, toAdd);
 		else

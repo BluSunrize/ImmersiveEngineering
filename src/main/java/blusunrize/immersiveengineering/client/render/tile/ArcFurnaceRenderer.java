@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -48,8 +49,8 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		final var state = te.getHelper().getState();
-		final var facing = te.getHelper().getContext().getLevel().getOrientation().front();
+		final State state = te.getHelper().getState();
+		final Direction facing = te.getHelper().getContext().getLevel().getOrientation().front();
 		List<String> renderedParts = null;
 		for(int i = 0; i < ArcFurnaceLogic.ELECTRODE_COUNT; i++)
 			if((state.electrodePresence&(1<<i))!=0)

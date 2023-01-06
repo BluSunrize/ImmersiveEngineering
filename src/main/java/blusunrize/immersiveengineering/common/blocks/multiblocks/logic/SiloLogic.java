@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
@@ -39,11 +40,11 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		state.comparatorHelper.update(context, state.storageAmount);
 		if(state.identStack.isEmpty()||state.storageAmount <= 0)
 			return;
-		final var level = context.getLevel();
+		final IMultiblockLevel level = context.getLevel();
 		if(!level.shouldTickModulo(8)||!state.rsState.isEnabled(context))
 			return;
 		for(CapabilityReference<IItemHandler> output : state.outputs)
@@ -102,7 +103,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 			for(RelativeBlockFace face : RelativeBlockFace.values())
 				if(face!=RelativeBlockFace.DOWN)
 				{
-					final var neighbor = face.offsetRelative(OUTPUT_POS, -1);
+					final BlockPos neighbor = face.offsetRelative(OUTPUT_POS, -1);
 					outputBuilder.add(capabilitySource.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, neighbor, face));
 				}
 			this.outputs = outputBuilder.build();

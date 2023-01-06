@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
@@ -38,7 +39,7 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 			BlockEntity clickedTE = world.getBlockEntity(pos);
 			if(clickedTE instanceof IMultiblockBE<?> excavator)
 			{
-				final var mbLevel = excavator.getHelper().getContext().getLevel();
+				final IMultiblockLevel mbLevel = excavator.getHelper().getContext().getLevel();
 				BlockPos wheelCenter = mbLevel.toAbsolute(ExcavatorLogic.WHEEL_CENTER);
 				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.getCounterClockWise(), player);
 			}

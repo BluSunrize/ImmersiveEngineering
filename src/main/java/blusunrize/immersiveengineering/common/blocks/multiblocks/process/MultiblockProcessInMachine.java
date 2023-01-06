@@ -104,11 +104,11 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 		int[] outputSlots = context.getOutputSlots();
 		for(int iOutputSlot : outputSlots)
 		{
-			final var inv = context.getInventory();
+			final IItemHandlerModifiable inv = context.getInventory();
 			ItemStack s = inv.getStackInSlot(iOutputSlot);
 			if(s.isEmpty())
 				return true;
-			final var match = ItemHandlerHelper.canItemStacksStack(s, output);
+			final boolean match = ItemHandlerHelper.canItemStacksStack(s, output);
 			if(match&&s.getCount()+output.getCount() <= inv.getSlotLimit(iOutputSlot))
 				return true;
 		}
@@ -145,7 +145,7 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 		int[] outputSlots = context.getOutputSlots();
 		for(int iOutputSlot : outputSlots)
 		{
-			final var inv = context.getInventory();
+			final IItemHandlerModifiable inv = context.getInventory();
 			ItemStack s = inv.getStackInSlot(iOutputSlot);
 			if(s.isEmpty())
 			{

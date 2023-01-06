@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -36,6 +37,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
@@ -93,16 +95,16 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var level = context.getLevel();
-		final var state = context.getState();
+		final IMultiblockLevel level = context.getLevel();
+		final State state = context.getState();
 
 		float rot;
 		int target = -1;
-		final var wheelHelper = getWheel(level);
+		final IMultiblockBEHelperMaster<BucketWheelLogic.State> wheelHelper = getWheel(level);
 		if(wheelHelper==null)
 			return;
-		final var wheel = wheelHelper.getState();
-		final var wheelCtx = wheelHelper.getContext();
+		final BucketWheelLogic.State wheel = wheelHelper.getState();
+		final IMultiblockContext<BucketWheelLogic.State> wheelCtx = wheelHelper.getContext();
 		adjustWheel(level.getOrientation(), wheelCtx.getLevel().getOrientation(), wheel);
 		wheel.active = state.active;
 		rot = wheel.rotation;
@@ -114,7 +116,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			state.active = false;
 			return;
 		}
-		final var rawLevel = level.getRawLevel();
+		final Level rawLevel = level.getRawLevel();
 		MineralVein mineralVein = ExcavatorHandler.getRandomMineral(rawLevel, level.toAbsolute(WHEEL_CENTER));
 		MineralMix mineral = mineralVein!=null?mineralVein.getMineral(rawLevel): null;
 
@@ -171,7 +173,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			BucketWheelLogic.State wheel
 	)
 	{
-		final var wheelFront = wheelOrientation.front().getCounterClockWise();
+		final Direction wheelFront = wheelOrientation.front().getCounterClockWise();
 		wheel.reverseRotation = wheelFront!=excavatorOrientation.front();
 	}
 
@@ -181,10 +183,10 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			return;
 		if(!(level.getRawLevel() instanceof ServerLevel rawLevel))
 			return;
-		final var facing = level.getOrientation().front();
+		final Direction facing = level.getOrientation().front();
 		Axis axis = facing.getAxis();
 		int sign = level.getOrientation().mirrored()?-1: 1;
-		final var topCenterAbs = level.toAbsolute(WHEEL_CENTER_TOP);
+		final Vec3 topCenterAbs = level.toAbsolute(WHEEL_CENTER_TOP);
 		double fixPosOffset = .5*sign;
 		double fixVelOffset = .075*sign;
 		for(int i = 0; i < 16; i++)
@@ -215,7 +217,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	{
 		if(!(level.getBlockEntity(WHEEL_CENTER) instanceof MultiblockBlockEntityMaster<?> wheelBE))
 			return null;
-		final var helper = wheelBE.getHelper();
+		final IMultiblockBEHelperMaster<?> helper = wheelBE.getHelper();
 		if(helper.getState() instanceof BucketWheelLogic.State)
 			//noinspection unchecked
 			return (IMultiblockBEHelperMaster<BucketWheelLogic.State>)helper;
@@ -236,13 +238,13 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 
 	private ItemStack digBlock(BlockPos relativePos, IMultiblockLevel level)
 	{
-		final var rawLevel = level.getRawLevel();
+		final Level rawLevel = level.getRawLevel();
 		if(!(rawLevel instanceof ServerLevel serverLevel))
 			return ItemStack.EMPTY;
 		FakePlayer fakePlayer = FakePlayerUtil.getFakePlayer(rawLevel);
 		BlockState blockstate = level.getBlockState(relativePos);
 		Block block = blockstate.getBlock();
-		final var absolutePos = level.toAbsolute(relativePos);
+		final BlockPos absolutePos = level.toAbsolute(relativePos);
 		if(!blockstate.isAir()&&blockstate.getDestroySpeed(rawLevel, absolutePos)!=-1)
 		{
 			if(!block.canHarvestBlock(blockstate, rawLevel, absolutePos, fakePlayer))
@@ -311,7 +313,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	{
 		if(getWheel(level)==null)
 			return 0;
-		final var wheelPos = level.toAbsolute(WHEEL_CENTER);
+		final BlockPos wheelPos = level.toAbsolute(WHEEL_CENTER);
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(level.getRawLevel(), wheelPos);
 		if(info==null)
 			return 0;

@@ -3,6 +3,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
@@ -63,7 +65,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		final VoxelShape absoluteShape = cachedShape.get(posInMB, orientation);
 		if(multiblock.postProcessesShape())
 		{
-			final var multiblockCtx = getContext();
+			final IMultiblockContext<State> multiblockCtx = getContext();
 			if(multiblockCtx!=null)
 				return logic.postProcessAbsoluteShape(multiblockCtx, absoluteShape, ctx, posInMB);
 		}
@@ -73,10 +75,10 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
 	{
-		final var masterHelper = getMasterHelper();
+		final MultiblockBEHelperMaster<State> masterHelper = getMasterHelper();
 		if(masterHelper==null)
 			return LazyOptional.empty();
-		final var ctx = masterHelper.getContext();
+		final MultiblockContext<State> ctx = masterHelper.getContext();
 		final RelativeBlockFace relativeSide = RelativeBlockFace.from(orientation, side);
 		final CapabilityPosition position = new CapabilityPosition(getPositionInMB(), relativeSide);
 		for(final ComponentInstance<?> component : masterHelper.getComponentInstances())
@@ -115,10 +117,10 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		if(masterHelperDuringDisassembly==null)
 			// Master BE went missing, can't do anything
 			return;
-		final var ctx = masterHelperDuringDisassembly.getContext();
-		final var levelWrapper = ctx.getLevel();
-		final var absolutePos = levelWrapper.toAbsolute(getPositionInMB());
-		final var levelRaw = levelWrapper.getRawLevel();
+		final IMultiblockContext<State> ctx = masterHelperDuringDisassembly.getContext();
+		final IMultiblockLevel levelWrapper = ctx.getLevel();
+		final BlockPos absolutePos = levelWrapper.toAbsolute(getPositionInMB());
+		final Level levelRaw = levelWrapper.getRawLevel();
 		getMultiblock().disassemble().disassemble(
 				levelRaw, levelWrapper.getAbsoluteOrigin(), levelWrapper.getOrientation()
 		);
@@ -128,7 +130,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	@Override
 	public void onEntityCollided(Entity collided)
 	{
-		final var helper = getMasterHelper();
+		final MultiblockBEHelperMaster<State> helper = getMasterHelper();
 		if(helper==null)
 			return;
 		getMultiblock().logic().onEntityCollision(helper.getContext(), getPositionInMB(), collided);
@@ -154,7 +156,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		if(!multiblock.hasComparatorOutput())
 			return 0;
 		// TODO cache locally?
-		final var masterHelper = getMasterHelper();
+		final MultiblockBEHelperMaster<State> masterHelper = getMasterHelper();
 		if(masterHelper==null)
 			return 0;
 		return masterHelper.getCurrentComparatorOutputs().getInt(getPositionInMB());
@@ -176,8 +178,8 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 			return cachedRedstoneValues.get(side);
 		else
 		{
-			final var absoluteFace = side.forFront(orientation);
-			final var neighbor = be.getBlockPos().relative(absoluteFace);
+			final Direction absoluteFace = side.forFront(orientation);
+			final BlockPos neighbor = be.getBlockPos().relative(absoluteFace);
 			return updateRedstoneValue(absoluteFace, neighbor);
 		}
 	}
@@ -211,9 +213,9 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 
 	private int updateRedstoneValue(Direction sideAbsolute, BlockPos neighborPos)
 	{
-		final var level = Objects.requireNonNull(be.getLevel());
+		final Level level = Objects.requireNonNull(be.getLevel());
 		final int rsStrength = level.getSignal(neighborPos, sideAbsolute);
-		final var sideRelative = RelativeBlockFace.from(orientation, sideAbsolute);
+		final RelativeBlockFace sideRelative = RelativeBlockFace.from(orientation, sideAbsolute);
 		cachedRedstoneValues.put(sideRelative, rsStrength);
 		return rsStrength;
 	}

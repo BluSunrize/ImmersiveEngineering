@@ -66,7 +66,7 @@ public record MultiblockOrientation(Direction front, boolean mirrored)
 		VoxelShape ret = Shapes.empty();
 		for(AABB aabb : relative.toAabbs())
 		{
-			final var newBox = CachedShapesWithTransform.withFacingAndMirror(aabb, front, mirrored);
+			final AABB newBox = CachedShapesWithTransform.withFacingAndMirror(aabb, front, mirrored);
 			ret = Shapes.joinUnoptimized(ret, Shapes.create(newBox), BooleanOp.OR);
 		}
 		return ret.optimize();

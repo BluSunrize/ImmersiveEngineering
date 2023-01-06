@@ -30,8 +30,8 @@ public enum RelativeBlockFace
 
 	public Direction forFront(MultiblockOrientation orientation)
 	{
-		final var front = orientation.front();
-		final var mirror = orientation.mirrored();
+		final Direction front = orientation.front();
+		final boolean mirror = orientation.mirrored();
 		Preconditions.checkArgument(front.getAxis().isHorizontal());
 		return switch(this)
 				{
@@ -49,8 +49,8 @@ public enum RelativeBlockFace
 	{
 		if(absoluteFace==null)
 			return null;
-		final var front = orientation.front();
-		final var mirror = orientation.mirrored();
+		final Direction front = orientation.front();
+		final boolean mirror = orientation.mirrored();
 		Preconditions.checkArgument(front.getAxis().isHorizontal());
 		if(absoluteFace==Direction.UP)
 			return UP;

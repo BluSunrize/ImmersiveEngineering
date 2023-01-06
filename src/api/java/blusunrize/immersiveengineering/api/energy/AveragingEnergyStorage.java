@@ -69,7 +69,7 @@ public class AveragingEnergyStorage extends MutableEnergyStorage
 	@Override
 	public Tag serializeNBT()
 	{
-		final var compound = new CompoundTag();
+		final CompoundTag compound = new CompoundTag();
 		compound.putInt("energy", energy);
 		compound.putInt("averageInsertion", averageInsertion);
 		compound.putInt("averageExtraction", averageExtraction);

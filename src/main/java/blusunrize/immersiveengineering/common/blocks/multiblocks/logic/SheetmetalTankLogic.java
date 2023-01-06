@@ -44,7 +44,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		state.comparatorHelper.update(context, state.tank.getFluidAmount());
 		if(!state.rsState.isEnabled(context)||state.tank.isEmpty())
 			return;
@@ -123,7 +123,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 			for(RelativeBlockFace face : RelativeBlockFace.values())
 				if(face!=RelativeBlockFace.DOWN)
 				{
-					final var neighbor = face.offsetRelative(IO_POS, -1);
+					final BlockPos neighbor = face.offsetRelative(IO_POS, -1);
 					outputBuilder.add(capabilitySource.getCapabilityAt(ForgeCapabilities.FLUID_HANDLER, neighbor, face));
 				}
 			this.outputs = outputBuilder.build();

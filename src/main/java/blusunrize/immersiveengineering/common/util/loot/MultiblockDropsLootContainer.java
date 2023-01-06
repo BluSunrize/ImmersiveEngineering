@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.ComponentInstance;
@@ -19,6 +20,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
@@ -41,7 +43,7 @@ public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 	{
 		if(context.getParamOrNull(LootContextParams.BLOCK_ENTITY) instanceof IMultiblockBE<?> multiblockBE)
 		{
-			final var helper = multiblockBE.getHelper();
+			final IMultiblockBEHelper<?> helper = multiblockBE.getHelper();
 			dropOriginalBlock(helper, context, output);
 			dropExtraItems(helper, output);
 		}
@@ -49,8 +51,8 @@ public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 
 	private void dropOriginalBlock(IMultiblockBEHelper<?> helper, LootContext context, Consumer<ItemStack> drop)
 	{
-		final var originalBlock = helper.getOriginalBlock(context.getLevel());
-		final var dropCTX = new LootContext.Builder(context.getLevel())
+		final BlockState originalBlock = helper.getOriginalBlock(context.getLevel());
+		final LootContext.Builder dropCTX = new LootContext.Builder(context.getLevel())
 				.withOptionalParameter(LootContextParams.TOOL, context.getParamOrNull(LootContextParams.TOOL))
 				.withOptionalParameter(LootContextParams.ORIGIN, context.getParamOrNull(LootContextParams.ORIGIN));
 		Utils.getDrops(originalBlock, dropCTX).forEach(drop);
@@ -61,7 +63,7 @@ public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 	{
 		if(!(iHelper instanceof MultiblockBEHelperCommon<S> helper))
 			return;
-		final var masterHelper = helper.getMasterHelperDuringDisassembly();
+		final IMultiblockBEHelperMaster<S> masterHelper = helper.getMasterHelperDuringDisassembly();
 		if(masterHelper instanceof MultiblockBEHelperMaster<S> nonAPI)
 			for(final ComponentInstance<?> component : nonAPI.getComponentInstances())
 				component.dropExtraItems(drop);

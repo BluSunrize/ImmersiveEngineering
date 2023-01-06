@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
@@ -43,10 +44,10 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEn
 	@Override
 	public void render(MultiblockBlockEntityMaster<State> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final var helper = tile.getHelper();
-		final var facing = helper.getContext().getLevel().getOrientation().front();
-		final var state = helper.getState();
-		final var mirrored = state.reverseRotation;
+		final IMultiblockBEHelperMaster<State> helper = tile.getHelper();
+		final Direction facing = helper.getContext().getLevel().getOrientation().front();
+		final State state = helper.getState();
+		final boolean mirrored = state.reverseRotation;
 		matrixStack.pushPose();
 
 		matrixStack.translate(.5, .5, .5);
@@ -55,7 +56,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEn
 		float dir = facing==Direction.SOUTH?0: facing==Direction.NORTH?Mth.PI: facing==Direction.EAST?Mth.HALF_PI: -Mth.HALF_PI;
 		matrixStack.mulPose(new Quaternionf().rotateY(dir));
 		float rot = state.rotation+(float)(state.active?IEServerConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
-		matrixStack.mulPose(new Quaternionf().rotateX(rot * Mth.DEG_TO_RAD));
+		matrixStack.mulPose(new Quaternionf().rotateX(rot*Mth.DEG_TO_RAD));
 
 		matrixStack.translate(-.5, -.5, -.5);
 		try

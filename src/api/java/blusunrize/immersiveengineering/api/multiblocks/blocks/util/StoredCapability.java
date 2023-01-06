@@ -17,7 +17,7 @@ public class StoredCapability<T>
 	{
 		if(cap.isPresent())
 			return cap;
-		final var result = ctx.registerCapability(value);
+		final LazyOptional<T> result = ctx.registerCapability(value);
 		this.cap = result;
 		return result;
 	}

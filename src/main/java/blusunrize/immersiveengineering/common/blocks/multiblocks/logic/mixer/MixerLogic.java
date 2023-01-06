@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
@@ -71,13 +72,13 @@ public class MixerLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var level = context.getLevel();
-		final var rsEnabled = state.rsState.isEnabled(context);
+		final State state = context.getState();
+		final IMultiblockLevel level = context.getLevel();
+		final boolean rsEnabled = state.rsState.isEnabled(context);
 
-		final var active = state.processor.tickServer(state, level, rsEnabled);
-		final var enqueueState = enqueueNewRecipes(state, level.getRawLevel());
-		final var updateFromOutput = outputFluids(state, enqueueState.foundRecipe);
+		final boolean active = state.processor.tickServer(state, level, rsEnabled);
+		final RecipeEnqueueState enqueueState = enqueueNewRecipes(state, level.getRawLevel());
+		final boolean updateFromOutput = outputFluids(state, enqueueState.foundRecipe);
 
 		if(updateFromOutput||enqueueState.update||active!=state.isActive)
 		{
@@ -90,7 +91,7 @@ public class MixerLogic
 
 	private RecipeEnqueueState enqueueNewRecipes(State state, Level rawLevel)
 	{
-		final var processQueue = state.processor.getQueue();
+		final List<MultiblockProcess<MixerRecipe, ProcessContextInMachine<MixerRecipe>>> processQueue = state.processor.getQueue();
 		if(state.energy.getEnergyStored() <= 0||processQueue.size() >= state.processor.getMaxQueueSize())
 			return RecipeEnqueueState.NOP;
 		if(state.tank.getFluidAmount() <= 0)
@@ -127,7 +128,7 @@ public class MixerLogic
 		int fluidTypes = state.tank.getFluidTypes();
 		if(fluidTypes <= 0||(fluidTypes <= 1&&foundRecipe&&!state.outputAll))
 			return false;
-		final var output = state.outputRef.getNullable();
+		final IFluidHandler output = state.outputRef.getNullable();
 		if(output==null)
 			return false;
 		if(!state.outputAll)
@@ -163,11 +164,11 @@ public class MixerLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(!state.isActive)
 			return;
 		state.animation_agitator = (state.animation_agitator+9)%360;
-		final var level = context.getLevel();
+		final IMultiblockLevel level = context.getLevel();
 		if(!state.isSoundPlaying.getAsBoolean())
 		{
 			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
@@ -179,12 +180,12 @@ public class MixerLogic
 			return;
 		FluidStack fs = state.tank.fluids.get(0);
 		float amount = fs.getAmount()/(float)state.tank.getCapacity()*1.125f;
-		final var relativePos = new Vec3(2, 0.9375+amount, 1);
+		final Vec3 relativePos = new Vec3(2, 0.9375+amount, 1);
 		Vec3 partPos = level.toAbsolute(relativePos);
 		float r = ApiUtils.RANDOM.nextFloat()*.8125f;
 		float angleRad = (float)Math.toRadians(state.animation_agitator);
 		partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
-		final var rawLevel = level.getRawLevel();
+		final Level rawLevel = level.getRawLevel();
 		for(int i = 0; i < 2; ++i)
 			if(ApiUtils.RANDOM.nextBoolean())
 				rawLevel.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
@@ -201,7 +202,7 @@ public class MixerLogic
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		if(cap==ForgeCapabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
 			return state.energyCap.cast(ctx);
 		else if(cap==ForgeCapabilities.FLUID_HANDLER)

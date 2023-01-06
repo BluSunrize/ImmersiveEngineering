@@ -2,13 +2,17 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.own
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 public class CrusherCallbacks extends Callback<State>
 {
@@ -26,10 +30,10 @@ public class CrusherCallbacks extends Callback<State>
 	@ComputerCallable
 	public ItemStack getInputQueueElement(CallbackEnvironment<State> env, @IndexArgument int index)
 	{
-		var queue = env.object().getProcessQueue();
+		List<MultiblockProcess<CrusherRecipe, ProcessContextInWorld<CrusherRecipe>>> queue = env.object().getProcessQueue();
 		if(index < 0||index >= queue.size())
 			throw new RuntimeException("Invalid index, queue contains "+queue.size()+" elements");
-		var process = queue.get(index);
+		MultiblockProcess<CrusherRecipe, ProcessContextInWorld<CrusherRecipe>> process = queue.get(index);
 		if(process instanceof MultiblockProcessInWorld<CrusherRecipe> inWorld)
 			return inWorld.inputItems.get(0);
 		else

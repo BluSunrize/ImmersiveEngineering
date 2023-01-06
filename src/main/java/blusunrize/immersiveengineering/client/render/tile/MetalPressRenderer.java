@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -38,17 +38,16 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 	@Override
 	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final var helper = te.getHelper();
-		final var state = helper.getState();
+		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
+		final State state = helper.getState();
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
-		final var queue = state.processor.getQueue();
-		float[] shift = new float[queue.size()];
+		float[] shift = new float[state.processor.getQueueSize()];
 
 		for(int i = 0; i < shift.length; i++)
 		{
-			MultiblockProcess<MetalPressRecipe, ?> process = queue.get(i);
+			MultiblockProcess<MetalPressRecipe, ?> process = state.processor.getQueue().get(i);
 			float processMaxTicks = process.getMaxTicks(te.getLevel());
 			float transportTime = getTransportTime(processMaxTicks);
 			float pressTime = getPressTime(processMaxTicks);
@@ -100,7 +99,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 		matrixStack.translate(-1.25, -.35, 0);
 		for(int i = 0; i < shift.length; i++)
 		{
-			MultiblockProcess<?, ?> process = queue.get(i);
+			MultiblockProcess<?, ?> process = state.processor.getQueue().get(i);
 			if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 				continue;
 			List<ItemStack> displays = inWorld.getDisplayItem(te.getLevel());

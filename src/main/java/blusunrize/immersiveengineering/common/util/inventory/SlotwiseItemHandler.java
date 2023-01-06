@@ -37,7 +37,7 @@ public class SlotwiseItemHandler implements IItemHandlerModifiable, Iterable<Ite
 	public static SlotwiseItemHandler makeWithGroups(List<IOConstraintGroup> constraintGroups, Runnable onChanged)
 	{
 		List<IOConstraint> slotConstraints = new ArrayList<>();
-		for(final var group : constraintGroups)
+		for(final IOConstraintGroup group : constraintGroups)
 			for(int i = 0; i < group.slotCount; ++i)
 				slotConstraints.add(group.constraint);
 		return new SlotwiseItemHandler(slotConstraints, onChanged);

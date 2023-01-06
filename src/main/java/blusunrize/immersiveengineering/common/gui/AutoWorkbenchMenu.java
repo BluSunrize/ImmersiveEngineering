@@ -39,7 +39,7 @@ public class AutoWorkbenchMenu extends IEContainerMenu
 			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
-		final var state = ctx.getState();
+		final State state = ctx.getState();
 		return new AutoWorkbenchMenu(
 				multiblockCtx(type, id, ctx), invPlayer,
 				state.inventory, state.getEnergy(),

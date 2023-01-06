@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTicka
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InWorldProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
@@ -57,7 +58,7 @@ public class AutoWorkbenchLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		boolean isRSEnabled = state.rsState.isEnabled(context);
 		boolean active = state.processor.tickServer(state, context.getLevel(), isRSEnabled);
 		if(active!=state.active)
@@ -102,7 +103,7 @@ public class AutoWorkbenchLogic
 	public void tickClient(IMultiblockContext<State> context)
 	{
 		if(context.getState().active)
-			for(final var process : context.getState().processor.getQueue())
+			for(final MultiblockProcess<BlueprintCraftingRecipe, ProcessContextInWorld<BlueprintCraftingRecipe>> process : context.getState().processor.getQueue())
 				++process.processTick;
 	}
 

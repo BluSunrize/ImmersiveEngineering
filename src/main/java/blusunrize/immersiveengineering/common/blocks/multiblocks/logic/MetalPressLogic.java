@@ -68,11 +68,11 @@ public class MetalPressLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
+		final State state = context.getState();
 		if(!state.renderAsActive)
 			return;
-		final var soundPos = context.getLevel().toAbsolute(REDSTONE_POS);
-		final var level = context.getLevel().getRawLevel();
+		final BlockPos soundPos = context.getLevel().toAbsolute(REDSTONE_POS);
+		final Level level = context.getLevel().getRawLevel();
 		for(MultiblockProcess<MetalPressRecipe, ?> process : state.processor.getQueue())
 		{
 			float maxTicks = process.getMaxTicks(level);
@@ -94,8 +94,8 @@ public class MetalPressLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
-		final var state = context.getState();
-		final var active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
+		final State state = context.getState();
+		final boolean active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		if(active!=state.renderAsActive)
 		{
 			state.renderAsActive = active;
@@ -106,7 +106,7 @@ public class MetalPressLogic
 	@Override
 	public void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity entity)
 	{
-		final var world = ctx.getLevel().getRawLevel();
+		final Level world = ctx.getLevel().getRawLevel();
 		if(world.isClientSide||!INPUT_POS.posInMultiblock().equals(posInMultiblock))
 			return;
 		if(entity instanceof ItemEntity itemEntity&&entity.isAlive()&&!itemEntity.getItem().isEmpty())
@@ -114,7 +114,7 @@ public class MetalPressLogic
 			ItemStack stack = itemEntity.getItem();
 			if(stack.isEmpty())
 				return;
-			final var state = ctx.getState();
+			final State state = ctx.getState();
 			MetalPressRecipe recipe = MetalPressRecipe.findRecipe(state.mold, stack, world);
 			if(recipe==null)
 				return;
@@ -139,9 +139,9 @@ public class MetalPressLogic
 	@Override
 	public InteractionResult click(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient)
 	{
-		final var state = ctx.getState();
-		final var level = ctx.getLevel().getRawLevel();
-		final var heldItem = player.getItemInHand(hand);
+		final State state = ctx.getState();
+		final Level level = ctx.getLevel().getRawLevel();
+		final ItemStack heldItem = player.getItemInHand(hand);
 		ItemStack newMold = null;
 		if(player.isShiftKeyDown()&&!state.mold.isEmpty())
 			newMold = ItemStack.EMPTY;

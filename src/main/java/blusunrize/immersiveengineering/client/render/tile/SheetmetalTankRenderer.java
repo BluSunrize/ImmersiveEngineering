@@ -14,20 +14,19 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SheetmetalTankLogic.State;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.Mth;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Mth;
 import net.minecraftforge.fluids.FluidStack;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 public class SheetmetalTankRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {
 	@Override
 	public void render(MultiblockBlockEntityMaster<State> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final var state = tile.getHelper().getState();
+		final State state = tile.getHelper().getState();
 		matrixStack.pushPose();
 
 		matrixStack.translate(.5, 0, .5);
