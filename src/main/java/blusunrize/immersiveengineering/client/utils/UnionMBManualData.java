@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2023
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks;
@@ -5,13 +13,13 @@ import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Rotation;
+import org.joml.Quaternionf;
 
 import java.util.List;
 import java.util.function.Supplier;

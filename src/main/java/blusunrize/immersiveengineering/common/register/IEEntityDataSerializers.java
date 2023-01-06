@@ -1,8 +1,15 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2023
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
-import blusunrize.immersiveengineering.common.fluids.IEFluid.EntityFluidSerializer;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.DeferredRegister;

@@ -1,12 +1,19 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2023
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Quaternionf;
 
 public abstract class IEBlockEntityRenderer<T extends BlockEntity> implements BlockEntityRenderer<T>
 {

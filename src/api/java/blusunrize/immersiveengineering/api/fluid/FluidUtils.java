@@ -1,3 +1,11 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2023
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
 package blusunrize.immersiveengineering.api.fluid;
 
 import net.minecraft.core.BlockPos;
@@ -264,6 +272,7 @@ public class FluidUtils
 	public static boolean enableFractionDisplay = true;
 	private static final Map<Fraction, String> FRACTION_STRINGS = new HashMap<>();
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
+
 	static
 	{
 		// this is not all the existing fraction symbols, but the most commonly used
