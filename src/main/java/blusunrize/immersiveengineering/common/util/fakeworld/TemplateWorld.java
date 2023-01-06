@@ -4,9 +4,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.*;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.profiling.InactiveProfiler;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -17,6 +20,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.entity.LevelEntityGetter;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -34,10 +38,16 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalLong;
 import java.util.function.Predicate;
 
 public class TemplateWorld extends Level
 {
+	private static final DimensionType STRUCTURE_DIMENSION = new DimensionType(
+			OptionalLong.empty(), false, false, false, false, 1, false, false, 0, 256, 256,
+			BlockTags.INFINIBURN_OVERWORLD, new ResourceLocation("missingno"), 0,
+			new DimensionType.MonsterSettings(true, false, ConstantInt.ZERO, 0)
+	);
 	private final Lazy<? extends RegistryAccess> FALLBACK_REGISTRIES = Lazy.of(RegistryAccess.BUILTIN);
 
 	private final Map<String, MapItemSavedData> maps = new HashMap<>();
@@ -48,7 +58,7 @@ public class TemplateWorld extends Level
 	public TemplateWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow)
 	{
 		super(
-				new FakeSpawnInfo(), Level.OVERWORLD, BuiltinRegistries.DIMENSION_TYPE.getHolderOrThrow(BuiltinDimensionTypes.OVERWORLD),
+				new FakeSpawnInfo(), Level.OVERWORLD, Holder.direct(STRUCTURE_DIMENSION),
 				() -> InactiveProfiler.INSTANCE, true, false, 0, 0
 		);
 		this.chunkProvider = new TemplateChunkProvider(blocks, this, shouldShow);
@@ -195,11 +205,5 @@ public class TemplateWorld extends Level
 	public int getBrightness(@Nonnull LightLayer lightType, @Nonnull BlockPos pos)
 	{
 		return 15;
-	}
-
-	@Override
-	public int getMinBuildHeight()
-	{
-		return 0;
 	}
 }
