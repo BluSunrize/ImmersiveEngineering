@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
@@ -64,7 +65,8 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 	@Override
 	public void load(CompoundTag tag)
 	{
-		this.positionInMB = NbtUtils.readBlockPos(tag.getCompound("posInMB"));
+		final String key = tag.contains("posInMultiblock", Tag.TAG_COMPOUND)?"posInMultiblock": "posInMB";
+		this.positionInMB = NbtUtils.readBlockPos(tag.getCompound(key));
 	}
 
 	@Override
