@@ -1,9 +1,9 @@
-// 1.19.3	2022-12-26T15:43:00.633709352	Loot Tables
+// 1.19.3	2023-01-07T13:36:34.474000124	Loot Tables
 53c77f343d012af1111af7a6fef68f6838270605 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 94a46b870062652f589a6b228854fae4c6d6eff4 data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 10afcc2798d9fa5d063fafb4139b257263f697b0 data/immersiveengineering/loot_tables/advancements/shader_rare.json
 2b2a4bde1a1c86393b28fa3ff9b81ef1ddeed22d data/immersiveengineering/loot_tables/blocks/acetaldehyde_fluid_block.json
-bfee8c99f1b870e90baf081ffd202ff815c4c436 data/immersiveengineering/loot_tables/blocks/adv_blast_furnace.json
+bfee8c99f1b870e90baf081ffd202ff815c4c436 data/immersiveengineering/loot_tables/blocks/advanced_blast_furnace.json
 bfee8c99f1b870e90baf081ffd202ff815c4c436 data/immersiveengineering/loot_tables/blocks/alloy_smelter.json
 e73857c0a98bf539cec3b50f4a33d726c7067214 data/immersiveengineering/loot_tables/blocks/alloybrick.json
 78747a3d60a50e1489af1aa8f3cdc05f55b55187 data/immersiveengineering/loot_tables/blocks/alu_fence.json

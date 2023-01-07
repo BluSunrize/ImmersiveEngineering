@@ -51,7 +51,7 @@ public class IEMultiblockLogic
 			.gui(IEMenuTypes.BLAST_FURNACE)
 			.build();
 
-	public static final MultiblockRegistration<AdvBlastFurnaceLogic.State> ADV_BLAST_FURNACE = stone(new AdvBlastFurnaceLogic(), "adv_blast_furnace", false)
+	public static final MultiblockRegistration<AdvBlastFurnaceLogic.State> ADV_BLAST_FURNACE = stone(new AdvBlastFurnaceLogic(), "advanced_blast_furnace", false)
 			.structure(() -> IEMultiblocks.ADVANCED_BLAST_FURNACE)
 			.build();
 
