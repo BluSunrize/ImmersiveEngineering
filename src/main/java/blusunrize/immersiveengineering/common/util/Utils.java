@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import org.joml.Vector4f;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -85,6 +84,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -507,7 +507,7 @@ public class Utils
 
 	public static Fluid getRelatedFluid(Level w, BlockPos pos)
 	{
-		return w.getBlockState(pos).getFluidState().getType();
+		return w.getFluidState(pos).getType();
 	}
 
 	//Stolen from BucketItem

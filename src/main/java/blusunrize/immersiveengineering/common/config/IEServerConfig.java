@@ -183,9 +183,6 @@ public class IEServerConfig
 				builder.push("pump");
 				pump_consumption = addPositive(builder, "consumption", 250, "The Flux the Fluid Pump will consume to pick up a fluid block in the world");
 				pump_consumption_accelerate = addPositive(builder, "consumption_accelerate", 5, "The Flux the Fluid Pump will consume pressurize and accelerate fluids, increasing the transferrate");
-				pump_infiniteWater = builder
-						.comment("Set this to false to disable the fluid pump being able to draw infinite water from sources")
-						.define("infiniteWater", true);
 				pump_placeCobble = builder
 						.comment("If this is set to true (default) the pump will replace fluids it picks up with cobblestone in order to reduce lag caused by flowing fluids.")
 						.define("placeCobble", true);
@@ -371,7 +368,6 @@ public class IEServerConfig
 		public final IntValue coredrill_consumption;
 		public final IntValue pump_consumption;
 		public final IntValue pump_consumption_accelerate;
-		public final BooleanValue pump_infiniteWater;
 		public final BooleanValue pump_placeCobble;
 		public final IntValue charger_consumption;
 		public final IntValue teslacoil_consumption;

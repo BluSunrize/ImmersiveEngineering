@@ -41,13 +41,13 @@ public class IEApi
 	/**
 	 * This map caches the preferred ores for the given OreDict name
 	 */
-	private static final HashMap<TagKey<Item>, ItemStack> oreOutputPreference = new HashMap<>();
+	private static final Map<TagKey<Item>, ItemStack> oreOutputPreference = new HashMap<>();
 
 	/**
 	 * This map stores a list of OreDict prefixes (ingot, plate, gear, nugget) and their ingot relation (ingot:component) <br>
 	 * Examples:<br>"plate"-{1,1},<br>"nugget"-{1,9},<br>"block"-{9,1},<br>"gear"-{4,1}
 	 */
-	public static HashMap<String, Integer[]> prefixToIngotMap = new HashMap<String, Integer[]>();
+	public static Map<String, Integer[]> prefixToIngotMap = new HashMap<String, Integer[]>();
 
 	/**
 	 * An array of all potions added by IE. indices are as follows:<br>
