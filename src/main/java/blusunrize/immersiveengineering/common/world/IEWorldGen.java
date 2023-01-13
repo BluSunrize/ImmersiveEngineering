@@ -9,12 +9,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import com.mojang.serialization.Lifecycle;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.RegistrySetBuilder.RegistryBootstrap;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -55,28 +50,5 @@ public class IEWorldGen
 		FEATURE_REGISTER.register(bus);
 		PLACEMENT_REGISTER.register(bus);
 		HEIGHT_REGISTER.register(bus);
-	}
-
-	public interface RegistryStubDuck<T>
-	{
-		ResourceKey<? extends Registry<T>> key();
-
-		Lifecycle lifecycle();
-
-		RegistrySetBuilder.RegistryBootstrap<T> bootstrap();
-
-		default <T2> void addTo(RegistrySetBuilder builder, RegistryBootstrap<T2> bootstrapOther)
-		{
-			final var castBootstrap = (RegistryBootstrap<T>)bootstrapOther;
-			builder.add(key(), lifecycle(), ctx -> {
-				bootstrap().run(ctx);
-				castBootstrap.run(ctx);
-			});
-		}
-
-		default void addTo(RegistrySetBuilder builder)
-		{
-			builder.add(key(), lifecycle(), bootstrap());
-		}
 	}
 }
