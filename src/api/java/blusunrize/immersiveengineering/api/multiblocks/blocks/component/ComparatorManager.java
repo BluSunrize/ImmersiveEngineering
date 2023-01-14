@@ -6,14 +6,13 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.multiblocks.blocks.util;
+package blusunrize.immersiveengineering.api.multiblocks.blocks.component;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent.StateWrapper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.StateWrapper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IServerTickableComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ComparatorManager.WrappedState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager.WrappedState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;

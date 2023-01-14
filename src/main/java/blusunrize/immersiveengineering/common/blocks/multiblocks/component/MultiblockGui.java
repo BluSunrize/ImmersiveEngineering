@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.component;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
