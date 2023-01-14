@@ -53,6 +53,7 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<AdvBlastFurnaceLogic.State> ADV_BLAST_FURNACE = stone(new AdvBlastFurnaceLogic(), "advanced_blast_furnace", false)
 			.structure(() -> IEMultiblocks.ADVANCED_BLAST_FURNACE)
+			.gui(IEMenuTypes.BLAST_FURNACE_ADV)
 			.build();
 
 	public static final MultiblockRegistration<AlloySmelterLogic.State> ALLOY_SMELTER = stone(new AlloySmelterLogic(), "alloy_smelter", true)
