@@ -18,12 +18,12 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.function.Function;
@@ -32,10 +32,10 @@ import java.util.function.Supplier;
 public record MultiblockRegistration<State extends IMultiblockState>(
 		IMultiblockLogic<State> logic,
 		List<ExtraComponent<State, ?>> extraComponents,
-		RegistryObject<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE,
-		RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE,
-		RegistryObject<? extends MultiblockPartBlock<State>> block,
-		RegistryObject<? extends Item> blockItem,
+		Supplier<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE,
+		Supplier<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE,
+		Supplier<? extends MultiblockPartBlock<State>> block,
+		Supplier<? extends Item> blockItem,
 		boolean mirrorable,
 		boolean hasComparatorOutput,
 		boolean redstoneInputAware,
@@ -43,15 +43,16 @@ public record MultiblockRegistration<State extends IMultiblockState>(
 		Supplier<BlockPos> getMasterPosInMB,
 		Function<Level, Vec3i> getSize,
 		Disassembler disassemble,
-		Function<Level, List<StructureBlockInfo>> getStructure
+		Function<Level, List<StructureBlockInfo>> getStructure,
+		ResourceLocation id
 )
 {
 	public static <State extends IMultiblockState>
-	MultiblockRegistrationBuilder<State, ?> builder(IMultiblockLogic<State> logic, String name)
+	MultiblockRegistrationBuilder<State, ?> builder(IMultiblockLogic<State> logic, ResourceLocation name)
 	{
 		class Impl extends MultiblockRegistrationBuilder<State, Impl>
 		{
-			public Impl(IMultiblockLogic<State> logic, String name)
+			public Impl(IMultiblockLogic<State> logic, ResourceLocation name)
 			{
 				super(logic, name);
 			}

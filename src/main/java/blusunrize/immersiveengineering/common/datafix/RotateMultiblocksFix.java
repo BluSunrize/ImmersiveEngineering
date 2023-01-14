@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.datafix;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Suppliers;
 import com.mojang.datafixers.*;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
@@ -20,19 +21,21 @@ import net.minecraft.util.datafix.fixes.References;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 public class RotateMultiblocksFix extends DataFix
 {
+	// This class is loaded quite early in the launch process, so avoid referencing classes from a static context
 	private static final String PROPERTIES_KEY = "Properties";
 	private static final String FACING_KEY = IEProperties.FACING_HORIZONTAL.getName();
-	private static final Set<String> STONE_MULTIBLOCKS = Set.of(
-			IEMultiblockLogic.ALLOY_SMELTER.block().getId().toString(),
-			IEMultiblockLogic.ADV_BLAST_FURNACE.block().getId().toString(),
-			IEMultiblockLogic.BLAST_FURNACE.block().getId().toString(),
-			IEMultiblockLogic.COKE_OVEN.block().getId().toString()
-	);
-	private static final String METAL_PRESS = IEMultiblockLogic.METAL_PRESS.block().getId().toString();
+	private static final Supplier<Set<String>> STONE_MULTIBLOCKS = Suppliers.memoize(() -> Set.of(
+			IEMultiblockLogic.ALLOY_SMELTER.id().toString(),
+			IEMultiblockLogic.ADV_BLAST_FURNACE.id().toString(),
+			IEMultiblockLogic.BLAST_FURNACE.id().toString(),
+			IEMultiblockLogic.COKE_OVEN.id().toString()
+	));
+	private static final Supplier<String> METAL_PRESS = Suppliers.memoize(() -> IEMultiblockLogic.METAL_PRESS.id().toString());
 
 	public static void registerFix(Schema newSchema, DataFixerBuilder builder)
 	{
@@ -58,9 +61,9 @@ public class RotateMultiblocksFix extends DataFix
 			Optional<String> maybeName = blockstateDynamic.get("Name").asString().result();
 			if(maybeName.isEmpty())
 				return blockstateDynamic;
-			if(STONE_MULTIBLOCKS.contains(maybeName.get()))
+			if(STONE_MULTIBLOCKS.get().contains(maybeName.get()))
 				return fixDirection(blockstateDynamic, Direction::getOpposite);
-			else if(METAL_PRESS.equals(maybeName.get()))
+			else if(METAL_PRESS.get().equals(maybeName.get()))
 				return fixDirection(blockstateDynamic, Direction::getCounterClockWise);
 			else
 				return blockstateDynamic;

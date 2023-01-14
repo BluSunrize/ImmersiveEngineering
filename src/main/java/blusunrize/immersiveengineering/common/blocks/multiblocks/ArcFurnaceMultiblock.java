@@ -21,7 +21,7 @@ public class ArcFurnaceMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/arcfurnace"),
 				MASTER_OFFSET, new BlockPos(2, 0, 4), new BlockPos(5, 5, 5),
-				IEMultiblockLogic.ARC_FURNACE.block());
+				IEMultiblockLogic.ARC_FURNACE);
 	}
 
 	@Override

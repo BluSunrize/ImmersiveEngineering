@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,29 +36,21 @@ import java.util.function.Consumer;
 
 public abstract class IETemplateMultiblock extends TemplateMultiblock
 {
-	private final RegistryObject<? extends Block> baseState;
+	private final MultiblockRegistration<?> logic;
 
 	public IETemplateMultiblock(
 			ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
-			IEBlocks.BlockEntry<?> baseState
-	)
-	{
-		this(loc, masterFromOrigin, triggerFromOrigin, size, baseState.getRegObject());
-	}
-
-	public IETemplateMultiblock(
-			ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
-			RegistryObject<? extends Block> baseState
+			MultiblockRegistration<?> logic
 	)
 	{
 		super(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableMap.of());
-		this.baseState = baseState;
+		this.logic = logic;
 	}
 
 	@Override
 	protected void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
 	{
-		BlockState state = baseState.get().defaultBlockState();
+		BlockState state = logic.block().get().defaultBlockState();
 		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, !offsetFromMaster.equals(Vec3i.ZERO));
 		if(state.hasProperty(IEProperties.MIRRORED))
 			state = state.setValue(IEProperties.MIRRORED, mirrored);
@@ -111,18 +102,18 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 
 	public ResourceLocation getBlockName()
 	{
-		return baseState.getId();
+		return logic.id();
 	}
 
 	@Override
 	public Component getDisplayName()
 	{
-		return baseState.get().getName();
+		return logic.block().get().getName();
 	}
 
 	@Override
 	public Block getBlock()
 	{
-		return baseState.get();
+		return logic.block().get();
 	}
 }

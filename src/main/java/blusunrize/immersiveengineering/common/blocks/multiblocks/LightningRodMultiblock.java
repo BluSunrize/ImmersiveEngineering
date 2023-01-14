@@ -20,7 +20,7 @@ public class LightningRodMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/lightning_rod"),
 				LightningRodLogic.MASTER_OFFSET, new BlockPos(1, 1, 2), new BlockPos(3, 3, 3),
-				IEMultiblockLogic.LIGHTNING_ROD.block());
+				IEMultiblockLogic.LIGHTNING_ROD);
 	}
 
 	@Override

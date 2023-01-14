@@ -20,7 +20,7 @@ public class CokeOvenMultiblock extends StoneMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/coke_oven"),
 				CokeOvenLogic.MASTER_OFFSET, new BlockPos(1, 1, 2), new BlockPos(3, 3, 3),
-				IEMultiblockLogic.COKE_OVEN.block());
+				IEMultiblockLogic.COKE_OVEN);
 	}
 
 	@Override

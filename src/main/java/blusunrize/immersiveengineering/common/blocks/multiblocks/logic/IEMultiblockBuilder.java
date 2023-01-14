@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistrationBuilder;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockComponent;
@@ -27,7 +28,7 @@ public class IEMultiblockBuilder<S extends IMultiblockState>
 {
 	public IEMultiblockBuilder(IMultiblockLogic<S> logic, String name)
 	{
-		super(logic, name);
+		super(logic, ImmersiveEngineering.rl(name));
 	}
 
 	public IEMultiblockBuilder<S> gui(ArgContainer<IMultiblockContext<S>, ?> menu)

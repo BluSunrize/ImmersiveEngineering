@@ -19,7 +19,7 @@ public class SiloMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/silo"),
 				new BlockPos(1, 0, 1), new BlockPos(1, 1, 2), new BlockPos(3, 7, 3),
-				IEMultiblockLogic.SILO.block());
+				IEMultiblockLogic.SILO);
 	}
 
 	@Override

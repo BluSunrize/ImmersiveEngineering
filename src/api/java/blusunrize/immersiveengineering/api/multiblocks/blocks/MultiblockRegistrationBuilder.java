@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -34,7 +35,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -46,18 +46,23 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistrationBuilder.RegistrationMethod.fromDeferred;
+
 public abstract class MultiblockRegistrationBuilder<
 		State extends IMultiblockState,
 		Self extends MultiblockRegistrationBuilder<State, Self>
 		>
 {
+	public static final String DUMMY_BE_SUFFIX = "_dummy";
+	public static final String MASTER_BE_SUFFIX = "_master";
+
 	private final IMultiblockLogic<State> logic;
-	private final String name;
+	private final ResourceLocation name;
 	private final List<ExtraComponent<State, ?>> extraComponents = new ArrayList<>();
-	private RegistryObject<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE;
-	private RegistryObject<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE;
-	private RegistryObject<? extends MultiblockPartBlock<State>> block;
-	private RegistryObject<? extends Item> item;
+	private Supplier<BlockEntityType<? extends MultiblockBlockEntityMaster<State>>> masterBE;
+	private Supplier<BlockEntityType<? extends MultiblockBlockEntityDummy<State>>> dummyBE;
+	private Supplier<? extends MultiblockPartBlock<State>> block;
+	private Supplier<? extends Item> item;
 	private boolean mirrorable = true;
 	private boolean hasComparatorOutput = false;
 	private boolean redstoneInputAware = false;
@@ -69,7 +74,7 @@ public abstract class MultiblockRegistrationBuilder<
 
 	private MultiblockRegistration<State> result;
 
-	public MultiblockRegistrationBuilder(IMultiblockLogic<State> logic, String name)
+	public MultiblockRegistrationBuilder(IMultiblockLogic<State> logic, ResourceLocation name)
 	{
 		this.logic = logic;
 		this.name = name;
@@ -101,16 +106,30 @@ public abstract class MultiblockRegistrationBuilder<
 
 	public Self defaultBEs(DeferredRegister<BlockEntityType<?>> register)
 	{
+		return defaultBEs(fromDeferred(register));
+	}
+
+	public Self defaultBEs(RegistrationMethod<BlockEntityType<?>> register)
+	{
 		Preconditions.checkState(this.masterBE==null);
 		Preconditions.checkState(this.dummyBE==null);
-		this.masterBE = register.register(name+"_master", () -> makeBEType(MultiblockBlockEntityMaster::new));
-		this.dummyBE = register.register(name+"_dummy", () -> makeBEType(MultiblockBlockEntityDummy::new));
+		this.masterBE = register.register(name.getPath()+MASTER_BE_SUFFIX, () -> makeBEType(MultiblockBlockEntityMaster::new));
+		this.dummyBE = register.register(name.getPath()+DUMMY_BE_SUFFIX, () -> makeBEType(MultiblockBlockEntityDummy::new));
 		return self();
 	}
 
 	public Self defaultBlock(
 			DeferredRegister<Block> register,
 			DeferredRegister<Item> blockItemRegister,
+			BlockBehaviour.Properties properties
+	)
+	{
+		return defaultBlock(fromDeferred(register), fromDeferred(blockItemRegister), properties);
+	}
+
+	public Self defaultBlock(
+			RegistrationMethod<Block> register,
+			RegistrationMethod<Item> blockItemRegister,
 			BlockBehaviour.Properties properties
 	)
 	{
@@ -129,9 +148,19 @@ public abstract class MultiblockRegistrationBuilder<
 			Function<Block, Item> makeItem
 	)
 	{
+		return customBlock(fromDeferred(register), fromDeferred(blockItemRegister), make, makeItem);
+	}
+
+	public Self customBlock(
+			RegistrationMethod<Block> register,
+			RegistrationMethod<Item> blockItemRegister,
+			Function<MultiblockRegistration<State>, ? extends MultiblockPartBlock<State>> make,
+			Function<Block, Item> makeItem
+	)
+	{
 		Preconditions.checkState(this.block==null);
-		this.block = register.register(name, () -> make.apply(this.result));
-		this.item = blockItemRegister.register(name, () -> makeItem.apply(this.result.block().get()));
+		this.block = register.register(name.getPath(), () -> make.apply(this.result));
+		this.item = blockItemRegister.register(name.getPath(), () -> makeItem.apply(this.result.block().get()));
 		return self();
 	}
 
@@ -199,7 +228,7 @@ public abstract class MultiblockRegistrationBuilder<
 		this.result = new MultiblockRegistration<>(
 				logic, extraComponents, masterBE, dummyBE, block, item,
 				mirrorable, hasComparatorOutput, redstoneInputAware, postProcessesShape,
-				getMasterPosInMB, getSize, disassemble, structure
+				getMasterPosInMB, getSize, disassemble, structure, name
 		);
 		return this.result;
 	}
@@ -219,6 +248,24 @@ public abstract class MultiblockRegistrationBuilder<
 	}
 
 	protected abstract Self self();
+
+	public interface RegistrationMethod<Base>
+	{
+		<T extends Base>
+		Supplier<T> register(String path, Supplier<T> makeInstance);
+
+		static <B> RegistrationMethod<B> fromDeferred(DeferredRegister<B> register)
+		{
+			return new RegistrationMethod<>()
+			{
+				@Override
+				public <T extends B> Supplier<T> register(String path, Supplier<T> makeInstance)
+				{
+					return register.register(path, makeInstance);
+				}
+			};
+		}
+	}
 
 	private interface BEConstructor<State extends IMultiblockState, T extends BlockEntity>
 	{

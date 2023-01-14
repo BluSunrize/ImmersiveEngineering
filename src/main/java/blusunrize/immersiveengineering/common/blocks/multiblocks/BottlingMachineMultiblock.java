@@ -20,7 +20,7 @@ public class BottlingMachineMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/bottling_machine"),
 				new BlockPos(1, 1, 0), new BlockPos(1, 1, 1), new BlockPos(3, 3, 2),
-				IEMultiblockLogic.BOTTLING_MACHINE.block());
+				IEMultiblockLogic.BOTTLING_MACHINE);
 	}
 
 	@Override

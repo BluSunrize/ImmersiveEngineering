@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistrationBuilder;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
@@ -47,8 +48,8 @@ public class Callbacks
 	void registerMB(MultiblockRegistration<S> type, Callback<S> owner, String name, BlockPos... valid)
 	{
 		final MultiblockCallbackWrapper<S> wrapped = new MultiblockCallbackWrapper<>(owner, type, name, valid);
-		CALLBACKS.put(type.masterBE().getId(), wrapped);
-		CALLBACKS.put(type.dummyBE().getId(), wrapped);
+		CALLBACKS.put(type.id().withPath(s -> s+MultiblockRegistrationBuilder.MASTER_BE_SUFFIX), wrapped);
+		CALLBACKS.put(type.id().withPath(s -> s+MultiblockRegistrationBuilder.DUMMY_BE_SUFFIX), wrapped);
 	}
 
 	private static <T extends BlockEntity>

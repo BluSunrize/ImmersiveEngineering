@@ -19,7 +19,7 @@ public class SheetmetalTankMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/sheetmetal_tank"),
 				new BlockPos(1, 0, 1), new BlockPos(1, 1, 2), new BlockPos(3, 5, 3),
-				IEMultiblockLogic.TANK.block());
+				IEMultiblockLogic.TANK);
 	}
 
 	@Override

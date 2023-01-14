@@ -8,25 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraft.world.level.Level;
-
-import javax.annotation.Nonnull;
 
 public abstract class StoneMultiblock extends IETemplateMultiblock
 {
-	public StoneMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, IEBlocks.BlockEntry<?> baseState)
+	public StoneMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, MultiblockRegistration<?> logic)
 	{
-		super(loc, masterFromOrigin, triggerFromOrigin, size, baseState);
-	}
-
-	public StoneMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, RegistryObject<? extends Block> baseState)
-	{
-		super(loc, masterFromOrigin, triggerFromOrigin, size, baseState);
+		super(loc, masterFromOrigin, triggerFromOrigin, size, logic);
 	}
 
 	@Override
