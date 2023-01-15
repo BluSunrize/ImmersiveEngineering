@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSplitModel<T extends BakedModel> extends CompositeBakedModel<T>
 {
+	@Nonnull
 	private final Vec3i size;
 
 	public AbstractSplitModel(T base, Vec3i size)

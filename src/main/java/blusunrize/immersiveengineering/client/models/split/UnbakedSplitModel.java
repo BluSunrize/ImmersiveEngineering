@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
@@ -17,8 +16,9 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,9 +29,10 @@ public class UnbakedSplitModel implements IUnbakedGeometry<UnbakedSplitModel>
 	private final UnbakedModel baseModel;
 	private final Set<Vec3i> parts;
 	private final boolean dynamic;
+	@Nonnull
 	private final Vec3i size;
 
-	public UnbakedSplitModel(UnbakedModel baseModel, List<Vec3i> parts, boolean dynamic, Vec3i size)
+	public UnbakedSplitModel(UnbakedModel baseModel, List<Vec3i> parts, boolean dynamic, @NotNull Vec3i size)
 	{
 		this.baseModel = baseModel;
 		this.parts = new HashSet<>(parts);

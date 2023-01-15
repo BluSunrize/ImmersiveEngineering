@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.multiblocks.blocks.registry;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperDummy;
@@ -96,8 +97,15 @@ public class MultiblockBlockEntityDummy<State extends IMultiblockState>
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
+	public BlockPos getModelOffset(BlockState state, Vec3i size)
 	{
-		return helper.getPositionInMB().subtract(helper.getMultiblock().masterPosInMB());
+		BlockPos mirroredPosInMB = helper.getPositionInMB();
+		if(helper.getMultiblock().mirrorable()&&state.getValue(IEProperties.MIRRORED))
+			mirroredPosInMB = new BlockPos(
+					size.getX()-mirroredPosInMB.getX()-1,
+					mirroredPosInMB.getY(),
+					mirroredPosInMB.getZ()
+			);
+		return mirroredPosInMB.subtract(helper.getMultiblock().masterPosInMB());
 	}
 }
