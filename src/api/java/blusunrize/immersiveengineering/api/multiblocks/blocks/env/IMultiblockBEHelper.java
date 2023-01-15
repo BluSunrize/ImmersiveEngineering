@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +54,7 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 
 	MultiblockRegistration<State> getMultiblock();
 
-	VoxelShape getShape(CollisionContext ctx);
+	VoxelShape getShape(@Nullable CollisionContext ctx, ShapeType type);
 
 	void disassemble();
 

@@ -11,15 +11,16 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.Disassembler;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.StateWrapper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -212,7 +213,7 @@ public abstract class MultiblockRegistrationBuilder<
 			{
 				final Method postProcessMethod = logic.getClass().getMethod(
 						"postProcessAbsoluteShape",
-						IMultiblockContext.class, VoxelShape.class, CollisionContext.class, BlockPos.class
+						IMultiblockContext.class, VoxelShape.class, CollisionContext.class, BlockPos.class, ShapeType.class
 				);
 				final Class<?> declaringClass = postProcessMethod.getDeclaringClass();
 				Preconditions.checkState(

@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnac
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ArcFurnaceSelectionShapes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ArcFurnaceShapes;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -274,7 +275,7 @@ public class ArcFurnaceLogic
 	}
 
 	@Override
-	public Function<BlockPos, VoxelShape> shapeGetter()
+	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType)
 	{
 		return ArcFurnaceShapes.SHAPE_GETTER;
 	}

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
@@ -52,30 +53,32 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	protected final MultiblockRegistration<State> multiblock;
 	protected final MultiblockOrientation orientation;
 	private IMultiblockBEHelperMaster<State> masterHelperDuringDisassembly;
-	private final CachedValue<BlockPos, MultiblockOrientation, VoxelShape> cachedShape;
+	private final EnumMap<ShapeType, CachedValue<BlockPos, MultiblockOrientation, VoxelShape>> cachedShape;
 
 	protected MultiblockBEHelperCommon(BlockEntity be, MultiblockRegistration<State> multiblock, BlockState state)
 	{
 		this.be = be;
 		this.multiblock = multiblock;
 		this.orientation = new MultiblockOrientation(state, multiblock.mirrorable());
-		this.cachedShape = new CachedValue<>((pos, orientation) -> {
-			final VoxelShape relative = multiblock.logic().shapeGetter().apply(pos);
-			return orientation.transformRelativeShape(relative);
-		});
+		this.cachedShape = new EnumMap<>(ShapeType.class);
+		for(final ShapeType type : ShapeType.values())
+			this.cachedShape.put(type, new CachedValue<>((pos, orientation) -> {
+				final VoxelShape relative = multiblock.logic().shapeGetter(type).apply(pos);
+				return orientation.transformRelativeShape(relative);
+			}));
 	}
 
 	@Override
-	public VoxelShape getShape(CollisionContext ctx)
+	public VoxelShape getShape(@Nullable CollisionContext ctx, ShapeType type)
 	{
 		final BlockPos posInMB = getPositionInMB();
 		final IMultiblockLogic<State> logic = multiblock.logic();
-		final VoxelShape absoluteShape = cachedShape.get(posInMB, orientation);
-		if(multiblock.postProcessesShape())
+		final VoxelShape absoluteShape = cachedShape.get(type).get(posInMB, orientation);
+		if(ctx!=null&&multiblock.postProcessesShape())
 		{
 			final IMultiblockContext<State> multiblockCtx = getContext();
 			if(multiblockCtx!=null)
-				return logic.postProcessAbsoluteShape(multiblockCtx, absoluteShape, ctx, posInMB);
+				return logic.postProcessAbsoluteShape(multiblockCtx, absoluteShape, ctx, posInMB, type);
 		}
 		return absoluteShape;
 	}

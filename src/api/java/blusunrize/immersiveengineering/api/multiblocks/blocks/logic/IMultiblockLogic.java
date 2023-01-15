@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.logic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -21,12 +22,15 @@ public interface IMultiblockLogic<State extends IMultiblockState> extends IMulti
 {
 	State createInitialState(IInitialMultiblockContext<State> capabilitySource);
 
-	// TODO split into collision and selection?
 	// TODO this API does not work for variable-size MBs
-	Function<BlockPos, VoxelShape> shapeGetter();
+	Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType);
 
 	default VoxelShape postProcessAbsoluteShape(
-			IMultiblockContext<State> ctx, VoxelShape defaultShape, CollisionContext shapeCtx, BlockPos posInMultiblock
+			IMultiblockContext<State> ctx,
+			VoxelShape defaultShape,
+			CollisionContext shapeCtx,
+			BlockPos posInMultiblock,
+			ShapeType type
 	)
 	{
 		return defaultShape;

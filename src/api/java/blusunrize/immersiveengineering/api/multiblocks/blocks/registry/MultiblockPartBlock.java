@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.registry;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -39,7 +39,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.BiConsumer;
 
 /**
  * TODO more documentation, this is just the things that seemed hard to discover while writing them<br>
@@ -104,16 +103,6 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		return null;
 	}
 
-	private <O, A extends BlockEntity> BlockEntityTicker<A> makeTicker(
-			BlockEntityType<A> actual, BiConsumer<O, IMultiblockContext<State>> tick, O obj
-	)
-	{
-		return createTickerHelper(
-				actual,
-				($1, $2, $3, be) -> tick.accept(obj, be.getHelper().getContext())
-		);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected <A extends BlockEntity>
@@ -122,7 +111,17 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		return multiblock.masterBE().get()==actual?(BlockEntityTicker<A>)ticker: null;
 	}
 
-	@Nonnull
+	@Override
+	public VoxelShape getCollisionShape(
+			@Nonnull BlockState state,
+			@Nonnull BlockGetter level,
+			@Nonnull BlockPos pos,
+			@Nonnull CollisionContext context
+	)
+	{
+		return getShape(level, pos, context, ShapeType.COLLISION);
+	}
+
 	@Override
 	public VoxelShape getShape(
 			@Nonnull BlockState state,
@@ -131,9 +130,27 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			@Nonnull CollisionContext context
 	)
 	{
+		return getShape(level, pos, context, ShapeType.SELECTION);
+	}
+
+	@Override
+	@Nonnull
+	public VoxelShape getBlockSupportShape(@Nonnull BlockState state, @Nonnull BlockGetter level, @Nonnull BlockPos pos)
+	{
+		return getShape(level, pos, null, ShapeType.BLOCK_SUPPORT);
+	}
+
+	@Nonnull
+	private VoxelShape getShape(
+			@Nonnull BlockGetter level,
+			@Nonnull BlockPos pos,
+			@Nullable CollisionContext context,
+			@Nonnull ShapeType type
+	)
+	{
 		final BlockEntity bEntity = level.getBlockEntity(pos);
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
-			return multiblockBE.getHelper().getShape(context);
+			return multiblockBE.getHelper().getShape(context, type);
 		else
 			return Shapes.block();
 	}
