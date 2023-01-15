@@ -170,24 +170,10 @@ public class DieselGeneratorLogic
 	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType)
 	{
-		return DieselGeneratorShapes.SHAPE_GETTER;
-	}
-
-	@Override
-	public VoxelShape postProcessAbsoluteShape(
-			IMultiblockContext<State> ctx, VoxelShape defaultShape, CollisionContext shapeCtx, BlockPos posInMultiblock
-	)
-	{
-		final BlockPos absolutePos = ctx.getLevel().toAbsolute(posInMultiblock);
-		if(posInMultiblock.equals(REDSTONE_POS)&&!shapeCtx.isAbove(ScaffoldingBlock.CHECK_SHAPE, absolutePos, false))
-		{
-			final MultiblockOrientation orientation = ctx.getLevel().getOrientation();
-			AABB box = CachedShapesWithTransform.withFacingAndMirror(
-					new AABB(0.9375, 0, 0, 1, 1, 1), orientation.front(), orientation.mirrored()
-			);
-			return Shapes.or(defaultShape, Shapes.create(box));
-		}
-		return defaultShape;
+		if(forType==ShapeType.BLOCK_SUPPORT)
+			return DieselGeneratorShapes.GETTER_WITH_REDSTONE_SUPPORT;
+		else
+			return DieselGeneratorShapes.SHAPE_GETTER;
 	}
 
 	public static class State implements IMultiblockState

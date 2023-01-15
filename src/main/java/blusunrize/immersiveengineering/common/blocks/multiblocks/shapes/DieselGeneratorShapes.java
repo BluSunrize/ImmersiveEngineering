@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.shapes;
 
 import blusunrize.immersiveengineering.api.utils.shapes.ShapeUtils;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 public class DieselGeneratorShapes implements Function<BlockPos, VoxelShape>
 {
 	public static final Function<BlockPos, VoxelShape> SHAPE_GETTER = new DieselGeneratorShapes();
+	public static final Function<BlockPos, VoxelShape> GETTER_WITH_REDSTONE_SUPPORT = DieselGeneratorShapes::redstoneSupported;
 
 	private DieselGeneratorShapes()
 	{
@@ -120,5 +122,14 @@ public class DieselGeneratorShapes implements Function<BlockPos, VoxelShape>
 					)));
 
 		return Shapes.block();
+	}
+
+	private static VoxelShape redstoneSupported(BlockPos pos)
+	{
+		final VoxelShape baseShape = SHAPE_GETTER.apply(pos);
+		if(pos.equals(DieselGeneratorLogic.REDSTONE_POS))
+			return Shapes.or(baseShape, Shapes.box(0.9375, 0, 0, 1, 1, 1));
+		else
+			return baseShape;
 	}
 }

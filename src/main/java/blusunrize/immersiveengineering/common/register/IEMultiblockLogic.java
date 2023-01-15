@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockItem;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
@@ -81,7 +81,6 @@ public class IEMultiblockLogic
 
 	public static final MultiblockRegistration<DieselGeneratorLogic.State> DIESEL_GENERATOR = metal(new DieselGeneratorLogic(), "diesel_generator")
 			.structure(() -> IEMultiblocks.DIESEL_GENERATOR)
-			.postProcessesShape()
 			.redstone(s -> s.rsState, DieselGeneratorLogic.REDSTONE_POS)
 			.build();
 
