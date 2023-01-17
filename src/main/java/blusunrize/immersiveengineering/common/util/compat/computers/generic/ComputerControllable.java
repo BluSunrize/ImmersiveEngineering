@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
+import blusunrize.immersiveengineering.api.utils.ComputerControlState;
+
 import java.util.stream.Stream;
 
 public interface ComputerControllable

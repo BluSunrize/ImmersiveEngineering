@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.crusher;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
@@ -22,7 +22,6 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +33,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		super(helper, JEIRecipeTypes.CRUSHER, "block.immersiveengineering.crusher");
 		setBackground(helper.createBlankDrawable(140, 54));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.CRUSHER));
+		setIcon(IEMultiblockLogic.CRUSHER.iconStack());
 	}
 
 	@Override

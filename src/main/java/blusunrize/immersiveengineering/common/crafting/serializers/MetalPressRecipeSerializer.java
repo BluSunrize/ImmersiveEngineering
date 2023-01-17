@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +30,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.METAL_PRESS);
+		return IEMultiblockLogic.METAL_PRESS.iconStack();
 	}
 
 	@Override

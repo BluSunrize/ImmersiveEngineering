@@ -8,25 +8,33 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.RefineryBlockEntity;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.State;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.SingleItemCallback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
 
-public class RefineryCallbacks extends MultiblockCallbackOwner<RefineryBlockEntity>
+public class RefineryCallbacks extends Callback<State>
 {
 	public RefineryCallbacks()
 	{
-		super(RefineryBlockEntity.class, "refinery");
-		addAdditional(PoweredMBCallbacks.INSTANCE);
-		addAdditional(new TankCallbacks<>(te -> te.tanks[0], "left input"));
-		addAdditional(new TankCallbacks<>(te -> te.tanks[1], "right input"));
-		addAdditional(new TankCallbacks<>(te -> te.tanks[2], "output"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 0, "left filled canisters"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 1, "left empty canisters"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 2, "right filled canisters"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 3, "right empty canisters"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 4, "empty output canisters"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 3, "filled output canisters"));
+		addAdditional(MBEnergyCallbacks.INSTANCE, State::getEnergy);
+		addAdditional(new TankCallbacks<>(te -> te.tanks.leftInput(), "left input"));
+		addAdditional(new TankCallbacks<>(te -> te.tanks.rightInput(), "right input"));
+		addAdditional(new TankCallbacks<>(te -> te.tanks.output(), "output"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 0, "left filled canisters"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 1, "left empty canisters"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 2, "right filled canisters"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 3, "right empty canisters"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 4, "empty output canisters"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 3, "filled output canisters"));
+	}
+
+	@ComputerCallable
+	public boolean isRunning(CallbackEnvironment<State> env)
+	{
+		return env.object().active;
 	}
 }

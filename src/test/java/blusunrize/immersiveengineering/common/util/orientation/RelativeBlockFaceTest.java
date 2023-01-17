@@ -9,6 +9,8 @@
 
 package blusunrize.immersiveengineering.common.util.orientation;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import junit.framework.TestCase;
 import net.minecraft.core.Direction;
@@ -24,8 +26,8 @@ public class RelativeBlockFaceTest extends TestCase
 			{
 				for(Direction face : DirectionUtils.VALUES)
 				{
-					RelativeBlockFace relative = RelativeBlockFace.from(front, mirror, face);
-					Assert.assertEquals(face, relative.forFront(front, mirror));
+					RelativeBlockFace relative = RelativeBlockFace.from(new MultiblockOrientation(front, mirror), face);
+					Assert.assertEquals(face, relative.forFront(new MultiblockOrientation(front, mirror)));
 				}
 			}
 		}

@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +42,7 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & BakedMod
 
 	private final LoadingCache<K, Map<Vec3i, List<BakedQuad>>> subModelCache;
 
-	public BakedDynamicSplitModel(T base, Set<Vec3i> parts, ModelState transform, Vec3i size)
+	public BakedDynamicSplitModel(T base, Set<Vec3i> parts, ModelState transform, @Nonnull Vec3i size)
 	{
 		super(base, size);
 		this.subModelCache = CacheBuilder.newBuilder()

@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
@@ -34,7 +34,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.ARC_FURNACE);
+		return IEMultiblockLogic.ARC_FURNACE.iconStack();
 	}
 
 	@Override

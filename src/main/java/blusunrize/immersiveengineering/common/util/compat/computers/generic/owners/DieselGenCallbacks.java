@@ -8,24 +8,22 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MultiblockCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
 
-public class DieselGenCallbacks extends MultiblockCallbackOwner<DieselGeneratorBlockEntity>
+public class DieselGenCallbacks extends Callback<State>
 {
-	@ComputerCallable
-	public boolean isRunning(CallbackEnvironment<DieselGeneratorBlockEntity> env)
-	{
-		return env.object().active;
-	}
-
 	public DieselGenCallbacks()
 	{
-		super(DieselGeneratorBlockEntity.class, "diesel_generator");
-		addAdditional(new TankCallbacks<>(te -> te.tanks[0], ""));
-		addAdditional(MultiblockCallbacks.INSTANCE);
+		addAdditional(new TankCallbacks<>(te -> te.tank, ""));
+	}
+
+	@ComputerCallable
+	public boolean isRunning(CallbackEnvironment<State> env)
+	{
+		return env.object().isActive();
 	}
 }

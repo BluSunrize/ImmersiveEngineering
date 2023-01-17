@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei.sawmill;
 
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
@@ -38,7 +38,7 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 		setBackground(helper.drawableBuilder(
 				JEIHelper.JEI_GUI, 0, 0, 114, 26).setTextureSize(128, 128).addPadding(2, 36, 2, 12).build()
 		);
-		setIcon(new ItemStack(IEBlocks.Multiblocks.SAWMILL));
+		setIcon(IEMultiblockLogic.SAWMILL.iconStack());
 
 		this.middle = helper.drawableBuilder(JEIHelper.JEI_GUI, 0, 26, 29, 16).setTextureSize(128, 128).build();
 		IDrawableStatic arrowStatic = helper.drawableBuilder(JEIHelper.JEI_GUI, 29, 26, 66, 16).setTextureSize(128, 128).build();

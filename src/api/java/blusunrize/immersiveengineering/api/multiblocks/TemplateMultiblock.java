@@ -239,17 +239,26 @@ public abstract class TemplateMultiblock implements IMultiblock
 
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, Mirror mirror, Rotation rot)
 	{
+		return origin.offset(getAbsoluteOffset(relative, mirror, rot));
+	}
+
+	public static BlockPos getAbsoluteOffset(BlockPos relative, Mirror mirror, Rotation rot)
+	{
 		StructurePlaceSettings settings = new StructurePlaceSettings().setMirror(mirror).setRotation(rot);
-		return origin.offset(StructureTemplate.calculateRelativePosition(settings, relative));
+		return StructureTemplate.calculateRelativePosition(settings, relative);
 	}
 
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, boolean mirrored, Direction facing)
 	{
+		return origin.offset(getAbsoluteOffset(relative, mirrored, facing));
+	}
+
+	public static BlockPos getAbsoluteOffset(BlockPos relative, boolean mirrored, Direction facing)
+	{
 		Rotation rot = DirectionUtils.getRotationBetweenFacings(Direction.NORTH, facing);
 		if(rot==null)
-			return origin;
-		return withSettingsAndOffset(origin, relative, mirrored?Mirror.FRONT_BACK: Mirror.NONE,
-				rot);
+			return BlockPos.ZERO;
+		return getAbsoluteOffset(relative, mirrored?Mirror.FRONT_BACK: Mirror.NONE, rot);
 	}
 
 	@Override

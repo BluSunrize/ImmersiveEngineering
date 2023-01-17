@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +31,7 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.SQUEEZER);
+		return IEMultiblockLogic.SQUEEZER.iconStack();
 	}
 
 	@Override

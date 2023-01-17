@@ -9,40 +9,47 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 import net.minecraft.world.item.ItemStack;
 
-public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenchBlockEntity>
+public class AutoWorkbenchCallbacks extends Callback<State>
 {
 	public AutoWorkbenchCallbacks()
 	{
-		super(AutoWorkbenchBlockEntity.class, "auto_workbench");
-		addAdditional(PoweredMBCallbacks.INSTANCE);
+		addAdditional(MBEnergyCallbacks.INSTANCE, State::getEnergy);
 	}
 
 	@ComputerCallable
-	public void selectRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env, @IndexArgument int selected)
+	public boolean isRunning(CallbackEnvironment<State> env)
 	{
-		BlueprintCraftingRecipe[] availableRecipes = env.object().getAvailableRecipes();
+		return env.object().active;
+	}
+
+	@ComputerCallable
+	public void selectRecipe(CallbackEnvironment<State> env, @IndexArgument int selected)
+	{
+		BlueprintCraftingRecipe[] availableRecipes = AutoWorkbenchLogic.getAvailableRecipes(env.level(), env.object());
 		if(selected < 0||selected >= availableRecipes.length)
 			throw new RuntimeException("Only "+availableRecipes.length+" recipes are available");
 		env.object().selectedRecipe = selected;
 	}
 
 	@ComputerCallable
-	public void unselectRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
+	public void unselectRecipe(CallbackEnvironment<State> env)
 	{
 		env.object().selectedRecipe = -1;
 	}
 
 	@ComputerCallable
-	public ItemStack[] getAvailableRecipes(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
+	public ItemStack[] getAvailableRecipes(CallbackEnvironment<State> env)
 	{
-		BlueprintCraftingRecipe[] availableRecipes = env.object().getAvailableRecipes();
+		BlueprintCraftingRecipe[] availableRecipes = AutoWorkbenchLogic.getAvailableRecipes(env.level(), env.object());
 		ItemStack[] outputs = new ItemStack[availableRecipes.length];
 		for(int i = 0; i < availableRecipes.length; ++i)
 			outputs[i] = availableRecipes[i].output.get();
@@ -50,7 +57,7 @@ public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenc
 	}
 
 	@ComputerCallable
-	public int getSelectedRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
+	public int getSelectedRecipe(CallbackEnvironment<State> env)
 	{
 		return env.object().selectedRecipe+1;
 	}

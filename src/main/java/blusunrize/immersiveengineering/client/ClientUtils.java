@@ -26,12 +26,10 @@ import net.minecraft.client.gui.font.FontManager;
 import net.minecraft.client.gui.font.FontSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
@@ -106,9 +104,9 @@ public class ClientUtils
 		return r<<16|g<<8|b;
 	}
 
-	public static IEBlockEntitySound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
+	public static IEBlockEntitySound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, BlockPos pos)
 	{
-		IEBlockEntitySound sound = new IEBlockEntitySound(soundEvent, volume, pitch, repeat, delay, pos, Attenuation.LINEAR, SoundSource.BLOCKS);
+		IEBlockEntitySound sound = new IEBlockEntitySound(soundEvent, volume, pitch, pos);
 		sound.evaluateVolume();
 		ClientUtils.mc().getSoundManager().play(sound);
 		return sound;

@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
-public record CallbackEnvironment<T>(T object, T beforePreprocess)
+import net.minecraft.world.level.Level;
+
+public record CallbackEnvironment<T>(T object, Level level)
 {
 }

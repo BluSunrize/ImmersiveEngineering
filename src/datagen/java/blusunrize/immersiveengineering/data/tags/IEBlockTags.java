@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -35,7 +36,6 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
@@ -226,7 +226,7 @@ public class IEBlockTags extends BlockTagsProvider
 	private void registerAxeMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
-		IEBlocks.REGISTER.getEntries().stream()
+		Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
 				.map(RegistryObject::get)
 				.filter(b -> b.defaultBlockState().getMaterial()==Material.WOOD)
 				.forEach(tag::add);
@@ -237,7 +237,7 @@ public class IEBlockTags extends BlockTagsProvider
 	private void registerPickaxeMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_PICKAXE);
-		IEBlocks.REGISTER.getEntries().stream()
+		Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
 				.map(RegistryObject::get)
 				.filter(b -> {
 					Material material = b.defaultBlockState().getMaterial();

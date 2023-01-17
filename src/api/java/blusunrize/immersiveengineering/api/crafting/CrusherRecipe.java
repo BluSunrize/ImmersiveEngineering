@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -56,7 +55,7 @@ public class CrusherRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NonNullList<ItemStack> getActualItemOutputs(BlockEntity tile)
+	public NonNullList<ItemStack> getActualItemOutputs()
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output.get());

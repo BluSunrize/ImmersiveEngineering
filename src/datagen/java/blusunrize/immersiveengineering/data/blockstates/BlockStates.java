@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.data.DataGenUtils;
 import blusunrize.immersiveengineering.data.models.ConveyorModelBuilder;
 import blusunrize.immersiveengineering.data.models.ModelProviderUtils;
@@ -218,7 +219,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 		postBlock(MetalDecoration.STEEL_POST, rl("block/metal_decoration/steel_post"));
 		postBlock(MetalDecoration.ALU_POST, rl("block/metal_decoration/aluminum_post"));
 
-		simpleBlock(Multiblocks.BUCKET_WHEEL.get(), emptyWithParticles("block/bucket_wheel", "block/multiblocks/bucket_wheel"));
+		simpleBlock(
+				IEMultiblockLogic.BUCKET_WHEEL.block().get(),
+				emptyWithParticles("block/bucket_wheel", "block/multiblocks/bucket_wheel")
+		);
 		simpleBlock(
 				MetalDevices.FLUID_PIPE.get(),
 				ieObjBuilder("block/metal_device/fluid_pipe.obj.ie").callback(PipeCallbacks.INSTANCE).layer(cutout()).end()

@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.MultitankArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
-import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -50,7 +50,7 @@ public class MixerScreen extends IEContainerScreen<MixerMenu>
 						new Rect2i(leftPos+106, topPos+61, 30, 16),
 						() -> Component.translatable(Lib.GUI_CONFIG+"mixer.output"+(menu.outputAll.get()?"All": "Single"))
 				),
-				new MultitankArea(new Rect2i(leftPos+76, topPos+11, 58, 47), MixerBlockEntity.TANK_VOLUME, menu.tankContents)
+				new MultitankArea(new Rect2i(leftPos+76, topPos+11, 58, 47), MixerLogic.TANK_VOLUME, menu.tankContents)
 		);
 	}
 

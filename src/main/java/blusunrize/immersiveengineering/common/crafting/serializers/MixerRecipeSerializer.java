@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,7 +31,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.MIXER);
+		return IEMultiblockLogic.MIXER.iconStack();
 	}
 
 	@Override

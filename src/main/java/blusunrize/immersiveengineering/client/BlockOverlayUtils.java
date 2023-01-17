@@ -51,6 +51,7 @@ import net.minecraftforge.client.event.RenderHighlightEvent;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class BlockOverlayUtils
@@ -60,18 +61,21 @@ public class BlockOverlayUtils
 	public static void drawBlockOverlayText(PoseStack transform, Component[] text, int scaledWidth, int scaledHeight)
 	{
 		if(text!=null&&text.length > 0)
-		{
-			int i = 0;
-			MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-			for(Component s : text)
-				if(s!=null)
-					ClientUtils.font().drawInBatch(
-							Language.getInstance().getVisualOrder(s),
-							scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().lineHeight, 0xffffffff, true,
-							transform.last().pose(), buffer, false, 0, 0xf000f0
-					);
-			buffer.endBatch();
-		}
+			drawBlockOverlayText(transform, Arrays.asList(text), scaledWidth, scaledHeight);
+	}
+
+	public static void drawBlockOverlayText(PoseStack transform, Iterable<Component> text, int scaledWidth, int scaledHeight)
+	{
+		int i = 0;
+		MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+		for(Component s : text)
+			if(s!=null)
+				ClientUtils.font().drawInBatch(
+						Language.getInstance().getVisualOrder(s),
+						scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().lineHeight, 0xffffffff, true,
+						transform.last().pose(), buffer, false, 0, 0xf000f0
+				);
+		buffer.endBatch();
 	}
 
 	/* ----------- ARROWS ----------- */

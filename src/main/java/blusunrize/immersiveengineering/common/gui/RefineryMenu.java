@@ -10,24 +10,29 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.common.blocks.metal.RefineryBlockEntity;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.RefineryTanks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.State;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class RefineryMenu extends IEContainerMenu
 {
-	public static RefineryMenu makeServer(MenuType<?> type, int id, Inventory invPlayer, RefineryBlockEntity be)
+	public static RefineryMenu makeServer(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+	)
 	{
+		final State state = ctx.getState();
 		return new RefineryMenu(
-				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.inventory), be.energyStorage, be.tanks
+				multiblockCtx(type, id, ctx), invPlayer, state.inventory, state.getEnergy(), state.tanks
 		);
 	}
 
@@ -36,17 +41,17 @@ public class RefineryMenu extends IEContainerMenu
 		return new RefineryMenu(
 				clientCtx(type, id),
 				invPlayer,
-				new ItemStackHandler(RefineryBlockEntity.NUM_SLOTS),
-				new MutableEnergyStorage(RefineryBlockEntity.ENERGY_CAPACITY),
-				RefineryBlockEntity.makeTanks()
+				new ItemStackHandler(RefineryLogic.NUM_SLOTS),
+				new MutableEnergyStorage(RefineryLogic.ENERGY_CAPACITY),
+				new RefineryTanks()
 		);
 	}
 
 	public final IEnergyStorage energy;
-	public final FluidTank[] tanks;
+	public final RefineryTanks tanks;
 
 	public RefineryMenu(
-			MenuContext ctx, Inventory inventoryPlayer, IItemHandler inv, IMutableEnergyStorage energy, FluidTank[] tanks
+			MenuContext ctx, Inventory inventoryPlayer, IItemHandler inv, IMutableEnergyStorage energy, RefineryTanks tanks
 	)
 	{
 		super(ctx);
@@ -63,7 +68,8 @@ public class RefineryMenu extends IEContainerMenu
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
 		addGenericData(GenericContainerData.energy(energy));
-		for(int i = 0; i < 3; ++i)
-			addGenericData(GenericContainerData.fluid(tanks[i]));
+		addGenericData(GenericContainerData.fluid(tanks.leftInput()));
+		addGenericData(GenericContainerData.fluid(tanks.rightInput()));
+		addGenericData(GenericContainerData.fluid(tanks.output()));
 	}
 }

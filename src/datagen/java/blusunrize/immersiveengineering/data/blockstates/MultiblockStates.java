@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -141,12 +141,13 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 				modLoc("block/multiblocks/alloy_smelter_side"),
 				modLoc("block/multiblocks/alloy_smelter_on")
 		);
-		createMultiblock(Multiblocks.COKE_OVEN, cokeOvenOff, cokeOvenOn,
-				IEProperties.ACTIVE);
-		createMultiblock(Multiblocks.ALLOY_SMELTER, alloySmelterOff, alloySmelterOn,
-				IEProperties.ACTIVE);
-		createMultiblock(Multiblocks.BLAST_FURNACE, blastFurnaceOff, blastFurnaceOn,
-				IEProperties.ACTIVE);
+		createMultiblock(
+				IEMultiblockLogic.COKE_OVEN.block(), cokeOvenOff, cokeOvenOn, IEProperties.ACTIVE
+		);
+		createMultiblock(IEMultiblockLogic.ALLOY_SMELTER.block(), alloySmelterOff, alloySmelterOn, IEProperties.ACTIVE);
+		createMultiblock(
+				IEMultiblockLogic.BLAST_FURNACE.block(), blastFurnaceOff, blastFurnaceOn, IEProperties.ACTIVE
+		);
 	}
 
 	private void createMetalMultiblocks()
@@ -154,19 +155,13 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(innerObj("block/metal_multiblock/sawmill.obj"), IEMultiblocks.SAWMILL);
 		createMultiblock(innerObj("block/metal_multiblock/excavator.obj"), IEMultiblocks.EXCAVATOR);
 		createMultiblock(innerObj("block/metal_multiblock/crusher.obj"), IEMultiblocks.CRUSHER);
-		createMultiblock(Multiblocks.METAL_PRESS, split(
-				innerObj("block/metal_multiblock/metal_press.obj"),
-				IEMultiblocks.METAL_PRESS,
-				p -> new BlockPos(p.getZ()+1, p.getY(), p.getX()-1),
-				false
-		));
-		createMultiblock(Multiblocks.ASSEMBLER,
-				split(innerObj("block/metal_multiblock/assembler.obj"), IEMultiblocks.ASSEMBLER));
+		createMultiblock(innerObj("block/metal_multiblock/metal_press.obj"), IEMultiblocks.METAL_PRESS);
+		createMultiblock(innerObj("block/metal_multiblock/assembler.obj"), IEMultiblocks.ASSEMBLER);
 		createMultiblock(innerObj("block/metal_multiblock/arc_furnace.obj"), IEMultiblocks.ARC_FURNACE);
 
-		createMultiblock(Multiblocks.ADVANCED_BLAST_FURNACE, split(innerObj("block/blastfurnace_advanced.obj"), IEMultiblocks.ADVANCED_BLAST_FURNACE));
-		createMultiblock(Multiblocks.SILO, split(innerObj("block/metal_multiblock/silo.obj"), IEMultiblocks.SILO));
-		createMultiblock(Multiblocks.TANK, split(innerObj("block/metal_multiblock/tank.obj", cutoutMipped()), IEMultiblocks.SHEETMETAL_TANK));
+		createMultiblock(innerObj("block/blastfurnace_advanced.obj"), IEMultiblocks.ADVANCED_BLAST_FURNACE);
+		createMultiblock(innerObj("block/metal_multiblock/silo.obj"), IEMultiblocks.SILO);
+		createMultiblock(innerObj("block/metal_multiblock/tank.obj", cutoutMipped()), IEMultiblocks.SHEETMETAL_TANK);
 		createDynamicMultiblock(
 				ieObjBuilder("block/metal_multiblock/bottling_machine.obj.ie", innerModels)
 						.callback(BottlingMachineCallbacks.INSTANCE)
@@ -179,8 +174,10 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(innerObj("block/metal_multiblock/mixer.obj"), IEMultiblocks.MIXER);
 		createMultiblock(innerObj("block/metal_multiblock/refinery.obj"), IEMultiblocks.REFINERY);
 		createMultiblock(innerObj("block/metal_multiblock/diesel_generator.obj", cutoutMipped()), IEMultiblocks.DIESEL_GENERATOR);
-		createMultiblock(Multiblocks.LIGHTNING_ROD,
-				split(innerObj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD));
+		createMultiblock(
+				IEMultiblockLogic.LIGHTNING_ROD.block(),
+				split(innerObj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD)
+		);
 		createMultiblock(WoodenDevices.WORKBENCH,
 				splitDynamic(
 						ieObjBuilder("block/wooden_device/workbench.obj.ie", innerModels).callback(WorkbenchCallbacks.INSTANCE).end(),
@@ -242,12 +239,16 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 
 	private void createMultiblock(NongeneratedModel unsplitModel, IETemplateMultiblock multiblock, boolean dynamic)
 	{
-		createMultiblock(
-				multiblock::getBlock,
-				split(unsplitModel, multiblock, false, dynamic),
-				split(mirror(unsplitModel, innerModels), multiblock, true, dynamic),
-				IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED
-		);
+		final ModelFile mainModel = split(unsplitModel, multiblock, false, dynamic);
+		if(multiblock.getBlock().getStateDefinition().getProperties().contains(IEProperties.MIRRORED))
+			createMultiblock(
+					multiblock::getBlock,
+					mainModel,
+					split(mirror(unsplitModel, innerModels), multiblock, true, dynamic),
+					IEProperties.FACING_HORIZONTAL, IEProperties.MIRRORED
+			);
+		else
+			createMultiblock(multiblock::getBlock, mainModel, null, IEProperties.FACING_HORIZONTAL, null);
 	}
 
 	private void createMultiblock(Supplier<? extends Block> b, ModelFile masterModel)

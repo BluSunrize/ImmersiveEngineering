@@ -9,17 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
 public class ArcFurnaceMultiblock extends IETemplateMultiblock
 {
+	public static final BlockPos MASTER_OFFSET = new BlockPos(2, 1, 2);
+
 	public ArcFurnaceMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/arcfurnace"),
-				new BlockPos(2, 1, 2), new BlockPos(2, 0, 4), new BlockPos(5, 5, 5),
-				Multiblocks.ARC_FURNACE);
+				MASTER_OFFSET, new BlockPos(2, 0, 4), new BlockPos(5, 5, 5),
+				IEMultiblockLogic.ARC_FURNACE);
 	}
 
 	@Override

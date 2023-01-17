@@ -9,14 +9,19 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.client.models.ModelGlider;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import net.minecraft.client.model.MinecartModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IEModelLayers
 {
 	public static final ModelLayerLocation BARREL_MINECART = new ModelLayerLocation(IEEntityTypes.BARREL_MINECART.getId(), "main");
@@ -27,14 +32,15 @@ public class IEModelLayers
 	public static final ModelLayerLocation EARMUFFS = new ModelLayerLocation(ImmersiveEngineering.rl("earmuffs"), "main");
 	public static final ModelLayerLocation GLIDER = new ModelLayerLocation(ImmersiveEngineering.rl("glider"), "main");
 
-	public static void registerDefinitions()
+	@SubscribeEvent
+	public static void registerDefinitions(RegisterLayerDefinitions ev)
 	{
-		ForgeHooksClient.registerLayerDefinition(BARREL_MINECART, MinecartModel::createBodyLayer);
-		ForgeHooksClient.registerLayerDefinition(CRATE_MINECART, MinecartModel::createBodyLayer);
-		ForgeHooksClient.registerLayerDefinition(REINFORCED_CRATE_CART, MinecartModel::createBodyLayer);
-		ForgeHooksClient.registerLayerDefinition(METAL_BARREL_CART, MinecartModel::createBodyLayer);
-		ForgeHooksClient.registerLayerDefinition(POWERPACK, ModelPowerpack::createLayers);
-		ForgeHooksClient.registerLayerDefinition(EARMUFFS, ModelEarmuffs::createLayers);
-		ForgeHooksClient.registerLayerDefinition(GLIDER, ModelGlider::createLayers);
+		ev.registerLayerDefinition(BARREL_MINECART, MinecartModel::createBodyLayer);
+		ev.registerLayerDefinition(CRATE_MINECART, MinecartModel::createBodyLayer);
+		ev.registerLayerDefinition(REINFORCED_CRATE_CART, MinecartModel::createBodyLayer);
+		ev.registerLayerDefinition(METAL_BARREL_CART, MinecartModel::createBodyLayer);
+		ev.registerLayerDefinition(POWERPACK, ModelPowerpack::createLayers);
+		ev.registerLayerDefinition(EARMUFFS, ModelEarmuffs::createLayers);
+		ev.registerLayerDefinition(GLIDER, ModelGlider::createLayers);
 	}
 }

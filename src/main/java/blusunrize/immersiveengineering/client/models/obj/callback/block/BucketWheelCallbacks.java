@@ -9,7 +9,8 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
-import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BucketWheelLogic.State;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -23,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,23 +34,22 @@ public class BucketWheelCallbacks implements BlockCallback<BucketWheelCallbacks.
 	private static final BucketWheelCallbacks.Key INVALID = new BucketWheelCallbacks.Key(Collections.EMPTY_MAP);
 
 	@Override
-	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
+	public Key extractKey(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState blockState, BlockEntity blockEntity)
 	{
-		if(!(blockEntity instanceof BucketWheelBlockEntity bucketWheel))
+		if(!(blockEntity instanceof MultiblockBlockEntityMaster<?> masterBE))
+			return getDefaultKey();
+		if(!(masterBE.getHelper().getState() instanceof State state))
 			return getDefaultKey();
 		Map<String, TextureAtlasSprite> texMap = new HashMap<>();
-		synchronized(bucketWheel.digStacks)
+		for(int i = 0; i < state.digStacks.size(); i++)
 		{
-			for(int i = 0; i < bucketWheel.digStacks.size(); i++)
+			ItemStack stackAtIndex = state.digStacks.get(i);
+			if(!stackAtIndex.isEmpty())
 			{
-				ItemStack stackAtIndex = bucketWheel.digStacks.get(i);
-				if(!stackAtIndex.isEmpty())
-				{
-					Block b = Block.byItem(stackAtIndex.getItem());
-					BlockState digState = b!=Blocks.AIR?b.defaultBlockState(): Blocks.COBBLESTONE.defaultBlockState();
-					BakedModel digModel = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(digState);
-					texMap.put("dig"+i, digModel.getParticleIcon(null));
-				}
+				Block b = Block.byItem(stackAtIndex.getItem());
+				BlockState digState = b!=Blocks.AIR?b.defaultBlockState(): Blocks.COBBLESTONE.defaultBlockState();
+				BakedModel digModel = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(digState);
+				texMap.put("dig"+i, digModel.getParticleIcon(null));
 			}
 		}
 		return new BucketWheelCallbacks.Key(texMap);

@@ -12,22 +12,27 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends MultiblockProcess<R>
+public class MultiblockProcessInMachine<R extends MultiblockRecipe>
+		extends MultiblockProcess<R, ProcessContextInMachine<R>>
 {
 	protected final int[] inputSlots;
 	protected int[] inputAmounts = null;
@@ -39,10 +44,18 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 		this.inputSlots = inputSlots;
 	}
 
-	public MultiblockProcessInMachine(R recipe, BiFunction<Level, ResourceLocation, R> getRecipe, int... inputSlots)
+	public MultiblockProcessInMachine(R recipe, int... inputSlots)
 	{
-		super(recipe, getRecipe);
+		super(recipe);
 		this.inputSlots = inputSlots;
+	}
+
+	public MultiblockProcessInMachine(BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data)
+	{
+		super(getRecipe, data);
+		this.inputSlots = data.getIntArray("process_inputSlots");
+		setInputAmounts(data.getIntArray("process_inputAmounts"));
+		setInputTanks(data.getIntArray("process_inputTanks"));
 	}
 
 	public MultiblockProcessInMachine<R> setInputTanks(int... inputTanks)
@@ -73,53 +86,115 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 		return this.inputTanks;
 	}
 
-	protected List<IngredientWithSize> getRecipeItemInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
+	protected List<IngredientWithSize> getRecipeItemInputs(ProcessContextInMachine<R> context, Level level)
 	{
-		R recipe = getLevelData(multiblock.getLevel()).recipe();
-		return recipe == null ? List.of() : recipe.getItemInputs();
+		R recipe = getLevelData(level).recipe();
+		return recipe==null?List.of(): recipe.getItemInputs();
 	}
 
-	protected List<FluidTagInput> getRecipeFluidInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
+	protected List<FluidTagInput> getRecipeFluidInputs(ProcessContextInMachine<R> context, Level level)
 	{
-		R recipe = getLevelData(multiblock.getLevel()).recipe();
-		return recipe == null ? List.of() : recipe.getFluidInputs();
+		R recipe = getLevelData(level).recipe();
+		return recipe==null?List.of(): recipe.getFluidInputs();
 	}
 
 	@Override
-	public void doProcessTick(PoweredMultiblockBlockEntity<?, R> multiblock)
+	protected boolean canOutputItem(ProcessContextInMachine<R> context, ItemStack output)
 	{
-		R recipe = getLevelData(multiblock.getLevel()).recipe();
-		if (recipe == null)
+		int[] outputSlots = context.getOutputSlots();
+		for(int iOutputSlot : outputSlots)
+		{
+			final IItemHandlerModifiable inv = context.getInventory();
+			ItemStack s = inv.getStackInSlot(iOutputSlot);
+			if(s.isEmpty())
+				return true;
+			final boolean match = ItemHandlerHelper.canItemStacksStack(s, output);
+			if(match&&s.getCount()+output.getCount() <= inv.getSlotLimit(iOutputSlot))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	protected boolean canOutputFluid(ProcessContextInMachine<R> context, FluidStack output)
+	{
+		IFluidTank[] tanks = context.getInternalTanks();
+		int[] outputTanks = context.getOutputTanks();
+		for(int iOutputTank : outputTanks)
+			if(tanks[iOutputTank].fill(output, FluidAction.SIMULATE)==output.getAmount())
+				return true;
+		return false;
+	}
+
+	@Override
+	protected void outputFluid(ProcessContextInMachine<R> context, FluidStack output)
+	{
+		IFluidTank[] tanks = context.getInternalTanks();
+		int[] outputTanks = context.getOutputTanks();
+		for(int iOutputTank : outputTanks)
+			if(tanks[iOutputTank].fill(output, FluidAction.SIMULATE)==output.getAmount())
+			{
+				tanks[iOutputTank].fill(output, FluidAction.EXECUTE);
+				break;
+			}
+	}
+
+	@Override
+	protected void outputItem(ProcessContextInMachine<R> context, ItemStack output, IMultiblockLevel level)
+	{
+		int[] outputSlots = context.getOutputSlots();
+		for(int iOutputSlot : outputSlots)
+		{
+			final IItemHandlerModifiable inv = context.getInventory();
+			ItemStack s = inv.getStackInSlot(iOutputSlot);
+			if(s.isEmpty())
+			{
+				inv.setStackInSlot(iOutputSlot, output.copy());
+				break;
+			}
+			else if(ItemHandlerHelper.canItemStacksStack(s, output)&&s.getCount()+output.getCount() <= inv.getSlotLimit(iOutputSlot))
+			{
+				s.grow(output.getCount());
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void doProcessTick(ProcessContextInMachine<R> context, IMultiblockLevel level)
+	{
+		R recipe = getLevelData(level.getRawLevel()).recipe();
+		if(recipe==null)
 			return;
-		NonNullList<ItemStack> inv = multiblock.getInventory();
+		IItemHandlerModifiable inv = context.getInventory();
 		if(recipe.shouldCheckItemAvailability()&&recipe.getItemInputs()!=null&&inv!=null)
 		{
 			NonNullList<ItemStack> query = NonNullList.withSize(inputSlots.length, ItemStack.EMPTY);
 			for(int i = 0; i < inputSlots.length; i++)
-				if(inputSlots[i] >= 0&&inputSlots[i] < inv.size())
-					query.set(i, multiblock.getInventory().get(inputSlots[i]));
+				if(inputSlots[i] >= 0&&inputSlots[i] < inv.getSlots())
+					query.set(i, context.getInventory().getStackInSlot(inputSlots[i]));
 			if(!IngredientUtils.stacksMatchIngredientWithSizeList(recipe.getItemInputs(), query))
 			{
 				this.clearProcess = true;
 				return;
 			}
 		}
-		super.doProcessTick(multiblock);
+		super.doProcessTick(context, level);
 	}
 
 	@Override
-	protected void processFinish(PoweredMultiblockBlockEntity<?, R> multiblock)
+	protected void processFinish(ProcessContextInMachine<R> context, IMultiblockLevel level)
 	{
-		super.processFinish(multiblock);
-		NonNullList<ItemStack> inv = multiblock.getInventory();
-		List<IngredientWithSize> itemInputList = this.getRecipeItemInputs(multiblock);
+		super.processFinish(context, level);
+		IItemHandlerModifiable inv = context.getInventory();
+		List<IngredientWithSize> itemInputList = this.getRecipeItemInputs(context, level.getRawLevel());
 		if(inv!=null&&this.inputSlots!=null&&itemInputList!=null)
 		{
 			if(this.inputAmounts!=null&&this.inputSlots.length==this.inputAmounts.length)
 			{
 				for(int i = 0; i < this.inputSlots.length; i++)
 					if(this.inputAmounts[i] > 0)
-						inv.get(this.inputSlots[i]).shrink(this.inputAmounts[i]);
+						inv.getStackInSlot(this.inputSlots[i]).shrink(this.inputAmounts[i]);
 
 			}
 			else
@@ -127,19 +202,19 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 				{
 					int ingrSize = ingr.getCount();
 					for(int slot : this.inputSlots)
-						if(!inv.get(slot).isEmpty()&&ingr.test(inv.get(slot)))
+						if(!inv.getStackInSlot(slot).isEmpty()&&ingr.test(inv.getStackInSlot(slot)))
 						{
-							int taken = Math.min(inv.get(slot).getCount(), ingrSize);
-							inv.get(slot).shrink(taken);
-							if(inv.get(slot).getCount() <= 0)
-								inv.set(slot, ItemStack.EMPTY);
+							int taken = Math.min(inv.getStackInSlot(slot).getCount(), ingrSize);
+							inv.getStackInSlot(slot).shrink(taken);
+							if(inv.getStackInSlot(slot).getCount() <= 0)
+								inv.setStackInSlot(slot, ItemStack.EMPTY);
 							if((ingrSize -= taken) <= 0)
 								break;
 						}
 				}
 		}
-		IFluidTank[] tanks = multiblock.getInternalTanks();
-		List<FluidTagInput> fluidInputList = this.getRecipeFluidInputs(multiblock);
+		IFluidTank[] tanks = context.getInternalTanks();
+		List<FluidTagInput> fluidInputList = this.getRecipeFluidInputs(context, level.getRawLevel());
 		if(tanks!=null&&this.inputTanks!=null&&fluidInputList!=null)
 		{
 			for(FluidTagInput ingr : new ArrayList<>(fluidInputList))
@@ -155,14 +230,6 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 					}
 			}
 		}
-	}
-
-	public static <R extends MultiblockRecipe>
-	MultiblockProcessInMachine<R> load(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data)
-	{
-		return new MultiblockProcessInMachine<>(recipeId, getRecipe, data.getIntArray("process_inputSlots"))
-				.setInputAmounts(data.getIntArray("process_inputAmounts"))
-				.setInputTanks(data.getIntArray("process_inputTanks"));
 	}
 
 	@Override

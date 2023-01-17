@@ -9,59 +9,45 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
 
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.*;
+import static blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.*;
 
-public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEntity>
+public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
 {
 	public static final String NAME = "metal_press_piston";
 	public static DynamicModel PISTON;
 
 	@Override
-	public void render(MetalPressBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
-			return;
-
-		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-		BlockPos blockPos = te.getBlockPos();
-		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.METAL_PRESS.get())
-			return;
-		BakedModel model = PISTON.get();
-
+		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
+		final State state = helper.getState();
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
-		float[] shift = new float[te.processQueue.size()];
+		float[] shift = new float[state.processor.getQueueSize()];
 
 		for(int i = 0; i < shift.length; i++)
 		{
-			MultiblockProcess<MetalPressRecipe> process = te.processQueue.get(i);
-			if(process==null)
-				continue;
+			MultiblockProcess<MetalPressRecipe, ?> process = state.processor.getQueue().get(i);
 			float processMaxTicks = process.getMaxTicks(te.getLevel());
 			float transportTime = getTransportTime(processMaxTicks);
 			float pressTime = getPressTime(processMaxTicks);
@@ -74,7 +60,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 				shift[i] = .5f;
 			else
 				shift[i] = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
-			if(!te.mold.isEmpty())
+			if(!state.mold.isEmpty())
 				if(fProcess >= transportTime&&fProcess < (processMaxTicks-transportTime))
 				{
 					if(fProcess < (transportTime+pressTime))
@@ -86,41 +72,41 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 				}
 		}
 
-		matrixStack.mulPose(new Quaternionf().rotateY(
-				te.getFacing()==Direction.SOUTH?Mth.PI: te.getFacing()==Direction.WEST?Mth.HALF_PI: te.getFacing()==Direction.EAST?-Mth.HALF_PI: 0
-		));
+		rotateForFacing(matrixStack, helper.getContext().getLevel().getOrientation().front());
 		matrixStack.pushPose();
 		matrixStack.translate(0, -piston*.6875f, 0);
 		matrixStack.pushPose();
 		matrixStack.translate(-0.5, -0.5, -0.5);
+		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+		BakedModel pistonModel = PISTON.get();
 		blockRenderer.getModelRenderer().renderModel(
-				matrixStack.last(), bufferIn.getBuffer(RenderType.solid()), state, model,
+				matrixStack.last(), bufferIn.getBuffer(RenderType.solid()), null, pistonModel,
 				1, 1, 1,
 				combinedLightIn, combinedOverlayIn, ModelData.EMPTY, RenderType.solid()
 		);
 		matrixStack.popPose();
 
-		if(!te.mold.isEmpty())
+		if(!state.mold.isEmpty())
 		{
 			matrixStack.translate(0, .34, 0);
 			matrixStack.mulPose(new Quaternionf().rotateX(-Mth.HALF_PI));
 			float scale = .75f;
 			matrixStack.scale(scale, scale, 1);
-			ClientUtils.mc().getItemRenderer().renderStatic(te.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
+			ClientUtils.mc().getItemRenderer().renderStatic(state.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
 					matrixStack, bufferIn, 0);
 		}
 		matrixStack.popPose();
-		matrixStack.translate(0, -.35, 1.25);
+		matrixStack.translate(-1.25, -.35, 0);
 		for(int i = 0; i < shift.length; i++)
 		{
-			MultiblockProcess<?> process = te.processQueue.get(i);
+			MultiblockProcess<?, ?> process = state.processor.getQueue().get(i);
 			if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 				continue;
 			List<ItemStack> displays = inWorld.getDisplayItem(te.getLevel());
 			if(displays.isEmpty())
 				continue;
 			matrixStack.pushPose();
-			matrixStack.translate(0, 0, -TRANSLATION_DISTANCE*shift[i]);
+			matrixStack.translate(TRANSLATION_DISTANCE*shift[i], 0, 0);
 			if(piston > .92)
 				matrixStack.translate(0, .92-piston, 0);
 

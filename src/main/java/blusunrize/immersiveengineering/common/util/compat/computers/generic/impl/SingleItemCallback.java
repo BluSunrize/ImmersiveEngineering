@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Call
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.List;
 import java.util.function.Function;
@@ -25,6 +26,12 @@ public class SingleItemCallback<T> extends Callback<T>
 	{
 		this.getStack = getStack;
 		this.desc = desc;
+	}
+
+	public static <T>
+	SingleItemCallback<T> fromHandler(Function<T, IItemHandler> getInv, int index, String desc)
+	{
+		return new SingleItemCallback<>(getInv.andThen(l -> l.getStackInSlot(index)), desc);
 	}
 
 	public SingleItemCallback(Function<T, List<ItemStack>> getStack, int index, String desc)

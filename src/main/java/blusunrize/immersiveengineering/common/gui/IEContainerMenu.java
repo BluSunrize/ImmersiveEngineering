@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
@@ -28,6 +29,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -36,7 +38,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.NetworkDirection;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -221,7 +222,20 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 			ieContainer.usingPlayers.remove(serverPlayer);
 	}
 
-	public static MenuContext blockCtx(@Nullable MenuType<?> pMenuType, int pContainerId, BlockEntity be)
+	public static MenuContext multiblockCtx(
+			MenuType<?> pMenuType, int pContainerId, IMultiblockContext<?> ctx
+	)
+	{
+		return new MenuContext(pMenuType, pContainerId, ctx::markMasterDirty, p -> {
+			if(!ctx.isValid().getAsBoolean())
+				return false;
+			// TODO should not be origin
+			final BlockPos pos = ctx.getLevel().getAbsoluteOrigin();
+			return p.distanceToSqr(Vec3.atCenterOf(pos)) <= 64.0D;
+		});
+	}
+
+	public static MenuContext blockCtx(MenuType<?> pMenuType, int pContainerId, BlockEntity be)
 	{
 		return new MenuContext(pMenuType, pContainerId, () -> {
 			be.setChanged();
@@ -238,7 +252,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 	}
 
 	public static MenuContext itemCtx(
-			@Nullable MenuType<?> pMenuType, int pContainerId, Inventory playerInv, EquipmentSlot slot, ItemStack stack
+			MenuType<?> pMenuType, int pContainerId, Inventory playerInv, EquipmentSlot slot, ItemStack stack
 	)
 	{
 		return new MenuContext(pMenuType, pContainerId, () -> {
@@ -249,7 +263,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 		});
 	}
 
-	public static MenuContext clientCtx(@Nullable MenuType<?> pMenuType, int pContainerId)
+	public static MenuContext clientCtx(MenuType<?> pMenuType, int pContainerId)
 	{
 		return new MenuContext(pMenuType, pContainerId, () -> {
 		}, $ -> true);

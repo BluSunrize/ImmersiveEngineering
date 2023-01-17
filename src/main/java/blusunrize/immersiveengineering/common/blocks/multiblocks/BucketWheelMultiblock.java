@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -25,7 +25,7 @@ public class BucketWheelMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/bucket_wheel"),
 				new BlockPos(3, 3, 0), new BlockPos(3, 3, 0), new BlockPos(7, 7, 1),
-				Multiblocks.BUCKET_WHEEL);
+				IEMultiblockLogic.BUCKET_WHEEL);
 	}
 
 	@Override

@@ -22,15 +22,15 @@ import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
-import blusunrize.immersiveengineering.common.blocks.stone.*;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity.CrudeBlastFurnaceBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.CoresampleBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
+import blusunrize.immersiveengineering.common.blocks.stone.SlagGravelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -91,7 +91,7 @@ public final class IEBlocks
 					.strength(3, 15)
 					.requiresCorrectToolForDrops()
 					.isViewBlocking((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	public static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
 
 	private IEBlocks()
 	{
@@ -150,78 +150,6 @@ public final class IEBlocks
 
 		public static final BlockEntry<IEBaseBlock> DUROPLAST = BlockEntry.simple(
 				"duroplast", STONE_DECO_PROPS_NOT_SOLID
-		);
-
-		private static void init()
-		{
-		}
-	}
-
-	public static final class Multiblocks
-	{
-		public static final BlockEntry<StoneMultiBlock<CokeOvenBlockEntity>> COKE_OVEN = new BlockEntry<>(
-				"coke_oven", StoneMultiBlock.properties(true), p -> new StoneMultiBlock<>(p, IEBlockEntities.COKE_OVEN)
-		);
-		public static final BlockEntry<StoneMultiBlock<CrudeBlastFurnaceBlockEntity>> BLAST_FURNACE = new BlockEntry<>(
-				"blast_furnace", StoneMultiBlock.properties(true), p -> new StoneMultiBlock<>(p, IEBlockEntities.BLAST_FURNACE)
-		);
-		public static final BlockEntry<StoneMultiBlock<AlloySmelterBlockEntity>> ALLOY_SMELTER = new BlockEntry<>(
-				"alloy_smelter", StoneMultiBlock.properties(true), p -> new StoneMultiBlock<>(p, IEBlockEntities.ALLOY_SMELTER)
-		);
-		public static final BlockEntry<StoneMultiBlock<BlastFurnaceAdvancedBlockEntity>> ADVANCED_BLAST_FURNACE = new BlockEntry<>(
-				"advanced_blast_furnace", StoneMultiBlock.properties(false), p -> new StoneMultiBlock<>(p, IEBlockEntities.BLAST_FURNACE_ADVANCED)
-		);
-
-		public static final BlockEntry<MetalMultiblockBlock<MetalPressBlockEntity>> METAL_PRESS = new BlockEntry<>(
-				"metal_press", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.METAL_PRESS, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<CrusherBlockEntity>> CRUSHER = new BlockEntry<>(
-				"crusher", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.CRUSHER, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<SawmillBlockEntity>> SAWMILL = new BlockEntry<>(
-				"sawmill", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SAWMILL, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<SheetmetalTankBlockEntity>> TANK = new BlockEntry<>(
-				"tank", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SHEETMETAL_TANK, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<SiloBlockEntity>> SILO = new BlockEntry<>(
-				"silo", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SILO, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<AssemblerBlockEntity>> ASSEMBLER = new BlockEntry<>(
-				"assembler", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.ASSEMBLER, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<AutoWorkbenchBlockEntity>> AUTO_WORKBENCH = new BlockEntry<>(
-				"auto_workbench", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.AUTO_WORKBENCH, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<BottlingMachineBlockEntity>> BOTTLING_MACHINE = new BlockEntry<>(
-				"bottling_machine", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.BOTTLING_MACHINE, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<SqueezerBlockEntity>> SQUEEZER = new BlockEntry<>(
-				"squeezer", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SQUEEZER, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<FermenterBlockEntity>> FERMENTER = new BlockEntry<>(
-				"fermenter", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.FERMENTER, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<RefineryBlockEntity>> REFINERY = new BlockEntry<>(
-				"refinery", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.REFINERY, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<DieselGeneratorBlockEntity>> DIESEL_GENERATOR = new BlockEntry<>(
-				"diesel_generator", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.DIESEL_GENERATOR, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<ExcavatorBlockEntity>> EXCAVATOR = new BlockEntry<>(
-				"excavator", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.EXCAVATOR, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<BucketWheelBlockEntity>> BUCKET_WHEEL = new BlockEntry<>(
-				"bucket_wheel", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.BUCKET_WHEEL, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<ArcFurnaceBlockEntity>> ARC_FURNACE = new BlockEntry<>(
-				"arc_furnace", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.ARC_FURNACE, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<LightningrodBlockEntity>> LIGHTNING_ROD = new BlockEntry<>(
-				"lightning_rod", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.LIGHTNING_ROD, p)
-		);
-		public static final BlockEntry<MetalMultiblockBlock<MixerBlockEntity>> MIXER = new BlockEntry<>(
-				"mixer", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.MIXER, p)
 		);
 
 		private static void init()
@@ -630,7 +558,6 @@ public final class IEBlocks
 	{
 		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		StoneDecoration.init();
-		Multiblocks.init();
 		Metals.init();
 		WoodenDecoration.init();
 		WoodenDevices.init();
@@ -765,6 +692,11 @@ public final class IEBlocks
 		public Item asItem()
 		{
 			return get().asItem();
+		}
+
+		public RegistryObject<? extends Block> getRegObject()
+		{
+			return regObject;
 		}
 	}
 }

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -335,7 +335,7 @@ public class IEBlockInterfaces
 		@Nullable
 		T getGuiMaster();
 
-		BEContainer<? super T, ?> getContainerType();
+		ArgContainer<? super T, ?> getContainerType();
 
 		boolean canUseGui(Player player);
 
@@ -350,7 +350,7 @@ public class IEBlockInterfaces
 		{
 			T master = getGuiMaster();
 			Preconditions.checkNotNull(master);
-			BEContainer<? super T, ?> type = getContainerType();
+			ArgContainer<? super T, ?> type = getContainerType();
 			return type.create(id, playerInventory, master);
 		}
 

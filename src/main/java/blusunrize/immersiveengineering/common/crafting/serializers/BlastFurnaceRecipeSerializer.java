@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +28,7 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.BLAST_FURNACE);
+		return IEMultiblockLogic.BLAST_FURNACE.iconStack();
 	}
 
 	@Override

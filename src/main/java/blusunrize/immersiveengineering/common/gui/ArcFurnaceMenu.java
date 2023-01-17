@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceProcess;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -31,15 +33,16 @@ public class ArcFurnaceMenu extends IEContainerMenu
 	public final GetterAndSetter<List<ProcessSlot>> processes;
 
 	public static ArcFurnaceMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, ArcFurnaceBlockEntity be
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
+		final State state = ctx.getState();
 		return new ArcFurnaceMenu(
-				blockCtx(type, id, be), invPlayer,
-				new ItemStackHandler(be.getInventory()), be.energyStorage,
-				GetterAndSetter.getterOnly(() -> be.processQueue.stream()
-						.filter(p -> p instanceof MultiblockProcessInMachine<?>)
-						.map(p -> ProcessSlot.fromBE((MultiblockProcessInMachine<?>)p, be.getLevel()))
+				multiblockCtx(type, id, ctx), invPlayer,
+				state.getInventory(), state.getEnergy(),
+				GetterAndSetter.getterOnly(() -> state.getProcessQueue().stream()
+						.filter(p -> p instanceof ArcFurnaceProcess)
+						.map(p -> ProcessSlot.fromCtx((ArcFurnaceProcess)p, ctx.getLevel().getRawLevel()))
 						.toList()
 				)
 		);
@@ -50,8 +53,8 @@ public class ArcFurnaceMenu extends IEContainerMenu
 		return new ArcFurnaceMenu(
 				clientCtx(type, id),
 				invPlayer,
-				new ItemStackHandler(ArcFurnaceBlockEntity.NUM_SLOTS),
-				new MutableEnergyStorage(ArcFurnaceBlockEntity.ENERGY_CAPACITY),
+				new ItemStackHandler(ArcFurnaceLogic.NUM_SLOTS),
+				new MutableEnergyStorage(ArcFurnaceLogic.ENERGY_CAPACITY),
 				GetterAndSetter.standalone(List.of())
 		);
 	}
@@ -90,7 +93,7 @@ public class ArcFurnaceMenu extends IEContainerMenu
 
 	public record ProcessSlot(int slot, int processStep)
 	{
-		public static ProcessSlot fromBE(MultiblockProcessInMachine<?> process, Level level)
+		public static ProcessSlot fromCtx(ArcFurnaceProcess process, Level level)
 		{
 			float mod = process.processTick/(float)process.getMaxTicks(level);
 			int slot = process.getInputSlots()[0];

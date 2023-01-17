@@ -9,9 +9,12 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AdvBlastFurnaceLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BlastFurnaceLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BlastFurnaceLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.StateView;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -33,29 +36,35 @@ public class BlastFurnaceMenu extends IEContainerMenu
 	public final GetterAndSetter<Boolean> rightHeater;
 
 	public static BlastFurnaceMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, BlastFurnaceBlockEntity<?> be
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
+		final State state = ctx.getState();
 		return new BlastFurnaceMenu(
-				blockCtx(type, id, be), invPlayer,
-				new ItemStackHandler(be.getInventory()), be.stateView,
-				heaterActive(be, true), heaterActive(be, false)
+				multiblockCtx(type, id, ctx), invPlayer,
+				state.getInventory(), state.getStateView(),
+				GetterAndSetter.constant(false), GetterAndSetter.constant(false)
 		);
 	}
 
-	private static GetterAndSetter<Boolean> heaterActive(BlastFurnaceBlockEntity<?> be, boolean left)
+	public static BlastFurnaceMenu makeServerAdv(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<AdvBlastFurnaceLogic.State> ctx
+	)
 	{
-		if(be instanceof BlastFurnaceAdvancedBlockEntity advanced)
-			return GetterAndSetter.getterOnly(() -> advanced.getFromPreheater(left, h -> h.active, false));
-		else
-			return GetterAndSetter.getterOnly(() -> false);
+		final AdvBlastFurnaceLogic.State state = ctx.getState();
+		final IMultiblockLevel level = ctx.getLevel();
+		return new BlastFurnaceMenu(
+				multiblockCtx(type, id, ctx), invPlayer,
+				state.getInventory(), state.getStateView(),
+				state.preheaterActive(level, 0), state.preheaterActive(level, 1)
+		);
 	}
 
 	public static BlastFurnaceMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
 	{
 		return new BlastFurnaceMenu(
 				clientCtx(type, id), invPlayer,
-				new ItemStackHandler(BlastFurnaceBlockEntity.NUM_SLOTS),
+				new ItemStackHandler(BlastFurnaceLogic.NUM_SLOTS),
 				new SimpleContainerData(StateView.NUM_SLOTS),
 				GetterAndSetter.standalone(false), GetterAndSetter.standalone(false)
 		);

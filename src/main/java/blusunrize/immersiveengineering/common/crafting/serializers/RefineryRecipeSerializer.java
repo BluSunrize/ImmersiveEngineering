@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +30,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.REFINERY);
+		return IEMultiblockLogic.REFINERY.iconStack();
 	}
 
 	@Override

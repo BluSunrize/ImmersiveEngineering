@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
@@ -41,7 +41,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	{
 		super(helper, type, "block.immersiveengineering.arc_furnace");
 		setBackground(helper.createBlankDrawable(148, 54));
-		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, IEMultiblockLogic.ARC_FURNACE.iconStack()));
 		arrow = helper.drawableBuilder(JEIHelper.JEI_GUI, 19, 4, 24, 18).setTextureSize(128, 128).build();
 	}
 

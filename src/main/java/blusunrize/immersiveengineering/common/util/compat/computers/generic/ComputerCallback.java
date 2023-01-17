@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback.RemappedCallback;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Primitives;
@@ -27,11 +28,13 @@ public class ComputerCallback<T>
 	private final String name;
 	private final boolean isAsync;
 	private final Class<?> luaReturnType;
+	private final Function<T, ?> remapOwner;
 
-	private ComputerCallback(
-			Callback<T> owner, Method method, LuaTypeConverter converters
+	private <T2> ComputerCallback(
+			Callback<T2> owner, Method method, LuaTypeConverter converters, Function<T, T2> remapOwner
 	) throws IllegalAccessException
 	{
+		this.remapOwner = remapOwner;
 		this.caller = MethodHandles.lookup().unreflect(method).bindTo(owner);
 		Function<Object, Object[]> wrapResult;
 		Class<?> actualReturnType = method.getReturnType();
@@ -63,15 +66,17 @@ public class ComputerCallback<T>
 		return name;
 	}
 
-	public static <T> List<ComputerCallback<? super T>>
-	getInClass(Callback<T> provider, LuaTypeConverter converters) throws IllegalAccessException
+	public static <T, T2>
+	List<ComputerCallback<? super T>> getInClass(
+			Callback<T2> provider, LuaTypeConverter converters, Function<T, T2> remapArg
+	) throws IllegalAccessException
 	{
 		List<ComputerCallback<? super T>> callbacks = new ArrayList<>();
 		for(Method m : provider.getClass().getMethods())
 			if(m.isAnnotationPresent(ComputerCallable.class))
-				callbacks.add(new ComputerCallback<>(provider, m, converters));
-		for(Callback<? super T> extra : provider.getAdditionalCallbacks())
-			callbacks.addAll(getInClass(extra, converters));
+				callbacks.add(new ComputerCallback<>(provider, m, converters, remapArg));
+		for(RemappedCallback<? super T2, ?> extra : provider.getAdditionalCallbacks())
+			callbacks.addAll(extra.getCallbacks(converters, remapArg::apply));
 		Set<String> names = new HashSet<>();
 		for(ComputerCallback<?> cb : callbacks)
 			if(!names.add(cb.getName()))
@@ -97,7 +102,7 @@ public class ComputerCallback<T>
 			);
 		Object[] realArguments = new Object[arguments.length+1];
 		System.arraycopy(arguments, 0, realArguments, 1, arguments.length);
-		realArguments[0] = env;
+		realArguments[0] = new CallbackEnvironment<>(remapOwner.apply(env.object()), env.level());
 		for(int i = 0; i < arguments.length; ++i)
 		{
 			int realIndex = i+1;

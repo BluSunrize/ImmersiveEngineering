@@ -24,7 +24,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
+import blusunrize.immersiveengineering.api.utils.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

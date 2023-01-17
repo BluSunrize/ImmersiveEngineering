@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +27,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.ALLOY_SMELTER);
+		return IEMultiblockLogic.ALLOY_SMELTER.iconStack();
 	}
 
 	@Override

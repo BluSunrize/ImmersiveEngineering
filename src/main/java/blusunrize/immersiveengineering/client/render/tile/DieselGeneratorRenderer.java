@@ -8,54 +8,48 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
 
 import java.util.List;
 
-public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGeneratorBlockEntity>
+public class DieselGeneratorRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<DieselGeneratorLogic.State>>
 {
 	public static final String NAME = "diesel_gen_fan";
 	public static DynamicModel FAN;
 
 	@Override
-	public void render(DieselGeneratorBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MultiblockBlockEntityMaster<DieselGeneratorLogic.State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
-			return;
-
-		BlockPos blockPos = te.getBlockPos();
-		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.DIESEL_GENERATOR.get())
-			return;
-
 		matrixStack.pushPose();
 		matrixStack.translate(0, .6875, 0);
 		matrixStack.translate(0.5, 0, 0.5);
+		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
+		final Direction facing = helper.getContext().getLevel().getOrientation().front();
+		final State state = helper.getState();
 
 		matrixStack.mulPose(new Quaternionf().rotateAxis(
-				(te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks))*Mth.DEG_TO_RAD,
-				Vec3.atLowerCornerOf(te.getFacing().getNormal()).toVector3f()
+				(state.animation_fanRotation+(state.animation_fanRotationStep*partialTicks))*Mth.DEG_TO_RAD,
+				Vec3.atLowerCornerOf(facing.getNormal()).toVector3f()
 		));
 		matrixStack.translate(-0.5, 0, -0.5);
 
-		List<BakedQuad> quads = FAN.get().getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
-		rotateForFacing(matrixStack, te.getFacing());
-		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.solid()), matrixStack, combinedLightIn,
-				combinedOverlayIn);
+		List<BakedQuad> quads = FAN.getNullQuads();
+		rotateForFacing(matrixStack, facing);
+		RenderUtils.renderModelTESRFast(
+				quads, bufferIn.getBuffer(RenderType.solid()), matrixStack, combinedLightIn, combinedOverlayIn
+		);
 
 		matrixStack.popPose();
 	}

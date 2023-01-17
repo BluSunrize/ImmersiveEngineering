@@ -8,8 +8,10 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.StateView;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.MenuType;
@@ -24,11 +26,12 @@ public class AlloySmelterMenu extends IEContainerMenu
 	private final ContainerData stateView;
 
 	public static AlloySmelterMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, AlloySmelterBlockEntity be
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
+		final State state = ctx.getState();
 		return new AlloySmelterMenu(
-				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()), be.stateView
+				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.getStateView()
 		);
 	}
 
@@ -37,7 +40,7 @@ public class AlloySmelterMenu extends IEContainerMenu
 		return new AlloySmelterMenu(
 				clientCtx(type, id),
 				invPlayer,
-				new ItemStackHandler(AlloySmelterBlockEntity.NUM_SLOTS),
+				new ItemStackHandler(AlloySmelterLogic.NUM_SLOTS),
 				new SimpleContainerData(StateView.NUM_SLOTS)
 		);
 	}

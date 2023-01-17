@@ -49,11 +49,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBloc
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
-import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.*;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
@@ -83,6 +80,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
@@ -153,8 +151,6 @@ public class ClientProxy extends CommonProxy
 		ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
 		reloadableManager.registerReloadListener(handler);
 		reloadableManager.registerReloadListener(new ConnectionRenderer());
-
-		IEModelLayers.registerDefinitions();
 	}
 
 	@SubscribeEvent
@@ -238,9 +234,9 @@ public class ClientProxy extends CommonProxy
 		IEBlockEntitySound sound = tileSoundMap.get(pos);
 		if(sound==null&&tileActive)
 		{
-			if(tile instanceof ISoundBE&&mc().player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundBE)tile).getSoundRadiusSq())
+			if(tile instanceof ISoundBE soundBE&&mc().player.distanceToSqr(Vec3.atCenterOf(pos)) > soundBE.getSoundRadiusSq())
 				return;
-			sound = ClientUtils.generatePositionedIESound(soundEvent.get(), volume, pitch, true, 0, pos);
+			sound = ClientUtils.generatePositionedIESound(soundEvent.get(), volume, pitch, pos);
 			tileSoundMap.put(pos, sound);
 		}
 		else if(sound!=null&&(sound.donePlaying||!tileActive))
@@ -249,14 +245,6 @@ public class ClientProxy extends CommonProxy
 			mc().getSoundManager().stop(sound);
 			tileSoundMap.remove(pos);
 		}
-	}
-
-	@Override
-	public void stopTileSound(String soundName, BlockEntity tile)
-	{
-		IEBlockEntitySound sound = tileSoundMap.get(tile.getBlockPos());
-		if(sound!=null)
-			mc().getSoundManager().stop(sound);
 	}
 
 	@SubscribeEvent
@@ -416,6 +404,14 @@ public class ClientProxy extends CommonProxy
 
 	private static <T extends BlockEntity>
 	void registerBERenderNoContext(
+			RegisterRenderers event, Supplier<BlockEntityType<? extends T>> type, Supplier<BlockEntityRenderer<T>> render
+	)
+	{
+		ClientProxy.registerBERenderNoContext(event, type.get(), render);
+	}
+
+	private static <T extends BlockEntity>
+	void registerBERenderNoContext(
 			RegisterRenderers event, BlockEntityType<? extends T> type, Supplier<BlockEntityRenderer<T>> render
 	)
 	{
@@ -432,18 +428,18 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.CLOCHE.master(), ClocheRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.BLASTFURNACE_PREHEATER.master(), BlastFurnacePreheaterRenderer::new);
 		// MULTIBLOCKS
-		registerBERenderNoContext(event, IEBlockEntities.METAL_PRESS.master(), MetalPressRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.CRUSHER.master(), CrusherRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SAWMILL.master(), SawmillRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SILO.master(), SiloRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SQUEEZER.master(), SqueezerRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.MIXER.master(), MixerRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.METAL_PRESS.masterBE(), MetalPressRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.CRUSHER.masterBE(), CrusherRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.SAWMILL.masterBE(), SawmillRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.TANK.masterBE(), SheetmetalTankRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.SILO.masterBE(), SiloRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.SQUEEZER.masterBE(), SqueezerRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.DIESEL_GENERATOR.masterBE(), DieselGeneratorRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.BUCKET_WHEEL.masterBE(), BucketWheelRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.ARC_FURNACE.masterBE(), ArcFurnaceRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.AUTO_WORKBENCH.masterBE(), AutoWorkbenchRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.BOTTLING_MACHINE.masterBE(), BottlingMachineRenderer::new);
+		registerBERenderNoContext(event, IEMultiblockLogic.MIXER.masterBE(), MixerRenderer::new);
 		//WOOD
 		registerBERenderNoContext(event, IEBlockEntities.WATERMILL.master(), WatermillRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.WINDMILL.get(), WindmillRenderer::new);
@@ -461,7 +457,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	public static <C extends IEBaseContainerOld<?>, S extends Screen & MenuAccess<C>>
-	void registerTileScreen(BEContainer<?, C> type, ScreenConstructor<C, S> factory)
+	void registerTileScreen(ArgContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
 		MenuScreens.register(type.getType(), factory);
 	}

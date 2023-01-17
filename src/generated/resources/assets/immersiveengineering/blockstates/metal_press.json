@@ -1,21 +1,40 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,mirrored=false": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press_split",
       "uvlock": true,
       "y": 90
     },
-    "facing=north": {
+    "facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/metal_press_mirrored_split",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=north,mirrored=false": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press_split",
       "uvlock": true
     },
-    "facing=south": {
+    "facing=north,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/metal_press_mirrored_split",
+      "uvlock": true
+    },
+    "facing=south,mirrored=false": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press_split",
       "uvlock": true,
       "y": 180
     },
-    "facing=west": {
+    "facing=south,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/metal_press_mirrored_split",
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=west,mirrored=false": {
       "model": "immersiveengineering:block/metal_multiblock/metal_press_split",
+      "uvlock": true,
+      "y": 270
+    },
+    "facing=west,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/metal_press_mirrored_split",
       "uvlock": true,
       "y": 270
     }

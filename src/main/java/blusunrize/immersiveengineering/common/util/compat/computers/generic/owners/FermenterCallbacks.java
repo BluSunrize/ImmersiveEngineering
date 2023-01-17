@@ -8,21 +8,29 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.FermenterBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.SingleItemCallback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
 
-public class FermenterCallbacks extends MultiblockCallbackOwner<FermenterBlockEntity>
+public class FermenterCallbacks extends Callback<State>
 {
 	public FermenterCallbacks()
 	{
-		super(FermenterBlockEntity.class, "fermenter");
-		addAdditional(PoweredMBCallbacks.INSTANCE);
-		addAdditional(new TankCallbacks<>(te -> te.tanks[0], ""));
-		addAdditional(new InventoryCallbacks<>(te -> te.inventory, 0, 8, "input"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 9, "empty canisters"));
-		addAdditional(new SingleItemCallback<>(te -> te.inventory, 10, "filled canisters"));
+		addAdditional(MBEnergyCallbacks.INSTANCE, State::getEnergy);
+		addAdditional(new TankCallbacks<>(State::getTank, ""));
+		addAdditional(InventoryCallbacks.fromHandler(State::getInventory, 0, 8, "input"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 9, "empty canisters"));
+		addAdditional(SingleItemCallback.fromHandler(State::getInventory, 10, "filled canisters"));
+	}
+
+	@ComputerCallable
+	public boolean isRunning(CallbackEnvironment<State> env)
+	{
+		return env.object().active;
 	}
 }

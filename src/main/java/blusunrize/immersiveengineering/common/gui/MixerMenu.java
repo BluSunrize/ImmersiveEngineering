@@ -8,12 +8,13 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixingProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -36,24 +37,25 @@ import java.util.List;
 public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContainer
 {
 	public static MixerMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, MixerBlockEntity be
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
 	)
 	{
+		final State state = ctx.getState();
 		final GetterAndSetter<List<SlotProgress>> progress = GetterAndSetter.getterOnly(() -> {
 			List<SlotProgress> result = new ArrayList<>();
-			for(final MultiblockProcess<MixerRecipe> process : be.processQueue)
-				if(process instanceof MultiblockProcessInMachine<MixerRecipe> inMachine)
+			for(final MultiblockProcess<?, ?> process : state.processor.getQueue())
+				if(process instanceof MixingProcess inMachine)
 				{
-					final float mod = 1-(process.processTick/(float)process.getMaxTicks(be.getLevel()));
+					final float mod = 1-(process.processTick/(float)process.getMaxTicks(ctx.getLevel().getRawLevel()));
 					for(final int inputSlot : inMachine.getInputSlots())
 						result.add(new SlotProgress(inputSlot, mod));
 				}
 			return result;
 		});
 		return new MixerMenu(
-				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.inventory), be.energyStorage, progress,
-				GetterAndSetter.getterOnly(() -> be.tank.fluids),
-				new GetterAndSetter<>(() -> be.outputAll, b -> be.outputAll = b)
+				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.energy, progress,
+				GetterAndSetter.getterOnly(() -> state.tank.fluids),
+				new GetterAndSetter<>(() -> state.outputAll, b -> state.outputAll = b)
 		);
 	}
 
@@ -62,8 +64,8 @@ public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContai
 		return new MixerMenu(
 				clientCtx(type, id),
 				invPlayer,
-				new ItemStackHandler(MixerBlockEntity.NUM_SLOTS),
-				new MutableEnergyStorage(MixerBlockEntity.ENERGY_CAPACITY),
+				new ItemStackHandler(MixerLogic.NUM_SLOTS),
+				new MutableEnergyStorage(MixerLogic.ENERGY_CAPACITY),
 				GetterAndSetter.standalone(List.of()),
 				GetterAndSetter.standalone(List.of()),
 				GetterAndSetter.standalone(false)
@@ -105,7 +107,7 @@ public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContai
 	@Override
 	public boolean canInsert(ItemStack stack, int slotNumber, Slot slotObject)
 	{
-		for(final var progress : this.progress.get())
+		for(final SlotProgress progress : this.progress.get())
 			if(progress.slot==slotNumber)
 				return false;
 		return true;

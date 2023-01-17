@@ -8,16 +8,24 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.SawmillBlockEntity;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.SingleItemCallback;
 
-public class SawmillCallbacks extends MultiblockCallbackOwner<SawmillBlockEntity>
+public class SawmillCallbacks extends Callback<State>
 {
 	public SawmillCallbacks()
 	{
-		super(SawmillBlockEntity.class, "sawmill");
-		addAdditional(PoweredMBCallbacks.INSTANCE);
+		addAdditional(MBEnergyCallbacks.INSTANCE, State::getEnergy);
 		addAdditional(new SingleItemCallback<>(te -> te.sawblade, "sawblade"));
+	}
+
+	@ComputerCallable
+	public boolean isRunning(CallbackEnvironment<State> env)
+	{
+		return env.object().active;
 	}
 }

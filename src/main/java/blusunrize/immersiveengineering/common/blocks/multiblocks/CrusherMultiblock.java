@@ -9,7 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,8 +19,8 @@ public class CrusherMultiblock extends IETemplateMultiblock
 	public CrusherMultiblock()
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/crusher"),
-				new BlockPos(2, 1, 1), new BlockPos(2, 1, 2), new BlockPos(5, 3, 3),
-				Multiblocks.CRUSHER);
+				CrusherLogic.MASTER_OFFSET, new BlockPos(2, 1, 2), new BlockPos(5, 3, 3),
+				IEMultiblockLogic.CRUSHER);
 	}
 
 	@Override

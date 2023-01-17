@@ -21,9 +21,6 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
-import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SimpleSkyhookProvider;
 import blusunrize.immersiveengineering.common.items.DrillItem;
@@ -75,7 +72,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -83,6 +79,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class EventHandler
 {
@@ -211,19 +208,19 @@ public class EventHandler
 		}
 	}
 
-	public static Map<UUID, CrusherBlockEntity> crusherMap = new HashMap<>();
+	public static Map<UUID, Consumer<ItemStack>> crusherMap = new HashMap<>();
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingDropsLowest(LivingDropsEvent event)
 	{
 		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getMsgId()))
 		{
-			CrusherBlockEntity crusher = crusherMap.get(event.getEntity().getUUID());
+			final Consumer<ItemStack> crusher = crusherMap.get(event.getEntity().getUUID());
 			if(crusher!=null)
 			{
 				for(ItemEntity item : event.getDrops())
 					if(item!=null&&!item.getItem().isEmpty())
-						crusher.doProcessOutput(item.getItem());
+						crusher.accept(item.getItem());
 				crusherMap.remove(event.getEntity().getUUID());
 				event.setCanceled(true);
 			}
@@ -401,7 +398,8 @@ public class EventHandler
 		}
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	// TODO test if multiblocks are still bad when broken with a drill or similar
+	/*@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void breakLast(BlockEvent.BreakEvent event)
 	{
 		if(event.getState().getBlock() instanceof IEMultiblockBlock)
@@ -410,7 +408,7 @@ public class EventHandler
 			if(te instanceof MultiblockPartBlockEntity<?> multiblockBE)
 				multiblockBE.onlyLocalDissassembly = event.getLevel().getLevelData().getGameTime();
 		}
-	}
+	}*/
 
 	@SubscribeEvent
 	public void onLivingDeath(LivingDeathEvent event)

@@ -11,6 +11,11 @@ package blusunrize.immersiveengineering.api.utils.shapes;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.List;
 
 public class ShapeUtils
 {
@@ -28,20 +33,21 @@ public class ShapeUtils
 
 	public static Vec3 rotate(Vec3 in, Direction to)
 	{
-		switch(to)
-		{
-			case NORTH:
-				return in;
-			case SOUTH:
-				return new Vec3(-in.x(), in.y(), -in.z());
-			case EAST:
-				return new Vec3(-in.z(), in.y(), in.x());
-			case WEST:
-				return new Vec3(in.z(), in.y(), -in.x());
-			case DOWN:
-			case UP:
-			default:
-				throw new RuntimeException("Unexpected direction: "+to);
-		}
+		return switch(to)
+				{
+					case NORTH -> in;
+					case SOUTH -> new Vec3(-in.x(), in.y(), -in.z());
+					case EAST -> new Vec3(-in.z(), in.y(), in.x());
+					case WEST -> new Vec3(in.z(), in.y(), -in.x());
+					case DOWN, UP -> throw new RuntimeException("Unexpected direction: "+to);
+				};
+	}
+
+	public static VoxelShape join(List<AABB> boxes)
+	{
+		VoxelShape ret = Shapes.empty();
+		for(AABB aabb : boxes)
+			ret = Shapes.joinUnoptimized(ret, Shapes.create(aabb), BooleanOp.OR);
+		return ret.optimize();
 	}
 }

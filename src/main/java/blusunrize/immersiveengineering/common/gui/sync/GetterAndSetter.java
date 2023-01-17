@@ -41,6 +41,12 @@ public record GetterAndSetter<T>(Supplier<T> getter, Consumer<T> setter) impleme
 		return result;
 	}
 
+	public static <T>
+	GetterAndSetter<T> constant(T value)
+	{
+		return getterOnly(() -> value);
+	}
+
 	public void set(T newValue)
 	{
 		setter.accept(newValue);

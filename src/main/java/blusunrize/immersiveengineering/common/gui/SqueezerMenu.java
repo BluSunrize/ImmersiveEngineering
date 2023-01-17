@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.common.blocks.metal.SqueezerBlockEntity;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic.State;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,10 +28,13 @@ public class SqueezerMenu extends IEContainerMenu
 	public final IMutableEnergyStorage energy;
 	public final FluidTank tank;
 
-	public static SqueezerMenu makeServer(MenuType<?> type, int id, Inventory invPlayer, SqueezerBlockEntity be)
+	public static SqueezerMenu makeServer(
+			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+	)
 	{
+		final State state = ctx.getState();
 		return new SqueezerMenu(
-				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.inventory), be.energyStorage, be.tanks[0]
+				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.getEnergy(), state.getTank()
 		);
 	}
 
@@ -38,9 +43,9 @@ public class SqueezerMenu extends IEContainerMenu
 		return new SqueezerMenu(
 				clientCtx(type, id),
 				invPlayer,
-				new ItemStackHandler(SqueezerBlockEntity.NUM_SLOTS),
-				new MutableEnergyStorage(SqueezerBlockEntity.ENERGY_CAPACITY),
-				new FluidTank(SqueezerBlockEntity.TANK_CAPACITY)
+				new ItemStackHandler(SqueezerLogic.NUM_SLOTS),
+				new MutableEnergyStorage(SqueezerLogic.ENERGY_CAPACITY),
+				new FluidTank(SqueezerLogic.TANK_CAPACITY)
 		);
 	}
 

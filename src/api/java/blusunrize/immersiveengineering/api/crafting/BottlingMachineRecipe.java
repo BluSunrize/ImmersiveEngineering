@@ -9,25 +9,19 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -109,7 +103,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		return list;
 	}
 
-	public static BottlingMachineRecipe findRecipe(Level level, ItemStack[] input, FluidStack fluid)
+	public static BottlingMachineRecipe findRecipe(Level level, FluidStack fluid, ItemStack... input)
 	{
 		if(fluid.isEmpty())
 			return null;

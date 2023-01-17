@@ -22,26 +22,25 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.RecipeMatcher;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingContainer>>
 {
 	@Override
-	public RecipeQuery[] getQueriedInputs(Recipe<CraftingContainer> recipe, NonNullList<ItemStack> input, Level world)
+	public List<RecipeQuery> getQueriedInputs(Recipe<CraftingContainer> recipe, NonNullList<ItemStack> input, Level world)
 	{
 		NonNullList<Ingredient> ingred = recipe.getIngredients();
 		// Check that the ingredients roughly match what the recipe actually requires.
 		// This is necessary to prevent infinite crafting for recipes like FireworkRocketRecipe which don't return
 		// meaningful values in getIngredients.
-		NonNullList<Predicate<ItemStack>> ingredientsForMatching = NonNullList.create();
+		NonNullList<Ingredient> ingredientsForMatching = NonNullList.create();
 		List<ItemStack> inputList = input.subList(0, input.size()-1);
 		for(Ingredient i : ingred)
 			if(!i.isEmpty())
 				ingredientsForMatching.add(i);
-		final int numNonEmpty = ingredientsForMatching.size();
 		while(ingredientsForMatching.size() < inputList.size())
-			ingredientsForMatching.add(ItemStack::isEmpty);
+			ingredientsForMatching.add(Ingredient.EMPTY);
 		ForgeHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
 		int[] ingredientAssignment = RecipeMatcher.findMatches(inputList, ingredientsForMatching);
 		ForgeHooks.setCraftingPlayer(null);
@@ -51,26 +50,23 @@ public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingCo
 				Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input)
 		);
 
-		// - 1: Input list contains the output slot
-		RecipeQuery[] query = new RecipeQuery[input.size()-1];
-		if(ingredientAssignment!=null)
-			// If the ingredients provided by the recipe are plausible request those
-			// Try to request each ingredient at the index where it is in the input pattern, this is needed for
-			// some CraftTweaker recipes
-			for(int stackIndex = 0; stackIndex < ingredientAssignment.length; stackIndex++)
-			{
-				int ingredIndex = ingredientAssignment[stackIndex];
-				if(ingredIndex < numNonEmpty)
-					query[stackIndex] = AssemblerHandler.createQueryFromIngredient(
-							(Ingredient)ingredientsForMatching.get(ingredIndex),
-							remains.get(stackIndex)
-					);
-			}
-		else
-			// Otherwise request the exact stacks used in the input
-			for(int i = 0; i < query.length; i++)
-				if(!input.get(i).isEmpty())
-					query[i] = AssemblerHandler.createQueryFromItemStack(input.get(i), remains.get(i));
-		return query;
+		List<RecipeQuery> queries = new ArrayList<>();
+		for(int i = 0; i < inputList.size(); i++)
+		{
+			final RecipeQuery query;
+			if(ingredientAssignment!=null)
+				// If the ingredients provided by the recipe are plausible request those
+				// Try to request each ingredient at the index where it is in the input pattern, this is needed for
+				// some CraftTweaker recipes
+				query = AssemblerHandler.createQueryFromIngredient(
+						ingredientsForMatching.get(ingredientAssignment[i]), remains.get(i)
+				);
+			else
+				// Otherwise request the exact stacks used in the input
+				query = AssemblerHandler.createQueryFromItemStack(input.get(i), remains.get(i));
+			if(query!=null)
+				queries.add(query);
+		}
+		return queries;
 	}
 }

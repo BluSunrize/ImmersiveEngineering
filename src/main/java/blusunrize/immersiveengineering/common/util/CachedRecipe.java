@@ -37,13 +37,29 @@ public class CachedRecipe
 	}
 
 	public static <K1, K2, R>
-	Supplier<R> cached(Function3<K1, K2, R, R> getRecipeWithHint, Supplier<K1> get1, Supplier<K2> get2) {
+	Supplier<R> cached(Function3<K1, K2, R, R> getRecipeWithHint, Supplier<K1> get1, Supplier<K2> get2)
+	{
 		BiFunction<K1, K2, R> cached = cached(getRecipeWithHint);
 		return () -> cached.apply(get1.get(), get2.get());
 	}
 
 	public static <K1, K2, R>
-	BiFunction<K1, K2, R> cached(Function3<K1, K2, R, R> getRecipeWithHint) {
+	Function<K1, R> cachedSkip1(Function3<K1, K2, R, R> getRecipeWithHint, Supplier<K2> get2)
+	{
+		BiFunction<K1, K2, R> cached = cached(getRecipeWithHint);
+		return k1 -> cached.apply(k1, get2.get());
+	}
+
+	public static <K1, K2, K3, R>
+	Function<K1, R> cachedSkip1(Function4<K1, K2, K3, R, R> getRecipeWithHint, Supplier<K2> get2, Supplier<K3> get3)
+	{
+		Function3<K1, K2, K3, R> cached = cached(getRecipeWithHint);
+		return k1 -> cached.apply(k1, get2.get(), get3.get());
+	}
+
+	public static <K1, K2, R>
+	BiFunction<K1, K2, R> cached(Function3<K1, K2, R, R> getRecipeWithHint)
+	{
 		Mutable<R> cached = new MutableObject<>();
 		return (k1, k2) -> {
 			R result = getRecipeWithHint.apply(k1, k2, cached.getValue());
