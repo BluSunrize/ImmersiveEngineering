@@ -65,7 +65,6 @@ import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
@@ -136,6 +135,7 @@ public class IEContent
 		IELootFunctions.init();
 		IEArgumentTypes.init();
 		IEBannerPatterns.init();
+		TemplateWorld.init();
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
