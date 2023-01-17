@@ -91,7 +91,8 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	{
 		Random random = new Random(seed);
 		var output = this.output.get();
-		NonNullList<ItemStack> actualOutput = NonNullList.withSize(output.size(), ItemStack.EMPTY);
+		int remainingIndex = output.size();
+		NonNullList<ItemStack> actualOutput = NonNullList.withSize(output.size() + secondaryOutputs.size() , ItemStack.EMPTY);
 		for(int i = 0; i < output.size(); ++i)
 			actualOutput.set(i, output.get(i).copy());
 		for(StackWithChance secondary : secondaryOutputs)
@@ -106,8 +107,10 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 					remaining = ItemStack.EMPTY;
 					break;
 				}
-			if(!remaining.isEmpty())
-				actualOutput.add(remaining);
+			if(!remaining.isEmpty()) {
+				actualOutput.set(remainingIndex, remaining);
+				remainingIndex++;
+			}
 		}
 		return actualOutput;
 	}
