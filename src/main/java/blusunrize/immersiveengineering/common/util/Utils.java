@@ -509,7 +509,7 @@ public class Utils
 
 	public static Fluid getRelatedFluid(Level w, BlockPos pos)
 	{
-		return w.getBlockState(pos).getFluidState().getType();
+		return w.getFluidState(pos).getType();
 	}
 
 	//Stolen from BucketItem

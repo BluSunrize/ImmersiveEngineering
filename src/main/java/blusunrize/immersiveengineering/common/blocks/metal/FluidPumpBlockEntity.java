@@ -36,7 +36,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
@@ -45,7 +45,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -80,9 +79,9 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 	}
 
-	public FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME);
-	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
-	public boolean placeCobble = true;
+	private final FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME);
+	private final MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
+	private boolean placeCobble = true;
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
 			this, be -> be.energyCap, FluidPumpBlockEntity::master, registerEnergyInput(energyStorage)
 	);
@@ -91,7 +90,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	private Fluid searchFluid = null;
 	private final List<BlockPos> openList = new ArrayList<>();
 	private final List<BlockPos> closedList = new ArrayList<>();
-	private final List<BlockPos> checked = new ArrayList<>();
+	private final Set<BlockPos> checked = new HashSet<>();
 
 	public FluidPumpBlockEntity(BlockEntityType<FluidPumpBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -136,25 +135,8 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 						int out = this.outputFluid(drain, FluidAction.EXECUTE);
 						input.drain(out, FluidAction.EXECUTE);
 					}
-					else if(level.getGameTime()%20==((getBlockPos().getX()^getBlockPos().getZ())&19)
-							&&level.getFluidState(getBlockPos().relative(f)).getType().is(FluidTags.WATER)
-							&&IEServerConfig.MACHINES.pump_infiniteWater.get()
-							&&tank.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), FluidAction.SIMULATE)==FluidType.BUCKET_VOLUME
-							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
-					{
-						int connectedSources = 0;
-						for(Direction f2 : DirectionUtils.BY_HORIZONTAL_INDEX)
-						{
-							FluidState waterState = level.getFluidState(getBlockPos().relative(f).relative(f2));
-							if(waterState.getType().is(FluidTags.WATER)&&waterState.isSource())
-								connectedSources++;
-						}
-						if(connectedSources > 1)
-						{
-							this.energyStorage.extractEnergy(consumption, false);
-							this.tank.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), FluidAction.EXECUTE);
-						}
-					}
+					else
+						gatherInfiniteFluidFromWorld(f);
 				}
 			if(level.getGameTime()%40==(((getBlockPos().getX()^getBlockPos().getZ()))%40+40)%40)
 			{
@@ -190,6 +172,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		openList.clear();
 		closedList.clear();
 		checked.clear();
+		searchFluid = null;
 		for(Direction f : Direction.values())
 			if(sideConfig.get(f)==IOSideConfig.INPUT)
 			{
@@ -198,38 +181,68 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			}
 	}
 
+	private void gatherInfiniteFluidFromWorld(Direction gatherFrom)
+	{
+		if(level.getGameTime()%20!=Mth.positiveModulo(getBlockPos().getX()^getBlockPos().getZ(), 20))
+			return;
+		int consumption = IEServerConfig.MACHINES.pump_consumption.get();
+		if(this.energyStorage.extractEnergy(consumption, true) < consumption)
+			return;
+		final BlockPos neighborPos = getBlockPos().relative(gatherFrom);
+		final FluidState neighborFluidState = level.getFluidState(neighborPos);
+		if(!neighborFluidState.isSource()||!neighborFluidState.canConvertToSource(getLevelNonnull(), neighborPos))
+			return;
+		final Fluid fluid = neighborFluidState.getType();
+		final FluidStack gatheredFluid = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
+		if(tank.fill(gatheredFluid, FluidAction.SIMULATE)!=gatheredFluid.getAmount())
+			return;
+		int connectedSources = 0;
+		for(Direction sourceNeighbor : DirectionUtils.BY_HORIZONTAL_INDEX)
+		{
+			FluidState neighboringSource = level.getFluidState(neighborPos.relative(sourceNeighbor));
+			if(neighboringSource.getType()==fluid&&neighboringSource.isSource())
+				connectedSources++;
+		}
+		if(connectedSources > 1)
+		{
+			this.energyStorage.extractEnergy(consumption, false);
+			this.tank.fill(gatheredFluid, FluidAction.EXECUTE);
+		}
+	}
+
 	public void checkAreaTick()
 	{
-		boolean infiniteWater = IEServerConfig.MACHINES.pump_infiniteWater.get();
-		BlockPos next = null;
 		final int closedListMax = 2048;
 		int timeout = 0;
 		while(timeout < 64&&closedList.size() < closedListMax&&!openList.isEmpty())
 		{
 			timeout++;
-			next = openList.get(0);
-			if(!checked.contains(next))
-			{
-				Fluid fluid = Utils.getRelatedFluid(getLevelNonnull(), next);
-				if(fluid!=Fluids.EMPTY&&(fluid!=Fluids.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
-				{
-					if(searchFluid==null)
-						searchFluid = fluid;
+			BlockPos next = openList.remove(0);
+			if(!checked.add(next))
+				continue;
+			final FluidState fluidState = getLevelNonnull().getFluidState(next);
+			if(fluidState.isEmpty()||fluidState.canConvertToSource(getLevelNonnull(), next))
+				continue;
+			Fluid fluid = fluidState.getType();
+			if(searchFluid!=null&&fluid!=searchFluid)
+				continue;
+			if(searchFluid==null)
+				searchFluid = fluid;
 
-					if(!Utils.drainFluidBlock(level, next, FluidAction.SIMULATE).isEmpty())
-						closedList.add(next);
-					for(Direction f : Direction.values())
-					{
-						BlockPos pos2 = next.relative(f);
-						fluid = Utils.getRelatedFluid(level, pos2);
-						if(fluid!=Fluids.EMPTY&&!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&(fluid!=Fluids.WATER
-								||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
-							openList.add(pos2);
-					}
-				}
-				checked.add(next);
+			if(!Utils.drainFluidBlock(level, next, FluidAction.SIMULATE).isEmpty())
+				closedList.add(next);
+			for(Direction f : Direction.values())
+			{
+				BlockPos neighborPos = next.relative(f);
+				if(checked.contains(neighborPos))
+					continue;
+				FluidState neighborFluidState = getLevelNonnull().getFluidState(neighborPos);
+				if(neighborFluidState.isEmpty())
+					continue;
+				Fluid neighborFluid = Utils.getRelatedFluid(level, neighborPos);
+				if(!neighborFluidState.canConvertToSource(getLevelNonnull(), neighborPos)&&neighborFluid==searchFluid)
+					openList.add(neighborPos);
 			}
-			openList.remove(0);
 		}
 		if(closedList.size() >= closedListMax||openList.isEmpty())
 			checkingArea = false;
