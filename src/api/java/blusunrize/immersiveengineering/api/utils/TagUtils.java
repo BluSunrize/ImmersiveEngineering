@@ -18,6 +18,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
@@ -117,5 +118,10 @@ public class TagUtils
 	public static TagKey<EntityType<?>> createEntityWrapper(ResourceLocation name)
 	{
 		return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, name);
+	}
+
+	public static TagKey<Biome> createBiomeWrapper(ResourceLocation name)
+	{
+		return TagKey.create(Registry.BIOME_REGISTRY, name);
 	}
 }

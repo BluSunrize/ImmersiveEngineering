@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
@@ -27,11 +28,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -61,7 +65,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class IEWorldGen
 {
-	public static Map<String, Holder<PlacedFeature>> features = new HashMap<>();
+	public static Map<String, Pair<Holder<PlacedFeature>, TagKey<Biome>>> features = new HashMap<>();
 	public static Map<String, Pair<VeinType, List<TargetBlockState>>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
@@ -75,7 +79,7 @@ public class IEWorldGen
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, type);
 		String name = type.getVeinName();
 		Holder<PlacedFeature> feature = register(rl(name), IE_CONFIG_ORE, cfg, getOreModifiers(type));
-		features.put(name, feature);
+		features.put(name, Pair.of(feature, BiomeTags.IS_OVERWORLD));
 		retroFeatures.put(name, Pair.of(type, targetList));
 	}
 
@@ -86,7 +90,7 @@ public class IEWorldGen
 				//TODO does this do what I want?
 				rl(path), MINERAL_VEIN_FEATURE, new NoneFeatureConfiguration(), List.of()
 		);
-		features.put(path, veinFeature);
+		features.put(path, Pair.of(veinFeature, IETags.hasMineralVeins));
 	}
 
 	public static void onConfigUpdated()

@@ -15,7 +15,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -43,8 +43,9 @@ public class BiomeModifierProvider
 		{
 			final ResourceLocation nameRL = ImmersiveEngineering.rl(name);
 			final ResourceKey<PlacedFeature> key = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, nameRL);
+			TagKey<Biome> biomeTag = IEWorldGen.features.get(name).getSecond();
 			modifiers.put(nameRL, new AddFeaturesBiomeModifier(
-					new Named<>(biomeReg, BiomeTags.IS_OVERWORLD),
+					new Named<>(biomeReg, biomeTag),
 					HolderSet.direct(featureReg.getHolderOrThrow(key)),
 					Decoration.UNDERGROUND_ORES
 			));
