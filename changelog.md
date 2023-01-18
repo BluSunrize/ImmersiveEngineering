@@ -1,3 +1,7 @@
+##### Version 1.19.2-9.1.1-pre
+- Fix crashing when opening the manual with Lithium installed (Malte)
+- Fix mineral veins only generating in the overworld (BluSunrize)
+
 ##### Version 1.19.2-9.1.0-156
 - All features from 8.3.0
 - Allow dynamic addition of Blueprints, not possible on 1.18 (Malte)
