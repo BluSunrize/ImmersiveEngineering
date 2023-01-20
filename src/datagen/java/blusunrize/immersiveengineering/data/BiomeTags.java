@@ -11,25 +11,32 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 
-public class BiomeTags extends ForgeRegistryTagsProvider<Biome>
+public class BiomeTags extends TagsProvider<Biome>
 {
 
-	public BiomeTags(DataGenerator generatorIn, @Nullable ExistingFileHelper existingFileHelper)
+	public BiomeTags(
+			PackOutput output,
+			CompletableFuture<HolderLookup.Provider> lookup,
+			@Nullable ExistingFileHelper existingFileHelper
+	)
 	{
-		super(generatorIn, ForgeRegistries.BIOMES, Lib.MODID, existingFileHelper);
+		super(output, Registries.BIOME, lookup, Lib.MODID, existingFileHelper);
 	}
 
 	@Override
-	protected void addTags()
+	protected void addTags(Provider provider)
 	{
 		tag(IETags.hasMineralVeins)
 				.addTag(net.minecraft.tags.BiomeTags.IS_OVERWORLD)

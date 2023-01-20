@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
@@ -32,6 +33,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -65,7 +67,7 @@ public class WorldGenerationProvider
 			oreFeatures.put(type, typeReg);
 		}
 		final Registrations registrations = new Registrations(
-				oreFeatures, new FeatureRegistration(ImmersiveEngineering.rl("mineral_veins"))
+				oreFeatures, new FeatureRegistration(ImmersiveEngineering.rl("mineral_veins"), IETags.hasMineralVeins)
 		);
 		final RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
 		registryBuilder.add(Registries.CONFIGURED_FEATURE, ctx -> bootstrapConfiguredFeatures(ctx, registrations));
@@ -119,7 +121,7 @@ public class WorldGenerationProvider
 			ctx.register(
 					ResourceKey.create(Keys.BIOME_MODIFIERS, entry.name),
 					new AddFeaturesBiomeModifier(
-							biomeReg.getOrThrow(BiomeTags.IS_OVERWORLD),
+							biomeReg.getOrThrow(entry.inBiomes),
 							HolderSet.direct(entry.placed),
 							Decoration.UNDERGROUND_ORES
 					)
@@ -131,10 +133,17 @@ public class WorldGenerationProvider
 		public Reference<ConfiguredFeature<?, ?>> configured;
 		public Reference<PlacedFeature> placed;
 		public final ResourceLocation name;
+		public final TagKey<Biome> inBiomes;
 
 		private FeatureRegistration(ResourceLocation name)
 		{
+			this(name, BiomeTags.IS_OVERWORLD);
+		}
+
+		private FeatureRegistration(ResourceLocation name, TagKey<Biome> inBiomes)
+		{
 			this.name = name;
+			this.inBiomes = inBiomes;
 		}
 
 		private void registerConfigured(

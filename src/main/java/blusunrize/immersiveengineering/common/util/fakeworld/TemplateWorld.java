@@ -9,14 +9,13 @@
 package blusunrize.immersiveengineering.common.util.fakeworld;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.core.*;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -44,10 +43,6 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Scoreboard;
 import net.minecraft.world.ticks.LevelTickAccess;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,17 +51,15 @@ import java.util.function.Predicate;
 
 public class TemplateWorld extends Level
 {
-	private static final DeferredRegister<DimensionType> REGISTER = DeferredRegister.create(
-			Registries.DIMENSION_TYPE, Lib.MODID
+	private static final DimensionType DIMENSION_TYPE = new DimensionType(
+			OptionalLong.empty(), false, false, false, false, 1, false, false, 0, 256, 256,
+			BlockTags.INFINIBURN_OVERWORLD, new ResourceLocation("missingno"), 0,
+			new DimensionType.MonsterSettings(true, false, ConstantInt.ZERO, 0)
 	);
+	private static final ResourceLocation DIMENSION_TYPE_ID = ImmersiveEngineering.rl("multiblock_preview");
 
-	private static final RegistryObject<DimensionType> STRUCTURE_DIMENSION = REGISTER.register(
-			"multiblock_preview",
-			() -> new DimensionType(
-					OptionalLong.empty(), false, false, false, false, 1, false, false, 0, 256, 256,
-					BlockTags.INFINIBURN_OVERWORLD, new ResourceLocation("missingno"), 0,
-					new DimensionType.MonsterSettings(true, false, ConstantInt.ZERO, 0)
-			)
+	private static final Holder<DimensionType> STRUCTURE_DIMENSION = new FakeRegisteredHolder<>(
+			DIMENSION_TYPE, ResourceKey.create(Registries.DIMENSION_TYPE, DIMENSION_TYPE_ID)
 	);
 
 	private final Map<String, MapItemSavedData> maps = new HashMap<>();
@@ -77,15 +70,10 @@ public class TemplateWorld extends Level
 	public TemplateWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow)
 	{
 		super(
-				new FakeSpawnInfo(), Level.OVERWORLD, STRUCTURE_DIMENSION.getHolder().orElseThrow(),
+				new FakeSpawnInfo(), Level.OVERWORLD, STRUCTURE_DIMENSION,
 				() -> InactiveProfiler.INSTANCE, true, false, 0, 0
 		);
 		this.chunkProvider = new TemplateChunkProvider(blocks, this, shouldShow);
-	}
-
-	public static void init()
-	{
-		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 
 	@Override
@@ -231,5 +219,11 @@ public class TemplateWorld extends Level
 	public int getBrightness(@Nonnull LightLayer lightType, @Nonnull BlockPos pos)
 	{
 		return 15;
+	}
+
+	@Override
+	public ResourceKey<DimensionType> dimensionTypeId()
+	{
+		throw new UnsupportedOperationException("The dimension type for this \"world\" is not actually registered!");
 	}
 }

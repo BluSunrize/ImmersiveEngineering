@@ -137,7 +137,6 @@ public class IEContent
 		IELootFunctions.init();
 		IEArgumentTypes.init();
 		IEBannerPatterns.init();
-		TemplateWorld.init();
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;

@@ -118,6 +118,6 @@ public class TagUtils
 
 	public static TagKey<Biome> createBiomeWrapper(ResourceLocation name)
 	{
-		return TagKey.create(Registry.BIOME_REGISTRY, name);
+		return TagKey.create(Registries.BIOME, name);
 	}
 }
