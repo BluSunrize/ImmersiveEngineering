@@ -24,7 +24,7 @@ import java.util.Optional;
 public class BlockEntityMixin
 {
 	@CaptureOwner(
-			method = "loadStatic",
+			method = {"loadStatic", "m_155241_"},
 			at = @At(
 					value = "INVOKE",
 					target = "Ljava/util/Optional;map(Ljava/util/function/Function;)Ljava/util/Optional;",
