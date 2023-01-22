@@ -55,9 +55,10 @@ public class RebuildTaskMixin
 					@At(value = "INVOKE", target = "Lnet/optifine/override/ChunkCacheOF;m_8055_(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),
 			}
 	)
-	public void extractRegion(BlockAndTintGetter region)
+	public BlockAndTintGetter extractRegion(BlockAndTintGetter region)
 	{
 		immersiveengineering$regionCopy = region;
+		return region;
 	}
 
 	@ModifyVariable(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/RandomSource;create()Lnet/minecraft/util/RandomSource;"))
