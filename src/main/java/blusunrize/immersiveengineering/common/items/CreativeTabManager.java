@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -33,6 +34,7 @@ public class CreativeTabManager
 		TAB = ev.registerCreativeModeTab(
 				ImmersiveEngineering.rl("main"),
 				b -> b.icon(() -> IEItems.Misc.WIRE_COILS.get(WireType.COPPER).get().getDefaultInstance())
+						.title(Component.literal(ImmersiveEngineering.MODNAME))
 		);
 	}
 
