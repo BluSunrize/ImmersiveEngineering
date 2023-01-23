@@ -79,8 +79,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	public List<SawmillProcess> sawmillProcessQueue = new ArrayList<>();
 	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
 	private int combinedLogs = 0;
-	//Temporary counters for making sure sounds tick properly
-	private boolean flipTick = false;
 
 	public SawmillBlockEntity(BlockEntityType<SawmillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -153,9 +151,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 						.filter(p -> p.isSawing(level))
 						.findFirst();
 
-				//Handle sounds for both empty & full, and flip the tick for when the sound is supposed to change
-				if(process.isPresent()!=flipTick)
-					ImmersiveEngineering.proxy.stopTileSound(null, this);
+				//Handle sounds for both empty & full
 				if(process.isPresent())
 					ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_full, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
 				else
@@ -177,9 +173,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 							posX, posY, posZ, vX, vY, vZ
 					);
 				}
-
-				//Flip sound-detection tick
-				flipTick = process.isPresent();
 			}
 		}
 
