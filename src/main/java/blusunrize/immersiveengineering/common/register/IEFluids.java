@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.register;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.fluids.ConcreteFluid;
@@ -19,6 +18,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -146,7 +147,9 @@ public class IEFluids
 				Function<FluidEntry, ? extends IEFluid> makeStill, Function<FluidEntry, ? extends IEFluid> makeFlowing,
 				@Nullable Consumer<FluidType.Properties> buildAttributes, List<Property<?>> properties)
 		{
-			FluidType.Properties builder = FluidType.Properties.create();
+			FluidType.Properties builder = FluidType.Properties.create()
+					.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY);
 			if(buildAttributes!=null)
 				buildAttributes.accept(builder);
 			RegistryObject<FluidType> type = TYPE_REGISTER.register(
