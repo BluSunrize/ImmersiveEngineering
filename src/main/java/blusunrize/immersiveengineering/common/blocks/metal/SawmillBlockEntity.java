@@ -80,7 +80,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
 	private int combinedLogs = 0;
 	//Temporary counters for making sure sounds tick properly
-	private int count = 0;
+	private boolean flipTick = false;
 
 	public SawmillBlockEntity(BlockEntityType<SawmillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -152,10 +152,24 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 				Optional<SawmillProcess> process = sawmillProcessQueue.stream()
 						.filter(p -> p.isSawing(level))
 						.findFirst();
-				//Handle empty sound
-				ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, this, !isRSDisabled()&&!sawblade.isEmpty()&&!process.isPresent(), .4f, 1);
-				//Handle particles & full sound
-				if(process.isPresent())
+
+				if(process.isPresent()!=flipTick)
+				{
+					//Don't play sound to give the machine a chance to reset its sound if the sound-tick flips state
+					ImmersiveEngineering.proxy.stopTileSound(null, this);
+				}
+				else
+				{
+					//Handle sounds for both empty & full if the sound-tick isn't flipping
+					if(process.isPresent())
+					{
+						ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_full, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
+					}else
+						ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
+				}
+
+				//Handle particles
+				if (process.isPresent())
 				{
 					Direction particleDir = getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise();
 					AABB aabb = CACHED_SAWBLADE_AABB.apply(this);
@@ -169,14 +183,10 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 							new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(level, true)),
 							posX, posY, posZ, vX, vY, vZ
 					);
-					//Arbitrary constant is arbitrary, but it's what sounded good in game, so we keep it. Actual length is supposed to be 10t...
-					count++;
-					if (count % 21 == 0) level.playSound(ImmersiveEngineering.proxy.getClientPlayer(), getBlockPos(), IESounds.saw_full, SoundSource.BLOCKS, .4F, 1);
 				}
-				else if (count != -1)
-				{
-					count = -1;
-				}
+
+				//Flip sound-detection tick
+				flipTick = process.isPresent();
 			}
 		}
 
@@ -223,7 +233,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		{
 			if (!isRSDisabled() && !master.sawblade.isEmpty())
 			{
-				if(!player.getAbilities().invulnerable)
+				if(!player.getAbilities().invulnerable && player.isShiftKeyDown() && heldItem.isEmpty())
 				{
 					int consumed = master.energyStorage.extractEnergy(80, true);
 					if(consumed > 0)

@@ -285,7 +285,10 @@ public class ClientProxy extends CommonProxy
 	{
 		IEBlockEntitySound sound = tileSoundMap.get(tile.getBlockPos());
 		if(sound!=null)
+		{
 			mc().getSoundManager().stop(sound);
+			tileSoundMap.put(tile.getBlockPos(), null);
+		}
 	}
 
 	@SubscribeEvent
