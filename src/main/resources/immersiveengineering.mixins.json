@@ -27,6 +27,7 @@
     "coremods.TemplateMixin"
   ],
   "client": [
+    "accessors.client.ChatComponentAccess",
     "accessors.client.CompiledChunkAccess",
     "accessors.client.FontResourceManagerAccess",
     "accessors.client.MinecartRendererAccess",

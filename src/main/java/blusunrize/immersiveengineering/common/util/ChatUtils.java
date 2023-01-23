@@ -18,11 +18,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class ChatUtils
 {
 	public static final MessageSignature NO_SPAM_SIGNATURE = new MessageSignature(
-			(Lib.MODID+"nospam").getBytes(StandardCharsets.UTF_8)
+			Arrays.copyOf((Lib.MODID+"nospam").getBytes(StandardCharsets.UTF_8), MessageSignature.BYTES)
 	);
 
 	public static void sendServerNoSpamMessages(Player player, Component message)
