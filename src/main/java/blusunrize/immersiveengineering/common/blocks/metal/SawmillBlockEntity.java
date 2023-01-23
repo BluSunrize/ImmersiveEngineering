@@ -153,20 +153,13 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 						.filter(p -> p.isSawing(level))
 						.findFirst();
 
+				//Handle sounds for both empty & full, and flip the tick for when the sound is supposed to change
 				if(process.isPresent()!=flipTick)
-				{
-					//Don't play sound to give the machine a chance to reset its sound if the sound-tick flips state
 					ImmersiveEngineering.proxy.stopTileSound(null, this);
-				}
+				if(process.isPresent())
+					ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_full, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
 				else
-				{
-					//Handle sounds for both empty & full if the sound-tick isn't flipping
-					if(process.isPresent())
-					{
-						ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_full, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
-					}else
-						ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
-				}
+					ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
 
 				//Handle particles
 				if (process.isPresent())
