@@ -65,7 +65,8 @@ public class FermenterLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
-	private static final CapabilityPosition FLUID_OUTPUT = new CapabilityPosition(2, 0, 1, RelativeBlockFace.LEFT);
+	private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(3, 0, 1, RelativeBlockFace.RIGHT);
+	private static final CapabilityPosition FLUID_OUTPUT_CAP = CapabilityPosition.opposing(FLUID_OUTPUT);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
 
 	public static final int TANK_CAPACITY = 24*FluidType.BUCKET_VOLUME;
@@ -180,7 +181,7 @@ public class FermenterLogic
 	{
 		if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return ctx.getState().energyHandler.cast(ctx);
-		if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_OUTPUT.equalsOrNullFace(position))
+		if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_OUTPUT_CAP.equalsOrNullFace(position))
 			return ctx.getState().fluidHandler.cast(ctx);
 		if(cap==ForgeCapabilities.ITEM_HANDLER)
 		{
@@ -241,9 +242,7 @@ public class FermenterLogic
 					new IOConstraintGroup(IOConstraint.FLUID_INPUT, 1),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1)
 			), ctx.getMarkDirtyRunnable());
-			this.fluidOutput = ctx.getCapabilityAt(
-					ForgeCapabilities.FLUID_HANDLER, new BlockPos(3, 0, 1), RelativeBlockFace.LEFT
-			);
+			this.fluidOutput = ctx.getCapabilityAt(ForgeCapabilities.FLUID_HANDLER, FLUID_OUTPUT);
 			this.itemOutput = ctx.getCapabilityAt(
 					ForgeCapabilities.ITEM_HANDLER, new BlockPos(2, 1, 1), RelativeBlockFace.LEFT
 			);
