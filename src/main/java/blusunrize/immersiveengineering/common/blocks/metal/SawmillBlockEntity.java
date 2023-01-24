@@ -79,8 +79,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	public List<SawmillProcess> sawmillProcessQueue = new ArrayList<>();
 	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
 	private int combinedLogs = 0;
-	//Temporary counters for making sure sounds tick properly
-	private int count = 0;
+	private boolean shutdown = true;
 
 	public SawmillBlockEntity(BlockEntityType<SawmillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -131,61 +130,62 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	);
 
 	@Override
-	public boolean canTickAny()
-	{
-		return super.canTickAny()&&!isRSDisabled();
-	}
-
-	@Override
 	public void tickClient()
 	{
 		if(shouldRenderAsActive())
 		{
-			if ( !isRSDisabled())
-			{
-				animation_bladeRotation += 36f;
-				animation_bladeRotation %= 360f;
-			}
+			//Handle shutdown switch
+			shutdown = false;
 
-			if(!this.sawblade.isEmpty())
+			//Rotate the blade
+			animation_bladeRotation += 36f;
+			animation_bladeRotation %= 360f;
+
+			//Handle recipe checks
+			Optional<SawmillProcess> process = sawmillProcessQueue.stream()
+					.filter(p -> p.isSawing(level))
+					.findFirst();
+
+			//Handle sounds for both empty & full
+			if(process.isPresent())
+				ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_full, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
+			else
+				ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, this, !isRSDisabled()&&!sawblade.isEmpty(), .4f, 1);
+
+			//Handle particles
+			if (process.isPresent())
 			{
-				Optional<SawmillProcess> process = sawmillProcessQueue.stream()
-						.filter(p -> p.isSawing(level))
-						.findFirst();
-				//Handle empty sound
-				ImmersiveEngineering.proxy.handleTileSound(IESounds.saw_empty, this, !isRSDisabled()&&!sawblade.isEmpty()&&!process.isPresent(), .4f, 1);
-				//Handle particles & full sound
-				if(process.isPresent())
-				{
-					Direction particleDir = getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise();
-					AABB aabb = CACHED_SAWBLADE_AABB.apply(this);
-					double posX = aabb.minX+level.random.nextDouble()*(aabb.maxX-aabb.minX);
-					double posY = aabb.minY+level.random.nextDouble()*(aabb.maxY-aabb.minY);
-					double posZ = aabb.minZ+level.random.nextDouble()*(aabb.maxZ-aabb.minZ);
-					double vX = level.random.nextDouble()*particleDir.getStepX()*0.3;
-					double vY = level.random.nextDouble()*0.3;
-					double vZ = level.random.nextDouble()*particleDir.getStepZ()*0.3;
-					level.addAlwaysVisibleParticle(
-							new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(level, true)),
-							posX, posY, posZ, vX, vY, vZ
-					);
-					//Arbitrary constant is arbitrary, but it's what sounded good in game, so we keep it. Actual length is supposed to be 10t...
-					count++;
-					if (count % 21 == 0) level.playSound(ImmersiveEngineering.proxy.getClientPlayer(), getBlockPos(), IESounds.saw_full, SoundSource.BLOCKS, .4F, 1);
-				}
-				else if (count != -1)
-				{
-					count = -1;
-				}
+				Direction particleDir = getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise();
+				AABB aabb = CACHED_SAWBLADE_AABB.apply(this);
+				double posX = aabb.minX+level.random.nextDouble()*(aabb.maxX-aabb.minX);
+				double posY = aabb.minY+level.random.nextDouble()*(aabb.maxY-aabb.minY);
+				double posZ = aabb.minZ+level.random.nextDouble()*(aabb.maxZ-aabb.minZ);
+				double vX = level.random.nextDouble()*particleDir.getStepX()*0.3;
+				double vY = level.random.nextDouble()*0.3;
+				double vZ = level.random.nextDouble()*particleDir.getStepZ()*0.3;
+				level.addAlwaysVisibleParticle(
+						new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(level, true)),
+						posX, posY, posZ, vX, vY, vZ
+				);
 			}
 		}
 
+		//Handle shutdown sounds
+		if (isRSDisabled()&&!shutdown&&!this.sawblade.isEmpty())
+	    {
+			ImmersiveEngineering.proxy.stopTileSound(null, this);
+			shutdown = true;
+			getLevelNonnull().playSound(ImmersiveEngineering.proxy.getClientPlayer(), getBlockPos(), IESounds.saw_shutdown, SoundSource.BLOCKS, .4f, 1);
+		}
 	}
 
 	@Override
 	public void tickServer()
 	{
 		super.tickServer();
+		if (isRSDisabled())
+		    return;
+
 		tickedProcesses = 0;
 		int max = getMaxProcessPerTick();
 		int i = 0;
@@ -223,7 +223,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		{
 			if (!isRSDisabled() && !master.sawblade.isEmpty())
 			{
-				if(!player.getAbilities().invulnerable)
+				if(!player.getAbilities().invulnerable && player.isShiftKeyDown() && heldItem.isEmpty())
 				{
 					int consumed = master.energyStorage.extractEnergy(80, true);
 					if(consumed > 0)
