@@ -1,3 +1,9 @@
+##### Version 1.18.2-8.3.1-pre
+- Fix multiblock preview in the manual when Radium is installed (Malte)
+- Fix issue related to shaderbag rarities (Malte)
+- Fix sawmill sounds and document that removing a spinning blade is painful (Silfryi)
+- Fix crash with arc furnace recipes loading (Kanzaji)
+
 ##### Version 1.18.2-8.3.0-155
 - Add process indicator to the Cloche's GUI (BluSunrize)
 - Add sounds for Assembler, Bottling Machine, Coke Oven, Fermenter, Mixer, Preheaters, Refinery and Sawmill (Silfryi)
