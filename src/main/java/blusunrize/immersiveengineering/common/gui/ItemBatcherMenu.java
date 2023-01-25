@@ -45,8 +45,8 @@ public class ItemBatcherMenu extends IEContainerMenu
 		return new ItemBatcherMenu(
 				blockCtx(type, id, be),
 				invPlayer,
-				new ItemStackHandler(be.getInventory()),
 				new ItemStackHandler(be.getFilters()),
+				new ItemStackHandler(be.getInventory()),
 				new GetterAndSetter<>(() -> be.batchMode.ordinal(), b -> be.batchMode = BatchMode.values()[b]),
 				colors
 		);
