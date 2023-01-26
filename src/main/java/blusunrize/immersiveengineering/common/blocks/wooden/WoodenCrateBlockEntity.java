@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
@@ -16,9 +17,11 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -34,8 +37,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
@@ -157,6 +165,32 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 				setCustomName(stack.getHoverName());
 			enchantments = stack.getEnchantmentTags();
 		}
+	}
+
+	private final LazyOptional<IItemHandler> inventoryCap = CapabilityUtils.constantOptional(
+			new IEInventoryHandler(CONTAINER_SIZE, this)
+	);
+
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
+	{
+		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			return inventoryCap.cast();
+		return super.getCapability(cap, side);
+	}
+
+	@Override
+	public void invalidateCaps()
+	{
+		super.invalidateCaps();
+		inventoryCap.invalidate();
+	}
+
+	@Override
+	public boolean canPlaceItem(int index, ItemStack stack)
+	{
+		return isStackValid(index, stack);
 	}
 
 	@Override
