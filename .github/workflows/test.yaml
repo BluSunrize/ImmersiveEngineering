@@ -64,10 +64,7 @@ jobs:
       - name: Create list of existing generated resources
         run: find src/generated/resources/ ! -path "**/.cache*" > resources.txt
       - name: Run data generation
-        # Hide the non-zero return code from gradle. runData always returns !=0 (to stop gradle from "caching" it?)
-        run: xvfb-run --auto-servernum bash -c "ie_manual_datagen_path=$(pwd)/../manual-data ./gradlew runData" || true
-      - name: Check for crashes during data generation
-        run: bash -c "[ -f run/ie_data_gen_done ]"
+        run: xvfb-run --auto-servernum bash -c "ie_manual_datagen_path=$(pwd)/../manual-data ./gradlew runData"
       - name: Check that no files have changed
         # TODO --exit-code doesn't seem to be working as advertised?
         run: git update-index --really-refresh && git diff-index --ignore-all-space HEAD && git diff-index --ignore-all-space --quiet HEAD || (git diff && false)
