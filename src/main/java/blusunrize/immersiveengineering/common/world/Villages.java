@@ -162,7 +162,7 @@ public class Villages
 				"craftingtable", () -> createPOI(assembleStates(WoodenDevices.CRAFTING_TABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_TURNTABLE = POINTS_OF_INTEREST.register(
-				"turntable", () -> createPOI("turntable", assembleStates(WoodenDevices.TURNTABLE.get()))
+				"turntable", () -> createPOI(assembleStates(WoodenDevices.TURNTABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_CIRCUITTABLE = POINTS_OF_INTEREST.register(
 				"circuit_table", () -> createPOI(assembleStates(WoodenDevices.CIRCUIT_TABLE.get()))
