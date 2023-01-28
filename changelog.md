@@ -1,8 +1,14 @@
 ##### Version 1.18.2-8.3.1-pre
+- Add pride shaders! (BluSunrize)
+- Change workstations for Villagers to stop using vanilla blocks (BluSunrize)
+    - Structural Engineer -> Turntable, was Engineer's Crafting Table
+    - Machinist -> Engineer's Crafting Table, was Anvil
 - Fix multiblock preview in the manual when Radium is installed (Malte)
 - Fix issue related to shaderbag rarities (Malte)
 - Fix sawmill sounds and document that removing a spinning blade is painful (Silfryi)
 - Fix crash with arc furnace recipes loading (Kanzaji)
+- Fix hoppers being able to insert crates into other crates (Malte)
+- Fix multiple issues with IE's shaders (BluSunrize)
 
 ##### Version 1.18.2-8.3.0-155
 - Add process indicator to the Cloche's GUI (BluSunrize)
