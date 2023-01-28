@@ -4,11 +4,11 @@
 - Fix mineral veins only generating in the overworld (BluSunrize)
 - Fix switched filters and buffers in item batcher GUI (Malte)
 
-##### Version 1.18.2-8.3.1-pre
+##### Version 1.18.2-8.3.1-157
 - Add pride shaders! (BluSunrize)
 - Change workstations for Villagers to stop using vanilla blocks (BluSunrize)
-  - Structural Engineer -> Turntable, was Engineer's Crafting Table
-  - Machinist -> Engineer's Crafting Table, was Anvil
+    - Structural Engineer -> Turntable, was Engineer's Crafting Table
+    - Machinist -> Engineer's Crafting Table, was Anvil
 - Fix multiblock preview in the manual when Radium is installed (Malte)
 - Fix issue related to shaderbag rarities (Malte)
 - Fix sawmill sounds and document that removing a spinning blade is painful (Silfryi)
