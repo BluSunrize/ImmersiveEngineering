@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.3.1-156
+##### Version 1.18.2-8.3.1-157
 - Add pride shaders! (BluSunrize)
 - Change workstations for Villagers to stop using vanilla blocks (BluSunrize)
     - Structural Engineer -> Turntable, was Engineer's Crafting Table
