@@ -17,10 +17,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseDrill;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Vector4f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
@@ -154,6 +151,16 @@ public class IEShaders
 			netherforged.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[5].setTextureBounds(0, .8125, 1, 1).setCutoutBounds(0, 0, 1, .1875);
 			addLayer(netherforged, "1_0", 0xff323c2c);
 		});
+
+		addShader("transpride", 2, Rarity.EPIC, 0xfff5abb9, 0xff5bcffa, 0xfff5abb9, 0xffffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "transpride");
+		final ShaderRegistryEntry enbypride = addShader("enbypride", 8, Rarity.EPIC, 0xff282828, 0xff282828, 0xff9d59d2, 0xffffffff, "1_2", true, 0xfffcf431).setInfo("Pride", "Pride Flags", "enbypride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(enbypride, "whitestripe", 0xffffffff));
+		final ShaderRegistryEntry gaypride = addShader("gaypride", 8, Rarity.EPIC, 0xff5049cc, 0xff26ceaa, 0xff7bade2, 0xffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "gaypride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(gaypride, "1_3", 0xff98e8e6));
+		final ShaderRegistryEntry lesbianpride = addShader("lesbianpride", 8, Rarity.EPIC, 0xffa50062, 0xffd462a5, 0xffff9b55, 0xffa50062, "1_2", true, 0xffd62900).setInfo("Pride", "Pride Flags", "lesbianpride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(lesbianpride, "whitestripe", 0xffffffff));
+		final ShaderRegistryEntry acepride = addShader("acepride", 8, Rarity.EPIC, 0xff510053, 0xffffffff, 0xff6c6c6c, 0xff6c6c6c, "1_2", true, 0xff000000).setInfo("Pride", "Pride Flags", "acepride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(acepride, "whitestripe", 0xff510053));
 	}
 
 	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
