@@ -1,6 +1,8 @@
 ##### Version 1.19.2-9.1.1-pre
+- All features from 8.3.1
 - Fix crashing when opening the manual with Lithium installed (Malte)
 - Fix mineral veins only generating in the overworld (BluSunrize)
+- Fix switched filters and buffers in item batcher GUI (Malte)
 
 ##### Version 1.18.2-8.3.1-pre
 - Add pride shaders! (BluSunrize)
