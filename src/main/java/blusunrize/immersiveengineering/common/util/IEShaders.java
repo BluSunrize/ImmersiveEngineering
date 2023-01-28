@@ -87,17 +87,6 @@ public class IEShaders
 			addDynamicLayer(ikelos, "circuit", 0xffefa117,
 					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
 					pre -> {
-						if(pre)
-						{
-							//TODO fix all of this RenderSystem.pushLightingAttributes();
-							//TODO GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, new float[]{.5f, .2f, 0, .5f});
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
-						}
-						else
-						{
-							//TODO fix all of this RenderSystem.popAttributes();
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-						}
 					},
 					true
 			);
@@ -124,10 +113,6 @@ public class IEShaders
 			addDynamicLayer(ancient, "1_6", 0xff80fcf2,//0xaafaf307,
 					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
 					pre -> {
-						if(pre)
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
-						else
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
 					},
 					true
 			);
@@ -261,10 +246,10 @@ public class IEShaders
 				return new RenderType(
 						//TODO better name?
 						"shader_"+base.toString()+func_modifyRender,
-						DefaultVertexFormat.BLOCK,
-						Mode.QUADS,
+						base.format(),
+						base.mode(),
 						256,
-						false,
+						base.affectsCrumbling(),
 						true,
 						() -> {
 							base.setupRenderState();
