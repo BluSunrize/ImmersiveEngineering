@@ -17,10 +17,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseDrill;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Vector4f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
@@ -37,8 +34,8 @@ public class IEShaders
 	{
 		//DEFAULT CUTOUTS
 		//whitestripe
-		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_whitestripe"), 0, 0, .25, .25);
-		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_whitestripe"), 0, 22/64d, .5, 54/64d);
+		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_whitestripe"), 0, .75, .25, 1);
+		setDefaultTextureBounds(new ResourceLocation("immersiveengineering:item/shaders/drill_diesel_whitestripe"), 0, 17/64d, .5, 42/64d);
 
 		//REGISTER SHADERS
 		addShader("rosequartz", 0, Rarity.COMMON, 0xff412323, 0xffe6b4b4, 0xfff0cdcd, 0xffe6b4b4).setInfo(null, null, "rosequartz");
@@ -57,11 +54,11 @@ public class IEShaders
 		final ShaderRegistryEntry sponsor = addShader("sponsor", 0, Rarity.EPIC, 0xff191919, 0xfff71b24, 0xffffffff, 0xffaaaaaa, "sponsor", false, 0xffffffff).setInfo(null, "Fallout", "sponsor");
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			((ShaderCaseMinecart)sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "minecart"))).mirrorSideForPass[2] = false;
-			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[4].setTextureBounds(0, 0, .25, .25);
-			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).getLayers()[3].setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d);
-			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).getLayers()[3].setTextureBounds(2/64d, 10/64d, 23/64d, 31/64d);
-			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).getLayers()[3].setTextureBounds(6/64d, 16/64d, 22/64d, 32/64d);
-			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).getLayers()[2].setTextureBounds(0/32d, 9/32d, 14/32d, 25/32d).setCutoutBounds(.0625, 0, .9375, 1);
+			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[4].setTextureBounds(0, .75, .25, 1);
+			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).getLayers()[3].setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d);
+			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).getLayers()[3].setTextureBounds(2/64d, 33/64d, 23/64d, 54/64d);
+			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).getLayers()[3].setTextureBounds(6/64d, 32/64d, 22/64d, 48/64d);
+			sponsor.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).getLayers()[2].setTextureBounds(0/32d, 7/32d, 14/32d, 23/32d).setCutoutBounds(.0625, 0, .9375, 1);
 		});
 
 		addShader("massfusion", 3, Rarity.RARE, 0xff6e5a37, 0xff394730, 0xff545454, 0xffaaaaaa, "fusion", true, 0xffffffff).setInfo(null, "Fallout", "massfusion");
@@ -87,17 +84,6 @@ public class IEShaders
 			addDynamicLayer(ikelos, "circuit", 0xffefa117,
 					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
 					pre -> {
-						if(pre)
-						{
-							//TODO fix all of this RenderSystem.pushLightingAttributes();
-							//TODO GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, new float[]{.5f, .2f, 0, .5f});
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
-						}
-						else
-						{
-							//TODO fix all of this RenderSystem.popAttributes();
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
-						}
 					},
 					true
 			);
@@ -124,10 +110,6 @@ public class IEShaders
 			addDynamicLayer(ancient, "1_6", 0xff80fcf2,//0xaafaf307,
 					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
 					pre -> {
-						if(pre)
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
-						else
-							Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
 					},
 					true
 			);
@@ -164,11 +146,21 @@ public class IEShaders
 		final ShaderRegistryEntry netherforged = addShader("netherforged", 0, Rarity.EPIC, 0xff575046, 0xff323c2c, 0x80bf541f, 0xff4f4f4f).setInfo(null, null, "netherforged");
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 			addBlockScaledLayer(netherforged, "minecraft:block/magma", 0xffffffff);
-			netherforged.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[4].setTextureBounds(0, 0, .3125, .3125);
+			netherforged.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[4].setTextureBounds(0, .6875, .3125, 1);
 			addLayer(netherforged, "1_8", 0xff323c2c);
-			netherforged.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[5].setTextureBounds(0, 0, 1, .1875).setCutoutBounds(0, 0, 1, .1875);
+			netherforged.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).getLayers()[5].setTextureBounds(0, .8125, 1, 1).setCutoutBounds(0, 0, 1, .1875);
 			addLayer(netherforged, "1_0", 0xff323c2c);
 		});
+
+		addShader("transpride", 2, Rarity.EPIC, 0xfff5abb9, 0xff5bcffa, 0xfff5abb9, 0xffffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "transpride");
+		final ShaderRegistryEntry enbypride = addShader("enbypride", 8, Rarity.EPIC, 0xff282828, 0xff282828, 0xff9d59d2, 0xffffffff, "1_2", true, 0xfffcf431).setInfo("Pride", "Pride Flags", "enbypride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(enbypride, "whitestripe", 0xffffffff));
+		final ShaderRegistryEntry gaypride = addShader("gaypride", 8, Rarity.EPIC, 0xff5049cc, 0xff26ceaa, 0xff7bade2, 0xffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "gaypride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(gaypride, "1_3", 0xff98e8e6));
+		final ShaderRegistryEntry lesbianpride = addShader("lesbianpride", 8, Rarity.EPIC, 0xffa50062, 0xffd462a5, 0xffff9b55, 0xffa50062, "1_2", true, 0xffd62900).setInfo("Pride", "Pride Flags", "lesbianpride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(lesbianpride, "whitestripe", 0xffffffff));
+		final ShaderRegistryEntry acepride = addShader("acepride", 8, Rarity.EPIC, 0xff510053, 0xffffffff, 0xff6c6c6c, 0xff6c6c6c, "1_2", true, 0xff000000).setInfo("Pride", "Pride Flags", "acepride");
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(acepride, "whitestripe", 0xff510053));
 	}
 
 	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
@@ -183,14 +175,14 @@ public class IEShaders
 
 	private static void addBlockScaledLayer(ShaderRegistryEntry entry, String texture, int colour)
 	{
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, 0, .25, .1875));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(10/64d, 34/64d, 26/64d, 50/64d).setCutoutBounds(.1875f, 0, .8125, .75f));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/64f, 10/64f, 26/64f, 20/64f).setCutoutBounds(0, .615, 1, 1));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(6/64d, 16/64d, 22/64d, 24/64d).setCutoutBounds(0, 0, 1, .5));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(55/64d, 48/64d, 1, 58/64d).setCutoutBounds(.25, .125, .75, .6875));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/32f, 9/32f, 14/32f, 26/32f).setCutoutBounds(.0625, 0, .9375, 1));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "balloon")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .375, .75, .875).setCutoutBounds(.125, 0, .875, .5));
-		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(1/64d, 21/64d, 21/64d, 41/64d));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "revolver")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .8125, .25, 1));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "drill")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d).setCutoutBounds(.1875f, 0, .8125, .75f));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "buzzsaw")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/64f, 44/64f, 26/64f, 54/64f).setCutoutBounds(0, .615, 1, 1));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(6/64d, 40/64d, 22/64d, 48/64d).setCutoutBounds(0, 0, 1, .5));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "railgun")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(55/64d, 6/64d, 1, 16/64d).setCutoutBounds(.25, .125, .75, .6875));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "shield")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/32f, 6/32f, 14/32f, 23/32f).setCutoutBounds(.0625, 0, .9375, 1));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "balloon")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .125, .75, .625).setCutoutBounds(.125, 0, .875, .5));
+		entry.getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(1/64d, 23/64d, 21/64d, 43/64d));
 	}
 
 	private static void addLayer(ShaderRegistryEntry entry, String texture, int colour)
@@ -261,10 +253,10 @@ public class IEShaders
 				return new RenderType(
 						//TODO better name?
 						"shader_"+base.toString()+func_modifyRender,
-						DefaultVertexFormat.BLOCK,
-						Mode.QUADS,
+						base.format(),
+						base.mode(),
 						256,
-						false,
+						base.affectsCrumbling(),
 						true,
 						() -> {
 							base.setupRenderState();
