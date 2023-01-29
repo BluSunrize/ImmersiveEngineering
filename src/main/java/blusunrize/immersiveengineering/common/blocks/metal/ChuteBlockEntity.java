@@ -177,8 +177,9 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 				BlockEntity inventoryTile;
 				BlockPos invPos = diagonal?getBlockPos().relative(facing): getBlockPos().below();
 				inventoryTile = world.getBlockEntity(invPos);
+				Direction insertFrom = diagonal?facing.getOpposite(): Direction.UP;
 				if(!world.isClientSide&&isValidTargetInventory(inventoryTile))
-					ItemUtils.tryInsertEntity(world, invPos, getFacing().getOpposite(), itemEntity);
+					ItemUtils.tryInsertEntity(world, invPos, insertFrom, itemEntity);
 			}
 		}
 	}
