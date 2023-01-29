@@ -1,4 +1,4 @@
-##### Version 1.19.2-9.1.2-pre
+##### Version 1.19.2-9.1.2-159
 - Fix broken villager workstations
 
 ##### Version 1.19.2-9.1.1-158
