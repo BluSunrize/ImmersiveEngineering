@@ -1,3 +1,6 @@
+##### Version 1.19.2-9.1.2-pre
+- Fix broken villager workstations
+
 ##### Version 1.19.2-9.1.1-158
 - All features from 8.3.1
 - Fix crashing when opening the manual with Lithium installed (Malte)
