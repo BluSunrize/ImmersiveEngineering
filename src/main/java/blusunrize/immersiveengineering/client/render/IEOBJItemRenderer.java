@@ -90,7 +90,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			if(callback.shouldRenderGroup(model.getKey(), g, null))
 				visible.add(g);
 		LivingEntity entity = GlobalTempData.getActiveHolder();
-		if(transformType==TransformType.FIRST_PERSON_LEFT_HAND)
+		if(transformType==TransformType.FIRST_PERSON_LEFT_HAND||transformType==TransformType.THIRD_PERSON_LEFT_HAND)
 		{
 			MultiBufferSource oldBufferIn = bufferIn;
 			bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));
