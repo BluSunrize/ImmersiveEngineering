@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.ChuteCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlockEntity;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class ChuteCallbacks implements BlockCallback<ChuteCallbacks.Key>
+public class ChuteCallbacks implements BlockCallback<Key>
 {
 	public static final ChuteCallbacks INSTANCE = new ChuteCallbacks();
 

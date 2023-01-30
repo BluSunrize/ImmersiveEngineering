@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;

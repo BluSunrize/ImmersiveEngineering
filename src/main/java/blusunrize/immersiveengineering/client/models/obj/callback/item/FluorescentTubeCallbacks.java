@@ -10,7 +10,9 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.FluorescentTubeCallbacks.Key;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
@@ -22,7 +24,7 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.common.items.FluorescentTubeItem.*;
 
-public class FluorescentTubeCallbacks implements ItemCallback<FluorescentTubeCallbacks.Key>
+public class FluorescentTubeCallbacks implements ItemCallback<Key>
 {
 	public static final FluorescentTubeCallbacks INSTANCE = new FluorescentTubeCallbacks();
 

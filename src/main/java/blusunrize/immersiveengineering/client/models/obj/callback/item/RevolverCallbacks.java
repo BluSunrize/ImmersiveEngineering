@@ -10,7 +10,9 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.RevolverCallbacks.Key;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem.SpecialRevolver;
@@ -36,7 +38,7 @@ import java.util.*;
 
 import static blusunrize.immersiveengineering.common.items.RevolverItem.specialRevolversByTag;
 
-public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
+public class RevolverCallbacks implements ItemCallback<Key>
 {
 	public static final RevolverCallbacks INSTANCE = new RevolverCallbacks();
 

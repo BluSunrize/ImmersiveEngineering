@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.client.models.obj.callback;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 public class DynamicSubmodelCallbacks implements IEOBJCallback<VisibilityList>

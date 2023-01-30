@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.client.TextUtils;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
@@ -74,7 +74,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
-		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
+		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	@Override

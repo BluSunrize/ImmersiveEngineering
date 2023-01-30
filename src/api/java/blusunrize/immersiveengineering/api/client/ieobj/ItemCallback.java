@@ -1,27 +1,37 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2023
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
- *
  */
 
-package blusunrize.immersiveengineering.client.models.obj.callback.item;
+package blusunrize.immersiveengineering.api.client.ieobj;
 
-import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 public interface ItemCallback<Key> extends IEOBJCallback<Key>
 {
+	SetRestrictedField<BlockEntityWithoutLevelRenderer> DYNAMIC_IEOBJ_RENDERER = SetRestrictedField.client();
+	IClientItemExtensions USE_IEOBJ_RENDER = new IClientItemExtensions()
+	{
+		@Override
+		public BlockEntityWithoutLevelRenderer getCustomRenderer()
+		{
+			return DYNAMIC_IEOBJ_RENDERER.getValue();
+		}
+	};
+
 	default List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
 		return List.of();

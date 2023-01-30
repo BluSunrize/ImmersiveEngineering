@@ -8,22 +8,20 @@
 
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.api.client.ieobj.DefaultCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.client.models.obj.GlobalTempData;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
-import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.InvertingVertexBuffer;
-import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
 import malte0811.modelsplitter.model.Group;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -39,27 +37,12 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 {
-	public static final Supplier<BlockEntityWithoutLevelRenderer> INSTANCE = Suppliers.memoize(
-			() -> new IEOBJItemRenderer(
-					Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()
-			)
-	);
-	public static final IClientItemExtensions USE_IEOBJ_RENDER = new IClientItemExtensions()
-	{
-		@Override
-		public BlockEntityWithoutLevelRenderer getCustomRenderer()
-		{
-			return INSTANCE.get();
-		}
-	};
-
-	private IEOBJItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_)
+	public IEOBJItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_)
 	{
 		super(p_172550_, p_172551_);
 	}
@@ -90,7 +73,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			if(callback.shouldRenderGroup(model.getKey(), g, null))
 				visible.add(g);
 		LivingEntity entity = GlobalTempData.getActiveHolder();
-		if(transformType==TransformType.FIRST_PERSON_LEFT_HAND)
+		if(transformType==TransformType.FIRST_PERSON_LEFT_HAND||transformType==TransformType.THIRD_PERSON_LEFT_HAND)
 		{
 			MultiBufferSource oldBufferIn = bufferIn;
 			bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));

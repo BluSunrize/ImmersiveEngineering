@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;

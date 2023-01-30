@@ -1,16 +1,13 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2023
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
- *
  */
 
-package blusunrize.immersiveengineering.client.models.obj.callback.block;
+package blusunrize.immersiveengineering.api.client.ieobj;
 
-import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;

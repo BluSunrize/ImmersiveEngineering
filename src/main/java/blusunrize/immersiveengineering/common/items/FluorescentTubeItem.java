@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
@@ -54,7 +54,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
-		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
+		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	@Override

@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.PostCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import net.minecraft.core.BlockPos;
@@ -28,7 +30,7 @@ import java.util.List;
 import static blusunrize.immersiveengineering.common.blocks.generic.PostBlock.HORIZONTAL_OFFSET;
 import static blusunrize.immersiveengineering.common.blocks.generic.PostBlock.POST_SLAVE;
 
-public class PostCallbacks implements BlockCallback<PostCallbacks.Key>
+public class PostCallbacks implements BlockCallback<Key>
 {
 	public static final PostCallbacks INSTANCE = new PostCallbacks();
 
