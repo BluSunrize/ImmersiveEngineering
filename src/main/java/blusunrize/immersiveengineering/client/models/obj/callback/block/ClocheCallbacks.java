@@ -10,9 +10,11 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.ComparableItemStack;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.ClocheCallbacks.Key;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -33,7 +35,7 @@ import javax.annotation.Nullable;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.SLOT_SOIL;
 
-public class ClocheCallbacks implements BlockCallback<ClocheCallbacks.Key>
+public class ClocheCallbacks implements BlockCallback<Key>
 {
 	public static final ClocheCallbacks INSTANCE = new ClocheCallbacks();
 	private static final Key INVALID = new Key(new ComparableItemStack(ItemStack.EMPTY));

@@ -12,6 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.api.client.ieobj.DefaultCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -28,14 +31,13 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoade
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.mirror.MirroredModelLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
-import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
 import blusunrize.immersiveengineering.client.render.conveyor.SplitConveyorRender;
 import blusunrize.immersiveengineering.client.render.entity.*;
@@ -64,7 +66,6 @@ import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
-import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -535,6 +536,9 @@ public class ClientProxy extends CommonProxy
 				stacks -> new ManualElementBlueprint(ManualHelper.getManual(), stacks)
 		);
 		IEManual.initManual();
+		ItemCallback.DYNAMIC_IEOBJ_RENDERER.setValue(new IEOBJItemRenderer(
+				Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()
+		));
 		SetRestrictedField.lock(true);
 	}
 }

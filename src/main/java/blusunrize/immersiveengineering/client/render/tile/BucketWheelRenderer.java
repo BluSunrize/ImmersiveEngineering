@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;

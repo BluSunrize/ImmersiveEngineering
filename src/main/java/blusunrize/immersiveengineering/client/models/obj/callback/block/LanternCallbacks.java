@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;

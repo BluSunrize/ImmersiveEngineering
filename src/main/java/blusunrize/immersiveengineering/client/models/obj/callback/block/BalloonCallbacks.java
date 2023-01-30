@@ -9,7 +9,9 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.BalloonCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.cloth.BalloonBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.math.Vector4f;
@@ -21,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class BalloonCallbacks implements BlockCallback<BalloonCallbacks.Key>
+public class BalloonCallbacks implements BlockCallback<Key>
 {
 	public static final BalloonCallbacks INSTANCE = new BalloonCallbacks();
 	private static final Key INVALID = new Key(0, DyeColor.BLACK, DyeColor.PURPLE);

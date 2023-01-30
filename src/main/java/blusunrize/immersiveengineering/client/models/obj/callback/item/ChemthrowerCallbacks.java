@@ -9,13 +9,15 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.ChemthrowerCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public class ChemthrowerCallbacks implements ItemCallback<ChemthrowerCallbacks.Key>
+public class ChemthrowerCallbacks implements ItemCallback<Key>
 {
 	public static final ChemthrowerCallbacks INSTANCE = new ChemthrowerCallbacks();
 

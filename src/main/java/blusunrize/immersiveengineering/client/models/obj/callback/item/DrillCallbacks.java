@@ -9,8 +9,10 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.DrillCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.DieselToolItem;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
@@ -30,7 +32,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
+public class DrillCallbacks implements ItemCallback<Key>
 {
 	public static final DrillCallbacks INSTANCE = new DrillCallbacks();
 
