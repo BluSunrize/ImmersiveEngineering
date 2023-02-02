@@ -8,11 +8,19 @@
 
 package blusunrize.lib.manual.utils;
 
+import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class ManualRecipeRef
 {
@@ -69,5 +77,35 @@ public class ManualRecipeRef
 	public ResourceLocation getRecipeName()
 	{
 		return Objects.requireNonNull(recipeName);
+	}
+
+	public <C extends Container, R extends Recipe<C>>
+	void forEachMatchingRecipe(RecipeType<R> type, Consumer<R> out)
+	{
+		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+		forEachMatchingRecipe(type, PrivateAccess.getRecipes(recipeManager, type).values(), out);
+	}
+
+	public <C extends Container, R extends Recipe<C>>
+	void forEachMatchingRecipe(RecipeType<R> type, Collection<R> allRecipes, Consumer<R> out)
+	{
+		if(isRecipeName())
+		{
+			RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+			R recipe = PrivateAccess.getRecipes(recipeManager, type).get(getRecipeName());
+			if(recipe!=null&&matches(recipe))
+				out.accept(recipe);
+		}
+		else
+			for(R recipe : allRecipes)
+				if(matches(recipe))
+					out.accept(recipe);
+	}
+
+	public boolean matches(Recipe<?> rec)
+	{
+		if(isResult()&&ManualUtils.stackMatchesObject(rec.getResultItem(), getResult()))
+			return true;
+		return isRecipeName()&&getRecipeName().equals(rec.getId());
 	}
 }

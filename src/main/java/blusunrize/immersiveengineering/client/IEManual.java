@@ -26,6 +26,7 @@ import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualEntry.SpecialElementData;
 import blusunrize.lib.manual.Tree.InnerNode;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -42,7 +43,6 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.VersionChecker.CheckResult;
@@ -315,24 +315,19 @@ public class IEManual
 		return list.toArray(new Component[0][]);
 	}
 
-	static ItemStack[] collectRecipeStacksFromJSON(JsonObject json)
+	static ManualRecipeRef[] collectRecipeStacksFromJSON(JsonObject json)
 	{
-		ItemStack[] stacks;
+		final ManualInstance manual = ManualHelper.getManual();
+		ManualRecipeRef[] stacks;
 		if(GsonHelper.isArrayNode(json, "recipes"))
 		{
 			JsonArray arr = json.get("recipes").getAsJsonArray();
-			stacks = new ItemStack[arr.size()];
+			stacks = new ManualRecipeRef[arr.size()];
 			for(int i = 0; i < stacks.length; ++i)
-				stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
+				stacks[i] = ManualUtils.getRecipeObjFromJson(manual, arr.get(i));
 		}
 		else
-		{
-			JsonElement recipe = json.get("recipe");
-			Preconditions.checkArgument(recipe.isJsonObject());
-			stacks = new ItemStack[]{
-					CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
-			};
-		}
+			stacks = new ManualRecipeRef[]{ManualUtils.getRecipeObjFromJson(manual, json.get("recipe"))};
 		return stacks;
 	}
 

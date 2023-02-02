@@ -67,6 +67,7 @@ import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.lib.manual.gui.ManualScreen;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
@@ -105,6 +106,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -532,9 +534,15 @@ public class ClientProxy extends CommonProxy
 		SetRestrictedField.startInitializing(true);
 		VertexBufferHolder.addToAPI();
 		ManualHelper.MAKE_MULTIBLOCK_ELEMENT.setValue(mb -> new ManualElementMultiblock(ManualHelper.getManual(), mb));
-		ManualHelper.MAKE_BLUEPRINT_ELEMENT.setValue(
+		ManualHelper.MAKE_BLUEPRINT_ELEMENT_NEW.setValue(
 				stacks -> new ManualElementBlueprint(ManualHelper.getManual(), stacks)
 		);
+		ManualHelper.MAKE_BLUEPRINT_ELEMENT.setValue(stacks -> {
+			ManualRecipeRef[] refs = Arrays.stream(stacks)
+					.map(ManualRecipeRef::new)
+					.toArray(ManualRecipeRef[]::new);
+			return ManualHelper.MAKE_BLUEPRINT_ELEMENT_NEW.getValue().create(refs);
+		});
 		IEManual.initManual();
 		ItemCallback.DYNAMIC_IEOBJ_RENDERER.setValue(new IEOBJItemRenderer(
 				Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()

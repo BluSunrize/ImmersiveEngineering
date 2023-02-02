@@ -11,25 +11,21 @@ package blusunrize.lib.manual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
-import blusunrize.lib.manual.utils.PrivateAccess;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ManualElementCrafting extends SpecialManualElements
 {
@@ -65,74 +61,54 @@ public class ManualElementCrafting extends SpecialManualElements
 				if(recipe.isLayout())
 					addFixedRecipe(iStack, recipe.getLayout());
 				else
-					checkAllRecipesFor(recipe, iStack);
+				{
+					int finalIStack = iStack;
+					recipe.forEachMatchingRecipe(RecipeType.CRAFTING, r -> addRecipe(r, finalIStack));
+				}
 			}
 		}
 	}
 
-	private void checkAllRecipesFor(ManualRecipeRef recipeToAdd, int recipeIndex)
+	private void addRecipe(Recipe<CraftingContainer> rec, int recipeIndex)
 	{
-		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-		Map<ResourceLocation, Recipe<CraftingContainer>> recipes = PrivateAccess.getRecipes(
-				recipeManager, RecipeType.CRAFTING
-		);
-		if(recipeToAdd.isRecipeName())
+		NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
+		int recipeWidth;
+		int recipeHeight;
+		if(rec instanceof IShapedRecipe<?> shaped)
 		{
-			Recipe<CraftingContainer> recipe = recipes.get(recipeToAdd.getRecipeName());
-			if(recipe!=null)
-				checkRecipe(recipe, recipeToAdd, recipeIndex);
+			recipeWidth = shaped.getRecipeWidth();
+			recipeHeight = shaped.getRecipeHeight();
 		}
 		else
-			for(Recipe<CraftingContainer> recipe : recipes.values())
-				checkRecipe(recipe, recipeToAdd, recipeIndex);
-	}
-
-	private void checkRecipe(Recipe<CraftingContainer> rec, ManualRecipeRef recipeToAdd, int recipeIndex)
-	{
-		boolean matches = recipeToAdd.isResult()&&ManualUtils.stackMatchesObject(rec.getResultItem(), recipeToAdd.getResult());
-		if(!matches&&recipeToAdd.isRecipeName()&&recipeToAdd.getRecipeName().equals(rec.getId()))
-			matches = true;
-		if(matches)
 		{
-			NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
-			int recipeWidth;
-			int recipeHeight;
-			if(rec instanceof IShapedRecipe<?> shaped)
-			{
-				recipeWidth = shaped.getRecipeWidth();
-				recipeHeight = shaped.getRecipeHeight();
-			}
-			else
-			{
-				recipeWidth = Mth.clamp(ingredientsPre.size(), 1, 3);
-				recipeHeight = (ingredientsPre.size()-1)/3+1;
-			}
-
-			int yOffset = (this.heightPixels[recipeIndex]-18*recipeHeight)/2;
-			if(yOffset < 0)
-				yOffset = 0;
-			PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
-			int xBase = (120-(recipeWidth+2)*18)/2;
-			for(int heightPos = 0; heightPos < recipeHeight; heightPos++)
-				for(int widthPos = 0; widthPos < recipeWidth; widthPos++)
-				{
-					int index = heightPos*recipeWidth+widthPos;
-					if(index < ingredientsPre.size())
-						pIngredients[index] = new PositionedItemStack(ingredientsPre.get(index),
-								xBase+widthPos*18, heightPos*18+yOffset);
-				}
-			pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getResultItem(), xBase+recipeWidth*18+18,
-					recipeHeight*9-8+yOffset);
-			if(this.heightPixels[recipeIndex] < recipeHeight*18)
-			{
-				this.heightPixels[recipeIndex] = recipeHeight*18;
-				for(int prevId = 0; prevId <= recipeIndex; ++prevId)
-					for(PositionedItemStack[] oldStacks : recipeLayout[prevId])
-						moveBy(oldStacks, yOffset);
-			}
-			this.recipeLayout[recipeIndex].add(pIngredients);
-			addProvidedItem(rec.getResultItem());
+			recipeWidth = Mth.clamp(ingredientsPre.size(), 1, 3);
+			recipeHeight = (ingredientsPre.size()-1)/3+1;
 		}
+
+		int yOffset = (this.heightPixels[recipeIndex]-18*recipeHeight)/2;
+		if(yOffset < 0)
+			yOffset = 0;
+		PositionedItemStack[] pIngredients = new PositionedItemStack[ingredientsPre.size()+1];
+		int xBase = (120-(recipeWidth+2)*18)/2;
+		for(int heightPos = 0; heightPos < recipeHeight; heightPos++)
+			for(int widthPos = 0; widthPos < recipeWidth; widthPos++)
+			{
+				int index = heightPos*recipeWidth+widthPos;
+				if(index < ingredientsPre.size())
+					pIngredients[index] = new PositionedItemStack(ingredientsPre.get(index),
+							xBase+widthPos*18, heightPos*18+yOffset);
+			}
+		pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getResultItem(), xBase+recipeWidth*18+18,
+				recipeHeight*9-8+yOffset);
+		if(this.heightPixels[recipeIndex] < recipeHeight*18)
+		{
+			this.heightPixels[recipeIndex] = recipeHeight*18;
+			for(int prevId = 0; prevId <= recipeIndex; ++prevId)
+				for(PositionedItemStack[] oldStacks : recipeLayout[prevId])
+					moveBy(oldStacks, yOffset);
+		}
+		this.recipeLayout[recipeIndex].add(pIngredients);
+		addProvidedItem(rec.getResultItem());
 	}
 
 	private void addFixedRecipe(int index, PositionedItemStack[] recipe)

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultib
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.SpecialManualElement;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -44,6 +45,7 @@ public class ManualHelper
 	public static final SetRestrictedField<Consumer<Function<String, Object>>> ADD_CONFIG_GETTER = SetRestrictedField.client();
 	public static final SetRestrictedField<MultiblockElementConstructor> MAKE_MULTIBLOCK_ELEMENT = SetRestrictedField.client();
 	public static final SetRestrictedField<BlueprintElementConstructor> MAKE_BLUEPRINT_ELEMENT = SetRestrictedField.client();
+	public static final SetRestrictedField<BlueprintElementConstructorNew> MAKE_BLUEPRINT_ELEMENT_NEW = SetRestrictedField.client();
 
 	public static ManualInstance getManual()
 	{
@@ -68,5 +70,10 @@ public class ManualHelper
 	public interface BlueprintElementConstructor
 	{
 		SpecialManualElement create(ItemStack... stacks);
+	}
+
+	public interface BlueprintElementConstructorNew
+	{
+		SpecialManualElement create(ManualRecipeRef... stacks);
 	}
 }

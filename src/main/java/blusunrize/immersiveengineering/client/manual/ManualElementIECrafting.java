@@ -14,6 +14,8 @@ import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
@@ -24,15 +26,17 @@ import java.util.List;
 
 public abstract class ManualElementIECrafting extends SpecialManualElements
 {
-	protected final ItemStack[] stacks;
+	protected final ManualRecipeRef[] stacks;
 	protected final List<PositionedItemStack[]> recipes = new ArrayList<>();
 	protected final List<ArrowPosition> arrowPositions = new ArrayList<>();
 	protected int recipePage;
 	protected int yOff;
 
-	public ManualElementIECrafting(ManualInstance manual, ItemStack... stacks)
+	public ManualElementIECrafting(ManualInstance manual, ManualRecipeRef... stacks)
 	{
 		super(manual);
+		for(final ManualRecipeRef ref : stacks)
+			Preconditions.checkArgument(!ref.isLayout());
 		this.stacks = stacks;
 	}
 
