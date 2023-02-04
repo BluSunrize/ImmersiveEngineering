@@ -1,3 +1,6 @@
+##### Version 1.18.2-8.4.0-pre
+- Change accumulator backpack to use an obj model (BluSunrize)
+
 ##### Version 1.18.2-8.3.1-157
 - Add pride shaders! (BluSunrize)
 - Change workstations for Villagers to stop using vanilla blocks (BluSunrize)
