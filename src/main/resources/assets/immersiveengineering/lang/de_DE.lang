@@ -169,8 +169,8 @@ item.ImmersiveEngineering.material.componentSteel.name=Stählerne mechanische Ko
 item.ImmersiveEngineering.material.slag.name=Schlacke
 item.ImmersiveEngineering.seed.hemp.name=Industrielle Hanfsamen
 
-item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Kreosotflasche
-item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Kreosoteimer
+item.ImmersiveEngineering.fluidContainers.bottleCreosote.name=Teerölflasche
+item.ImmersiveEngineering.fluidContainers.bucketCreosote.name=Teeröleimer
 item.ImmersiveEngineering.fluidContainers.bottlePlantoil.name=Pflanzenölflasche
 item.ImmersiveEngineering.fluidContainers.bucketPlantoil.name=Pflanzenöleimer
 item.ImmersiveEngineering.fluidContainers.bottleEthanol.name=Ethanolflasche
