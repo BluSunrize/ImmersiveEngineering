@@ -113,7 +113,7 @@ tile.ImmersiveEngineering.hemp.name=Industrieller Hanf
 #Hydraulicraft Support
 tile.harvesterTrolley.ieCrop.name=Industrial Hemp Harvester Trolley 
 
-fluid.creosote=Kreosot
+fluid.creosote=Teeröl
 fluid.plantoil=Pflanzenöl
 fluid.ethanol=Ethanol
 fluid.biodiesel=Biodiesel
@@ -159,7 +159,7 @@ item.ImmersiveEngineering.material.windmillBlade.name=Windmühlenflügel
 item.ImmersiveEngineering.material.hempFiber.name=Industrielle Hanffaser
 item.ImmersiveEngineering.material.fabric.name=Fester Stoff
 item.ImmersiveEngineering.material.windmillBladeAdvanced.name=Verbesserter Windmühlenflügel
-item.ImmersiveEngineering.material.coalCoke.name=Koks
+item.ImmersiveEngineering.material.coalCoke.name=Kohlekoks
 item.ImmersiveEngineering.material.gunpartBarrel.name=Revolverrohr
 item.ImmersiveEngineering.material.gunpartDrum.name=Revolvertrommel
 item.ImmersiveEngineering.material.gunpartGrip.name=Hölzerner Griff
