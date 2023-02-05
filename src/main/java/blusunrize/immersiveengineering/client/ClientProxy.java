@@ -247,7 +247,6 @@ public class ClientProxy extends CommonProxy
 		}
 	}
 
-	@Override
 	public void stopTileSound(String soundName, BlockEntity tile)
 	{
 		IEBlockEntitySound sound = tileSoundMap.get(tile.getBlockPos());

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.ActiveState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
@@ -26,6 +27,6 @@ public class SawmillCallbacks extends Callback<State>
 	@ComputerCallable
 	public boolean isRunning(CallbackEnvironment<State> env)
 	{
-		return env.object().active;
+		return env.object().active!=ActiveState.DISABLED;
 	}
 }

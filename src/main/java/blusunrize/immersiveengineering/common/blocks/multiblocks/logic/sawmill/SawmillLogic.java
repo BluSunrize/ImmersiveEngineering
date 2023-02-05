@@ -37,6 +37,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -57,6 +58,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -102,7 +104,13 @@ public class SawmillLogic
 		}
 		for(ItemStack output : secondaries)
 			state.secondaryOutput.insertOrDrop(output.copy(), level);
-		boolean renderActive = state.energy.getEnergyStored() > 0&&rsAllowed&&!state.sawblade.isEmpty();
+		ActiveState renderActive;
+		if(state.energy.getEnergyStored() <= 0||!rsAllowed||state.sawblade.isEmpty())
+			renderActive = ActiveState.DISABLED;
+		else if(state.sawmillProcessQueue.isEmpty())
+			renderActive = ActiveState.IDLE;
+		else
+			renderActive = ActiveState.SAWING;
 		if(state.active!=renderActive)
 		{
 			state.active = renderActive;
@@ -113,26 +121,36 @@ public class SawmillLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> ctx)
 	{
+		final IMultiblockLevel level = ctx.getLevel();
 		final State state = ctx.getState();
-		if(!state.active)
+		//Handle sound
+		final boolean shouldPlay = state.active!=ActiveState.DISABLED||state.lastSoundState!=ActiveState.DISABLED;
+		if(shouldPlay&&!state.soundPlaying.get(state.active).getAsBoolean())
+		{
+			final Vec3 soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
+			final ActiveState active = state.active;
+			RegistryObject<SoundEvent> sound = switch(active)
+					{
+						case DISABLED -> IESounds.saw_shutdown;
+						case IDLE -> IESounds.saw_empty;
+						case SAWING -> IESounds.saw_full;
+					};
+			state.soundPlaying.put(state.active, MultiblockSound.startSound(
+					() -> state.active==active, ctx.isValid(), soundPos, sound, state.active!=ActiveState.DISABLED
+			));
+		}
+		state.lastSoundState = state.active;
+		if(state.active==ActiveState.DISABLED)
 			return;
 		state.animation_bladeRotation += 36f;
 		state.animation_bladeRotation %= 360f;
 		state.sawmillProcessQueue.forEach(SawmillProcess::incrementProcessOnClient);
 
-		final IMultiblockLevel level = ctx.getLevel();
 		final Level rawLevel = level.getRawLevel();
 		Optional<SawmillProcess> process = state.sawmillProcessQueue.stream()
 				.filter(p -> p.isSawing(rawLevel))
 				.findFirst();
 		//Handle empty sound
-		if(!state.playingEmptySound.getAsBoolean())
-		{
-			final Vec3 soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
-			state.playingEmptySound = MultiblockSound.startSound(
-					() -> state.active, ctx.isValid(), soundPos, IESounds.saw_empty
-			);
-		}
 		//Handle particles & full sound
 		if(process.isPresent())
 		{
@@ -207,19 +225,16 @@ public class SawmillLogic
 	)
 	{
 		final State state = ctx.getState();
+		final ItemStack heldItem = player.getItemInHand(hand);
 		if(state.rsState.isEnabled(ctx)&&!state.sawblade.isEmpty())
 		{
-			if(!isClient)
+			if(!isClient&&player.isShiftKeyDown()&&heldItem.isEmpty())
 				hurtEntity(player, ctx);
 			return InteractionResult.FAIL;
 		}
-		final ItemStack heldItem = player.getItemInHand(hand);
-		if(player.isShiftKeyDown()&&!state.sawblade.isEmpty())
+		if(player.isShiftKeyDown()&&!state.sawblade.isEmpty()&&heldItem.isEmpty())
 		{
-			if(heldItem.isEmpty())
-				player.setItemInHand(hand, state.sawblade.copy());
-			else if(!isClient)
-				player.spawnAtLocation(state.sawblade.copy(), 0);
+			player.setItemInHand(hand, state.sawblade.copy());
 			state.sawblade = ItemStack.EMPTY;
 			ctx.markDirtyAndSync();
 			return InteractionResult.SUCCESS;
@@ -339,11 +354,12 @@ public class SawmillLogic
 		private final StoredCapability<IEnergyStorage> energyCap;
 
 		// Client fields
-		public boolean active;
+		public ActiveState active = ActiveState.DISABLED;
 		//Temporary counter for making sure sounds tick properly
 		private int count = 0;
 		public float animation_bladeRotation = 0;
-		private BooleanSupplier playingEmptySound = () -> false;
+		private final EnumMap<ActiveState, BooleanSupplier> soundPlaying = new EnumMap<>(ActiveState.class);
+		private ActiveState lastSoundState = ActiveState.DISABLED;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -367,6 +383,8 @@ public class SawmillLogic
 				}
 			});
 			this.energyCap = new StoredCapability<>(energy);
+			for(final ActiveState state : ActiveState.values())
+				soundPlaying.put(state, () -> false);
 		}
 
 		@Override
@@ -389,14 +407,14 @@ public class SawmillLogic
 		public void writeSyncNBT(CompoundTag nbt)
 		{
 			writeCommonNBT(nbt);
-			nbt.putBoolean("active", active);
+			nbt.putInt("active", active.ordinal());
 		}
 
 		@Override
 		public void readSyncNBT(CompoundTag nbt)
 		{
 			readCommonNBT(nbt);
-			active = nbt.getBoolean("active");
+			active = ActiveState.values()[nbt.getInt("active")];
 		}
 
 		private void writeCommonNBT(CompoundTag nbt)
@@ -421,5 +439,10 @@ public class SawmillLogic
 		{
 			return energy;
 		}
+	}
+
+	public enum ActiveState
+	{
+		DISABLED, IDLE, SAWING;
 	}
 }

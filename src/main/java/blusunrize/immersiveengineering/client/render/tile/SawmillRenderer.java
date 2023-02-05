@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.ActiveState;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillProcess;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -56,7 +57,7 @@ public class SawmillRenderer extends IEBlockEntityRenderer<MultiblockBlockEntity
 			matrixStack.pushPose();
 			matrixStack.translate(1, .125, -.5);
 			float spin = state.animation_bladeRotation;
-			if(state.active)
+			if(state.active!=ActiveState.DISABLED)
 				spin += 36f*partialTicks;
 			matrixStack.mulPose(new Quaternionf().rotateZ(spin*Mth.DEG_TO_RAD));
 			RenderUtils.renderModelTESRFast(

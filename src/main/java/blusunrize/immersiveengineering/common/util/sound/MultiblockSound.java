@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.sound;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
@@ -25,7 +26,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 	private final BooleanSupplier valid;
 
 	public MultiblockSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound, boolean loop
 	)
 	{
 		super(sound, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
@@ -34,7 +35,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		this.x = pos.x;
 		this.y = pos.y;
 		this.z = pos.z;
-		this.looping = true;
+		this.looping = loop;
 		this.volume = 0;
 	}
 
@@ -42,9 +43,20 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound
 	)
 	{
-		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get());
-		Minecraft.getInstance().getSoundManager().play(instance);
-		return () -> !instance.isStopped();
+		return startSound(active, valid, pos, sound, true);
+	}
+
+	public static BooleanSupplier startSound(
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound, boolean loop
+	)
+	{
+		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get(), loop);
+		final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+		soundManager.play(instance);
+		if(loop)
+			return () -> !instance.isStopped();
+		else
+			return () -> soundManager.isActive(instance);
 	}
 
 	@Override
