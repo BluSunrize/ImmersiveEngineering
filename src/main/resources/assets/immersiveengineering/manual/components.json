@@ -3,12 +3,8 @@
         "type": "crafting",
         "recipes": [
             [
-                {
-                    "recipe": "crafting/component_iron"
-                },
-                {
-                    "recipe": "crafting/component_steel"
-                }
+                "crafting/component_iron",
+                "crafting/component_steel"
             ]
         ]
     },
@@ -19,41 +15,27 @@
     "mech_components": {
         "type": "blueprint",
         "recipes": [
-            {
-                "item": "immersiveengineering:component_iron"
-            },
-            {
-                "item": "immersiveengineering:component_steel"
-            }
+            "blueprint/component_iron",
+            "blueprint/component_steel"
         ]
     },
     "elec_components": {
         "type": "blueprint",
         "recipes": [
-            {
-                "item": "immersiveengineering:component_electronic"
-            },
-            {
-                "item": "immersiveengineering:component_electronic_adv"
-            }
+            "blueprint/component_electronic",
+            "blueprint/component_electronic_adv"
         ]
     },
     "light_bulbs": {
         "type": "blueprint",
-        "recipe": {
-            "item": "immersiveengineering:light_bulb"
-        }
+        "recipe": "blueprint/light_bulb"
     },
     "tubes": {
         "type": "blueprint",
-        "recipe": {
-            "item": "immersiveengineering:electron_tube"
-        }
+        "recipe": "blueprint/electron_tube"
     },
     "pcb": {
         "type": "blueprint",
-        "recipe": {
-            "item": "immersiveengineering:circuit_board"
-        }
+        "recipe": "blueprint/circuit_board"
     }
 }

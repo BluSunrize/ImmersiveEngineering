@@ -9,6 +9,8 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.ShieldCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Quaternionf;
@@ -20,7 +22,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public class ShieldCallbacks implements ItemCallback<ShieldCallbacks.Key>
+public class ShieldCallbacks implements ItemCallback<Key>
 {
 	public static final ShieldCallbacks INSTANCE = new ShieldCallbacks();
 

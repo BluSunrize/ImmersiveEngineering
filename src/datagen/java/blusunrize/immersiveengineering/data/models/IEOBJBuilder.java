@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.data.models;
 
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

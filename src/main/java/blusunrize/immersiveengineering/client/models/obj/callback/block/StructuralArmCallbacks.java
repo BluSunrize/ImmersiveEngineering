@@ -9,6 +9,8 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.StructuralArmCallbacks.Key;
 import blusunrize.immersiveengineering.client.utils.BakedQuadBuilder;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.StructuralArmBlockEntity;
@@ -31,7 +33,7 @@ import java.util.List;
 
 import static net.minecraft.core.Direction.*;
 
-public class StructuralArmCallbacks implements BlockCallback<StructuralArmCallbacks.Key>
+public class StructuralArmCallbacks implements BlockCallback<Key>
 {
 	public static final StructuralArmCallbacks INSTANCE = new StructuralArmCallbacks();
 	private static final Matrix4 SHRINK = Util.make(new Matrix4(), mat -> {

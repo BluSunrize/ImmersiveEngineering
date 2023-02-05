@@ -9,7 +9,9 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BucketWheelLogic.State;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -28,7 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BucketWheelCallbacks implements BlockCallback<BucketWheelCallbacks.Key>
+public class BucketWheelCallbacks implements BlockCallback<Key>
 {
 	public static final BucketWheelCallbacks INSTANCE = new BucketWheelCallbacks();
 	private static final BucketWheelCallbacks.Key INVALID = new BucketWheelCallbacks.Key(Collections.EMPTY_MAP);

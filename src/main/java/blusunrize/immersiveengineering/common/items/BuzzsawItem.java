@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
@@ -81,7 +81,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public void initializeClient(Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
-		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
+		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */

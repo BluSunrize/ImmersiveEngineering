@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
 import com.mojang.datafixers.util.Pair;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
 import malte0811.modelsplitter.model.OBJModel;

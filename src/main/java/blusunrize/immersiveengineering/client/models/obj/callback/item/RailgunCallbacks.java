@@ -9,13 +9,15 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.RailgunCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.RailgunItem;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public class RailgunCallbacks implements ItemCallback<RailgunCallbacks.Key>
+public class RailgunCallbacks implements ItemCallback<Key>
 {
 	public static RailgunCallbacks INSTANCE = new RailgunCallbacks();
 

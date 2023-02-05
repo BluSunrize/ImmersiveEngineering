@@ -18,6 +18,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.gui.CraftingTableMenu;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
+import blusunrize.immersiveengineering.common.items.PotionBucketItem;
+import blusunrize.immersiveengineering.common.items.ShaderItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
@@ -85,6 +87,12 @@ public class JEIHelper implements IModPlugin
 				VanillaTypes.ITEM_STACK,
 				Misc.BLUEPRINT.asItem(),
 				(stack, $) -> EngineersBlueprintItem.getCategory(stack)
+		);
+		subtypeRegistry.registerSubtypeInterpreter(
+				VanillaTypes.ITEM_STACK, Misc.POTION_BUCKET.asItem(), (stack, $) -> PotionBucketItem.getPotion(stack).getName("")
+		);
+		subtypeRegistry.registerSubtypeInterpreter(
+				VanillaTypes.ITEM_STACK, Misc.SHADER.asItem(), (stack, $) -> ItemNBTHelper.getString(stack, ShaderItem.SHADER_NAME_KEY)
 		);
 		for(IConveyorType<?> conveyor : ConveyorHandler.getConveyorTypes())
 			subtypeRegistry.registerSubtypeInterpreter(

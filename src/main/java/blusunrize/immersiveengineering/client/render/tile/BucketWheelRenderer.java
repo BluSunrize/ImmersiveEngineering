@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEH
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BucketWheelLogic.State;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;

@@ -10,7 +10,9 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.RSConnectorCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
 import org.joml.Vector4f;
 import net.minecraft.client.renderer.RenderType;
@@ -22,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class RSConnectorCallbacks implements BlockCallback<RSConnectorCallbacks.Key>
+public class RSConnectorCallbacks implements BlockCallback<Key>
 {
 	public static final RSConnectorCallbacks INSTANCE = new RSConnectorCallbacks();
 	private static final Key INVALID = new Key(IOSideConfig.INPUT, DyeColor.WHITE);

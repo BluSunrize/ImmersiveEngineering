@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.client.models.ModelGlider;
-import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import net.minecraft.client.model.MinecartModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -29,7 +28,6 @@ public class IEModelLayers
 	public static final ModelLayerLocation CRATE_MINECART = new ModelLayerLocation(IEEntityTypes.CRATE_MINECART.getId(), "main");
 	public static final ModelLayerLocation REINFORCED_CRATE_CART = new ModelLayerLocation(IEEntityTypes.REINFORCED_CRATE_CART.getId(), "main");
 	public static final ModelLayerLocation METAL_BARREL_CART = new ModelLayerLocation(IEEntityTypes.METAL_BARREL_CART.getId(), "main");
-	public static final ModelLayerLocation POWERPACK = new ModelLayerLocation(ImmersiveEngineering.rl("powerpack"), "main");
 	public static final ModelLayerLocation EARMUFFS = new ModelLayerLocation(ImmersiveEngineering.rl("earmuffs"), "main");
 	public static final ModelLayerLocation GLIDER = new ModelLayerLocation(ImmersiveEngineering.rl("glider"), "main");
 
@@ -40,7 +38,6 @@ public class IEModelLayers
 		ev.registerLayerDefinition(CRATE_MINECART, MinecartModel::createBodyLayer);
 		ev.registerLayerDefinition(REINFORCED_CRATE_CART, MinecartModel::createBodyLayer);
 		ev.registerLayerDefinition(METAL_BARREL_CART, MinecartModel::createBodyLayer);
-		ev.registerLayerDefinition(POWERPACK, ModelPowerpack::createLayers);
 		ev.registerLayerDefinition(EARMUFFS, ModelEarmuffs::createLayers);
 		ev.registerLayerDefinition(GLIDER, ModelGlider::createLayers);
 	}

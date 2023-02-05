@@ -10,13 +10,16 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.client.models.mirror.MirroredModelLoader;
 import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.GroupKey;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.client.models.split.PolygonUtils;
 import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQuadData;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -24,13 +27,16 @@ import com.mojang.math.*;
 import malte0811.modelsplitter.model.Group;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
 import malte0811.modelsplitter.model.Polygon;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -45,15 +51,20 @@ import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class SpecificIEOBJModel<T> implements BakedModel
 {
+	private static final Map<Direction, List<BakedQuad>> EMPTY_ALL_SIDES = Util.make(
+			new EnumMap<>(Direction.class), map -> {
+				for(Direction d : DirectionUtils.VALUES)
+					map.put(d, List.of());
+			}
+	);
+
 	private final GeneralIEOBJModel<T> baseModel;
 	@Nonnull
 	private final IEOBJCallback<T> callback;
@@ -63,7 +74,8 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	private final IEObjState state;
 	@Nullable
 	private final RenderType layer;
-	private List<BakedQuad> quads;
+	private final List<BakedQuad> quads;
+	private final Supplier<BakedModel> inverted;
 
 	public SpecificIEOBJModel(
 			GeneralIEOBJModel<T> baseModel, T key, @Nullable ShaderCase shader, @Nullable RenderType layer
@@ -75,6 +87,12 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		this.shader = shader;
 		this.state = callback.getIEOBJState(key);
 		this.layer = layer;
+		this.quads = buildQuads();
+		this.inverted = Suppliers.memoize(() -> new SimpleBakedModel(
+				MirroredModelLoader.reversedQuads(quads), EMPTY_ALL_SIDES,
+				baseModel.useAmbientOcclusion(), baseModel.usesBlockLight(), baseModel.isGui3d(),
+				baseModel.getParticleIcon(), ItemTransforms.NO_TRANSFORMS, baseModel.getOverrides()
+		));
 	}
 
 	@Nonnull
@@ -83,8 +101,6 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	{
 		if(pSide!=null)
 			return List.of();
-		if(quads==null)
-			quads = buildQuads();
 		return quads;
 	}
 
@@ -146,6 +162,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			@Nonnull TransformType transformType, @Nonnull PoseStack transforms, boolean applyLeftHandTransform
 	)
 	{
+		BakedModel result = this;
 		ItemTransform baseItemTransform = baseModel.getOwner().getTransforms().getTransform(transformType);
 		Vector3f scale = baseItemTransform.scale;
 		if(scale.x()*scale.y()*scale.z() < 0)
@@ -157,13 +174,16 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			).apply(applyLeftHandTransform, transforms);
 			transforms.last().pose().mul(INVERT);
 			transforms.last().normal().mul(INVERT_NORMAL);
+			// The custom renderer handles inversion on its own, for the default renderer we need to invert the quads
+			if(!isCustomRenderer())
+				result = this.inverted.get();
 		}
 		else
 			baseItemTransform.apply(applyLeftHandTransform, transforms);
 		ItemCallback.castOrDefault(callback).handlePerspective(
 				key, GlobalTempData.getActiveHolder(), transformType, transforms
 		);
-		return this;
+		return result;
 	}
 
 	private List<BakedQuad> buildQuads()

@@ -9,7 +9,9 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.FloodlightCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightBlockEntity;
 import com.mojang.math.Transformation;
 import org.joml.Vector3f;
@@ -23,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class FloodlightCallbacks implements BlockCallback<FloodlightCallbacks.Key>
+public class FloodlightCallbacks implements BlockCallback<Key>
 {
 	public static final FloodlightCallbacks INSTANCE = new FloodlightCallbacks();
 	private static final Key INVALID = new Key(Direction.NORTH, Direction.DOWN, 0, 0);

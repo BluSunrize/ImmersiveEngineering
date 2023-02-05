@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;

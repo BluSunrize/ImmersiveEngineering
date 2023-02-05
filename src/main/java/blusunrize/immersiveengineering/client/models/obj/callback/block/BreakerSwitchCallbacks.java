@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.common.blocks.metal.BreakerSwitchBlockEntity;
 import net.minecraft.util.Mth;
 import org.joml.Quaternionf;

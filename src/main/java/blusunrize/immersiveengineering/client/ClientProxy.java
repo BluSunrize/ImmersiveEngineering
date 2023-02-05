@@ -12,6 +12,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.ManualHelper;
+import blusunrize.immersiveengineering.api.client.ieobj.DefaultCallback;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
@@ -27,9 +30,7 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoade
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.mirror.MirroredModelLoader;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
-import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
-import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
@@ -54,6 +55,7 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
@@ -93,6 +95,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -478,10 +481,19 @@ public class ClientProxy extends CommonProxy
 		SetRestrictedField.startInitializing(true);
 		VertexBufferHolder.addToAPI();
 		ManualHelper.MAKE_MULTIBLOCK_ELEMENT.setValue(mb -> new ManualElementMultiblock(ManualHelper.getManual(), mb));
-		ManualHelper.MAKE_BLUEPRINT_ELEMENT.setValue(
+		ManualHelper.MAKE_BLUEPRINT_ELEMENT_NEW.setValue(
 				stacks -> new ManualElementBlueprint(ManualHelper.getManual(), stacks)
 		);
+		ManualHelper.MAKE_BLUEPRINT_ELEMENT.setValue(stacks -> {
+			ManualRecipeRef[] refs = Arrays.stream(stacks)
+					.map(ManualRecipeRef::new)
+					.toArray(ManualRecipeRef[]::new);
+			return ManualHelper.MAKE_BLUEPRINT_ELEMENT_NEW.getValue().create(refs);
+		});
 		IEManual.initManual();
+		ItemCallback.DYNAMIC_IEOBJ_RENDERER.setValue(new blusunrize.immersiveengineering.client.render.IEOBJItemRenderer(
+				Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()
+		));
 		SetRestrictedField.lock(true);
 	}
 }

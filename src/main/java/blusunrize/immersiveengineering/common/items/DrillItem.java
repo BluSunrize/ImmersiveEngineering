@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -69,7 +69,7 @@ public class DrillItem extends DieselToolItem
 	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
-		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
+		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */

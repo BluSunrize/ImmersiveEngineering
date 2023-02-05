@@ -12,8 +12,10 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.PipeCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity.ConnectionStyle;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -43,7 +45,7 @@ import java.util.Map;
 
 import static net.minecraft.core.Direction.*;
 
-public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
+public class PipeCallbacks implements BlockCallback<Key>
 {
 	public static final PipeCallbacks INSTANCE = new PipeCallbacks();
 

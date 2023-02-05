@@ -9,7 +9,9 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.BuzzsawCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.BuzzsawItem;
 import blusunrize.immersiveengineering.common.items.SawbladeItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
@@ -28,7 +30,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BuzzsawCallbacks implements ItemCallback<BuzzsawCallbacks.Key>
+public class BuzzsawCallbacks implements ItemCallback<Key>
 {
 	public static final BuzzsawCallbacks INSTANCE = new BuzzsawCallbacks();
 

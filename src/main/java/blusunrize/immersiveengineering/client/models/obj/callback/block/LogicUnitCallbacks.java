@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.LogicUnitCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.wooden.LogicUnitBlockEntity;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -27,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class LogicUnitCallbacks implements BlockCallback<LogicUnitCallbacks.Key>
+public class LogicUnitCallbacks implements BlockCallback<Key>
 {
 	public static final LogicUnitCallbacks INSTANCE = new LogicUnitCallbacks();
 	private static final Key INVALID = new Key(IntLists.EMPTY_LIST);

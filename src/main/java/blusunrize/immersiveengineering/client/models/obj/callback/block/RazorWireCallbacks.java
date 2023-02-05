@@ -9,6 +9,8 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.RazorWireCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -18,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class RazorWireCallbacks implements BlockCallback<RazorWireCallbacks.Key>
+public class RazorWireCallbacks implements BlockCallback<Key>
 {
 	public static final RazorWireCallbacks INSTANCE = new RazorWireCallbacks();
 	private static final Key INVALID = new Key(false, false, true, true);

@@ -9,7 +9,9 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.ProbeConnectorCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import org.joml.Vector4f;
 import net.minecraft.client.renderer.RenderType;
@@ -21,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public class ProbeConnectorCallbacks implements BlockCallback<ProbeConnectorCallbacks.Key>
+public class ProbeConnectorCallbacks implements BlockCallback<Key>
 {
 	public static final ProbeConnectorCallbacks INSTANCE = new ProbeConnectorCallbacks();
 	private static final Key INVALID = new Key(DyeColor.WHITE, DyeColor.WHITE);
