@@ -12,10 +12,6 @@
   },
   "electrode": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:graphite_electrode"
-      }
-    ]
+    "recipe": "blueprint/graphite_electrode"
   }
 }

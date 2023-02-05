@@ -51,6 +51,8 @@ import java.util.Locale;
 
 public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 {
+	public static final String SHADER_NAME_KEY = "shader_name";
+
 	public ShaderItem()
 	{
 		super(new Properties().stacksTo(1));
@@ -66,8 +68,8 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 	@Override
 	public ResourceLocation getShaderName(ItemStack stack)
 	{
-		if(ItemNBTHelper.hasKey(stack, "shader_name"))
-			return new ResourceLocation(ItemNBTHelper.getString(stack, "shader_name"));
+		if(ItemNBTHelper.hasKey(stack, SHADER_NAME_KEY))
+			return new ResourceLocation(ItemNBTHelper.getString(stack, SHADER_NAME_KEY));
 		return null;
 	}
 
@@ -171,7 +173,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 			for(ResourceLocation key : ShaderRegistry.shaderRegistry.keySet())
 			{
 				ItemStack s = new ItemStack(this);
-				ItemNBTHelper.putString(s, "shader_name", key.toString());
+				ItemNBTHelper.putString(s, SHADER_NAME_KEY, key.toString());
 				list.add(s);
 			}
 	}

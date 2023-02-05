@@ -1,3 +1,11 @@
+##### Version 1.18.2-8.4.0-pre
+- Change IEOBJs to be used from the API (Malte)
+- Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
+- Change accumulator backpack to use an obj model (BluSunrize)
+- Fix some issues with models being mirrored (Malte)
+- Fix shaders and potion buckets not showing up in JEI (Malte)
+- Fix arc recycling accidentally modifying the empty ItemStack constant (Malte)
+
 ##### Version 1.19.2-9.1.2-159
 - Fix broken villager workstations
 

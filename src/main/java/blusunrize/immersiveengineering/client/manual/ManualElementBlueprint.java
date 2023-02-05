@@ -10,14 +10,13 @@ package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
-import net.minecraft.client.Minecraft;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.world.item.ItemStack;
 
 public class ManualElementBlueprint extends ManualElementIECrafting
 {
-	public ManualElementBlueprint(ManualInstance manual, ItemStack... stacks)
+	public ManualElementBlueprint(ManualInstance manual, ManualRecipeRef... stacks)
 	{
 		super(manual, stacks);
 		recalculateCraftingRecipes();
@@ -27,27 +26,26 @@ public class ManualElementBlueprint extends ManualElementIECrafting
 	public void recalculateCraftingRecipes()
 	{
 		this.recipes.clear();
-
-		for(BlueprintCraftingRecipe recipe : BlueprintCraftingRecipe.RECIPES.getRecipes(Minecraft.getInstance().level))
-			for(ItemStack output : stacks)
-				if(!recipe.output.get().isEmpty()&&ManualUtils.stackMatchesObject(recipe.output.get(), output)&&recipe.inputs!=null&&recipe.inputs.length > 0)
-				{
-					int h = (int)Math.ceil(recipe.inputs.length/2f);
-					PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];
-					for(int i = 0; i < recipe.inputs.length; i++)
-						pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getMatchingStacks(), 32+i%2*18, i/2*18);
-					int middle = (int)(h/2f*18);
-					pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output.get(), 86, middle-9);
-					final ItemStack blueprint = BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory);
-					pIngredients[pIngredients.length-1] = new PositionedItemStack(blueprint, 8, middle-9);
-
-					this.recipes.add(pIngredients);
-					this.arrowPositions.add(new ArrowPosition(69, middle-5));
-					if(h*18 > yOff)
-						yOff = h*18;
-				}
 		this.providedItems.clear();
-		for(ItemStack stack : stacks)
-			this.addProvidedItem(stack);
+
+		for(final var recipeRef : stacks)
+			recipeRef.forEachMatchingRecipe(BlueprintCraftingRecipe.TYPE, recipe -> {
+				final ItemStack output = recipe.output.get();
+				if(recipe.inputs==null||recipe.inputs.length <= 0)
+					return;
+				int h = (int)Math.ceil(recipe.inputs.length/2f);
+				PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];
+				for(int i = 0; i < recipe.inputs.length; i++)
+					pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getMatchingStacks(), 32+i%2*18, i/2*18);
+				int middle = (int)(h/2f*18);
+				pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output.get(), 86, middle-9);
+				pIngredients[pIngredients.length-1] = new PositionedItemStack(BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory), 8, middle-9);
+
+				this.recipes.add(pIngredients);
+				this.arrowPositions.add(new ArrowPosition(69, middle-5));
+				if(h*18 > yOff)
+					yOff = h*18;
+				this.addProvidedItem(output);
+			});
 	}
 }

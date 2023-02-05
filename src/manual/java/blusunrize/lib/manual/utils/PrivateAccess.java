@@ -31,11 +31,11 @@ public class PrivateAccess
 
 	@SuppressWarnings("unchecked")
 	public static <C extends Container, T extends Recipe<C>>
-	Map<ResourceLocation, Recipe<C>> getRecipes(RecipeManager manager, RecipeType<T> recipeTypeIn)
+	Map<ResourceLocation, T> getRecipes(RecipeManager manager, RecipeType<T> recipeTypeIn)
 	{
 		try
 		{
-			return (Map<ResourceLocation, Recipe<C>>)GET_RECIPES_OF_TYPE.get().invokeExact(manager, recipeTypeIn);
+			return (Map<ResourceLocation, T>)GET_RECIPES_OF_TYPE.get().invokeExact(manager, recipeTypeIn);
 		} catch(Throwable throwable)
 		{
 			throw new RuntimeException(throwable);

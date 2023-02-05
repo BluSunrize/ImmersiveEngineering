@@ -14,82 +14,42 @@
   },
   "casull": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:casull"
-      }
-    ]
+    "recipe": "blueprint/bullet_casull"
   },
   "ap": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:armor_piercing"
-      }
-    ]
+    "recipe": "blueprint/bullet_armorpiercing"
   },
   "buckshot": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:buckshot"
-      }
-    ]
+    "recipe": "blueprint/bullet_buckshot"
   },
   "he": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:he"
-      }
-    ]
+    "recipe": "blueprint/bullet_explosive"
   },
   "silver": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:silver"
-      }
-    ]
+    "recipe": "blueprint/bullet_silver"
   },
   "dragon": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:dragons_breath"
-      }
-    ]
+    "recipe": "blueprint/bullet_dragonsbreath"
   },
   "potion": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:potion"
-      }
-    ]
+    "recipe": "blueprint/bullet_potion"
   },
   "flare": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:flare"
-      }
-    ]
+    "recipe": "blueprint/bullet_flare_green"
   },
   "homing": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:homing"
-      }
-    ]
+    "recipe": "blueprint/bullet_homing"
   },
   "wolfpack": {
     "type": "blueprint",
-    "recipes": [
-      {
-        "item": "immersiveengineering:wolfpack"
-      }
-    ]
+    "recipe": "blueprint/bullet_wolfpack"
   }
 }

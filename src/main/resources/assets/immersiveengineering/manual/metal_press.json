@@ -10,30 +10,14 @@
   "mold_recipes": {
     "type": "blueprint",
     "recipes": [
-      {
-        "item": "immersiveengineering:mold_plate"
-      },
-      {
-        "item": "immersiveengineering:mold_gear"
-      },
-      {
-        "item": "immersiveengineering:mold_rod"
-      },
-      {
-        "item": "immersiveengineering:mold_bullet_casing"
-      },
-      {
-        "item": "immersiveengineering:mold_wire"
-      },
-      {
-        "item": "immersiveengineering:mold_packing_4"
-      },
-      {
-        "item": "immersiveengineering:mold_packing_9"
-      },
-      {
-        "item": "immersiveengineering:mold_unpacking"
-      }
+      "blueprint/mold_plate",
+      "blueprint/mold_gear",
+      "blueprint/mold_rod",
+      "blueprint/mold_bullet_casing",
+      "blueprint/mold_wire",
+      "blueprint/mold_packing_4",
+      "blueprint/mold_packing_9",
+      "blueprint/mold_unpacking"
     ]
   },
   "packing": {
