@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
@@ -29,9 +30,9 @@ public class ManualElementBlueprint extends ManualElementIECrafting
 		this.providedItems.clear();
 
 		for(final var recipeRef : stacks)
-			recipeRef.forEachMatchingRecipe(BlueprintCraftingRecipe.TYPE, recipe -> {
+			recipeRef.forEachMatchingRecipe(IERecipeTypes.BLUEPRINT.get(), recipe -> {
 				final ItemStack output = recipe.output.get();
-				if(recipe.inputs==null||recipe.inputs.length <= 0)
+				if(recipe.inputs==null||recipe.inputs.length==0)
 					return;
 				int h = (int)Math.ceil(recipe.inputs.length/2f);
 				PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];

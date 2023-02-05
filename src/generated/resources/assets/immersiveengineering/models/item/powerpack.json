@@ -1,207 +1,111 @@
 {
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/item/powerpack.obj",
-  "flip-v": true,
-  "transform": {
-    "thirdperson_righthand": {
-      "translation": [
-        -0.25,
-        0.375,
-        0.5
-      ],
-      "rotation": [
-        0.0,
-        -0.55557024,
-        0.0,
-        0.83146966
-      ],
-      "scale": [
-        0.5,
-        0.5,
-        0.5
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "origin": "corner"
-    },
-    "thirdperson_lefthand": {
-      "translation": [
-        -0.25,
-        0.375,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        -0.55557024,
-        0.0,
-        0.83146966
-      ],
-      "scale": [
-        0.5,
-        0.5,
-        0.5
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "origin": "corner"
-    },
-    "firstperson_righthand": {
-      "translation": [
-        -0.0625,
-        0.625,
-        0.3125
-      ],
-      "rotation": [
-        0.0,
-        -0.7071068,
-        0.0,
-        -0.7071068
-      ],
-      "scale": [
-        0.25,
-        0.25,
-        0.25
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "origin": "corner"
-    },
+  "display": {
     "firstperson_lefthand": {
-      "translation": [
-        0.375,
-        0.875,
-        0.4375
-      ],
       "rotation": [
-        0.0,
-        -0.7071068,
-        0.0,
-        -0.7071068
+        180.0,
+        90.0,
+        180.0
       ],
       "scale": [
         0.625,
         0.625,
         0.625
       ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "origin": "corner"
-    },
-    "head": {
       "translation": [
-        0.0,
-        0.0,
-        0.0
-      ],
+        6.0,
+        14.0,
+        7.0
+      ]
+    },
+    "firstperson_righthand": {
       "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
+        180.0,
+        90.0,
+        180.0
       ],
       "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.25,
+        0.25,
+        0.25
       ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
+      "translation": [
+        -1.0,
+        10.0,
+        5.0
+      ]
+    },
+    "fixed": {
+      "translation": [
+        8.0,
+        14.0,
+        11.0
+      ]
+    },
+    "ground": {
+      "scale": [
+        0.5,
+        0.5,
+        0.5
       ],
-      "origin": "corner"
+      "translation": [
+        4.0,
+        8.0,
+        4.0
+      ]
     },
     "gui": {
-      "translation": [
-        -0.375,
-        0.6875,
-        0.0
-      ],
       "rotation": [
-        0.0,
-        1.0,
-        0.0,
-        2.5E-6
+        180.0,
+        2.8647887E-4,
+        180.0
       ],
       "scale": [
         0.8125,
         0.8125,
         0.8125
       ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "origin": "corner"
-    },
-    "ground": {
       "translation": [
-        0.25,
-        0.5,
-        0.25
-      ],
+        -6.0,
+        11.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
       "rotation": [
         0.0,
-        0.0,
-        0.0,
-        1.0
+        -67.50001,
+        0.0
       ],
       "scale": [
         0.5,
         0.5,
         0.5
       ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "origin": "corner"
-    },
-    "fixed": {
       "translation": [
-        0.5,
-        0.875,
-        0.6875
-      ],
+        -4.0,
+        6.0,
+        0.0
+      ]
+    },
+    "thirdperson_righthand": {
       "rotation": [
         0.0,
-        0.0,
-        0.0,
-        1.0
+        -67.50001,
+        0.0
       ],
       "scale": [
-        1.0,
-        1.0,
-        1.0
+        0.5,
+        0.5,
+        0.5
       ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "origin": "corner"
+      "translation": [
+        -4.0,
+        6.0,
+        8.0
+      ]
     }
-  }
+  },
+  "flip_v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/item/powerpack.obj"
 }

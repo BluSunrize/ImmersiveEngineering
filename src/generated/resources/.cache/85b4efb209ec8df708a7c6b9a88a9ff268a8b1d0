@@ -1,4 +1,4 @@
-// 1.19.2	2022-10-03T09:33:52.442740149	Item models
+// 1.19.2	2023-02-05T18:23:32.223670224	Item models
 88d3c4ffa914af5a3f1ace93ca44a7a9de73bd8f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 9ccc4d7a0d7b18dbb71d95f07395ccc9db5454d5 assets/immersiveengineering/models/item/advanced_blast_furnace.json
 52c332b23e9b84d62d49c7b4e70bfd1193037cc7 assets/immersiveengineering/models/item/alloy_smelter.json
@@ -196,6 +196,7 @@ c4249ceac6b65155e6fee34f5e0364a19d0f1c21 assets/immersiveengineering/models/item
 909b4e4377424ac2b78d87d1fd9b1d87051aa621 assets/immersiveengineering/models/item/plate_uranium.json
 227cbaeaec9e31a1efe547a7fff4c6197bd573c9 assets/immersiveengineering/models/item/potion.json
 3139d82011bddab9415183706c0db790b260c40a assets/immersiveengineering/models/item/potion_bucket.json
+0be95d57c36ef8fcf720a2acd936c818bfe720bf assets/immersiveengineering/models/item/powerpack.json
 2193d67ebca816971e1ecad2cd1daa85966e3fd1 assets/immersiveengineering/models/item/railgun.json
 d6b152718c76ab533946443ef52f338db54cd473 assets/immersiveengineering/models/item/raw_aluminum.json
 5d5f4c6211e386b99fb49e92b2ec3f50fcd1ecaf assets/immersiveengineering/models/item/raw_lead.json
