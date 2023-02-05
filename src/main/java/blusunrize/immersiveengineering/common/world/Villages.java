@@ -159,8 +159,8 @@ public class Villages
 		public static final RegistryObject<PoiType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
 				"craftingtable", () -> createPOI(assembleStates(WoodenDevices.CRAFTING_TABLE.get()))
 		);
-		public static final RegistryObject<PoiType> POI_ANVIL = POINTS_OF_INTEREST.register(
-				"anvil", () -> createPOI(assembleStates(Blocks.ANVIL))
+		public static final RegistryObject<PoiType> POI_TURNTABLE = POINTS_OF_INTEREST.register(
+				"turntable", () -> createPOI(assembleStates(WoodenDevices.TURNTABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_CIRCUITTABLE = POINTS_OF_INTEREST.register(
 				"circuit_table", () -> createPOI(assembleStates(WoodenDevices.CIRCUIT_TABLE.get()))
@@ -173,10 +173,10 @@ public class Villages
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
-				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_CRAFTINGTABLE, SoundEvents.VILLAGER_WORK_MASON)
+				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_TURNTABLE, SoundEvents.VILLAGER_WORK_MASON)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
-				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL, SoundEvents.VILLAGER_WORK_TOOLSMITH)
+				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_CRAFTINGTABLE, SoundEvents.VILLAGER_WORK_TOOLSMITH)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
 				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE, IESounds.spark.get())

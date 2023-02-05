@@ -127,18 +127,18 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			boolean bright = callback.areGroupsFullbright(stack, groups);
 			RenderType baseType;
 			ResourceLocation atlas = InventoryMenu.BLOCK_ATLAS;
+			Vector4f color = quadsForLayer.layer().getColor();
 			if(bright)
 				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
-			else if(quadsForLayer.layer().isTranslucent())
+			else if(quadsForLayer.layer().isTranslucent() || color.w()<1)
 				baseType = RenderType.entityTranslucent(atlas);
 			else
-				baseType = RenderType.entityCutout(atlas);
+				baseType = RenderType.entityCutoutNoCull(atlas);
 			RenderType actualType = quadsForLayer.layer().getRenderType(baseType);
 			VertexConsumer builder = buffer.getBuffer(actualType);
-			Vector4f color = quadsForLayer.layer().getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer())
-				builder.putBulkData(matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay, true);
-			matrix.scale(1.01F, 1.01F, 1.01F);
+				builder.putBulkData(matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay, false);
+			matrix.scale(1.0005F, 1.0005F, 1.0005F);
 		}
 		matrix.popPose();
 	}

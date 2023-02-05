@@ -232,8 +232,10 @@ public class ClientProxy extends CommonProxy
 	{
 		BlockPos pos = tile.getBlockPos();
 		IEBlockEntitySound sound = tileSoundMap.get(pos);
-		if(sound==null&&tileActive)
+		if((sound==null||!soundEvent.get().getLocation().equals(sound.getLocation()))&&tileActive)
 		{
+			if(sound!=null)
+				stopTileSound(null, tile);
 			if(tile instanceof ISoundBE soundBE&&mc().player.distanceToSqr(Vec3.atCenterOf(pos)) > soundBE.getSoundRadiusSq())
 				return;
 			sound = ClientUtils.generatePositionedIESound(soundEvent.get(), volume, pitch, pos);
@@ -241,9 +243,19 @@ public class ClientProxy extends CommonProxy
 		}
 		else if(sound!=null&&(sound.donePlaying||!tileActive))
 		{
+			stopTileSound(null, tile);
+		}
+	}
+
+	@Override
+	public void stopTileSound(String soundName, BlockEntity tile)
+	{
+		IEBlockEntitySound sound = tileSoundMap.get(tile.getBlockPos());
+		if(sound!=null)
+		{
 			sound.donePlaying = true;
 			mc().getSoundManager().stop(sound);
-			tileSoundMap.remove(pos);
+			tileSoundMap.remove(tile.getBlockPos());
 		}
 	}
 

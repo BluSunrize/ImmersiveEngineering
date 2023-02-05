@@ -1,6 +1,23 @@
-##### Version 1.19.2-9.1.1-pre
+##### Version 1.19.2-9.1.2-159
+- Fix broken villager workstations
+
+##### Version 1.19.2-9.1.1-158
+- All features from 8.3.1
 - Fix crashing when opening the manual with Lithium installed (Malte)
 - Fix mineral veins only generating in the overworld (BluSunrize)
+- Fix switched filters and buffers in item batcher GUI (Malte)
+
+##### Version 1.18.2-8.3.1-157
+- Add pride shaders! (BluSunrize)
+- Change workstations for Villagers to stop using vanilla blocks (BluSunrize)
+    - Structural Engineer -> Turntable, was Engineer's Crafting Table
+    - Machinist -> Engineer's Crafting Table, was Anvil
+- Fix multiblock preview in the manual when Radium is installed (Malte)
+- Fix issue related to shaderbag rarities (Malte)
+- Fix sawmill sounds and document that removing a spinning blade is painful (Silfryi)
+- Fix crash with arc furnace recipes loading (Kanzaji)
+- Fix hoppers being able to insert crates into other crates (Malte)
+- Fix multiple issues with IE's shaders (BluSunrize)
 
 ##### Version 1.19.2-9.1.0-156
 - All features from 8.3.0

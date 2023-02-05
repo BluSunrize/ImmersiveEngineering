@@ -17,9 +17,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
+          distribution: 'temurin'
       - name: Compile IE
         run: ./gradlew compileJava
       - name: Run unit tests
@@ -56,17 +57,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 17
+          distribution: 'temurin'
       - name: Create list of existing generated resources
         run: find src/generated/resources/ ! -path "**/.cache*" > resources.txt
       - name: Run data generation
-        # Hide the non-zero return code from gradle. runData always returns !=0 (to stop gradle from "caching" it?)
-        run: xvfb-run --auto-servernum bash -c "ie_manual_datagen_path=$(pwd)/../manual-data ./gradlew runData" || true
-      # TODO add new equivalent of this
-      # - name: Check for crashes during data generation
-      #   run: bash -c "[ -f run/ie_data_gen_done ]"
+        run: xvfb-run --auto-servernum bash -c "ie_manual_datagen_path=$(pwd)/../manual-data ./gradlew runData"
       - name: Check that no files have changed
         run: git update-index --really-refresh || (git diff && false)
       - name: Create list of actual generated resources
