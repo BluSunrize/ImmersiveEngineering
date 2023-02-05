@@ -1,3 +1,7 @@
+##### Version 1.19.3-9.2.0-160
+- First alpha release for 1.19.3
+- All features from 8.4.0 (not yet released)
+
 ##### Version 1.18.2-8.4.0-pre
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
