@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
@@ -54,6 +53,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +65,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class IEWorldGen
 {
-	public static Map<String, Pair<Holder<PlacedFeature>, TagKey<Biome>>> features = new HashMap<>();
+	public static Map<String, Pair<Holder<PlacedFeature>, @Nullable TagKey<Biome>>> features = new HashMap<>();
 	public static Map<String, Pair<VeinType, List<TargetBlockState>>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
@@ -90,7 +90,7 @@ public class IEWorldGen
 				//TODO does this do what I want?
 				rl(path), MINERAL_VEIN_FEATURE, new NoneFeatureConfiguration(), List.of()
 		);
-		features.put(path, Pair.of(veinFeature, IETags.hasMineralVeins));
+		features.put(path, Pair.of(veinFeature, null));
 	}
 
 	public static void onConfigUpdated()

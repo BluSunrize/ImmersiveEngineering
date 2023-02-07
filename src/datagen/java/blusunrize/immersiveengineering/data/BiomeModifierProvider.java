@@ -2,10 +2,12 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.world.AddGlobalFeatureBiomeModifier;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.Registry;
@@ -44,11 +46,15 @@ public class BiomeModifierProvider
 			final ResourceLocation nameRL = ImmersiveEngineering.rl(name);
 			final ResourceKey<PlacedFeature> key = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, nameRL);
 			TagKey<Biome> biomeTag = IEWorldGen.features.get(name).getSecond();
-			modifiers.put(nameRL, new AddFeaturesBiomeModifier(
-					new Named<>(biomeReg, biomeTag),
-					HolderSet.direct(featureReg.getHolderOrThrow(key)),
-					Decoration.UNDERGROUND_ORES
-			));
+			final Holder<PlacedFeature> featureHolder = featureReg.getHolderOrThrow(key);
+			BiomeModifier modifier;
+			if(biomeTag!=null)
+				modifier = new AddFeaturesBiomeModifier(
+						new Named<>(biomeReg, biomeTag), HolderSet.direct(featureHolder), Decoration.UNDERGROUND_ORES
+				);
+			else
+				modifier = new AddGlobalFeatureBiomeModifier(featureHolder, Decoration.UNDERGROUND_ORES);
+			modifiers.put(nameRL, modifier);
 		}
 		add.accept(JsonCodecProvider.forDatapackRegistry(
 				dataGenerator, existingFileHelper, Lib.MODID, jsonOps, Keys.BIOME_MODIFIERS, modifiers.build()
