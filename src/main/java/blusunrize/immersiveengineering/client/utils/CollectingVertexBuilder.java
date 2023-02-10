@@ -15,19 +15,22 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 //TODO actually handle default color!
 public class CollectingVertexBuilder extends DefaultedVertexConsumer
 {
-	protected final List<List<Consumer<VertexConsumer>>> vertices = new ArrayList<>();
-	private List<Consumer<VertexConsumer>> nextVertex = new ArrayList<>();
+	protected final List<Vertex> vertices = new ArrayList<>();
+	private final List<Vertex> pool = new ArrayList<>();
+	private Vertex currentVertex = makeVertex();
 
 	@Nonnull
 	@Override
 	public VertexConsumer vertex(double x, double y, double z)
 	{
-		nextVertex.add(vb -> vb.vertex(x, y, z));
+		currentVertex.order.add(Element.POSITION);
+		currentVertex.position[0] = x;
+		currentVertex.position[1] = y;
+		currentVertex.position[2] = z;
 		return this;
 	}
 
@@ -35,7 +38,11 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 	@Override
 	public VertexConsumer color(int red, int green, int blue, int alpha)
 	{
-		nextVertex.add(vb -> vb.color(red, green, blue, alpha));
+		currentVertex.order.add(Element.COLOR);
+		currentVertex.color[0] = red;
+		currentVertex.color[1] = green;
+		currentVertex.color[2] = blue;
+		currentVertex.color[3] = alpha;
 		return this;
 	}
 
@@ -43,7 +50,9 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 	@Override
 	public VertexConsumer uv(float u, float v)
 	{
-		nextVertex.add(vb -> vb.uv(u, v));
+		currentVertex.order.add(Element.UV);
+		currentVertex.uv[0] = u;
+		currentVertex.uv[1] = v;
 		return this;
 	}
 
@@ -51,7 +60,9 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 	@Override
 	public VertexConsumer overlayCoords(int u, int v)
 	{
-		nextVertex.add(vb -> vb.overlayCoords(u, v));
+		currentVertex.order.add(Element.OVERLAY);
+		currentVertex.overlay[0] = u;
+		currentVertex.overlay[1] = v;
 		return this;
 	}
 
@@ -59,7 +70,9 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 	@Override
 	public VertexConsumer uv2(int u, int v)
 	{
-		nextVertex.add(vb -> vb.uv2(u, v));
+		currentVertex.order.add(Element.UV2);
+		currentVertex.uv2[0] = u;
+		currentVertex.uv2[1] = v;
 		return this;
 	}
 
@@ -67,23 +80,78 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 	@Override
 	public VertexConsumer normal(float x, float y, float z)
 	{
-		nextVertex.add(vb -> vb.normal(x, y, z));
+		currentVertex.order.add(Element.NORMAL);
+		currentVertex.normal[0] = x;
+		currentVertex.normal[1] = y;
+		currentVertex.normal[2] = z;
 		return this;
 	}
 
 	@Override
 	public void endVertex()
 	{
-		nextVertex.add(VertexConsumer::endVertex);
-		vertices.add(nextVertex);
-		nextVertex = new ArrayList<>();
+		vertices.add(currentVertex);
+		currentVertex = makeVertex();
 	}
 
 	public void pipeAndClear(VertexConsumer out)
 	{
-		for(List<Consumer<VertexConsumer>> l : vertices)
-			for(Consumer<VertexConsumer> c : l)
-				c.accept(out);
+		for(Vertex v : vertices)
+			v.pipe(out);
+		clear();
+	}
+
+	protected void clear()
+	{
+		pool.addAll(vertices);
 		vertices.clear();
+	}
+
+	private Vertex makeVertex()
+	{
+		if(!pool.isEmpty())
+		{
+			Vertex result = pool.remove(pool.size()-1);
+			result.order.clear();
+			return result;
+		}
+		else
+			return new Vertex();
+	}
+
+	protected static class Vertex
+	{
+		private final double[] position = new double[3];
+		private final int[] color = new int[4];
+		private final float[] uv = new float[2];
+		private final int[] overlay = new int[2];
+		private final int[] uv2 = new int[2];
+		private final float[] normal = new float[3];
+		private final List<Element> order = new ArrayList<>();
+
+		public void pipe(VertexConsumer out)
+		{
+			for(Element e : order)
+				switch(e)
+				{
+					case POSITION -> out.vertex(position[0], position[1], position[2]);
+					case COLOR -> out.color(color[0], color[1], color[2], color[3]);
+					case UV -> out.uv(uv[0], uv[1]);
+					case OVERLAY -> out.overlayCoords(overlay[0], overlay[1]);
+					case UV2 -> out.uv2(uv2[0], uv2[1]);
+					case NORMAL -> out.normal(normal[0], normal[1], normal[2]);
+				}
+			out.endVertex();
+		}
+	}
+
+	protected enum Element
+	{
+		POSITION,
+		COLOR,
+		UV,
+		OVERLAY,
+		UV2,
+		NORMAL
 	}
 }
