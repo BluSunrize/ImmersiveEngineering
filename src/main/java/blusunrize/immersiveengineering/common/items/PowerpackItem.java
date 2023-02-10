@@ -10,10 +10,16 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
+import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.SimpleCapProvider;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -24,15 +30,27 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.util.EnergyHelper.*;
 
@@ -40,8 +58,18 @@ import static blusunrize.immersiveengineering.common.util.EnergyHelper.*;
  * @author BluSunrize
  * @since 15.06.2017
  */
-public class PowerpackItem extends IEBaseItem
+public class PowerpackItem extends UpgradeableToolItem
 {
+	private static Map<Item, CapacitorConfig> capacitorConfigMap = new HashMap<>();
+
+	static
+	{
+		capacitorConfigMap.put(MetalDevices.CAPACITOR_LV.asItem(), IEServerConfig.MACHINES.lvCapConfig);
+		capacitorConfigMap.put(MetalDevices.CAPACITOR_MV.asItem(), IEServerConfig.MACHINES.mvCapConfig);
+		capacitorConfigMap.put(MetalDevices.CAPACITOR_HV.asItem(), IEServerConfig.MACHINES.hvCapConfig);
+		capacitorConfigMap.put(MetalDevices.CAPACITOR_CREATIVE.asItem(), IEServerConfig.Machines.CapacitorConfig.CREATIVE);
+	}
+
 	public static final ItemGetterList POWERPACK_GETTER = new ItemGetterList(player -> {
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 		if(chest.getItem() instanceof PowerpackItem)
@@ -54,7 +82,7 @@ public class PowerpackItem extends IEBaseItem
 
 	public PowerpackItem()
 	{
-		super(new Properties().stacksTo(1));
+		super(new Properties().stacksTo(1), "powerpack");
 	}
 
 	@Override
@@ -112,19 +140,84 @@ public class PowerpackItem extends IEBaseItem
 			onArmorTick(stack, world, (Player)entity);
 	}
 
+	public static ItemStack getCapacitorStatic(ItemStack container)
+	{
+		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+			return ItemStack.EMPTY;
+		LazyOptional<IItemHandler> cap = container.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		if(cap.isPresent())
+		{
+			ItemStack capacitor = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
+			return capacitorConfigMap.containsKey(capacitor.getItem())?capacitor: ItemStack.EMPTY;
+		}
+		return ItemStack.EMPTY;
+	}
+
+	public static ItemStack getBannerStatic(ItemStack container)
+	{
+		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+			return ItemStack.EMPTY;
+		LazyOptional<IItemHandler> cap = container.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		if(cap.isPresent())
+		{
+			ItemStack banner = cap.map(handler -> handler.getStackInSlot(1)).orElse(ItemStack.EMPTY);
+			return banner.getItem() instanceof BannerItem?banner:ItemStack.EMPTY;
+		}
+		return ItemStack.EMPTY;
+	}
+
 	public static int getMaxEnergyStored(ItemStack container)
 	{
-		return 100000;
+		ItemStack capacitor = getCapacitorStatic(container);
+		if(!capacitor.isEmpty())
+		{
+			CapacitorConfig cfg = capacitorConfigMap.get(capacitor.getItem());
+			if(cfg!=null)
+				return cfg.storage.getAsInt();
+		}
+		return 0;
+	}
+
+	@Override
+	public int getSlotCount()
+	{
+		return 2;
 	}
 
 	@Override
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
-			return new SimpleCapProvider<>(
-					() -> CapabilityEnergy.ENERGY, new ItemEnergyStorage(stack, PowerpackItem::getMaxEnergyStored)
-			);
-		else
-			return super.initCapabilities(stack, nbt);
+			return new IEItemStackHandler(stack)
+			{
+				final LazyOptional<ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
+						new EnergyHelper.ItemEnergyStorage(stack, PowerpackItem::getMaxEnergyStored)
+				);
+
+				@Nonnull
+				@Override
+				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
+				{
+					if(capability==CapabilityEnergy.ENERGY)
+						return energyStorage.cast();
+					return super.getCapability(capability, facing);
+				}
+			};
+		return super.initCapabilities(stack, nbt);
+	}
+
+	@Override
+	public boolean canModify(ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
+	{
+		return new Slot[]{
+				new IESlot.WithPredicate(toolInventory, 0, 98, 22, (itemStack) -> capacitorConfigMap.containsKey(itemStack.getItem())),
+				new IESlot.WithPredicate(toolInventory, 1, 118, 52, (itemStack) -> itemStack.getItem() instanceof BannerItem)
+		};
 	}
 }
