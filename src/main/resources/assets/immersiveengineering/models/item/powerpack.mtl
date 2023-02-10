@@ -1,2 +1,5 @@
+newmtl banner
+map_Kd minecraft:entity/shield/base
+
 newmtl powerpack
 map_Kd immersiveengineering:item/powerpack
