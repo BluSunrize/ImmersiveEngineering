@@ -291,7 +291,9 @@ public class ItemModels extends TRSRItemModelProvider
 				.callback(ChemthrowerCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/chemthrower"));
-		obj(Misc.POWERPACK, rl("item/powerpack.obj"))
+		ieObjBuilder(Misc.POWERPACK, rl("item/powerpack.obj"))
+				.callback(PowerpackCallbacks.INSTANCE)
+				.end()
 				.transforms(rl("item/powerpack"));
 
 		IEFluids.ALL_ENTRIES.forEach(this::createBucket);

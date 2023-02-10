@@ -1,7 +1,7 @@
 {
-  "loader": "forge:obj",
+  "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/powerpack.obj",
-  "flip-v": true,
+  "callbacks": "immersiveengineering:powerpack",
   "transform": {
     "thirdperson_righthand": {
       "translation": [
