@@ -19,8 +19,10 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 {
 	public static final PowerpackCallbacks INSTANCE = new PowerpackCallbacks();
 
-	// If set to 2 will only render the banner. If set to 1 will render the banner_post in addition to other stuff
-	// If set to 0, will omit the banner post.
+	// 0: Render base & upgrades
+	// 1: Render base & upgrades & banner post
+	// 2: Render banner for small (shield) textures
+	// 3: Render banner for large textures
 	public static int THIRD_PERSON_PASS = 0;
 
 	@Override
@@ -32,16 +34,21 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 	@Override
 	public boolean useAbsoluteUV(Key object, String material)
 	{
-		return "banner".equals(material);
+		return "banner".equals(material)||"big_banner".equals(material);
 	}
 
 	@Override
 	public boolean shouldRenderGroup(Key key, String group, RenderType layer)
 	{
-		if(THIRD_PERSON_PASS==2 || "banner".equals(group))
-			return THIRD_PERSON_PASS==2 == "banner".equals(group);
+		// banners only render when specifically enabled
+		if(key.third_person_pass==2 || "banner".equals(group))
+			return key.third_person_pass==2 == "banner".equals(group);
+		if(key.third_person_pass==3 || "big_banner".equals(group))
+			return key.third_person_pass==3 == "big_banner".equals(group);
+		// post is optional
 		if("banner_post".equals(group))
-			return THIRD_PERSON_PASS==1;
+			return key.third_person_pass==1;
+		// everything else is permitted
 		return true;
 	}
 

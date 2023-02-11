@@ -110,16 +110,21 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 	@Nullable
 	private ResourceLocation getBannerResourceLocation(ShaderBannerBlockEntity bannerObj)
 	{
+		return getShaderResourceLocation(bannerObj.shader.getShaderItem(), bannerObj.shader.getShaderType());
+	}
+
+	@Nullable
+	public static ResourceLocation getShaderResourceLocation(ItemStack shader, ResourceLocation shaderType)
+	{
 		ResourceLocation name = null;
 		ShaderCase sCase = null;
-		ItemStack shader = bannerObj.shader.getShaderItem();
 		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
 		{
 			IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
 			name = iShaderItem.getShaderName(shader);
 			if(CACHE.containsKey(name))
 				return CACHE.get(name);
-			sCase = iShaderItem.getShaderCase(shader, bannerObj.shader.getShaderType());
+			sCase = iShaderItem.getShaderCase(shader, shaderType);
 		}
 
 		if(sCase!=null)

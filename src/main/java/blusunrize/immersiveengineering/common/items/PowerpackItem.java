@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
@@ -59,7 +60,7 @@ import static blusunrize.immersiveengineering.common.util.EnergyHelper.*;
  */
 public class PowerpackItem extends UpgradeableToolItem
 {
-	private static Map<Item, CapacitorConfig> capacitorConfigMap = new HashMap<>();
+	private static final Map<Item, CapacitorConfig> capacitorConfigMap = new HashMap<>();
 
 	static
 	{
@@ -174,7 +175,10 @@ public class PowerpackItem extends UpgradeableToolItem
 		if(cap.isPresent())
 		{
 			ItemStack banner = cap.map(handler -> handler.getStackInSlot(1)).orElse(ItemStack.EMPTY);
-			return banner.getItem() instanceof BannerItem?banner: ItemStack.EMPTY;
+			if(banner.getItem() instanceof BannerItem)
+				return banner;
+			if(banner.getItem() instanceof IShaderItem)
+				return banner;
 		}
 		return ItemStack.EMPTY;
 	}
@@ -226,7 +230,9 @@ public class PowerpackItem extends UpgradeableToolItem
 	{
 		return new Slot[]{
 				new IESlot.WithPredicate(toolInventory, 0, 98, 22, (itemStack) -> capacitorConfigMap.containsKey(itemStack.getItem())),
-				new IESlot.WithPredicate(toolInventory, 1, 118, 52, (itemStack) -> itemStack.getItem() instanceof BannerItem)
+				new IESlot.WithPredicate(toolInventory, 1, 118, 52,
+						(itemStack) -> itemStack.getItem() instanceof BannerItem||itemStack.getItem() instanceof IShaderItem
+				)
 		};
 	}
 }

@@ -8,10 +8,12 @@
 
 package blusunrize.immersiveengineering.client.models;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
+import blusunrize.immersiveengineering.client.render.tile.ShaderBannerRenderer;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -39,13 +41,15 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractBannerBlock;
-import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.phys.Vec3;
@@ -105,20 +109,38 @@ public class ModelPowerpack
 		if(!banner.isEmpty())
 		{
 			matrixStackIn.pushPose();
-			// set up to render the cloth
-			PowerpackCallbacks.THIRD_PERSON_PASS = 2;
 
-			BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
-			bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, TransformType.FIXED, false);
-			matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
-			for(BannerLayer layer : getBannerLayers(banner, bakedModel))
+			ResourceLocation shaderTexture = ShaderBannerRenderer.getShaderResourceLocation(
+					banner, new ResourceLocation(ImmersiveEngineering.MODID, "banner")
+			);
+			if(shaderTexture!=null)
 			{
-				VertexConsumer consumer = layer.getConsumer.apply(buffers);
-				for(BakedQuad quad : layer.bakedQuads())
-					consumer.putBulkData(
-							matrixStackIn.last(), quad, layer.red(), layer.green(), layer.blue(), 1,
-							LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false
-					);
+				// set up to render the large-texture banner
+				PowerpackCallbacks.THIRD_PERSON_PASS = 3;
+				BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
+				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, TransformType.FIXED, false);
+				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
+				VertexConsumer consumer = buffers.getBuffer(RenderType.entitySolid(shaderTexture));
+				Minecraft.getInstance().getItemRenderer().renderModelLists(
+						bakedModel, powerpack, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, matrixStackIn, consumer
+				);
+			}
+			else
+			{
+				// set up to render the small-texture banner
+				PowerpackCallbacks.THIRD_PERSON_PASS = 2;
+				BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
+				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, TransformType.FIXED, false);
+				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
+				for(BannerLayer layer : getBannerLayers(banner, bakedModel))
+				{
+					VertexConsumer consumer = layer.getConsumer.apply(buffers);
+					for(BakedQuad quad : layer.bakedQuads())
+						consumer.putBulkData(
+								matrixStackIn.last(), quad, layer.red(), layer.green(), layer.blue(), 1,
+								LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false
+						);
+				}
 			}
 			matrixStackIn.popPose();
 			PowerpackCallbacks.THIRD_PERSON_PASS = 1;
@@ -171,7 +193,7 @@ public class ModelPowerpack
 	private static List<BannerLayer> getBannerLayers(ItemStack banner, BakedModel bakedModel)
 	{
 		DyeColor baseCol = DyeColor.WHITE;
-		if(banner.getItem() instanceof BlockItem && ((BlockItem)banner.getItem()).getBlock()instanceof AbstractBannerBlock bannerBlock)
+		if(banner.getItem() instanceof BlockItem&&((BlockItem)banner.getItem()).getBlock() instanceof AbstractBannerBlock bannerBlock)
 			baseCol = bannerBlock.getColor();
 		ListTag patternList = BannerBlockEntity.getItemPatterns(banner);
 		BannerKey key = new BannerKey(baseCol, patternList!=null?patternList.toString(): "");
