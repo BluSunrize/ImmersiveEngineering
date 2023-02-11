@@ -32,10 +32,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.BannerItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -124,7 +121,7 @@ public class PowerpackItem extends UpgradeableToolItem
 			for(EquipmentSlot slot : EquipmentSlot.values())
 			{
 				ItemStack equipped = player.getItemBySlot(slot);
-				if(isFluxReceiver(equipped)&&!(equipped.getItem() instanceof PowerpackItem))
+				if(isFluxReceiver(equipped)&&!(equipped.getItem() instanceof PowerpackItem)&&!(equipped.getItem() instanceof BlockItem))
 					energy -= insertFlux(equipped, Math.min(energy, 256), false);
 			}
 			if(pre!=energy)
