@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
@@ -41,6 +42,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -85,9 +87,12 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
-		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
-		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored).withStyle(ChatFormatting.GRAY));
+		IEnergyStorage energy = CapabilityUtils.getCapability(stack, CapabilityEnergy.ENERGY);
+		if(energy!=null)
+		{
+			String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
+			list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored).withStyle(ChatFormatting.GRAY));
+		}
 	}
 
 	@Nullable
@@ -132,6 +137,17 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected)
 	{
+		// Migration for older powerpacks before they had item storage
+		if(ItemNBTHelper.hasKey(stack, "energy"))
+		{
+			int previousEnergy = ItemNBTHelper.getInt(stack, "energy");
+			IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);
+			ItemStack newCapacitor = new ItemStack(IEBlocks.MetalDevices.CAPACITOR_LV);
+			ItemNBTHelper.putInt(newCapacitor, EnergyHelper.ENERGY_KEY, previousEnergy);
+			((IItemHandlerModifiable)inv).setStackInSlot(0, newCapacitor);
+			ItemNBTHelper.remove(stack, "energy");
+		}
+
 		// We'll just have to assume that's Curios which sets the slot of -1
 		if(itemSlot==-1&&entity instanceof Player)
 			onArmorTick(stack, world, (Player)entity);
@@ -158,7 +174,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		if(cap.isPresent())
 		{
 			ItemStack banner = cap.map(handler -> handler.getStackInSlot(1)).orElse(ItemStack.EMPTY);
-			return banner.getItem() instanceof BannerItem?banner:ItemStack.EMPTY;
+			return banner.getItem() instanceof BannerItem?banner: ItemStack.EMPTY;
 		}
 		return ItemStack.EMPTY;
 	}
@@ -187,16 +203,12 @@ public class PowerpackItem extends UpgradeableToolItem
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
 			{
-				final LazyOptional<ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
-						new EnergyHelper.ItemEnergyStorage(stack, PowerpackItem::getMaxEnergyStored)
-				);
-
 				@Nonnull
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
 					if(capability==CapabilityEnergy.ENERGY)
-						return energyStorage.cast();
+						return getCapacitorStatic(stack).getCapability(capability, facing);
 					return super.getCapability(capability, facing);
 				}
 			};
