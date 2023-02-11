@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEnti
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
@@ -663,6 +664,12 @@ public final class IEBlocks
 				toItem = BlockItemBalloon::new;
 			else if(entry==Connectors.TRANSFORMER)
 				toItem = TransformerBlockItem::new;
+			else if(entry==MetalDevices.CAPACITOR_LV)
+				toItem = block -> new BlockItemCapacitor(block, IEServerConfig.MACHINES.lvCapConfig);
+			else if(entry==MetalDevices.CAPACITOR_MV)
+				toItem = block -> new BlockItemCapacitor(block, IEServerConfig.MACHINES.mvCapConfig);
+			else if(entry==MetalDevices.CAPACITOR_HV)
+				toItem = block -> new BlockItemCapacitor(block, IEServerConfig.MACHINES.hvCapConfig);
 			else if(entry==WoodenDevices.CRATE||entry==WoodenDevices.REINFORCED_CRATE)
 				toItem = BlockItemIE.BlockItemIENoInventory::new;
 			else
