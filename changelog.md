@@ -5,6 +5,7 @@
 - Fix some issues with models being mirrored (Malte)
 - Fix shaders and potion buckets not showing up in JEI (Malte)
 - Fix arc recycling accidentally modifying the empty ItemStack constant (Malte)
+- Fix tooltips on capacitors not showing energy stored (BluSunrize)
 
 ##### Version 1.18.2-8.3.1-157
 - Add pride shaders! (BluSunrize)
