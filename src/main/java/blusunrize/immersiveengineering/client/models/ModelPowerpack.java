@@ -43,9 +43,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.AbstractBannerBlock;
+import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.phys.Vec3;
@@ -170,7 +170,9 @@ public class ModelPowerpack
 
 	private static List<BannerLayer> getBannerLayers(ItemStack banner, BakedModel bakedModel)
 	{
-		DyeColor baseCol = ShieldItem.getColor(banner);
+		DyeColor baseCol = DyeColor.WHITE;
+		if(banner.getItem() instanceof BlockItem && ((BlockItem)banner.getItem()).getBlock()instanceof AbstractBannerBlock bannerBlock)
+			baseCol = bannerBlock.getColor();
 		ListTag patternList = BannerBlockEntity.getItemPatterns(banner);
 		BannerKey key = new BannerKey(baseCol, patternList!=null?patternList.toString(): "");
 		List<BannerLayer> cached = bannerCache.getIfPresent(key);
