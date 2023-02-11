@@ -38,8 +38,8 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 	@Override
 	public boolean shouldRenderGroup(Key key, String group, RenderType layer)
 	{
-		if("banner".equals(group) && THIRD_PERSON_PASS!=2)
-			return false;
+		if(THIRD_PERSON_PASS==2 || "banner".equals(group))
+			return THIRD_PERSON_PASS==2 == "banner".equals(group);
 		if("banner_post".equals(group))
 			return THIRD_PERSON_PASS==1;
 		return true;
