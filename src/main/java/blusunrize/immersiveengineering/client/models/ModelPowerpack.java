@@ -10,14 +10,19 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
+import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import com.google.common.base.Suppliers;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -26,18 +31,31 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.level.block.entity.BannerBlockEntity;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.ForgeHooksClient;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -51,6 +69,10 @@ public class ModelPowerpack
 		ModelPart layer = models.bakeLayer(ModelLayers.PLAYER);
 		return new ArmorModel(layer);
 	});
+
+	private final static Cache<BannerKey, List<BannerLayer>> bannerCache = CacheBuilder.newBuilder()
+			.maximumSize(100)
+			.build();
 
 	public static void render(
 			LivingEntity toRender, ItemStack powerpack,
@@ -70,7 +92,6 @@ public class ModelPowerpack
 		}
 
 		ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
-		BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
 		matrixStackIn.pushPose();
 		matrixStackIn.mulPose(new Quaternion(180, 0, 0, true));
 		if(model.crouching)
@@ -80,11 +101,35 @@ public class ModelPowerpack
 		}
 		matrixStackIn.translate(0, -.37, -.187);
 
+		ItemStack banner = PowerpackItem.getBannerStatic(powerpack);
+		if(!banner.isEmpty())
+		{
+			matrixStackIn.pushPose();
+			// set up to render the cloth
+			PowerpackCallbacks.THIRD_PERSON_PASS = 2;
+
+			BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
+			bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, TransformType.FIXED, false);
+			matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
+			for(BannerLayer layer : getBannerLayers(banner, bakedModel))
+			{
+				VertexConsumer consumer = layer.getConsumer.apply(buffers);
+				for(BakedQuad quad : layer.bakedQuads())
+					consumer.putBulkData(
+							matrixStackIn.last(), quad, layer.red(), layer.green(), layer.blue(), 1,
+							LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false
+					);
+			}
+			matrixStackIn.popPose();
+			PowerpackCallbacks.THIRD_PERSON_PASS = 1;
+		}
 		Minecraft.getInstance().getItemRenderer().render(
 				powerpack, TransformType.FIXED, false,
 				matrixStackIn, buffers,
-				LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, bakedModel
+				LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+				renderer.getModel(powerpack, toRender.getLevel(), toRender, 0)
 		);
+		PowerpackCallbacks.THIRD_PERSON_PASS = 0;
 		matrixStackIn.popPose();
 
 		for(InteractionHand hand : InteractionHand.values())
@@ -112,6 +157,43 @@ public class ModelPowerpack
 				matrixStackIn.popPose();
 			}
 		}
+	}
+
+	private record BannerKey(DyeColor base, String patternText)
+	{
+	}
+
+	private record BannerLayer(Function<MultiBufferSource, VertexConsumer> getConsumer,
+							   float red, float green, float blue, List<BakedQuad> bakedQuads)
+	{
+	}
+
+	private static List<BannerLayer> getBannerLayers(ItemStack banner, BakedModel bakedModel)
+	{
+		DyeColor baseCol = ShieldItem.getColor(banner);
+		ListTag patternList = BannerBlockEntity.getItemPatterns(banner);
+		BannerKey key = new BannerKey(baseCol, patternList!=null?patternList.toString(): "");
+		List<BannerLayer> cached = bannerCache.getIfPresent(key);
+		if(cached!=null)
+			return cached;
+
+		List<Pair<BannerPattern, DyeColor>> list = BannerBlockEntity.createPatterns(baseCol, patternList);
+		List<BakedQuad> quads = bakedModel.getQuads(null, null, new Random(42));
+		cached = new ArrayList<>(quads.size()*list.size());
+		for(int i = 0; i < 17&&i < list.size(); ++i)
+		{
+			Pair<BannerPattern, DyeColor> pair = list.get(i);
+			BannerPattern bannerpattern = pair.getFirst();
+			Material material = Sheets.getShieldMaterial(bannerpattern);
+			float[] colour = pair.getSecond().getTextureDiffuseColors();
+			cached.add(new BannerLayer(
+					mbs -> material.buffer(mbs, RenderType::entityCutoutNoCullZOffset),
+					colour[0], colour[1], colour[2],
+					quads
+			));
+		}
+		bannerCache.put(key, cached);
+		return cached;
 	}
 
 	private record CatenaryKey(int xTimes1024, int zTimes1024, boolean crouched, boolean right)
