@@ -29,9 +29,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
-import org.joml.Quaternionf;
 
 import java.util.List;
 
@@ -85,7 +83,7 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 				hotMetal_still = blockMap.getSprite(HOT_METLA_STILL);
 				hotMetal_flow = blockMap.getSprite(HOT_METLA_FLOW);
 			}
-			matrixStack.mulPose(new Quaternionf().rotateY((-facing.toYRot()+180)*Mth.DEG_TO_RAD));
+			rotateForFacingNoCentering(matrixStack, facing);
 			int process = 40;
 			float speed = 5f;
 			int pour = process-state.pouringMetal;

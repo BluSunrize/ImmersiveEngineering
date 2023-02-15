@@ -15,14 +15,13 @@ import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Quaternionf;
 
 public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntity>
 {
@@ -42,9 +41,9 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntit
 			return;
 		transform.pushPose();
 		transform.translate(.5, .5, .5);
-		final float dir = (tile.getFacing().toYRot()+Mth.PI)%Mth.PI;
+		rotateForFacingNoCentering(transform, tile.getFacing());
 		float wheelRotation = Mth.TWO_PI*(tile.rotation+partialTicks*(float)tile.perTick);
-		transform.mulPose(new Quaternionf().rotateY(dir).rotateZ(wheelRotation));
+		transform.mulPose(new Quaternionf().rotateZ(wheelRotation));
 		transform.translate(-.5, -.5, -.5);
 		MODEL_BUFFER.render(RenderType.cutoutMipped(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
 		transform.popPose();
