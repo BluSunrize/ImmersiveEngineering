@@ -10,13 +10,14 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -191,6 +192,8 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	@Override
 	public void tickServer()
 	{
+		if(!SafeChunkUtils.isChunkSafe(be.getLevel(), be.getBlockPos()))
+			return;
 		final IMultiblockComponent<State> logic = multiblock.logic();
 		if(logic instanceof IServerTickableComponent<State> serverTickable)
 			serverTickable.tickServer(getContext());
@@ -201,6 +204,8 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	@Override
 	public void tickClient()
 	{
+		if(!SafeChunkUtils.isChunkSafe(be.getLevel(), be.getBlockPos()))
+			return;
 		final IMultiblockComponent<State> logic = multiblock.logic();
 		if(logic instanceof IClientTickableComponent<State> clientTickable)
 			clientTickable.tickClient(getContext());
