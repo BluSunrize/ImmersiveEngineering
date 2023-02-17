@@ -1,6 +1,7 @@
 Accumulator Backpack
 Do....Ray....Egon!
-Energy storage takes space and some heavy weight components. As such, storing large amounts of energy in each tool individually is inefficient and makes them akward to wield.
-The Accumulator Backpack acts as a compromise, offering a centralized storage of energy for any powered tools to tap into.
-The backpack charges any tools held in main- or offhand as well as any armorpieces you are wearing.
-The accumulator can be worn on your back like a piece of chest armor, or you may attach it to most common sets of armor in order to gain the benefit of a power-supply as well as protection.
+Energy storage takes space and some heavyweight components. As such, storing large amounts of energy in each tool individually is inefficient and makes them awkward to wield.
+The Accumulator Backpack acts as a compromise, offering a centralized storage of energy for any powered tools to tap into. You construct its carrying frame with the recipe shown here. After that you can take it to the <link;workbench;Engineer's Workbench;start> in order to place an <link;accumulators;Accumulator> inside it.
+The backpack charges any tools in your hands, as well as any armor you are wearing. You can wear it like a piece of chest armor, or you may craft it with a chestpiece to attach it and gain the benefit of a power-supply as well as protection.<np>
+<&antenna>By attaching a §2Charging Antenna§r to the backpack, you can charge its accumulator on the go! Simply walk underneath an <link;wiring;un-insulated powerline;wire_recipes> to have the antenna connect to it.<br>
+While you remain close enough to the wire, the antenna will flex and stay connected, slowly charging the accumulator from the wire network.

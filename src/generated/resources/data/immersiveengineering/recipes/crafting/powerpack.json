@@ -1,18 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "cbc",
-    "wlw"
+    "srs",
+    "clc",
+    "wrw"
   ],
   "key": {
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    },
     "l": {
       "tag": "forge:leather"
     },
+    "r": {
+      "tag": "forge:rods/steel"
+    },
     "w": {
       "item": "immersiveengineering:wirecoil_copper_ins"
-    },
-    "b": {
-      "item": "immersiveengineering:capacitor_lv"
     },
     "c": {
       "item": "immersiveengineering:connector_lv"
