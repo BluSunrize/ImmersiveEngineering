@@ -8,12 +8,25 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
+import blusunrize.immersiveengineering.api.wires.WireCollisionData;
+import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
+import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler.IShockingWire;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.network.MessageBirthdayParty;
+import blusunrize.immersiveengineering.common.network.MessagePowerpackAntenna;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -30,12 +43,16 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -44,12 +61,13 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.util.EnergyHelper.*;
@@ -70,6 +88,8 @@ public class PowerpackItem extends UpgradeableToolItem
 		capacitorConfigMap.put(MetalDevices.CAPACITOR_CREATIVE.asItem(), IEServerConfig.Machines.CapacitorConfig.CREATIVE);
 	}
 
+	private static final Map<UUID, Connection> PLAYER_ATTACHED_TO = new HashMap<>();
+
 	public static final ItemGetterList POWERPACK_GETTER = new ItemGetterList(player -> {
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 		if(chest.getItem() instanceof PowerpackItem)
@@ -82,7 +102,7 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public PowerpackItem()
 	{
-		super(new Properties().stacksTo(1), "powerpack");
+		super(new Properties().stacksTo(1), "POWERPACK");
 	}
 
 	@Override
@@ -132,6 +152,69 @@ public class PowerpackItem extends UpgradeableToolItem
 			}
 			if(pre!=energy)
 				extractFlux(itemStack, pre-energy, false);
+		}
+		if(getUpgrades(itemStack).getBoolean("antenna"))
+			handleAntennaTick(itemStack, world, player);
+	}
+
+	private void handleAntennaTick(ItemStack itemStack, Level world, Player player)
+	{
+		// attachment only works when grounded
+		if(!player.isOnGround()||world.isClientSide())
+			return;
+
+		GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
+		tooFar:
+		if(PLAYER_ATTACHED_TO.containsKey(player.getUUID()))
+		{
+			Connection conn = PLAYER_ATTACHED_TO.get(player.getUUID());
+			// Check for staying connected
+			CatenaryData catenary = conn.getCatenaryData();
+			Vec3 antennaTip = player.position().add(0, 2.5, 0);
+			Vec3 ap = antennaTip.subtract(Vec3.atLowerCornerOf(conn.getEndA().position()).add(conn.getEndAOffset()));
+			double orthLength = ap.dot(catenary.delta())/catenary.delta().dot(catenary.delta());
+			Vec3 catPoint = conn.getPoint(orthLength, conn.getEndA()).add(Vec3.atLowerCornerOf(conn.getEndA().position()));
+			double dist = antennaTip.subtract(catPoint).lengthSqr();
+			if(orthLength < 0||orthLength > 1||dist >= 8)
+			{
+				PLAYER_ATTACHED_TO.remove(player.getUUID());
+				ImmersiveEngineering.packetHandler.send(PacketDistributor.ALL.noArg(), new MessagePowerpackAntenna(player, null));
+				break tooFar;
+			}
+
+			// Transfer energy
+			if(!world.isClientSide())
+			{
+				EnergyTransferHandler energyHandler = conn.getContainingNet(global).getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
+				var sources = energyHandler.getSources().values();
+				Optional<EnergyConnector> source = sources.stream()
+						.filter(o -> o.getAvailableEnergy() > 0)
+						.max(Comparator.comparingInt(EnergyConnector::getAvailableEnergy));
+				source.ifPresent(e -> {
+					int charge = Math.min(e.getAvailableEnergy(), 256);
+					charge = insertFlux(itemStack, charge, false);
+					e.extractEnergy(charge);
+				});
+			}
+		}
+		else
+		{
+			WireCollisionData wireData = global.getCollisionData();
+			Collection<CollisionInfo> atBlock = wireData.getCollisionInfo(player.getOnPos().above(4));
+			Optional<Connection> connection = atBlock.stream()
+					.filter(CollisionInfo::isInBlock)
+					.map(CollisionInfo::connection)
+					.filter(c -> c.type instanceof IShockingWire)
+					.filter(c -> {
+						Vec3 delta = c.getCatenaryData().delta();
+						double angle = c.getCatenaryData().isVertical()?1: delta.y()/Math.sqrt(delta.x()*delta.x()+delta.z()*delta.z());
+						return Math.abs(angle) < 0.5;
+					})
+					.findAny();
+			connection.ifPresent(conn -> {
+				PLAYER_ATTACHED_TO.put(player.getUUID(), conn);
+				ImmersiveEngineering.packetHandler.send(PacketDistributor.ALL.noArg(), new MessagePowerpackAntenna(player, conn));
+			});
 		}
 	}
 
@@ -198,7 +281,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public int getSlotCount()
 	{
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -230,9 +313,10 @@ public class PowerpackItem extends UpgradeableToolItem
 	{
 		return new Slot[]{
 				new IESlot.WithPredicate(toolInventory, 0, 98, 22, (itemStack) -> capacitorConfigMap.containsKey(itemStack.getItem())),
-				new IESlot.WithPredicate(toolInventory, 1, 118, 52,
+				new IESlot.WithPredicate(toolInventory, 1, 134, 22,
 						(itemStack) -> itemStack.getItem() instanceof BannerItem||itemStack.getItem() instanceof IShaderItem
-				)
+				),
+				new IESlot.Upgrades(container, toolInventory, 2, 79, 52, "POWERPACK", stack, true, level, getPlayer)
 		};
 	}
 }

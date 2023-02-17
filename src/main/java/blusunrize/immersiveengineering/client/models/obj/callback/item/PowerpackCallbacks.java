@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks.Key;
+import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -28,7 +30,8 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 	@Override
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
-		return new Key(THIRD_PERSON_PASS);
+		CompoundTag upgrades = PowerpackItem.getUpgradesStatic(stack);
+		return new Key(THIRD_PERSON_PASS, upgrades.getBoolean("antenna"));
 	}
 
 	@Override
@@ -48,11 +51,13 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 		// post is optional
 		if("banner_post".equals(group))
 			return key.third_person_pass==1;
+		if("antenna".equals(group))
+			return key.antenna;
 		// everything else is permitted
 		return true;
 	}
 
-	public record Key(int third_person_pass)
+	public record Key(int third_person_pass, boolean antenna)
 	{
 	}
 }

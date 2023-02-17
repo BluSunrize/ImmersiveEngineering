@@ -254,6 +254,7 @@ public class ImmersiveEngineering
 		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageContainerData.class, MessageContainerData::new, PLAY_TO_CLIENT);
 		registerMessage(MessageOpenManual.class, MessageOpenManual::new, PLAY_TO_CLIENT);
+		registerMessage(MessagePowerpackAntenna.class, MessagePowerpackAntenna::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));

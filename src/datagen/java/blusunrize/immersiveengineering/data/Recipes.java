@@ -2719,6 +2719,16 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_buzzsaw", has(Tools.BUZZSAW))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.BUZZSAW_SPAREBLADES))));
 
+		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_ANTENNA))
+				.pattern("www")
+				.pattern("rww")
+				.pattern("c  ")
+				.define('w', IETags.aluminumWire)
+				.define('r', IETags.aluminumRod)
+				.define('c', IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false))
+				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_ANTENNA))));
+
 		ShapelessRecipeBuilder.shapeless(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.requires(Tools.WIRECUTTER)

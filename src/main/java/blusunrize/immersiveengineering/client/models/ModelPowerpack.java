@@ -26,6 +26,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -40,8 +41,10 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,12 +55,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractBannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
+import org.lwjgl.system.CallbackI.V;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -74,6 +77,8 @@ public class ModelPowerpack
 		return new ArmorModel(layer);
 	});
 
+	public static Map<UUID, Connection> PLAYER_ATTACHED_TO = new HashMap<>();
+
 	private final static Cache<BannerKey, List<BannerLayer>> bannerCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.build();
@@ -82,8 +87,7 @@ public class ModelPowerpack
 			LivingEntity toRender, ItemStack powerpack,
 			PoseStack matrixStackIn, MultiBufferSource buffers,
 			int packedLightIn, int packedOverlayIn,
-			float red, float green, float blue, float alpha,
-			float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch
+			float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch
 	)
 	{
 		ArmorModel model = MODEL.get();
@@ -178,6 +182,36 @@ public class ModelPowerpack
 				);
 				matrixStackIn.popPose();
 			}
+		}
+
+		CompoundTag upgrades = PowerpackItem.getUpgradesStatic(powerpack);
+		if(upgrades.getBoolean("antenna"))
+		{
+			Vec3 antennaBase = new Vec3(-.09375, -.3125, .21875).yRot((float)Math.toRadians(-toRender.yBodyRotO));
+			Vec3 antennaTip = antennaBase.add(0, -2.5, 0);
+			double distFromWire = 0;
+			if(PLAYER_ATTACHED_TO.containsKey(toRender.getUUID()))
+			{
+				Connection connection = PLAYER_ATTACHED_TO.get(toRender.getUUID());
+				CatenaryData catenary = connection.getCatenaryData();
+				Vec3 a = Vec3.atLowerCornerOf(connection.getEndA().position());
+				Vec3 ap = antennaTip.add(toRender.position()).subtract(a);
+				Vec3 connectionDir = catenary.delta().normalize();
+				distFromWire = ap.cross(connectionDir).length();
+				double orthLength = ap.dot(catenary.delta())/catenary.delta().dot(catenary.delta());
+				Vec3 catPoint = connection.getPoint(orthLength, connection.getEndA());
+				antennaTip = toRender.position().add(0, 1.25, 0).subtract(a.add(catPoint)).scale(1.02);
+			}
+			matrixStackIn.pushPose();
+			// undo player rotation to allow absolute positioning
+			matrixStackIn.mulPose(new Quaternion(Vector3f.YP, -toRender.yBodyRotO, true));
+			matrixStackIn.scale(-1.0F, 1.0F, 1.0F);
+			CatenaryData renderCat = Connection.makeCatenaryData(antennaBase, antennaTip, 1.0+distFromWire*0.005);
+			ConnectionRenderer.renderConnection(
+					new TransformingVertexBuilder(buffers, RenderType.entitySolid(InventoryMenu.BLOCK_ATLAS), matrixStackIn),
+					renderCat, -.03125, 0xa4afb0, packedLightIn, packedOverlayIn
+			);
+			matrixStackIn.popPose();
 		}
 	}
 
