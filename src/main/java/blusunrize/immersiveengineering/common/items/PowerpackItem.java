@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -92,6 +93,11 @@ public class PowerpackItem extends UpgradeableToolItem
 			return ItemStack.EMPTY;
 	});
 
+	public static final int ITEM_CHARGE_RATE = 256;
+	public static final int INDUCTION_CHARGE_RATE = ITEM_CHARGE_RATE/32;
+	public static final int ANTENNA_CHARGE_RATE = 32;
+	public static final int TESLA_CONSUMPTION = 1024;
+
 	public PowerpackItem()
 	{
 		super(new Properties().stacksTo(1), "POWERPACK");
@@ -140,7 +146,23 @@ public class PowerpackItem extends UpgradeableToolItem
 			{
 				ItemStack equipped = player.getItemBySlot(slot);
 				if(isFluxReceiver(equipped)&&!(equipped.getItem() instanceof PowerpackItem)&&!(equipped.getItem() instanceof BlockItem))
-					energy -= insertFlux(equipped, Math.min(energy, 256), false);
+					energy -= insertFlux(equipped, Math.min(energy, ITEM_CHARGE_RATE), false);
+			}
+			// induction charging only happens every 4 ticks
+			if(getUpgrades(itemStack).getBoolean("induction")&&player.tickCount%4==0)
+			{
+				NonNullList<ItemStack> allItems = player.getInventory().items;
+				final int selected = player.getInventory().selected;
+				for(int i = 0; i < allItems.size(); i++)
+				{
+					if(i!=selected) // ignore equipped item
+						continue;
+					ItemStack inventoryItem = allItems.get(i);
+					if(isFluxReceiver(inventoryItem)&&!(inventoryItem.getItem() instanceof PowerpackItem)&&!(inventoryItem.getItem() instanceof BlockItem))
+						energy -= insertFlux(inventoryItem, Math.min(energy, INDUCTION_CHARGE_RATE), false);
+					if(energy <= 0) // this is a long loop, so breaking early is good
+						break;
+				}
 			}
 			if(pre!=energy)
 				extractFlux(itemStack, pre-energy, false);
@@ -183,7 +205,7 @@ public class PowerpackItem extends UpgradeableToolItem
 						.filter(o -> o.getAvailableEnergy() > 0)
 						.max(Comparator.comparingInt(EnergyConnector::getAvailableEnergy));
 				source.ifPresent(e -> {
-					int charge = Math.min(e.getAvailableEnergy(), 32);
+					int charge = Math.min(e.getAvailableEnergy(), ANTENNA_CHARGE_RATE);
 					charge = insertFlux(itemStack, charge, false);
 					e.extractEnergy(charge);
 				});
