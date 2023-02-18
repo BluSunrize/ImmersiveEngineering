@@ -29,22 +29,24 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
@@ -52,7 +54,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.extensions.IForgeAbstractMinecart;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -178,7 +179,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	{
 		// attachment only works when grounded
 		boolean grounded = player.getRootVehicle().isOnGround();
-		if(!grounded && player.getRootVehicle() instanceof IForgeAbstractMinecart minecart)
+		if(!grounded&&player.getRootVehicle() instanceof AbstractMinecart minecart)
 		{
 			BlockPos railPos = minecart.getCurrentRailPosition();
 			if(world.getBlockState(railPos).is(BlockTags.RAILS))
@@ -209,12 +210,7 @@ public class PowerpackItem extends UpgradeableToolItem
 			// Transfer energy
 			if(!world.isClientSide())
 			{
-				EnergyTransferHandler energyHandler = conn.getContainingNet(global).getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
-				var sources = energyHandler.getSources().values();
-				Optional<EnergyConnector> source = sources.stream()
-						.filter(o -> o.getAvailableEnergy() > 0)
-						.max(Comparator.comparingInt(EnergyConnector::getAvailableEnergy));
-				source.ifPresent(e -> {
+				findBestSource(global, conn).ifPresent(e -> {
 					int charge = Math.min(e.getAvailableEnergy(), ANTENNA_CHARGE_RATE);
 					charge = insertFlux(itemStack, charge, false);
 					e.extractEnergy(charge);
@@ -238,8 +234,39 @@ public class PowerpackItem extends UpgradeableToolItem
 			connection.ifPresent(conn -> {
 				PLAYER_ATTACHED_TO.put(player.getUUID(), conn);
 				ImmersiveEngineering.packetHandler.send(PacketDistributor.ALL.noArg(), new MessagePowerpackAntenna(player, conn));
+				if(player.getVehicle() instanceof AbstractMinecart minecart &&minecart.getDeltaMovement().lengthSqr() > 4)
+					findBestSource(global, conn).ifPresent(e -> {
+						if(e.getAvailableEnergy() >= 4096)
+						{
+							e.extractEnergy(4096);
+							LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(world);
+							lightningbolt.moveTo(player.getX(), player.getY(), player.getZ());
+							world.addFreshEntity(lightningbolt);
+							Vec3 dir = minecart.getDeltaMovement().normalize();
+							Vec3 orth = dir.yRot((float)Math.toRadians(90));
+							Vec3 off = dir.scale(0.125);
+							Vec3 left = minecart.position().add(orth.scale(0.625));
+							Vec3 right = minecart.position().add(orth.scale(-0.625));
+							for(int i=0; i<80; i++)
+							{
+								left = left.add(off);
+								right = right.add(off);
+								((ServerLevel)world).sendParticles(ParticleTypes.FLAME, left.x, left.y, left.z, 0, 0, 0, 0, 1);
+								((ServerLevel)world).sendParticles(ParticleTypes.FLAME, right.x, right.y, right.z, 0, 0, 0, 0, 1);
+							}
+							Utils.unlockIEAdvancement(player, "tools/secret_bttf");
+						}
+					});
 			});
 		}
+	}
+
+	private Optional<EnergyConnector> findBestSource(GlobalWireNetwork globalNetwork, Connection connection)
+	{
+		EnergyTransferHandler energyHandler = connection.getContainingNet(globalNetwork).getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
+		return energyHandler.getSources().values().stream()
+				.filter(o -> o.getAvailableEnergy() > 0)
+				.max(Comparator.comparingInt(EnergyConnector::getAvailableEnergy));
 	}
 
 	@Override
@@ -343,5 +370,15 @@ public class PowerpackItem extends UpgradeableToolItem
 				new IESlot.Upgrades(container, toolInventory, 2, 79, 52, "POWERPACK", stack, true, level, getPlayer),
 				new IESlot.Upgrades(container, toolInventory, 3, 117, 52, "POWERPACK", stack, true, level, getPlayer)
 		};
+	}
+
+	@Override
+	public void removeFromWorkbench(Player player, ItemStack stack)
+	{
+		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		invCap.ifPresent(inv -> {
+			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
+				Utils.unlockIEAdvancement(player, "tools/upgrade_powerpack");
+		});
 	}
 }
