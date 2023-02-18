@@ -7,6 +7,7 @@
     - The Charging Antenna upgrade will charge the pack by attaching to overhead wires
     - The Miniaturized Tesla Coil will electrocute your attackers
     - The Induction Charger will charge your whole inventory
+    - There may be a new secret advancement too ;)
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
 - Fix some issues with models being mirrored (Malte)

@@ -2,7 +2,8 @@
   "parent": "immersiveengineering:tools/craft_powerpack",
   "display": {
     "icon": {
-      "item": "immersiveengineering:powerpack"
+      "item": "immersiveengineering:powerpack",
+      "nbt": "{upgrades:{antenna:1b,induction:1b}}"
     },
     "title": {
       "translate": "advancement.immersiveengineering.upgrade_powerpack"

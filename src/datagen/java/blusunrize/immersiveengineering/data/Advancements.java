@@ -263,7 +263,7 @@ public class Advancements extends AdvancementProvider
 			upgrades = new CompoundTag();
 			upgrades.putBoolean("antenna", true);
 			upgrades.putBoolean("induction", true);
-			ItemNBTHelper.setTagCompound(upgradedRailgun, "upgrades", upgrades);
+			ItemNBTHelper.setTagCompound(upgradedPowerpack, "upgrades", upgrades);
 			Advancement upgradePowerpack = AdvBuilder.child("upgrade_powerpack", powerpack).challenge()
 					.icon(upgradedPowerpack).codeTriggered().loot("shader_rare").save(consumer);
 
