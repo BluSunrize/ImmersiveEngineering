@@ -31,12 +31,14 @@ import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -50,6 +52,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.extensions.IForgeAbstractMinecart;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -174,7 +177,14 @@ public class PowerpackItem extends UpgradeableToolItem
 	private void handleAntennaTick(ItemStack itemStack, Level world, Player player)
 	{
 		// attachment only works when grounded
-		if(!player.isOnGround()||world.isClientSide())
+		boolean grounded = player.getRootVehicle().isOnGround();
+		if(!grounded && player.getRootVehicle() instanceof IForgeAbstractMinecart minecart)
+		{
+			BlockPos railPos = minecart.getCurrentRailPosition();
+			if(world.getBlockState(railPos).is(BlockTags.RAILS))
+				grounded = true;
+		}
+		if(!grounded||world.isClientSide())
 			return;
 
 		GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
