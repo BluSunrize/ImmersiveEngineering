@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ttt",
+    "wew"
+  ],
+  "key": {
+    "t": {
+      "item": "immersiveengineering:electron_tube"
+    },
+    "w": {
+      "item": "immersiveengineering:wirecoil_electrum_ins"
+    },
+    "e": {
+      "item": "immersiveengineering:component_electronic"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_powerpack_induction"
+  }
+}

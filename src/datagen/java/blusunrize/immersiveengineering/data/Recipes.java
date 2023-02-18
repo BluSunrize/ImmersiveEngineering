@@ -2738,10 +2738,10 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))
 				.pattern("iii")
-				.pattern("crc")
+				.pattern("cfc")
 				.pattern("cec")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
-				.define('r', IETags.steelRod)
+				.define('f', WoodenDecoration.TREATED_FENCE)
 				.define('c', IETags.electrumWire)
 				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))

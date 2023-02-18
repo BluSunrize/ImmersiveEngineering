@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "iii",
+    "cfc",
+    "cec"
+  ],
+  "key": {
+    "i": {
+      "tag": "forge:plates/aluminum"
+    },
+    "f": {
+      "item": "immersiveengineering:treated_fence"
+    },
+    "c": {
+      "tag": "forge:wires/electrum"
+    },
+    "e": {
+      "item": "immersiveengineering:component_electronic_adv"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:toolupgrade_powerpack_tesla"
+  }
+}
