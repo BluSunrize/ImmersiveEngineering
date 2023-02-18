@@ -2728,6 +2728,24 @@ public class Recipes extends RecipeProvider
 				.define('c', IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false))
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_ANTENNA))));
+		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))
+				.pattern("ttt")
+				.pattern("wew")
+				.define('t', Ingredients.ELECTRON_TUBE)
+				.define('w', Misc.WIRE_COILS.get(WireType.ELECTRUM_INSULATED))
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))));
+		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))
+				.pattern("iii")
+				.pattern("crc")
+				.pattern("cec")
+				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
+				.define('r', IETags.steelRod)
+				.define('c', IETags.electrumWire)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
+				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))));
 
 		ShapelessRecipeBuilder.shapeless(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)

@@ -273,7 +273,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public int getSlotCount()
 	{
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -308,7 +308,8 @@ public class PowerpackItem extends UpgradeableToolItem
 				new IESlot.WithPredicate(toolInventory, 1, 134, 22,
 						(itemStack) -> itemStack.getItem() instanceof BannerItem||itemStack.getItem() instanceof IShaderItem
 				),
-				new IESlot.Upgrades(container, toolInventory, 2, 79, 52, "POWERPACK", stack, true, level, getPlayer)
+				new IESlot.Upgrades(container, toolInventory, 2, 79, 52, "POWERPACK", stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 3, 117, 52, "POWERPACK", stack, true, level, getPlayer)
 		};
 	}
 }

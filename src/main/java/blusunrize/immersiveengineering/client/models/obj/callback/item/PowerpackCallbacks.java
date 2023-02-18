@@ -31,7 +31,12 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
 		CompoundTag upgrades = PowerpackItem.getUpgradesStatic(stack);
-		return new Key(THIRD_PERSON_PASS, upgrades.getBoolean("antenna"));
+		return new Key(
+				THIRD_PERSON_PASS,
+				upgrades.getBoolean("antenna"),
+				upgrades.getBoolean("induction"),
+				upgrades.getBoolean("tesla")
+		);
 	}
 
 	@Override
@@ -44,20 +49,24 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 	public boolean shouldRenderGroup(Key key, String group, RenderType layer)
 	{
 		// banners only render when specifically enabled
-		if(key.third_person_pass==2 || "banner".equals(group))
-			return key.third_person_pass==2 == "banner".equals(group);
-		if(key.third_person_pass==3 || "big_banner".equals(group))
-			return key.third_person_pass==3 == "big_banner".equals(group);
+		if(key.third_person_pass==2||"banner".equals(group))
+			return key.third_person_pass==2=="banner".equals(group);
+		if(key.third_person_pass==3||"big_banner".equals(group))
+			return key.third_person_pass==3=="big_banner".equals(group);
 		// post is optional
 		if("banner_post".equals(group))
 			return key.third_person_pass==1;
 		if("antenna".equals(group))
 			return key.antenna;
+		if("induction".equals(group)||"induction_tubes".equals(group))
+			return key.induction;
+		if("tesla_coil".equals(group))
+			return key.tesla;
 		// everything else is permitted
 		return true;
 	}
 
-	public record Key(int third_person_pass, boolean antenna)
+	public record Key(int third_person_pass, boolean antenna, boolean induction, boolean tesla)
 	{
 	}
 }
