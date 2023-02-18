@@ -5,6 +5,8 @@
     - Existing packs will automatically migrate to an LV accumulator.
     - May be equipped with a shader or banner, to proudly display over your shoulder
     - The Charging Antenna upgrade will charge the pack by attaching to overhead wires
+    - The Miniaturized Tesla Coil will electrocute your attackers
+    - The Induction Charger will charge your whole inventory
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
 - Fix some issues with models being mirrored (Malte)
