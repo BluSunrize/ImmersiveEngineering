@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
+import com.google.common.base.Suppliers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -75,15 +76,14 @@ import static blusunrize.immersiveengineering.common.util.EnergyHelper.*;
  */
 public class PowerpackItem extends UpgradeableToolItem
 {
-	private static final Map<Item, CapacitorConfig> capacitorConfigMap = new HashMap<>();
-
-	static
-	{
+	private static final Supplier<Map<Item, CapacitorConfig>> capacitorConfigMap = Suppliers.memoize(() -> {
+		Map<Item, CapacitorConfig> capacitorConfigMap = new HashMap<>();
 		capacitorConfigMap.put(MetalDevices.CAPACITOR_LV.asItem(), IEServerConfig.MACHINES.lvCapConfig);
 		capacitorConfigMap.put(MetalDevices.CAPACITOR_MV.asItem(), IEServerConfig.MACHINES.mvCapConfig);
 		capacitorConfigMap.put(MetalDevices.CAPACITOR_HV.asItem(), IEServerConfig.MACHINES.hvCapConfig);
 		capacitorConfigMap.put(MetalDevices.CAPACITOR_CREATIVE.asItem(), IEServerConfig.Machines.CapacitorConfig.CREATIVE);
-	}
+		return capacitorConfigMap;
+	});
 
 	private static final Map<UUID, Connection> PLAYER_ATTACHED_TO = new HashMap<>();
 
@@ -296,7 +296,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		if(cap.isPresent())
 		{
 			ItemStack capacitor = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
-			return capacitorConfigMap.containsKey(capacitor.getItem())?capacitor: ItemStack.EMPTY;
+			return capacitorConfigMap.get().containsKey(capacitor.getItem())?capacitor: ItemStack.EMPTY;
 		}
 		return ItemStack.EMPTY;
 	}
@@ -322,7 +322,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		ItemStack capacitor = getCapacitorStatic(container);
 		if(!capacitor.isEmpty())
 		{
-			CapacitorConfig cfg = capacitorConfigMap.get(capacitor.getItem());
+			CapacitorConfig cfg = capacitorConfigMap.get().get(capacitor.getItem());
 			if(cfg!=null)
 				return cfg.storage.getAsInt();
 		}
@@ -363,7 +363,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
 		return new Slot[]{
-				new IESlot.WithPredicate(toolInventory, 0, 98, 22, (itemStack) -> capacitorConfigMap.containsKey(itemStack.getItem())),
+				new IESlot.WithPredicate(toolInventory, 0, 98, 22, (itemStack) -> capacitorConfigMap.get().containsKey(itemStack.getItem())),
 				new IESlot.WithPredicate(toolInventory, 1, 134, 22,
 						(itemStack) -> itemStack.getItem() instanceof BannerItem||itemStack.getItem() instanceof IShaderItem
 				),
