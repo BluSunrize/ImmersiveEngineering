@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -82,9 +81,10 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 					plantQuads.put(state, plantQuadList);
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
-				block.getSecond().push(matrixStack);
-				RenderUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack, type.format()),
-						tile.getLevelNonnull(), blockPos, false, col, combinedLightIn);
+				matrixStack.pushTransformation(block.getSecond());
+				RenderUtils.renderModelTESRFancy(
+						plantQuadList, baseBuilder, matrixStack, tile.getLevelNonnull(), blockPos, false, col, combinedLightIn
+				);
 				matrixStack.popPose();
 			}
 
@@ -93,10 +93,9 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 			Consumer<?> quadInjector = (object) -> {if(object instanceof BakedQuad) injectedQuadList.add((BakedQuad) object);};
 			recipe.renderFunction.injectQuads(seed, growth, quadInjector);
 			if(injectedQuadList.size() > 0)
-			{
-				RenderUtils.renderModelTESRFancy(injectedQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack, type.format()),
-						tile.getLevelNonnull(), blockPos, false, -1, combinedLightIn);
-			}
+				RenderUtils.renderModelTESRFancy(
+						injectedQuadList, baseBuilder, matrixStack, tile.getLevelNonnull(), blockPos, false, -1, combinedLightIn
+				);
 
 			matrixStack.popPose();
 		}

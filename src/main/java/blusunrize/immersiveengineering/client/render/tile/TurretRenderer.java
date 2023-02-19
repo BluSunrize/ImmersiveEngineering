@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
@@ -92,7 +91,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 	{
 		pos = pos.above();
 
-		VertexConsumer solidBuilder = new TransformingVertexBuilder(buffer, RenderType.solid(), matrix);
+		VertexConsumer solidBuilder = buffer.getBuffer(RenderType.solid());
 		matrix.pushPose();
 		matrix.translate(-.5, 0, -.5);
 		List<BakedQuad> quads = model.getQuads(
@@ -100,7 +99,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 				ModelDataUtils.single(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(parts)),
 				RenderType.solid()
 		);
-		RenderUtils.renderModelTESRFancy(quads, solidBuilder, world, pos, !isFirst, -1, light);
+		RenderUtils.renderModelTESRFancy(quads, solidBuilder, matrix, world, pos, !isFirst, -1, light);
 		matrix.popPose();
 	}
 
