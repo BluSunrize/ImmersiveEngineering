@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SimpleSkyhookProvider;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
@@ -47,9 +46,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -261,7 +260,7 @@ public class EventHandler
 				((IEShieldItem)activeStack.getItem()).hitShield(activeStack, player, event.getSource(), amount, event);
 			}
 
-			Random rng = player.getRandom();
+			RandomSource rng = player.getRandom();
 			ItemStack powerpack = PowerpackItem.POWERPACK_GETTER.getFrom(player);
 			// 33% chance of zapping the attacker, provided they are living and within ~2 blocks
 			if(!powerpack.isEmpty()&&PowerpackItem.getUpgradesStatic(powerpack).getBoolean("tesla"))
@@ -272,8 +271,8 @@ public class EventHandler
 						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(2+player.getRandom().nextInt(4), true);
 						if(dmgsrc.apply(attacker))
 							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 60));
-						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark,
-								SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
+						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
+								SoundSource.BLOCKS, 2.5F, 0.5F+rng.nextFloat());
 					}
 		}
 	}

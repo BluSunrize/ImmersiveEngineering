@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.awt.*;
 import java.util.List;
@@ -64,7 +64,7 @@ public class BlueprintRenderer
 		{
 			BakedModel ibakedmodel = ClientUtils.mc().getItemRenderer().getModel(stack, world, player, 0);
 			Set<ResourceLocation> textures = new HashSet<>();
-			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, EmptyModelData.INSTANCE);
+			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, ModelData.EMPTY, null);
 			final Function<ResourceLocation, TextureAtlasSprite> blockAtlas = ClientUtils.mc().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
 			for(BakedQuad quad : quads)
 			{

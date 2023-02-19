@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
@@ -41,10 +42,10 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,10 +56,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractBannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
-import org.lwjgl.system.CallbackI.V;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -235,14 +234,14 @@ public class ModelPowerpack
 		if(cached!=null)
 			return cached;
 
-		List<Pair<BannerPattern, DyeColor>> list = BannerBlockEntity.createPatterns(baseCol, patternList);
-		List<BakedQuad> quads = bakedModel.getQuads(null, null, new Random(42));
+		List<Pair<Holder<BannerPattern>, DyeColor>> list = BannerBlockEntity.createPatterns(baseCol, patternList);
+		List<BakedQuad> quads = bakedModel.getQuads(null, null, ApiUtils.RANDOM_SOURCE);
 		cached = new ArrayList<>(quads.size()*list.size());
 		for(int i = 0; i < 17&&i < list.size(); ++i)
 		{
-			Pair<BannerPattern, DyeColor> pair = list.get(i);
-			BannerPattern bannerpattern = pair.getFirst();
-			Material material = Sheets.getShieldMaterial(bannerpattern);
+			Pair<Holder<BannerPattern>, DyeColor> pair = list.get(i);
+			Holder<BannerPattern> bannerpattern = pair.getFirst();
+			Material material = Sheets.getShieldMaterial(bannerpattern.unwrapKey().orElseThrow());
 			float[] colour = pair.getSecond().getTextureDiffuseColors();
 			cached.add(new BannerLayer(
 					mbs -> material.buffer(mbs, RenderType::entityCutoutNoCullZOffset),
