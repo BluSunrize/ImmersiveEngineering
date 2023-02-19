@@ -68,7 +68,7 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 
 		ItemStack powerpack = PowerpackItem.POWERPACK_GETTER.getFrom(living);
 		if(!powerpack.isEmpty())
-			renderPowerpack(powerpack, matrixStackIn, bufferIn, packedLightIn, living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			renderPowerpack(powerpack, matrixStackIn, bufferIn, packedLightIn, living, limbSwing, limbSwingAmount,partialTicks, ageInTicks, netHeadYaw, headPitch);
 
 		ItemStack chest = living.getItemBySlot(EquipmentSlot.CHEST);
 		if(chest.getItem() instanceof GliderItem)
@@ -82,13 +82,13 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 		}
 	}
 
-	private void renderPowerpack(ItemStack powerpack, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+	private void renderPowerpack(ItemStack powerpack, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		if(!powerpack.isEmpty())
 			ModelPowerpack.render(
 					living, powerpack,
-					matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1,
-					limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch
+					matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY,
+					limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch
 			);
 	}
 }

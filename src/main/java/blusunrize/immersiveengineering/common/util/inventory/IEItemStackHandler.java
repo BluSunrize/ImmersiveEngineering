@@ -12,6 +12,9 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -82,6 +85,23 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		return ForgeCapabilities.ITEM_HANDLER.orEmpty(capability, thisOpt);
+	}
+
+
+	@Override
+	public void deserializeNBT(CompoundTag nbt)
+	{
+		// overridden because the Forge handler pulls size from NBT, thus making them forever the same size
+		ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
+		stacks.clear();
+		for(int i = 0; i < tagList.size(); i++)
+		{
+			CompoundTag itemTags = tagList.getCompound(i);
+			int slot = itemTags.getInt("Slot");
+			if(slot >= 0&&slot < stacks.size())
+				stacks.set(slot, ItemStack.of(itemTags));
+		}
+		onLoad();
 	}
 
 	public NonNullList<ItemStack> getContainedItems()

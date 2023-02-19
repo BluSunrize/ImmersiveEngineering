@@ -8,38 +8,44 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
+import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBlockEntity>
 {
+	private static final Map<String, IVertexBufferHolder> VBO_BY_BLUEPRINT = new HashMap<>();
 
 	@Override
-	public void render(ModWorkbenchBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ModWorkbenchBlockEntity te, float partialTicks, PoseStack transform, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
-		matrixStack.pushPose();
-		matrixStack.translate(.5, .5, .5);
+		transform.pushPose();
+		transform.translate(.5, .5, .5);
 
 		Direction facing = te.getFacing();
 
 		float angle = facing==Direction.NORTH?0: facing==Direction.WEST?90: facing==Direction.EAST?-90: 180;
 
-		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), angle, true));
+		transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), angle, true));
 
 		ItemStack stack = te.getInventory().get(0);
 		boolean showIngredients = true;
@@ -47,56 +53,27 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 		{
 			if(stack.getItem() instanceof EngineersBlueprintItem)
 			{
-				matrixStack.pushPose();
 				double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(te.getBlockPos()));
 				if(playerDistanceSq < 120)
 				{
-					BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(te.getLevel(), ItemNBTHelper.getString(stack, "blueprint"));
-
-					int l = recipes.length;
-					int perRow = l > 6?l-3: l > 4?l-2: l==1?2: l==2?3: l;
-					matrixStack.translate(0, .501, 0);
-					matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
-					matrixStack.mulPose(new Quaternion(new Vector3f(0, 0, 1), -22.5f, true));
-					matrixStack.translate(0.39, l > 4?.72: .78, 0);
-					float scale = l > 4?.009375f: .012f;
-					matrixStack.scale(scale, -scale, scale);
-					int rendered = 0;
-					for(int i = 0; i < l; i++)
-					{
-						BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
-						BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, te.getLevelNonnull());
-						if(blueprint!=null)
-						{
-							double dX = rendered < perRow?(.93725/scale-perRow*16.6)+rendered*16.6: (.70375/scale-rendered%perRow*16.6);
-							double dY = rendered < perRow?0: -.15625;
-							matrixStack.translate(dX, dY/scale, 0);
-
-							//Width depends on distance
-							float texScale = blueprint.textureScale/16f;
-							matrixStack.scale(1/texScale, 1/texScale, 1/texScale);
-							blueprint.draw(matrixStack, bufferIn, combinedLightIn);
-							matrixStack.scale(texScale, texScale, texScale);
-							matrixStack.translate(-dX, -dY/scale, 0);
-							rendered++;
-						}
-					}
+					final String category = ItemNBTHelper.getString(stack, "blueprint");
+					IVertexBufferHolder vbo = VBO_BY_BLUEPRINT.computeIfAbsent(category, this::buildVBO);
+					vbo.render(BlueprintRenderer.RENDER_TYPE, combinedLightIn, combinedOverlayIn, bufferIn, transform);
 				}
-				matrixStack.popPose();
 			}
 			else
 			{
 				showIngredients = false;
-				matrixStack.pushPose();
-				matrixStack.translate(0, .5625, 0);
+				transform.pushPose();
+				transform.translate(0, .5625, 0);
 
-				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
-				matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
-				matrixStack.translate(-.875, 0, 0);
-				matrixStack.scale(.75f, .75f, .75f);
+				transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
+				transform.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
+				transform.translate(-.875, 0, 0);
+				transform.scale(.75f, .75f, .75f);
 				ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-						combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
-				matrixStack.popPose();
+						combinedLightIn, combinedOverlayIn, transform, bufferIn, 0);
+				transform.popPose();
 			}
 		}
 		if(showIngredients)
@@ -118,27 +95,68 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				stack = te.getInventory().get(i);
 				if(!stack.isEmpty())
 				{
-					matrixStack.pushPose();
-					matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
-					matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
-					matrixStack.translate(dX, dZ, -.515);
-					matrixStack.scale(.25f, .25f, .25f);
+					transform.pushPose();
+					transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
+					transform.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
+					transform.translate(dX, dZ, -.515);
+					transform.scale(.25f, .25f, .25f);
 					{
 						try
 						{
 							ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-									combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
+									combinedLightIn, combinedOverlayIn, transform, bufferIn, 0);
 						} catch(Exception e)
 						{
 							e.printStackTrace();
 						}
 					}
-					matrixStack.popPose();
+					transform.popPose();
 				}
 			}
 		}
+		transform.popPose();
+	}
 
-		matrixStack.popPose();
+	private IVertexBufferHolder buildVBO(String category)
+	{
+		return IVertexBufferHolder.create((builder, transform, light, overlay) -> {
+			final ClientLevel level = ClientUtils.mc().level;
+			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(level, category);
+			transform.pushPose();
+			int numRecipes = recipes.length;
+			int perRow;
+			if(numRecipes > 6) perRow = numRecipes-3;
+			else if(numRecipes > 4) perRow = numRecipes-2;
+			else if(numRecipes==1) perRow = 2;
+			else if(numRecipes==2) perRow = 3;
+			else perRow = numRecipes;
+			transform.translate(0, .501, 0);
+			transform.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
+			transform.mulPose(new Quaternion(new Vector3f(0, 0, 1), -22.5f, true));
+			transform.translate(0.39, numRecipes > 4?.72: .78, 0);
+			float scale = numRecipes > 4?.009375f: .012f;
+			transform.scale(scale, -scale, scale);
+			int rendered = 0;
+			for(int i = 0; i < numRecipes; i++)
+			{
+				BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
+				BlueprintLines blueprint = recipe==null?null: BlueprintRenderer.getBlueprintDrawable(recipe, level);
+				if(blueprint!=null)
+				{
+					double dX = rendered < perRow?(.93725/scale-perRow*16.6)+rendered*16.6: (.70375/scale-rendered%perRow*16.6);
+					double dY = rendered < perRow?0: -.15625;
+					transform.translate(dX, dY/scale, 0);
 
+					//Width depends on distance
+					float texScale = blueprint.textureScale/16f;
+					transform.scale(1/texScale, 1/texScale, 1/texScale);
+					blueprint.draw(transform, builder, IVertexBufferHolder.BUFFER_FORMAT, light);
+					transform.scale(texScale, texScale, texScale);
+					transform.translate(-dX, -dY/scale, 0);
+					rendered++;
+				}
+			}
+			transform.popPose();
+		});
 	}
 }

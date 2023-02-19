@@ -262,7 +262,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF_L.item());
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF.item());
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
-				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED);
+				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
 
 		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));
@@ -295,7 +295,9 @@ public class ItemModels extends TRSRItemModelProvider
 				.callback(ChemthrowerCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/chemthrower"));
-		obj(Misc.POWERPACK, rl("item/powerpack.obj"))
+		ieObjBuilder(Misc.POWERPACK, rl("item/powerpack.obj"))
+				.callback(PowerpackCallbacks.INSTANCE)
+				.end()
 				.transforms(rl("item/powerpack"));
 
 		IEFluids.ALL_ENTRIES.forEach(this::createBucket);

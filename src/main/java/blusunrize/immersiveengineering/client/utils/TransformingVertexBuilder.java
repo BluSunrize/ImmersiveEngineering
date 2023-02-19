@@ -153,9 +153,14 @@ public class TransformingVertexBuilder implements VertexConsumer
 		color.setGlobal(null);
 	}
 
+	public void setUV(Vec2 uv)
+	{
+		this.uv.setGlobal(uv);
+	}
+
 	public void setLight(int light)
 	{
-		lightmap.setGlobal(new Vec2i(light&255, light >> 16));
+		lightmap.setGlobal(new Vec2i(light&255, light>>16));
 	}
 
 	public void setNormal(float x, float y, float z)

@@ -217,7 +217,7 @@ public class EnergyHelper
 			if(!simulate)
 			{
 				stored += accepted;
-				ItemNBTHelper.putInt(stack, "energy", stored);
+				ItemNBTHelper.putInt(stack, ENERGY_KEY, stored);
 			}
 			return accepted;
 		}
@@ -230,7 +230,7 @@ public class EnergyHelper
 			if(!simulate)
 			{
 				stored -= extracted;
-				ItemNBTHelper.putInt(stack, "energy", stored);
+				ItemNBTHelper.putInt(stack, ENERGY_KEY, stored);
 			}
 			return extracted;
 		}
@@ -238,7 +238,7 @@ public class EnergyHelper
 		@Override
 		public int getEnergyStored()
 		{
-			return ItemNBTHelper.getInt(stack, "energy");
+			return ItemNBTHelper.getInt(stack, ENERGY_KEY);
 		}
 
 		@Override

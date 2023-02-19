@@ -14,41 +14,34 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
+import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.List;
+
+import static blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.getBlueprintDrawable;
 
 public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBlockEntity>
 {
@@ -307,278 +300,5 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 				light, overlay, data, RenderType.solid()
 		);
 		matrix.popPose();
-	}
-
-	public static HashMap<BlueprintCraftingRecipe, BlueprintLines> blueprintCache = new HashMap<>();
-
-	public static BlueprintLines getBlueprintDrawable(BlueprintCraftingRecipe recipe, Level world)
-	{
-		if(recipe==null)
-			return null;
-		BlueprintLines blueprint = blueprintCache.get(recipe);
-		if(blueprint==null)
-		{
-			blueprint = getBlueprintDrawable(recipe.output.get(), world);
-			blueprintCache.put(recipe, blueprint);
-		}
-		return blueprint;
-	}
-
-	public static BlueprintLines getBlueprintDrawable(ItemStack stack, Level world)
-	{
-		if(stack.isEmpty())
-			return null;
-		Player player = ClientUtils.mc().player;
-		ArrayList<BufferedImage> images = new ArrayList<>();
-		try
-		{
-			BakedModel ibakedmodel = ClientUtils.mc().getItemRenderer().getModel(stack, world, player, 0);
-			HashSet<String> textures = new HashSet<>();
-			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, ModelData.EMPTY, null);
-			for(BakedQuad quad : quads)
-				if(quad!=null)
-					textures.add(quad.getSprite().getName().toString());
-			for(String s : textures)
-			{
-				ResourceLocation rl = new ResourceLocation(s);
-				rl = new ResourceLocation(rl.getNamespace(), String.format("%s/%s%s", "textures", rl.getPath(), ".png"));
-				Resource resource = ClientUtils.mc().getResourceManager().getResource(rl).orElseThrow();
-				BufferedImage bufferedImage = ClientUtils.readBufferedImage(resource.open());
-				if(bufferedImage!=null)
-					images.add(bufferedImage);
-			}
-		} catch(Exception e)
-		{
-		}
-		if(images.isEmpty())
-			return null;
-		ArrayList<Pair<TexturePoint, TexturePoint>> lines = new ArrayList<>();
-		Set<TexturePoint> testSet = new HashSet<>();
-		HashMultimap<Integer, TexturePoint> area = HashMultimap.create();
-		int wMax = 0;
-		for(BufferedImage bufferedImage : images)
-		{
-			Set<Pair<TexturePoint, TexturePoint>> temp_lines = new HashSet<>();
-
-			int w = bufferedImage.getWidth();
-			int h = bufferedImage.getHeight();
-
-			if(h > w)
-				h = w;
-			if(w > wMax)
-				wMax = w;
-			for(int hh = 0; hh < h; hh++)
-				for(int ww = 0; ww < w; ww++)
-				{
-					int argb = bufferedImage.getRGB(ww, hh);
-					float r = (argb >> 16&255)/255f;
-					float g = (argb >> 8&255)/255f;
-					float b = (argb&255)/255f;
-					float intesity = (r+b+g)/3f;
-					int alpha = (argb >> 24)&255;
-					if(alpha > 0)
-					{
-						boolean added = false;
-						//Check colour sets for similar colour to shade it later
-						TexturePoint tp = new TexturePoint(ww, hh, w);
-						if(!testSet.contains(tp))
-						{
-							for(Integer key : area.keySet())
-							{
-								for(TexturePoint p : area.get(key))
-								{
-									float mod = w/(float)p.scale;
-									int pColour = bufferedImage.getRGB((int)(p.x*mod), (int)(p.y*mod));
-									float dR = (r-(pColour >> 16&255)/255f);
-									float dG = (g-(pColour >> 8&255)/255f);
-									float dB = (b-(pColour&255)/255f);
-									double delta = Math.sqrt(dR*dR+dG*dG+dB*dB);
-									if(delta < .25)
-									{
-										area.put(key, tp);
-										added = true;
-										break;
-									}
-								}
-								if(added)
-									break;
-							}
-							if(!added)
-								area.put(argb, tp);
-							testSet.add(tp);
-						}
-						//Compare to direct neighbour
-						for(int i = 0; i < 4; i++)
-						{
-							int xx = (i==0?-1: i==1?1: 0);
-							int yy = (i==2?-1: i==3?1: 0);
-							int u = ww+xx;
-							int v = hh+yy;
-
-							int neighbour = 0;
-							float delta = 1;
-							boolean notTransparent = false;
-							if(u >= 0&&u < w&&v >= 0&&v < h)
-							{
-								neighbour = bufferedImage.getRGB(u, v);
-								notTransparent = ((neighbour >> 24)&255) > 0;
-								if(notTransparent)
-								{
-									float neighbourIntesity = ((neighbour >> 16&255)+(neighbour >> 8&255)+(neighbour&255))/765f;
-									float intesityDelta = Math.max(0, Math.min(1, Math.abs(intesity-neighbourIntesity)));
-									float rDelta = Math.max(0, Math.min(1, Math.abs(r-(neighbour >> 16&255)/255f)));
-									float gDelta = Math.max(0, Math.min(1, Math.abs(g-(neighbour >> 8&255)/255f)));
-									float bDelta = Math.max(0, Math.min(1, Math.abs(b-(neighbour&255)/255f)));
-									delta = Math.max(intesityDelta, Math.max(rDelta, Math.max(gDelta, bDelta)));
-									delta = delta < .25?0: delta > .4?1: delta;
-								}
-							}
-							if(delta > 0)
-							{
-								Pair<TexturePoint, TexturePoint> l = Pair.of(new TexturePoint(ww+(i==0?0: i==1?1: 0), hh+(i==2?0: i==3?1: 0), w), new TexturePoint(ww+(i==0?0: i==1?1: 1), hh+(i==2?0: i==3?1: 1), w));
-								temp_lines.add(l);
-							}
-						}
-					}
-				}
-			lines.addAll(temp_lines);
-		}
-
-		ArrayList<Integer> lumiSort = new ArrayList<>(area.keySet());
-		lumiSort.sort(Comparator.comparingDouble(AutoWorkbenchRenderer::getLuminance));
-		HashMultimap<ShadeStyle, Point> complete_areaMap = HashMultimap.create();
-		int lineNumber = 2;
-		int lineStyle = 0;
-		for(Integer i : lumiSort)
-		{
-			Set<Point> styleSlot = complete_areaMap.get(new ShadeStyle(lineNumber, lineStyle));
-			for(TexturePoint point : area.get(i))
-				styleSlot.add(new Point(point.x(), point.y()));
-			++lineStyle;
-			lineStyle %= 3;
-			if(lineStyle==0)
-				lineNumber += 1;
-		}
-
-		Set<Pair<Point, Point>> complete_lines = new HashSet<>();
-		for(Pair<TexturePoint, TexturePoint> line : lines)
-		{
-			TexturePoint p1 = line.getFirst();
-			TexturePoint p2 = line.getSecond();
-			complete_lines.add(Pair.of(new Point((int)(p1.x/(float)p1.scale*wMax), (int)(p1.y/(float)p1.scale*wMax)), new Point((int)(p2.x/(float)p2.scale*wMax), (int)(p2.y/(float)p2.scale*wMax))));
-		}
-		return new BlueprintLines(wMax, complete_lines, complete_areaMap);
-	}
-
-	public static class BlueprintLines
-	{
-		final int textureScale;
-		final Set<Pair<Point, Point>> lines;
-		final HashMultimap<ShadeStyle, Point> areas;
-
-		BlueprintLines(int textureScale, Set<Pair<Point, Point>> lines, HashMultimap<ShadeStyle, Point> areas)
-		{
-			this.textureScale = textureScale;
-			this.lines = lines;
-			this.areas = areas;
-		}
-
-		public int getTextureScale()
-		{
-			return textureScale;
-		}
-
-		public void draw(PoseStack matrixStack, MultiBufferSource buffer, int packedLight)
-		{
-			//Draw edges
-			TransformingVertexBuilder builder = new TransformingVertexBuilder(
-					buffer, IERenderTypes.POSITION_COLOR_LIGHTMAP, matrixStack
-			);
-			builder.defaultColor(255, 255, 255, 255);
-			builder.setLight(packedLight);
-			LinePainter painter = makeQuadLinePainter(builder, 0.05f);
-			for(Pair<Point, Point> line : lines)
-				painter.drawLine(line.getFirst().x, line.getFirst().y, line.getSecond().x, line.getSecond().y);
-
-			for(ShadeStyle style : areas.keySet())
-				for(Point pixel : areas.get(style))
-					style.drawShading(pixel, painter);
-			builder.unsetDefaultColor();
-		}
-	}
-
-	private static class ShadeStyle
-	{
-		int stripeAmount = 1;
-		int stripeDirection = 0;
-
-		ShadeStyle(int stripeAmount, int stripeDirection)
-		{
-			this.stripeAmount = stripeAmount;
-			this.stripeDirection = stripeDirection;
-		}
-
-		void drawShading(Point pixel, LinePainter painter)
-		{
-			float step = 1/(float)stripeAmount;
-			float offset = step/2;
-			if(stripeDirection > 1)
-			{
-				int perSide = stripeAmount/2+(stripeAmount%2==1?1: 0);
-				step = 1/(float)(perSide);
-				offset = stripeAmount%2==1?step: step/2;
-			}
-			for(int i = 0; i < stripeAmount; i++)
-				if(stripeDirection==0)//vertical
-					painter.drawLine(pixel.x+offset+step*i, pixel.y, pixel.x+offset+step*i, pixel.y+1);
-				else if(stripeDirection==1)//horizontal
-					painter.drawLine(pixel.x, pixel.y+offset+step*i, pixel.x+1, pixel.y+offset+step*i);
-				else if(stripeDirection==2)//diagonal
-				{
-					if(i==stripeAmount-1&&stripeAmount%2==1)
-						painter.drawLine(pixel.x, pixel.y+1, pixel.x+1, pixel.y);
-					else if(i%2==0)
-						painter.drawLine(pixel.x, pixel.y+offset+step*(i/2), pixel.x+offset+step*(i/2), pixel.y);
-					else
-						painter.drawLine(pixel.x+1-offset-step*(i/2), pixel.y+1, pixel.x+1, pixel.y+1-offset-step*(i/2));
-				}
-		}
-	}
-
-	private static LinePainter makeQuadLinePainter(VertexConsumer out, float width)
-	{
-		return (x0, y0, x1, y1) -> {
-			float deltaX = x1-x0;
-			float deltaY = y1-y0;
-			// Normalize
-			final float distance = Mth.fastInvSqrt(deltaY*deltaY+deltaX*deltaX);
-			deltaX /= distance;
-			deltaY /= distance;
-			// Draw quad
-			final float offsetX = -deltaY*width;
-			final float offsetY = deltaX*width;
-			out.vertex(x0+offsetX, y0+offsetY, 0).endVertex();
-			out.vertex(x1+offsetX, y1+offsetY, 0).endVertex();
-			out.vertex(x1-offsetX, y1-offsetY, 0).endVertex();
-			out.vertex(x0-offsetX, y0-offsetY, 0).endVertex();
-		};
-	}
-
-	private record TexturePoint(int x, int y, int scale)
-	{
-	}
-
-	private static double getLuminance(int rgb)
-	{
-		return Math.sqrt(.241*(rgb>>16&255)+.691*(rgb>>8&255)+.068*(rgb&255));
-	}
-
-	private interface LinePainter
-	{
-		void drawLine(float x0, float y0, float x1, float y1);
-	}
-
-	private record Point(int x, int y)
-	{
 	}
 }

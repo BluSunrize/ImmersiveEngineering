@@ -25,6 +25,8 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -161,6 +163,7 @@ public class IERenderTypes extends RenderStateShard
 				Mode.QUADS,
 				RenderType.CompositeState.builder()
 						.setLightmapState(new LightmapStateShard(true))
+						.setTextureState(new WhiteTextureStateShard())
 						.setShaderState(POSITION_COLOR_LIGHTMAP_SHADER)
 						.createCompositeState(false)
 		);
@@ -353,5 +356,31 @@ public class IERenderTypes extends RenderStateShard
 		)
 		{
 		});
+	}
+
+	private static class WhiteTextureStateShard extends EmptyTextureStateShard
+	{
+		public WhiteTextureStateShard()
+		{
+			super(() -> {
+				RenderSystem.enableTexture();
+				RenderSystem.setShaderTexture(0, WhiteTexture.INSTANCE.get().getTextureLocation());
+			}, () -> {
+			});
+		}
+
+		@Nonnull
+		@Override
+		public String toString()
+		{
+			return "IE: White";
+		}
+
+		@Nonnull
+		@Override
+		protected Optional<ResourceLocation> cutoutTexture()
+		{
+			return Optional.of(WhiteTexture.INSTANCE.get().getTextureLocation());
+		}
 	}
 }

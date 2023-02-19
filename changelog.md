@@ -1,10 +1,20 @@
 ##### Version 1.18.2-8.4.0-pre
+- Overhaul the Accumulator Backpack (BluSunrize)
+    - Now uses a fancy OBJ model
+    - It's now crafted as an empty frame, to put an accumulator in!
+    - Existing packs will automatically migrate to an LV accumulator.
+    - May be equipped with a shader or banner, to proudly display over your shoulder
+    - The Charging Antenna upgrade will charge the pack by attaching to overhead wires
+    - The Miniaturized Tesla Coil will electrocute your attackers
+    - The Induction Charger will charge your whole inventory
+    - There may be a new secret advancement too ;)
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
-- Change accumulator backpack to use an obj model (BluSunrize)
 - Fix some issues with models being mirrored (Malte)
 - Fix shaders and potion buckets not showing up in JEI (Malte)
 - Fix arc recycling accidentally modifying the empty ItemStack constant (Malte)
+- Fix tooltips on capacitors not showing energy stored (BluSunrize)
+- Cleanup and optimize Blueprint rendering (Malte)
 
 ##### Version 1.19.2-9.1.2-159
 - Fix broken villager workstations
