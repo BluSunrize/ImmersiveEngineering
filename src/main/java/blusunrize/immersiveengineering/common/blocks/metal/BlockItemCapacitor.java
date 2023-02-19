@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.util.SimpleCapProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.energy.CapabilityEnergy;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockItemCapacitor extends BlockItemIE
@@ -37,7 +37,7 @@ public class BlockItemCapacitor extends BlockItemIE
 
 		if(!stack.isEmpty())
 			return new SimpleCapProvider<>(
-					() -> CapabilityEnergy.ENERGY, new ItemEnergyStorage(stack, value -> configValues.storage.getAsInt())
+					() -> ForgeCapabilities.ENERGY, new ItemEnergyStorage(stack, value -> configValues.storage.getAsInt())
 			);
 		else
 			return super.initCapabilities(stack, nbt);

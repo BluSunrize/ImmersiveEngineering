@@ -1,4 +1,5 @@
 {
+  "callbacks": "immersiveengineering:powerpack",
   "display": {
     "firstperson_lefthand": {
       "rotation": [
@@ -105,7 +106,6 @@
       ]
     }
   },
-  "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/powerpack.obj"
 }
