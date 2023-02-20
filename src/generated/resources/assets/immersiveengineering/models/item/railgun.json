@@ -116,6 +116,9 @@
       ]
     }
   },
+  "layers": [
+    "translucent"
+  ],
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/railgun.obj.ie"
 }
