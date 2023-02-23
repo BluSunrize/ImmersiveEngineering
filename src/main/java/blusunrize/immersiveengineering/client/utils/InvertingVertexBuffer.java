@@ -29,8 +29,8 @@ public class InvertingVertexBuffer extends CollectingVertexBuilder
 		if(vertices.size() >= verticesPerPrimitive)
 		{
 			for(int i = vertices.size()-1; i >= 0; --i)
-				vertices.get(i).forEach(c -> c.accept(baseBuilder));
-			vertices.clear();
+				vertices.get(i).pipe(baseBuilder);
+			clear();
 		}
 	}
 }

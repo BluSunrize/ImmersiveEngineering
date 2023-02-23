@@ -31,7 +31,7 @@ public class WhiteTexture implements AutoCloseable
 	private WhiteTexture()
 	{
 		this.whiteTexture = new DynamicTexture(16, 16, false);
-		this.whiteTextureLocation = Minecraft.getInstance().getTextureManager().register("light_map", this.whiteTexture);
+		this.whiteTextureLocation = Minecraft.getInstance().getTextureManager().register("ie_light_map", this.whiteTexture);
 		NativeImage lightPixels = Objects.requireNonNull(this.whiteTexture.getPixels());
 
 		for(int i = 0; i < 16; ++i)
@@ -51,6 +51,11 @@ public class WhiteTexture implements AutoCloseable
 		Minecraft.getInstance().getTextureManager().bindForSetup(this.whiteTextureLocation);
 		RenderSystem.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		RenderSystem.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+
+	public ResourceLocation getTextureLocation()
+	{
+		return whiteTextureLocation;
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.Sim
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.ManualItem;
+import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.network.MessageOpenManual;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
@@ -40,11 +41,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -251,6 +256,21 @@ public class EventHandler
 				float amount = event.getAmount();
 				((IEShieldItem)activeStack.getItem()).hitShield(activeStack, player, event.getSource(), amount, event);
 			}
+
+			RandomSource rng = player.getRandom();
+			ItemStack powerpack = PowerpackItem.POWERPACK_GETTER.getFrom(player);
+			// 33% chance of zapping the attacker, provided they are living and within ~2 blocks
+			if(!powerpack.isEmpty()&&PowerpackItem.getUpgradesStatic(powerpack).getBoolean("tesla"))
+				if(event.getSource().getEntity() instanceof LivingEntity attacker&&attacker.distanceToSqr(player) < 4)
+					if(EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, true)==PowerpackItem.TESLA_CONSUMPTION)
+					{
+						EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, false);
+						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(2+player.getRandom().nextInt(4), true);
+						if(dmgsrc.apply(attacker))
+							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 60));
+						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
+								SoundSource.BLOCKS, 2.5F, 0.5F+rng.nextFloat());
+					}
 		}
 	}
 

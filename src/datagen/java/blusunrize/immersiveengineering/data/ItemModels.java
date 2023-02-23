@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.*;
 import com.google.common.base.Preconditions;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -263,7 +264,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF_L.item());
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF.item());
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
-				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED);
+				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
 
 		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));
@@ -271,6 +272,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(rl("item/toolbox"));
 		ieObjBuilder(IEItems.Misc.SHIELD, rl("item/shield.obj.ie"))
 				.callback(ShieldCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(rl("item/shield"));
 		ieObjBuilder(Weapons.REVOLVER, modLoc("item/revolver.obj.ie"))
@@ -290,13 +292,16 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/buzzsaw"));
 		ieObjBuilder(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))
 				.callback(RailgunCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(modLoc("item/railgun"));
 		ieObjBuilder(Weapons.CHEMTHROWER, modLoc("item/chemthrower.obj.ie"))
 				.callback(ChemthrowerCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/chemthrower"));
-		obj(Misc.POWERPACK, rl("item/powerpack.obj"))
+		ieObjBuilder(Misc.POWERPACK, rl("item/powerpack.obj"))
+				.callback(PowerpackCallbacks.INSTANCE)
+				.end()
 				.transforms(rl("item/powerpack"));
 
 		IEFluids.ALL_ENTRIES.forEach(this::createBucket);

@@ -28,8 +28,8 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
-import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
-import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
+import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer;
+import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -287,7 +287,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				{
 					int i = event.getItemFrameEntity().getRotation();
 					BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
-					BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, event.getItemFrameEntity().getCommandSenderWorld());
+					BlueprintLines blueprint = recipe==null?null: BlueprintRenderer.getBlueprintDrawable(recipe, event.getItemFrameEntity().getCommandSenderWorld());
 					if(blueprint!=null)
 					{
 						PoseStack transform = event.getPoseStack();

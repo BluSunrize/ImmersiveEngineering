@@ -28,6 +28,11 @@ public interface IEOBJCallback<Key>
 		return null;
 	}
 
+	default boolean useAbsoluteUV(Key object, String material)
+	{
+		return false;
+	}
+
 	default boolean shouldRenderGroup(Key object, String group, RenderType layer)
 	{
 		return true;

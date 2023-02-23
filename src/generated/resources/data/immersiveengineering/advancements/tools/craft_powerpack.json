@@ -1,0 +1,37 @@
+{
+  "parent": "immersiveengineering:tools/tools_root",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:powerpack"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_powerpack.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:powerpack"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_powerpack"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

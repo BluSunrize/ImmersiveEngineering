@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -33,7 +34,7 @@ import java.util.Map;
 public class BucketWheelCallbacks implements BlockCallback<Key>
 {
 	public static final BucketWheelCallbacks INSTANCE = new BucketWheelCallbacks();
-	private static final BucketWheelCallbacks.Key INVALID = new BucketWheelCallbacks.Key(Collections.EMPTY_MAP);
+	private static final BucketWheelCallbacks.Key INVALID = new BucketWheelCallbacks.Key(Collections.emptyMap());
 
 	@Override
 	public Key extractKey(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState blockState, BlockEntity blockEntity)
@@ -51,7 +52,7 @@ public class BucketWheelCallbacks implements BlockCallback<Key>
 				Block b = Block.byItem(stackAtIndex.getItem());
 				BlockState digState = b!=Blocks.AIR?b.defaultBlockState(): Blocks.COBBLESTONE.defaultBlockState();
 				BakedModel digModel = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(digState);
-				texMap.put("dig"+i, digModel.getParticleIcon(null));
+				texMap.put("dig"+i, digModel.getParticleIcon(ModelData.EMPTY));
 			}
 		}
 		return new BucketWheelCallbacks.Key(texMap);

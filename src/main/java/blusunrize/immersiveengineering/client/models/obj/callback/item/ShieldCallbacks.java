@@ -17,8 +17,6 @@ import org.joml.Quaternionf;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -46,34 +44,31 @@ public class ShieldCallbacks implements ItemCallback<Key>
 	@Override
 	public void handlePerspective(Key key, LivingEntity holder, TransformType cameraTransformType, PoseStack mat)
 	{
-		if(holder!=null&&holder.isUsingItem())
-			if((holder.getUsedItemHand()==InteractionHand.MAIN_HAND)==(holder.getMainArm()==HumanoidArm.RIGHT))
-			{
-				if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
-				{
-					mat.mulPose(new Quaternionf().rotateXYZ(-.15F, 0, 0));
-					mat.translate(-.25, .5, -.4375);
-				}
-				else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)
-				{
-					mat.mulPose(new Quaternionf().rotateXYZ(0.52359F, 0, 0));
-					mat.mulPose(new Quaternionf().rotateXYZ(0, 0.78539F, 0));
-					mat.translate(.40625, -.125, -.125);
-				}
-			}
-			else
-			{
-				if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
-				{
-					mat.mulPose(new Quaternionf().rotateXYZ(.15F, 0, 0));
-					mat.translate(.25, .375, .4375);
-				}
-				else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
-				{
-					mat.mulPose(new Quaternionf().rotateXYZ(-0.52359F, 1, 0));
-					mat.translate(.1875, .3125, .75);
-				}
-			}
+		if(holder==null||!holder.isUsingItem())
+			return;
+
+		if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
+		{
+			mat.mulPose(new Quaternionf().rotateXYZ(-.15F, 0, 0));
+			mat.translate(-.25, .5, -.4375);
+		}
+		else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)
+		{
+			mat.mulPose(new Quaternionf().rotateXYZ(0.52359F, 0, 0));
+			mat.mulPose(new Quaternionf().rotateXYZ(0, 0.78539F, 0));
+			mat.translate(.40625, -.125, -.125);
+		}
+		if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
+		{
+			mat.mulPose(new Quaternionf().rotateXYZ(.15F, 0, 0));
+			mat.translate(-.25, .375, .4375);
+		}
+		else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
+		{
+			mat.mulPose(new Quaternionf().rotateXYZ(-0.52359F, 0, 0, false));
+			mat.mulPose(new Quaternion(0, -0.78539F, 0));
+			mat.translate(-.1875, .3125, .4375);
+		}
 	}
 
 	public record Key(boolean flash, boolean shock)

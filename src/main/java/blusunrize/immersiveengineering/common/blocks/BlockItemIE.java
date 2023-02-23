@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -67,9 +68,9 @@ public class BlockItemIE extends BlockItem
 			tooltip.add(TextUtils.applyFormat(Component.translatable(flavourKey), ChatFormatting.GRAY));
 		}
 		super.appendHoverText(stack, world, tooltip, advanced);
-		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
+		if(ItemNBTHelper.hasKey(stack, EnergyHelper.ENERGY_KEY))
 			tooltip.add(TextUtils.applyFormat(Component.translatable(Lib.DESC_INFO+"energyStored",
-							ItemNBTHelper.getInt(stack, "energyStorage")),
+							ItemNBTHelper.getInt(stack,  EnergyHelper.ENERGY_KEY)),
 					ChatFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{

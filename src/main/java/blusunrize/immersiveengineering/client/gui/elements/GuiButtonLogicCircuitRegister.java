@@ -32,7 +32,11 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 			int x, int y, Component name, IIEPressable<GuiButtonState<LogicCircuitRegister>> handler
 	)
 	{
-		return new GuiButtonLogicCircuitRegister(x, y, name, handler, new MutableInt());
+		final MutableInt state = new MutableInt();
+		return new GuiButtonLogicCircuitRegister(x, y, name, btn -> {
+			state.setValue(btn.getNextStateInt());
+			handler.onIEPress(btn);
+		}, state);
 	}
 
 	private GuiButtonLogicCircuitRegister(

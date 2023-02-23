@@ -118,6 +118,7 @@ public class ClientProxy extends CommonProxy
 		IEOBJCallbacks.register(rl("chemthrower"), ChemthrowerCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("railgun"), RailgunCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("shield"), ShieldCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("powerpack"), PowerpackCallbacks.INSTANCE);
 
 		IEOBJCallbacks.register(rl("balloon"), BalloonCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("bottling_machine"), BottlingMachineCallbacks.INSTANCE);
@@ -208,6 +209,7 @@ public class ClientProxy extends CommonProxy
 			Sheets.BANNER_MATERIALS.put(pattern, new Material(Sheets.BANNER_SHEET, BannerPattern.location(pattern, true)));
 			Sheets.SHIELD_MATERIALS.put(pattern, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(pattern, false)));
 		});
+		ev.enqueueWork(OptifineWarning::warnIfRequired);
 	}
 
 	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(

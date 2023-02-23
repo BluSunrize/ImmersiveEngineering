@@ -239,6 +239,7 @@ public class ImmersiveEngineering
 		registerMessage(MessageContainerData.class, MessageContainerData::new, PLAY_TO_CLIENT);
 		registerMessage(MessageNoSpamChat.class, MessageNoSpamChat::new, PLAY_TO_CLIENT);
 		registerMessage(MessageOpenManual.class, MessageOpenManual::new, PLAY_TO_CLIENT);
+		registerMessage(MessagePowerpackAntenna.class, MessagePowerpackAntenna::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));

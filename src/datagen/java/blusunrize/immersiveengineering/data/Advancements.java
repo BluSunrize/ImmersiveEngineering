@@ -221,12 +221,25 @@ public class Advancements extends ForgeAdvancementProvider
 		Advancement upgradeRailgun = AdvBuilder.child("upgrade_railgun", railgun).challenge()
 				.icon(upgradedRailgun).codeTriggered().loot("shader_rare").save(consumer);
 
-		Advancement birthdayparty = AdvBuilder.child("secret_birthdayparty", upgradeRevolver).challenge().hidden()
-				.icon(Misc.ICON_BIRTHDAY).codeTriggered().loot("shader_masterwork").save(consumer);
-		Advancement drillbreak = AdvBuilder.child("secret_drillbreak", upgradeDrill).challenge().hidden()
-				.icon(Misc.ICON_DRILLBREAK).codeTriggered().loot("shader_masterwork").save(consumer);
-		Advancement ravenholm = AdvBuilder.child("secret_ravenholm", upgradeRailgun).challenge().hidden()
-				.icon(Misc.ICON_RAVENHOLM).codeTriggered().loot("shader_masterwork").save(consumer);
+			Advancement powerpack = AdvBuilder.child("craft_powerpack", tools).getItem(Misc.POWERPACK).save(consumer);
+
+			ItemStack upgradedPowerpack = new ItemStack(Misc.POWERPACK);
+			upgrades = new CompoundTag();
+			upgrades.putBoolean("antenna", true);
+			upgrades.putBoolean("induction", true);
+			ItemNBTHelper.setTagCompound(upgradedPowerpack, "upgrades", upgrades);
+			Advancement upgradePowerpack = AdvBuilder.child("upgrade_powerpack", powerpack).challenge()
+					.icon(upgradedPowerpack).codeTriggered().loot("shader_rare").save(consumer);
+
+			Advancement birthdayparty = AdvBuilder.child("secret_birthdayparty", upgradeRevolver).challenge().hidden()
+					.icon(Misc.ICON_BIRTHDAY).codeTriggered().loot("shader_masterwork").save(consumer);
+			Advancement drillbreak = AdvBuilder.child("secret_drillbreak", upgradeDrill).challenge().hidden()
+					.icon(Misc.ICON_DRILLBREAK).codeTriggered().loot("shader_masterwork").save(consumer);
+			Advancement ravenholm = AdvBuilder.child("secret_ravenholm", upgradeRailgun).challenge().hidden()
+					.icon(Misc.ICON_RAVENHOLM).codeTriggered().loot("shader_masterwork").save(consumer);
+			Advancement bttf = AdvBuilder.child("secret_bttf", upgradePowerpack).challenge().hidden()
+					.icon(Misc.ICON_BTTF).codeTriggered().loot("shader_masterwork").save(consumer);
+		}
 	}
 
 	private static Path createPath(Path pathIn, Advancement advancementIn)

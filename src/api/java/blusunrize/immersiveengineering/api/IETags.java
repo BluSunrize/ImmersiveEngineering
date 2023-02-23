@@ -139,6 +139,7 @@ public class IETags
 	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(rl("shaderbag/whitelist"));
 	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(rl("shaderbag/blacklist"));
 
+	@Deprecated(forRemoval = true)
 	public static final TagKey<Biome> hasMineralVeins = createBiomeWrapper(rl("has_mineral_veins"));
 
 	static

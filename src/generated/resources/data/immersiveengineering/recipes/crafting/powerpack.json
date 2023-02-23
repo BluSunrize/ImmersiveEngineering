@@ -2,22 +2,26 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "b": {
-      "item": "immersiveengineering:capacitor_lv"
-    },
     "c": {
       "item": "immersiveengineering:connector_lv"
     },
     "l": {
       "tag": "forge:leather"
     },
+    "r": {
+      "tag": "forge:rods/steel"
+    },
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    },
     "w": {
       "item": "immersiveengineering:wirecoil_copper_ins"
     }
   },
   "pattern": [
-    "cbc",
-    "wlw"
+    "srs",
+    "clc",
+    "wrw"
   ],
   "result": {
     "item": "immersiveengineering:powerpack"

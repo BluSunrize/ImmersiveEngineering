@@ -13,7 +13,11 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.mixin.accessors.client.PlayerControllerAccess;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix3f;
 import org.joml.Matrix4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -30,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.Vec3;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,13 +41,21 @@ import java.util.List;
 public class RenderUtils
 {
 	// The coordinates for each vertex of a quad
-	private static final float[][] quadCoords = new float[4][3];
+	private static final Vector4f[] quadCoords = Util.make(new Vector4f[4], a -> {
+		for(int i = 0; i < a.length; ++i)
+			a[i] = new Vector4f();
+	});
 	// the brighnesses of the surrounding blocks. the first dimension indicates block (1) vs sky (0) light
 	// These are used to create different light direction vectors depending on the direction of a quads normal vector.
 	private static final int[][] neighbourBrightness = new int[2][6];
 	// The light vectors created from neighbourBrightness aren't "normalized" (to length 255), the length needs to be divided by this factor to normalize it.
 	// The indices are generated as follows: a 1 bit indicates a positive facing normal, a 0 a negative one. 1=x, 2=y, 4=z
 	private static final float[][] normalizationFactors = new float[2][8];
+
+	private static final VertexFormat FORMAT = DefaultVertexFormat.BLOCK;
+	private static final int VERTEX_SIZE = FORMAT.getIntegerSize();
+	private static final int UV_OFFSET = ClientUtils.findTextureOffset(FORMAT);
+	private static final int POSITION_OFFSET = ClientUtils.findPositionOffset(FORMAT);
 
 	/**
 	 * Renders the given quads. Uses the local and neighbour brightnesses to calculate lighting
@@ -56,11 +67,14 @@ public class RenderUtils
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
 	 * @param color     the render color (mostly used for plants)
 	 */
-	public static void renderModelTESRFancy(List<BakedQuad> quads, VertexConsumer renderer, Level world, BlockPos pos,
-											boolean useCached, int color, int light)
+	public static void renderModelTESRFancy(
+			List<BakedQuad> quads, VertexConsumer renderer, PoseStack transform,
+			Level world, BlockPos pos,
+			boolean useCached, int color, int light
+	)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEClientConfig.disableFancyTESR.get())
-			renderModelTESRFast(quads, renderer, new PoseStack(), world.getRawBrightness(pos, 0), color);
+			renderModelTESRFast(quads, renderer, transform, world.getRawBrightness(pos, 0), color);
 		else
 		{
 			if(!useCached)
@@ -69,7 +83,7 @@ public class RenderUtils
 				for(Direction f : DirectionUtils.VALUES)
 				{
 					int val = LevelRenderer.getLightColor(world, pos.relative(f));
-					neighbourBrightness[0][f.get3DDataValue()] = (val >> 16)&255;
+					neighbourBrightness[0][f.get3DDataValue()] = (val>>16)&255;
 					neighbourBrightness[1][f.get3DDataValue()] = val&255;
 				}
 				// calculate the different correction factors for all 8 possible light vectors
@@ -95,78 +109,78 @@ public class RenderUtils
 			int rgba[] = {255, 255, 255, 255};
 			if(color >= 0)
 			{
-				rgba[0] = color >> 16&255;
-				rgba[1] = color >> 8&255;
+				rgba[0] = color>>16&255;
+				rgba[1] = color>>8&255;
 				rgba[2] = color&255;
 			}
+			final Matrix4f positionTransform = transform.last().pose();
+			final Matrix3f normalTransform = transform.last().normal();
 			for(BakedQuad quad : quads)
 			{
 				int[] vData = quad.getVertices();
-				VertexFormat format = DefaultVertexFormat.BLOCK;
-				int size = format.getIntegerSize();
-				int uvOffset = ClientUtils.findTextureOffset(format);
-				int posOffset = ClientUtils.findPositionOffset(format);
 				// extract position info from the quad
 				for(int i = 0; i < 4; i++)
-				{
-					quadCoords[i][0] = Float.intBitsToFloat(vData[size*i+posOffset]);
-					quadCoords[i][1] = Float.intBitsToFloat(vData[size*i+posOffset+1]);
-					quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+posOffset+2]);
-				}
+					quadCoords[i].set(
+							Float.intBitsToFloat(vData[VERTEX_SIZE*i+POSITION_OFFSET]),
+							Float.intBitsToFloat(vData[VERTEX_SIZE*i+POSITION_OFFSET+1]),
+							Float.intBitsToFloat(vData[VERTEX_SIZE*i+POSITION_OFFSET+2]),
+							1
+					);
 				//generate the normal vector
-				Vec3 side1 = new Vec3(quadCoords[1][0]-quadCoords[3][0],
-						quadCoords[1][1]-quadCoords[3][1],
-						quadCoords[1][2]-quadCoords[3][2]);
-				Vec3 side2 = new Vec3(quadCoords[2][0]-quadCoords[0][0],
-						quadCoords[2][1]-quadCoords[0][1],
-						quadCoords[2][2]-quadCoords[0][2]);
-				Vec3 normal = side1.cross(side2);
-				normal = normal.normalize();
+				Vector3f normal = new Vector3f(quadCoords[1]);
+				Vector3f side2 = new Vector3f(quadCoords[2]);
+				normal.add(-quadCoords[3].x(), -quadCoords[3].y(), -quadCoords[3].z());
+				side2.add(-quadCoords[0].x(), -quadCoords[0].y(), -quadCoords[0].z());
+				normal.cross(side2);
+				normal.normalize();
 				// calculate the final light values and do the rendering
 				int l1 = getLightValue(neighbourBrightness[1], normalizationFactors[1], light&255, normal);
-				int l2 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (light >> 16)&255, normal);
+				int l2 = getLightValue(neighbourBrightness[0], normalizationFactors[0], (light>>16)&255, normal);
+				normal.transform(normalTransform);
 				for(int i = 0; i < 4; ++i)
 				{
-					renderer
-							.vertex(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
-							.color(rgba[0], rgba[1], rgba[2], rgba[3])
-							.uv(Float.intBitsToFloat(vData[size*i+uvOffset]), Float.intBitsToFloat(vData[size*i+uvOffset+1]))
-							.overlayCoords(OverlayTexture.NO_OVERLAY)
-							.uv2(l1, l2)
-							.normal((float)normal.x, (float)normal.y, (float)normal.z)
-							.endVertex();
+					final Vector4f vertexPos = quadCoords[i];
+					vertexPos.transform(positionTransform);
+					renderer.vertex(
+							vertexPos.x(), vertexPos.y(), vertexPos.z(),
+							rgba[0]/255f, rgba[1]/255f, rgba[2]/255f, rgba[3]/255f,
+							Float.intBitsToFloat(vData[VERTEX_SIZE*i+UV_OFFSET]), Float.intBitsToFloat(vData[VERTEX_SIZE*i+UV_OFFSET+1]),
+							OverlayTexture.NO_OVERLAY,
+							LightTexture.pack(l1>>4, l2>>4),
+							normal.x(), normal.y(), normal.z()
+					);
 				}
 			}
 		}
 	}
 
-	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vec3 normal)
+	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vector3f normal)
 	{
 		//calculate the dot product between the required light vector and the normal of the quad
 		// quad brightness is proportional to this value, see https://github.com/ssloy/tinyrenderer/wiki/Lesson-2:-Triangle-rasterization-and-back-face-culling#flat-shading-render
 		double sideBrightness;
 		byte type = 0;
-		if(normal.x > 0)
+		if(normal.x() > 0)
 		{
-			sideBrightness = normal.x*neighbourBrightness[5];
+			sideBrightness = normal.x()*neighbourBrightness[5];
 			type |= 1;
 		}
 		else
-			sideBrightness = -normal.x*neighbourBrightness[4];
-		if(normal.y > 0)
+			sideBrightness = -normal.x()*neighbourBrightness[4];
+		if(normal.y() > 0)
 		{
-			sideBrightness += normal.y*neighbourBrightness[1];
+			sideBrightness += normal.y()*neighbourBrightness[1];
 			type |= 2;
 		}
 		else
-			sideBrightness += -normal.y*neighbourBrightness[0];
-		if(normal.z > 0)
+			sideBrightness += -normal.y()*neighbourBrightness[0];
+		if(normal.z() > 0)
 		{
-			sideBrightness += normal.z*neighbourBrightness[3];
+			sideBrightness += normal.z()*neighbourBrightness[3];
 			type |= 4;
 		}
 		else
-			sideBrightness += -normal.z*neighbourBrightness[2];
+			sideBrightness += -normal.z()*neighbourBrightness[2];
 		// the final light value is the aritmethic mean of the local brighness and the normalized "dot-product-brightness"
 		return (int)((localBrightness+sideBrightness/normalizationFactors[type])/2);
 	}
@@ -190,8 +204,8 @@ public class RenderUtils
 		float blue = 1;
 		if(color >= 0)
 		{
-			red = (color >> 16&255)/255F;
-			green = (color >> 8&255)/255F;
+			red = (color>>16&255)/255F;
+			green = (color>>8&255)/255F;
 			blue = (color&255)/255F;
 		}
 		for(BakedQuad quad : quads)

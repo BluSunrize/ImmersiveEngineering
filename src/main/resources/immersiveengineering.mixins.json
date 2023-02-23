@@ -39,8 +39,7 @@
     "accessors.client.SimpleModelAccess",
     "accessors.client.WorldRendererAccess",
     "coremods.client.BipedModelMixin",
-    "coremods.client.RebuildTaskMixin",
-    "coremods.client.WorldRendererMixin"
+    "coremods.client.RebuildTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1
