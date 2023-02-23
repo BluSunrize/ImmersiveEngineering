@@ -26,8 +26,6 @@ import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -46,6 +44,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -204,7 +203,7 @@ public class ModelPowerpack
 			}
 			matrixStackIn.pushPose();
 			// undo player rotation to allow absolute positioning
-			matrixStackIn.mulPose(new Quaternion(Vector3f.YP, -toRender.yBodyRotO, true));
+			matrixStackIn.mulPose(new Quaternionf().rotationY(-toRender.yBodyRotO*Mth.DEG_TO_RAD));
 			matrixStackIn.scale(-1.0F, 1.0F, 1.0F);
 			CatenaryData renderCat = Connection.makeCatenaryData(antennaBase, antennaTip, 1.0+distFromWire*0.005);
 			ConnectionRenderer.renderConnection(

@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ShieldCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Quaternionf;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Quaternionf;
 
 public class ShieldCallbacks implements ItemCallback<Key>
 {
@@ -65,8 +65,7 @@ public class ShieldCallbacks implements ItemCallback<Key>
 		}
 		else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
 		{
-			mat.mulPose(new Quaternionf().rotateXYZ(-0.52359F, 0, 0, false));
-			mat.mulPose(new Quaternion(0, -0.78539F, 0));
+			mat.mulPose(new Quaternionf().rotateX(-0.52359F).rotateY(-0.78539F));
 			mat.translate(-.1875, .3125, .4375);
 		}
 	}

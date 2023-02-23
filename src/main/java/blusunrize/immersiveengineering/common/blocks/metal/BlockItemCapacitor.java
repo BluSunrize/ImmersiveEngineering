@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.ItemEnergyStorage;
@@ -26,7 +25,7 @@ public class BlockItemCapacitor extends BlockItemIE
 
 	public BlockItemCapacitor(Block b, CapacitorConfig configValues)
 	{
-		super(b, new Properties().tab(ImmersiveEngineering.ITEM_GROUP));
+		super(b, new Properties());
 		this.configValues = configValues;
 	}
 

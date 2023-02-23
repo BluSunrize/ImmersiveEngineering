@@ -16,15 +16,14 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEnt
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,8 +67,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				transform.pushPose();
 				transform.translate(0, .5625, 0);
 
-				transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
-				transform.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
+				transform.mulPose(new Quaternionf().rotateY(Mth.PI).rotateX(Mth.HALF_PI));
 				transform.translate(-.875, 0, 0);
 				transform.scale(.75f, .75f, .75f);
 				ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
@@ -97,8 +95,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				if(!stack.isEmpty())
 				{
 					transform.pushPose();
-					transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
-					transform.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
+					transform.mulPose(new Quaternionf().rotateY(Mth.PI).rotateX(Mth.HALF_PI));
 					transform.translate(dX, dZ, -.515);
 					transform.scale(.25f, .25f, .25f);
 					{
@@ -132,8 +129,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 			else if(numRecipes==2) perRow = 3;
 			else perRow = numRecipes;
 			transform.translate(0, .501, 0);
-			transform.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
-			transform.mulPose(new Quaternion(new Vector3f(0, 0, 1), -22.5f, true));
+			transform.mulPose(new Quaternionf().rotateY(-Mth.PI/8).rotateX(-Mth.HALF_PI));
 			transform.translate(0.39, numRecipes > 4?.72: .78, 0);
 			float scale = numRecipes > 4?.009375f: .012f;
 			transform.scale(scale, -scale, scale);

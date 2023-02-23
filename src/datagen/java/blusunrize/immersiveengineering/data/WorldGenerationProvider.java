@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
+import blusunrize.immersiveengineering.common.world.AddGlobalFeatureBiomeModifier;
 import blusunrize.immersiveengineering.common.world.IECountPlacement;
 import blusunrize.immersiveengineering.common.world.IEHeightProvider;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
@@ -50,6 +50,7 @@ import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
@@ -67,7 +68,8 @@ public class WorldGenerationProvider
 			oreFeatures.put(type, typeReg);
 		}
 		final Registrations registrations = new Registrations(
-				oreFeatures, new FeatureRegistration(ImmersiveEngineering.rl("mineral_veins"), IETags.hasMineralVeins)
+				oreFeatures,
+				new FeatureRegistration(ImmersiveEngineering.rl("mineral_veins"), null)
 		);
 		final RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
 		registryBuilder.add(Registries.CONFIGURED_FEATURE, ctx -> bootstrapConfiguredFeatures(ctx, registrations));
@@ -118,14 +120,16 @@ public class WorldGenerationProvider
 	{
 		final HolderGetter<Biome> biomeReg = ctx.lookup(Registries.BIOME);
 		for(final FeatureRegistration entry : registrations.allFeatures)
-			ctx.register(
-					ResourceKey.create(Keys.BIOME_MODIFIERS, entry.name),
-					new AddFeaturesBiomeModifier(
-							biomeReg.getOrThrow(entry.inBiomes),
-							HolderSet.direct(entry.placed),
-							Decoration.UNDERGROUND_ORES
-					)
-			);
+		{
+			final BiomeModifier modifier;
+			if(entry.inBiomes!=null)
+				modifier = new AddFeaturesBiomeModifier(
+						biomeReg.getOrThrow(entry.inBiomes), HolderSet.direct(entry.placed), Decoration.UNDERGROUND_ORES
+				);
+			else
+				modifier = new AddGlobalFeatureBiomeModifier(entry.placed, Decoration.UNDERGROUND_ORES);
+			ctx.register(ResourceKey.create(Keys.BIOME_MODIFIERS, entry.name), modifier);
+		}
 	}
 
 	private static class FeatureRegistration
@@ -133,6 +137,7 @@ public class WorldGenerationProvider
 		public Reference<ConfiguredFeature<?, ?>> configured;
 		public Reference<PlacedFeature> placed;
 		public final ResourceLocation name;
+		@Nullable
 		public final TagKey<Biome> inBiomes;
 
 		private FeatureRegistration(ResourceLocation name)
@@ -140,7 +145,7 @@ public class WorldGenerationProvider
 			this(name, BiomeTags.IS_OVERWORLD);
 		}
 
-		private FeatureRegistration(ResourceLocation name, TagKey<Biome> inBiomes)
+		private FeatureRegistration(ResourceLocation name, @Nullable TagKey<Biome> inBiomes)
 		{
 			this.name = name;
 			this.inBiomes = inBiomes;

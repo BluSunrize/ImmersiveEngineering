@@ -68,7 +68,7 @@ public class BlueprintRenderer
 			final Function<ResourceLocation, TextureAtlasSprite> blockAtlas = ClientUtils.mc().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS);
 			for(BakedQuad quad : quads)
 			{
-				final ResourceLocation texture = quad.getSprite().getName();
+				final ResourceLocation texture = quad.getSprite().contents().name();
 				if(textures.add(texture))
 					images.add(blockAtlas.apply(texture));
 			}
@@ -86,8 +86,8 @@ public class BlueprintRenderer
 		{
 			Set<Pair<TexturePoint, TexturePoint>> tempLines = new HashSet<>();
 
-			int w = bufferedImage.getWidth();
-			int h = bufferedImage.getHeight();
+			int w = bufferedImage.contents().width();
+			int h = bufferedImage.contents().height();
 
 			if(h > w)
 				h = w;

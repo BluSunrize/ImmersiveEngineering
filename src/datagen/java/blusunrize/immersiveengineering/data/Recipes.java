@@ -2709,7 +2709,7 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_buzzsaw", has(Tools.BUZZSAW))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.BUZZSAW_SPAREBLADES))));
 
-		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_ANTENNA))
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_ANTENNA))
 				.pattern("www")
 				.pattern("rww")
 				.pattern("c  ")
@@ -2718,7 +2718,7 @@ public class Recipes extends RecipeProvider
 				.define('c', IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false))
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_ANTENNA))));
-		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))
 				.pattern("ttt")
 				.pattern("wew")
 				.define('t', Ingredients.ELECTRON_TUBE)
@@ -2726,7 +2726,7 @@ public class Recipes extends RecipeProvider
 				.define('e', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))));
-		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))
 				.pattern("iii")
 				.pattern("cfc")
 				.pattern("cec")
@@ -2737,7 +2737,7 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))));
 
-		ShapelessRecipeBuilder.shapeless(Ingredients.WIRE_COPPER)
+		shapelessMisc(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.requires(Tools.WIRECUTTER)
 				.unlockedBy("has_copper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
