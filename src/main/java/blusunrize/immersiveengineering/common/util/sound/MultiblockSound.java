@@ -53,10 +53,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get(), loop);
 		final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 		soundManager.play(instance);
-		if(loop)
-			return () -> !instance.isStopped();
-		else
-			return () -> soundManager.isActive(instance);
+		return () -> soundManager.isActive(instance);
 	}
 
 	@Override
