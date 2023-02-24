@@ -85,6 +85,9 @@ import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.NewRegistryEvent;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
 import static blusunrize.immersiveengineering.common.fluids.IEFluid.BUCKET_DISPENSE_BEHAVIOR;
@@ -92,6 +95,8 @@ import static blusunrize.immersiveengineering.common.fluids.IEFluid.BUCKET_DISPE
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
 {
+	private static CompletableFuture<?> lastOnThreadFuture;
+
 	public static void modConstruction()
 	{
 		/*BULLETS*/
@@ -240,7 +245,7 @@ public class IEContent
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler::new);
 		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler::new);
 
-		ev.enqueueWork(IEContent::onThreadCommonSetup);
+		setFuture(ev.enqueueWork(IEContent::onThreadCommonSetup));
 	}
 
 	private static void onThreadCommonSetup()
@@ -297,5 +302,25 @@ public class IEContent
 		IMultiblockBEHelperMaster.MAKE_HELPER.setValue(MultiblockBEHelperMaster::new);
 		IMultiblockBEHelperDummy.MAKE_HELPER.setValue(MultiblockBEHelperDummy::new);
 		SetRestrictedField.lock(false);
+	}
+
+	public static void clearLastFuture()
+	{
+		if(lastOnThreadFuture==null)
+			return;
+		try
+		{
+			lastOnThreadFuture.get();
+		} catch(InterruptedException|ExecutionException e)
+		{
+			throw new RuntimeException(e);
+		}
+		lastOnThreadFuture = null;
+	}
+
+	public static void setFuture(CompletableFuture<?> next)
+	{
+		clearLastFuture();
+		lastOnThreadFuture = next;
 	}
 }

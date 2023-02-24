@@ -278,6 +278,7 @@ public class ImmersiveEngineering
 	public void enqueueIMCs(InterModEnqueueEvent event)
 	{
 		IECompatModules.doModulesIMCs();
+		IEContent.clearLastFuture();
 	}
 
 	public void registerCommands(RegisterCommandsEvent event)
