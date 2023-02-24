@@ -9,6 +9,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers
 
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -111,8 +112,8 @@ public class SawmillRecipeManager implements IRecipeManager<SawmillRecipe>
 		final ItemStack mainOutput = output.getInternal();
 		final ItemStack[] secondaryOutputs = CrTIngredientUtil.getItemStacks(outputSecondaries);
 
-		final SawmillRecipe recipe = new SawmillRecipe(
-				resourceLocation, of(mainOutput), of(stripped), ingredient, energy
+		final SawmillRecipe recipe = IEServerConfig.MACHINES.sawmillConfig.apply(
+				new SawmillRecipe(resourceLocation, of(mainOutput), of(stripped), ingredient, energy)
 		);
 		for(ItemStack stack : secondaryStripping)
 			recipe.addToSecondaryStripping(of(stack));

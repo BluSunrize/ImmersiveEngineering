@@ -17,6 +17,7 @@
 - Fix tooltips on capacitors not showing energy stored (BluSunrize)
 - Cleanup and optimize Blueprint rendering (Malte)
 - Fix bucketwheel not querying block particles properly (Malte)
+- Fix config settings not being applied to crafttweaker recipes (BluSunrize)
 
 ##### Version 1.18.2-8.3.1-157
 - Add pride shaders! (BluSunrize)

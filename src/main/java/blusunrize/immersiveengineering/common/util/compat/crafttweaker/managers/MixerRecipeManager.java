@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
@@ -123,7 +124,9 @@ public class MixerRecipeManager implements IRecipeManager<MixerRecipe>
 		final IngredientWithSize[] ingredientsWithSize = CrTIngredientUtil.getIngredientsWithSize(inputItems);
 		final FluidStack outputFluidStack = new FluidStack(output, amount);
 
-		final MixerRecipe recipe = new MixerRecipe(resourceLocation, outputFluidStack, fluidTagInput, ingredientsWithSize, energy);
+		final MixerRecipe recipe = IEServerConfig.MACHINES.mixerConfig.apply(
+				new MixerRecipe(resourceLocation, outputFluidStack, fluidTagInput, ingredientsWithSize, energy)
+		);
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, outputFluidStack));
 	}
 }
