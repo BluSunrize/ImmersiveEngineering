@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
@@ -30,21 +27,15 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.mixin.accessors.HeroGiftsTaskAccess;
-import blusunrize.immersiveengineering.mixin.accessors.SingleJigsawAccess;
-import com.google.common.collect.ImmutableList;
+import blusunrize.immersiveengineering.mixin.accessors.TemplatePoolAccess;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -64,16 +55,18 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool.Projection;
 import net.minecraft.world.level.saveddata.maps.MapDecoration.Type;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.TagsUpdatedEvent.UpdateCause;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.DeferredRegister;
@@ -91,6 +84,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.register.IEItems.Misc.TOOL_UPGRADES;
 import static blusunrize.immersiveengineering.common.register.IEItems.Misc.WIRE_COILS;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class Villages
 {
 	public static final ResourceLocation ENGINEER = rl("engineer");
@@ -99,13 +93,23 @@ public class Villages
 	public static final ResourceLocation OUTFITTER = rl("outfitter");
 	public static final ResourceLocation GUNSMITH = rl("gunsmith");
 
-	public static void init()
+	@SubscribeEvent
+	public static void onTagsUpdated(TagsUpdatedEvent ev)
 	{
+		if(ev.getUpdateCause()!=UpdateCause.SERVER_DATA_LOAD)
+			return;
 		// Register engineer's houses for each biome
 		for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"})
 			for(String type : new String[]{"engineer", "machinist", "electrician", "gunsmith", "outfitter"})
-				addToPool(new ResourceLocation("village/"+biome+"/houses"), rl("village/houses/"+biome+"_"+type), 1);
+				addToPool(
+						new ResourceLocation("village/"+biome+"/houses"),
+						rl("village/houses/"+biome+"_"+type),
+						ev.getRegistryAccess()
+				);
+	}
 
+	public static void init()
+	{
 		// Register gifts
 		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
 		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_MACHINIST.get(), rl("gameplay/hero_of_the_village/machinist"));
@@ -114,37 +118,17 @@ public class Villages
 		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
 	}
 
-	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
+	private static void addToPool(ResourceLocation poolId, ResourceLocation toAdd, RegistryAccess regAccess)
 	{
-		throw new UnsupportedOperationException();
-		/*
-		StructureTemplatePool old = BuiltinRegistries.TEMPLATE_POOL.get(pool);
-		int id = BuiltinRegistries.TEMPLATE_POOL.getId(old);
+		Registry<StructureTemplatePool> registry = regAccess.registryOrThrow(Registries.TEMPLATE_POOL);
+		StructureTemplatePool pool = Objects.requireNonNull(registry.get(poolId), poolId.getPath());
+		TemplatePoolAccess poolAccess = (TemplatePoolAccess)pool;
+		if(!(poolAccess.getRawTemplates() instanceof ArrayList))
+			poolAccess.setRawTemplates(new ArrayList<>(poolAccess.getRawTemplates()));
 
-		// Fixed seed to prevent inconsistencies between different worlds
-		List<StructurePoolElement> shuffled;
-		if(old!=null)
-			shuffled = old.getShuffledTemplates(RandomSource.create(0));
-		else
-			shuffled = ImmutableList.of();
-		Object2IntMap<StructurePoolElement> newPieces = new Object2IntLinkedOpenHashMap<>();
-		for(StructurePoolElement p : shuffled)
-			newPieces.computeInt(p, (StructurePoolElement pTemp, Integer i) -> (i==null?0: i)+1);
-		newPieces.put(SingleJigsawAccess.construct(
-				Either.left(toAdd), ProcessorLists.EMPTY, Projection.RIGID
-		), weight);
-		List<Pair<StructurePoolElement, Integer>> newPieceList = newPieces.object2IntEntrySet().stream()
-				.map(e -> Pair.of(e.getKey(), e.getIntValue()))
-				.collect(Collectors.toList());
-
-		ResourceLocation name = old.getName();
-		((WritableRegistry<StructureTemplatePool>)BuiltinRegistries.TEMPLATE_POOL).registerOrOverride(
-				OptionalInt.of(id),
-				ResourceKey.create(BuiltinRegistries.TEMPLATE_POOL.key(), name),
-				new StructureTemplatePool(pool, name, newPieceList),
-				Lifecycle.stable()
-		);
-		 */
+		SinglePoolElement addedElement = SinglePoolElement.single(toAdd.toString()).apply(Projection.RIGID);
+		poolAccess.getRawTemplates().add(Pair.of(addedElement, 1));
+		poolAccess.getTemplates().add(addedElement);
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
