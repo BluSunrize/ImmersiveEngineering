@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
@@ -29,7 +30,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
@@ -114,6 +117,22 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 			else
 				return Shapes.block();
 		};
+	}
+
+	@Override
+	public InteractionResult click(
+			IMultiblockContext<State> ctx, BlockPos posInMultiblock,
+			Player player, InteractionHand hand, BlockHitResult absoluteHit,
+			boolean isClient
+	)
+	{
+		if(FluidUtils.interactWithFluidHandler(player, hand, ctx.getState().tank))
+		{
+			ctx.markDirtyAndSync();
+			return InteractionResult.SUCCESS;
+		}
+		else
+			return InteractionResult.PASS;
 	}
 
 	public static class State implements IMultiblockState
