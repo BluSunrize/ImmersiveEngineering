@@ -296,6 +296,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/railgun"));
 		ieObjBuilder(Weapons.CHEMTHROWER, modLoc("item/chemthrower.obj.ie"))
 				.callback(ChemthrowerCallbacks.INSTANCE)
+				.layer(RenderType.cutout())
 				.end()
 				.transforms(modLoc("item/chemthrower"));
 		ieObjBuilder(Misc.POWERPACK, rl("item/powerpack.obj"))
