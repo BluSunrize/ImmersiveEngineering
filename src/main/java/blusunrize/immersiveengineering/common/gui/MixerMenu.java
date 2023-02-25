@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixingProcess;
@@ -25,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.IItemHandler;
@@ -37,16 +37,17 @@ import java.util.List;
 public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContainer
 {
 	public static MixerMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<State> ctx
 	)
 	{
-		final State state = ctx.getState();
+		final State state = ctx.mbContext().getState();
 		final GetterAndSetter<List<SlotProgress>> progress = GetterAndSetter.getterOnly(() -> {
+			final Level level = ctx.mbContext().getLevel().getRawLevel();
 			List<SlotProgress> result = new ArrayList<>();
 			for(final MultiblockProcess<?, ?> process : state.processor.getQueue())
 				if(process instanceof MixingProcess inMachine)
 				{
-					final float mod = 1-(process.processTick/(float)process.getMaxTicks(ctx.getLevel().getRawLevel()));
+					final float mod = 1-(process.processTick/(float)process.getMaxTicks(level));
 					for(final int inputSlot : inMachine.getInputSlots())
 						result.add(new SlotProgress(inputSlot, mod));
 				}

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.metal.CrafterPatternInventory;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
@@ -44,10 +43,10 @@ public class AssemblerMenu extends IEContainerMenu
 	public final GetterAndSetter<Boolean> recursiveIngredients;
 
 	public static AssemblerMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<State> ctx
 	)
 	{
-		final State state = ctx.getState();
+		final State state = ctx.mbContext().getState();
 		List<IItemHandlerModifiable> patterns = new ArrayList<>(AssemblerLogic.NUM_PATTERNS);
 		for(final CrafterPatternInventory pattern : state.patterns)
 			patterns.add(new ItemStackHandler(pattern.inv)
@@ -55,7 +54,7 @@ public class AssemblerMenu extends IEContainerMenu
 				@Override
 				protected void onContentsChanged(int slot)
 				{
-					pattern.recalculateOutput(ctx.getLevel().getRawLevel());
+					pattern.recalculateOutput(ctx.mbContext().getLevel().getRawLevel());
 				}
 
 				@Override

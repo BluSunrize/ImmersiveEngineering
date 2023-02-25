@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceProcess;
@@ -33,16 +32,16 @@ public class ArcFurnaceMenu extends IEContainerMenu
 	public final GetterAndSetter<List<ProcessSlot>> processes;
 
 	public static ArcFurnaceMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<State> ctx
 	)
 	{
-		final State state = ctx.getState();
+		final State state = ctx.mbContext().getState();
 		return new ArcFurnaceMenu(
 				multiblockCtx(type, id, ctx), invPlayer,
 				state.getInventory(), state.getEnergy(),
 				GetterAndSetter.getterOnly(() -> state.getProcessQueue().stream()
 						.filter(p -> p instanceof ArcFurnaceProcess)
-						.map(p -> ProcessSlot.fromCtx((ArcFurnaceProcess)p, ctx.getLevel().getRawLevel()))
+						.map(p -> ProcessSlot.fromCtx((ArcFurnaceProcess)p, ctx.mbContext().getLevel().getRawLevel()))
 						.toList()
 				)
 		);

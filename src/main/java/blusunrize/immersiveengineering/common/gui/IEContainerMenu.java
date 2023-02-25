@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
@@ -223,15 +224,13 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 	}
 
 	public static MenuContext multiblockCtx(
-			MenuType<?> pMenuType, int pContainerId, IMultiblockContext<?> ctx
+			MenuType<?> pMenuType, int pContainerId, MultiblockMenuContext<?> ctx
 	)
 	{
-		return new MenuContext(pMenuType, pContainerId, ctx::markMasterDirty, p -> {
-			if(!ctx.isValid().getAsBoolean())
+		return new MenuContext(pMenuType, pContainerId, ctx.mbContext()::markMasterDirty, p -> {
+			if(!ctx.mbContext().isValid().getAsBoolean())
 				return false;
-			// TODO should not be origin
-			final BlockPos pos = ctx.getLevel().getAbsoluteOrigin();
-			return p.distanceToSqr(Vec3.atCenterOf(pos)) <= 64.0D;
+			return p.distanceToSqr(Vec3.atCenterOf(ctx.clickedPos)) <= 64.0D;
 		});
 	}
 
@@ -272,6 +271,11 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 	protected record MenuContext(
 			MenuType<?> type, int id, Runnable setChanged, Predicate<Player> isValid
 	)
+	{
+	}
+
+	public record MultiblockMenuContext<S extends IMultiblockState>(IMultiblockContext<S> mbContext,
+																	BlockPos clickedPos)
 	{
 	}
 }

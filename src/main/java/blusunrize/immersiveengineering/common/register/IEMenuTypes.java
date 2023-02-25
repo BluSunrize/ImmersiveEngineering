@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ToolboxBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemBlockEntity;
@@ -20,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnac
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.gui.*;
+import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenuContext;
 import blusunrize.immersiveengineering.common.gui.TurretMenu.ChemTurretMenu;
 import blusunrize.immersiveengineering.common.gui.TurretMenu.GunTurretMenu;
 import net.minecraft.core.BlockPos;
@@ -47,16 +49,16 @@ public class IEMenuTypes
 {
 	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Lib.MODID);
 
-	public static final ArgContainer<IMultiblockContext<CokeOvenLogic.State>, CokeOvenMenu> COKE_OVEN = registerArg(
+	public static final MultiblockContainer<CokeOvenLogic.State, CokeOvenMenu> COKE_OVEN = registerMultiblock(
 			Lib.GUIID_CokeOven, CokeOvenMenu::makeServer, CokeOvenMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<AlloySmelterLogic.State>, AlloySmelterMenu> ALLOY_SMELTER = registerArg(
+	public static final MultiblockContainer<AlloySmelterLogic.State, AlloySmelterMenu> ALLOY_SMELTER = registerMultiblock(
 			Lib.GUIID_AlloySmelter, AlloySmelterMenu::makeServer, AlloySmelterMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<BlastFurnaceLogic.State>, BlastFurnaceMenu> BLAST_FURNACE = registerArg(
+	public static final MultiblockContainer<BlastFurnaceLogic.State, BlastFurnaceMenu> BLAST_FURNACE = registerMultiblock(
 			Lib.GUIID_BlastFurnace, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<AdvBlastFurnaceLogic.State>, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerArg(
+	public static final MultiblockContainer<AdvBlastFurnaceLogic.State, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerMultiblock(
 			Lib.GUIID_BlastFurnaceAdv, BlastFurnaceMenu::makeServerAdv, BlastFurnaceMenu::makeClient
 	);
 	public static final ArgContainer<CraftingTableBlockEntity, CraftingTableMenu> CRAFTING_TABLE = registerArg(
@@ -67,7 +69,7 @@ public class IEMenuTypes
 	public static final ArgContainer<CircuitTableBlockEntity, CircuitTableMenu> CIRCUIT_TABLE = registerArg(
 			Lib.GUIID_CircuitTable, CircuitTableMenu::makeServer, CircuitTableMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<AssemblerLogic.State>, AssemblerMenu> ASSEMBLER = registerArg(
+	public static final MultiblockContainer<AssemblerLogic.State, AssemblerMenu> ASSEMBLER = registerMultiblock(
 			Lib.GUIID_Assembler, AssemblerMenu::makeServer, AssemblerMenu::makeClient
 	);
 	public static final ArgContainer<SorterBlockEntity, SorterMenu> SORTER = registerArg(
@@ -79,22 +81,22 @@ public class IEMenuTypes
 	public static final ArgContainer<LogicUnitBlockEntity, LogicUnitMenu> LOGIC_UNIT = registerArg(
 			Lib.GUIID_LogicUnit, LogicUnitMenu::makeServer, LogicUnitMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<SqueezerLogic.State>, SqueezerMenu> SQUEEZER = registerArg(
+	public static final MultiblockContainer<SqueezerLogic.State, SqueezerMenu> SQUEEZER = registerMultiblock(
 			Lib.GUIID_Squeezer, SqueezerMenu::makeServer, SqueezerMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<FermenterLogic.State>, FermenterMenu> FERMENTER = registerArg(
+	public static final MultiblockContainer<FermenterLogic.State, FermenterMenu> FERMENTER = registerMultiblock(
 			Lib.GUIID_Fermenter, FermenterMenu::makeServer, FermenterMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<RefineryLogic.State>, RefineryMenu> REFINERY = registerArg(
+	public static final MultiblockContainer<RefineryLogic.State, RefineryMenu> REFINERY = registerMultiblock(
 			Lib.GUIID_Refinery, RefineryMenu::makeServer, RefineryMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<ArcFurnaceLogic.State>, ArcFurnaceMenu> ARC_FURNACE = registerArg(
+	public static final MultiblockContainer<ArcFurnaceLogic.State, ArcFurnaceMenu> ARC_FURNACE = registerMultiblock(
 			Lib.GUIID_ArcFurnace, ArcFurnaceMenu::makeServer, ArcFurnaceMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<AutoWorkbenchLogic.State>, AutoWorkbenchMenu> AUTO_WORKBENCH = registerArg(
+	public static final MultiblockContainer<AutoWorkbenchLogic.State, AutoWorkbenchMenu> AUTO_WORKBENCH = registerMultiblock(
 			Lib.GUIID_AutoWorkbench, AutoWorkbenchMenu::makeServer, AutoWorkbenchMenu::makeClient
 	);
-	public static final ArgContainer<IMultiblockContext<MixerLogic.State>, MixerMenu> MIXER = registerArg(
+	public static final MultiblockContainer<MixerLogic.State, MixerMenu> MIXER = registerMultiblock(
 			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient
 	);
 	public static final ArgContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerArg(
@@ -128,6 +130,17 @@ public class IEMenuTypes
 	{
 		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
 		return new ArgContainer<>(typeRef, container);
+	}
+
+	public static <S extends IMultiblockState, C extends IEContainerMenu>
+	MultiblockContainer<S, C> registerMultiblock(
+			String name,
+			ArgContainerConstructor<MultiblockMenuContext<S>, C> container,
+			ClientContainerConstructor<C> client
+	)
+	{
+		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
+		return new MultiblockContainer<>(typeRef, container);
 	}
 
 	public static <C extends IEContainerMenu>
@@ -249,6 +262,22 @@ public class IEMenuTypes
 		}
 	}
 
+	public static class MultiblockContainer<S extends IMultiblockState, C extends IEContainerMenu> extends
+			ArgContainer<MultiblockMenuContext<S>, C>
+	{
+		private MultiblockContainer(
+				RegistryObject<MenuType<C>> type,
+				ArgContainerConstructor<MultiblockMenuContext<S>, C> factory
+		)
+		{
+			super(type, factory);
+		}
+
+		public MenuProvider provide(IMultiblockContext<S> ctx, BlockPos relativeClicked)
+		{
+			return provide(new MultiblockMenuContext<>(ctx, ctx.getLevel().toAbsolute(relativeClicked)));
+		}
+	}
 
 	public record ItemContainerType<C extends AbstractContainerMenu>(
 			RegistryObject<MenuType<C>> type, ItemContainerConstructor<C> factory

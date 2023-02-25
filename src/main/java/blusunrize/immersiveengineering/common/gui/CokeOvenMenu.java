@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.StateView;
@@ -34,10 +33,10 @@ public class CokeOvenMenu extends IEContainerMenu
 	public final FluidTank tank;
 
 	public static CokeOvenMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<CokeOvenLogic.State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<CokeOvenLogic.State> ctx
 	)
 	{
-		final State state = ctx.getState();
+		final State state = ctx.mbContext().getState();
 		return new CokeOvenMenu(
 				multiblockCtx(type, id, ctx), invPlayer, state.getInventory().getRawHandler(), state, state.getTank()
 		);

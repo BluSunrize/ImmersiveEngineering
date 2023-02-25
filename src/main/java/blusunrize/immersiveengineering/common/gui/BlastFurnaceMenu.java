@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AdvBlastFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BlastFurnaceLogic;
@@ -36,10 +35,10 @@ public class BlastFurnaceMenu extends IEContainerMenu
 	public final GetterAndSetter<Boolean> rightHeater;
 
 	public static BlastFurnaceMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<State> ctx
 	)
 	{
-		final State state = ctx.getState();
+		final State state = ctx.mbContext().getState();
 		return new BlastFurnaceMenu(
 				multiblockCtx(type, id, ctx), invPlayer,
 				state.getInventory(), state.getStateView(),
@@ -48,11 +47,11 @@ public class BlastFurnaceMenu extends IEContainerMenu
 	}
 
 	public static BlastFurnaceMenu makeServerAdv(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<AdvBlastFurnaceLogic.State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<AdvBlastFurnaceLogic.State> ctx
 	)
 	{
-		final AdvBlastFurnaceLogic.State state = ctx.getState();
-		final IMultiblockLevel level = ctx.getLevel();
+		final AdvBlastFurnaceLogic.State state = ctx.mbContext().getState();
+		final IMultiblockLevel level = ctx.mbContext().getLevel();
 		return new BlastFurnaceMenu(
 				multiblockCtx(type, id, ctx), invPlayer,
 				state.getInventory(), state.getStateView(),

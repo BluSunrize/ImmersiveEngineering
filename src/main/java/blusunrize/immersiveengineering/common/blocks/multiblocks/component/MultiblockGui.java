@@ -8,16 +8,18 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.component;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.MultiblockContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
-public record MultiblockGui<S>(ArgContainer<IMultiblockContext<S>, ?> menu) implements IMultiblockComponent<S>
+public record MultiblockGui<S extends IMultiblockState>(
+		MultiblockContainer<S, ?> menu) implements IMultiblockComponent<S>
 {
 	@Override
 	public InteractionResult click(
@@ -30,7 +32,7 @@ public record MultiblockGui<S>(ArgContainer<IMultiblockContext<S>, ?> menu) impl
 	)
 	{
 		if(!isClient)
-			player.openMenu(menu.provide(ctx));
+			player.openMenu(menu.provide(ctx, posInMultiblock));
 		return InteractionResult.SUCCESS;
 	}
 }

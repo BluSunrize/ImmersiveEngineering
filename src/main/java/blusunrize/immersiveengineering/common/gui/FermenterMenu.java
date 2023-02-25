@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
@@ -29,10 +28,10 @@ public class FermenterMenu extends IEContainerMenu
 	public final FluidTank tank;
 
 	public static FermenterMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<State> ctx
 	)
 	{
-		final State state = ctx.getState();
+		final State state = ctx.mbContext().getState();
 		return new FermenterMenu(
 				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.getEnergy(), state.getTank()
 		);

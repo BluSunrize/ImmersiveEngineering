@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AlloySmelterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler.StateView;
@@ -26,10 +25,10 @@ public class AlloySmelterMenu extends IEContainerMenu
 	private final ContainerData stateView;
 
 	public static AlloySmelterMenu makeServer(
-			MenuType<?> type, int id, Inventory invPlayer, IMultiblockContext<State> ctx
+			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<State> ctx
 	)
 	{
-		final State state = ctx.getState();
+		final State state = ctx.mbContext().getState();
 		return new AlloySmelterMenu(
 				multiblockCtx(type, id, ctx), invPlayer, state.getInventory(), state.getStateView()
 		);

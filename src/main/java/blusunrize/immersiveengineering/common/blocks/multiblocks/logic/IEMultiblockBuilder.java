@@ -10,16 +10,15 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistrationBuilder;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.StateWrapper;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.component.MultiblockGui;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.component.MultiblockGui;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.MultiblockContainer;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 
@@ -31,7 +30,7 @@ public class IEMultiblockBuilder<S extends IMultiblockState>
 		super(logic, ImmersiveEngineering.rl(name));
 	}
 
-	public IEMultiblockBuilder<S> gui(ArgContainer<IMultiblockContext<S>, ?> menu)
+	public IEMultiblockBuilder<S> gui(MultiblockContainer<S, ?> menu)
 	{
 		return component(new MultiblockGui<>(menu));
 	}
