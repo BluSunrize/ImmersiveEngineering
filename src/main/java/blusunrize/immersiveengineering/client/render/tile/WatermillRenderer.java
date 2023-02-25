@@ -18,6 +18,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
@@ -41,7 +42,8 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntit
 			return;
 		transform.pushPose();
 		transform.translate(.5, .5, .5);
-		rotateForFacingNoCentering(transform, tile.getFacing());
+		if(tile.getFacing().getAxis()==Axis.X)
+			transform.mulPose(new Quaternionf().rotateY(Mth.HALF_PI));
 		float wheelRotation = Mth.TWO_PI*(tile.rotation+partialTicks*(float)tile.perTick);
 		transform.mulPose(new Quaternionf().rotateZ(wheelRotation));
 		transform.translate(-.5, -.5, -.5);
