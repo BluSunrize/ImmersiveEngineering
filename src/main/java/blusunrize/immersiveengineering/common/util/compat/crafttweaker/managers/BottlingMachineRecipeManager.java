@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
@@ -53,9 +54,9 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 	 * The bottling Machine only goes via Fluid tag!
 	 *
 	 * @param recipePath The recipe name, without the resource location
-	 * @param inputs  The item input (the items to be filled)
+	 * @param inputs     The item input (the items to be filled)
 	 * @param fluidTag   The fluid tag of the fluid
-	 * @param outputs     The resulting "filled" items.
+	 * @param outputs    The resulting "filled" items.
 	 * @docParam recipePath "grow_a_pick"
 	 * @docParam itemInput [<item:minecraft:stick> * 3]
 	 * @docParam fluidTag <tag:minecraft:water>
@@ -72,8 +73,8 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 		final List<Lazy<ItemStack>> outputList = CrTIngredientUtil.getNonNullList(outputs);
 		final IngredientWithSize[] ingredients = CrTIngredientUtil.getIngredientsWithSize(inputs);
 
-		final BottlingMachineRecipe recipe = new BottlingMachineRecipe(
-				resourceLocation, outputList, ingredients, fluidTagInput
+		final BottlingMachineRecipe recipe = IEServerConfig.MACHINES.bottlingMachineConfig.apply(
+				new BottlingMachineRecipe(resourceLocation, outputList, ingredients, fluidTagInput)
 		);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
