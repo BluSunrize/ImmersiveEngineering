@@ -89,25 +89,26 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	}
 
 	@Override
-	public void tickServer() {
+	public void tickServer()
+	{
 		super.tickServer();
-		if (processQueue.size() > 0 && processQueue.get(0).getRecipe(getLevelNonnull()) != null)
+		if(processQueue.size() > 0&&processQueue.get(0).getRecipe(getLevelNonnull())!=null)
 			spawnParticles(processQueue.get(0).getRecipe(getLevelNonnull()).input.getItems()[0]);
 	}
 
 	public void spawnParticles(ItemStack stack)
 	{
-		if (getLevel() instanceof ServerLevel serverLevel)
+		if(getLevel() instanceof ServerLevel serverLevel)
 		{
 			serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack),
-				getBlockPos().getX() + (getFacing().getAxis().equals(Axis.X) ? 0.5 : 0), getBlockPos().getY() + 2.125, getBlockPos().getZ() + 0.5 -(getFacing().getAxis().equals(Axis.X) ? 0.5 : 0),
-				8, 0, 0, 0, 0.0625);
+					getBlockPos().getX()+(getFacing().getAxis().equals(Axis.X)?0.5: 0), getBlockPos().getY()+2.125, getBlockPos().getZ()+0.5-(getFacing().getAxis().equals(Axis.X)?0.5: 0),
+					8, 0, 0, 0, 0.0625);
 			serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack),
-				getBlockPos().getX() + 0.5, getBlockPos().getY() + 2.125, getBlockPos().getZ() + 0.5,
-				8, 0, 0, 0, 0.0625);
+					getBlockPos().getX()+0.5, getBlockPos().getY()+2.125, getBlockPos().getZ()+0.5,
+					8, 0, 0, 0, 0.0625);
 			serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, stack),
-				getBlockPos().getX() + 1 - (getFacing().getAxis().equals(Axis.X) ? 0.5 : 0), getBlockPos().getY() + 2.125, getBlockPos().getZ() + 0.5 + (getFacing().getAxis().equals(Axis.X) ? 0.5 : 0),
-				8, 0, 0, 0, 0.0625);
+					getBlockPos().getX()+1-(getFacing().getAxis().equals(Axis.X)?0.5: 0), getBlockPos().getY()+2.125, getBlockPos().getZ()+0.5+(getFacing().getAxis().equals(Axis.X)?0.5: 0),
+					8, 0, 0, 0, 0.0625);
 		}
 	}
 
@@ -337,6 +338,13 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean shouldRenderAsActiveImpl()
+	{
+		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()
+				&&(!processQueue.isEmpty()||EventHandler.crusherMap.containsValue(this));
 	}
 
 	@Override
