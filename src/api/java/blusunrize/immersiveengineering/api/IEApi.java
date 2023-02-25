@@ -110,4 +110,9 @@ public class IEApi
 	{
 		return ModList.get().getModFileById(Lib.MODID).versionString();
 	}
+
+	public static ResourceLocation ieLoc(String path)
+	{
+		return new ResourceLocation(Lib.MODID, path);
+	}
 }
