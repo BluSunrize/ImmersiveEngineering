@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -77,8 +78,8 @@ public class ArcFurnaceRecipeManager implements IRecipeManager<ArcFurnaceRecipe>
 		final IngredientWithSize main = CrTIngredientUtil.getIngredientWithSize(mainIngredient);
 		final IngredientWithSize[] additivesWithSize = CrTIngredientUtil.getIngredientsWithSize(additives);
 
-		final ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(
-				resourceLocation, outputList, of(slag.getInternal()), List.of(), time, energy, main, additivesWithSize
+		final ArcFurnaceRecipe recipe = IEServerConfig.MACHINES.arcFurnaceConfig.apply(
+				new ArcFurnaceRecipe(resourceLocation, outputList, of(slag.getInternal()), List.of(), time, energy, main, additivesWithSize)
 		);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));

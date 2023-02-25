@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
@@ -120,6 +121,7 @@ public class RefineryRecipeManager implements IRecipeManager<RefineryRecipe>
 		final FluidTagInput tagInput2 = CrTIngredientUtil.getFluidTagInput(fluidInput2);
 
 		final RefineryRecipe recipe = new RefineryRecipe(resourceLocation, outputStack, tagInput1, tagInput2, catalyst.asVanillaIngredient(), energy);
+		recipe.modifyTimeAndEnergy(() -> 1, IEServerConfig.MACHINES.refineryConfig::get);
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, output));
 	}
 }

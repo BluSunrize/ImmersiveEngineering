@@ -14,11 +14,14 @@
     - There may be a new secret advancement too ;)
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
+- Add a bisexual pride shader (BluSunrize)
 - Fix some issues with models being mirrored (Malte)
 - Fix shaders and potion buckets not showing up in JEI (Malte)
 - Fix arc recycling accidentally modifying the empty ItemStack constant (Malte)
 - Fix tooltips on capacitors not showing energy stored (BluSunrize)
 - Cleanup and optimize Blueprint rendering (Malte)
+- Fix bucketwheel not querying block particles properly (Malte)
+- Fix config settings not being applied to crafttweaker recipes (BluSunrize)
 
 ##### Version 1.19.2-9.1.2-159
 - Fix broken villager workstations

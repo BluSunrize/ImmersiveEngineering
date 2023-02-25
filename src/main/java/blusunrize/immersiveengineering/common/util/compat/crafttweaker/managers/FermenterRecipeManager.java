@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
@@ -72,8 +73,8 @@ public class FermenterRecipeManager implements IRecipeManager<FermenterRecipe>
 		final FluidStack fluidStack = fluidOutput.getInternal();
 		final ItemStack outputItem = itemOutput.getInternal();
 
-		final FermenterRecipe recipe = new FermenterRecipe(
-				resourceLocation, fluidStack, IESerializableRecipe.of(outputItem), ingredient, energy
+		final FermenterRecipe recipe = IEServerConfig.MACHINES.fermenterConfig.apply(
+				new FermenterRecipe(resourceLocation, fluidStack, IESerializableRecipe.of(outputItem), ingredient, energy)
 		);
 		final String outputDescription = String.format("%s and %s", itemOutput.getCommandString(), fluidOutput.getCommandString());
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, outputDescription));

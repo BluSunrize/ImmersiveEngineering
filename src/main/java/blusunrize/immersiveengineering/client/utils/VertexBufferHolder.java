@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -22,20 +21,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.Map.Entry;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.FORGE)
 public class VertexBufferHolder implements IVertexBufferHolder
 {
 	private static final Lazy<Boolean> HAS_OPTIFINE = Lazy.of(() -> {
@@ -139,10 +131,9 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		renderer.render(builder, transform, light, overlay);
 	}
 
-	@SubscribeEvent
-	public static void afterTERRendering(RenderLevelStageEvent ev)
+	public static void afterTERRendering()
 	{
-		if(ev.getStage()!=Stage.AFTER_TRIPWIRE_BLOCKS||JOBS.isEmpty())
+		if(JOBS.isEmpty())
 			return;
 		for(Entry<RenderType, List<BufferedJob>> typeEntry : JOBS.entrySet())
 		{

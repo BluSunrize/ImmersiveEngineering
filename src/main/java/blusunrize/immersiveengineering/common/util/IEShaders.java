@@ -161,6 +161,7 @@ public class IEShaders
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(gaypride, "1_3", 0xff98e8e6));
 		final ShaderRegistryEntry lesbianpride = addShader("lesbianpride", 8, Rarity.EPIC, 0xffa50062, 0xffd462a5, 0xffff9b55, 0xffa50062, "1_2", true, 0xffd62900).setInfo("Pride", "Pride Flags", "lesbianpride");
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(lesbianpride, "whitestripe", 0xffffffff));
+		addShader("bipride", 8, Rarity.EPIC, 0xff0035a9, 0xff9c4e97, 0xffd70071, 0xff0035a9).setInfo("Pride", "Pride Flags", "bipride");
 		final ShaderRegistryEntry acepride = addShader("acepride", 8, Rarity.EPIC, 0xff510053, 0xffffffff, 0xff6c6c6c, 0xff6c6c6c, "1_2", true, 0xff000000).setInfo("Pride", "Pride Flags", "acepride");
 		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(acepride, "whitestripe", 0xff510053));
 	}
