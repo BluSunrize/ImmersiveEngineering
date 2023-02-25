@@ -335,10 +335,10 @@ public class ImmersiveEngineering
 						RevolverItem.SpecialRevolver revolver = gson.fromJson(je, RevolverItem.SpecialRevolver.class);
 						if(revolver!=null)
 						{
-							if(revolver.uuid!=null)
-								for(String uuid : revolver.uuid)
+							if(revolver.uuid()!=null)
+								for(String uuid : revolver.uuid())
 									RevolverItem.specialRevolvers.put(uuid, revolver);
-							RevolverItem.specialRevolversByTag.put(!revolver.tag.isEmpty()?revolver.tag: revolver.flavour, revolver);
+							RevolverItem.specialRevolversByTag.put(!revolver.tag().isEmpty()?revolver.tag(): revolver.flavour(), revolver);
 						}
 					} catch(Exception excepParse)
 					{

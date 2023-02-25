@@ -645,22 +645,14 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	public static final Multimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
 	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<>();
 
-	public static class SpecialRevolver
+	public record SpecialRevolver(
+			String[] uuid,
+			String tag,
+			String flavour,
+			HashMap<String, Object> baseUpgrades,
+			String[] renderAdditions
+	)
 	{
-		public final String[] uuid;
-		public final String tag;
-		public final String flavour;
-		public final HashMap<String, Object> baseUpgrades;
-		public final String[] renderAdditions;
-
-		public SpecialRevolver(String[] uuid, String tag, String flavour, HashMap<String, Object> baseUpgrades, String[] renderAdditions)
-		{
-			this.uuid = uuid;
-			this.tag = tag;
-			this.flavour = flavour;
-			this.baseUpgrades = baseUpgrades;
-			this.renderAdditions = renderAdditions;
-		}
 	}
 
 	@ParametersAreNonnullByDefault
@@ -793,5 +785,4 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			return perkCompound;
 		}
 	}
-
 }
