@@ -40,8 +40,6 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 	{
 		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
 		final State state = helper.getState();
-		matrixStack.pushPose();
-		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
 		float[] shift = new float[state.processor.getQueueSize()];
 
@@ -72,7 +70,9 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 				}
 		}
 
-		rotateForFacing(matrixStack, helper.getContext().getLevel().getOrientation().front());
+		matrixStack.pushPose();
+		matrixStack.translate(.5, .5, .5);
+		rotateForFacingNoCentering(matrixStack, helper.getContext().getLevel().getOrientation().front());
 		matrixStack.pushPose();
 		matrixStack.translate(0, -piston*.6875f, 0);
 		matrixStack.pushPose();
