@@ -131,10 +131,7 @@ public class ItemOverlayUtils
 											  BiConsumer<VertexConsumer, IFluidHandlerItem> additionalRender)
 	{
 		VertexConsumer builder = getHudElementsBuilder(buffer);
-		int rightOffset = 0;
-		if(ClientUtils.mc().options.showSubtitles)
-			rightOffset += 100;
-		float dx = scaledWidth-rightOffset-16;
+		float dx = scaledWidth-16;
 		float dy = scaledHeight;
 		transform.pushPose();
 		transform.translate(dx, dy, 0);
