@@ -123,7 +123,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		if(rot%45 > 40)
 			target = Math.round(rot/360f*8)%8;
 
-		if(state.rsState.isEnabled(context))
+		if(!state.rsState.isEnabled(context))
 		{
 			state.active = false;
 			return;
@@ -172,10 +172,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 				wheelChanged = true;
 			}
 			if(wheelChanged)
-			{
-				wheelCtx.markMasterDirty();
-				wheelCtx.requestMasterBESync();
-			}
+				wheelCtx.markDirtyAndSync();
 		}
 	}
 
