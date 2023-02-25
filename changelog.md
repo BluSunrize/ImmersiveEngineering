@@ -11,6 +11,7 @@
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
 - Add a bisexual pride shader (BluSunrize)
+- Add the Rock Softening Acid upgrade for the Mining Drill, giving it Fortune 3! (BluSunrize)
 - Increase the speed of rockcutter and grinding disk (BluSunrize)
 - Fix some issues with models being mirrored (Malte)
 - Fix shaders and potion buckets not showing up in JEI (Malte)

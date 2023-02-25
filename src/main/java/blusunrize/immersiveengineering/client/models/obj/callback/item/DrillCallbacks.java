@@ -50,7 +50,8 @@ public class DrillCallbacks implements ItemCallback<Key>
 				headTexture,
 				upgrades.getInt("damage"),
 				upgrades.getBoolean("waterproof"),
-				upgrades.getBoolean("oiled")
+				upgrades.getBoolean("oiled"),
+				upgrades.getBoolean("fortune")
 		);
 	}
 
@@ -73,6 +74,8 @@ public class DrillCallbacks implements ItemCallback<Key>
 			return key.waterproof();
 		if(group.equals("upgrade_speed"))
 			return key.oiled();
+		if(group.equals("upgrade_fortune"))
+			return key.fortune();
 		if(key.headTexture()!=null)
 		{
 			if(group.equals("drill_head"))
@@ -129,12 +132,12 @@ public class DrillCallbacks implements ItemCallback<Key>
 			rotation = new Quaternion(angle, 0, 0, false);
 		else if("upgrade_damage1".equals(groups.get(0)))
 		{
-			translation = new Vector3f(.441f, 0, 0);
+			translation = new Vector3f(.46875f, 0, 0);
 			rotation = new Quaternion(0, angle, 0, false);
 		}
 		else if("upgrade_damage3".equals(groups.get(0)))
 		{
-			translation = new Vector3f(.441f, 0, 0);
+			translation = new Vector3f(.46875f, 0, 0);
 			rotation = new Quaternion(0, 0, angle, false);
 		}
 		return new Transformation(translation, rotation, null, null);
@@ -150,7 +153,7 @@ public class DrillCallbacks implements ItemCallback<Key>
 						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
 	}
 
-	public record Key(ResourceLocation headTexture, int damage, boolean waterproof, boolean oiled)
+	public record Key(ResourceLocation headTexture, int damage, boolean waterproof, boolean oiled, boolean fortune)
 	{
 	}
 }
