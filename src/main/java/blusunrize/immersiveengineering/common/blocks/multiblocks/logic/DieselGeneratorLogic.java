@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
+import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -52,10 +53,14 @@ import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class DieselGeneratorLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
+	private static final List<BlockPos> ENERGY_OUTPUTS = IntStream.range(0, 3)
+			.mapToObj(i -> new BlockPos(i, 2, 4))
+			.toList();
 	private static final Vec3 SMOKE_POSITION = new Vec3(2.1875, 3.25, 2.1875);
 	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 2);
 	private static final CapabilityPosition FLUID_INPUT_A = new CapabilityPosition(0, 0, 4, RelativeBlockFace.RIGHT);
@@ -162,8 +167,14 @@ public class DieselGeneratorLogic
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(FLUID_INPUT_A.equalsOrNullFace(position)||FLUID_INPUT_B.equalsOrNullFace(position))
-			return ctx.getState().fluidCap.cast(ctx);
+		if(cap==ForgeCapabilities.FLUID_HANDLER)
+			if(FLUID_INPUT_A.equalsOrNullFace(position)||FLUID_INPUT_B.equalsOrNullFace(position))
+				return ctx.getState().fluidCap.cast(ctx);
+		if(cap==ForgeCapabilities.ENERGY)
+			if(position.side()==null||(
+					position.side()==RelativeBlockFace.UP&&ENERGY_OUTPUTS.contains(position.posInMultiblock())
+			))
+				return ctx.getState().energyView.cast(ctx);
 		return LazyOptional.empty();
 	}
 
@@ -195,15 +206,15 @@ public class DieselGeneratorLogic
 		private final BiFunction<Level, Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
 		private final List<CapabilityReference<IEnergyStorage>> energyOutputs;
 		private final StoredCapability<IFluidHandler> fluidCap = new StoredCapability<>(tank);
+		private final StoredCapability<IEnergyStorage> energyView;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			ImmutableList.Builder<CapabilityReference<IEnergyStorage>> outputs = ImmutableList.builder();
-			for(int i = 0; i < 3; ++i)
-				outputs.add(ctx.getCapabilityAt(
-						ForgeCapabilities.ENERGY, new BlockPos(i, 2, 4), RelativeBlockFace.DOWN
-				));
+			for(BlockPos pos : ENERGY_OUTPUTS)
+				outputs.add(ctx.getCapabilityAt(ForgeCapabilities.ENERGY, pos, RelativeBlockFace.DOWN));
 			this.energyOutputs = outputs.build();
+			this.energyView = new StoredCapability<>(NullEnergyStorage.INSTANCE);
 		}
 
 		@Override
