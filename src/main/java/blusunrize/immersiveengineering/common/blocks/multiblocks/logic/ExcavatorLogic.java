@@ -114,7 +114,11 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		final BucketWheelLogic.State wheel = wheelHelper.getState();
 		final IMultiblockContext<BucketWheelLogic.State> wheelCtx = wheelHelper.getContext();
 		adjustWheel(level.getOrientation(), wheelCtx.getLevel().getOrientation(), wheel);
-		wheel.active = state.active;
+		if(wheel.active!=state.active)
+		{
+			wheel.active = state.active;
+			wheelCtx.markDirtyAndSync();
+		}
 		rot = wheel.rotation;
 		if(rot%45 > 40)
 			target = Math.round(rot/360f*8)%8;
