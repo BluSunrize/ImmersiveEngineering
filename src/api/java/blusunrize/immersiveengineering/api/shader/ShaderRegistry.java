@@ -154,16 +154,16 @@ public class ShaderRegistry
 	public static ShaderCaseRevolver registerShader_Revolver(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, int colourBlade, String additionalTexture, int colourAddtional)
 	{
 		List<ShaderLayer> list = new ArrayList();
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_grip"), colour0));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"), colour1));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_0"), colourBlade));
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_1_"+overlayType), colour2));
+		list.add(new ShaderLayer(ieLoc("item/revolvers/shaders/revolver_grip"), colour0));
+		list.add(new ShaderLayer(ieLoc("item/revolvers/shaders/revolver_0"), colour1));
+		list.add(new ShaderLayer(ieLoc("item/revolvers/shaders/revolver_0"), colourBlade));
+		list.add(new ShaderLayer(ieLoc("item/revolvers/shaders/revolver_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("item/revolvers/shaders/revolver_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
-		list.add(new ShaderLayer(new ResourceLocation("immersiveengineering:revolvers/shaders/revolver_uncoloured"), 0xffffffff));
+		list.add(new ShaderLayer(ieLoc("item/revolvers/shaders/revolver_uncoloured"), 0xffffffff));
 		ShaderCaseRevolver shader = new ShaderCaseRevolver(list);
 		return registerShaderCase(name, shader, rarity);
 	}
