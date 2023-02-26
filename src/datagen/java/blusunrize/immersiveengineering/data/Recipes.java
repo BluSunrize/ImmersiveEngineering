@@ -2613,6 +2613,16 @@ public class Recipes extends RecipeProvider
 				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_drill", has(Tools.DRILL))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_DAMAGE))));
+		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_FORTUNE))
+				.pattern("ai ")
+				.pattern("iai")
+				.pattern("ppc")
+				.define('a', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('p', MetalDevices.FLUID_PIPE)
+				.define('c', Ingredients.COMPONENT_STEEL)
+				.unlockedBy("has_drill", has(Tools.DRILL))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_FORTUNE))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_CAPACITY))
 				.pattern("pi ")
 				.pattern("idi")

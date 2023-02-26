@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.4.0-pre
+##### Version 1.18.2-8.4.0-161
 - Overhaul the Accumulator Backpack (BluSunrize)
     - Now uses a fancy OBJ model
     - It's now crafted as an empty frame, to put an accumulator in!
@@ -11,6 +11,8 @@
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
 - Add a bisexual pride shader (BluSunrize)
+- Add the Rock Softening Acid upgrade for the Mining Drill, giving it Fortune 3! (BluSunrize)
+- Increase the speed of rockcutter and grinding disk (BluSunrize)
 - Fix some issues with models being mirrored (Malte)
 - Fix shaders and potion buckets not showing up in JEI (Malte)
 - Fix arc recycling accidentally modifying the empty ItemStack constant (Malte)
@@ -18,6 +20,8 @@
 - Cleanup and optimize Blueprint rendering (Malte)
 - Fix bucketwheel not querying block particles properly (Malte)
 - Fix config settings not being applied to crafttweaker recipes (BluSunrize)
+- Fix tool GUIs being shifted ro the left by subtitles, this isn't necessary since we ove subtitles upwards instead (BluSunrize)
+- Fix crusher not animating or making noise when crushing entities (BluSunrize)
 
 ##### Version 1.19.2-9.1.2-159
 - Fix broken villager workstations
