@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -88,14 +89,15 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 				TextureAtlasSprite sprite = ClientUtils.getSprite(
 						instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
 				);
-				TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
+				DyeColor dyeColour = instance.getDyeColour();
+				TextureAtlasSprite spriteColour = dyeColour!=null?ClientUtils.getSprite(getColouredStripesTexture()):null;
 				walls = new boolean[]{
 						renderBottomWall(facing, ConveyorWall.LEFT, context),
 						renderBottomWall(facing, ConveyorWall.RIGHT, context)
 				};
 				baseModel.addAll(ModelConveyor.getBaseConveyor(
 						facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
-						new boolean[]{true, false}, spriteColour, instance.getDyeColour()
+						new boolean[]{true, false}, spriteColour, dyeColour
 				));
 			}
 		}
