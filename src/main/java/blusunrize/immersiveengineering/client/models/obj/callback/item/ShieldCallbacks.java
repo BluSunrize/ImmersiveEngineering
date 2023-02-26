@@ -17,8 +17,12 @@ import com.mojang.math.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+
+import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType.*;
 
 public class ShieldCallbacks implements ItemCallback<Key>
 {
@@ -46,24 +50,32 @@ public class ShieldCallbacks implements ItemCallback<Key>
 	{
 		if(holder==null||!holder.isUsingItem())
 			return;
+		boolean leftHand = cameraTransformType==FIRST_PERSON_LEFT_HAND||cameraTransformType==THIRD_PERSON_LEFT_HAND;
+		boolean rightHand = cameraTransformType==FIRST_PERSON_RIGHT_HAND||cameraTransformType==THIRD_PERSON_RIGHT_HAND;
+		if(!leftHand&&!rightHand)
+			return;
+		boolean leftIsMain = holder.getMainArm()==HumanoidArm.LEFT;
+		InteractionHand inHand = (leftIsMain==leftHand)?InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND;
+		if(holder.getUsedItemHand()!=inHand)
+			return;
 
-		if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
+		if(cameraTransformType==FIRST_PERSON_RIGHT_HAND)
 		{
 			mat.mulPose(new Quaternion(-.15F, 0, 0, false));
 			mat.translate(-.25, .5, -.4375);
 		}
-		else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)
+		else if(cameraTransformType==THIRD_PERSON_RIGHT_HAND)
 		{
 			mat.mulPose(new Quaternion(0.52359F, 0, 0, false));
 			mat.mulPose(new Quaternion(0, 0.78539F, 0, false));
 			mat.translate(.40625, -.125, -.125);
 		}
-		if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
+		if(cameraTransformType==FIRST_PERSON_LEFT_HAND)
 		{
 			mat.mulPose(new Quaternion(.15F, 0, 0, false));
 			mat.translate(-.25, .375, .4375);
 		}
-		else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
+		else if(cameraTransformType==THIRD_PERSON_LEFT_HAND)
 		{
 			mat.mulPose(new Quaternion(-0.52359F, 0, 0, false));
 			mat.mulPose(new Quaternion(0, -0.78539F, 0, false));
