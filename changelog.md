@@ -1,3 +1,10 @@
+##### Version 1.19.2-9.2.0-pre
+- All features from 8.4.0
+- Change mineral veins to generate without needing to tag a biome for them (Malte)
+- Add a warning when using a version of Optifine that breaks the PoseStack (Malte)
+- Fix rendering issues with Railgun, Chemthrower and Shield (Malte)
+- Fix IO buttons in the circuit table (Malte)
+
 ##### Version 1.18.2-8.4.0-161
 - Overhaul the Accumulator Backpack (BluSunrize)
     - Now uses a fancy OBJ model
