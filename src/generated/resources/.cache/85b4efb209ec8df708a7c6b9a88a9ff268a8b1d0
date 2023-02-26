@@ -1,4 +1,4 @@
-// 1.19.2	2023-02-26T17:17:37.6433008	Item models
+// 1.19.2	2023-02-26T17:43:55.2372053	Item models
 88d3c4ffa914af5a3f1ace93ca44a7a9de73bd8f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 9ccc4d7a0d7b18dbb71d95f07395ccc9db5454d5 assets/immersiveengineering/models/item/advanced_blast_furnace.json
 52c332b23e9b84d62d49c7b4e70bfd1193037cc7 assets/immersiveengineering/models/item/alloy_smelter.json
@@ -197,7 +197,7 @@ c4249ceac6b65155e6fee34f5e0364a19d0f1c21 assets/immersiveengineering/models/item
 909b4e4377424ac2b78d87d1fd9b1d87051aa621 assets/immersiveengineering/models/item/plate_uranium.json
 227cbaeaec9e31a1efe547a7fff4c6197bd573c9 assets/immersiveengineering/models/item/potion.json
 3139d82011bddab9415183706c0db790b260c40a assets/immersiveengineering/models/item/potion_bucket.json
-ef558a8a3681ce2132e8ec04743efcafea07aaae assets/immersiveengineering/models/item/powerpack.json
+75381ceba50e19830c2b2bc59e51e26bf7a49b48 assets/immersiveengineering/models/item/powerpack.json
 448d65f1b4635cb8d9cdd7fd65c808912d1ed45c assets/immersiveengineering/models/item/railgun.json
 d6b152718c76ab533946443ef52f338db54cd473 assets/immersiveengineering/models/item/raw_aluminum.json
 5d5f4c6211e386b99fb49e92b2ec3f50fcd1ecaf assets/immersiveengineering/models/item/raw_lead.json
@@ -208,7 +208,7 @@ b1a836c5afda05a8f8b4ac13ed7ea90d8eee6f4e assets/immersiveengineering/models/item
 bbb1d0a59a1e060d7c5d88397ab0c1fcb017ec3b assets/immersiveengineering/models/item/redstone_acid_bucket.json
 d1eb928deb033bcd631cb248b5e3b9a60133eebc assets/immersiveengineering/models/item/redstone_breaker.json
 2864bdb5086b4df0aae54aeb7c3bc1676ea62aae assets/immersiveengineering/models/item/refinery.json
-c6738835749800b4d107b0488139493edf4b9fe7 assets/immersiveengineering/models/item/revolver.json
+e436d3bbaa8ceeff429a8dccc5a56a00781893b4 assets/immersiveengineering/models/item/revolver.json
 33d279a2d5e6463704ea78587300db74978801be assets/immersiveengineering/models/item/rockcutter.json
 bc2321c610f4902d0ea49cf78d768a30e6c5f0eb assets/immersiveengineering/models/item/sample_drill.json
 9462332eae24acf44afb0824343dfafa26b3d47c assets/immersiveengineering/models/item/sawblade.json

@@ -277,6 +277,7 @@ public class ItemModels extends TRSRItemModelProvider
 		ieObjBuilder(Weapons.REVOLVER, modLoc("item/revolver.obj.ie"))
 				.dynamic(true)
 				.callback(RevolverCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(modLoc("item/revolver"));
 		ieObjBuilder(Tools.DRILL, modLoc("item/drill/drill_diesel.obj.ie"))
@@ -301,6 +302,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/chemthrower"));
 		ieObjBuilder(Misc.POWERPACK, rl("item/powerpack.obj"))
 				.callback(PowerpackCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(rl("item/powerpack"));
 
