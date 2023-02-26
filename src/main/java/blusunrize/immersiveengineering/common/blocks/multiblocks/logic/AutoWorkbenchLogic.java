@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager.SimpleComparatorValue;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -148,6 +150,13 @@ public class AutoWorkbenchLogic
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType)
 	{
 		return AutoWorkbenchShapes.SHAPE_GETTER;
+	}
+
+	public static ComparatorManager<State> makeComparator()
+	{
+		return ComparatorManager.makeSimple(
+				SimpleComparatorValue.inventory(State::getInventory, FIRST_INPUT_SLOT, NUM_INPUT_SLOTS), REDSTONE_POS
+		);
 	}
 
 	public static class State implements IMultiblockState, ProcessContextInWorld<BlueprintCraftingRecipe>

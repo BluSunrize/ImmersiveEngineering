@@ -100,6 +100,7 @@ public class IEMultiblockLogic
 			.structure(() -> IEMultiblocks.AUTO_WORKBENCH)
 			.redstone(s -> s.rsState, AutoWorkbenchLogic.REDSTONE_POS)
 			.gui(IEMenuTypes.AUTO_WORKBENCH)
+			.comparator(AutoWorkbenchLogic.makeComparator())
 			.build();
 
 	public static final MultiblockRegistration<BottlingMachineLogic.State> BOTTLING_MACHINE = metal(new BottlingMachineLogic(), "bottling_machine")
