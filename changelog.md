@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.4.0-pre
+##### Version 1.18.2-8.4.0-161
 - Overhaul the Accumulator Backpack (BluSunrize)
     - Now uses a fancy OBJ model
     - It's now crafted as an empty frame, to put an accumulator in!
