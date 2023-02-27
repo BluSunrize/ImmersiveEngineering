@@ -220,7 +220,9 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		/**
 		 * Sides
 		 */
-		vertices = new Vec3[]{new Vec3(0, 0, 1-length), new Vec3(0, 0, 1), new Vec3(0, .125f, 1), new Vec3(0, .125f, 1-length)};
+		double cornerOff0 = corners[0]?0:.0625;
+		double cornerOff1 = corners[1]?0:.0625;
+		vertices = new Vec3[]{new Vec3(0, 0, 1-length+cornerOff1), new Vec3(0, 0, 1-cornerOff0), new Vec3(0, .125f, 1-cornerOff0), new Vec3(0, .125f, 1-length+cornerOff1)};
 		for(int i = 0; i < 4; i++)
 			if((i==0||i==3)?conDir==ConveyorDirection.UP: conDir==ConveyorDirection.DOWN)
 				vertices[i] = vertices[i].add(0, length, 0);
