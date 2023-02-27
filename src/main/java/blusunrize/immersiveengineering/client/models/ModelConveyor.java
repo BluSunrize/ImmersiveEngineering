@@ -157,7 +157,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 	{
 		List<BakedQuad> quads = new ArrayList<>();
 
-		Vec3[] vertices = {new Vec3(.0625f, 0, 1-length), new Vec3(.0625f, 0, 1), new Vec3(.9375f, 0, 1), new Vec3(.9375f, 0, 1-length)};
+		Vec3[] vertices = {new Vec3(.0625, 0, 1-length), new Vec3(.0625, 0, 1), new Vec3(.9375, 0, 1), new Vec3(.9375, 0, 1-length)};
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(rl_casing[0]);
 		TextureAtlasSprite tex_casing1 = ClientUtils.getSprite(rl_casing[1]);
 		TextureAtlasSprite tex_casing2 = ClientUtils.getSprite(rl_casing[2]);
@@ -192,11 +192,11 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor, new double[]{0, length*16, 16, 0}, colour, false));
 		if(corners[0])
 		{
-			vertices = new Vec3[]{new Vec3(0, .1875f, .9375f), new Vec3(0, .1875f, 1), new Vec3(.0625, .1875f, 1), new Vec3(.0625, .1875f, .9375f)};
+			vertices = new Vec3[]{new Vec3(0, .1875, .9375), new Vec3(0, .1875, 1), new Vec3(.0625, .1875, 1), new Vec3(.0625, .1875, .9375)};
 			//Shift if up/down
 			for(int i = 0; i < 4; i++)
 				vertices[i] = vertices[i].add(0,
-						i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0),
+						i==0||i==3?(conDir==ConveyorDirection.UP?.0625: conDir==ConveyorDirection.DOWN?length-.0625: 0): (conDir==ConveyorDirection.DOWN?length: 0),
 						0);
 			//Draw top casing back
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), topTexture, new double[]{0, 1, 1, 0}, topColor, false));
@@ -206,10 +206,10 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		}
 		if(corners[1])
 		{
-			vertices = new Vec3[]{new Vec3(0, .1875f, 1-length), new Vec3(0, .1875f, 1.0625f-length), new Vec3(.0625, .1875f, 1.0625f-length), new Vec3(.0625, .1875f, 1-length)};
+			vertices = new Vec3[]{new Vec3(0, .1875, 1-length), new Vec3(0, .1875, 1.0625-length), new Vec3(.0625, .1875, 1.0625-length), new Vec3(.0625, .1875, 1-length)};
 			//Shift if up/down
 			for(int i = 0; i < 4; i++)
-				vertices[i] = vertices[i].add(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
+				vertices[i] = vertices[i].add(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625: conDir==ConveyorDirection.DOWN?.0625: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
 			//Draw top casing front
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), topTexture, new double[]{0, 1, 1, 0}, topColor, false));
 			for(int i = 0; i < 4; i++)
@@ -222,7 +222,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		 */
 		double cornerOff0 = corners[0]?0:.0625;
 		double cornerOff1 = corners[1]?0:.0625;
-		vertices = new Vec3[]{new Vec3(0, 0, 1-length+cornerOff1), new Vec3(0, 0, 1-cornerOff0), new Vec3(0, .125f, 1-cornerOff0), new Vec3(0, .125f, 1-length+cornerOff1)};
+		vertices = new Vec3[]{new Vec3(0, 0, 1-length+cornerOff1), new Vec3(0, 0, 1-cornerOff0), new Vec3(0, .125, 1-cornerOff0), new Vec3(0, .125, 1-length+cornerOff1)};
 		for(int i = 0; i < 4; i++)
 			if((i==0||i==3)?conDir==ConveyorDirection.UP: conDir==ConveyorDirection.DOWN)
 				vertices[i] = vertices[i].add(0, length, 0);
@@ -241,22 +241,22 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		for(int i = 0; i < 4; i++)
 		{
 			Vec3 v = vertices[i];
-			vertices[i] = new Vec3(v.x, v.y+((i==0||i==1)?.125f: .0625f), v.z);
+			vertices[i] = new Vec3(v.x, v.y+((i==0||i==1)?.125: .0625), v.z);
 		}
 		/**
 		 * Corners
 		 */
 		if(corners[0])
 		{
-			vertices = new Vec3[]{new Vec3(0, .125f, .9375f), new Vec3(0, .125f, 1), new Vec3(0, .1875f, 1), new Vec3(0, .1875f, .9375f)};
+			vertices = new Vec3[]{new Vec3(0, .125, .9375), new Vec3(0, .125, 1), new Vec3(0, .1875, 1), new Vec3(0, .1875, .9375)};
 			if(conDir!=ConveyorDirection.HORIZONTAL)
 				for(int i = 0; i < 4; i++)
-					vertices[i] = vertices[i].add(0, i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0), 0);
+					vertices[i] = vertices[i].add(0, i==0||i==3?(conDir==ConveyorDirection.UP?.0625: conDir==ConveyorDirection.DOWN?length-.0625: 0): (conDir==ConveyorDirection.DOWN?length: 0), 0);
 			//Back left
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing1, new double[]{0, 2, 1, 3}, colour, false));
 			for(int i = 0; i < vertices.length; i++)
 			{
-				vertices[i] = vertices[i].add(.0625f, 0, 0);
+				vertices[i] = vertices[i].add(.0625, 0, 0);
 			}
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing1, new double[]{0, 2, 1, 3}, colour, true));
 			//Shift right
@@ -269,21 +269,21 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing1, new double[]{0, 2, 1, 3}, colour, true));
 			for(int i = 0; i < vertices.length; i++)
 			{
-				vertices[i] = vertices[i].add(-.0625f, 0, 0);
+				vertices[i] = vertices[i].add(-.0625, 0, 0);
 			}
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing1, new double[]{0, 2, 1, 3}, colour, false));
 		}
 		if(corners[1])
 		{
-			vertices = new Vec3[]{new Vec3(0, .125f, 1-length), new Vec3(0, .125f, 1.0625f-length), new Vec3(0, .1875f, 1.0625f-length), new Vec3(0, .1875f, 1-length)};
+			vertices = new Vec3[]{new Vec3(0, .125, 1-length), new Vec3(0, .125, 1.0625-length), new Vec3(0, .1875, 1.0625-length), new Vec3(0, .1875, 1-length)};
 			if(conDir!=ConveyorDirection.HORIZONTAL)
 				for(int i = 0; i < 4; i++)
-					vertices[i] = vertices[i].add(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
+					vertices[i] = vertices[i].add(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625: conDir==ConveyorDirection.DOWN?.0625: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
 			//Front left
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
 			for(int i = 0; i < vertices.length; i++)
 			{
-				vertices[i] = vertices[i].add(.0625f, 0, 0);
+				vertices[i] = vertices[i].add(.0625, 0, 0);
 			}
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
 			//Shift right
@@ -296,7 +296,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, true));
 			for(int i = 0; i < vertices.length; i++)
 			{
-				vertices[i] = vertices[i].add(-.0625f, 0, 0);
+				vertices[i] = vertices[i].add(-.0625, 0, 0);
 			}
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing0, new double[]{0, 15, 1, 16}, colour, false));
 		}
@@ -305,7 +305,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		/**
 		 * Front & Back
 		 */
-		vertices = new Vec3[]{new Vec3(.0625f, 0, 1-length), new Vec3(.0625f, .125f, 1-length), new Vec3(.9375f, .125f, 1-length), new Vec3(.9375f, 0, 1-length)};
+		vertices = new Vec3[]{new Vec3(.0625, 0, 1-length), new Vec3(.0625, .125, 1-length), new Vec3(.9375, .125, 1-length), new Vec3(.9375, 0, 1-length)};
 		//Shift if up/down
 		if(conDir==ConveyorDirection.UP)
 			for(int i = 0; i < vertices.length; i++)
@@ -315,7 +315,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_conveyor, new double[]{1, frontUMax+2, 15, frontUMax}, colour, false));
 		//Expand to side and up
 		for(int i = 0; i < 4; i++)
-			vertices[i] = new Vec3(vertices[i].x() < .5f?0: 1, vertices[i].y(), vertices[i].z);
+			vertices[i] = new Vec3(vertices[i].x() < .5?0: 1, vertices[i].y(), vertices[i].z);
 		//Draw front casing
 		quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 2, 16, 0}, colour, false));
 		if(corners[1])
@@ -330,14 +330,14 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{15, 3, 16, 2}, colour, false));
 
 			for(int i = 0; i < vertices.length; i++)
-				vertices[i] = vertices[i].add(0, (conDir==ConveyorDirection.UP?-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0), .0625f);
+				vertices[i] = vertices[i].add(0, (conDir==ConveyorDirection.UP?-.0625: conDir==ConveyorDirection.DOWN?.0625: 0), .0625);
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{15, 3, 16, 2}, colour, true));
 			for(int i = 0; i < 4; i++)
 				vertices[i] = vertices[i].subtract(.9375, 0, 0);
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing, tex_casing2, new double[]{0, 3, 1, 2}, colour, true));
 		}
 
-		vertices = new Vec3[]{new Vec3(.0625f, 0, 1), new Vec3(.0625f, .125f, 1), new Vec3(.9375f, .125f, 1), new Vec3(.9375f, 0, 1)};
+		vertices = new Vec3[]{new Vec3(.0625, 0, 1), new Vec3(.0625, .125, 1), new Vec3(.9375, .125, 1), new Vec3(.9375, 0, 1)};
 		//Shift if up/down
 		if(conDir==ConveyorDirection.DOWN)
 			for(int i = 0; i < vertices.length; i++)
@@ -347,7 +347,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_conveyor, new double[]{1, 0, 15, 2}, colour, true));
 		//Expand to side and up
 		for(int i = 0; i < 4; i++)
-			vertices[i] = new Vec3(vertices[i].x() < .5f?0: 1, vertices[i].y(), vertices[i].z);
+			vertices[i] = new Vec3(vertices[i].x() < .5?0: 1, vertices[i].y(), vertices[i].z);
 		//Draw back casing
 		quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_casing2, new double[]{0, 0, 16, 2}, colour, true));
 		if(corners[0])
@@ -362,7 +362,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_casing2, new double[]{15, 2, 16, 3}, colour, true));
 
 			for(int i = 0; i < vertices.length; i++)
-				vertices[i] = vertices[i].add(0, conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?-.0625f: 0, -.0625f);
+				vertices[i] = vertices[i].add(0, conDir==ConveyorDirection.UP?.0625: conDir==ConveyorDirection.DOWN?-.0625: 0, -.0625);
 			quads.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertices), facing.getOpposite(), tex_casing2, new double[]{15, 2, 16, 3}, colour, false));
 			for(int i = 0; i < 4; i++)
 				vertices[i] = vertices[i].subtract(.9375, 0, 0);
@@ -372,29 +372,29 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		/**
 		 * Walls
 		 */
-		float wallLength = length-.125f;
+		double wallLength = length-.125;
 		vertices = new Vec3[]{
-				new Vec3(0, .1875f, .9375f-wallLength),
-				new Vec3(0, .1875f, .9375f),
-				new Vec3(.0625f, .1875f, .9375f),
-				new Vec3(.0625f, .1875f, .9375f-wallLength)
+				new Vec3(0, .1875, .9375-wallLength),
+				new Vec3(0, .1875, .9375),
+				new Vec3(.0625, .1875, .9375),
+				new Vec3(.0625, .1875, .9375-wallLength)
 		};
 		Vec3[] vertices2 = new Vec3[]{
-				new Vec3(0, .125f, .9375f-wallLength),
-				new Vec3(0, .125f, .9375f),
-				new Vec3(0, .1875f, .9375f),
-				new Vec3(0, .1875f, .9375f-wallLength)
+				new Vec3(0, .125, .9375-wallLength),
+				new Vec3(0, .125, .9375),
+				new Vec3(0, .1875, .9375),
+				new Vec3(0, .1875, .9375-wallLength)
 		};
 		Vec3[] vertices3 = new Vec3[]{
-				new Vec3(.0625f, .125f, .9375f-wallLength),
-				new Vec3(.0625f, .125f, .9375f),
-				new Vec3(.0625f, .1875f, .9375f),
-				new Vec3(.0625f, .1875f, .9375f-wallLength)
+				new Vec3(.0625, .125, .9375-wallLength),
+				new Vec3(.0625, .125, .9375),
+				new Vec3(.0625, .1875, .9375),
+				new Vec3(.0625, .1875, .9375-wallLength)
 		};
 		for(int i = 0; i < 4; i++)
 			if(conDir!=ConveyorDirection.HORIZONTAL)
 			{
-				float f = (i==0||i==3)?(conDir==ConveyorDirection.UP?length-.0625f: .0625f): (conDir==ConveyorDirection.UP?.0625f: length-.0625f);
+				double f = (i==0||i==3)?(conDir==ConveyorDirection.UP?length-.0625: .0625): (conDir==ConveyorDirection.UP?.0625: length-.0625);
 				vertices[i] = vertices[i].add(0, f, 0);
 				vertices2[i] = vertices2[i].add(0, f, 0);
 				vertices3[i] = vertices3[i].add(0, f, 0);
@@ -408,9 +408,9 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		}
 		for(int i = 0; i < 4; i++)
 		{
-			vertices[i] = vertices[i].add(.9375f, 0, 0);
-			vertices2[i] = vertices2[i].add(.9375f, 0, 0);
-			vertices3[i] = vertices3[i].add(.9375f, 0, 0);
+			vertices[i] = vertices[i].add(.9375, 0, 0);
+			vertices2[i] = vertices2[i].add(.9375, 0, 0);
+			vertices3[i] = vertices3[i].add(.9375, 0, 0);
 		}
 		//Draw right walls
 		if(walls[1])
