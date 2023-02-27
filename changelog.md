@@ -3,6 +3,10 @@
 - Add recipes to cut wooden slabs on the sawmill (BluSunrize)
 - Change mineral veins to generate without needing to tag a biome for them (Malte)
 - Add a warning when using a version of Optifine that breaks the PoseStack (Malte)
+- Change Revolvers to trigger Sculk sensors! (BluSunrize)
+    - By default, it uses the event for fired projectiles
+    - If your revolver has the "Noise" perk of -60% or better, it will not trigger any events
+    - If your revolver has the "Noise" perk with a positive value, the sensors will treat it like an explosion instead 
 - Fix rendering issues with Railgun, Chemthrower and Shield (Malte)
 - Fix IO buttons in the circuit table (Malte)
 - Fix conveyor models to work properly with stained glass, eliminate clipping and fix depthbuffer issues (BluSunrize)

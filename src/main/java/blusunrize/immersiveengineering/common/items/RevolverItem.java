@@ -66,6 +66,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
@@ -380,6 +381,13 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								if(sound==null)
 									sound = IESounds.revolverFire.get();
 								world.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
+								// Revolvers with more than 60% noise reduction do not trigger sculk sensors
+								if(noise > .2f)
+								{
+									// anything louder than default is considered an explosion
+									GameEvent eventTriggered = noise > 0.5?GameEvent.EXPLODE:GameEvent.PROJECTILE_SHOOT;
+									world.gameEvent(eventTriggered, player.position(), GameEvent.Context.of(player));
+								}
 							}
 							else
 								world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1f, 1f);
