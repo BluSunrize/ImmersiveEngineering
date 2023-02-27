@@ -131,7 +131,7 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 		else
 		{
 			boolean straightInput = VerticalConveyor.isInwardConveyor(blockEntity, facing.getOpposite());
-			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .9375f, .75f), new Vec3(1, 1, 1), matrix, facing, getSprite, colour));
+			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.0625, .9375f, .75f), new Vec3(.9375, 1, .9375), matrix, facing, getSprite, colour));
 			if(!straightInput)
 				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .9375f), new Vec3(1, 1f, 1), matrix, facing, getSprite, colour));
 			else//has direct input, needs a cutout
