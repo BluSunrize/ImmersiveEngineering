@@ -992,6 +992,16 @@ public class Recipes extends RecipeProvider
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_stairs"));
 			}
+			// Stairs
+			if(wood.getSlab()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getSlab(), 2))
+						.addInput(wood.getPlank())
+						.setEnergy(800);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_slab"));
+			}
 		}
 		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 4))
 				.addInput(Items.BOOKSHELF)
