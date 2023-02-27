@@ -1,9 +1,11 @@
 ##### Version 1.19.2-9.2.0-pre
 - All features from 8.4.0
+- Add recipes to cut wooden slabs on the sawmill (BluSunrize)
 - Change mineral veins to generate without needing to tag a biome for them (Malte)
 - Add a warning when using a version of Optifine that breaks the PoseStack (Malte)
 - Fix rendering issues with Railgun, Chemthrower and Shield (Malte)
 - Fix IO buttons in the circuit table (Malte)
+- Fix conveyor models to work properly with stained glass, eliminate clipping and fix depthbuffer issues (BluSunrize)
 
 ##### Version 1.18.2-8.4.0-161
 - Overhaul the Accumulator Backpack (BluSunrize)
