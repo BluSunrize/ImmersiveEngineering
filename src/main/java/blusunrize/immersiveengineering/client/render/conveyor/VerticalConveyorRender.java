@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
@@ -75,7 +77,7 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context, @Nullable RenderType renderType)
 	{
 		VerticalConveyor instance = context.instance();
 		boolean[] walls = {true, true};
@@ -90,18 +92,20 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 						instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
 				);
 				DyeColor dyeColour = instance.getDyeColour();
-				TextureAtlasSprite spriteColour = dyeColour!=null?ClientUtils.getSprite(getColouredStripesTexture()):null;
+				TextureAtlasSprite spriteColour = dyeColour!=null?ClientUtils.getSprite(getColouredStripesTexture()): null;
 				walls = new boolean[]{
 						renderBottomWall(facing, ConveyorWall.LEFT, context),
 						renderBottomWall(facing, ConveyorWall.RIGHT, context)
 				};
-				baseModel.addAll(ModelConveyor.getBaseConveyor(
-						facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
-						new boolean[]{true, false}, spriteColour, dyeColour
-				));
+				if(renderType==null||renderType==RenderType.cutout())
+					baseModel.addAll(ModelConveyor.getBaseConveyor(
+							facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
+							new boolean[]{true, false}, spriteColour, dyeColour
+					));
 			}
 		}
-		addCoverQuads(baseModel, context, walls);
+		if(renderType==null||renderType==RenderType.translucent())
+			addCoverQuads(baseModel, context, walls);
 		return baseModel;
 	}
 

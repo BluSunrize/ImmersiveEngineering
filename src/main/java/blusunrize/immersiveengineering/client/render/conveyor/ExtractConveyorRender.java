@@ -11,6 +11,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ExtractConv
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -18,6 +19,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
@@ -29,8 +31,11 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<ExtractConveyor> context)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<ExtractConveyor> context, @Nullable RenderType renderType)
 	{
+		if(renderType!=null&&renderType!=RenderType.cutout())
+			return super.modifyQuads(baseModel, context, renderType);
+
 		final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/metal/storage_steel"));
 		final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/turntable_bottom"));
 		final TextureAtlasSprite texture_curtain = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/stripcurtain"));
@@ -92,9 +97,7 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.203125f+off, .1875f, .09375f), new Vec3(.296875f+off, .625f, .125f), matrix, facing, vertexTransformer, (facing1) -> texture_curtain, colour));
 		}
 
-		super.modifyQuads(baseModel, context);
-
-		return baseModel;
+		return super.modifyQuads(baseModel, context, renderType);
 	}
 
 	@Override

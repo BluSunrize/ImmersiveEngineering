@@ -81,9 +81,13 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_full")
 	};
 
-	private final Cache<Object, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
-			.maximumSize(100)
-			.build();
+	private final Map<RenderType, Cache<Object, List<BakedQuad>>> modelCache = new HashMap<>();
+	{
+		modelCache.put(RenderType.translucent(), CacheBuilder.newBuilder().maximumSize(100).build());
+		modelCache.put(RenderType.cutout(), CacheBuilder.newBuilder().maximumSize(100).build());
+		modelCache.put(null, CacheBuilder.newBuilder().maximumSize(100).build());
+	}
+
 	private final IConveyorType<T> type;
 	private final Block fallbackCover;
 
@@ -103,6 +107,8 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			@Nullable RenderType layer
 	)
 	{
+		if(side!=null)
+			return List.of();
 		Direction facing = Direction.NORTH;
 		T conveyor = null;
 		if(blockState!=null)
@@ -120,7 +126,8 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		IConveyorModelRender<T> clientData = ClientConveyors.getData(type);
 		IConveyorModelRender.RenderContext<T> context = new RenderContext<>(type, conveyor, fallbackCover);
 		Object key = clientData.getModelCacheKey(context);
-		List<BakedQuad> cachedQuads = modelCache.getIfPresent(key);
+		Cache<Object, List<BakedQuad>> layerCache = modelCache.get(layer);
+		List<BakedQuad> cachedQuads = layerCache.getIfPresent(key);
 		if(cachedQuads==null)
 		{
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
@@ -136,9 +143,10 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			TextureAtlasSprite tex_conveyor_colour = null;
 			if(conveyor!=null&&(colourStripes = conveyor.getDyeColour())!=null)
 				tex_conveyor_colour = ClientUtils.getSprite(clientData.getColouredStripesTexture());
-			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
-			cachedQuads = clientData.modifyQuads(cachedQuads, context);
-			modelCache.put(key, ImmutableList.copyOf(cachedQuads));
+			if(layer==null||layer==RenderType.cutout())
+				cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
+			cachedQuads = clientData.modifyQuads(cachedQuads, context, layer);
+			layerCache.put(key, ImmutableList.copyOf(cachedQuads));
 		}
 		return ImmutableList.copyOf(cachedQuads);
 	}
@@ -543,7 +551,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 	@Override
 	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
 	{
-		return ChunkRenderTypeSet.of(RenderType.cutout());
+		return ChunkRenderTypeSet.of(RenderType.cutout(), RenderType.translucent());
 	}
 
 	public record RawConveyorModel(IConveyorType<?> type) implements IUnbakedGeometry<RawConveyorModel>

@@ -8,12 +8,14 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConvey
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.common.util.Utils.withCoordinate;
@@ -34,8 +36,10 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 	public static ResourceLocation texture_casing = new ResourceLocation("immersiveengineering:block/conveyor/split_wall");
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<SplitConveyor> context)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<SplitConveyor> context, @Nullable RenderType renderType)
 	{
+		if(renderType!=null&&renderType!=RenderType.cutout())
+			return super.modifyQuads(baseModel, context, renderType);
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(texture_casing);
 		Direction facing = context!=null?context.getFacing(): Direction.NORTH;
 		Matrix4 matrix = new Matrix4(facing);
@@ -73,7 +77,6 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 				baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices3), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
-		super.modifyQuads(baseModel, context);
-		return baseModel;
+		return super.modifyQuads(baseModel, context, renderType);
 	}
 }
