@@ -388,6 +388,12 @@ public class Recipes extends RecipeProvider
 				.setTime(480)
 				.setRender(new ClocheRenderReference("generic", Blocks.BROWN_MUSHROOM))
 				.build(out, toRL("cloche/brown_mushroom"));
+		ClocheRecipeBuilder.builder(Items.MOSS_BLOCK)
+				.addInput(Items.MOSS_BLOCK)
+				.addSoil(Tags.Items.COBBLESTONE)
+				.setTime(1200)
+				.setRender(new ClocheRenderReference("generic", Blocks.MOSS_CARPET))
+				.build(out, toRL("cloche/moss"));
 	}
 
 	private void recipesBlueprint(@Nonnull Consumer<FinishedRecipe> out)

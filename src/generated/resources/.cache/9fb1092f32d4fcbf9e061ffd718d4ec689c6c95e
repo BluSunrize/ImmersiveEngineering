@@ -1,4 +1,4 @@
-// 1.19.2	2023-02-28T10:24:32.4864399	Recipes
+// 1.19.2	2023-02-28T17:33:06.637553	Recipes
 7ccf8b2f4f413f7667689450565e5430a943d23a data/immersiveengineering/advancements/recipes/decorations/crafting/torch.json
 b79e3d9e28de7d73e18625fac2456b738b168fc9 data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick.json
 d518ed26bb86cca14c1400daadb64610c935cafc data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick_from_slab.json
@@ -662,6 +662,7 @@ f18ba06489c51963baec0f4ebe0b32faac282362 data/immersiveengineering/recipes/cloch
 855d283a17114faf2eae79f739f4fbc9f13faea4 data/immersiveengineering/recipes/cloche/glow_berries.json
 b85dc775acff9495e52019aabf00fb0cb4261bc2 data/immersiveengineering/recipes/cloche/hemp.json
 0280ee782b33ea56e26774e55c252ae42ec710a8 data/immersiveengineering/recipes/cloche/melon.json
+0d600a324ebdc7791aef787419a77350d5feae5e data/immersiveengineering/recipes/cloche/moss.json
 b7bed7c154cd6683d90680c52de92e7d6106deb3 data/immersiveengineering/recipes/cloche/nether_wart.json
 ae3b887a30218382de3bfaecabd0a93ac091c5f0 data/immersiveengineering/recipes/cloche/potato.json
 5a8ef8a737fa728a55f9fadce57d6730a69fbb9b data/immersiveengineering/recipes/cloche/pumpkin.json
