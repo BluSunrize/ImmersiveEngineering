@@ -117,6 +117,9 @@
     }
   },
   "dynamic": true,
+  "layers": [
+    "translucent"
+  ],
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/revolver.obj.ie"
 }

@@ -1,0 +1,33 @@
+{
+  "type": "immersiveengineering:sawmill",
+  "energy": 1600,
+  "input": [
+    {
+      "item": "minecraft:mangrove_log"
+    },
+    {
+      "item": "minecraft:mangrove_wood"
+    }
+  ],
+  "result": {
+    "count": 6,
+    "item": "minecraft:mangrove_planks"
+  },
+  "secondaries": [
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": true
+    },
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": false
+    }
+  ],
+  "stripped": {
+    "item": "minecraft:stripped_mangrove_log"
+  }
+}

@@ -1,8 +1,21 @@
-##### Version 1.19.3-9.2.0-160
-- First alpha release for 1.19.3
-- All features from 8.4.0 (not yet released)
+##### Version 1.19.2-9.2.0-162
+- All features from 8.4.0
+- Add recipes to cut wooden slabs on the sawmill (BluSunrize)
+- Change mineral veins to generate without needing to tag a biome for them (Malte)
+- Add a warning when using a version of Optifine that breaks the PoseStack (Malte)
+- Change Revolvers to trigger Sculk sensors! (BluSunrize)
+    - By default, it uses the event for fired projectiles
+    - If your revolver has the "Noise" perk of -60% or better, it will not trigger any events
+    - If your revolver has the "Noise" perk with a positive value, the sensors will treat it like an explosion instead
+- Add recipes for new 1,19 items (BluSunrize)
+    - Mangroves can go in the sawmill
+    - Mud can be made in the bottling machine
+    - Moss can be grown on cobblestone in the cloche
+- Fix rendering issues with Railgun, Chemthrower and Shield (Malte)
+- Fix IO buttons in the circuit table (Malte)
+- Fix conveyor models to work properly with stained glass, eliminate clipping and fix depthbuffer issues (BluSunrize)
 
-##### Version 1.18.2-8.4.0-pre
+##### Version 1.18.2-8.4.0-161
 - Overhaul the Accumulator Backpack (BluSunrize)
     - Now uses a fancy OBJ model
     - It's now crafted as an empty frame, to put an accumulator in!
@@ -15,6 +28,8 @@
 - Change IEOBJs to be used from the API (Malte)
 - Change recipe display in the manual to allow specifying IDs instead of outputs (Malte)
 - Add a bisexual pride shader (BluSunrize)
+- Add the Rock Softening Acid upgrade for the Mining Drill, giving it Fortune 3! (BluSunrize)
+- Increase the speed of rockcutter and grinding disk (BluSunrize)
 - Fix some issues with models being mirrored (Malte)
 - Fix shaders and potion buckets not showing up in JEI (Malte)
 - Fix arc recycling accidentally modifying the empty ItemStack constant (Malte)
@@ -22,6 +37,12 @@
 - Cleanup and optimize Blueprint rendering (Malte)
 - Fix bucketwheel not querying block particles properly (Malte)
 - Fix config settings not being applied to crafttweaker recipes (BluSunrize)
+- Fix tool GUIs being shifted ro the left by subtitles, this isn't necessary since we ove subtitles upwards instead (BluSunrize)
+- Fix crusher not animating or making noise when crushing entities (BluSunrize)
+
+##### Version 1.19.3-9.2.0-160
+- First alpha release for 1.19.3
+- All features from 8.4.0 (not yet released)
 
 ##### Version 1.19.2-9.1.2-159
 - Fix broken villager workstations

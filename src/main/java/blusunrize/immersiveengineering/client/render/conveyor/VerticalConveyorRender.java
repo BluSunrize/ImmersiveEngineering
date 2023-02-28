@@ -19,10 +19,12 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBas
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,6 +32,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
@@ -82,7 +85,7 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context, @Nullable RenderType renderType)
 	{
 		VerticalConveyor instance = context.instance();
 		boolean[] walls = {true, true};
@@ -96,18 +99,21 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 				TextureAtlasSprite sprite = ClientUtils.getSprite(
 						instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
 				);
-				TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
+				DyeColor dyeColour = instance.getDyeColour();
+				TextureAtlasSprite spriteColour = dyeColour!=null?ClientUtils.getSprite(getColouredStripesTexture()): null;
 				walls = new boolean[]{
 						renderBottomWall(facing, ConveyorWall.LEFT, context),
 						renderBottomWall(facing, ConveyorWall.RIGHT, context)
 				};
-				baseModel.addAll(ModelConveyor.getBaseConveyor(
-						facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
-						new boolean[]{true, false}, spriteColour, instance.getDyeColour()
-				));
+				if(renderType==null||renderType==RenderType.cutout())
+					baseModel.addAll(ModelConveyor.getBaseConveyor(
+							facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
+							new boolean[]{true, false}, spriteColour, dyeColour
+					));
 			}
 		}
-		addCoverQuads(baseModel, context, walls);
+		if(renderType==null||renderType==RenderType.translucent())
+			addCoverQuads(baseModel, context, walls);
 		return baseModel;
 	}
 
@@ -133,7 +139,7 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 		else
 		{
 			boolean straightInput = VerticalConveyor.isInwardConveyor(blockEntity, facing.getOpposite());
-			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .9375f, .75f), new Vec3(1, 1, 1), matrix, facing, getSprite, colour));
+			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.0625, .9375f, .75f), new Vec3(.9375, 1, .9375), matrix, facing, getSprite, colour));
 			if(!straightInput)
 				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .9375f), new Vec3(1, 1f, 1), matrix, facing, getSprite, colour));
 			else//has direct input, needs a cutout

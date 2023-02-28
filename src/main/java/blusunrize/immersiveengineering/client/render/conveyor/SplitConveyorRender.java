@@ -16,12 +16,14 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConvey
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.common.util.Utils.withCoordinate;
@@ -42,8 +44,10 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 	public static ResourceLocation texture_casing = new ResourceLocation("immersiveengineering:block/conveyor/split_wall");
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<SplitConveyor> context)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<SplitConveyor> context, @Nullable RenderType renderType)
 	{
+		if(renderType!=null&&renderType!=RenderType.cutout())
+			return super.modifyQuads(baseModel, context, renderType);
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(texture_casing);
 		Direction facing = context!=null?context.getFacing(): Direction.NORTH;
 		Matrix4 matrix = new Matrix4(facing);
@@ -58,8 +62,9 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 		vertices = new Vec3[]{new Vec3(.0625f, .1875f, 0), new Vec3(.0625f, .1875f, 1), new Vec3(.9375f, .1875f, 1), new Vec3(.9375f, .1875f, 0)};
 		baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
 
+		// replace front with casing
 		vertices = new Vec3[]{new Vec3(.0625f, 0, 0), new Vec3(.0625f, .1875f, 0), new Vec3(.9375f, .1875f, 0), new Vec3(.9375f, 0, 0)};
-		baseModel.set(15, ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), facing, ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
+		baseModel.set(5, ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), facing, ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
 
 		vertices = new Vec3[]{new Vec3(.0625f, .125f, 0), new Vec3(.0625f, .1875f, 0), new Vec3(.9375f, .1875f, 0), new Vec3(.9375f, .125f, 0)};
 		Vec3[] vertices2 = new Vec3[]{new Vec3(.5f, .125f, 0), new Vec3(.5f, .125f, .5f), new Vec3(.5f, .1875f, .5f), new Vec3(.5f, .1875f, 0)};
@@ -81,7 +86,6 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 				baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices3), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
-		super.modifyQuads(baseModel, context);
-		return baseModel;
+		return super.modifyQuads(baseModel, context, renderType);
 	}
 }

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "type": "immersiveengineering:fluid",
+      "amount": 1000,
+      "tag": "forge:redstone_acid"
+    },
+    "c": {
+      "item": "immersiveengineering:component_steel"
+    },
+    "i": {
+      "tag": "forge:plates/steel"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    }
+  },
+  "pattern": [
+    "ai ",
+    "iai",
+    "ppc"
+  ],
+  "result": {
+    "item": "immersiveengineering:toolupgrade_drill_fortune"
+  }
+}

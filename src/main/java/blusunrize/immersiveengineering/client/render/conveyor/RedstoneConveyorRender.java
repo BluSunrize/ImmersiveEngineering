@@ -19,12 +19,14 @@ import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmode
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -73,8 +75,10 @@ public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<RedstoneConveyor> context)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<RedstoneConveyor> context, @Nullable RenderType renderType)
 	{
+		if(renderType!=null&&renderType!=RenderType.cutout())
+			return super.modifyQuads(baseModel, context, renderType);
 		boolean panelRight = context.instance()==null||context.instance().isPanelRight();
 		Direction facing = context.getFacing();
 		BakedModel model = ROTATED_MODELS.get(panelRight?facing: facing.getOpposite());

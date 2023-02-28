@@ -37,6 +37,10 @@
     "type": "crafting",
     "recipe": "crafting/toolupgrade_drill_damage"
   },
+  "drill_fortune_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_drill_fortune"
+  },
   "drill_capacity_recipe": {
     "type": "crafting",
     "recipe": "crafting/toolupgrade_drill_capacity"

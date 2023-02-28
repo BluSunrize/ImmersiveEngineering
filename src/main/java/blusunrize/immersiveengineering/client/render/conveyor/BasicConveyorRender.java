@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 
+import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -58,9 +60,10 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorMod
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context, @Nullable RenderType renderType)
 	{
-		addCoverToQuads(baseModel, context);
+		if(renderType==null||renderType==RenderType.translucent())
+			addCoverToQuads(baseModel, context);
 		return baseModel;
 	}
 

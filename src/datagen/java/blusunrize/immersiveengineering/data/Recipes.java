@@ -377,6 +377,12 @@ public class Recipes extends RecipeProvider
 				.setTime(480)
 				.setRender(new ClocheRenderReference("generic", Blocks.BROWN_MUSHROOM))
 				.build(out, toRL("cloche/brown_mushroom"));
+		ClocheRecipeBuilder.builder(Items.MOSS_BLOCK)
+				.addInput(Items.MOSS_BLOCK)
+				.addSoil(Tags.Items.COBBLESTONE)
+				.setTime(1200)
+				.setRender(new ClocheRenderReference("generic", Blocks.MOSS_CARPET))
+				.build(out, toRL("cloche/moss"));
 	}
 
 	private void recipesBlueprint(@Nonnull Consumer<FinishedRecipe> out)
@@ -782,6 +788,10 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.SPONGE)
 				.addFluidTag(FluidTags.WATER, FluidType.BUCKET_VOLUME)
 				.build(out, toRL("bottling/sponge"));
+		BottlingMachineRecipeBuilder.builder(Items.MUD)
+				.addInput(Items.DIRT)
+				.addFluidTag(FluidTags.WATER, quarter_bucket)
+				.build(out, toRL("bottling/mud"));
 		BottlingMachineRecipeBuilder.builder(Items.EXPOSED_COPPER)
 				.addInput(Items.COPPER_BLOCK)
 				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
@@ -980,6 +990,16 @@ public class Recipes extends RecipeProvider
 				if(wood.produceSawdust())
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_stairs"));
+			}
+			// Stairs
+			if(wood.getSlab()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getSlab(), 2))
+						.addInput(wood.getPlank())
+						.setEnergy(800);
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_slab"));
 			}
 		}
 		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 4))
@@ -2602,6 +2622,16 @@ public class Recipes extends RecipeProvider
 				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_drill", has(Tools.DRILL))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_DAMAGE))));
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_FORTUNE))
+				.pattern("ai ")
+				.pattern("iai")
+				.pattern("ppc")
+				.define('a', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('p', MetalDevices.FLUID_PIPE)
+				.define('c', Ingredients.COMPONENT_STEEL)
+				.unlockedBy("has_drill", has(Tools.DRILL))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_FORTUNE))));
 		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_CAPACITY))
 				.pattern("pi ")
 				.pattern("idi")

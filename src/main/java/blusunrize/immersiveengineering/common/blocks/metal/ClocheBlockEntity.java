@@ -133,16 +133,14 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		particles.get().clientTick();
 		ItemStack seed = inventory.get(SLOT_SEED);
 		ItemStack soil = inventory.get(SLOT_SOIL);
-		if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
+		if(renderActive)
 		{
 			ClocheRecipe recipe = cachedRecipe.get();
 			if(recipe!=null&&fertilizerAmount > 0)
 			{
-				if(renderGrowth < recipe.getTime(seed, soil)+IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod)
-				{
-					renderGrowth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
-					fertilizerAmount--;
-				}
+				double addGrow = IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
+				if(renderGrowth < recipe.getTime(seed, soil)+addGrow)
+					renderGrowth += addGrow;
 				else
 					renderGrowth = 0;
 				if(ApiUtils.RANDOM.nextInt(8)==0)
@@ -306,12 +304,12 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		// loadAllItems skips empty items, so if a slot was emptied it won't be properly synced without the fill call
 		Collections.fill(inventory, ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(nbt, inventory);
+		fertilizerAmount = nbt.getInt("fertilizerAmount");
+		fertilizerMod = nbt.getFloat("fertilizerMod");
 		if(!descPacket)
 		{
 			EnergyHelper.deserializeFrom(energyStorage, nbt);
 			tank.readFromNBT(nbt.getCompound("tank"));
-			fertilizerAmount = nbt.getInt("fertilizerAmount");
-			fertilizerMod = nbt.getFloat("fertilizerMod");
 			growth = nbt.getFloat("growth");
 		}
 		renderBB = null;
@@ -322,13 +320,13 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	{
 		nbt.putInt("dummy", dummy);
 		ContainerHelper.saveAllItems(nbt, inventory);
+		nbt.putInt("fertilizerAmount", fertilizerAmount);
+		nbt.putFloat("fertilizerMod", fertilizerMod);
 		if(!descPacket)
 		{
 			EnergyHelper.serializeTo(energyStorage, nbt);
 			CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
 			nbt.put("tank", tankTag);
-			nbt.putInt("fertilizerAmount", fertilizerAmount);
-			nbt.putFloat("fertilizerMod", fertilizerMod);
 			nbt.putFloat("growth", growth);
 		}
 	}

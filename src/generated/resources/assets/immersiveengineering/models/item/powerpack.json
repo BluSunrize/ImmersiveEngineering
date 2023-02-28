@@ -106,6 +106,9 @@
       ]
     }
   },
+  "layers": [
+    "translucent"
+  ],
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/powerpack.obj"
 }

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.tool.conveyor;
 
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -66,6 +67,15 @@ public interface IConveyorModelRender<T extends IConveyorBelt>
 		return ConveyorHandler.textureConveyorColour;
 	}
 
+	/**
+	 * @param renderType is null for item render
+	 */
+	default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context, @Nullable RenderType renderType)
+	{
+		return this.modifyQuads(baseModel, context);
+	}
+
+	@Deprecated
 	default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context)
 	{
 		return baseModel;
