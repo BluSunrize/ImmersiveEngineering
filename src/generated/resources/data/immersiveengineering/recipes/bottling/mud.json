@@ -1,0 +1,15 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 250,
+    "tag": "minecraft:water"
+  },
+  "input": {
+    "item": "minecraft:dirt"
+  },
+  "results": [
+    {
+      "item": "minecraft:mud"
+    }
+  ]
+}

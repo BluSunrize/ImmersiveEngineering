@@ -793,6 +793,10 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.SPONGE)
 				.addFluidTag(FluidTags.WATER, FluidType.BUCKET_VOLUME)
 				.build(out, toRL("bottling/sponge"));
+		BottlingMachineRecipeBuilder.builder(Items.MUD)
+				.addInput(Items.DIRT)
+				.addFluidTag(FluidTags.WATER, quarter_bucket)
+				.build(out, toRL("bottling/mud"));
 		BottlingMachineRecipeBuilder.builder(Items.EXPOSED_COPPER)
 				.addInput(Items.COPPER_BLOCK)
 				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
