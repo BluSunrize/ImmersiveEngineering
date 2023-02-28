@@ -1,4 +1,4 @@
-##### Version 1.19.2-9.2.0-pre
+##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0
 - Add recipes to cut wooden slabs on the sawmill (BluSunrize)
 - Change mineral veins to generate without needing to tag a biome for them (Malte)

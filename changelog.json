@@ -1,13 +1,14 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/immersive-engineering",
     "promos": {
-        "1.19.2-latest": "1.19.2-9.1.2-159",
-        "1.19.2-recommended": "1.19.2-9.1.2-159"
+        "1.19.2-latest": "1.19.2-9.2.0-162",
+        "1.19.2-recommended": "1.19.2-9.2.0-162"
     },
     "1.19.2": {
         "1.19.2-9.0.0-153": "- Initial release for 1.19.2",
         "1.19.2-9.1.0-156": "- All features from 8.3.0\n- Allow dynamic addition of Blueprints, not possible on 1.18 (Malte)\n- Fix issue with chat messages (Malte)\n- Fix sound attenuation issues (Malte)\n- Fix syncing of shaders on minecarts (Malte)\n- Fix render issues, and an optifine related crash (Malte)",
         "1.19.2-9.1.1-158": "- All features from 8.3.1\n- Fix crashing when opening the manual with Lithium installed (Malte)\n- Fix mineral veins only generating in the overworld (BluSunrize)\n- Fix switched filters and buffers in item batcher GUI (Malte)",
-        "1.19.2-9.1.2-159": "- Fix broken villager workstations"
+        "1.19.2-9.1.2-159": "- Fix broken villager workstations",
+        "1.19.2-9.2.0-162": "- All features from 8.4.0\n- Add recipes to cut wooden slabs on the sawmill (BluSunrize)\n- Change mineral veins to generate without needing to tag a biome for them (Malte)\n- Add a warning when using a version of Optifine that breaks the PoseStack (Malte)\n- Change Revolvers to trigger Sculk sensors! (BluSunrize)\n    - By default, it uses the event for fired projectiles\n    - If your revolver has the \"Noise\" perk of -60% or better, it will not trigger any events\n    - If your revolver has the \"Noise\" perk with a positive value, the sensors will treat it like an explosion instead\n- Add recipes for new 1,19 items (BluSunrize)\n    - Mangroves can go in the sawmill\n    - Mud can be made in the bottling machine\n    - Moss can be grown on cobblestone in the cloche\n- Fix rendering issues with Railgun, Chemthrower and Shield (Malte)\n- Fix IO buttons in the circuit table (Malte)\n- Fix conveyor models to work properly with stained glass, eliminate clipping and fix depthbuffer issues (BluSunrize)"
     }
 }
