@@ -1,10 +1,11 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/immersive-engineering",
     "promos": {
-        "1.19.3-latest": "1.19.3-9.2.0-160",
-        "1.19.3-recommended": "1.19.3-9.2.0-160"
+        "1.19.3-latest": "1.19.3-9.3.0-163",
+        "1.19.3-recommended": "1.19.3-9.3.0-163"
     },
     "1.19.3": {
-        "1.19.3-9.2.0-160": "- First alpha release for 1.19.3\n- All features from 8.4.0 (not yet released)"
+        "1.19.3-9.2.0-160": "- First alpha release for 1.19.3\n- All features from 8.4.0 (not yet released)",
+        "1.19.3-9.3.0-163": "- All features from 9.2.0\n- Fix cloche GUI not being transparent (BluSunrize)\n- Fix cloche farmland having a missing texture (BluSunrize)"
     }
 }

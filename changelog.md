@@ -1,4 +1,4 @@
-##### Version 1.19.2-9.3.0-pre
+##### Version 1.19.3-9.3.0-163
 - All features from 9.2.0
 - Fix cloche GUI not being transparent (BluSunrize)
 - Fix cloche farmland having a missing texture (BluSunrize)
