@@ -198,7 +198,7 @@ public class ModelUtils
 			quads = model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 		if(quads.isEmpty())//no quads at all D:
 			return null;
-		return quads.get(0).getSprite().atlasLocation();
+		return quads.get(0).getSprite().contents().name();
 	}
 
 	public static BakedQuad reverseOrder(BakedQuad in)
