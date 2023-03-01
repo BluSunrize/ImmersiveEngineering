@@ -104,6 +104,7 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	@Override
 	protected final void renderBg(@Nonnull PoseStack transform, float partialTicks, int x, int y)
 	{
+		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, background);
