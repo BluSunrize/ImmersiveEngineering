@@ -1,3 +1,8 @@
+##### Version 1.19.2-9.3.0-pre
+- All features from 9.2.0
+- Fix cloche GUI not being transparent (BluSunrize)
+- Fix cloche farmland having a missing texture (BluSunrize)
+
 ##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0
 - Add recipes to cut wooden slabs on the sawmill (BluSunrize)
