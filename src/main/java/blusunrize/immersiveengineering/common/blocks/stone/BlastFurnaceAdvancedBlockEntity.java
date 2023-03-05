@@ -217,9 +217,9 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 		{
 			if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
 				return inputHandler.getAndCast();
-			if(outputOffset.equals(posInMultiblock)&&facing==getFacing())
+			if(outputOffset.equals(posInMultiblock)&&facing==getFacing().getOpposite())
 				return outputHandler.getAndCast();
-			if(slagOutputOffset.equals(posInMultiblock)&&facing==getFacing().getOpposite())
+			if(slagOutputOffset.equals(posInMultiblock)&&facing==getFacing())
 				return slagHandler.getAndCast();
 		}
 		return super.getCapability(capability, facing);
