@@ -1002,7 +1002,7 @@ public class Recipes extends RecipeProvider
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_stairs"));
 			}
-			// Stairs
+			// Slabs
 			if(wood.getSlab()!=null)
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getSlab(), 2))
@@ -1012,6 +1012,21 @@ public class Recipes extends RecipeProvider
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_slab"));
 			}
+		}
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+		{
+			BlockEntry<IEBaseBlock> plank = WoodenDecoration.TREATED_WOOD.get(style);
+			SawmillRecipeBuilder.builder(new ItemStack(IEBlocks.TO_SLAB.get(plank.getId()), 2))
+					.addInput(plank.get())
+					.setEnergy(800)
+					.addSecondary(IETags.sawdust, false)
+					.build(out, toRL("sawmill/treated_wood_"+style.name().toLowerCase(Locale.ROOT)+"_slab"));
+
+			SawmillRecipeBuilder.builder(new ItemStack(plank.get(), 1))
+					.addInput(IEBlocks.TO_STAIRS.get(plank.getId()))
+					.setEnergy(1600)
+					.addSecondary(IETags.sawdust, false)
+					.build(out, toRL("sawmill/treated_wood_"+style.name().toLowerCase(Locale.ROOT)+"_stairs"));
 		}
 		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 4))
 				.addInput(Items.BOOKSHELF)
