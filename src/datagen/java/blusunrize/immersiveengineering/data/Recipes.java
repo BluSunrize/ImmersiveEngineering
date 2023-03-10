@@ -1351,25 +1351,59 @@ public class Recipes extends RecipeProvider
 				makeIngredient(IETags.fiberHemp),
 				makeIngredient(IETags.clay),
 				has(IETags.fiberHemp), out);
+		ShapedRecipeBuilder.shaped(StoneDecoration.HEMPCRETE_BRICK, 4)
+				.pattern("hh")
+				.pattern("hh")
+				.define('h', StoneDecoration.HEMPCRETE)
+				.unlockedBy("has_hempcrete", has(StoneDecoration.HEMPCRETE))
+				.save(out, toRL(toPath(StoneDecoration.HEMPCRETE_BRICK)));
+		ShapedRecipeBuilder.shaped(StoneDecoration.HEMPCRETE_PILLAR, 2)
+				.pattern("h")
+				.pattern("h")
+				.define('h', StoneDecoration.HEMPCRETE)
+				.unlockedBy("has_hempcrete", has(StoneDecoration.HEMPCRETE))
+				.save(out, toRL(toPath(StoneDecoration.HEMPCRETE_PILLAR)));
 		add3x3Conversion(StoneDecoration.COKE, IEItems.Ingredients.COAL_COKE, IETags.coalCoke, out);
 
 		addStairs(StoneDecoration.HEMPCRETE, out);
+		addStairs(StoneDecoration.HEMPCRETE_BRICK, out);
 		addStairs(StoneDecoration.CONCRETE, out);
+		addStairs(StoneDecoration.CONCRETE_BRICK, out);
 		addStairs(StoneDecoration.CONCRETE_TILE, out);
 		addStairs(StoneDecoration.CONCRETE_LEADED, out);
 
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_SHEET, 16, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_QUARTER, 4, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_THREE_QUARTER, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_TILE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_TILE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_LEADED.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_BRICK, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_CHISELED, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_PILLAR, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_BRICK, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_CHISELED, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_PILLAR, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_BRICK, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_CHISELED, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_PILLAR, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_TILE, out);
+
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(StoneDecoration.CONCRETE_BRICK), StoneDecoration.CONCRETE_BRICK_CRACKED, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL("smelting/"+toPath(StoneDecoration.CONCRETE_BRICK_CRACKED)));
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(StoneDecoration.HEMPCRETE_BRICK), StoneDecoration.HEMPCRETE_BRICK_CRACKED, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_hempcrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL("smelting/"+toPath(StoneDecoration.HEMPCRETE_BRICK_CRACKED)));
 
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.slag), StoneDecoration.SLAG_GLASS, 0.1f, standardSmeltingTime)
 				.unlockedBy("has_slag", has(IETags.slag))
@@ -1407,6 +1441,18 @@ public class Recipes extends RecipeProvider
 				.define('c', StoneDecoration.CONCRETE)
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL(toPath(StoneDecoration.CONCRETE_TILE)));
+		ShapedRecipeBuilder.shaped(StoneDecoration.CONCRETE_BRICK, 4)
+				.pattern("cc")
+				.pattern("cc")
+				.define('c', StoneDecoration.CONCRETE_TILE)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL(toPath(StoneDecoration.CONCRETE_BRICK)));
+		ShapedRecipeBuilder.shaped(StoneDecoration.CONCRETE_PILLAR, 2)
+				.pattern("c")
+				.pattern("c")
+				.define('c', StoneDecoration.CONCRETE_TILE)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL(toPath(StoneDecoration.CONCRETE_PILLAR)));
 		ShapelessRecipeBuilder.shapeless(StoneDecoration.CONCRETE_LEADED)
 				.requires(StoneDecoration.CONCRETE)
 				.requires(IETags.getTagsFor(EnumMetals.LEAD).plate)
