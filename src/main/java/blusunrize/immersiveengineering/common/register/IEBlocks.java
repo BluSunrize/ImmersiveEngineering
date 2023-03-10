@@ -60,6 +60,11 @@ public final class IEBlocks
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
 			.strength(2, 10);
+
+	private static final Supplier<Properties> STONE_DECO_BRICK_PROPS = () -> Block.Properties.of(Material.STONE)
+			.sound(SoundType.STONE)
+			.requiresCorrectToolForDrops()
+			.strength(1.75f, 10);
 	private static final Supplier<Properties> STONE_DECO_LEADED_PROPS = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
@@ -67,11 +72,11 @@ public final class IEBlocks
 	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
-			.strength(2, 10)
+			.strength(0.5f, 0.5f) //Glass & Tinted Glass are 0.3f,0.3f. These glasses are stronger, thus 0.5f,0.5f
 			.noOcclusion();
 	private static final Supplier<Properties> SHEETMETAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
-			.strength(3, 10);
+			.strength(2, 2); //Cauldron props are 2,2 and sheetmetal is similar
 	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES = () -> Block.Properties.of(Material.WOOD)
 			.sound(SoundType.WOOD)
 			.strength(2, 5);
@@ -102,12 +107,15 @@ public final class IEBlocks
 
 	public static final class StoneDecoration
 	{
-		public static final BlockEntry<IEBaseBlock> COKEBRICK = BlockEntry.simple("cokebrick", STONE_DECO_PROPS);
-		public static final BlockEntry<IEBaseBlock> BLASTBRICK = BlockEntry.simple("blastbrick", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> COKEBRICK = BlockEntry.simple("cokebrick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> BLASTBRICK = BlockEntry.simple("blastbrick", STONE_DECO_BRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> BLASTBRICK_REINFORCED = BlockEntry.simple(
-				"blastbrick_reinforced", STONE_DECO_PROPS
+				"blastbrick_reinforced", () -> Block.Properties.of(Material.STONE)
+						.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(2.5f, 12)
 		);
-		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple("coke", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple(
+				"coke", () -> Block.Properties.of(Material.STONE)
+				.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(5, 6));
 		public static final BlockEntry<SlagGravelBlock> SLAG_GRAVEL = new BlockEntry<>(
 				"slag_gravel",
 				() -> Block.Properties.of(Material.SAND, MaterialColor.STONE).strength(0.6F).sound(SoundType.GRAVEL),
@@ -130,7 +138,7 @@ public final class IEBlocks
 				"concrete_sprayed", () -> Block.Properties.of(Material.STONE)
 						.strength(.2F, 1)
 						.noOcclusion());
-		public static final BlockEntry<IEBaseBlock> ALLOYBRICK = BlockEntry.simple("alloybrick", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> ALLOYBRICK = BlockEntry.simple("alloybrick", STONE_DECO_BRICK_PROPS);
 
 		//TODO possibly merge into a single block with "arbitrary" height?
 		public static final BlockEntry<PartialConcreteBlock> CONCRETE_SHEET = new BlockEntry<>(
