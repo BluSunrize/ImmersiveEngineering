@@ -123,7 +123,15 @@ public final class IEBlocks
 		);
 
 		public static final BlockEntry<IEBaseBlock> HEMPCRETE = BlockEntry.simple("hempcrete", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_BRICK = BlockEntry.simple("hempcrete_brick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_BRICK_CRACKED = BlockEntry.simple("hempcrete_brick_cracked", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_CHISELED = BlockEntry.simple("hempcrete_chiseled", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_PILLAR = BlockEntry.simple("hempcrete_pillar", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> CONCRETE = BlockEntry.simple("concrete", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_BRICK = BlockEntry.simple("concrete_brick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_BRICK_CRACKED = BlockEntry.simple("concrete_brick_cracked", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_CHISELED = BlockEntry.simple("concrete_chiseled", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_PILLAR = BlockEntry.simple("concrete_pillar", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> CONCRETE_TILE = BlockEntry.simple("concrete_tile", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> CONCRETE_LEADED = BlockEntry.simple(
 				"concrete_leaded", STONE_DECO_LEADED_PROPS
@@ -652,13 +660,17 @@ public final class IEBlocks
 		registerSlab(StoneDecoration.BLASTBRICK_REINFORCED);
 		registerSlab(StoneDecoration.COKE);
 		registerSlab(StoneDecoration.HEMPCRETE);
+		registerSlab(StoneDecoration.HEMPCRETE_BRICK);
 		registerSlab(StoneDecoration.CONCRETE);
+		registerSlab(StoneDecoration.CONCRETE_BRICK);
 		registerSlab(StoneDecoration.CONCRETE_TILE);
 		registerSlab(StoneDecoration.CONCRETE_LEADED);
 		registerSlab(StoneDecoration.INSULATING_GLASS);
 		registerSlab(StoneDecoration.ALLOYBRICK);
 		registerStairs(StoneDecoration.HEMPCRETE);
+		registerStairs(StoneDecoration.HEMPCRETE_BRICK);
 		registerStairs(StoneDecoration.CONCRETE);
+		registerStairs(StoneDecoration.CONCRETE_BRICK);
 		registerStairs(StoneDecoration.CONCRETE_TILE);
 		registerStairs(StoneDecoration.CONCRETE_LEADED);
 
