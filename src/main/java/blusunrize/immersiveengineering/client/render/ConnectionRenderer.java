@@ -48,9 +48,9 @@ import java.util.concurrent.TimeUnit;
 
 public class ConnectionRenderer implements ResourceManagerReloadListener
 {
-	private static final LoadingCache<SegmentKey, RenderedSegment> SEGMENT_CACHE = CacheBuilder.newBuilder()
+	private static final LoadingCache<SectionKey, List<RenderedSegment>> SEGMENT_CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(120, TimeUnit.SECONDS)
-			.build(CacheLoader.from(ConnectionRenderer::renderSegmentForCache));
+			.build(CacheLoader.from(ConnectionRenderer::renderSectionForCache));
 	private static final ResettableLazy<TextureAtlasSprite> WIRE_TEXTURE = new ResettableLazy<>(
 			() -> Minecraft.getInstance().getModelManager()
 					.getAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -110,15 +110,16 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		int color = connection.type.getColour(connection);
 		double radius = connection.type.getRenderDiameter()/2;
 		int lastLight = 0;
-		for(int startPoint = toRender.firstPointToRender(); startPoint < toRender.lastPointToRender(); ++startPoint)
+		List<RenderedSegment> renderedSection = SEGMENT_CACHE.getUnchecked(new SectionKey(
+				radius, color, connection.getCatenaryData(), toRender.firstPointToRender(), toRender.lastPointToRender()
+		));
+		for(int i = 0; i < renderedSection.size(); ++i)
 		{
-			RenderedSegment renderedSegment = SEGMENT_CACHE.getUnchecked(
-					new SegmentKey(radius, color, connection.getCatenaryData(), startPoint)
-			);
-			if(startPoint==toRender.firstPointToRender())
-				lastLight = getLight(connection, renderedSegment.offsetStart, level);
-			int nextLight = getLight(connection, renderedSegment.offsetEnd, level);
-			renderedSegment.render(lastLight, nextLight, OverlayTexture.NO_OVERLAY, offX, offY, offZ, out);
+			RenderedSegment segment = renderedSection.get(i);
+			if(i==0)
+				lastLight = getLight(connection, segment.offsetStart, level);
+			int nextLight = getLight(connection, segment.offsetEnd, level);
+			segment.render(lastLight, nextLight, OverlayTexture.NO_OVERLAY, offX, offY, offZ, out);
 			lastLight = nextLight;
 		}
 	}
@@ -129,29 +130,38 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 			int light, int overlay
 	)
 	{
-		for(int i = 0; i < Connection.RENDER_POINTS_PER_WIRE; i++)
-			SEGMENT_CACHE.getUnchecked(new SegmentKey(radius, color, catenaryData, i))
-					.render(light, light, overlay, 0, 0, 0, out);
+		final List<RenderedSegment> section = SEGMENT_CACHE.getUnchecked(new SectionKey(
+				radius, color, catenaryData, 0, Connection.RENDER_POINTS_PER_WIRE
+		));
+		for(RenderedSegment renderedSegment : section)
+			renderedSegment.render(light, light, overlay, 0, 0, 0, out);
 	}
 
-	private static RenderedSegment renderSegmentForCache(SegmentKey key)
+	private static List<RenderedSegment> renderSectionForCache(SectionKey key)
 	{
 		CatenaryData catenaryData = key.catenaryShape();
-		List<Vertex> vertices = new ArrayList<>(4*4);
-		Vec3 start = key.catenaryShape().getRenderPoint(key.startIndex());
-		Vec3 end = key.catenaryShape().getRenderPoint(key.startIndex()+1);
-		Vec3 horNormal;
-		if(key.catenaryShape().isVertical())
-			horNormal = new Vec3(1, 0, 0);
-		else
-			horNormal = new Vec3(-catenaryData.delta().z, 0, catenaryData.delta().x).normalize();
-		Vec3 verticalNormal = start.subtract(end).cross(horNormal).normalize();
-		Vec3 horRadius = horNormal.scale(key.radius());
-		Vec3 verticalRadius = verticalNormal.scale(-key.radius());
+		List<RenderedSegment> segments = new ArrayList<>(key.lastIndex-key.firstIndex);
+		for(int startIndex = key.firstIndex; startIndex < key.lastIndex; ++startIndex)
+		{
+			List<Vertex> vertices = new ArrayList<>(4*4);
+			Vec3 start = key.catenaryShape().getRenderPoint(startIndex);
+			Vec3 end = key.catenaryShape().getRenderPoint(startIndex+1);
+			Vec3 horNormal;
+			if(key.catenaryShape().isVertical())
+				horNormal = new Vec3(1, 0, 0);
+			else
+				horNormal = new Vec3(-catenaryData.delta().z, 0, catenaryData.delta().x).normalize();
+			Vec3 verticalNormal = start.subtract(end).cross(horNormal).normalize();
+			Vec3 horRadius = horNormal.scale(key.radius());
+			Vec3 verticalRadius = verticalNormal.scale(-key.radius());
 
-		renderBidirectionalQuad(vertices, start, end, horRadius, key.color(), verticalNormal);
-		renderBidirectionalQuad(vertices, start, end, verticalRadius, key.color(), horNormal);
-		return new RenderedSegment(vertices, new Vec3i(start.x, start.y, start.z), new Vec3i(end.x, end.y, end.z));
+			renderBidirectionalQuad(vertices, start, end, horRadius, key.color(), verticalNormal);
+			renderBidirectionalQuad(vertices, start, end, verticalRadius, key.color(), horNormal);
+			segments.add(new RenderedSegment(
+					vertices, new Vec3i(start.x, start.y, start.z), new Vec3i(end.x, end.y, end.z)
+			));
+		}
+		return segments;
 	}
 
 	private static int getLight(Connection connection, Vec3i point, BlockAndTintGetter level)
@@ -194,7 +204,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		);
 	}
 
-	private record SegmentKey(double radius, int color, CatenaryData catenaryShape, int startIndex)
+	private record SectionKey(double radius, int color, CatenaryData catenaryShape, int firstIndex, int lastIndex)
 	{
 	}
 
