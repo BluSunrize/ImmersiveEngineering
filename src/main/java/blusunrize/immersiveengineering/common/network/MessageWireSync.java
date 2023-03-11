@@ -23,28 +23,31 @@ import net.minecraftforge.network.NetworkEvent.Context;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.common.network.MessageWireSync.Operation.ADD;
+import static blusunrize.immersiveengineering.common.network.MessageWireSync.Operation.REMOVE;
+
 public class MessageWireSync implements IMessage
 {
 	private final ConnectionPoint start;
 	private final ConnectionPoint end;
 	private final WireType type;
-	private final boolean added;
+	private final Operation operation;
 	private final Vec3 offsetStart;
 	private final Vec3 offsetEnd;
 
-	public MessageWireSync(Connection conn, boolean added)
+	public MessageWireSync(Connection conn, Operation operation)
 	{
 		this.start = conn.getEndA();
 		this.end = conn.getEndB();
 		this.type = conn.type;
-		this.added = added;
+		this.operation = operation;
 		this.offsetStart = conn.getEndAOffset();
 		this.offsetEnd = conn.getEndBOffset();
 	}
 
 	public MessageWireSync(FriendlyByteBuf buf)
 	{
-		added = buf.readBoolean();
+		operation = Operation.VALUES[buf.readByte()];
 		start = readConnPoint(buf);
 		end = readConnPoint(buf);
 		type = WireType.getValue(buf.readUtf(128));
@@ -66,7 +69,7 @@ public class MessageWireSync implements IMessage
 	@Override
 	public void toBytes(FriendlyByteBuf buf)
 	{
-		buf.writeBoolean(added);
+		buf.writeByte(operation.ordinal());
 		writeConnPoint(start, buf);
 		writeConnPoint(end, buf);
 		buf.writeUtf(type.getUniqueName());
@@ -78,21 +81,23 @@ public class MessageWireSync implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		context.get().enqueueWork(() -> {
-			WireLogger.logger.debug("Processing sync for connection from {} to {}, type {}, adding {}",
-					start, end, type, added);
+			WireLogger.logger.debug(
+					"Processing sync for connection from {} to {}, type {}, op {}",
+					start, end, type, operation.name()
+			);
 			Player player = ImmersiveEngineering.proxy.getClientPlayer();
 			Level w = player.level;
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			Connection connection = new Connection(type, start, end, offsetStart, offsetEnd);
-			if(added)
-				globalNet.addConnection(connection);
-			else if(globalNet.getNullableLocalNet(start)!=null&&globalNet.getNullableLocalNet(end)!=null)
+			if(operation!=ADD&&globalNet.getNullableLocalNet(start)!=null&&globalNet.getNullableLocalNet(end)!=null)
 			{
 				globalNet.removeConnection(connection);
 				removeProxyIfNoWires(start, globalNet);
 				removeProxyIfNoWires(end, globalNet);
 			}
+			if(operation!=REMOVE)
+				globalNet.addConnection(connection);
 			Set<SectionPos> sectionsToRerender = new ObjectArraySet<>();
 			WireUtils.forEachRenderPoint(connection, ($, $2, section) -> sectionsToRerender.add(section));
 			for(SectionPos section : sectionsToRerender)
@@ -107,5 +112,12 @@ public class MessageWireSync implements IMessage
 		IImmersiveConnectable iic = localNet.getConnector(point);
 		if(iic.isProxy()&&!WireUtils.hasAnyConnections(globalNet, iic))
 			globalNet.removeConnector(iic);
+	}
+
+	public enum Operation
+	{
+		ADD, REMOVE, UPDATE;
+
+		private static final Operation[] VALUES = values();
 	}
 }

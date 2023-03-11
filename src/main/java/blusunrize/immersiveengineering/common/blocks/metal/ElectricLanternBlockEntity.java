@@ -166,13 +166,15 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(!level.isClientSide)
+		{
 			setFacing(getFacing().getOpposite());
-		for(ConnectionPoint cp : getConnectionPoints())
-			for(Connection c : getLocalNet(cp.index()).getConnections(cp))
-				if(!c.isInternal())
-					globalNet.updateCatenaryData(c);
-		setChanged();
-		markContainingBlockForUpdate(getBlockState());
+			for(ConnectionPoint cp : getConnectionPoints())
+				for(Connection c : getLocalNet(cp.index()).getConnections(cp))
+					if(!c.isInternal())
+						globalNet.updateCatenaryData(c);
+			setChanged();
+			markContainingBlockForUpdate(getBlockState());
+		}
 		return true;
 	}
 
