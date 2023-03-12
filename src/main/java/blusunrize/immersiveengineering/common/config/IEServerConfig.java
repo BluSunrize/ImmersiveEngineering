@@ -657,4 +657,9 @@ public class IEServerConfig
 		ExcavatorHandler.mineralNoiseThreshold = IEServerConfig.MACHINES.excavator_theshold.get();
 		IEWorldGen.onConfigUpdated();
 	}
+
+	public static int getDuringStartup(IntValue value)
+	{
+		return value.getOrDefault();
+	}
 }

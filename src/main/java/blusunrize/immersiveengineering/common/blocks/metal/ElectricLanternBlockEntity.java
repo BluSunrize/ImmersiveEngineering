@@ -37,12 +37,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static blusunrize.immersiveengineering.common.config.IEServerConfig.getDuringStartup;
+
 public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity implements ISpawnInterdiction, IEServerTickableBE,
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
 	public int energyStorage = 0;
-	private final int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
-	private final int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
+	private final int energyDraw = getDuringStartup(IEServerConfig.MACHINES.lantern_energyDraw);
+	private final int maximumStorage = getDuringStartup(IEServerConfig.MACHINES.lantern_maximumStorage);
 
 	public ElectricLanternBlockEntity(BlockPos pos, BlockState state)
 	{
