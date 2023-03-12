@@ -11,15 +11,16 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -28,7 +29,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.awt.*;
@@ -195,8 +195,26 @@ public class BlueprintRenderer
 		return new BlueprintLines(wMax, complete_lines, complete_areaMap);
 	}
 
-	private static LinePainter makeQuadLinePainter(VertexConsumer out)
+	private static void putLineVertex(
+			PoseStack.Pose transform, VertexConsumer out, float x, float z, Vector3f normalUp, int light
+	)
 	{
+		Vector4f position = new Vector4f(x, z, 0, 1);
+		position.transform(transform.pose());
+		out.vertex(
+				position.x()/position.w(), position.y()/position.w(), position.z()/position.w(),
+				1, 1, 1, 1,
+				0.5f, 0.5f,
+				OverlayTexture.NO_OVERLAY,
+				light,
+				normalUp.x(), normalUp.y(), normalUp.z()
+		);
+	}
+
+	private static LinePainter makeQuadLinePainter(PoseStack.Pose transform, VertexConsumer out, int light)
+	{
+		Vector3f up = new Vector3f(0, 1, 0);
+		up.transform(transform.normal());
 		return (x0, y0, x1, y1, width) -> {
 			float deltaX = x1-x0;
 			float deltaY = y1-y0;
@@ -207,10 +225,10 @@ public class BlueprintRenderer
 			// Draw quad
 			final float offsetX = -deltaY*width;
 			final float offsetY = deltaX*width;
-			out.vertex(x0+offsetX, y0+offsetY, 0).endVertex();
-			out.vertex(x1+offsetX, y1+offsetY, 0).endVertex();
-			out.vertex(x1-offsetX, y1-offsetY, 0).endVertex();
-			out.vertex(x0-offsetX, y0-offsetY, 0).endVertex();
+			putLineVertex(transform, out, x0+offsetX, y0+offsetY, up, light);
+			putLineVertex(transform, out, x1+offsetX, y1+offsetY, up, light);
+			putLineVertex(transform, out, x1-offsetX, y1-offsetY, up, light);
+			putLineVertex(transform, out, x0-offsetX, y0-offsetY, up, light);
 		};
 	}
 
@@ -239,19 +257,12 @@ public class BlueprintRenderer
 
 		public void draw(PoseStack matrixStack, MultiBufferSource buffer, int packedLight)
 		{
-			draw(matrixStack, buffer.getBuffer(RENDER_TYPE), RENDER_TYPE.format(), packedLight);
+			draw(matrixStack, buffer.getBuffer(RENDER_TYPE), packedLight);
 		}
 
-		public void draw(PoseStack matrixStack, VertexConsumer baseBuilder, VertexFormat format, int packedLight)
+		public void draw(PoseStack matrixStack, VertexConsumer baseBuilder, int packedLight)
 		{
-			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack, format);
-			builder.defaultColor(255, 255, 255, 255);
-			builder.setLight(packedLight);
-			// The render type used for actual rendering sets the texture to our white texture, so any texture coord is
-			// good
-			builder.setUV(new Vec2(0.5f, 0.5f));
-			builder.setNormal(0, 1, 0);
-			LinePainter painter = makeQuadLinePainter(builder);
+			LinePainter painter = makeQuadLinePainter(matrixStack.last(), baseBuilder, packedLight);
 			for(Pair<Point, Point> line : lines)
 				painter.drawLine(line.getFirst().x, line.getFirst().y, line.getSecond().x, line.getSecond().y, 0.2f);
 
