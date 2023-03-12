@@ -136,7 +136,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 			else if(numRecipes==1) perRow = 2;
 			else if(numRecipes==2) perRow = 3;
 			else perRow = numRecipes;
-			transform.translate(0, .501, 0);
+			transform.translate(0, .502, 0);
 			transform.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
 			transform.mulPose(new Quaternion(new Vector3f(0, 0, 1), -22.5f, true));
 			transform.translate(0.39, numRecipes > 4?.72: .78, 0);
