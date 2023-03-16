@@ -62,81 +62,82 @@ public class IEDamageSources
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverCasull);
-		return sources(shot).source3(Lib.DMG_RevolverCasull, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverCasull, shot, shooter);
 	}
 
 	public static DamageSource causePiercingDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverAP);
-		return sources(shot).source3(Lib.DMG_RevolverAP, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverAP, shot, shooter);
 	}
 
 	public static DamageSource causeBuckshotDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverBuck);
-		return sources(shot).source3(Lib.DMG_RevolverBuck, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverBuck, shot, shooter);
 	}
 
 	public static DamageSource causeDragonsbreathDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverDragon);
-		return sources(shot).source3(Lib.DMG_RevolverDragon, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverDragon, shot, shooter);
 	}
 
 	public static DamageSource causeHomingDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverHoming);
-		return sources(shot).source3(Lib.DMG_RevolverHoming, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverHoming, shot, shooter);
 	}
 
 	public static DamageSource causeWolfpackDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverWolfpack);
-		return sources(shot).source3(Lib.DMG_RevolverWolfpack, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverWolfpack, shot, shooter);
 	}
 
 	public static DamageSource causeSilverDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverSilver);
-		return sources(shot).source3(Lib.DMG_RevolverSilver, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverSilver, shot, shooter);
 	}
 
 	public static DamageSource causePotionDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_RevolverPotion);
-		return sources(shot).source3(Lib.DMG_RevolverPotion, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_RevolverPotion, shot, shooter);
 	}
 
+	// TODO why is this never invoked?
 	public static DamageSource acid(Level level)
 	{
-		return sources(level).source1(Lib.DMG_Acid);
+		return sources(level).invokeSource(Lib.DMG_Acid, null, null);
 	}
 
 	public static DamageSource crusher(Level level)
 	{
-		return sources(level).source1(Lib.DMG_Crusher);
+		return sources(level).invokeSource(Lib.DMG_Crusher, null, null);
 	}
 
 	public static DamageSource sawmill(Level level)
 	{
-		return sources(level).source1(Lib.DMG_Sawmill);
+		return sources(level).invokeSource(Lib.DMG_Sawmill, null, null);
 	}
 
 	public static DamageSource razorWire(Level level)
 	{
-		return sources(level).source1(Lib.DMG_RazorWire);
+		return sources(level).invokeSource(Lib.DMG_RazorWire, null, null);
 	}
 
 	public static DamageSource razorShock(Level level)
 	{
-		return sources(level).source1(Lib.DMG_RazorShock);
+		return sources(level).invokeSource(Lib.DMG_RazorShock, null, null);
 	}
 
 	// DO NOT USE EXCEPT FOR CHECKING WHETHER AN ENTITY IS VULNERABLE
@@ -162,25 +163,25 @@ public class IEDamageSources
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_Railgun);
-		return sources(shot).source3(Lib.DMG_Railgun, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_Railgun, shot, shooter);
 	}
 
 	public static DamageSource causeSawbladeDamage(SawbladeEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return turret(shot, Lib.DMG_Sawblade);
-		return sources(shot).source3(Lib.DMG_Sawblade, shot, shooter);
+		return sources(shot).invokeSource(Lib.DMG_Sawblade, shot, shooter);
 	}
 
 	public static DamageSource causeTeslaPrimaryDamage(Level level)
 	{
-		return sources(level).source1(Lib.DMG_Tesla_prim);
+		return sources(level).invokeSource(Lib.DMG_Tesla_prim, null, null);
 	}
 
 	private static DamageSource turret(Entity projectile, ResourceKey<DamageType> type)
 	{
 		// TODO re-add special message for turrets
-		return sources(projectile).source1(type);
+		return sources(projectile).invokeSource(type, null, null);
 	}
 
 	private static DamageSourcesAccess sources(Level level)

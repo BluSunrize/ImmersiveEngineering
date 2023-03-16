@@ -19,16 +19,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import javax.annotation.Nullable;
 
 // TODO this will probably be made redundant by Forge?
-// TODO apparently it is not possible to @Invoker multiple overloads of the same name?
 @Mixin(DamageSources.class)
 public interface DamageSourcesAccess
 {
-	@Invoker("source")
-	DamageSource source1(ResourceKey<DamageType> p_270957_);
-
-	@Invoker("source")
-	DamageSource source2(ResourceKey<DamageType> p_270142_, @Nullable Entity p_270696_);
-
-	@Invoker("source")
-	DamageSource source3(ResourceKey<DamageType> p_270076_, @Nullable Entity p_270656_, @Nullable Entity p_270242_);
+	@Invoker
+	DamageSource invokeSource(ResourceKey<DamageType> p_270076_, @Nullable Entity p_270656_, @Nullable Entity p_270242_);
 }

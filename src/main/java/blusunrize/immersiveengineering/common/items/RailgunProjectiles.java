@@ -94,11 +94,11 @@ public class RailgunProjectiles
 				if(target instanceof EnderMan enderMan)
 				{
 					enderMan.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 200));
-					final var sources = (DamageSourcesAccess)world.damageSources();
+					final DamageSourcesAccess sources = (DamageSourcesAccess)world.damageSources();
 					Player p;
 					if(shooter!=null&&(p = world.getPlayerByUUID(shooter))!=null)
-						return sources.source2(Lib.DMG_Railgun, p);
-					return sources.source1(Lib.DMG_Railgun);
+						return sources.invokeSource(Lib.DMG_Railgun, p, null);
+					return sources.invokeSource(Lib.DMG_Railgun, null, null);
 				}
 				return null;
 			}
