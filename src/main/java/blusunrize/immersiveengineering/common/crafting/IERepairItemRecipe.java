@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,7 @@ public class IERepairItemRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv)
+	public ItemStack assemble(@Nonnull CraftingContainer inv, RegistryAccess access)
 	{
 		return findInputSlots(inv)
 				.map(p -> combineStacks(p.getFirst(), p.getSecond()))

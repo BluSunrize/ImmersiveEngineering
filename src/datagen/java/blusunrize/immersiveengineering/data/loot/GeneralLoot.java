@@ -21,7 +21,7 @@ import blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction;
 import blusunrize.immersiveengineering.common.world.Villages;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
@@ -38,7 +38,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
@@ -105,10 +104,10 @@ public class GeneralLoot implements LootTableSubProvider
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD)))
-				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST)))
-				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS)))
-				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.FEET))));
+				.add(createEntry(Misc.FARADAY_SUIT.get(Type.HELMET)))
+				.add(createEntry(Misc.FARADAY_SUIT.get(Type.CHESTPLATE)))
+				.add(createEntry(Misc.FARADAY_SUIT.get(Type.LEGGINGS)))
+				.add(createEntry(Misc.FARADAY_SUIT.get(Type.BOOTS))));
 		out.accept(rl("gameplay/hero_of_the_village/"+Villages.ELECTRICIAN.getPath()), builder);
 
 		builder = LootTable.lootTable();

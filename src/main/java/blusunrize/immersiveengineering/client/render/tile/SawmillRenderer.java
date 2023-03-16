@@ -20,10 +20,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.joml.Quaternionf;
 
 public class SawmillRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
@@ -71,19 +72,25 @@ public class SawmillRenderer extends IEBlockEntityRenderer<MultiblockBlockEntity
 		{
 			float relative = process.getRelativeProcessStep(te.getLevel());
 			ItemStack rendered = process.getCurrentStack(te.getLevel(), sawblade);
-			renderItem(rendered, relative, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
+			renderItem(rendered, relative, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, te.getLevel());
 		}
 		matrixStack.popPose();
 	}
 
-	private void renderItem(ItemStack stack, float progress, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	private void renderItem(
+			ItemStack stack, float progress,
+			PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, Level level
+	)
 	{
 		float xOffset = -2.5f+progress*5;
 		matrixStack.pushPose();
 		matrixStack.translate(xOffset, .375, 0);
 		matrixStack.mulPose(new Quaternionf().rotateZ(Mth.HALF_PI));
-		ClientUtils.mc().getItemRenderer().renderStatic(stack, TransformType.FIXED,
-				combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
+		ClientUtils.mc().getItemRenderer().renderStatic(
+				stack, ItemDisplayContext.FIXED,
+				combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+				level, 0
+		);
 		matrixStack.popPose();
 	}
 }

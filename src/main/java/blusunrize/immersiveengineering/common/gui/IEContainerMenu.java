@@ -78,7 +78,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 		if(!toSync.isEmpty())
 			for(ServerPlayer player : usingPlayers)
 				ImmersiveEngineering.packetHandler.sendTo(
-						new MessageContainerData(toSync), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT
+						new MessageContainerData(toSync), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT
 				);
 	}
 
@@ -211,7 +211,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 			for(int i = 0; i < ieContainer.genericData.size(); i++)
 				list.add(Pair.of(i, ieContainer.genericData.get(i).dataPair()));
 			ImmersiveEngineering.packetHandler.sendTo(
-					new MessageContainerData(list), serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT
+					new MessageContainerData(list), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT
 			);
 		}
 	}

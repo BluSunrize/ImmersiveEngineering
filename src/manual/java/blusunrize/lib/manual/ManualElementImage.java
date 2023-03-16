@@ -34,9 +34,9 @@ public class ManualElementImage extends SpecialManualElements
 		for(ManualImage image1 : images)
 		{
 			int xOff = 60-image1.uSize/2;
-			gui.fillGradient(transform, x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
+			gui.fillGradientPublic(transform, x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
 					0xffeaa74c, 0xfff6b059);
-			gui.fillGradient(transform, x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
+			gui.fillGradientPublic(transform, x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
 					0xffc68e46, 0xffbe8844);
 			yOff += image1.vSize+5;
 		}

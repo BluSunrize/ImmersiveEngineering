@@ -35,7 +35,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -51,6 +50,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractBannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
@@ -121,7 +121,7 @@ public class ModelPowerpack
 				// set up to render the large-texture banner
 				PowerpackCallbacks.THIRD_PERSON_PASS = 3;
 				BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
-				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, TransformType.FIXED, false);
+				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
 				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 				VertexConsumer consumer = buffers.getBuffer(RenderType.entitySolid(shaderTexture));
 				Minecraft.getInstance().getItemRenderer().renderModelLists(
@@ -133,7 +133,7 @@ public class ModelPowerpack
 				// set up to render the small-texture banner
 				PowerpackCallbacks.THIRD_PERSON_PASS = 2;
 				BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
-				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, TransformType.FIXED, false);
+				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
 				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 				for(BannerLayer layer : getBannerLayers(banner, bakedModel))
 				{
@@ -149,7 +149,7 @@ public class ModelPowerpack
 			PowerpackCallbacks.THIRD_PERSON_PASS = 1;
 		}
 		Minecraft.getInstance().getItemRenderer().render(
-				powerpack, TransformType.FIXED, false,
+				powerpack, ItemDisplayContext.FIXED, false,
 				matrixStackIn, buffers,
 				LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
 				renderer.getModel(powerpack, toRender.getLevel(), toRender, 0)

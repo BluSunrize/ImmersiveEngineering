@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.ComputerControlState;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
@@ -24,7 +25,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import blusunrize.immersiveengineering.api.utils.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -249,7 +249,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 		double maxDistance = hit!=null?Vec3.atCenterOf(hit).add(0, 0.25, 0).distanceToSqr(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{
-			BlockPos target = getBlockPos().offset(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));
+			BlockPos target = getBlockPos().offset((int)Math.round(vec.x*i), (int)Math.round(vec.y*i), (int)Math.round(vec.z*i));
 			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist > maxDistance)
 				break;

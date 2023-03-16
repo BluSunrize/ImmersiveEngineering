@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -36,14 +37,14 @@ public class LazyShapelessRecipe extends ShapelessRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem()
+	public ItemStack getResultItem(RegistryAccess access)
 	{
 		return result.get();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer p_44260_)
+	public ItemStack assemble(@Nonnull CraftingContainer p_44260_, RegistryAccess access)
 	{
 		return result.get().copy();
 	}

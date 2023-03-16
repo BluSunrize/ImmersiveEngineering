@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.cache.IListRecipe;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Unit;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.RegistryObject;
@@ -96,7 +97,7 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem()
+	public ItemStack getResultItem(RegistryAccess access)
 	{
 		return ItemStack.EMPTY;
 	}

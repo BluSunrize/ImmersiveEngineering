@@ -14,9 +14,10 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -119,7 +120,7 @@ public class ChemthrowerHandler
 				if(target.hurt(source, damage))
 				{
 					target.invulnerableTime = (int)(target.invulnerableTime*.75);
-					if(source.isFire()&&!target.fireImmune())
+					if(source.is(DamageTypeTags.IS_FIRE)&&!target.fireImmune())
 						target.setSecondsOnFire(fluid.is(Tags.Fluids.GASEOUS)?2: 5);
 				}
 			}
@@ -174,11 +175,12 @@ public class ChemthrowerHandler
 
 	public static class ChemthrowerEffect_Extinguish extends ChemthrowerEffect
 	{
-		private static DamageSource getPlayerDrownDamage(Player player)
+		private static DamageSource getPlayerDrownDamage(Player player, DamageSources sources)
 		{
+			final DamageSource drownSource = sources.drown();
 			if(player==null)
-				return DamageSource.DROWN;
-			return new EntityDamageSource(DamageSource.DROWN.getMsgId(), player).bypassArmor();
+				return drownSource;
+			return new DamageSource(drownSource.typeHolder(), player);
 		}
 
 		@Override
@@ -188,7 +190,7 @@ public class ChemthrowerHandler
 				target.clearFire();
 
 			if(target instanceof Blaze||target instanceof EnderMan)
-				if(target.hurt(getPlayerDrownDamage(shooter), 3))
+				if(target.hurt(getPlayerDrownDamage(shooter, target.damageSources()), 3))
 					target.invulnerableTime = (int)(target.invulnerableTime*.75);
 		}
 
@@ -229,7 +231,7 @@ public class ChemthrowerHandler
 				double x = target.getX()-8+ApiUtils.RANDOM.nextInt(17);
 				double y = target.getY()+ApiUtils.RANDOM.nextInt(8);
 				double z = target.getZ()-8+ApiUtils.RANDOM.nextInt(17);
-				if(!target.level.getBlockState(new BlockPos(x, y, z)).getMaterial().isSolid())
+				if(!target.level.getBlockState(BlockPos.containing(x, y, z)).getMaterial().isSolid())
 				{
 					EntityTeleportEvent event = new EntityTeleportEvent.EnderEntity(target, x, y, z);
 					if(MinecraftForge.EVENT_BUS.post(event))

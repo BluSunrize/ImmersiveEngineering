@@ -320,7 +320,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			location = name;
 			getContent = () -> {
 				ResourceLocation langLoc = new ResourceLocation(name.getNamespace(),
-						"manual/"+Minecraft.getInstance().getLanguageManager().getSelected().getCode()
+						"manual/"+Minecraft.getInstance().getLanguageManager().getSelected()
 								+"/"+name.getPath()+".txt");
 				ResourceLocation dataLoc = new ResourceLocation(name.getNamespace(),
 						"manual/"+name.getPath()+".json");

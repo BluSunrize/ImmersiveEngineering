@@ -17,7 +17,6 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.Resource;
@@ -96,8 +95,8 @@ public class StructureUpdater implements DataProvider
 
 	private static CompoundTag updateNBT(CompoundTag nbt)
 	{
-		final CompoundTag updatedNBT = NbtUtils.update(
-				DataFixers.getDataFixer(), DataFixTypes.STRUCTURE, nbt, nbt.getInt("DataVersion")
+		final CompoundTag updatedNBT = DataFixTypes.STRUCTURE.updateToCurrentVersion(
+				DataFixers.getDataFixer(), nbt, nbt.getInt("DataVersion")
 		);
 		StructureTemplate template = new StructureTemplate();
 		template.load(BuiltInRegistries.BLOCK.asLookup(), updatedNBT);

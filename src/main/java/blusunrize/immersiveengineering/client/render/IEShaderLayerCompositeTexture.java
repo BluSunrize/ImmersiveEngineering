@@ -12,18 +12,18 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.TextureUtil;
-import org.joml.Vector4f;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.IntFunction;
 
-import static com.mojang.blaze3d.platform.NativeImage.*;
+import static net.minecraft.util.FastColor.ARGB32.*;
 
 public class IEShaderLayerCompositeTexture extends AbstractTexture
 {
@@ -165,14 +165,14 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 	private void blendPixel(NativeImage image, int xIn, int yIn, int colIn)
 	{
 		int existing = image.getPixelRGBA(xIn, yIn);
-		float alphaIn = (float)getA(colIn)/255.0F;
-		float blueIn = (float)getB(colIn)/255.0F;
-		float greenIn = (float)getG(colIn)/255.0F;
-		float redIn = (float)getR(colIn)/255.0F;
-		float alphaOld = (float)getA(existing)/255.0F;
-		float blueOld = (float)getB(existing)/255.0F;
-		float greenOld = (float)getG(existing)/255.0F;
-		float redOld = (float)getR(existing)/255.0F;
+		float alphaIn = (float)alpha(colIn)/255.0F;
+		float blueIn = (float)blue(colIn)/255.0F;
+		float greenIn = (float)green(colIn)/255.0F;
+		float redIn = (float)red(colIn)/255.0F;
+		float alphaOld = (float)alpha(existing)/255.0F;
+		float blueOld = (float)blue(existing)/255.0F;
+		float greenOld = (float)green(existing)/255.0F;
+		float redOld = (float)red(existing)/255.0F;
 		float oldMixFactor = 1.0F-alphaIn;
 		float alphaOut = alphaIn*alphaIn+alphaOld*oldMixFactor;
 		float blueOut = blueIn*alphaIn+blueOld*oldMixFactor;
@@ -202,6 +202,6 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 		int blueOutInt = (int)(blueOut*255.0F);
 		int greenOutInt = (int)(greenOut*255.0F);
 		int alphaOutInt = (int)(redOut*255.0F);
-		image.setPixelRGBA(xIn, yIn, combine(redOutInt, blueOutInt, greenOutInt, alphaOutInt));
+		image.setPixelRGBA(xIn, yIn, color(redOutInt, blueOutInt, greenOutInt, alphaOutInt));
 	}
 }

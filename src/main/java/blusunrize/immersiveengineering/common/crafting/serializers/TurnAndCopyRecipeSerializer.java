@@ -29,7 +29,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	{
 		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json);
 		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem(), CraftingBookCategory.MISC);
+				basic.getIngredients(), basic.getResultItem(null), CraftingBookCategory.MISC);
 		if(GsonHelper.getAsBoolean(json, "quarter_turn", false))
 			recipe.allowQuarterTurn();
 		if(GsonHelper.getAsBoolean(json, "eighth_turn", false))
@@ -58,7 +58,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	{
 		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer);
 		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem(), CraftingBookCategory.MISC);
+				basic.getIngredients(), basic.getResultItem(null), CraftingBookCategory.MISC);
 		if(buffer.readBoolean())
 			recipe.allowQuarterTurn();
 		if(buffer.readBoolean())

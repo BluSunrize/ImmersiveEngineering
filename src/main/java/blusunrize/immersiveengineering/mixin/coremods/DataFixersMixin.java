@@ -25,7 +25,7 @@ public class DataFixersMixin
 					value = "INVOKE",
 					target = "Lnet/minecraft/util/datafix/fixes/OptionsAmbientOcclusionFix;<init>(Lcom/mojang/datafixers/schemas/Schema;)V"
 			),
-			ordinal = 175
+			ordinal = 173
 	)
 	private static Schema addMultiblockFixes(Schema newSchema, DataFixerBuilder builder)
 	{

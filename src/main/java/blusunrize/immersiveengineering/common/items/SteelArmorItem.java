@@ -26,7 +26,7 @@ public class SteelArmorItem extends ArmorItem
 {
 	public static ArmorMaterial mat = new SteelArmorMaterial();
 
-	public SteelArmorItem(EquipmentSlot type)
+	public SteelArmorItem(Type type)
 	{
 		super(mat, type, new Properties().stacksTo(1));
 	}
@@ -41,26 +41,26 @@ public class SteelArmorItem extends ArmorItem
 	{
 
 		@Override
-		public int getDurabilityForSlot(@Nonnull EquipmentSlot slotIn)
+		public int getDurabilityForType(@Nonnull Type slotIn)
 		{
 			return switch(slotIn)
 					{
-						case FEET -> 273;
-						case LEGS -> 315;
-						case CHEST -> 336;
-						case HEAD -> 231;
+						case BOOTS -> 273;
+						case LEGGINGS -> 315;
+						case CHESTPLATE -> 336;
+						case HELMET -> 231;
 						default -> 0;
 					};
 		}
 
 		@Override
-		public int getDefenseForSlot(EquipmentSlot slotIn)
+		public int getDefenseForType(Type slotIn)
 		{
 			return switch(slotIn)
 					{
-						case FEET, HEAD -> 2;
-						case LEGS -> 6;
-						case CHEST -> 7;
+						case BOOTS, HELMET -> 2;
+						case LEGGINGS -> 6;
+						case CHESTPLATE -> 7;
 						default -> 0;
 					};
 		}

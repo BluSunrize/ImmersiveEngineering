@@ -163,7 +163,7 @@ public class ManualScreen extends Screen
 			searchField.setTextColorUneditable(-1);
 			searchField.setBordered(false);
 			searchField.setMaxLength(17);
-			searchField.setFocus(true);
+			searchField.setFocused(true);
 			searchField.setCanLoseFocus(false);
 		}
 		else if(searchField!=null)
@@ -499,10 +499,9 @@ public class ManualScreen extends Screen
 	}
 
 	//Make public as a utility
-	@Override
-	public void fillGradient(PoseStack transform, int x1, int yA, int x2, int yB, int colorA, int colorB)
+	public void fillGradientPublic(PoseStack transform, int x1, int yA, int x2, int yB, int colorA, int colorB)
 	{
-		super.fillGradient(transform, x1, yA, x2, yB, colorA, colorB);
+		fillGradient(transform, x1, yA, x2, yB, colorA, colorB);
 	}
 
 	@Override

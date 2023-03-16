@@ -58,6 +58,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -403,7 +404,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 							transform.translate(6/256f*resMin, curStep*stepLength/256*resMin, 0);
 							GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
 							ClientUtils.font().drawInBatch((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff, true,
-									transform.last().pose(), buffers, false, 0, 0xf000f0);
+									transform.last().pose(), buffers, DisplayMode.NORMAL, 0, 0xf000f0);
 							transform.translate(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
 						}
 						transform.translate(0, -((5+stepOffset)/256*resMin), 0);
@@ -463,7 +464,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 							}
 							ClientUtils.font().drawInBatch(
 									s, scaledWidth/2-ClientUtils.font().width(s)/2, scaledHeight-leftHeight-20, col,
-									true, transform.last().pose(), buffer, false, 0, 0xf000f0);
+									true, transform.last().pose(), buffer, DisplayMode.NORMAL, 0, 0xf000f0);
 						}
 					}
 					else if(equipped.getItem()==Misc.FLUORESCENT_TUBE.get())
@@ -472,7 +473,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						String s = I18n.get(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
 						ClientUtils.font().drawInBatch(s, scaledWidth/2-ClientUtils.font().width(s)/2,
 								scaledHeight-leftHeight-20, FluorescentTubeItem.getRGBInt(equipped, 1),
-								true, transform.last().pose(), buffer, false, 0, 0xf000f0
+								true, transform.last().pose(), buffer, DisplayMode.NORMAL, 0, 0xf000f0
 						);
 					}
 					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
@@ -604,7 +605,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					ClientUtils.font().drawInBatch(
 							s, scaledWidth/2-w/2f,
 							scaledHeight/2+4+(i++)*(ClientUtils.font().lineHeight+2), col,
-							false, transform.last().pose(), buffer, false,
+							false, transform.last().pose(), buffer, DisplayMode.NORMAL,
 							0, 0xf000f0
 					);
 				}

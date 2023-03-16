@@ -46,7 +46,7 @@ public class VanillaFurnaceHeater implements IExternalHeatable
 		ItemStack existingOutput = furnace.getItem(2);
 		if(existingOutput.isEmpty())
 			return true;
-		ItemStack outStack = output.get().getResultItem();
+		ItemStack outStack = output.get().getResultItem(furnace.getLevel().registryAccess());
 		if(!existingOutput.sameItem(outStack))
 			return false;
 		int stackSize = existingOutput.getCount()+outStack.getCount();

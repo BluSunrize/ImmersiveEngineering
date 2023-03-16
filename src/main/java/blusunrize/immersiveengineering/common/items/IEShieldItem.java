@@ -32,6 +32,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
@@ -193,7 +194,7 @@ public class IEShieldItem extends UpgradeableToolItem
 		if(getUpgrades(stack).getBoolean("shock")&&getUpgrades(stack).getInt("shock_cooldown") <= 0)
 		{
 			boolean b = false;
-			if(event.getSource().isProjectile()&&event.getSource().getDirectEntity()!=null)
+			if(event.getSource().is(DamageTypeTags.IS_PROJECTILE)&&event.getSource().getDirectEntity()!=null)
 			{
 				Entity projectile = event.getSource().getDirectEntity();
 				projectile.discard();
@@ -202,7 +203,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			}
 			if(event.getSource().getEntity()!=null&&event.getSource().getEntity() instanceof LivingEntity&&event.getSource().getEntity().distanceToSqr(player) < 4)
 			{
-				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(event.getEntity().level, 1, true);
 				dmgsrc.apply(event.getSource().getEntity());
 				b = true;
 			}

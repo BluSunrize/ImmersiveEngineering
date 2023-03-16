@@ -30,6 +30,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -158,7 +159,7 @@ public class IEMenuTypes
 		return REGISTER.register(
 				name, () -> {
 					Mutable<MenuType<C>> typeBox = new MutableObject<>();
-					MenuType<C> type = new MenuType<>((id, inv) -> client.construct(typeBox.getValue(), id, inv));
+					MenuType<C> type = new MenuType<>((id, inv) -> client.construct(typeBox.getValue(), id, inv), FeatureFlagSet.of());
 					typeBox.setValue(type);
 					return type;
 				}
@@ -176,7 +177,7 @@ public class IEMenuTypes
 						BlockPos pos = data.readBlockPos();
 						BlockEntity te = world.getBlockEntity(pos);
 						return container.construct(typeBox.getValue(), windowId, inv, (T)te);
-					});
+					}, FeatureFlagSet.of());
 					typeBox.setValue(type);
 					return type;
 				}
@@ -197,7 +198,7 @@ public class IEMenuTypes
 						EquipmentSlot slot = EquipmentSlot.values()[slotOrdinal];
 						ItemStack stack = ImmersiveEngineering.proxy.getClientPlayer().getItemBySlot(slot);
 						return container.construct(typeBox.getValue(), windowId, inv, world, slot, stack);
-					});
+					}, FeatureFlagSet.of());
 					typeBox.setValue(type);
 					return type;
 				}
@@ -211,7 +212,7 @@ public class IEMenuTypes
 		return REGISTER.register(
 				name, () -> {
 					Mutable<MenuType<M>> typeBox = new MutableObject<>();
-					MenuType<M> type = new MenuType<>((id, inv) -> factory.construct(typeBox.getValue(), id, inv));
+					MenuType<M> type = new MenuType<>((id, inv) -> factory.construct(typeBox.getValue(), id, inv), FeatureFlagSet.of());
 					typeBox.setValue(type);
 					return type;
 				}

@@ -161,6 +161,7 @@ public class MinecraftInstanceManager
 		BlockEntityWithoutLevelRenderer beNoLevelRenderer = new BlockEntityWithoutLevelRenderer(dispatcher, entityModelSet);
 		beNoLevelRenderer.onResourceManagerReload(null);
 		final ItemRenderer itemRenderer = new ItemRenderer(
+				Minecraft.getInstance(),
 				Minecraft.getInstance().getTextureManager(),
 				Minecraft.getInstance().getModelManager(),
 				Minecraft.getInstance().getItemColors(),

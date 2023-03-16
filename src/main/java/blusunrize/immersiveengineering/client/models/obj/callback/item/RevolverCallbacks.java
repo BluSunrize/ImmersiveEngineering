@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -126,12 +126,12 @@ public class RevolverCallbacks implements ItemCallback<Key>
 	}
 
 	@Override
-	public void handlePerspective(Key key, LivingEntity holder, TransformType cameraTransformType, PoseStack mat)
+	public void handlePerspective(Key key, LivingEntity holder, ItemDisplayContext cameraItemDisplayContext, PoseStack mat)
 	{
-		if(holder instanceof Player player&&(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
+		if(holder instanceof Player player&&(cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_LEFT_HAND))
 		{
-			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(holder.getMainArm()==HumanoidArm.RIGHT);
-			boolean left = cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND;
+			boolean main = (cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)==(holder.getMainArm()==HumanoidArm.RIGHT);
+			boolean left = cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
 			if(key.fancyAnimation()&&main)
 			{
 				float f = player.getAttackStrengthScale(ClientUtils.mc().getFrameTime());
@@ -187,7 +187,7 @@ public class RevolverCallbacks implements ItemCallback<Key>
 	private static final List<List<String>> groups = List.of(List.of("frame"), List.of("cylinder"));
 
 	@Override
-	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	public List<List<String>> getSpecialGroups(ItemStack stack, ItemDisplayContext transform, LivingEntity entity)
 	{
 		return groups;
 	}
@@ -198,7 +198,7 @@ public class RevolverCallbacks implements ItemCallback<Key>
 
 	@Nonnull
 	@Override
-	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity,
+	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, ItemDisplayContext transform, LivingEntity entity,
 												float partialTicks)
 	{
 		if(matOpen==null)
@@ -207,10 +207,10 @@ public class RevolverCallbacks implements ItemCallback<Key>
 			matClose = new Transformation(new Vector3f(-.625F, .25F, 0), null, null, null);
 		if(matCylinder==null)
 			matCylinder = new Transformation(new Vector3f(0, .6875F, 0), null, null, null);
-		if(entity instanceof Player&&(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
+		if(entity instanceof Player&&(transform==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||transform==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||transform==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND||transform==ItemDisplayContext.THIRD_PERSON_LEFT_HAND))
 		{
-			boolean main = (transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT);
-			boolean left = transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND;
+			boolean main = (transform==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||transform==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT);
+			boolean left = transform==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||transform==ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
 			//Re-grab stack because the other one doesn't do reloads properly
 			stack = main?entity.getMainHandItem(): entity.getOffhandItem();
 			if(ItemNBTHelper.hasKey(stack, "reload"))

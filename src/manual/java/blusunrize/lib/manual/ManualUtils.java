@@ -22,17 +22,13 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import org.joml.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -42,6 +38,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -390,27 +387,16 @@ public class ManualUtils
 	{
 		if(!stack.isEmpty())
 		{
-			// Include the matrix transformation
-			PoseStack modelViewStack = RenderSystem.getModelViewStack();
-			modelViewStack.pushPose();
-			modelViewStack.mulPoseMatrix(transform.last().pose());
-			RenderSystem.applyModelViewMatrix();
-
-			// Counteract the zlevel increase, because multiplied with the matrix, it goes out of view
 			ItemRenderer itemRenderer = renderItem();
-			itemRenderer.blitOffset -= 50;
-			itemRenderer.renderAndDecorateItem(stack, x, y);
-			itemRenderer.blitOffset += 50;
+			itemRenderer.renderAndDecorateItem(transform, stack, x, y);
 
 			if(overlay)
 			{
 				// Use the Item's font renderer, if available
 				Font font = IClientItemExtensions.of(stack.getItem()).getFont(stack, FontContext.ITEM_COUNT);
 				font = font!=null?font: Minecraft.getInstance().font;
-				itemRenderer.renderGuiItemDecorations(font, stack, x, y, count);
+				itemRenderer.renderGuiItemDecorations(transform, font, stack, x, y, count);
 			}
-			modelViewStack.popPose();
-			RenderSystem.applyModelViewMatrix();
 		}
 	}
 }

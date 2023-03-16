@@ -66,7 +66,7 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 
 	public ShapedRecipe toVanilla()
 	{
-		return new ShapedRecipe(getId(), getGroup(), category, getWidth(), getHeight(), getIngredients(), getResultItem());
+		return new ShapedRecipe(getId(), getGroup(), category, getWidth(), getHeight(), getIngredients(), getResultItem(null));
 	}
 
 	@Override

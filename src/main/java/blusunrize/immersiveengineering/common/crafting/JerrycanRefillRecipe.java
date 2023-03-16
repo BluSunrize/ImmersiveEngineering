@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -57,7 +58,7 @@ public class JerrycanRefillRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv)
+	public ItemStack assemble(@Nonnull CraftingContainer inv, RegistryAccess access)
 	{
 		ItemStack[] components = getComponents(inv);
 		ItemStack newContainer = ItemHandlerHelper.copyStackWithSize(components[containerIndex], 1);

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +53,7 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 	}
 
 	@Override
-	public ItemStack assemble(Container inv)
+	public ItemStack assemble(Container inv, RegistryAccess access)
 	{
 		return this.outputDummy.get();
 	}

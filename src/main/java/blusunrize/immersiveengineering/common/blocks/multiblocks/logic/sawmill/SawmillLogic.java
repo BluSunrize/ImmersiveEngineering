@@ -268,7 +268,7 @@ public class SawmillLogic
 		int consumed = ctx.getState().energy.extractEnergy(80, false);
 		if(consumed > 0)
 		{
-			toHurt.hurt(IEDamageSources.sawmill, 7);
+			toHurt.hurt(IEDamageSources.sawmill(ctx.getLevel().getRawLevel()), 7);
 			ctx.markMasterDirty();
 		}
 	}

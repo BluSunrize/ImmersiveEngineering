@@ -162,7 +162,7 @@ public class ArcRecyclingCalculator
 		{
 			for(Recipe<?> recipe : recipeList)
 			{
-				RecyclingCalculation calc = getRecycleCalculation(recipe.getResultItem(), recipe);
+				RecyclingCalculation calc = getRecycleCalculation(recipe.getResultItem(tags), recipe);
 				if(calc!=null)
 				{
 					if(calc.isValid())

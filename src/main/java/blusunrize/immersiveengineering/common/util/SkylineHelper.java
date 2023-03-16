@@ -22,7 +22,6 @@ import net.minecraft.core.Cursor3D;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
@@ -95,7 +94,7 @@ public class SkylineHelper
 				double speedDiff = player.getDeltaMovement().y-vertSpeed;
 				if(speedDiff < 0)
 				{
-					player.causeFallDamage(fallDistanceFromSpeed(speedDiff), 1.2F, DamageSource.FALL);
+					player.causeFallDamage(fallDistanceFromSpeed(speedDiff), 1.2F, player.damageSources().fall());
 					player.fallDistance = 0;
 				}
 

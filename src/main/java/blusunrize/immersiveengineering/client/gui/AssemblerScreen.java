@@ -126,8 +126,8 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 					font = IClientItemExtensions.of(stack.getItem()).getFont(stack, FontContext.ITEM_COUNT);
 				if(font==null)
 					font = this.font;
-				itemRenderer.renderAndDecorateItem(stack, leftPos+27+i*58, topPos+64);
-				itemRenderer.renderGuiItemDecorations(font, stack, leftPos+27+i*58, topPos+64, ChatFormatting.GRAY.toString()+stack.getCount());
+				itemRenderer.renderAndDecorateItem(transform, stack, leftPos+27+i*58, topPos+64);
+				itemRenderer.renderGuiItemDecorations(transform, font, stack, leftPos+27+i*58, topPos+64, ChatFormatting.GRAY.toString()+stack.getCount());
 
 				RenderSystem.disableDepthTest();
 				fill(transform, leftPos+27+i*58, topPos+64, leftPos+27+i*74, topPos+80, 0x77444444);

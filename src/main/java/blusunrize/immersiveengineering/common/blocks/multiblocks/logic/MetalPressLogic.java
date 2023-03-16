@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes.
 import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -301,7 +302,11 @@ public class MetalPressLogic
 		)
 		{
 			if(tag.contains("baseRecipe", Tag.TAG_STRING))
-				return new SpecialMetalPressProcess(tag, new ResourceLocation(tag.getString("baseRecipe")));
+				//TODO
+				throw new UnsupportedOperationException();
+				//return new SpecialMetalPressProcess(
+				//		tag, new ResourceLocation(tag.getString("baseRecipe"))
+				//);
 			else
 				return new MultiblockProcessInWorld<>(getRecipe, tag);
 		}
@@ -311,12 +316,12 @@ public class MetalPressLogic
 	{
 		private final ResourceLocation baseRecipeLocation;
 
-		public SpecialMetalPressProcess(CompoundTag data, ResourceLocation baseRecipeLocation)
+		public SpecialMetalPressProcess(RegistryAccess access, CompoundTag data, ResourceLocation baseRecipeLocation)
 		{
 			super((level, name) -> {
 				CraftingRecipe baseRecipe = MetalPressPackingRecipes.CRAFTING_RECIPE_MAP.getById(level, baseRecipeLocation);
 				if(baseRecipe!=null)
-					return MetalPressPackingRecipes.getRecipeDelegate(baseRecipe, name);
+					return MetalPressPackingRecipes.getRecipeDelegate(baseRecipe, name, access);
 				else
 					return null;
 			}, data);

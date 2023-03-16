@@ -11,16 +11,15 @@ package blusunrize.immersiveengineering.data.models;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.common.base.Preconditions;
 import com.google.gson.*;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransform.Deserializer;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.common.util.TransformationHelper;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.EnumMap;
 import java.util.Locale;
@@ -31,7 +30,7 @@ import java.util.Optional;
 // TODO this is a pile of hacks and should probably just go away
 public class TransformationMap
 {
-	private final Map<ItemTransforms.TransformType, ItemTransform> transforms = new EnumMap<>(ItemTransforms.TransformType.class);
+	private final Map<ItemDisplayContext, ItemTransform> transforms = new EnumMap<>(ItemDisplayContext.class);
 
 	public static Vector3f toXYZDegrees(Quaternionf q)
 	{
@@ -73,10 +72,10 @@ public class TransformationMap
 		JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
 		Optional<String> type = Optional.ofNullable(obj.remove("type")).map(JsonElement::getAsString);
 		boolean vanilla = type.map("vanilla"::equals).orElse(false);
-		Map<ItemTransforms.TransformType, Transformation> transforms = new EnumMap<>(TransformType.class);
-		for(ItemTransforms.TransformType perspective : ItemTransforms.TransformType.values())
+		Map<ItemDisplayContext, Transformation> transforms = new EnumMap<>(ItemDisplayContext.class);
+		for(ItemDisplayContext perspective : ItemDisplayContext.values())
 		{
-			String key = perspective.getSerializeName();
+			String key = perspective.getSerializedName();
 			JsonObject forType = obj.getAsJsonObject(key);
 			obj.remove(key);
 			if(forType==null)
@@ -109,7 +108,7 @@ public class TransformationMap
 			baseTransform = readMatrix(obj, GSON);
 		else
 			baseTransform = Transformation.identity();
-		for(Entry<TransformType, Transformation> e : transforms.entrySet())
+		for(Entry<ItemDisplayContext, Transformation> e : transforms.entrySet())
 		{
 			Transformation transform = composeForgeLike(e.getValue(), baseTransform);
 			if(!transform.isIdentity())
@@ -147,7 +146,7 @@ public class TransformationMap
 		return GSON.fromJson(json, Transformation.class);
 	}
 
-	private String alternateName(ItemTransforms.TransformType type)
+	private String alternateName(ItemDisplayContext type)
 	{
 		return type.name().toLowerCase(Locale.US);
 	}
@@ -155,12 +154,12 @@ public class TransformationMap
 	public JsonObject toJson()
 	{
 		JsonObject ret = new JsonObject();
-		for(Entry<ItemTransforms.TransformType, ItemTransform> entry : transforms.entrySet())
+		for(Entry<ItemDisplayContext, ItemTransform> entry : transforms.entrySet())
 			add(ret, entry.getKey(), entry.getValue());
 		return ret;
 	}
 
-	private void add(JsonObject main, ItemTransforms.TransformType type, ItemTransform trsr)
+	private void add(JsonObject main, ItemDisplayContext type, ItemTransform trsr)
 	{
 		JsonObject result = new JsonObject();
 		if(!trsr.translation.equals(Deserializer.DEFAULT_TRANSLATION))
@@ -171,7 +170,7 @@ public class TransformationMap
 			result.add("scale", toJson(trsr.scale));
 		if(!trsr.rightRotation.equals(Deserializer.DEFAULT_ROTATION))
 			result.add("right_rotation", toJson(trsr.rightRotation));
-		main.add(type.getSerializeName(), result);
+		main.add(type.getSerializedName(), result);
 	}
 
 	private static JsonArray toJson(Vector3f v)

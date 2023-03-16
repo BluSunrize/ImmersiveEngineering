@@ -35,7 +35,7 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 {
 	public static ArmorMaterial mat = new FaradayArmorMaterial();
 
-	public FaradaySuitItem(EquipmentSlot type)
+	public FaradaySuitItem(Type type)
 	{
 		super(mat, type, new Properties().stacksTo(1));
 	}
@@ -50,9 +50,9 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		if(dmg.source.level < 1.75)
 		{
 			if(cache.containsKey("faraday"))
-				cache.put("faraday", (1<<this.slot.getIndex())|((Integer)cache.get("faraday")));
+				cache.put("faraday", (1<<this.type.ordinal())|((Integer)cache.get("faraday")));
 			else
-				cache.put("faraday", 1<<this.slot.getIndex());
+				cache.put("faraday", 1<<this.type.ordinal());
 			if(cache.containsKey("faraday")&&(Integer)cache.get("faraday")==(1<<4)-1)
 				dmg.dmg = 0;
 		}
@@ -81,27 +81,25 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 	{
 
 		@Override
-		public int getDurabilityForSlot(@Nonnull EquipmentSlot slotIn)
+		public int getDurabilityForType(Type slotIn)
 		{
 			return switch(slotIn)
 					{
-						case FEET -> 13;
-						case LEGS -> 15;
-						case CHEST -> 16;
-						case HEAD -> 11;
-						default -> 0;
+						case BOOTS -> 13;
+						case LEGGINGS -> 15;
+						case CHESTPLATE -> 16;
+						case HELMET -> 11;
 					};
 		}
 
 		@Override
-		public int getDefenseForSlot(EquipmentSlot slotIn)
+		public int getDefenseForType(Type slotIn)
 		{
 			return switch(slotIn)
 					{
-						case FEET, HEAD -> 1;
-						case LEGS -> 2;
-						case CHEST -> 3;
-						default -> 0;
+						case BOOTS, HELMET -> 1;
+						case LEGGINGS -> 2;
+						case CHESTPLATE -> 3;
 					};
 		}
 

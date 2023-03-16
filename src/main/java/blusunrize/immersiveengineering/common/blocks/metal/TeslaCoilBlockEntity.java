@@ -113,7 +113,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 			LivingEntity target = null;
 			if(!targets.isEmpty())
 			{
-				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEServerConfig.MACHINES.teslacoil_damage.get().floatValue(), lowPower);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(level, IEServerConfig.MACHINES.teslacoil_damage.get().floatValue(), lowPower);
 				int randomTarget = ApiUtils.RANDOM.nextInt(targets.size());
 				target = (LivingEntity)targets.get(randomTarget);
 				if(target!=null)
@@ -160,7 +160,12 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				tV += tV < 0?-2: 2;
 				tH += tH < 0?-2: 2;
 
-				BlockPos targetBlock = getBlockPos().offset(getFacing().getAxis()==Axis.X?0: tH, getFacing().getAxis()==Axis.Y?0: tV, getFacing().getAxis()==Axis.Y?tV: getFacing().getAxis()==Axis.X?tH: 0);
+				// TODO this looks like it might be wrong?
+				BlockPos targetBlock = getBlockPos().offset(
+						(int)(getFacing().getAxis()==Axis.X?0: tH),
+						(int)(getFacing().getAxis()==Axis.Y?0: tV),
+						(int)(getFacing().getAxis()==Axis.Y?tV: getFacing().getAxis()==Axis.X?tH: 0)
+				);
 				double tL = 0;
 				boolean targetFound = false;
 				if(!level.isEmptyBlock(targetBlock))
@@ -418,7 +423,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				if(lowPower)
 					energyDrain /= 2;
 				if(canRun(energyDrain))
-					player.hurt(IEDamageSources.causeTeslaPrimaryDamage(), Float.MAX_VALUE);
+					player.hurt(IEDamageSources.causeTeslaPrimaryDamage(level), Float.MAX_VALUE);
 				else
 				{
 					lowPower = !lowPower;

@@ -19,9 +19,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelData;
 import org.joml.Quaternionf;
@@ -92,8 +92,11 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 			matrixStack.mulPose(new Quaternionf().rotateX(-Mth.HALF_PI));
 			float scale = .75f;
 			matrixStack.scale(scale, scale, 1);
-			ClientUtils.mc().getItemRenderer().renderStatic(state.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
-					matrixStack, bufferIn, 0);
+			ClientUtils.mc().getItemRenderer().renderStatic(
+					state.mold, ItemDisplayContext.FIXED,
+					combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+					te.getLevel(), 0
+			);
 		}
 		matrixStack.popPose();
 		matrixStack.translate(-1.25, -.35, 0);
@@ -113,8 +116,10 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 			matrixStack.mulPose(new Quaternionf().rotateX(-Mth.HALF_PI));
 			float scale = .625f;
 			matrixStack.scale(scale, scale, 1);
-			ClientUtils.mc().getItemRenderer().renderStatic(displays.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
-					matrixStack, bufferIn, 0);
+			ClientUtils.mc().getItemRenderer().renderStatic(
+					displays.get(0), ItemDisplayContext.FIXED,
+					combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+					te.getLevel(), 0);
 			matrixStack.popPose();
 		}
 		matrixStack.popPose();

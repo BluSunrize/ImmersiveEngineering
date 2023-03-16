@@ -16,17 +16,17 @@ import blusunrize.immersiveengineering.client.models.obj.callback.item.DrillCall
 import blusunrize.immersiveengineering.common.items.DieselToolItem;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -109,7 +109,7 @@ public class DrillCallbacks implements ItemCallback<Key>
 	));
 
 	@Override
-	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	public List<List<String>> getSpecialGroups(ItemStack stack, ItemDisplayContext transform, LivingEntity entity)
 	{
 		if(shouldRotate(Tools.DRILL, entity, stack, transform))
 			return ROTATING;
@@ -121,7 +121,7 @@ public class DrillCallbacks implements ItemCallback<Key>
 
 	@Nonnull
 	@Override
-	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, ItemDisplayContext transform, LivingEntity entity, float partialTicks)
 	{
 		if(groups==FIXED.get(0))
 			return MAT_AUGERS;
@@ -144,13 +144,13 @@ public class DrillCallbacks implements ItemCallback<Key>
 	}
 
 	public static boolean shouldRotate(
-			Supplier<? extends DieselToolItem> item, LivingEntity entity, ItemStack stack, TransformType transform
+			Supplier<? extends DieselToolItem> item, LivingEntity entity, ItemStack stack, ItemDisplayContext transform
 	)
 	{
 		return entity!=null&&item.get().canToolBeUsed(stack)&&
 				(entity.getItemInHand(InteractionHand.MAIN_HAND)==stack||entity.getItemInHand(InteractionHand.OFF_HAND)==stack)&&
-				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
-						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
+				(transform==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||transform==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||
+						transform==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND||transform==ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
 	}
 
 	public record Key(ResourceLocation headTexture, int damage, boolean waterproof, boolean oiled, boolean fortune)

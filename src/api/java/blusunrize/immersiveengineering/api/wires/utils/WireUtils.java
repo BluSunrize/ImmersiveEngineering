@@ -187,7 +187,7 @@ public class WireUtils
 		for(int i = 0; i <= Connection.RENDER_POINTS_PER_WIRE; ++i)
 		{
 			Vec3 relativePos = conn.getCatenaryData().getRenderPoint(i);
-			BlockPos containingBlock = origin.offset(relativePos.x, relativePos.y, relativePos.z);
+			BlockPos containingBlock = origin.offset(BlockPos.containing(relativePos));
 			SectionPos section = SectionPos.of(containingBlock);
 			out.accept(i, relativePos, section);
 		}

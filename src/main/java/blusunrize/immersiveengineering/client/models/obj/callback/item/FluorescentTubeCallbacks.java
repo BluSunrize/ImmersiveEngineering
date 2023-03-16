@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.FluorescentTubeCallbacks.Key;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import org.joml.Vector4f;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector4f;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class FluorescentTubeCallbacks implements ItemCallback<Key>
 	private static final List<List<String>> special = List.of(List.of("tube"));
 
 	@Override
-	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	public List<List<String>> getSpecialGroups(ItemStack stack, ItemDisplayContext transform, LivingEntity entity)
 	{
 		return special;
 	}

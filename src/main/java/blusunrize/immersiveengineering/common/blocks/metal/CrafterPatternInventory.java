@@ -36,7 +36,7 @@ public class CrafterPatternInventory
 			return;
 		CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
 		this.recipe = Utils.findCraftingRecipe(invC, level).orElse(null);
-		this.inv.set(9, recipe!=null?recipe.assemble(invC): ItemStack.EMPTY);
+		this.inv.set(9, recipe!=null?recipe.assemble(invC, level.registryAccess()): ItemStack.EMPTY);
 	}
 
 	public ListTag writeToNBT()

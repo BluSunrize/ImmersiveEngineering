@@ -31,12 +31,12 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
-import java.util.Optional;
 
 public class IEExplosiveEntity extends PrimedTnt
 {
@@ -47,7 +47,7 @@ public class IEExplosiveEntity extends PrimedTnt
 	public BlockState block;
 	private Component name;
 
-	private static final EntityDataAccessor<Optional<BlockState>> dataMarker_block = SynchedEntityData.defineId(IEExplosiveEntity.class, EntityDataSerializers.BLOCK_STATE);
+	private static final EntityDataAccessor<BlockState> dataMarker_block = SynchedEntityData.defineId(IEExplosiveEntity.class, EntityDataSerializers.BLOCK_STATE);
 	private static final EntityDataAccessor<Integer> dataMarker_fuse = SynchedEntityData.defineId(IEExplosiveEntity.class, EntityDataSerializers.INT);
 
 	public IEExplosiveEntity(EntityType<IEExplosiveEntity> type, Level world)
@@ -94,7 +94,7 @@ public class IEExplosiveEntity extends PrimedTnt
 	protected void defineSynchedData()
 	{
 		super.defineSynchedData();
-		this.entityData.define(dataMarker_block, Optional.empty());
+		this.entityData.define(dataMarker_block, Blocks.AIR.defaultBlockState());
 		this.entityData.define(dataMarker_fuse, 0);
 	}
 
@@ -102,14 +102,16 @@ public class IEExplosiveEntity extends PrimedTnt
 	{
 		if(this.block!=null)
 		{
-			this.entityData.set(dataMarker_block, Optional.of(this.block));
+			this.entityData.set(dataMarker_block, this.block);
 			this.entityData.set(dataMarker_fuse, this.getFuse());
 		}
 	}
 
 	private void getBlockSynced()
 	{
-		this.block = this.entityData.get(dataMarker_block).orElse(null);
+		this.block = this.entityData.get(dataMarker_block);
+		if(this.block.isAir())
+			this.block = null;
 		this.setFuse(this.entityData.get(dataMarker_fuse));
 	}
 

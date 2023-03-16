@@ -42,7 +42,7 @@ public class GuiButtonItem extends Button
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				mc.getItemRenderer().renderAndDecorateItem(item, getX()+1, getY()+1);
+				mc.getItemRenderer().renderAndDecorateItem(transform, item, getX()+1, getY()+1);
 
 				if(!state)
 				{

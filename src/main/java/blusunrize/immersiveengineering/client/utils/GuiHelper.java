@@ -11,22 +11,23 @@ package blusunrize.immersiveengineering.client.utils;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import org.joml.Matrix4f;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
+import org.joml.Matrix4f;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.getSprite;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -50,7 +51,6 @@ public class GuiHelper
 		Matrix4f mat = transform.last().pose();
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		RenderSystem.enableBlend();
-		RenderSystem.disableTexture();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -61,7 +61,6 @@ public class GuiHelper
 		bufferbuilder.vertex(mat, x, y, 0).color(color[0], color[1], color[2], 1).endVertex();
 		bufferbuilder.unsetDefaultColor();
 		BufferUploader.drawWithShader(bufferbuilder.end());
-		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
 	}
 
@@ -168,8 +167,9 @@ public class GuiHelper
 		drawSlot(transform, x, y, w, h, 0x77222222, 0x77111111, 0x77999999);
 	}
 
-	public static void renderItemWithOverlayIntoGUI(MultiBufferSource buffer, PoseStack transform,
-													ItemStack stack, int x, int y)
+	public static void renderItemWithOverlayIntoGUI(
+			MultiBufferSource buffer, PoseStack transform, ItemStack stack, int x, int y, Level level
+	)
 	{
 		ItemRenderer itemRenderer = mc().getItemRenderer();
 		BakedModel bakedModel = itemRenderer.getModel(stack, null, mc().player, 0);
@@ -182,8 +182,9 @@ public class GuiHelper
 		transform.scale(1, -1, 1);
 		transform.scale(16, 16, 16);
 		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
-		itemRenderer.renderStatic(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
-				transform, batchBuffer, 0);
+		itemRenderer.renderStatic(
+				stack, ItemDisplayContext.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY, transform, batchBuffer, level, 0
+		);
 		batchBuffer.pipe(buffer);
 		transform.popPose();
 		renderDurabilityBar(stack, buffer, transform);

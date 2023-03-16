@@ -27,11 +27,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
@@ -213,7 +213,11 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 						matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
 						matrixStack.mulPose(new Quaternionf().rotateXYZ(itemDisplays[i][4], 0, 0));
 						matrixStack.scale(scale, scale, .5f);
-						ClientUtils.mc().getItemRenderer().renderStatic(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
+						ClientUtils.mc().getItemRenderer().renderStatic(
+								dList.get(0), ItemDisplayContext.FIXED,
+								combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+								blockEntity.getLevel(), 0
+						);
 						matrixStack.popPose();
 					}
 					else
@@ -248,9 +252,13 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 							}
 							matrixStack.pushPose();
 							matrixStack.translate(localItemX, localItemY, localItemZ);
-							matrixStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(localAngle), 0, 0));
+							matrixStack.mulPose(new Quaternionf().rotateXYZ((float)Math.toRadians(localAngle), 0, 0));
 							matrixStack.scale(scale, scale, .5f);
-							ClientUtils.mc().getItemRenderer().renderStatic(dList.get(d), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
+							ClientUtils.mc().getItemRenderer().renderStatic(
+									dList.get(d), ItemDisplayContext.FIXED,
+									combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+									blockEntity.getLevel(), 0
+							);
 							matrixStack.popPose();
 						}
 					}

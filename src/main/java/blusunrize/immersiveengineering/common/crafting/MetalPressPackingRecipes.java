@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -166,7 +167,7 @@ public class MetalPressPackingRecipes
 	}
 
 	@Nullable
-	public static RecipeDelegate getRecipeDelegate(CraftingRecipe recipe, ResourceLocation id)
+	public static RecipeDelegate getRecipeDelegate(CraftingRecipe recipe, ResourceLocation id, RegistryAccess access)
 	{
 		NonNullList<Ingredient> ingredients = recipe.getIngredients();
 		if(ingredients.isEmpty()||ingredients.get(0).isEmpty())
@@ -175,17 +176,17 @@ public class MetalPressPackingRecipes
 		if(PACK4_ID.equals(id))
 		{
 			if(ingredients.size()==4)
-				return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem()), input, false);
+				return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem(access)), input, false);
 		}
 		else if(PACK9_ID.equals(id))
 		{
 			if(ingredients.size()==9)
-				return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem()), input, true);
+				return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem(access)), input, true);
 		}
 		else if(UNPACK_ID.equals(id))
 		{
 			if(ingredients.size()==1)
-				return RecipeDelegate.getUnpacking(Pair.of(recipe, recipe.getResultItem()), input);
+				return RecipeDelegate.getUnpacking(Pair.of(recipe, recipe.getResultItem(access)), input);
 		}
 		return null;
 	}
@@ -197,7 +198,7 @@ public class MetalPressPackingRecipes
 		);
 		return world.getRecipeManager()
 				.getRecipeFor(RecipeType.CRAFTING, invC, world)
-				.map(recipe -> Pair.of(recipe, recipe.assemble(invC)))
+				.map(recipe -> Pair.of(recipe, recipe.assemble(invC, world.registryAccess())))
 				.orElse(null);
 	}
 

@@ -37,7 +37,7 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	public ShapelessFluidAwareRecipe(ShapelessRecipe in)
 	{
-		this(in.getId(), in.getGroup(), in.getIngredients(), in.getResultItem());
+		this(in.getId(), in.getGroup(), in.getIngredients(), in.getResultItem(null));
 	}
 
 	@Nullable
@@ -79,7 +79,7 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	public ShapelessRecipe toVanilla()
 	{
-		return new ShapelessRecipe(getId(), getGroup(), category(), getResultItem(), getIngredients());
+		return new ShapelessRecipe(getId(), getGroup(), category(), getResultItem(null), getIngredients());
 	}
 
 	@Override

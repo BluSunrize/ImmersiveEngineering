@@ -174,7 +174,7 @@ public class CrusherLogic implements
 			if(consumed > 0)
 			{
 				EventHandler.crusherMap.put(collided.getUUID(), s -> state.doProcessOutput(s, level));
-				collided.hurt(IEDamageSources.crusher, consumed/20f);
+				collided.hurt(IEDamageSources.crusher(collided.level), consumed/20f);
 			}
 		}
 	}

@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -98,8 +99,10 @@ public class ManualElementCrafting extends SpecialManualElements
 					pIngredients[index] = new PositionedItemStack(ingredientsPre.get(index),
 							xBase+widthPos*18, heightPos*18+yOffset);
 			}
-		pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getResultItem(), xBase+recipeWidth*18+18,
-				recipeHeight*9-8+yOffset);
+		final RegistryAccess regAccess = Minecraft.getInstance().level.registryAccess();
+		pIngredients[pIngredients.length-1] = new PositionedItemStack(
+				rec.getResultItem(regAccess), xBase+recipeWidth*18+18, recipeHeight*9-8+yOffset
+		);
 		if(this.heightPixels[recipeIndex] < recipeHeight*18)
 		{
 			this.heightPixels[recipeIndex] = recipeHeight*18;
@@ -108,7 +111,7 @@ public class ManualElementCrafting extends SpecialManualElements
 					moveBy(oldStacks, yOffset);
 		}
 		this.recipeLayout[recipeIndex].add(pIngredients);
-		addProvidedItem(rec.getResultItem());
+		addProvidedItem(rec.getResultItem(regAccess));
 	}
 
 	private void addFixedRecipe(int index, PositionedItemStack[] recipe)

@@ -77,7 +77,9 @@ public class BlueprintOutputArea extends InfoArea
 		ItemStack ghostStack = slot.recipe.output.get();
 		if(ghostStack.isEmpty()||slot.hasItem())
 			return;
-		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(ghostStack, area.getX(), area.getY());
+		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(
+				transform, ghostStack, area.getX(), area.getY()
+		);
 		RenderSystem.depthFunc(GL11.GL_GREATER);
 		fill(transform, area.getX(), area.getY(), area.getX()+area.getWidth(), area.getY()+area.getHeight(), 0xbb333333);
 		RenderSystem.depthFunc(GL11.GL_LEQUAL);

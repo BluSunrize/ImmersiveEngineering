@@ -151,7 +151,7 @@ public class ArcRecyclingChecker
 		return Pair.of(iRecipe -> {
 			if(!RECYCLING_RECIPE_TYPES.contains(iRecipe.getType()))
 				return false;
-			return checker.isAllowed(tags, iRecipe.getResultItem());
+			return checker.isAllowed(tags, iRecipe.getResultItem(tags));
 		}, checker);
 	}
 

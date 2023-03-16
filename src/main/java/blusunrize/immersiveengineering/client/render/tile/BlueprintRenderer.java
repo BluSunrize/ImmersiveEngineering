@@ -201,7 +201,7 @@ public class BlueprintRenderer
 			float deltaX = x1-x0;
 			float deltaY = y1-y0;
 			// Normalize
-			final float distance = Mth.fastInvSqrt(deltaY*deltaY+deltaX*deltaX);
+			final double distance = Mth.invSqrt(deltaY*deltaY+deltaX*deltaX);
 			deltaX /= distance;
 			deltaY /= distance;
 			// Draw quad

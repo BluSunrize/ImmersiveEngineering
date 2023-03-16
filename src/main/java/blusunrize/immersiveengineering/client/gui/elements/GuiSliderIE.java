@@ -42,7 +42,7 @@ public class GuiSliderIE extends ForgeSlider
 	}
 
 	@Override
-	public void renderButton(@Nonnull PoseStack transform, int pMouseX, int pMouseY, float pPartialTick)
+	public void renderWidget(@Nonnull PoseStack transform, int pMouseX, int pMouseY, float pPartialTick)
 	{
 		ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
 		Font fontrenderer = Minecraft.getInstance().font;

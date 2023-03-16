@@ -10,6 +10,9 @@ package blusunrize.immersiveengineering.api;
 
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -84,24 +87,29 @@ public class Lib
 
 	public static final int colour_nixieTubeText = 0xff9900;
 
-	public static String DMG_RevolverCasull = "ieRevolver_casull";
-	public static String DMG_RevolverAP = "ieRevolver_armorPiercing";
-	public static String DMG_RevolverBuck = "ieRevolver_buckshot";
-	public static String DMG_RevolverDragon = "ieRevolver_dragonsbreath";
-	public static String DMG_RevolverHoming = "ieRevolver_homing";
-	public static String DMG_RevolverWolfpack = "ieRevolver_wolfpack";
-	public static String DMG_RevolverSilver = "ieRevolver_silver";
-	public static String DMG_RevolverPotion = "ieRevolver_potion";
-	public static String DMG_Crusher = "ieCrushed";
-	public static String DMG_Sawmill = "ieSawmill";
-	public static String DMG_Tesla = "ieTesla";
-	public static String DMG_Acid = "ieAcid";
-	public static String DMG_Railgun = "ieRailgun";
-	public static String DMG_Sawblade = "ieSawblade";
-	public static String DMG_Tesla_prim = "ieTeslaPrimary";
-	public static String DMG_RazorWire = "ieRazorWire";
-	public static String DMG_RazorShock = "ieRazorShock";
-	public static String DMG_WireShock = "ieWireShock";
+	public static ResourceKey<DamageType> DMG_RevolverCasull = ieDamage("revolver_casull");
+	public static ResourceKey<DamageType> DMG_RevolverAP = ieDamage("revolver_armorpiercing");
+	public static ResourceKey<DamageType> DMG_RevolverBuck = ieDamage("revolver_buckshot");
+	public static ResourceKey<DamageType> DMG_RevolverDragon = ieDamage("revolver_dragonsbreath");
+	public static ResourceKey<DamageType> DMG_RevolverHoming = ieDamage("revolver_homing");
+	public static ResourceKey<DamageType> DMG_RevolverWolfpack = ieDamage("revolver_wolfpack");
+	public static ResourceKey<DamageType> DMG_RevolverSilver = ieDamage("revolver_silver");
+	public static ResourceKey<DamageType> DMG_RevolverPotion = ieDamage("revolver_potion");
+	public static ResourceKey<DamageType> DMG_Crusher = ieDamage("crushed");
+	public static ResourceKey<DamageType> DMG_Sawmill = ieDamage("sawmill");
+	public static ResourceKey<DamageType> DMG_Tesla = ieDamage("tesla");
+	public static ResourceKey<DamageType> DMG_Acid = ieDamage("acid");
+	public static ResourceKey<DamageType> DMG_Railgun = ieDamage("railgun");
+	public static ResourceKey<DamageType> DMG_Sawblade = ieDamage("sawblade");
+	public static ResourceKey<DamageType> DMG_Tesla_prim = ieDamage("tesla_primary");
+	public static ResourceKey<DamageType> DMG_RazorWire = ieDamage("razor_wire");
+	public static ResourceKey<DamageType> DMG_RazorShock = ieDamage("razor_shock");
+	public static ResourceKey<DamageType> DMG_WireShock = ieDamage("wire_shock");
+
+	private static ResourceKey<DamageType> ieDamage(String path)
+	{
+		return ResourceKey.create(Registries.DAMAGE_TYPE, IEApi.ieLoc(path));
+	}
 
 	public static final Tier MATERIAL_Steel = new Tier()
 	{

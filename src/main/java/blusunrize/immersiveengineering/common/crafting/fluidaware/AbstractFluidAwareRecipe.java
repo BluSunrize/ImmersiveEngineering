@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.IMatchLocation;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +59,7 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem()
+	public ItemStack getResultItem(RegistryAccess access)
 	{
 		return this.recipeOutput;
 	}
@@ -81,9 +82,9 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv)
+	public ItemStack assemble(@Nonnull CraftingContainer inv, RegistryAccess access)
 	{
-		return this.getResultItem().copy();
+		return this.getResultItem(access).copy();
 	}
 
 	@Nonnull

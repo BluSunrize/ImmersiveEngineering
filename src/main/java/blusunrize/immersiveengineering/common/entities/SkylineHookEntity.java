@@ -386,10 +386,10 @@ public class SkylineHookEntity extends Entity
 
 	@Override
 	@Nullable
-	public Entity getControllingPassenger()
+	public LivingEntity getControllingPassenger()
 	{
 		List<Entity> list = this.getPassengers();
-		return list.isEmpty()?null: list.get(0);
+		return list.isEmpty()?null: (LivingEntity)list.get(0);
 	}
 
 	@Override

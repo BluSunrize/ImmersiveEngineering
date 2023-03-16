@@ -28,7 +28,7 @@ public class RevolverAssemblyRecipeSerializer implements RecipeSerializer<Revolv
 	{
 		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json);
 		RevolverAssemblyRecipe recipe = new RevolverAssemblyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem());
+				basic.getIngredients(), basic.getResultItem(null));
 		if(GsonHelper.isValidNode(json, "copy_nbt"))
 		{
 			if(GsonHelper.isArrayNode(json, "copy_nbt"))
@@ -51,7 +51,7 @@ public class RevolverAssemblyRecipeSerializer implements RecipeSerializer<Revolv
 	{
 		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer);
 		RevolverAssemblyRecipe recipe = new RevolverAssemblyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem());
+				basic.getIngredients(), basic.getResultItem(null));
 		if(buffer.readBoolean())
 			recipe.allowQuarterTurn();
 		if(buffer.readBoolean())

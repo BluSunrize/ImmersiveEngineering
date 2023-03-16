@@ -26,11 +26,11 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector4f;
 
@@ -47,14 +47,14 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 	}
 
 	@Override
-	public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrixStackIn, @Nonnull MultiBufferSource bufferIn,
+	public void renderByItem(@Nonnull ItemStack stack, @Nonnull ItemDisplayContext transformType, @Nonnull PoseStack matrixStackIn, @Nonnull MultiBufferSource bufferIn,
 							 int combinedLightIn, int combinedOverlayIn)
 	{
 		renderByItem(stack, transformType, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, GlobalTempData.getActiveModel());
 	}
 
 	public <T> void renderByItem(
-			ItemStack stack, TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn,
+			ItemStack stack, ItemDisplayContext transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn,
 			int combinedLightIn, int combinedOverlayIn, SpecificIEOBJModel<T> model
 	)
 	{
@@ -72,7 +72,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			if(callback.shouldRenderGroup(model.getKey(), g, null))
 				visible.add(g);
 		LivingEntity entity = GlobalTempData.getActiveHolder();
-		if(transformType==TransformType.FIRST_PERSON_LEFT_HAND||transformType==TransformType.THIRD_PERSON_LEFT_HAND)
+		if(transformType==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||transformType==ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
 		{
 			MultiBufferSource oldBufferIn = bufferIn;
 			bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));

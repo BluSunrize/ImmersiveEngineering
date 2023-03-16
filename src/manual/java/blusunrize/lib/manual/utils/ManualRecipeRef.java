@@ -104,7 +104,9 @@ public class ManualRecipeRef
 
 	public boolean matches(Recipe<?> rec)
 	{
-		if(isResult()&&ManualUtils.stackMatchesObject(rec.getResultItem(), getResult()))
+		if(isResult()&&ManualUtils.stackMatchesObject(
+				rec.getResultItem(Minecraft.getInstance().level.registryAccess()), getResult()
+		))
 			return true;
 		return isRecipeName()&&getRecipeName().equals(rec.getId());
 	}

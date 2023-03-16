@@ -147,8 +147,8 @@ public class CatenaryTracerTest
 	private CatenaryTracer create(Vec3 start, Vec3 end, double slack)
 	{
 		WireType type = new DummyWireType(slack);
-		BlockPos posStart = new BlockPos(start);
-		BlockPos posEnd = new BlockPos(end);
+		BlockPos posStart = BlockPos.containing(start);
+		BlockPos posEnd = BlockPos.containing(end);
 		Connection conn = new Connection(
 				type,
 				new ConnectionPoint(posStart, 0),

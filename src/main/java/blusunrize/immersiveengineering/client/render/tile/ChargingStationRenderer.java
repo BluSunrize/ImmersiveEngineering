@@ -11,11 +11,10 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ChargingStationBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
+import org.joml.Quaternionf;
 
 public class ChargingStationRenderer extends IEBlockEntityRenderer<ChargingStationBlockEntity>
 {
@@ -47,8 +46,11 @@ public class ChargingStationRenderer extends IEBlockEntityRenderer<ChargingStati
 				matrixStack.pushPose();
 				float scale = .625f;
 				matrixStack.scale(scale, scale, 1);
-				ClientUtils.mc().getItemRenderer().renderStatic(te.inventory.get(0), TransformType.FIXED, combinedLightIn,
-						combinedOverlayIn, matrixStack, bufferIn, 0);
+				ClientUtils.mc().getItemRenderer().renderStatic(
+						te.inventory.get(0), ItemDisplayContext.FIXED,
+						combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+						te.getLevel(), 0
+				);
 				matrixStack.popPose();
 			}
 			matrixStack.popPose();

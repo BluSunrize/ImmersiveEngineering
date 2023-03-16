@@ -80,7 +80,7 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 	{
 		int protection = (!entity.getItemBySlot(EquipmentSlot.FEET).isEmpty()?1: 0)+(!entity.getItemBySlot(EquipmentSlot.LEGS).isEmpty()?1: 0);
 		float dmg = protection==2?.5f: protection==1?1: 1.5f;
-		entity.hurt(IEDamageSources.razorWire, dmg);
+		entity.hurt(IEDamageSources.razorWire(entity.level), dmg);
 	}
 
 	@Override
@@ -256,6 +256,6 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 		AABB aabb = new AABB(getBlockPos().offset(getFacing().getAxis()==Axis.Z?-widthN: 0, 0, getFacing().getAxis()==Axis.X?-widthN: 0), getBlockPos().offset(getFacing().getAxis()==Axis.Z?1+widthP: 1, 1, getFacing().getAxis()==Axis.X?1+widthP: 1));
 		List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, aabb);
 		for(LivingEntity ent : entities)
-			ent.hurt(IEDamageSources.razorShock, 2);
+			ent.hurt(IEDamageSources.razorShock(level), 2);
 	}
 }

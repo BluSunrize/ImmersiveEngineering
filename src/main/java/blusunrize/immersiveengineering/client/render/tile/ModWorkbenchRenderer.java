@@ -18,9 +18,9 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
@@ -70,8 +70,8 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				transform.mulPose(new Quaternionf().rotateY(Mth.PI).rotateX(Mth.HALF_PI));
 				transform.translate(-.875, 0, 0);
 				transform.scale(.75f, .75f, .75f);
-				ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-						combinedLightIn, combinedOverlayIn, transform, bufferIn, 0);
+				ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED,
+						combinedLightIn, combinedOverlayIn, transform, bufferIn, te.getLevel(), 0);
 				transform.popPose();
 			}
 		}
@@ -101,8 +101,8 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 					{
 						try
 						{
-							ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-									combinedLightIn, combinedOverlayIn, transform, bufferIn, 0);
+							ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemDisplayContext.FIXED,
+									combinedLightIn, combinedOverlayIn, transform, bufferIn, te.getLevel(), 0);
 						} catch(Exception e)
 						{
 							e.printStackTrace();

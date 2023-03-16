@@ -22,13 +22,14 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Wearable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.NotNull;
 
-public class GliderItem extends IEBaseItem implements Wearable
+public class GliderItem extends IEBaseItem implements Equipable
 {
 	public GliderItem()
 	{
@@ -103,4 +104,10 @@ public class GliderItem extends IEBaseItem implements Wearable
 		return EquipmentSlot.CHEST;
 	}
 
+	@Override
+	@NotNull
+	public EquipmentSlot getEquipmentSlot()
+	{
+		return EquipmentSlot.CHEST;
+	}
 }

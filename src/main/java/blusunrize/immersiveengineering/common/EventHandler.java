@@ -42,6 +42,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -265,7 +266,7 @@ public class EventHandler
 					if(EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, true)==PowerpackItem.TESLA_CONSUMPTION)
 					{
 						EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, false);
-						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(2+player.getRandom().nextInt(4), true);
+						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(player.getLevel(), 2+player.getRandom().nextInt(4), true);
 						if(dmgsrc.apply(attacker))
 							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 60));
 						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
@@ -278,13 +279,13 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)
 	{
-		if(event.getSource().isFire()&&event.getEntity().getEffect(IEPotions.FLAMMABLE.get())!=null)
+		if(event.getSource().is(DamageTypeTags.IS_FIRE)&&event.getEntity().getEffect(IEPotions.FLAMMABLE.get())!=null)
 		{
 			int amp = event.getEntity().getEffect(IEPotions.FLAMMABLE.get()).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(("flux".equals(event.getSource().getMsgId())||IEDamageSources.razorShock.equals(event.getSource())||
+		if(("flux".equals(event.getSource().getMsgId())||event.getSource().is(Lib.DMG_RazorShock)||
 				event.getSource() instanceof ElectricDamageSource)&&event.getEntity().getEffect(IEPotions.CONDUCTIVE.get())!=null)
 		{
 			int amp = event.getEntity().getEffect(IEPotions.CONDUCTIVE.get()).getAmplifier();
@@ -412,7 +413,7 @@ public class EventHandler
 				itementity.setDefaultPickUpDelay();
 				event.getLevel().addFreshEntity(itementity);
 				lectern.clearContent();
-				LecternBlock.resetBookState(event.getLevel(), pos, state, false);
+				LecternBlock.resetBookState(null, event.getLevel(), pos, state, false);
 			}
 			event.setCanceled(true);
 		}

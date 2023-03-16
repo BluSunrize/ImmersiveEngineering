@@ -55,12 +55,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.*;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlot.Type;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -153,12 +148,11 @@ public class Recipes extends RecipeProvider
 		addStandardSmeltingBlastingRecipe(Tools.STEEL_SHOVEL, Metals.NUGGETS.get(EnumMetals.STEEL), 0.1F, out, "_recycle_shovel");
 		addStandardSmeltingBlastingRecipe(Tools.STEEL_SWORD, Metals.NUGGETS.get(EnumMetals.STEEL), 0.1F, out, "_recycle_sword");
 
-		for(EquipmentSlot slot : EquipmentSlot.values())
-			if(slot.getType()==Type.ARMOR)
-			{
-				addStandardSmeltingBlastingRecipe(Tools.STEEL_ARMOR.get(slot), Metals.NUGGETS.get(EnumMetals.STEEL), 0.1F, out, "_recycle_steel_"+slot.getName());
-				addStandardSmeltingBlastingRecipe(Misc.FARADAY_SUIT.get(slot), Metals.NUGGETS.get(EnumMetals.ALUMINUM), 0.1F, out, "_recycle_faraday_"+slot.getName());
-			}
+		for(ArmorItem.Type slot : ArmorItem.Type.values())
+		{
+			addStandardSmeltingBlastingRecipe(Tools.STEEL_ARMOR.get(slot), Metals.NUGGETS.get(EnumMetals.STEEL), 0.1F, out, "_recycle_steel_"+slot.getName());
+			addStandardSmeltingBlastingRecipe(Misc.FARADAY_SUIT.get(slot), Metals.NUGGETS.get(EnumMetals.ALUMINUM), 0.1F, out, "_recycle_faraday_"+slot.getName());
+		}
 
 		for(Entry<ResourceLocation, BlockEntry<SlabBlock>> blockSlab : IEBlocks.TO_SLAB.entrySet())
 			addSlab(ForgeRegistries.BLOCKS.getValue(blockSlab.getKey()), blockSlab.getValue(), out);
@@ -2890,56 +2884,54 @@ public class Recipes extends RecipeProvider
 
 	private Consumer<FinishedRecipe> buildBlueprint(Consumer<FinishedRecipe> out, String blueprint, ICondition... conditions)
 	{
-		return recipe -> {
-			out.accept(new FinishedRecipe()
+		return recipe -> out.accept(new FinishedRecipe()
+		{
+			@Override
+			public void serializeRecipeData(@Nonnull JsonObject json)
 			{
-				@Override
-				public void serializeRecipeData(@Nonnull JsonObject json)
+				if(conditions.length > 0)
 				{
-					if(conditions.length > 0)
-					{
-						JsonArray conditionArray = new JsonArray();
-						for(ICondition condition : conditions)
-							conditionArray.add(CraftingHelper.serialize(condition));
-						json.add("conditions", conditionArray);
-					}
-
-					recipe.serializeRecipeData(json);
-					JsonObject output = json.getAsJsonObject("result");
-					JsonObject nbt = new JsonObject();
-					nbt.addProperty("blueprint", blueprint);
-					output.add("nbt", nbt);
+					JsonArray conditionArray = new JsonArray();
+					for(ICondition condition : conditions)
+						conditionArray.add(CraftingHelper.serialize(condition));
+					json.add("conditions", conditionArray);
 				}
 
-				@Nonnull
-				@Override
-				public ResourceLocation getId()
-				{
-					return recipe.getId();
-				}
+				recipe.serializeRecipeData(json);
+				JsonObject output = json.getAsJsonObject("result");
+				JsonObject nbt = new JsonObject();
+				nbt.addProperty("blueprint", blueprint);
+				output.add("nbt", nbt);
+			}
 
-				@Nonnull
-				@Override
-				public RecipeSerializer<?> getType()
-				{
-					return recipe.getType();
-				}
+			@Nonnull
+			@Override
+			public ResourceLocation getId()
+			{
+				return recipe.getId();
+			}
 
-				@Nullable
-				@Override
-				public JsonObject serializeAdvancement()
-				{
-					return recipe.serializeAdvancement();
-				}
+			@Nonnull
+			@Override
+			public RecipeSerializer<?> getType()
+			{
+				return recipe.getType();
+			}
 
-				@Nullable
-				@Override
-				public ResourceLocation getAdvancementId()
-				{
-					return recipe.getAdvancementId();
-				}
-			});
-		};
+			@Nullable
+			@Override
+			public JsonObject serializeAdvancement()
+			{
+				return recipe.serializeAdvancement();
+			}
+
+			@Nullable
+			@Override
+			public ResourceLocation getAdvancementId()
+			{
+				return recipe.getAdvancementId();
+			}
+		});
 	}
 
 	private void recipesWeapons(@Nonnull Consumer<FinishedRecipe> out)
@@ -3211,12 +3203,12 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
 	}
 
-	private void addArmor(TagKey<Item> input, Map<EquipmentSlot, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
+	private void addArmor(TagKey<Item> input, Map<ArmorItem.Type, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
 	{
-		ItemLike head = items.get(EquipmentSlot.HEAD);
-		ItemLike chest = items.get(EquipmentSlot.CHEST);
-		ItemLike legs = items.get(EquipmentSlot.LEGS);
-		ItemLike feet = items.get(EquipmentSlot.FEET);
+		ItemLike head = items.get(ArmorItem.Type.HELMET);
+		ItemLike chest = items.get(ArmorItem.Type.CHESTPLATE);
+		ItemLike legs = items.get(ArmorItem.Type.LEGGINGS);
+		ItemLike feet = items.get(ArmorItem.Type.BOOTS);
 		shapedMisc(head)
 				.pattern("xxx")
 				.pattern("x x")

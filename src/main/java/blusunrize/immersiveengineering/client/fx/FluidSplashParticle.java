@@ -73,7 +73,7 @@ public class FluidSplashParticle extends TextureSheetParticle
 			this.zd *= 0.7;
 		}
 
-		BlockPos blockpos = new BlockPos(this.x, this.y, this.z);
+		BlockPos blockpos = BlockPos.containing(this.x, this.y, this.z);
 		BlockState iblockstate = this.level.getBlockState(blockpos);
 		Material material = iblockstate.getMaterial();
 

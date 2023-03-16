@@ -40,7 +40,8 @@ public class WireCollisions
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
 		if(!e.level.isClientSide&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity living&&
-				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
+				// TODO this check is probably a lot slower now. Cache object?
+				!e.isInvulnerableTo(IEDamageSources.wireShock(e.level))&&
 				!(e instanceof Player player&&player.getAbilities().invulnerable))
 		{
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.level);

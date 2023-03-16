@@ -302,13 +302,11 @@ public class IERenderTypes extends RenderStateShard
 
 					GL11.glStencilMask(0xFF);
 					RenderSystem.clear(GL11.GL_STENCIL_BUFFER_BIT, true);
-					RenderSystem.disableTexture();
 					Tesselator tes = Tesselator.getInstance();
 					BufferBuilder bb = tes.getBuilder();
 					bb.begin(Mode.QUADS, DefaultVertexFormat.POSITION);
 					setupStencilArea.accept(bb);
 					tes.end();
-					RenderSystem.enableTexture();
 					RenderSystem.colorMask(true, true, true, true);
 					RenderSystem.depthMask(true);
 					GL11.glStencilMask(0x00);
@@ -363,7 +361,6 @@ public class IERenderTypes extends RenderStateShard
 		public WhiteTextureStateShard()
 		{
 			super(() -> {
-				RenderSystem.enableTexture();
 				RenderSystem.setShaderTexture(0, WhiteTexture.INSTANCE.get().getTextureLocation());
 			}, () -> {
 			});

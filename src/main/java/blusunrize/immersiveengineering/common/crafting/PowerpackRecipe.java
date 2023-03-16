@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -69,7 +69,7 @@ public class PowerpackRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv)
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -106,7 +106,7 @@ public class PowerpackRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem()
+	public ItemStack getResultItem(RegistryAccess access)
 	{
 		return new ItemStack(Misc.POWERPACK, 1);
 	}
@@ -127,7 +127,7 @@ public class PowerpackRecipe implements CraftingRecipe
 
 	private boolean isValidArmor(ItemStack stack)
 	{
-		if(!(stack.getItem() instanceof ArmorItem armor)||armor.getSlot()!=EquipmentSlot.CHEST)
+		if(!(stack.getItem() instanceof ArmorItem armor)||armor.getEquipmentSlot()!=EquipmentSlot.CHEST)
 			return false;
 		if(stack.getItem()==Misc.POWERPACK.asItem())
 			return false;

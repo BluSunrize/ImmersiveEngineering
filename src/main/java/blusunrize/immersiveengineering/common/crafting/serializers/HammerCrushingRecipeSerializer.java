@@ -63,6 +63,6 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShape
 		buffer.writeInt(ingredients.size());
 		for(Ingredient ingredient : ingredients)
 			CraftingHelper.write(buffer, ingredient);
-		buffer.writeItem(recipe.getResultItem());
+		buffer.writeItem(recipe.getResultItem(null));
 	}
 }

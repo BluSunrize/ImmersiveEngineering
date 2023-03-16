@@ -27,10 +27,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 import org.joml.Quaternionf;
@@ -167,8 +168,11 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 				if(!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
 				{
 					for(ItemStack displayS : display)
-						ClientUtils.mc().getItemRenderer().renderStatic(displayS, TransformType.FIXED,
-								combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
+						ClientUtils.mc().getItemRenderer().renderStatic(
+								displayS, ItemDisplayContext.FIXED,
+								combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+								te.getLevel(), 0
+						);
 				}
 				else
 				{
@@ -176,9 +180,9 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 					float h1 = h0+itemDisplays[i][4];
 
 					for(ItemStack inputS : process.inputItems)
-						renderItemPart(bufferIn, matrixStack, inputS, h0, h1, combinedLightIn, combinedOverlayIn, 0);
+						renderItemPart(bufferIn, matrixStack, inputS, h0, h1, combinedLightIn, combinedOverlayIn, 0, te.getLevel());
 					for(ItemStack displayS : display)
-						renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1);
+						renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1, te.getLevel());
 				}
 
 				matrixStack.scale(1/scale, 1/scale, 1/scale);
@@ -199,8 +203,10 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		matrixStack.popPose();
 	}
 
-	private void renderItemPart(MultiBufferSource baseBuffer, PoseStack matrix, ItemStack item, float minY, float maxY,
-								int combinedLightIn, int combinedOverlayIn, int ref)
+	private void renderItemPart(
+			MultiBufferSource baseBuffer, PoseStack matrix, ItemStack item, float minY, float maxY,
+			int combinedLightIn, int combinedOverlayIn, int ref, Level level
+	)
 	{
 		PoseStack innerStack = new PoseStack();
 		innerStack.last().pose().mul(matrix.last().pose());
@@ -211,7 +217,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 				vertexBuilder -> {
 					innerStack.pushPose();
 					innerStack.mulPose(new Quaternionf()
-							.rotateY((90.0F-ClientUtils.mc().getEntityRenderDispatcher().camera.getYRot()) * Mth.DEG_TO_RAD)
+							.rotateY((90.0F-ClientUtils.mc().getEntityRenderDispatcher().camera.getYRot())*Mth.DEG_TO_RAD)
 					);
 					RenderUtils.renderBox(vertexBuilder, innerStack, -.5f, minY, -.5f, .5f, maxY, .5f);
 					innerStack.popPose();
@@ -220,8 +226,9 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 				ref
 		);
 		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
-		ClientUtils.mc().getItemRenderer().renderStatic(item, TransformType.FIXED,
-				combinedLightIn, combinedOverlayIn, matrix, batchBuffer, 0);
+		ClientUtils.mc().getItemRenderer().renderStatic(
+				item, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, matrix, batchBuffer, level, 0
+		);
 		batchBuffer.pipe(stencilWrapper);
 	}
 }

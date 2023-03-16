@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
@@ -32,14 +32,14 @@ public interface ItemCallback<Key> extends IEOBJCallback<Key>
 		}
 	};
 
-	default List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	default List<List<String>> getSpecialGroups(ItemStack stack, ItemDisplayContext transform, LivingEntity entity)
 	{
 		return List.of();
 	}
 
 	@Nonnull
 	default Transformation getTransformForGroups(
-			ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity, float partialTicks
+			ItemStack stack, List<String> groups, ItemDisplayContext transform, LivingEntity entity, float partialTicks
 	)
 	{
 		return Transformation.identity();
@@ -52,7 +52,7 @@ public interface ItemCallback<Key> extends IEOBJCallback<Key>
 
 	Key extractKey(ItemStack stack, LivingEntity owner);
 
-	default void handlePerspective(Key key, LivingEntity holder, TransformType cameraTransformType, PoseStack mat)
+	default void handlePerspective(Key key, LivingEntity holder, ItemDisplayContext cameraItemDisplayContext, PoseStack mat)
 	{
 	}
 

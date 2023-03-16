@@ -120,7 +120,7 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 					x = ii==0?48: ii==1?29: ii==3?2: 10;
 					y = ii==1?57: ii==3?30: ii==4?11: 49;
 				}
-				ir.renderAndDecorateItem(b, x, y);
+				ir.renderAndDecorateItem(transform, b, x, y);
 			}
 		}
 		modelviewStack.popPose();

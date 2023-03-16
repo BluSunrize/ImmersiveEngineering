@@ -38,7 +38,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -51,6 +50,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
@@ -341,18 +341,18 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 	};
 
 	// TODO this needs to move to JSON at some points, like all other transforms
-	private static final Map<TransformType, Transformation> TRANSFORMATION_MAP;
+	private static final Map<ItemDisplayContext, Transformation> TRANSFORMATION_MAP;
 
 	static
 	{
-		Map<TransformType, Matrix4> matrixMap = new EnumMap<>(TransformType.class);
-		matrixMap.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
-		matrixMap.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
-		matrixMap.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
-		matrixMap.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
-		matrixMap.put(TransformType.GUI, new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0));
-		matrixMap.put(TransformType.FIXED, new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125));
-		matrixMap.put(TransformType.GROUND, new Matrix4().scale(.25, .25, .25));
+		Map<ItemDisplayContext, Matrix4> matrixMap = new EnumMap<>(ItemDisplayContext.class);
+		matrixMap.put(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
+		matrixMap.put(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
+		matrixMap.put(ItemDisplayContext.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
+		matrixMap.put(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
+		matrixMap.put(ItemDisplayContext.GUI, new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0));
+		matrixMap.put(ItemDisplayContext.FIXED, new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125));
+		matrixMap.put(ItemDisplayContext.GROUND, new Matrix4().scale(.25, .25, .25));
 		TRANSFORMATION_MAP = matrixMap.entrySet()
 				.stream()
 				.map(e -> Pair.of(e.getKey(), e.getValue().toTransformationMatrix()))
@@ -361,7 +361,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public BakedModel applyTransform(TransformType transformType, PoseStack stack, boolean applyLeftHandTransform)
+	public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack stack, boolean applyLeftHandTransform)
 	{
 		Transformation transform = TRANSFORMATION_MAP.get(transformType);
 		if(transform!=null)

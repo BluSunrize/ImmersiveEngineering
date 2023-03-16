@@ -30,7 +30,7 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 	public BasicShapedRecipe(ShapedRecipe vanillaBase)
 	{
 		this(vanillaBase.getId(), vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
-				vanillaBase.getIngredients(), vanillaBase.getResultItem(), vanillaBase.category());
+				vanillaBase.getIngredients(), vanillaBase.getResultItem(null), vanillaBase.category());
 	}
 
 	protected boolean checkMatch(CraftingContainer craftingInventory, MatchLocation loc)

@@ -147,7 +147,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 
 		renderBidirectionalQuad(vertices, start, end, horRadius, key.color(), verticalNormal);
 		renderBidirectionalQuad(vertices, start, end, verticalRadius, key.color(), horNormal);
-		return new RenderedSegment(vertices, new Vec3i(start.x, start.y, start.z), new Vec3i(end.x, end.y, end.z));
+		return new RenderedSegment(vertices, BlockPos.containing(start), BlockPos.containing(end));
 	}
 
 	private static int getLight(Connection connection, Vec3i point, BlockAndTintGetter level)

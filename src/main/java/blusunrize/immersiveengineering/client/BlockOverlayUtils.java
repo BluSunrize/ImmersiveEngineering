@@ -22,6 +22,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -73,7 +74,7 @@ public class BlockOverlayUtils
 				ClientUtils.font().drawInBatch(
 						Language.getInstance().getVisualOrder(s),
 						scaledWidth/2+8, scaledHeight/2+8+(i++)*ClientUtils.font().lineHeight, 0xffffffff, true,
-						transform.last().pose(), buffer, false, 0, 0xf000f0
+						transform.last().pose(), buffer, DisplayMode.NORMAL, 0, 0xf000f0
 				);
 		buffer.endBatch();
 	}

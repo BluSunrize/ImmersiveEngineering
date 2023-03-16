@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,13 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.BiFunction;
 
 public class WireDamageHandler extends LocalNetworkHandler implements ICollisionHandler
 {
 	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "wire_damage");
-	public static final SetRestrictedField<BiFunction<Float, ElectricSource, IElectricDamageSource>> GET_WIRE_DAMAGE
-			= SetRestrictedField.common();
+	public static final SetRestrictedField<WireDamageGetter> GET_WIRE_DAMAGE = SetRestrictedField.common();
 
 	private static final double KNOCKBACK_PER_DAMAGE = 10;
 
@@ -74,8 +73,9 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		final float maxPossibleDamage = shockWire.getDamageAmount(e, info.connection(), totalAvailable);
 		if(maxPossibleDamage <= 0)
 			return;
-		IElectricDamageSource dmg = GET_WIRE_DAMAGE.getValue()
-				.apply(maxPossibleDamage, shockWire.getElectricSource());
+		IElectricDamageSource dmg = GET_WIRE_DAMAGE.getValue().make(
+				e.level, maxPossibleDamage, shockWire.getElectricSource()
+		);
 		if(!dmg.apply(e))
 			return;
 		final float actualDamage = dmg.getDamage();
@@ -170,5 +170,10 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		{
 			return 0;
 		}
+	}
+
+	public interface WireDamageGetter
+	{
+		IElectricDamageSource make(Level level, float amount, ElectricSource source);
 	}
 }

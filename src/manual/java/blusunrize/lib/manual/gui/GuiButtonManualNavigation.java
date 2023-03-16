@@ -36,7 +36,7 @@ public class GuiButtonManualNavigation extends Button
 	}
 
 	@Override
-	public void renderButton(PoseStack transform, int mx, int my, float partial)
+	public void renderWidget(PoseStack transform, int mx, int my, float partial)
 	{
 		ManualUtils.bindTexture(gui.texture);
 		isHovered = mx >= this.getX()&&mx < (this.getX()+this.width)&&my >= this.getY()&&my < (this.getY()+this.height);

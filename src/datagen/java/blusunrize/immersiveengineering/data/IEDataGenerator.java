@@ -38,7 +38,7 @@ public class IEDataGenerator
 		{
 			BlockTagsProvider blockTags = new IEBlockTags(output, lookup, exHelper);
 			gen.addProvider(true, blockTags);
-			gen.addProvider(true, new IEItemTags(output, lookup, blockTags, exHelper));
+			gen.addProvider(true, new IEItemTags(output, lookup, blockTags.contentsGetter(), exHelper));
 			gen.addProvider(true, new FluidTags(output, lookup, exHelper));
 			gen.addProvider(true, new BlockEntityTags(output, lookup, exHelper));
 			gen.addProvider(true, new BannerTags(output, lookup, exHelper));

@@ -119,7 +119,7 @@ public class CraftingTableMenu extends IEContainerMenu
 			{
 				CraftingRecipe icraftingrecipe = optional.get();
 				if(craftResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe))
-					itemstack = icraftingrecipe.assemble(craftingInventory);
+					itemstack = icraftingrecipe.assemble(craftingInventory, world.registryAccess());
 			}
 
 			craftResultInventory.setItem(0, itemstack);

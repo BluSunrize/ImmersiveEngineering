@@ -15,16 +15,16 @@ import blusunrize.immersiveengineering.client.models.obj.callback.item.BuzzsawCa
 import blusunrize.immersiveengineering.common.items.BuzzsawItem;
 import blusunrize.immersiveengineering.common.items.SawbladeItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class BuzzsawCallbacks implements ItemCallback<Key>
 	private static final List<List<String>> GROUP_BLADE = List.of(List.of("blade"));
 
 	@Override
-	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	public List<List<String>> getSpecialGroups(ItemStack stack, ItemDisplayContext transform, LivingEntity entity)
 	{
 		return GROUP_BLADE;
 	}
@@ -98,7 +98,7 @@ public class BuzzsawCallbacks implements ItemCallback<Key>
 
 	@Nonnull
 	@Override
-	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, ItemDisplayContext transform, LivingEntity entity, float partialTicks)
 	{
 		if(!DrillCallbacks.shouldRotate(Tools.BUZZSAW, entity, stack, transform))
 			return MAT_FIXED;

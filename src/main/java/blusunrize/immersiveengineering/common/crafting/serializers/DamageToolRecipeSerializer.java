@@ -59,7 +59,7 @@ public class DamageToolRecipeSerializer implements RecipeSerializer<DamageToolRe
 			CraftingHelper.write(buffer, recipe.getIngredients().get(i));
 		CraftingHelper.write(buffer, recipe.getTool());
 		buffer.writeUtf(recipe.getGroup());
-		buffer.writeItem(recipe.getResultItem());
+		buffer.writeItem(recipe.getResultItem(null));
 	}
 
 	private static NonNullList<Ingredient> readIngredients(JsonArray all)

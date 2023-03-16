@@ -34,6 +34,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -364,7 +365,7 @@ public class Utils
 
 	public static boolean canBlockDamageSource(LivingEntity entity, DamageSource damageSourceIn)
 	{
-		if(!damageSourceIn.isBypassArmor()&&entity.isBlocking())
+		if(!damageSourceIn.is(DamageTypeTags.BYPASSES_ARMOR)&&entity.isBlocking())
 		{
 			Vec3 vec3d = damageSourceIn.getSourcePosition();
 			if(vec3d!=null)

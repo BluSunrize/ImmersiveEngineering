@@ -67,10 +67,10 @@ public class TemplateWorld extends Level
 	private final RecipeManager recipeManager = new RecipeManager();
 	private final TemplateChunkProvider chunkProvider;
 
-	public TemplateWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow)
+	public TemplateWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow, RegistryAccess regAccess)
 	{
 		super(
-				new FakeSpawnInfo(), Level.OVERWORLD, STRUCTURE_DIMENSION,
+				new FakeSpawnInfo(), Level.OVERWORLD, regAccess, STRUCTURE_DIMENSION,
 				() -> InactiveProfiler.INSTANCE, true, false, 0, 0
 		);
 		this.chunkProvider = new TemplateChunkProvider(blocks, this, shouldShow);
