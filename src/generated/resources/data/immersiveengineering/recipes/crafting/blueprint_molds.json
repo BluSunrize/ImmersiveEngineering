@@ -22,5 +22,6 @@
     "nbt": {
       "blueprint": "molds"
     }
-  }
+  },
+  "show_notification": true
 }

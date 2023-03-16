@@ -15,5 +15,6 @@
   ],
   "result": {
     "item": "immersiveengineering:minecart_metalbarrel"
-  }
+  },
+  "show_notification": true
 }

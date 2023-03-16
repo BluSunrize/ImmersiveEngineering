@@ -14,5 +14,6 @@
   "result": {
     "count": 3,
     "item": "immersiveengineering:metal_ladder_none"
-  }
+  },
+  "show_notification": true
 }

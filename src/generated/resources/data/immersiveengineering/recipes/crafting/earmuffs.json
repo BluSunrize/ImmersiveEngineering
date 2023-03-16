@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:earmuffs"
-  }
+  },
+  "show_notification": true
 }

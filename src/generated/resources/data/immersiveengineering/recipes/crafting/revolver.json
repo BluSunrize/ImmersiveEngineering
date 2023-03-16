@@ -30,5 +30,6 @@
   ],
   "result": {
     "item": "immersiveengineering:revolver"
-  }
+  },
+  "show_notification": true
 }

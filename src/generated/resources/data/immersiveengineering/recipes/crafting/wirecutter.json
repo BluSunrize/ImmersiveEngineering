@@ -15,5 +15,6 @@
   ],
   "result": {
     "item": "immersiveengineering:wirecutter"
-  }
+  },
+  "show_notification": true
 }

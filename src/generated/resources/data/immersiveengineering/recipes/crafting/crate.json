@@ -13,5 +13,6 @@
   ],
   "result": {
     "item": "immersiveengineering:crate"
-  }
+  },
+  "show_notification": true
 }

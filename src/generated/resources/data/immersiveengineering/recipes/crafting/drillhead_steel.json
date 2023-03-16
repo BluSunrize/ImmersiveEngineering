@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:drillhead_steel"
-  }
+  },
+  "show_notification": true
 }

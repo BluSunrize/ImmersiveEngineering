@@ -14,5 +14,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:stick_steel"
-  }
+  },
+  "show_notification": true
 }

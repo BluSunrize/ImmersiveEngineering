@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "immersiveengineering:tesla_coil"
-  }
+  },
+  "show_notification": true
 }

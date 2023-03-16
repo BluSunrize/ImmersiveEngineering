@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:cokebrick"
-  }
+  },
+  "show_notification": true
 }

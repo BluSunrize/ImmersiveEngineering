@@ -20,5 +20,6 @@
   "result": {
     "count": 2,
     "item": "immersiveengineering:balloon"
-  }
+  },
+  "show_notification": true
 }

@@ -15,5 +15,6 @@
   ],
   "result": {
     "item": "immersiveengineering:conveyor_dropper"
-  }
+  },
+  "show_notification": true
 }

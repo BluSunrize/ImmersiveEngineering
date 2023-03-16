@@ -17,5 +17,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:connector_lv"
-  }
+  },
+  "show_notification": true
 }

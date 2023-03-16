@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:thermoelectric_generator"
-  }
+  },
+  "show_notification": true
 }

@@ -14,5 +14,6 @@
   "result": {
     "count": 5,
     "item": "immersiveengineering:empty_casing"
-  }
+  },
+  "show_notification": true
 }

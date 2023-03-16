@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_armor_faraday_chestplate": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:armor_faraday_chestplate"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/nugget_aluminum_recycle_faraday_chestplate_from_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_armor_faraday_chestplate",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/nugget_aluminum_recycle_faraday_chestplate_from_blasting"
+    ]
+  }
+}

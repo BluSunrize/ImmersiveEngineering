@@ -25,5 +25,6 @@
   ],
   "result": {
     "item": "immersiveengineering:powerpack"
-  }
+  },
+  "show_notification": true
 }

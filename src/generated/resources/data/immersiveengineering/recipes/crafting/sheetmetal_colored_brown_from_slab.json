@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:sheetmetal_colored_brown"
-  }
+  },
+  "show_notification": true
 }

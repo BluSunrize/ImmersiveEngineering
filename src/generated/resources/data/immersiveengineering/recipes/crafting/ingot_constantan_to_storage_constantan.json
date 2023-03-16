@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:storage_constantan"
-  }
+  },
+  "show_notification": true
 }

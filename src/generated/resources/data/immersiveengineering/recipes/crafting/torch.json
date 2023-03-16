@@ -21,5 +21,6 @@
   "result": {
     "count": 12,
     "item": "minecraft:torch"
-  }
+  },
+  "show_notification": true
 }

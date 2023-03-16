@@ -24,5 +24,6 @@
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_drill_fortune"
-  }
+  },
+  "show_notification": true
 }

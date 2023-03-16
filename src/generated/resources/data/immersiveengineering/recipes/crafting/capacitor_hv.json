@@ -27,5 +27,6 @@
   ],
   "result": {
     "item": "immersiveengineering:capacitor_hv"
-  }
+  },
+  "show_notification": true
 }

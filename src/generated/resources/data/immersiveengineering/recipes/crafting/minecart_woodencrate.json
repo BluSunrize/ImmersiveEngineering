@@ -15,5 +15,6 @@
   ],
   "result": {
     "item": "immersiveengineering:minecart_woodencrate"
-  }
+  },
+  "show_notification": true
 }

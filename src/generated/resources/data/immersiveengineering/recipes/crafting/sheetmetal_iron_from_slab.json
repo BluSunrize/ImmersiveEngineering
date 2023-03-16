@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:sheetmetal_iron"
-  }
+  },
+  "show_notification": true
 }

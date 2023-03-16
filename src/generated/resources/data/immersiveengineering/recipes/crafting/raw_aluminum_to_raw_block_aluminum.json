@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:raw_block_aluminum"
-  }
+  },
+  "show_notification": true
 }

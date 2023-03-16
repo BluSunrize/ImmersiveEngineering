@@ -17,5 +17,6 @@
   "result": {
     "count": 8,
     "item": "immersiveengineering:sheetmetal_colored_green"
-  }
+  },
+  "show_notification": true
 }

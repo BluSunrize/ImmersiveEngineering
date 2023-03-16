@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:metal_barrel"
-  }
+  },
+  "show_notification": true
 }

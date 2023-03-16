@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:ingot_silver"
-  }
+  },
+  "show_notification": true
 }

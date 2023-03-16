@@ -27,5 +27,6 @@
   ],
   "result": {
     "item": "immersiveengineering:capacitor_mv"
-  }
+  },
+  "show_notification": true
 }

@@ -16,5 +16,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:steel_wallmount"
-  }
+  },
+  "show_notification": true
 }

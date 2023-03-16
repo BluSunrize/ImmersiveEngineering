@@ -24,5 +24,6 @@
   "quarter_turn": true,
   "result": {
     "item": "immersiveengineering:reinforced_crate"
-  }
+  },
+  "show_notification": true
 }

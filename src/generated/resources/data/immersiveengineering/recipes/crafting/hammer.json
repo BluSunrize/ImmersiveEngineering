@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:hammer"
-  }
+  },
+  "show_notification": true
 }

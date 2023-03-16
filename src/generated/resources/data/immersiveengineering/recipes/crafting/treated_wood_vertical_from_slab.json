@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:treated_wood_vertical"
-  }
+  },
+  "show_notification": true
 }

@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:blastfurnace_preheater"
-  }
+  },
+  "show_notification": true
 }

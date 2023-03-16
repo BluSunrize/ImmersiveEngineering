@@ -16,5 +16,6 @@
   "result": {
     "count": 8,
     "item": "immersiveengineering:connector_mv_relay"
-  }
+  },
+  "show_notification": true
 }

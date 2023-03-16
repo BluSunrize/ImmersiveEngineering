@@ -18,5 +18,6 @@
   ],
   "result": {
     "item": "immersiveengineering:breaker_switch"
-  }
+  },
+  "show_notification": true
 }

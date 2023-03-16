@@ -14,5 +14,6 @@
   "result": {
     "count": 8,
     "item": "immersiveengineering:fluid_pipe"
-  }
+  },
+  "show_notification": true
 }

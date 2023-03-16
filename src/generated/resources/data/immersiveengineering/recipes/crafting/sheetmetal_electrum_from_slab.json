@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:sheetmetal_electrum"
-  }
+  },
+  "show_notification": true
 }

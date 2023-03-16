@@ -21,5 +21,6 @@
   ],
   "result": {
     "item": "immersiveengineering:workbench"
-  }
+  },
+  "show_notification": true
 }

@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:coke"
-  }
+  },
+  "show_notification": true
 }

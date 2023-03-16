@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:coil_hv"
-  }
+  },
+  "show_notification": true
 }

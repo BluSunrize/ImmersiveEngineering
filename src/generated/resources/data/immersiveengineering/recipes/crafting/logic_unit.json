@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:logic_unit"
-  }
+  },
+  "show_notification": true
 }

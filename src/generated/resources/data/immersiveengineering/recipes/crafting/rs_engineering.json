@@ -21,5 +21,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:rs_engineering"
-  }
+  },
+  "show_notification": true
 }

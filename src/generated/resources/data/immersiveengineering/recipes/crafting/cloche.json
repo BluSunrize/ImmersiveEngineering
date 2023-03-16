@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "immersiveengineering:cloche"
-  }
+  },
+  "show_notification": true
 }

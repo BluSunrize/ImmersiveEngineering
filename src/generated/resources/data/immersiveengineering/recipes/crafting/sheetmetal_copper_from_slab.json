@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:sheetmetal_copper"
-  }
+  },
+  "show_notification": true
 }

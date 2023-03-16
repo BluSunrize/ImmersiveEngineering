@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_drill_waterproof"
-  }
+  },
+  "show_notification": true
 }

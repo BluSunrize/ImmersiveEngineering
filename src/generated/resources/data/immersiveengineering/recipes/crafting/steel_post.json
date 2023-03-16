@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:steel_post"
-  }
+  },
+  "show_notification": true
 }

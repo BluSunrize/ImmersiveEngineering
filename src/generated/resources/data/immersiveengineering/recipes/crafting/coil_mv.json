@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:coil_mv"
-  }
+  },
+  "show_notification": true
 }

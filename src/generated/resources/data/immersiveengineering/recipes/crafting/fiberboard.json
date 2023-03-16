@@ -19,5 +19,6 @@
   "result": {
     "count": 8,
     "item": "immersiveengineering:fiberboard"
-  }
+  },
+  "show_notification": true
 }

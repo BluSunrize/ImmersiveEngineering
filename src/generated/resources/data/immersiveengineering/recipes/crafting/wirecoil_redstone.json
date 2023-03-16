@@ -21,5 +21,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:wirecoil_redstone"
-  }
+  },
+  "show_notification": true
 }

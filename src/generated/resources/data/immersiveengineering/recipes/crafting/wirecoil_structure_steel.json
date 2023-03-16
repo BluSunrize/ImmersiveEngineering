@@ -17,5 +17,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:wirecoil_structure_steel"
-  }
+  },
+  "show_notification": true
 }

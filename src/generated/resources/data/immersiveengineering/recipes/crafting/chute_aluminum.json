@@ -14,5 +14,6 @@
   "result": {
     "count": 12,
     "item": "immersiveengineering:chute_aluminum"
-  }
+  },
+  "show_notification": true
 }

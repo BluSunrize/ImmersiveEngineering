@@ -28,5 +28,6 @@
     "nbt": {
       "blueprint": "components"
     }
-  }
+  },
+  "show_notification": true
 }

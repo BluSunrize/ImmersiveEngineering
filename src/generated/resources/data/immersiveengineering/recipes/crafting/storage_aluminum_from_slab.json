@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:storage_aluminum"
-  }
+  },
+  "show_notification": true
 }

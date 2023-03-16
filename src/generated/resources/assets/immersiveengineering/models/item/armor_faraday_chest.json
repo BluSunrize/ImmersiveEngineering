@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "immersiveengineering:item/armor_faraday_chest"
-  }
-}

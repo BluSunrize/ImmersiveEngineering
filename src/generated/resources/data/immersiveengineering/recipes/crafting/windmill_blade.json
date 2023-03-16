@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:windmill_blade"
-  }
+  },
+  "show_notification": true
 }

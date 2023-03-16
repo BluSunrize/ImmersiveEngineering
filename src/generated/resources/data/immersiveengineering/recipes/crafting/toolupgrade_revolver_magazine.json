@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_revolver_magazine"
-  }
+  },
+  "show_notification": true
 }

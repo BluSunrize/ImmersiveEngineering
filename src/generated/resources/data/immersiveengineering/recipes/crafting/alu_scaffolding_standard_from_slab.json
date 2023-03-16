@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:alu_scaffolding_standard"
-  }
+  },
+  "show_notification": true
 }

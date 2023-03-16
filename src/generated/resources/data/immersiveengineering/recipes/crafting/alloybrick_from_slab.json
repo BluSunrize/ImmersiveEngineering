@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:alloybrick"
-  }
+  },
+  "show_notification": true
 }

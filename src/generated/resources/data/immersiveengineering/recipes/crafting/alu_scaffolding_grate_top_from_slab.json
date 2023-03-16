@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:alu_scaffolding_grate_top"
-  }
+  },
+  "show_notification": true
 }

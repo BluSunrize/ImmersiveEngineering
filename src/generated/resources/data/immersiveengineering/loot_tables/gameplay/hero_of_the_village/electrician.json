@@ -6,19 +6,19 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:armor_faraday_head"
+          "name": "immersiveengineering:armor_faraday_helmet"
         },
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:armor_faraday_chest"
+          "name": "immersiveengineering:armor_faraday_chestplate"
         },
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:armor_faraday_legs"
+          "name": "immersiveengineering:armor_faraday_leggings"
         },
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:armor_faraday_feet"
+          "name": "immersiveengineering:armor_faraday_boots"
         }
       ],
       "rolls": 1.0

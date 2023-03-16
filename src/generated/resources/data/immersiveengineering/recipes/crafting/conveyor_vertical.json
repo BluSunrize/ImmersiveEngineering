@@ -17,5 +17,6 @@
   "result": {
     "count": 3,
     "item": "immersiveengineering:conveyor_vertical"
-  }
+  },
+  "show_notification": true
 }

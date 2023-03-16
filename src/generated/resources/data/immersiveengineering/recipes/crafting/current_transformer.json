@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "immersiveengineering:current_transformer"
-  }
+  },
+  "show_notification": true
 }

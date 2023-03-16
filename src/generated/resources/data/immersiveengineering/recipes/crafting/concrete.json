@@ -27,5 +27,6 @@
   "result": {
     "count": 8,
     "item": "immersiveengineering:concrete"
-  }
+  },
+  "show_notification": true
 }

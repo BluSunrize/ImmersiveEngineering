@@ -14,5 +14,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:stairs_alu_scaffolding_wooden_top"
-  }
+  },
+  "show_notification": true
 }

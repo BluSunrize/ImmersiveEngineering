@@ -28,5 +28,6 @@
   ],
   "result": {
     "item": "immersiveengineering:turret_gun"
-  }
+  },
+  "show_notification": true
 }

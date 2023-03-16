@@ -17,5 +17,6 @@
   ],
   "result": {
     "item": "immersiveengineering:speedloader"
-  }
+  },
+  "show_notification": true
 }

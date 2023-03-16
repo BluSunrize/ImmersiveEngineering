@@ -12,5 +12,6 @@
   "result": {
     "count": 6,
     "item": "immersiveengineering:slab_sheetmetal_colored_brown"
-  }
+  },
+  "show_notification": true
 }

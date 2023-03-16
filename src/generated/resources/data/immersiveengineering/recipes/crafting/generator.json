@@ -20,5 +20,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:generator"
-  }
+  },
+  "show_notification": true
 }

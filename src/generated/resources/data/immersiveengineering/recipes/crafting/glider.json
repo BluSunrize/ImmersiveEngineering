@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:glider"
-  }
+  },
+  "show_notification": true
 }

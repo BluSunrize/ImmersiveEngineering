@@ -19,5 +19,6 @@
   ],
   "result": {
     "item": "immersiveengineering:fluorescent_tube"
-  }
+  },
+  "show_notification": true
 }

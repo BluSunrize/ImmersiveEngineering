@@ -22,5 +22,6 @@
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_powerpack_tesla"
-  }
+  },
+  "show_notification": true
 }

@@ -12,5 +12,6 @@
   "result": {
     "count": 6,
     "item": "immersiveengineering:slab_sheetmetal_lead"
-  }
+  },
+  "show_notification": true
 }

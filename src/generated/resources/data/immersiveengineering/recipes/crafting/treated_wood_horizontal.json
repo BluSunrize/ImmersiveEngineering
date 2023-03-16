@@ -19,5 +19,6 @@
   "result": {
     "count": 8,
     "item": "immersiveengineering:treated_wood_horizontal"
-  }
+  },
+  "show_notification": true
 }

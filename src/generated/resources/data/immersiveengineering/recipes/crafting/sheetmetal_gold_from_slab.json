@@ -12,5 +12,6 @@
   ],
   "result": {
     "item": "immersiveengineering:sheetmetal_gold"
-  }
+  },
+  "show_notification": true
 }

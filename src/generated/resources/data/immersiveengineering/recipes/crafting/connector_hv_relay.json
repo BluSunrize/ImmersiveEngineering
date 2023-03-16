@@ -22,5 +22,6 @@
   "result": {
     "count": 8,
     "item": "immersiveengineering:connector_hv_relay"
-  }
+  },
+  "show_notification": true
 }

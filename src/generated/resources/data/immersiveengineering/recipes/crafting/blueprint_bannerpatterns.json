@@ -22,5 +22,6 @@
     "nbt": {
       "blueprint": "bannerpatterns"
     }
-  }
+  },
+  "show_notification": true
 }

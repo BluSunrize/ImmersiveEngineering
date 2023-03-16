@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_railgun_capacitors"
-  }
+  },
+  "show_notification": true
 }

@@ -14,5 +14,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:concrete_tile"
-  }
+  },
+  "show_notification": true
 }

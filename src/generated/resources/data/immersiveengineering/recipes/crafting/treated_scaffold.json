@@ -17,5 +17,6 @@
   "result": {
     "count": 6,
     "item": "immersiveengineering:treated_scaffold"
-  }
+  },
+  "show_notification": true
 }

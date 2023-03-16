@@ -20,5 +20,6 @@
   "result": {
     "count": 4,
     "item": "immersiveengineering:wirecoil_copper_ins"
-  }
+  },
+  "show_notification": true
 }

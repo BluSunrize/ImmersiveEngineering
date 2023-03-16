@@ -16,5 +16,6 @@
   "result": {
     "count": 3,
     "item": "immersiveengineering:metal_ladder_alu"
-  }
+  },
+  "show_notification": true
 }

@@ -15,5 +15,6 @@
   ],
   "result": {
     "item": "immersiveengineering:screwdriver"
-  }
+  },
+  "show_notification": true
 }

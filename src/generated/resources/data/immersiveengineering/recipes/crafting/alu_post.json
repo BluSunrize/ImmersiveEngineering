@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:alu_post"
-  }
+  },
+  "show_notification": true
 }

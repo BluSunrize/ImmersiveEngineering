@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:connector_bundled"
-  }
+  },
+  "show_notification": true
 }

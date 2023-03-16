@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "immersiveengineering:waterwheel_segment"
-  }
+  },
+  "show_notification": true
 }
