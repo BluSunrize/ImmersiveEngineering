@@ -37,12 +37,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import static blusunrize.immersiveengineering.common.config.IEServerConfig.getOrDefault;
+
 public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity implements ISpawnInterdiction, IEServerTickableBE,
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
 	public int energyStorage = 0;
-	private final int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
-	private final int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
+	private final int energyDraw = getOrDefault(IEServerConfig.MACHINES.lantern_energyDraw);
+	private final int maximumStorage = getOrDefault(IEServerConfig.MACHINES.lantern_maximumStorage);
 
 	public ElectricLanternBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -166,13 +168,15 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(!level.isClientSide)
+		{
 			setFacing(getFacing().getOpposite());
-		for(ConnectionPoint cp : getConnectionPoints())
-			for(Connection c : getLocalNet(cp.index()).getConnections(cp))
-				if(!c.isInternal())
-					globalNet.updateCatenaryData(c);
-		setChanged();
-		markContainingBlockForUpdate(getBlockState());
+			for(ConnectionPoint cp : getConnectionPoints())
+				for(Connection c : getLocalNet(cp.index()).getConnections(cp))
+					if(!c.isInternal())
+						globalNet.updateCatenaryData(c);
+			setChanged();
+			markContainingBlockForUpdate(getBlockState());
+		}
 		return true;
 	}
 

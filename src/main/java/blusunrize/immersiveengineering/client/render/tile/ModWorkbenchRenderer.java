@@ -128,7 +128,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 			else if(numRecipes==1) perRow = 2;
 			else if(numRecipes==2) perRow = 3;
 			else perRow = numRecipes;
-			transform.translate(0, .501, 0);
+			transform.translate(0, .502, 0);
 			transform.mulPose(new Quaternionf().rotateY(-Mth.PI/8).rotateX(-Mth.HALF_PI));
 			transform.translate(0.39, numRecipes > 4?.72: .78, 0);
 			float scale = numRecipes > 4?.009375f: .012f;
@@ -147,7 +147,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 					//Width depends on distance
 					float texScale = blueprint.textureScale/16f;
 					transform.scale(1/texScale, 1/texScale, 1/texScale);
-					blueprint.draw(transform, builder, IVertexBufferHolder.BUFFER_FORMAT, light);
+					blueprint.draw(transform, builder, light);
 					transform.scale(texScale, texScale, texScale);
 					transform.translate(-dX, -dY/scale, 0);
 					rendered++;

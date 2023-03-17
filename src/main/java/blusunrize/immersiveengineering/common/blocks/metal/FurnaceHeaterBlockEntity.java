@@ -44,8 +44,7 @@ import java.util.Collection;
 public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IActiveState,
 		IStateBasedDirectional, IHammerInteraction
 {
-	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000, Math.max(256,
-			Math.max(IEServerConfig.MACHINES.heater_consumption.get(), IEServerConfig.MACHINES.heater_speedupConsumption.get())));
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000, getEnergyIO());
 	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
 	private final Collection<CapabilityReference<IExternalHeatable>> heatables = CapabilityReference.forAllNeighbors(
 			this, ExternalHeaterHandler.CAPABILITY
@@ -142,5 +141,13 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 	{
 		this.setFacing(side);
 		return true;
+	}
+
+	private static int getEnergyIO()
+	{
+		return Math.max(256, Math.max(
+				IEServerConfig.getOrDefault(IEServerConfig.MACHINES.heater_consumption),
+				IEServerConfig.getOrDefault(IEServerConfig.MACHINES.heater_speedupConsumption)
+		));
 	}
 }

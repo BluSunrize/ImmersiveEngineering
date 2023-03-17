@@ -560,6 +560,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		Vec3 newOffsetB = iicB.getConnectionOffset(conn.getEndB(), conn.getEndA(), conn.type);
 		conn.resetCatenaryData(newOffsetA, newOffsetB);
 		collisionData.addConnection(conn);
+		syncManager.onConnectionEndpointsChanged(conn);
 	}
 
 	private void putLocalNet(ConnectionPoint cp, @Nullable LocalWireNetwork net)

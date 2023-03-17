@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
@@ -21,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
@@ -65,7 +67,10 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		super(configValues.tileType.get(), pos, state);
 		this.configValues = configValues;
-		energyStorage = makeMainEnergyStorage();
+		if(IEServerConfig.CONFIG_SPEC.isLoaded())
+			energyStorage = makeMainEnergyStorage();
+		else
+			energyStorage = NullEnergyStorage.INSTANCE;
 		for(Direction f : DirectionUtils.VALUES)
 		{
 			if(f==Direction.UP)
@@ -222,7 +227,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		return new MutableEnergyStorage(getMaxStorage(), getMaxInput(), getMaxOutput());
 	}
 
-	private static record CapacitorEnergyHandler(
+	private record CapacitorEnergyHandler(
 			Direction side, Map<Direction, IOSideConfig> sideConfigs, IEnergyStorage base
 	) implements IEnergyStorage
 	{

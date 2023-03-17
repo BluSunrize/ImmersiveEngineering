@@ -1,5 +1,8 @@
 {
-  "type": "immersiveengineering:add_global_modifier",
-  "feature": "immersiveengineering:mineral_veins",
+  "type": "forge:add_features",
+  "biomes": {
+    "type": "forge:any"
+  },
+  "features": "immersiveengineering:mineral_veins",
   "step": "underground_ores"
 }
