@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
 import blusunrize.immersiveengineering.client.utils.DistField;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -56,9 +55,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.Lazy;
@@ -79,8 +75,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.common.config.IEServerConfig.getDuringStartup;
+
 public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
-		IStateBasedDirectional, IBlockBounds, IHasDummyBlocks, IIEInventory,
+		IStateBasedDirectional, IHasDummyBlocks, IIEInventory,
 		IInteractionObjectIE<ClocheBlockEntity>, IModelOffsetProvider
 {
 	public static final int SLOT_SOIL = 0;
@@ -100,7 +98,9 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			return fluid.getFluid().is(FluidTags.WATER);
 		}
 	};
-	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(
+			ENERGY_CAPACITY, Math.max(256, getDuringStartup(IEServerConfig.MACHINES.cloche_consumption))
+	);
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	public final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
 			ClocheRecipe::findRecipe, () -> level, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)
@@ -354,12 +354,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			if(state.getBlock()==MetalDevices.CLOCHE.get())
 				getLevelNonnull().setBlockAndUpdate(pos, state.setValue(getFacingProperty(), facing));
 		}
-	}
-
-	@Override
-	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
-	{
-		return Shapes.block();
 	}
 
 	@Override

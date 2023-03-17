@@ -52,13 +52,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static blusunrize.immersiveengineering.common.config.IEServerConfig.getDuringStartup;
+
 public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity implements IEServerTickableBE,
 		IAdvancedDirectionalBE, IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds,
 		IActiveState, EnergyConnector, IStateBasedDirectional, ComputerControllable
 {
 	public int energyStorage = 0;
-	private final int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
-	public final int maximumStorage = IEServerConfig.MACHINES.floodlight_maximumStorage.get();
+	private final int energyDraw = getDuringStartup(IEServerConfig.MACHINES.floodlight_energyDraw);
+	public final int maximumStorage = getDuringStartup(IEServerConfig.MACHINES.floodlight_maximumStorage);
 	public boolean redstoneControlInverted = false;
 	public Direction facing = Direction.NORTH;
 	public float rotY = 0;

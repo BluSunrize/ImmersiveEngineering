@@ -62,7 +62,7 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 
 	public IEBaseBlock(Block.Properties blockProps, boolean fitsIntoContainer)
 	{
-		super(blockProps.dynamicShape());
+		super(blockProps);
 		this.fitsIntoContainer = fitsIntoContainer;
 		this.notNormalBlock = !defaultBlockState().canOcclude();
 
