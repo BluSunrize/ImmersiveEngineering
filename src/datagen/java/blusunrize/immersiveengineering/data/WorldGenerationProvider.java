@@ -13,16 +13,18 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
-import blusunrize.immersiveengineering.common.world.AddGlobalFeatureBiomeModifier;
 import blusunrize.immersiveengineering.common.world.IECountPlacement;
 import blusunrize.immersiveengineering.common.world.IEHeightProvider;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.data.tags.DamageTypeTagProvider;
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.*;
+import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
@@ -49,11 +51,13 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
+import net.minecraftforge.registries.holdersets.AnyHolderSet;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class WorldGenerationProvider
 {
@@ -125,13 +129,14 @@ public class WorldGenerationProvider
 		final HolderGetter<Biome> biomeReg = ctx.lookup(Registries.BIOME);
 		for(final FeatureRegistration entry : registrations.allFeatures)
 		{
-			final BiomeModifier modifier;
+			final HolderSet<Biome> biomes;
 			if(entry.inBiomes!=null)
-				modifier = new AddFeaturesBiomeModifier(
-						biomeReg.getOrThrow(entry.inBiomes), HolderSet.direct(entry.placed), Decoration.UNDERGROUND_ORES
-				);
+				biomes = biomeReg.getOrThrow(entry.inBiomes);
 			else
-				modifier = new AddGlobalFeatureBiomeModifier(entry.placed, Decoration.UNDERGROUND_ORES);
+				biomes = new AnyHolderSet<>(new DummyRegistryLookup<>(Registries.BIOME));
+			final BiomeModifier modifier = new AddFeaturesBiomeModifier(
+					biomes, HolderSet.direct(entry.placed), Decoration.UNDERGROUND_ORES
+			);
 			ctx.register(ResourceKey.create(Keys.BIOME_MODIFIERS, entry.name), modifier);
 		}
 	}
@@ -190,6 +195,47 @@ public class WorldGenerationProvider
 					oreFeatures,
 					mineralVeins
 			);
+		}
+	}
+
+	private record DummyRegistryLookup<T>(
+			ResourceKey<? extends Registry<? extends T>> key
+	) implements RegistryLookup<T>
+	{
+		@Override
+		public Lifecycle registryLifecycle()
+		{
+			return Lifecycle.stable();
+		}
+
+		@Override
+		public Stream<Reference<T>> listElements()
+		{
+			return Stream.empty();
+		}
+
+		@Override
+		public Stream<Named<T>> listTags()
+		{
+			return Stream.empty();
+		}
+
+		@Override
+		public Optional<Reference<T>> get(ResourceKey<T> p_255645_)
+		{
+			return Optional.empty();
+		}
+
+		@Override
+		public Optional<Named<T>> get(TagKey<T> p_256283_)
+		{
+			return Optional.empty();
+		}
+
+		@Override
+		public boolean canSerializeIn(HolderOwner<T> p_255875_)
+		{
+			return true;
 		}
 	}
 }

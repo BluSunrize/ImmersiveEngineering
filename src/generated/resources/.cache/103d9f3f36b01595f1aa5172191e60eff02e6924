@@ -1,4 +1,4 @@
-// 1.19.4	2023-03-16T08:44:19.200049422	Registries
+// 1.19.4	2023-03-17T18:24:00.886823787	Registries
 f848d7a7dd5c6875b099a39f38ff3e2d65eb80c6 data/immersiveengineering/damage_type/acid.json
 81f5cde4a7079a859199f027ae3adad5d005b5c1 data/immersiveengineering/damage_type/crushed.json
 ab61f473db1145824d9933fab9eacc30cf7a8a0c data/immersiveengineering/damage_type/railgun.json
@@ -20,7 +20,7 @@ a55a5b5ff75efa77531ed693a811d24caa2f5ba9 data/immersiveengineering/damage_type/t
 ea5ceb43fdaee92f8f23245e1b84c790089308fe data/immersiveengineering/forge/biome_modifier/bauxite.json
 da75750ac49205fa37a0b91f0c720265e124d707 data/immersiveengineering/forge/biome_modifier/deep_nickel.json
 f5648de142ef24cdcef75030dc517f990ddf151b data/immersiveengineering/forge/biome_modifier/lead.json
-4d475ecc42aa326aa7d8854d5803289e82314a5a data/immersiveengineering/forge/biome_modifier/mineral_veins.json
+0f835eacaaceff9d8b5e1f2ff39e3bd1ffa47284 data/immersiveengineering/forge/biome_modifier/mineral_veins.json
 2f205e324f7cb7278aa394da08ddeacb95eb01be data/immersiveengineering/forge/biome_modifier/nickel.json
 25aa6f9d701e28ea780c1f9c0173ebd35da4d34c data/immersiveengineering/forge/biome_modifier/silver.json
 1826cc636cdebdc16b5930131c601e6c7679ac25 data/immersiveengineering/forge/biome_modifier/uranium.json

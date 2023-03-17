@@ -15,8 +15,6 @@ import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -30,6 +28,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.awt.*;
 import java.util.List;
@@ -200,9 +200,9 @@ public class BlueprintRenderer
 	)
 	{
 		Vector4f position = new Vector4f(x, z, 0, 1);
-		position.transform(transform.pose());
+		position.mul(transform.pose()).div(position.w);
 		out.vertex(
-				position.x()/position.w(), position.y()/position.w(), position.z()/position.w(),
+				position.x(), position.y(), position.z(),
 				1, 1, 1, 1,
 				0.5f, 0.5f,
 				OverlayTexture.NO_OVERLAY,
@@ -214,7 +214,7 @@ public class BlueprintRenderer
 	private static LinePainter makeQuadLinePainter(PoseStack.Pose transform, VertexConsumer out, int light)
 	{
 		Vector3f up = new Vector3f(0, 1, 0);
-		up.transform(transform.normal());
+		up.mul(transform.normal());
 		return (x0, y0, x1, y1, width) -> {
 			float deltaX = x1-x0;
 			float deltaY = y1-y0;
