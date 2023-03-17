@@ -133,7 +133,6 @@ public class IEContent
 		IEEntityTypes.REGISTER.register(modBus);
 		IEMenuTypes.REGISTER.register(modBus);
 		IEEntityDataSerializers.REGISTER.register(modBus);
-		IEBiomeModifiers.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();
