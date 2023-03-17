@@ -75,7 +75,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.config.IEServerConfig.getDuringStartup;
+import static blusunrize.immersiveengineering.common.config.IEServerConfig.getOrDefault;
 
 public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
 		IStateBasedDirectional, IHasDummyBlocks, IIEInventory,
@@ -99,7 +99,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		}
 	};
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(
-			ENERGY_CAPACITY, Math.max(256, getDuringStartup(IEServerConfig.MACHINES.cloche_consumption))
+			ENERGY_CAPACITY, Math.max(256, getOrDefault(IEServerConfig.MACHINES.cloche_consumption))
 	);
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	public final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(

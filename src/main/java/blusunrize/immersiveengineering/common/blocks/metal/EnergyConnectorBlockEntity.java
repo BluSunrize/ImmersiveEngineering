@@ -61,7 +61,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
-import static blusunrize.immersiveengineering.common.config.IEServerConfig.getDuringStartup;
+import static blusunrize.immersiveengineering.common.config.IEServerConfig.getOrDefault;
 
 public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity implements IStateBasedDirectional,
 		IBlockBounds, EnergyConnector, IEServerTickableBE
@@ -222,12 +222,12 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 
 	public int getMaxInput()
 	{
-		return getDuringStartup(IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate);
+		return getOrDefault(IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate);
 	}
 
 	public int getMaxOutput()
 	{
-		return getDuringStartup(IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate);
+		return getOrDefault(IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate);
 	}
 
 	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatArrayMap<>();

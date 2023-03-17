@@ -146,8 +146,8 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 	private static int getEnergyIO()
 	{
 		return Math.max(256, Math.max(
-				IEServerConfig.MACHINES.heater_consumption.getOrDefault(),
-				IEServerConfig.MACHINES.heater_speedupConsumption.getOrDefault()
+				IEServerConfig.getOrDefault(IEServerConfig.MACHINES.heater_consumption),
+				IEServerConfig.getOrDefault(IEServerConfig.MACHINES.heater_speedupConsumption)
 		));
 	}
 }

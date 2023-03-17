@@ -67,7 +67,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		super(configValues.tileType.get(), pos, state);
 		this.configValues = configValues;
-		if(IEServerConfig.CONFIG_SPEC.getBaseSpec().isLoaded())
+		if(IEServerConfig.CONFIG_SPEC.isLoaded())
 			energyStorage = makeMainEnergyStorage();
 		else
 			energyStorage = NullEnergyStorage.INSTANCE;
