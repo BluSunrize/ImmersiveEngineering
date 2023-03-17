@@ -126,7 +126,6 @@ public class IEContent
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEMenuTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEEntityDataSerializers.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEBiomeModifiers.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();
