@@ -15,7 +15,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags.Blocks;
@@ -138,9 +137,6 @@ public class IETags
 
 	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(rl("shaderbag/whitelist"));
 	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(rl("shaderbag/blacklist"));
-
-	@Deprecated(forRemoval = true)
-	public static final TagKey<Biome> hasMineralVeins = createBiomeWrapper(rl("has_mineral_veins"));
 
 	static
 	{

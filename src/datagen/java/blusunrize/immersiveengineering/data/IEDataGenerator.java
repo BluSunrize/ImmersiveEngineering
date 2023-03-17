@@ -44,7 +44,6 @@ public class IEDataGenerator
 			gen.addProvider(true, new BannerTags(output, lookup, exHelper));
 			gen.addProvider(true, new PoiTags(output, lookup, exHelper));
 			gen.addProvider(true, new EntityTypeTags(output, lookup, exHelper));
-			gen.addProvider(true, new BiomeTags(output, lookup, exHelper));
 			gen.addProvider(true, new Recipes(output));
 			gen.addProvider(true, new AllLoot(output));
 			gen.addProvider(true, new BlockStates(output, exHelper));
