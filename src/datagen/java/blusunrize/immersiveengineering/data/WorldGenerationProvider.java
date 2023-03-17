@@ -18,13 +18,12 @@ import blusunrize.immersiveengineering.common.world.IECountPlacement;
 import blusunrize.immersiveengineering.common.world.IEHeightProvider;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import blusunrize.immersiveengineering.data.tags.DamageTypeTagProvider;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -46,6 +45,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
@@ -57,8 +57,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class WorldGenerationProvider
 {
-	public static DataProvider makeProvider(
-			PackOutput output, CompletableFuture<HolderLookup.Provider> vanillaRegistries
+	public static List<DataProvider> makeProviders(
+			PackOutput output, CompletableFuture<HolderLookup.Provider> vanillaRegistries, ExistingFileHelper exFiles
 	)
 	{
 		final Map<VeinType, FeatureRegistration> oreFeatures = new EnumMap<>(VeinType.class);
@@ -76,7 +76,10 @@ public class WorldGenerationProvider
 		registryBuilder.add(Registries.PLACED_FEATURE, ctx -> bootstrapPlacedFeatures(ctx, registrations));
 		registryBuilder.add(Keys.BIOME_MODIFIERS, ctx -> bootstrapBiomeModifiers(ctx, registrations));
 		registryBuilder.add(Registries.DAMAGE_TYPE, DamageTypeProvider::bootstrap);
-		return new DatapackBuiltinEntriesProvider(output, vanillaRegistries, registryBuilder, Set.of(Lib.MODID));
+		return List.of(
+				new DatapackBuiltinEntriesProvider(output, vanillaRegistries, registryBuilder, Set.of(Lib.MODID)),
+				new DamageTypeTagProvider(output, vanillaRegistries.thenApply(r -> append(r, registryBuilder)), exFiles)
+		);
 	}
 
 	private static void bootstrapConfiguredFeatures(
@@ -131,6 +134,11 @@ public class WorldGenerationProvider
 				modifier = new AddGlobalFeatureBiomeModifier(entry.placed, Decoration.UNDERGROUND_ORES);
 			ctx.register(ResourceKey.create(Keys.BIOME_MODIFIERS, entry.name), modifier);
 		}
+	}
+
+	private static HolderLookup.Provider append(HolderLookup.Provider original, RegistrySetBuilder builder)
+	{
+		return builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), original);
 	}
 
 	private static class FeatureRegistration

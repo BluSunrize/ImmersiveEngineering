@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import blusunrize.immersiveengineering.data.tags.*;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -55,9 +56,9 @@ public class IEDataGenerator
 			gen.addProvider(true, new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new DynamicModels(multiblocks, output, exHelper));
-			gen.addProvider(true, WorldGenerationProvider.makeProvider(output, lookup));
+			for(final DataProvider provider : WorldGenerationProvider.makeProviders(output, lookup, exHelper))
+				gen.addProvider(true, provider);
 			ManualDataGenerator.addProviders(gen, exHelper);
-			// TODO find a new way to detect crashes in datagen
 		}
 	}
 }

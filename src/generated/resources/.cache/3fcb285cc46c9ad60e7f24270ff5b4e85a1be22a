@@ -1,0 +1,3 @@
+// 1.19.4	2023-03-17T16:12:04.705724902	Tags for minecraft:damage_type mod id immersiveengineering
+0ee767c512ee1c807c3b089d8d1ab7b0cc74f80e data/minecraft/tags/damage_type/bypasses_armor.json
+dcb78636a880bcab83596bbe1023dbace3a9e297 data/minecraft/tags/damage_type/is_fire.json
