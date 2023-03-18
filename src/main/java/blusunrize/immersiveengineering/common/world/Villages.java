@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
@@ -48,6 +45,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ColumnPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -63,7 +61,6 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
@@ -249,7 +246,9 @@ public class Villages
 				trades.get(4).add(new EmeraldForItems(MetalDecoration.STEEL_POST, new PriceInterval(1, 2), 4, 20));
 				trades.get(4).add(new EmeraldForItems(MetalDecoration.ALU_POST, new PriceInterval(1, 3), 6, 15));
 				trades.get(4).add(new EmeraldForItems(StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 4), 10, 10));
+				trades.get(4).add(new OreveinMapForEmeralds());
 
+				trades.get(5).add(new OreveinMapForEmeralds());
 				trades.get(5).add(new OreveinMapForEmeralds());
 			}
 			else if(MACHINIST.equals(typeName))
@@ -452,7 +451,8 @@ public class Villages
 	private static class OreveinMapForEmeralds implements ItemListing
 	{
 		public PriceInterval value;
-		private static final int SEARCH_RADIUS = 32*16;
+		private static final int SEARCH_RADIUS = 16*16;
+		private static final String TRADER_SOLD_KEY = "immersiveengineering:mapped_veins";
 
 		public OreveinMapForEmeralds()
 		{
@@ -466,29 +466,35 @@ public class Villages
 				return null;
 			Level world = trader.getCommandSenderWorld();
 			BlockPos merchantPos = trader.blockPosition();
-			List<MineralVein> veins = new ArrayList<>();
-			for(int i = 0; i < 8; i++) //Let's just try this a maximum of 8 times before I give up
-			{
-				int offX = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
-				int offZ = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
-				MineralVein vein = ExcavatorHandler.getRandomMineral(world, merchantPos.offset(offX, 0, offZ));
-				if(vein!=null&&vein.getMineral(world)!=null&&!veins.contains(vein))
-					veins.add(vein);
-			}
+			// extract list of already sold veins from the rader
+			CompoundTag traderData = trader.getPersistentData();
+			List<Long> soldMaps = new ArrayList<>();
+			if(traderData.contains(TRADER_SOLD_KEY))
+				for(long l : traderData.getLongArray(TRADER_SOLD_KEY))
+					soldMaps.add(l);
+			// get veins in 16 chunk radius, ordered by their rarity (lowest weight first)
+			List<MineralVein> veins = ExcavatorHandler.findVeinsForVillager(world, merchantPos, SEARCH_RADIUS, soldMaps);
 			if(veins.size() > 0)
 			{
-				// lowest weight first, to pick the rarest vein
-				veins.sort(Comparator.comparingInt(o -> o.getMineral(world).weight));
-				MineralVein vein = veins.get(0);
-				BlockPos blockPos = new BlockPos(vein.getPos().x(), 64, vein.getPos().z());
+				//select random vein from top 10
+				int select = random.nextInt(Math.min(10, veins.size()));
+				MineralVein vein = veins.get(select);
+				ColumnPos veinPos = vein.getPos();
+				// store sold map in trader data
+				soldMaps.add(veinPos.toLong());
+				traderData.putLongArray(TRADER_SOLD_KEY, soldMaps);
+				// build map
+				BlockPos blockPos = new BlockPos(veinPos.x(), 64, veinPos.z());
 				ItemStack selling = MapItem.create(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				MapItem.lockMap(world, selling);
 				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
 				selling.setHoverName(Component.translatable("item.immersiveengineering.map_orevein"));
 				ItemNBTHelper.setLore(selling, Component.translatable(vein.getMineral(world).getTranslationKey()));
-				ItemStack steelIngot = IEApi.getPreferredTagStack(trader.level.registryAccess(), IETags.getTagsFor(EnumMetals.STEEL).ingot);
-				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
-						ItemHandlerHelper.copyStackWithSize(steelIngot, 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);
+				// return offer
+				return new MerchantOffer(
+						new ItemStack(Items.EMERALD, 8+random.nextInt(8)), new ItemStack(Items.MAP),
+						selling, 0, 1, 30, 0.5F
+				);
 			}
 			return null;
 		}

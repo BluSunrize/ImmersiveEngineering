@@ -2,6 +2,8 @@
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
 - Cache connection rendering at the section level rather than individual segments (Malte)
 - Improve chunk building performance by not marking all IE blocks as "dynamicShape" (Malte)
+- Overhaul villager trades
+    - Mineral Vein maps now focus on rare veins within 16 chunks of the villager and they sell up to 3 of them
 - Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
 - Fix z-fighting issues on the mod workbench with rubidium (Malte)
 - Fix visual issues when inverting powered lanterns (Malte)

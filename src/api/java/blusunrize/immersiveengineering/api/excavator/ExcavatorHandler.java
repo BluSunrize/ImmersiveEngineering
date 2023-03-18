@@ -104,6 +104,29 @@ public class ExcavatorHandler
 		}
 	}
 
+	public static List<MineralVein> findVeinsForVillager(Level world, BlockPos villagerPos, long radius, List<Long> excludedPositions)
+	{
+		if(world.isClientSide)
+			return Collections.emptyList();
+		long radiusSq = radius*radius;
+		ResourceKey<Level> dimension = world.dimension();
+		List<MineralVein> foundVeins;
+		synchronized(MINERAL_VEIN_LIST)
+		{
+			// filter maps already sold, then fiter by radius, finally order by weight
+			foundVeins = MINERAL_VEIN_LIST.get(dimension).stream()
+					.filter(vein -> !excludedPositions.contains(vein.getPos().toLong()))
+					.filter(vein -> {
+						long dX = vein.getPos().x()-villagerPos.getX();
+						long dZ = vein.getPos().z()-villagerPos.getZ();
+						long d = dX*dX+dZ*dZ;
+						return d < radiusSq;
+					}).sorted(Comparator.comparingInt(o -> o.getMineral(world).weight))
+					.collect(Collectors.toList());
+		}
+		return foundVeins;
+	}
+
 	public static void generatePotentialVein(Level world, ChunkPos chunkpos, RandomSource rand)
 	{
 		int xStart = chunkpos.getMinBlockX();
@@ -116,7 +139,7 @@ public class ExcavatorHandler
 		for(int xx = 0; xx < 16; ++xx)
 			for(int zz = 0; zz < 16; ++zz)
 			{
-				double noise = noiseGenerator.getValue((xStart+xx)*d0, (zStart+zz)*d0, true) * 0.55D;
+				double noise = noiseGenerator.getValue((xStart+xx)*d0, (zStart+zz)*d0, true)*0.55D;
 				// Vanilla Perlin noise scales to 0.55, so we un-scale it
 				double chance = Math.abs(noise)/.55;
 				if(chance > mineralNoiseThreshold&&chance > maxNoise)
@@ -186,7 +209,8 @@ public class ExcavatorHandler
 		}
 	}
 
-	public static void setSetDirtyCallback(Runnable setDirty) {
+	public static void setSetDirtyCallback(Runnable setDirty)
+	{
 		MARK_SAVE_DATA_DIRTY.setValue(setDirty);
 	}
 
