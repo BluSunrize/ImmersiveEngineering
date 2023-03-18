@@ -1,3 +1,13 @@
+##### Version 1.19.2-9.2.1-pre
+- Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
+- Cache connection rendering at the section level rather than individual segments (Malte)
+- Improve chunk building performance by not marking all IE blocks as "dynamicShape" (Malte)
+- Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
+- Fix z-fighting issues on the mod workbench with rubidium (Malte)
+- Fix visual issues when inverting powered lanterns (Malte)
+- Fix shift-clicking an output item in the mod workbench adding to the output stack (Malte)
+- Fix global sound of mixer as a result of stereo audio file (Malte)
+
 ##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0
 - Add recipes to cut wooden slabs on the sawmill (BluSunrize)
