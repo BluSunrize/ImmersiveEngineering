@@ -137,6 +137,7 @@ public class IEMultiblockLogic
 			.structure(() -> IEMultiblocks.SQUEEZER)
 			.redstone(s -> s.rsState, SqueezerLogic.REDSTONE_POS)
 			.gui(IEMenuTypes.SQUEEZER)
+			.comparator(SqueezerLogic.makeComparator())
 			.build();
 
 	public static final MultiblockRegistration<BucketWheelLogic.State> BUCKET_WHEEL = metal(new BucketWheelLogic(), "bucket_wheel")

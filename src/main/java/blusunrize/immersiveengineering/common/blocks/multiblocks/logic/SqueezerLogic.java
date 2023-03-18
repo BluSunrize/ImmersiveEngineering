@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
@@ -68,7 +69,8 @@ public class SqueezerLogic
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
 
 	public static final int NUM_SLOTS = 11;
-	public static final int OUTPUT_SLOT = 8;
+	public static final int NUM_INPUT_SLOTS = 8;
+	public static final int OUTPUT_SLOT = NUM_INPUT_SLOTS;
 	public static final int TANK_CAPACITY = 24*FluidType.BUCKET_VOLUME;
 	public static final int ENERGY_CAPACITY = 16000;
 
@@ -93,14 +95,14 @@ public class SqueezerLogic
 		// TODO deduplicate with fermenter
 		if(state.energy.getEnergyStored() <= 0||state.processor.getQueueSize() >= state.processor.getMaxQueueSize())
 			return;
-		final int[] usedInvSlots = new int[8];
+		final int[] usedInvSlots = new int[NUM_INPUT_SLOTS];
 		for(MultiblockProcess<?, ?> process : state.processor.getQueue())
 			if(process instanceof MultiblockProcessInMachine)
 				for(int i : ((MultiblockProcessInMachine<?>)process).getInputSlots())
 					usedInvSlots[i]++;
 
 		Integer[] preferredSlots = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7};
-		Arrays.sort(preferredSlots, 0, 8, Comparator.comparingInt(arg0 -> usedInvSlots[arg0]));
+		Arrays.sort(preferredSlots, 0, NUM_INPUT_SLOTS, Comparator.comparingInt(arg0 -> usedInvSlots[arg0]));
 		for(int slot : preferredSlots)
 		{
 			ItemStack stack = state.inventory.getStackInSlot(slot);
@@ -186,6 +188,13 @@ public class SqueezerLogic
 		return SqueezerShapes.SHAPE_GETTER;
 	}
 
+	public static ComparatorManager<SqueezerLogic.State> makeComparator()
+	{
+		return ComparatorManager.makeSimple(
+				state -> Utils.calcRedstoneFromInventory(OUTPUT_SLOT, state.inventory), REDSTONE_POS
+		);
+	}
+
 	public static class State implements IMultiblockState, ProcessContextInMachine<SqueezerRecipe>
 	{
 		private final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
@@ -211,23 +220,23 @@ public class SqueezerLogic
 		{
 			final Runnable markDirty = ctx.getMarkDirtyRunnable();
 			this.inventory = SlotwiseItemHandler.makeWithGroups(List.of(
-					new IOConstraintGroup(IOConstraint.ANY_INPUT, 8),
+					new IOConstraintGroup(IOConstraint.ANY_INPUT, NUM_INPUT_SLOTS),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1),
 					new IOConstraintGroup(IOConstraint.FLUID_INPUT, 1),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1)
 			), markDirty);
 			this.processor = new InMachineProcessor<>(
-					8, 0, 8, markDirty, SqueezerRecipe.RECIPES::getById
+					NUM_INPUT_SLOTS, 0, NUM_INPUT_SLOTS, markDirty, SqueezerRecipe.RECIPES::getById
 			);
 			this.itemOutput = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, ITEM_OUTPUT);
 			this.fluidOutput = ctx.getCapabilityAt(ForgeCapabilities.FLUID_HANDLER, FLUID_OUTPUT);
 			this.energyCap = new StoredCapability<>(energy);
 			this.fluidOutputCap = new StoredCapability<>(ArrayFluidHandler.drainOnly(tank, markDirty));
 			this.itemInputCap = new StoredCapability<>(new WrappingItemHandler(
-					inventory, true, false, new IntRange(0, 8)
+					inventory, true, false, new IntRange(0, NUM_INPUT_SLOTS)
 			));
 			this.itemOutputCap = new StoredCapability<>(new WrappingItemHandler(
-					inventory, false, true, new IntRange(8, 9)
+					inventory, false, true, new IntRange(OUTPUT_SLOT, OUTPUT_SLOT+1)
 			));
 		}
 
