@@ -54,8 +54,8 @@ public class AdvBlastFurnaceLogic
 	private static final BlockPos[] HEATER_OFFSETS = {
 			new BlockPos(-1, 0, 1), new BlockPos(3, 0, 1)
 	};
-	private static final MultiblockFace OUTPUT_OFFSET = new MultiblockFace(1, 0, 0, RelativeBlockFace.FRONT);
-	private static final MultiblockFace SLAG_OUTPUT_OFFSET = new MultiblockFace(1, 0, 2, RelativeBlockFace.BACK);
+	private static final MultiblockFace OUTPUT_OFFSET = new MultiblockFace(1, 0, -1, RelativeBlockFace.FRONT);
+	private static final MultiblockFace SLAG_OUTPUT_OFFSET = new MultiblockFace(1, 0, 3, RelativeBlockFace.BACK);
 	private static final CapabilityPosition OUTPUT_CAP = CapabilityPosition.opposing(OUTPUT_OFFSET);
 	private static final CapabilityPosition SLAG_OUTPUT_CAP = CapabilityPosition.opposing(SLAG_OUTPUT_OFFSET);
 	private static final CapabilityPosition INPUT_CAP = new CapabilityPosition(1, 3, 1, RelativeBlockFace.UP);
