@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * @author BluSunrize - 01.09.2016
@@ -61,21 +60,9 @@ public class AssemblerHandler
 		return (IRecipeAdapter<R>)findAdapterForClass(recipe.getClass());
 	}
 
-	@Deprecated
-	public static void registerSpecialIngredientConverter(Function<Ingredient, RecipeQuery> func)
-	{
-		registerSpecialIngredientConverter((ingr, rem) -> func.apply(ingr));
-	}
-
 	public static void registerSpecialIngredientConverter(BiFunction<Ingredient, ItemStack, RecipeQuery> func)
 	{
 		specialIngredientConverters.add(func);
-	}
-
-	@Deprecated
-	public static void registerSpecialItemStackConverter(Function<ItemStack, RecipeQuery> func)
-	{
-		registerSpecialItemStackConverter((stack, rem) -> func.apply(stack));
 	}
 
 	public static void registerSpecialItemStackConverter(BiFunction<ItemStack, ItemStack, RecipeQuery> func)

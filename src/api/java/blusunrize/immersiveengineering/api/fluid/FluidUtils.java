@@ -9,13 +9,10 @@
 package blusunrize.immersiveengineering.api.fluid;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -89,35 +86,6 @@ public class FluidUtils
 			fluidDestination.fill(simulatedMoved, doDrain);
 			return new FluidActionResult(handler.getContainer());
 		}).orElse(FluidActionResult.FAILURE);
-	}
-
-	@Deprecated
-	public static boolean multiblockFluidOutput(
-			Level level, BlockPos targetPos, Direction dir, FluidTank tank,
-			int slotIn, int slotOut, IntFunction<ItemStack> invGet, BiConsumer<Integer, ItemStack> invSet
-	)
-	{
-		boolean updateTile = false;
-		if(tank.getFluidAmount() > 0)
-		{
-			// Handle container filling first, so that players can "intercept" the output
-			if(slotIn >= 0&&slotOut >= 0&&invGet!=null&&invSet!=null)
-				updateTile = fillFluidContainer(tank, slotIn, slotOut, invGet, invSet);
-
-			// Then try to output into pipes or similar
-			FluidStack out = copyFluidStackWithAmount(tank.getFluid(), Math.min(tank.getFluidAmount(), FluidType.BUCKET_VOLUME), false);
-			updateTile |= FluidUtil.getFluidHandler(level, targetPos, dir.getOpposite()).map(output -> {
-				int accepted = output.fill(out, FluidAction.SIMULATE);
-				if(accepted > 0)
-				{
-					int drained = output.fill(copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
-					tank.drain(drained, FluidAction.EXECUTE);
-					return true;
-				}
-				return false;
-			}).orElse(false);
-		}
-		return updateTile;
 	}
 
 	public static boolean multiblockFluidOutput(

@@ -70,16 +70,7 @@ public interface IConveyorModelRender<T extends IConveyorBelt>
 	/**
 	 * @param renderType is null for item render
 	 */
-	default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context, @Nullable RenderType renderType)
-	{
-		return this.modifyQuads(baseModel, context);
-	}
-
-	@Deprecated
-	default List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context)
-	{
-		return baseModel;
-	}
+	List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context, @Nullable RenderType renderType);
 
 	/**
 	 * @return whether the wall should be drawn on the model. Also used for they cache key

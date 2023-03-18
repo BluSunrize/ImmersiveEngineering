@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.function.IntConsumer;
 import java.util.function.ObjIntConsumer;
 
 public class LayeredComparatorOutput<CTX>
@@ -28,16 +27,6 @@ public class LayeredComparatorOutput<CTX>
 	private double lastValue = -1;
 	private int currentMasterOutput;
 	private final int[] currentLayerOutputs;
-
-	@Deprecated
-	public static LayeredComparatorOutput<Void> make(
-			double maxValue, int numLayers, Runnable updateMaster, IntConsumer updateLayer
-	)
-	{
-		return new LayeredComparatorOutput<>(
-				maxValue, numLayers, ($, $1) -> updateMaster.run(), ($, $1, l) -> updateLayer.accept(l)
-		);
-	}
 
 	public LayeredComparatorOutput(
 			double maxValue, int numLayers, ObjIntConsumer<CTX> updateMaster, LayerUpdater<CTX> updateLayer

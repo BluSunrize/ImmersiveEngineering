@@ -35,8 +35,6 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
-	@Deprecated(forRemoval = true)
-	public static final Set<String> recipeCategories = new TreeSet<>();
 	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLUEPRINT);
 	private static int reloadCountForCategories = CachedRecipeList.INVALID_RELOAD_COUNT;
 	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
