@@ -25,6 +25,8 @@ jobs:
         run: ./gradlew compileJava
       - name: Run unit tests
         run: ./gradlew test
+      - name: Check for stereo sound files
+        run: scripts/check_sounds.sh
   datagen:
     runs-on: ubuntu-latest
     needs: test
