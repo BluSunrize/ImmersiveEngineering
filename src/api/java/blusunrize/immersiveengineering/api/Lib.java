@@ -85,30 +85,39 @@ public class Lib
 	public static final String NBT_Powerpack = "IE:Powerpack";
 	public static final String NBT_DAMAGE = "Damage";
 
-	public static final int colour_nixieTubeText = 0xff9900;
-
-	public static ResourceKey<DamageType> DMG_RevolverCasull = ieDamage("revolver_casull");
-	public static ResourceKey<DamageType> DMG_RevolverAP = ieDamage("revolver_armorpiercing");
-	public static ResourceKey<DamageType> DMG_RevolverBuck = ieDamage("revolver_buckshot");
-	public static ResourceKey<DamageType> DMG_RevolverDragon = ieDamage("revolver_dragonsbreath");
-	public static ResourceKey<DamageType> DMG_RevolverHoming = ieDamage("revolver_homing");
-	public static ResourceKey<DamageType> DMG_RevolverWolfpack = ieDamage("revolver_wolfpack");
-	public static ResourceKey<DamageType> DMG_RevolverSilver = ieDamage("revolver_silver");
-	public static ResourceKey<DamageType> DMG_RevolverPotion = ieDamage("revolver_potion");
-	public static ResourceKey<DamageType> DMG_Crusher = ieDamage("crushed");
-	public static ResourceKey<DamageType> DMG_Sawmill = ieDamage("sawmill");
-	public static ResourceKey<DamageType> DMG_Tesla = ieDamage("tesla");
-	public static ResourceKey<DamageType> DMG_Acid = ieDamage("acid");
-	public static ResourceKey<DamageType> DMG_Railgun = ieDamage("railgun");
-	public static ResourceKey<DamageType> DMG_Sawblade = ieDamage("sawblade");
-	public static ResourceKey<DamageType> DMG_Tesla_prim = ieDamage("tesla_primary");
-	public static ResourceKey<DamageType> DMG_RazorWire = ieDamage("razor_wire");
-	public static ResourceKey<DamageType> DMG_RazorShock = ieDamage("razor_shock");
-	public static ResourceKey<DamageType> DMG_WireShock = ieDamage("wire_shock");
+	public static class DamageTypes
+	{
+		public static final TurretDamageType REVOLVER_CASULL = new TurretDamageType("revolver_casull");
+		public static final TurretDamageType REVOLVER_ARMORPIERCING = new TurretDamageType("revolver_armorpiercing");
+		public static final TurretDamageType REVOLVER_BUCKSHOT = new TurretDamageType("revolver_buckshot");
+		public static final TurretDamageType REVOLVER_DRAGONSBREATH = new TurretDamageType("revolver_dragonsbreath");
+		public static final TurretDamageType REVOLVER_HOMING = new TurretDamageType("revolver_homing");
+		public static final TurretDamageType REVOLVER_WOLFPACK = new TurretDamageType("revolver_wolfpack");
+		public static final TurretDamageType REVOLVER_SILVER = new TurretDamageType("revolver_silver");
+		public static final TurretDamageType REVOLVER_POTION = new TurretDamageType("revolver_potion");
+		public static final ResourceKey<DamageType> CRUSHER = ieDamage("crushed");
+		public static final ResourceKey<DamageType> SAWMILL = ieDamage("sawmill");
+		public static final ResourceKey<DamageType> TESLA = ieDamage("tesla");
+		public static final ResourceKey<DamageType> ACID = ieDamage("acid");
+		public static final TurretDamageType RAILGUN = new TurretDamageType("railgun");
+		public static final TurretDamageType SAWBLADE = new TurretDamageType("sawblade");
+		public static final ResourceKey<DamageType> TESLA_PRIMARY = ieDamage("tesla_primary");
+		public static final ResourceKey<DamageType> RAZOR_WIRE = ieDamage("razor_wire");
+		public static final ResourceKey<DamageType> RAZOR_SHOCK = ieDamage("razor_shock");
+		public static final ResourceKey<DamageType> WIRE_SHOCK = ieDamage("wire_shock");
+	}
 
 	private static ResourceKey<DamageType> ieDamage(String path)
 	{
 		return ResourceKey.create(Registries.DAMAGE_TYPE, IEApi.ieLoc(path));
+	}
+
+	public record TurretDamageType(ResourceKey<DamageType> playerType, ResourceKey<DamageType> turretType)
+	{
+		private TurretDamageType(String path)
+		{
+			this(ieDamage(path), ieDamage(path+"_turret"));
+		}
 	}
 
 	public static final Tier MATERIAL_Steel = new Tier()

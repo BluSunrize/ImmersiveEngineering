@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.Lib.DamageTypes;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -219,7 +220,7 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingDropsLowest(LivingDropsEvent event)
 	{
-		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getMsgId()))
+		if(!event.isCanceled()&&event.getSource().is(DamageTypes.CRUSHER))
 		{
 			final Consumer<ItemStack> crusher = crusherMap.get(event.getEntity().getUUID());
 			if(crusher!=null)
@@ -285,7 +286,7 @@ public class EventHandler
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(("flux".equals(event.getSource().getMsgId())||event.getSource().is(Lib.DMG_RazorShock)||
+		if(("flux".equals(event.getSource().getMsgId())||event.getSource().is(DamageTypes.RAZOR_SHOCK)||
 				event.getSource() instanceof ElectricDamageSource)&&event.getEntity().getEffect(IEPotions.CONDUCTIVE.get())!=null)
 		{
 			int amp = event.getEntity().getEffect(IEPotions.CONDUCTIVE.get()).getAmplifier();

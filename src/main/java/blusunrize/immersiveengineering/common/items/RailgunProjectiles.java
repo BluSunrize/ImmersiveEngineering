@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.Lib.DamageTypes;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
@@ -97,8 +97,8 @@ public class RailgunProjectiles
 					final DamageSourcesAccess sources = (DamageSourcesAccess)world.damageSources();
 					Player p;
 					if(shooter!=null&&(p = world.getPlayerByUUID(shooter))!=null)
-						return sources.invokeSource(Lib.DMG_Railgun, p, null);
-					return sources.invokeSource(Lib.DMG_Railgun, null, null);
+						return sources.invokeSource(DamageTypes.RAILGUN.turretType(), p, null);
+					return sources.invokeSource(DamageTypes.RAILGUN.playerType(), null, null);
 				}
 				return null;
 			}

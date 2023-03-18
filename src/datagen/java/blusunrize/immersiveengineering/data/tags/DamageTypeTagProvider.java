@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data.tags;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.Lib.DamageTypes;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -35,14 +36,17 @@ public class DamageTypeTagProvider extends TagsProvider<DamageType>
 	@Override
 	protected void addTags(@NotNull Provider provider)
 	{
-		tag(DamageTypeTags.IS_FIRE).add(Lib.DMG_RevolverDragon);
+		tag(DamageTypeTags.IS_FIRE)
+				.add(DamageTypes.REVOLVER_DRAGONSBREATH.playerType())
+				.add(DamageTypes.REVOLVER_DRAGONSBREATH.turretType());
 		tag(DamageTypeTags.BYPASSES_ARMOR)
-				.add(Lib.DMG_RazorShock)
-				.add(Lib.DMG_WireShock)
-				.add(Lib.DMG_Tesla)
-				.add(Lib.DMG_Tesla_prim)
-				.add(Lib.DMG_RevolverAP)
-				.add(Lib.DMG_Railgun)
-				.add(Lib.DMG_Sawblade);
+				.add(DamageTypes.RAZOR_SHOCK)
+				.add(DamageTypes.WIRE_SHOCK)
+				.add(DamageTypes.TESLA)
+				.add(DamageTypes.TESLA_PRIMARY)
+				.add(DamageTypes.REVOLVER_ARMORPIERCING.playerType())
+				.add(DamageTypes.REVOLVER_ARMORPIERCING.turretType())
+				.add(DamageTypes.RAILGUN.playerType())
+				.add(DamageTypes.SAWBLADE.playerType());
 	}
 }
