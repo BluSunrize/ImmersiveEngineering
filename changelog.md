@@ -7,6 +7,7 @@
 - Fix visual issues when inverting powered lanterns (Malte)
 - Fix shift-clicking an output item in the mod workbench adding to the output stack (Malte)
 - Fix global sound of mixer as a result of stereo audio file (Malte)
+- Fix assemblers not outputting revolver speedloaders, because they were considered ingredients in their own recipe (BluSunrize)
 
 ##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0

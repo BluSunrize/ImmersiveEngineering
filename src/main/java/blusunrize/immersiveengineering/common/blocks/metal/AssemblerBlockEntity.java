@@ -346,15 +346,16 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 			return false;
 		if(slot-1 < patterns.length||recursiveIngredients)
 			for(int p = recursiveIngredients?0: slot; p < patterns.length; p++)
-			{
-				CrafterPatternInventory pattern = patterns[p];
-				for(int i = 0; i < 9; i++)
-					if(!pattern.inv.get(i).isEmpty())
-					{
-						if(ItemStack.isSame(pattern.inv.get(i), stack))
-							return true;
-					}
-			}
+				if(p!=slot) // ignore own pattern, we don't want self-replicating crafts anyhow...
+				{
+					CrafterPatternInventory pattern = patterns[p];
+					for(int i = 0; i < 9; i++)
+						if(!pattern.inv.get(i).isEmpty())
+						{
+							if(ItemStack.isSame(pattern.inv.get(i), stack))
+								return true;
+						}
+				}
 		return false;
 	}
 
