@@ -435,7 +435,7 @@ public class Villages
 				ItemNBTHelper.setLore(selling, Component.translatable(vein.getMineral(world).getTranslationKey()));
 				// return offer
 				return new MerchantOffer(
-						new ItemStack(Items.EMERALD, 8+random.nextInt(8)), new ItemStack(Items.MAP),
+						new ItemStack(Items.EMERALD, 8+random.nextInt(8)), new ItemStack(Items.COMPASS),
 						selling, 0, 1, 30, 0.5F
 				);
 			}
