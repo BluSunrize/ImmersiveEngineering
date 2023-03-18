@@ -195,7 +195,6 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		float hitX = (float)context.getClickLocation().x-pos.getX();
 		float hitY = (float)context.getClickLocation().y-pos.getY();
 		float hitZ = (float)context.getClickLocation().z-pos.getZ();
-		ItemStack stack = context.getItemInHand();
 
 		if(tile instanceof IDirectionalBE directionalBE)
 		{

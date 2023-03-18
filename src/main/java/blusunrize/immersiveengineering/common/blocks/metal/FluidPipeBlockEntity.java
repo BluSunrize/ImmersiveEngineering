@@ -226,6 +226,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				invalidateHandler(curDir);
 			}
 		}
+		final Block oldCover = cover;
 		cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
 		DyeColor oldColor = color;
 		if(nbt.contains("color", Tag.TAG_INT))
@@ -234,7 +235,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			color = null;
 		byte oldConns = connections;
 		connections = nbt.getByte("connections");
-		if(level!=null&&level.isClientSide&&(connections!=oldConns||color!=oldColor))
+		if(level!=null&&level.isClientSide&&(connections!=oldConns||color!=oldColor)||cover!=oldCover)
 		{
 			BlockState state = level.getBlockState(worldPosition);
 			level.sendBlockUpdated(worldPosition, state, state, 3);
@@ -470,7 +471,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		}
 	}
 
-	public static record DirectionalFluidOutput(
+	public record DirectionalFluidOutput(
 			IFluidHandler output,
 			Direction direction,
 			BlockEntity containingTile
@@ -692,37 +693,49 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	{
 		if(heldItem.isEmpty()&&player.isShiftKeyDown()&&hasCover())
 		{
-			dropCover(player);
-			this.cover = Blocks.AIR;
-			this.markContainingBlockForUpdate(null);
-			level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
+			if(!player.level.isClientSide)
+			{
+				dropCover(player);
+				this.cover = Blocks.AIR;
+				this.markContainingBlockForUpdate(null);
+				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
+			}
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&!player.isShiftKeyDown())
+			return setColorOrCoverFrom(heldItem, player);
+		return false;
+	}
+
+	private boolean setColorOrCoverFrom(ItemStack heldItem, Player player)
+	{
+		DyeColor heldDye = Utils.getDye(heldItem);
+		if(heldDye!=null)
 		{
-			Block heldBlock = Block.byItem(heldItem.getItem());
-			if(heldBlock!=Blocks.AIR)
-				for(Predicate<Block> func : validPipeCovers)
-					if(func.test(heldBlock))
-					{
-						if(this.cover!=heldBlock)
-						{
-							dropCover(player);
-							this.cover = heldBlock;
-							heldItem.shrink(1);
-							this.markContainingBlockForUpdate(null);
-							level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
-							return true;
-						}
-					}
-			DyeColor heldDye = Utils.getDye(heldItem);
-			if(heldDye!=null)
+			if(!player.level.isClientSide)
 			{
 				color = heldDye;
 				markContainingBlockForUpdate(null);
+				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
+			}
+			return true;
+		}
+		Block heldBlock = Block.byItem(heldItem.getItem());
+		if(heldBlock==Blocks.AIR)
+			return false;
+		for(Predicate<Block> func : validPipeCovers)
+			if(func.test(heldBlock)&&this.cover!=heldBlock)
+			{
+				if(!player.level.isClientSide)
+				{
+					dropCover(player);
+					this.cover = heldBlock;
+					heldItem.shrink(1);
+					this.markContainingBlockForUpdate(null);
+					level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
+				}
 				return true;
 			}
-		}
 		return false;
 	}
 
@@ -764,6 +777,13 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		final Level level = ctx.getLevel();
 		if(level.isClientSide)
 			return;
+		if(ctx.getPlayer()!=null)
+		{
+			final InteractionHand otherHand = ctx.getHand()==InteractionHand.MAIN_HAND?
+					InteractionHand.OFF_HAND:
+					InteractionHand.MAIN_HAND;
+			setColorOrCoverFrom(ctx.getPlayer().getItemInHand(otherHand), ctx.getPlayer());
+		}
 		final BlockPos pos = ctx.getClickedPos();
 		for(Direction dir : Direction.values())
 			if(level.getBlockEntity(pos.relative(dir)) instanceof FluidPipeBlockEntity neighborPipe)
