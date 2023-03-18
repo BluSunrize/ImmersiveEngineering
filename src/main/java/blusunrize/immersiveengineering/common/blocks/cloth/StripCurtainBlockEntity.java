@@ -27,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -206,8 +207,9 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public void readOnPlacement(LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
+		final ItemStack stack = ctx.getItemInHand();
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 			this.colour = ItemNBTHelper.getInt(stack, "colour");
 	}

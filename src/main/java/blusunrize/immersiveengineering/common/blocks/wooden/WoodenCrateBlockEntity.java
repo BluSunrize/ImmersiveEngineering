@@ -28,17 +28,17 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -155,7 +155,12 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	}
 
 	@Override
-	public void readOnPlacement(LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
+	{
+		onBEPlaced(ctx.getItemInHand());
+	}
+
+	public void onBEPlaced(ItemStack stack)
 	{
 		if(stack.hasTag())
 		{
@@ -174,7 +179,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(cap==ForgeCapabilities.ITEM_HANDLER)
 			return inventoryCap.cast();
 		return super.getCapability(cap, side);
 	}

@@ -44,6 +44,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -758,19 +759,16 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
-	public void onBEPlaced(Level world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		if(!world.isClientSide())
-		{
-			BlockEntity te;
-			for(Direction dir : Direction.values())
-				if((te = world.getBlockEntity(pos.relative(dir))) instanceof FluidPipeBlockEntity)
-				{
-					FluidPipeBlockEntity neighborPipe = (FluidPipeBlockEntity)te;
-					if(neighborPipe.color!=this.color||!neighborPipe.sideConfig.getBoolean(dir.getOpposite()))
-						this.setSide(dir, false);
-				}
-		}
+		final Level level = ctx.getLevel();
+		if(level.isClientSide)
+			return;
+		final BlockPos pos = ctx.getClickedPos();
+		for(Direction dir : Direction.values())
+			if(level.getBlockEntity(pos.relative(dir)) instanceof FluidPipeBlockEntity neighborPipe)
+				if(neighborPipe.color!=this.color||!neighborPipe.sideConfig.getBoolean(dir.getOpposite()))
+					this.setSide(dir, false);
 	}
 
 	public boolean hasOutputConnection(Direction side)

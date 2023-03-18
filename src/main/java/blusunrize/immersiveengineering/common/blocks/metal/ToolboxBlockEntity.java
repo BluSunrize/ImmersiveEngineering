@@ -35,6 +35,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -163,8 +164,9 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	}
 
 	@Override
-	public void readOnPlacement(LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
+		final ItemStack stack = ctx.getItemInHand();
 		if(stack.getItem() instanceof InternalStorageItem)
 		{
 			stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(inv ->

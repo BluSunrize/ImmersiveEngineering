@@ -31,6 +31,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -165,8 +166,9 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
+		final ItemStack stack = ctx.getItemInHand();
 		reference = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
 		stateForMiddle = NbtUtils.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
 	}
