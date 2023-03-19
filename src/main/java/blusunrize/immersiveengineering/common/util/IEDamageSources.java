@@ -178,7 +178,7 @@ public class IEDamageSources
 	public static DamageSource causeRailgunDamage(RailgunShotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
-			return new TurretDamageSource(Lib.DMG_Railgun);
+			return new TurretDamageSource(Lib.DMG_Railgun).bypassArmor();
 		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).bypassArmor();
 	}
 
@@ -186,7 +186,7 @@ public class IEDamageSources
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_Sawblade);
-		return new IEDamageSource_Indirect(Lib.DMG_Sawblade, shot, shooter).bypassArmor();
+		return new IEDamageSource_Indirect(Lib.DMG_Sawblade, shot, shooter);
 	}
 
 	public static DamageSource causeTeslaPrimaryDamage()

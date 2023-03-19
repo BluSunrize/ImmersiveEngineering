@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -100,8 +101,8 @@ public class SawbladeEntity extends IEProjectileEntity
 	{
 		Entity shooter = getOwner();
 		Entity target = result.getEntity();
-		// todo: make this configurable?
-		target.hurt(IEDamageSources.causeSawbladeDamage(this, shooter), 12.0f);
+		float damage = (float)(12f *IEServerConfig.TOOLS.railgun_damage.get());
+		target.hurt(IEDamageSources.causeSawbladeDamage(this, shooter), damage);
 		this.handlePiecing(target);
 	}
 

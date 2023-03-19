@@ -28,6 +28,9 @@
 - Fix global sound of mixer as a result of stereo audio file (Malte)
 - Fix assemblers not outputting revolver speedloaders, because they were considered ingredients in their own recipe (BluSunrize)
 - Fix Jade plugin not displaying translated text for hemp growth (BluSunrize)
+- Fix sawblade projectiles not rendering and having a very broken piercing-functionality (BluSunrize)
+- Fix sawblade projectiles not using the config damage multiplier for the railgun (BluSunrize)
+    - In exchange, they no longer count as armorpiercing (they shouldn't have been to begin with)
 
 ##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0
