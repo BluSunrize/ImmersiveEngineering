@@ -1334,5 +1334,7 @@
   "ie.manual.newerVersion": " - New!",
   "ie.manual.currentVersion": " - Current",
   "ie.manual.entry.mineralsDimAny": "§l%1$s§r is a mineral vein that can be found in any dimension.",
-  "immersiveengineering.optifinePoseStackWarning": "Immersive Engineering detected an incompatible version of Optifine. Due to Optifine's patching process, this version of Optifine removes Forge-added methods which are used, directly or indirectly, by Immersive Engineering and many other mods. As a result, you will probably experience a crash at virtually random times, e.g. when a search matches certain items. It is recommended that you do not use Optifine until this is fixed."
+  "immersiveengineering.optifinePoseStackWarning": "Immersive Engineering detected an incompatible version of Optifine. Due to Optifine's patching process, this version of Optifine removes Forge-added methods which are used, directly or indirectly, by Immersive Engineering and many other mods. As a result, you will probably experience a crash at virtually random times, e.g. when a search matches certain items. It is recommended that you do not use Optifine until this is fixed.",
+  "config.jade.plugin_immersiveengineering.hemp":  "Industrial Hemp Crop Growth",
+  "config.jade.plugin_immersiveengineering.multiblock_icon": "Multiblock Icons"
 }
