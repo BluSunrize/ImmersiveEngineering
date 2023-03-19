@@ -2,7 +2,7 @@
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
 - Cache connection rendering at the section level rather than individual segments (Malte)
 - Improve chunk building performance by not marking all IE blocks as "dynamicShape" (Malte)
-- Overhaul villager trades
+- Overhaul villager trades (BluSunrize)
     - Structural Engineer:
         - Requests more raw materials (treated wood, metal rods, concrete) and sells finished products (scaffolding, leaded concrete)
         - Requires more interesting items like insulated glass and duroplast, to make "speedrunning" the mineral vein maps a little harder
@@ -11,6 +11,11 @@
         - Blueprint for crafting components is an early trade that gives good XP
         - Mostly focused on emerald-based sales of drill heads & upgrades
         - Still has the blueprint for Arc Furnace electrodes as a master trade
+    - Electrician:
+        - Reduced cost of tools & added screwdriver to the options
+        - Removed railgun and revolver upgrades from the list
+        - Experts will purchase vacuum tubes and sell electronic components
+        - Master trades are tesla coil & cheap circuit backplanes 
 - Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
 - Fix z-fighting issues on the mod workbench with rubidium (Malte)
 - Fix visual issues when inverting powered lanterns (Malte)

@@ -286,24 +286,27 @@ public class Villages
 				 * Sells wires, tools and the faraday suit
 				 */
 				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.copperWire, new PriceInterval(8, 16), 16, 2));
-				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.WIRECUTTER, new PriceInterval(4, 7), 12, 1).setMultiplier(0.2f));
-				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.COPPER), new PriceInterval(2, 4), 12, 1).setMultiplier(0.2f));
+				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.COPPER), new PriceInterval(2, 4), 16, 1));
+				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.WIRECUTTER, new PriceInterval(1, 3), 12, 1).setMultiplier(0.2f));
+				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.SCREWDRIVER, new PriceInterval(1, 3), 12, 1).setMultiplier(0.2f));
 
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.electrumWire, new PriceInterval(6, 12), 12, 4));
-				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.VOLTMETER, new PriceInterval(4, 7), 3, 12).setMultiplier(0.2f));
-				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.ELECTRUM), new PriceInterval(1, 4), 12, 5));
+				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.electrumWire, new PriceInterval(6, 12), 16, 5));
+				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.ELECTRUM), new PriceInterval(1, 4), 16, 5));
+				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.VOLTMETER, new PriceInterval(1, 3), 12, 5).setMultiplier(0.2f));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.FEET), new PriceInterval(5, 7), 3, 15).setMultiplier(0.2f));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS), new PriceInterval(9, 11), 3, 15).setMultiplier(0.2f));
 
-				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.aluminumWire, new PriceInterval(4, 8), 20, 10));
-				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.STEEL), new PriceInterval(1, 2), 12, 8));
-				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST), new PriceInterval(11, 15), 3, 18).setMultiplier(0.2f));
-				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD), new PriceInterval(5, 7), 3, 18).setMultiplier(0.2f));
+				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.aluminumWire, new PriceInterval(4, 8), 16, 10));
+				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.STEEL), new PriceInterval(1, 2), 16, 10));
+				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST), new PriceInterval(11, 15), 3, 20).setMultiplier(0.2f));
+				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD), new PriceInterval(5, 7), 3, 20).setMultiplier(0.2f));
 
-				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FLUORESCENT_TUBE, new PriceInterval(8, 12), 3, 25).setMultiplier(0.2f));
-				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_ELECTRO), new PriceInterval(8, 12), 3, 15).setMultiplier(0.2f));
+				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, Ingredients.ELECTRON_TUBE, new PriceInterval(2, 6), 16, 10));
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.COMPONENT_ELECTRONIC, new PriceInterval(1, 3), 16, 15));
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.FLUORESCENT_TUBE, new PriceInterval(3, 6), 3, 20).setMultiplier(0.2f));
 
-				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_CAPACITORS), new PriceInterval(8, 12), 3, 30).setMultiplier(0.2f));
+				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, MetalDevices.TESLA_COIL, new PriceInterval(20, 32), 12, 30));
+				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.CIRCUIT_BOARD, new PriceInterval(1, 2), 16, 5));
 			}
 			else if(OUTFITTER.equals(typeName))
 			{
