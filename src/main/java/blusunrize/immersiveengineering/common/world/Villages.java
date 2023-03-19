@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
@@ -23,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
@@ -316,10 +314,25 @@ public class Villages
 				ItemLike bag_common = IEItems.Misc.SHADER_BAG.get(Rarity.COMMON);
 				ItemLike bag_uncommon = IEItems.Misc.SHADER_BAG.get(Rarity.UNCOMMON);
 				ItemLike bag_rare = IEItems.Misc.SHADER_BAG.get(Rarity.RARE);
+				ItemLike bag_epic = IEItems.Misc.SHADER_BAG.get(Rarity.EPIC);
 
-				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_common, new PriceInterval(2, 8), 24, 1).setMultiplier(0.2f));
-				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_uncommon, new PriceInterval(8, 14), 24, 5).setMultiplier(0.2f));
-				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_rare, new PriceInterval(14, 20), 24, 10).setMultiplier(0.2f));
+				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_common, new PriceInterval(1, 8), 16, 2));
+				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, Ingredients.HEMP_FABRIC, new PriceInterval(8, 12), 16, 1));
+
+				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_uncommon, new PriceInterval(4, 12), 16, 5));
+				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEBannerPatterns.HAMMER.item(), new PriceInterval(10, 20), 3, 20));
+				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEBannerPatterns.WINDMILL.item(), new PriceInterval(4, 20), 3, 20));
+				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEBannerPatterns.ORNATE.item(), new PriceInterval(4, 20), 3, 20));
+
+				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_rare, new PriceInterval(8, 16), 16, 15));
+				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.SILVER).dust, new PriceInterval(4, 12), 16, 10));
+				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_uncommon, new PriceInterval(4, 12), 8, 5));
+
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_epic, new PriceInterval(12, 20), 3, 20));
+				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.GOLD).dust, new PriceInterval(4, 12), 16, 15));
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_rare, new PriceInterval(8, 16), 8, 15));
+
+				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, bag_epic, new PriceInterval(16, 28), 3, 30).setMultiplier(0.2f));
 			}
 			else if(GUNSMITH.equals(typeName))
 			{

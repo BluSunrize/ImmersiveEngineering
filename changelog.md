@@ -15,7 +15,11 @@
         - Reduced cost of tools & added screwdriver to the options
         - Removed railgun and revolver upgrades from the list
         - Experts will purchase vacuum tubes and sell electronic components
-        - Master trades are tesla coil & cheap circuit backplanes 
+        - Master trades are tesla coil & cheap circuit backplanes
+    - Outfitter:
+        - Can now sell epic grabbags as well
+        - Will buy tough fabric, silver and gold grit 
+        - Can sell some of IE's banner patterns
 - Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
 - Fix z-fighting issues on the mod workbench with rubidium (Malte)
 - Fix visual issues when inverting powered lanterns (Malte)
