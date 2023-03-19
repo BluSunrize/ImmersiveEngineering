@@ -7,6 +7,10 @@
         - Requests more raw materials (treated wood, metal rods, concrete) and sells finished products (scaffolding, leaded concrete)
         - Requires more interesting items like insulated glass and duroplast, to make "speedrunning" the mineral vein maps a little harder
         - Mineral Vein maps now focus on rare veins within 16 chunks of the villager and they can sell 2 of them
+    - Machinist:
+        - Blueprint for crafting components is an early trade that gives good XP
+        - Mostly focused on emerald-based sales of drill heads & upgrades
+        - Still has the blueprint for Arc Furnace electrodes as a master trade
 - Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
 - Fix z-fighting issues on the mod workbench with rubidium (Malte)
 - Fix visual issues when inverting powered lanterns (Malte)

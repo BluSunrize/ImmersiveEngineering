@@ -260,20 +260,24 @@ public class Villages
 				 * Sells tools, metals, blueprints and drillheads
 				 */
 				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.coalCoke, new PriceInterval(8, 16), 16, 2));
-				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.HAMMER, new PriceInterval(4, 7), 12, 1).setMultiplier(0.2f));
+				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.HAMMER, new PriceInterval(1, 3), 12, 1).setMultiplier(0.2f));
+				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("components"), new PriceInterval(6, 16), 3, 5).setMultiplier(0.2f));
 
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.COPPER).ingot, new PriceInterval(4, 6), 6, 10));
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.ALUMINUM).ingot, new PriceInterval(4, 6), 6, 10));
+				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.STEEL).ingot, new PriceInterval(3, 6), 12, 10));
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.COMPONENT_STEEL, new PriceInterval(1, 3), 12, 5));
+				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.WATERWHEEL_SEGMENT, new PriceInterval(1, 3), 8, 10));
 
 				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.TOOLBOX, new PriceInterval(6, 8), 3, 20).setMultiplier(0.2f));
-				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.WATERWHEEL_SEGMENT, new PriceInterval(1, 3), 8, 10));
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getTagsFor(EnumMetals.STEEL).plate, new PriceInterval(4, 6), 12, 7));
+				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.DRILLHEAD_IRON, new PriceInterval(20, 40), 3, 15).setMultiplier(0.2f));
+				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.SAWBLADE, new PriceInterval(20, 40), 3, 15).setMultiplier(0.2f));
+				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.EARMUFFS, new PriceInterval(4, 9), 3, 20).setMultiplier(0.2f));
 
-				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.DRILLHEAD_IRON, new PriceInterval(28, 40), 3, 15).setMultiplier(0.2f));
-				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, IEItems.Misc.EARMUFFS, new PriceInterval(4, 9), 3, 20).setMultiplier(0.2f));
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.DRILLHEAD_STEEL, new PriceInterval(32, 48), 3, 30).setMultiplier(0.2f));
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, TOOL_UPGRADES.get(ToolUpgrade.DRILL_LUBE), new PriceInterval(5, 10), 8, 10));
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, TOOL_UPGRADES.get(ToolUpgrade.DRILL_CAPACITY), new PriceInterval(5, 10), 8, 10));
+				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, MetalDecoration.ENGINEERING_LIGHT, new PriceInterval(1, 2), 16, 10));
 
-				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Tools.DRILLHEAD_STEEL, new PriceInterval(32, 48), 3, 30).setMultiplier(0.2f));
+				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, TOOL_UPGRADES.get(ToolUpgrade.DRILL_FORTUNE), new PriceInterval(5, 10), 8, 10));
 				trades.get(5).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new PriceInterval(12, 24), 3, 30).setMultiplier(0.2f));
 			}
 			else if(ELECTRICIAN.equals(typeName))
