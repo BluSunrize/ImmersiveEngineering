@@ -150,31 +150,35 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 
 		// enable gravity
 		this.setNoGravity(false);
-		// restore rotations
-		this.setXRot(xRotPrev);
-		this.setYRot(yRotPrev);
-		this.xRotO = xRot0Prev;
-		this.yRotO = yRot0Prev;
 
-		// perform custom movement changes
-		float absMotion = (float)delta.length();
-		this.setYRot((float)(Math.atan2(delta.x, delta.z)*180.0D/Math.PI));
-		this.setXRot((float)(Math.atan2(delta.y, absMotion)*180.0D/Math.PI));
-		while(this.getXRot()-this.xRotO < -180.0F)
-			this.xRotO -= 360.0F;
-		while(this.getXRot()-this.xRotO >= 180.0F)
-			this.xRotO += 360.0F;
-		while(this.getYRot()-this.yRotO < -180.0F)
-			this.yRotO -= 360.0F;
-		while(this.getYRot()-this.yRotO >= 180.0F)
-			this.yRotO += 360.0F;
-		this.setXRot(this.xRotO+(this.getXRot()-this.xRotO)*0.2F);
-		this.setYRot(this.yRotO+(this.getYRot()-this.yRotO)*0.2F);
-		float movementDecay = getMotionDecayFactor();
-		if(this.isInWater())
-			movementDecay *= 0.8F;
-		if(movementDecay > 0)
-			setDeltaMovement(delta.scale(movementDecay).add(0, -getGravity(), 0));
+		if(!this.inGround)
+		{
+			// restore rotations
+			this.setXRot(xRotPrev);
+			this.setYRot(yRotPrev);
+			this.xRotO = xRot0Prev;
+			this.yRotO = yRot0Prev;
+
+			// perform custom movement changes
+			float absMotion = (float)delta.length();
+			this.setYRot((float)(Math.atan2(delta.x, delta.z)*180.0D/Math.PI));
+			this.setXRot((float)(Math.atan2(delta.y, absMotion)*180.0D/Math.PI));
+			while(this.getXRot()-this.xRotO < -180.0F)
+				this.xRotO -= 360.0F;
+			while(this.getXRot()-this.xRotO >= 180.0F)
+				this.xRotO += 360.0F;
+			while(this.getYRot()-this.yRotO < -180.0F)
+				this.yRotO -= 360.0F;
+			while(this.getYRot()-this.yRotO >= 180.0F)
+				this.yRotO += 360.0F;
+			this.setXRot(this.xRotO+(this.getXRot()-this.xRotO)*0.2F);
+			this.setYRot(this.yRotO+(this.getYRot()-this.yRotO)*0.2F);
+			float movementDecay = getMotionDecayFactor();
+			if(this.isInWater())
+				movementDecay *= 0.8F;
+			if(movementDecay > 0)
+				setDeltaMovement(delta.scale(movementDecay).add(0, -getGravity(), 0));
+		}
 	}
 
 	@Override
