@@ -33,6 +33,7 @@
 - Fix sawblade projectiles not rendering and having a very broken piercing-functionality (BluSunrize)
 - Fix sawblade projectiles not using the config damage multiplier for the railgun (BluSunrize)
     - In exchange, they no longer count as armorpiercing (they shouldn't have been to begin with)
+- Fix mixer not rendering its contained fluid (BluSunrize)
 
 ##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0
