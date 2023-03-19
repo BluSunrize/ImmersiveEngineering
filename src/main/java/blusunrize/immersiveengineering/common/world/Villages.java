@@ -233,25 +233,25 @@ public class Villages
 				/* Structural Engineer
 				 * Sells various construction materials
 				 */
-				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.treatedStick, new PriceInterval(8, 16), 16, 1));
-				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(6, 10), 12, 1));
+				trades.get(1).add(new TradeListing(EMERALD_FOR_ITEM, IETags.getItemTag(IETags.treatedWood), new PriceInterval(4, 6), 16, 2));
+				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WoodenDecoration.TREATED_SCAFFOLDING, new PriceInterval(5, 8), 16, 1));
 				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, Cloth.BALLOON, new PriceInterval(1, 3), 12, 2));
 
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.ironRod, new PriceInterval(2, 6), 12, 10));
+				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.ironRod, new PriceInterval(4, 8), 16, 10));
+				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.ironRod, new PriceInterval(4, 8), 16, 10));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(2, 4), 12, 5));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, MetalDecoration.ALU_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(2, 4), 12, 5));
 
-				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, IETags.steelRod, new PriceInterval(2, 6), 12, 6));
-				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, StoneDecoration.CONCRETE, new PriceInterval(4, 8), 8, 12));
-				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WoodenDevices.TREATED_WALLMOUNT, new PriceInterval(2, 3), 10, 8));
+				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WIRE_COILS.get(WireType.STRUCTURE_ROPE), new PriceInterval(4, 6), 16, 10));
+				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, Connectors.CONNECTOR_STRUCTURAL, new PriceInterval(4, 8), 16, 10));
+				trades.get(3).add(new TradeListing(EMERALD_FOR_ITEM, StoneDecoration.CONCRETE, new PriceInterval(4, 8), 8, 15));
+				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, StoneDecoration.CONCRETE_LEADED, new PriceInterval(4, 6), 16, 10));
 
-				trades.get(4).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WoodenDecoration.TREATED_POST, new PriceInterval(2, 3), 4, 10));
-				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, MetalDecoration.STEEL_POST, new PriceInterval(1, 2), 4, 20));
-				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, MetalDecoration.ALU_POST, new PriceInterval(1, 3), 6, 15));
-				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 4), 10, 10));
+				trades.get(4).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WoodenDecoration.TREATED_POST, new PriceInterval(2, 3), 8, 20));
+				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, StoneDecoration.INSULATING_GLASS, new PriceInterval(2, 6), 16, 10));
+				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, StoneDecoration.DUROPLAST, new PriceInterval(2, 6), 16, 10));
 				trades.get(4).add(new OreveinMapForEmeralds());
 
-				trades.get(5).add(new OreveinMapForEmeralds());
 				trades.get(5).add(new OreveinMapForEmeralds());
 			}
 			else if(MACHINIST.equals(typeName))
