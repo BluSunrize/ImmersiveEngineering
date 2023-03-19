@@ -20,6 +20,7 @@
         - Can now sell epic grabbags as well
         - Will buy tough fabric, silver and gold grit 
         - Can sell some of IE's banner patterns
+- Change Chemthrower to have a broader spread by default, making the effect of the Focused Nozzle more noticeable (BluSunrize)
 - Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
 - Fix z-fighting issues on the mod workbench with rubidium (Malte)
 - Fix visual issues when inverting powered lanterns (Malte)

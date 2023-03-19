@@ -139,12 +139,12 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				int split = 8;
 				boolean isGas = fs.getFluid().is(Tags.Fluids.GASEOUS);
 
-				float scatter = isGas?.15f: .05f;
+				float scatter = isGas?.25f: .15f;
 				float range = isGas?.5f: 1f;
 				if(getUpgrades(stack).getBoolean("focus"))
 				{
 					range += .25f;
-					scatter -= .025f;
+					scatter = .025f;
 				}
 
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&isIgniteEnable(stack);
