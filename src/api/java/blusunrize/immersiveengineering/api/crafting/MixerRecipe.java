@@ -145,7 +145,7 @@ public class MixerRecipe extends MultiblockRecipe
 	@Override
 	public int getMultipleProcessTicks()
 	{
-		return 0;
+		return 7;
 	}
 
 	@Override
