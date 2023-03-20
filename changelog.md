@@ -1,5 +1,6 @@
 ##### Version 1.19.2-9.2.1-pre
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
+- Add Jade plugin for showing fill of sheetmetal tank (BluSunrize)
 - Cache connection rendering at the section level rather than individual segments (Malte)
 - Improve chunk building performance by not marking all IE blocks as "dynamicShape" (Malte)
 - Overhaul villager trades (BluSunrize)
@@ -34,6 +35,7 @@
 - Fix sawblade projectiles not using the config damage multiplier for the railgun (BluSunrize)
     - In exchange, they no longer count as armorpiercing (they shouldn't have been to begin with)
 - Fix mixer not rendering its contained fluid (BluSunrize)
+- Fix heavy plated shield being raised when using mainhand items (Malte)
 
 ##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0
