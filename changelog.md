@@ -1,6 +1,8 @@
 ##### Version 1.19.2-9.2.1-pre
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
 - Add Jade plugin for showing fill of sheetmetal tank (BluSunrize)
+- Add Concrete and Hempcrete bricks, pillars and chiseled variants (voidsong-dragonfly)
+- Add sawmill recipes for treated wood (TeamSpen210) 
 - Cache connection rendering at the section level rather than individual segments (Malte)
 - Improve chunk building performance by not marking all IE blocks as "dynamicShape" (Malte)
 - Overhaul villager trades (BluSunrize)
@@ -36,6 +38,8 @@
     - In exchange, they no longer count as armorpiercing (they shouldn't have been to begin with)
 - Fix mixer not rendering its contained fluid (BluSunrize)
 - Fix heavy plated shield being raised when using mainhand items (Malte)
+- Fix possible crash with Vanilla Tweaks and hemp seeds (BluSunrize)
+- Translations Added/Updated: zh_cn (RevenXXX-a, mc-kaishixiaxue), uk_ua (SKZGx, hnufelka)
 
 ##### Version 1.19.2-9.2.0-162
 - All features from 8.4.0
