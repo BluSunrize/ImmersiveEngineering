@@ -38,6 +38,7 @@
     - In exchange, they no longer count as armorpiercing (they shouldn't have been to begin with)
 - Fix mixer not rendering its contained fluid (BluSunrize)
 - Fix heavy plated shield being raised when using mainhand items (Malte)
+- Fix toolbox being allowed to be placed in partial blocks, deleting them (BluSunrize)
 - Fix possible crash with Vanilla Tweaks and hemp seeds (BluSunrize)
 - Translations Added/Updated: zh_cn (RevenXXX-a, mc-kaishixiaxue), uk_ua (SKZGx, hnufelka)
 
