@@ -12,6 +12,23 @@
       ]
     ]
   },
+  "brick": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:concrete_brick"
+      },
+      {
+        "item": "immersiveengineering:concrete_brick_cracked"
+      },
+      {
+        "item": "immersiveengineering:concrete_pillar"
+      },
+      {
+        "item": "immersiveengineering:concrete_chiseled"
+      }
+    ]
+  },
   "partial": {
     "type": "item_display",
     "items": [

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "h": {
+      "item": "immersiveengineering:hempcrete"
+    }
+  },
+  "pattern": [
+    "h",
+    "h"
+  ],
+  "result": {
+    "count": 2,
+    "item": "immersiveengineering:hempcrete_pillar"
+  }
+}
