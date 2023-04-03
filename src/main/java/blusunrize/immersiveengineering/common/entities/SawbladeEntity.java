@@ -16,12 +16,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 import javax.annotation.Nonnull;
@@ -96,14 +98,30 @@ public class SawbladeEntity extends IEProjectileEntity
 		super.baseTick();
 	}
 
+	private void damageSawblade()
+	{
+		int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
+		Entity shooter = getOwner();
+		if(getAmmo().hurt(dmg, level.random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
+			this.discard();
+	}
+
+	@Override
+	protected void onHitBlock(BlockHitResult result)
+	{
+		super.onHitBlock(result);
+		damageSawblade();
+	}
+
 	@Override
 	protected void onHitEntity(EntityHitResult result)
 	{
 		Entity shooter = getOwner();
 		Entity target = result.getEntity();
-		float damage = (float)(12f *IEServerConfig.TOOLS.railgun_damage.get());
+		float damage = (float)(12f*IEServerConfig.TOOLS.railgun_damage.get());
 		target.hurt(IEDamageSources.causeSawbladeDamage(this, shooter), damage);
 		this.handlePiecing(target);
+		damageSawblade();
 	}
 
 	@Override
