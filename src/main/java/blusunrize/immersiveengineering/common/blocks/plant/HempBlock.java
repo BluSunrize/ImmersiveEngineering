@@ -64,7 +64,7 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos)
 	{
 		boolean b = super.canSurvive(state, world, pos);
-		if(state.getValue(GROWTH)==EnumHempGrowth.TOP0)
+		if(state.getBlock().equals(this)&&state.getValue(GROWTH)==EnumHempGrowth.TOP0)
 		{
 			BlockState stateBelow = world.getBlockState(pos.below());
 			b = stateBelow.getBlock().equals(this)&&stateBelow.getValue(GROWTH)==EnumHempGrowth.BOTTOM0.getMax();
