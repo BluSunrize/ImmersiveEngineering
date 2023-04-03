@@ -3,10 +3,16 @@
   "category": "bullet",
   "inputs": [
     {
-      "item": "immersiveengineering:empty_casing"
+      "base_ingredient": {
+        "item": "immersiveengineering:empty_casing"
+      },
+      "count": 4
     },
     {
-      "tag": "forge:gunpowder"
+      "base_ingredient": {
+        "tag": "forge:gunpowder"
+      },
+      "count": 2
     },
     {
       "base_ingredient": {
@@ -22,6 +28,7 @@
     }
   ],
   "result": {
+    "count": 4,
     "item": "immersiveengineering:armor_piercing"
   }
 }

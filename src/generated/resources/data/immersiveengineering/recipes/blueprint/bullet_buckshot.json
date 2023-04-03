@@ -3,10 +3,16 @@
   "category": "bullet",
   "inputs": [
     {
-      "item": "immersiveengineering:empty_shell"
+      "base_ingredient": {
+        "item": "immersiveengineering:empty_shell"
+      },
+      "count": 4
     },
     {
-      "tag": "forge:gunpowder"
+      "base_ingredient": {
+        "tag": "forge:gunpowder"
+      },
+      "count": 2
     },
     {
       "base_ingredient": {
@@ -16,6 +22,7 @@
     }
   ],
   "result": {
+    "count": 4,
     "item": "immersiveengineering:buckshot"
   }
 }

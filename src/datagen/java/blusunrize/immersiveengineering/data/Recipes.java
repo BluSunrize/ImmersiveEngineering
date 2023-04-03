@@ -441,26 +441,26 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("blueprint/"+toPath(mold)));
 
 
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.CASULL))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.CASULL), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
 				.build(out, toRL("blueprint/bullet_casull"));
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).nugget, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.CONSTANTAN).nugget, 2))
 				.build(out, toRL("blueprint/bullet_armorpiercing"));
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.SILVER))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.SILVER), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
-				.addInput(IETags.getTagsFor(EnumMetals.SILVER).nugget)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.SILVER).nugget, 2))
 				.build(out, toRL("blueprint/bullet_silver"));
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.BUCKSHOT))
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.BUCKSHOT), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).dust, 2))
 				.build(out, toRL("blueprint/bullet_buckshot"));
 
@@ -469,9 +469,9 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(Items.TNT)
 				.build(out, toRL("blueprint/bullet_explosive"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH))
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 4))
 				.build(out, toRL("blueprint/bullet_dragonsbreath"));
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.POTION))
@@ -480,31 +480,31 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.GLASS_BOTTLE)
 				.build(out, toRL("blueprint/bullet_potion"));
 
-		ItemStack flare = BulletHandler.getBulletStack(BulletItem.FLARE);
+		ItemStack flare = new ItemStack(BulletHandler.getBulletItem(BulletItem.FLARE), 4);
 		ItemNBTHelper.putInt(flare, "flareColour", 0xcc2e06);
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_RED)
 				.build(out, toRL("blueprint/bullet_flare_red"));
 		ItemNBTHelper.putInt(flare, "flareColour", 0x2ca30b);
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_GREEN)
 				.build(out, toRL("blueprint/bullet_flare_green"));
 		ItemNBTHelper.putInt(flare, "flareColour", 0xffff82);
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_YELLOW)
 				.build(out, toRL("blueprint/bullet_flare_yellow"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.HOMING))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.HOMING), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
 				.addInput(Items.ENDER_EYE)
 				.build(out, toRL("blueprint/bullet_homing"));
@@ -3086,7 +3086,6 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_coppper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.save(out, toRL(toPath(BulletHandler.emptyCasing)));
 
-		BulletHandler.getBulletStack(BulletItem.FLARE);
 		TurnAndCopyRecipeBuilder.builder(BulletHandler.getBulletItem(BulletItem.FIREWORK))
 				.setNBTCopyTargetRecipe(0, 1, 2, 3, 4, 5, 6) //Since this isn't relative positioning, we have to account for the top 6 slots >_>
 				.pattern("f")
