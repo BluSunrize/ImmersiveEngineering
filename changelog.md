@@ -26,6 +26,7 @@
 - Change Chemthrower to have a broader spread by default, making the effect of the Focused Nozzle more noticeable (BluSunrize)
 - Change Mixer to allow faster processing, provided it has enough power (BluSunrize)
     - Can increase its speed by up to 700%!
+- Change Revolver Speedloader recipe to use Duroplast, making it cheaper and more enticing to use (BluSunrize)
 - Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
 - Fix z-fighting issues on the mod workbench with rubidium (Malte)
 - Fix visual issues when inverting powered lanterns (Malte)

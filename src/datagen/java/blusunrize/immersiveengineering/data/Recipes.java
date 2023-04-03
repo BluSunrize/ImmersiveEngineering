@@ -3060,11 +3060,12 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(Ingredients.WOODEN_GRIP), has(Ingredients.WOODEN_GRIP))
 				.save(out, toRL(toPath(Weapons.REVOLVER)));
 		ShapedRecipeBuilder.shaped(Weapons.SPEEDLOADER)
-				.pattern("sdc")
+				.pattern("sd")
+				.pattern("dc")
 				.define('s', IETags.ironRod)
-				.define('d', Ingredients.GUNPART_DRUM)
+				.define('d', IETags.plasticPlate)
 				.define('c', Ingredients.COMPONENT_IRON)
-				.unlockedBy("has_drum", has(Ingredients.GUNPART_DRUM))
+				.unlockedBy("has_revolver", has(Weapons.REVOLVER))
 				.save(out, toRL(toPath(Weapons.SPEEDLOADER)));
 
 		ShapedRecipeBuilder.shaped(BulletHandler.emptyShell, 3)
