@@ -20,8 +20,12 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -150,6 +154,20 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 
 		// enable gravity
 		this.setNoGravity(false);
+
+		// Vanilla has a fun issue where it ignores a block hit result if it found any entities instead
+		// so we check for block hits here again...
+		if(!this.isRemoved() && !this.inGround)
+		{
+			Vec3 vec32 = this.position();
+			Vec3 vec33 = vec32.add(delta);
+			BlockHitResult blockHitResult = this.level.clip(new ClipContext(vec32, vec33, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+			if(blockHitResult.getType()!=HitResult.Type.MISS&&!ForgeEventFactory.onProjectileImpact(this, blockHitResult))
+			{
+				this.onHit(blockHitResult);
+				this.hasImpulse = true;
+			}
+		}
 
 		if(!this.inGround)
 		{
