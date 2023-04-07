@@ -1,3 +1,6 @@
+##### Version 1.19.3-9.3.1-pre
+- All features from 9.2.1
+
 ##### Version 1.19.2-9.2.1-164
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
 - Add Jade plugin for showing fill of sheetmetal tank (BluSunrize)
