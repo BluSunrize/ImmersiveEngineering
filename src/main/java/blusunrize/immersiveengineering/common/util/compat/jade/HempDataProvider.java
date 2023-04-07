@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.util.compat.jade;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,12 +37,10 @@ public class HempDataProvider implements IBlockComponentProvider
 			relativeGrowth = 1;
 		else
 			relativeGrowth = ((growth.ordinal()-min.ordinal())/(float)(max.ordinal()-min.ordinal()));
-		Component growthText;
 		if(relativeGrowth < 1)
-			growthText = Component.literal((int)(100*relativeGrowth)+"%");
+			iTooltip.add(Component.translatable("tooltip.jade.crop_growth", String.format("%.0f%%", relativeGrowth*100)));
 		else
-			growthText = Component.translatable("tooltip.waila.crop_mature");
-		iTooltip.append(Component.translatable("tooltip.waila.crop_growth").append(growthText));
+			iTooltip.add(Component.translatable("tooltip.jade.crop_growth", Component.translatable("tooltip.jade.crop_mature").withStyle(ChatFormatting.GREEN)));
 	}
 
 	@Override

@@ -68,7 +68,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	@Override
 	public void readTileFromItem(LivingEntity placer, ItemStack itemStack)
 	{
-		this.containedBlockEntity.readOnPlacement(placer, itemStack);
+		this.containedBlockEntity.onBEPlaced(itemStack);
 	}
 
 	@Override

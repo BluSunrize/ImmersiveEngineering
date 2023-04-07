@@ -119,10 +119,11 @@ public class ToolboxItem extends InternalStorageItem
 			BlockPos pos = ctx.getClickedPos();
 			Direction side = ctx.getClickedFace();
 			BlockState state = world.getBlockState(pos);
-			if(!state.canBeReplaced(new BlockPlaceContext(ctx)))
+			BlockPlaceContext blockCtx = new BlockPlaceContext(ctx);
+			if(!state.canBeReplaced(blockCtx))
 				pos = pos.relative(side);
 
-			if(stack.getCount()!=0&&player.mayUseItemAt(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
+			if(stack.getCount()!=0&&player.mayUseItemAt(pos, side, stack)&&world.getBlockState(pos).canBeReplaced(blockCtx))
 			{
 				BlockState toolbox = MetalDevices.TOOLBOX.defaultBlockState();
 				if(world.setBlock(pos, toolbox, 3))

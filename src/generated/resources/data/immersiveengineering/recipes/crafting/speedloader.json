@@ -6,14 +6,15 @@
       "item": "immersiveengineering:component_iron"
     },
     "d": {
-      "item": "immersiveengineering:gunpart_drum"
+      "tag": "forge:plates/plastic"
     },
     "s": {
       "tag": "forge:rods/iron"
     }
   },
   "pattern": [
-    "sdc"
+    "sd",
+    "dc"
   ],
   "result": {
     "item": "immersiveengineering:speedloader"

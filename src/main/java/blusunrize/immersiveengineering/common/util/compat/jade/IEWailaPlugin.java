@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.common.util.compat.jade;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import snownee.jade.api.IWailaClientRegistration;
+import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
 
@@ -22,5 +24,11 @@ public class IEWailaPlugin implements IWailaPlugin
 	{
 		registrar.registerBlockComponent(new HempDataProvider(), HempBlock.class);
 		registrar.registerBlockIcon(new MultiblockIconProvider(), MultiblockPartBlock.class);
+	}
+
+	@Override
+	public void register(IWailaCommonRegistration registration)
+	{
+		registration.registerFluidStorage(new SheetmetalTankDataProvider(), SheetmetalTankBlockEntity.class);
 	}
 }

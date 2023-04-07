@@ -13,4 +13,6 @@ public interface IWireSyncManager
 	void onConnectionAdded(Connection c);
 
 	void onConnectionRemoved(Connection c);
+
+	void onConnectionEndpointsChanged(Connection c);
 }

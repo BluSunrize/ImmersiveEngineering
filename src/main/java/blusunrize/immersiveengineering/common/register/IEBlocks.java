@@ -38,6 +38,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -61,6 +62,11 @@ public final class IEBlocks
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
 			.strength(2, 10);
+
+	private static final Supplier<Properties> STONE_DECO_BRICK_PROPS = () -> Block.Properties.of(Material.STONE)
+			.sound(SoundType.STONE)
+			.requiresCorrectToolForDrops()
+			.strength(1.75f, 10);
 	private static final Supplier<Properties> STONE_DECO_LEADED_PROPS = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
@@ -68,11 +74,11 @@ public final class IEBlocks
 	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
-			.strength(2, 10)
+			.strength(0.5f, 0.5f) //Glass & Tinted Glass are 0.3f,0.3f. These glasses are stronger, thus 0.5f,0.5f
 			.noOcclusion();
 	private static final Supplier<Properties> SHEETMETAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
-			.strength(3, 10);
+			.strength(2, 2); //Cauldron props are 2,2 and sheetmetal is similar
 	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES = () -> Block.Properties.of(Material.WOOD)
 			.sound(SoundType.WOOD)
 			.strength(2, 5);
@@ -93,6 +99,7 @@ public final class IEBlocks
 					.requiresCorrectToolForDrops()
 					.isViewBlocking((state, blockReader, pos) -> false);
 	public static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	private static final Supplier<Properties> METAL_PROPERTIES_DYNAMIC = () -> METAL_PROPERTIES_NO_OCCLUSION.get().dynamicShape();
 
 	private IEBlocks()
 	{
@@ -103,12 +110,15 @@ public final class IEBlocks
 
 	public static final class StoneDecoration
 	{
-		public static final BlockEntry<IEBaseBlock> COKEBRICK = BlockEntry.simple("cokebrick", STONE_DECO_PROPS);
-		public static final BlockEntry<IEBaseBlock> BLASTBRICK = BlockEntry.simple("blastbrick", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> COKEBRICK = BlockEntry.simple("cokebrick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> BLASTBRICK = BlockEntry.simple("blastbrick", STONE_DECO_BRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> BLASTBRICK_REINFORCED = BlockEntry.simple(
-				"blastbrick_reinforced", STONE_DECO_PROPS
+				"blastbrick_reinforced", () -> Block.Properties.of(Material.STONE)
+						.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(2.5f, 12)
 		);
-		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple("coke", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple(
+				"coke", () -> Block.Properties.of(Material.STONE)
+				.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(5, 6));
 		public static final BlockEntry<SlagGravelBlock> SLAG_GRAVEL = new BlockEntry<>(
 				"slag_gravel",
 				() -> Block.Properties.of(Material.SAND, MaterialColor.STONE).strength(0.6F).sound(SoundType.GRAVEL),
@@ -116,7 +126,15 @@ public final class IEBlocks
 		);
 
 		public static final BlockEntry<IEBaseBlock> HEMPCRETE = BlockEntry.simple("hempcrete", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_BRICK = BlockEntry.simple("hempcrete_brick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_BRICK_CRACKED = BlockEntry.simple("hempcrete_brick_cracked", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_CHISELED = BlockEntry.simple("hempcrete_chiseled", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> HEMPCRETE_PILLAR = BlockEntry.simple("hempcrete_pillar", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> CONCRETE = BlockEntry.simple("concrete", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_BRICK = BlockEntry.simple("concrete_brick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_BRICK_CRACKED = BlockEntry.simple("concrete_brick_cracked", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_CHISELED = BlockEntry.simple("concrete_chiseled", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_PILLAR = BlockEntry.simple("concrete_pillar", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> CONCRETE_TILE = BlockEntry.simple("concrete_tile", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> CONCRETE_LEADED = BlockEntry.simple(
 				"concrete_leaded", STONE_DECO_LEADED_PROPS
@@ -131,7 +149,7 @@ public final class IEBlocks
 				"concrete_sprayed", () -> Block.Properties.of(Material.STONE)
 						.strength(.2F, 1)
 						.noOcclusion());
-		public static final BlockEntry<IEBaseBlock> ALLOYBRICK = BlockEntry.simple("alloybrick", STONE_DECO_PROPS);
+		public static final BlockEntry<IEBaseBlock> ALLOYBRICK = BlockEntry.simple("alloybrick", STONE_DECO_BRICK_PROPS);
 
 		//TODO possibly merge into a single block with "arbitrary" height?
 		public static final BlockEntry<PartialConcreteBlock> CONCRETE_SHEET = new BlockEntry<>(
@@ -146,7 +164,10 @@ public final class IEBlocks
 		);
 
 		public static final BlockEntry<HorizontalFacingBlock<CoresampleBlockEntity>> CORESAMPLE = new BlockEntry<>(
-				"coresample", STONE_DECO_PROPS_NOT_SOLID, p -> new HorizontalFacingBlock<>(IEBlockEntities.CORE_SAMPLE, p)
+				"coresample",
+				// TODO move bounds code into the block impl and get rid of dynamic shapes
+				dynamicShape(STONE_DECO_PROPS_NOT_SOLID),
+				p -> new HorizontalFacingBlock<>(IEBlockEntities.CORE_SAMPLE, p)
 		);
 
 		public static final BlockEntry<IEBaseBlock> DUROPLAST = BlockEntry.simple(
@@ -306,7 +327,8 @@ public final class IEBlocks
 				"fluid_sorter", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.FLUID_SORTER, p)
 		);
 		public static final BlockEntry<WindmillBlock> WINDMILL = new BlockEntry<>(
-				"windmill", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindmillBlock::new
+				// TODO move shape into block impl and get rid of dynamic shapes
+				"windmill", dynamicShape(STANDARD_WOOD_PROPERTIES_NO_OCCLUSION), WindmillBlock::new
 		);
 		public static final BlockEntry<WatermillBlock> WATERMILL = new BlockEntry<>(
 				"watermill", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WatermillBlock::new
@@ -341,10 +363,10 @@ public final class IEBlocks
 		public static final BlockEntry<PostBlock> ALU_POST = BlockEntry.post("alu_post", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<LanternBlock> LANTERN = new BlockEntry<>("lantern", LanternBlock.PROPERTIES, LanternBlock::new);
 		public static final BlockEntry<StructuralArmBlock> STEEL_SLOPE = new BlockEntry<>(
-				"steel_slope", METAL_PROPERTIES_NO_OCCLUSION, StructuralArmBlock::new
+				"steel_slope", METAL_PROPERTIES_DYNAMIC, StructuralArmBlock::new
 		);
 		public static final BlockEntry<StructuralArmBlock> ALU_SLOPE = new BlockEntry<>(
-				"alu_slope", METAL_PROPERTIES_NO_OCCLUSION, StructuralArmBlock::new
+				"alu_slope", METAL_PROPERTIES_DYNAMIC, StructuralArmBlock::new
 		);
 		public static final Map<CoverType, BlockEntry<MetalLadderBlock>> METAL_LADDER = new EnumMap<>(CoverType.class);
 		public static final Map<MetalScaffoldingType, BlockEntry<ScaffoldingBlock>> STEEL_SCAFFOLDING = new EnumMap<>(MetalScaffoldingType.class);
@@ -388,7 +410,8 @@ public final class IEBlocks
 				"razor_wire", RazorWireBlock.PROPERTIES, RazorWireBlock::new
 		);
 		public static final BlockEntry<HorizontalFacingBlock<ToolboxBlockEntity>> TOOLBOX = new BlockEntry<>(
-				"toolbox_block", METAL_PROPERTIES_NO_OVERLAY, p -> new HorizontalFacingBlock<>(IEBlockEntities.TOOLBOX, p)
+				// TODO move shape into block
+				"toolbox_block", dynamicShape(METAL_PROPERTIES_NO_OVERLAY), p -> new HorizontalFacingBlock<>(IEBlockEntities.TOOLBOX, p)
 		);
 		public static final BlockEntry<IEEntityBlock<CapacitorBlockEntity>> CAPACITOR_LV = new BlockEntry<>(
 				"capacitor_lv", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.CAPACITOR_LV, p)
@@ -404,7 +427,8 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<IEEntityBlock<?>> BARREL = BlockEntry.barrel("metal_barrel", true);
 		public static final BlockEntry<FluidPumpBlock> FLUID_PUMP = new BlockEntry<>(
-				"fluid_pump", METAL_PROPERTIES_NO_OCCLUSION, FluidPumpBlock::new
+				// TODO make non-dynamic
+				"fluid_pump", METAL_PROPERTIES_DYNAMIC, FluidPumpBlock::new
 		);
 		public static final BlockEntry<IEEntityBlock<FluidPlacerBlockEntity>> FLUID_PLACER = new BlockEntry<>(
 				"fluid_placer", METAL_PROPERTIES_NO_OCCLUSION, p -> new IEEntityBlock<>(IEBlockEntities.FLUID_PLACER, p)
@@ -425,17 +449,20 @@ public final class IEBlocks
 				"electric_lantern", ElectricLanternBlock.PROPERTIES, ElectricLanternBlock::new
 		);
 		public static final BlockEntry<HorizontalFacingBlock<ChargingStationBlockEntity>> CHARGING_STATION = new BlockEntry<>(
-				"charging_station", METAL_PROPERTIES_NO_OVERLAY, p -> new HorizontalFacingBlock<>(IEBlockEntities.CHARGING_STATION, p)
+				// TODO move shape into block impl
+				"charging_station", dynamicShape(METAL_PROPERTIES_NO_OVERLAY), p -> new HorizontalFacingBlock<>(IEBlockEntities.CHARGING_STATION, p)
 		);
-		public static final BlockEntry<FluidPipeBlock> FLUID_PIPE = new BlockEntry<>("fluid_pipe", METAL_PROPERTIES_NO_OVERLAY, FluidPipeBlock::new);
+		public static final BlockEntry<FluidPipeBlock> FLUID_PIPE = new BlockEntry<>("fluid_pipe", METAL_PROPERTIES_DYNAMIC, FluidPipeBlock::new);
 		public static final BlockEntry<SampleDrillBlock> SAMPLE_DRILL = new BlockEntry<>("sample_drill", METAL_PROPERTIES_NO_OCCLUSION, SampleDrillBlock::new);
-		public static final BlockEntry<TeslaCoilBlock> TESLA_COIL = new BlockEntry<>("tesla_coil", METAL_PROPERTIES_NO_OCCLUSION, TeslaCoilBlock::new);
+		// TODO make non-dynamic
+		public static final BlockEntry<TeslaCoilBlock> TESLA_COIL = new BlockEntry<>("tesla_coil", METAL_PROPERTIES_DYNAMIC, TeslaCoilBlock::new);
 		public static final BlockEntry<FloodlightBlock> FLOODLIGHT = new BlockEntry<>("floodlight", FloodlightBlock.PROPERTIES, FloodlightBlock::new);
+		// TODO make both turrets non-dynamic
 		public static final BlockEntry<TurretBlock<TurretChemBlockEntity>> TURRET_CHEM = new BlockEntry<>(
-				"turret_chem", METAL_PROPERTIES_NO_OCCLUSION, p -> new TurretBlock<>(IEBlockEntities.TURRET_CHEM, p)
+				"turret_chem", METAL_PROPERTIES_DYNAMIC, p -> new TurretBlock<>(IEBlockEntities.TURRET_CHEM, p)
 		);
 		public static final BlockEntry<TurretBlock<TurretGunBlockEntity>> TURRET_GUN = new BlockEntry<>(
-				"turret_gun", METAL_PROPERTIES_NO_OCCLUSION, p -> new TurretBlock<>(IEBlockEntities.TURRET_GUN, p)
+				"turret_gun", METAL_PROPERTIES_DYNAMIC, p -> new TurretBlock<>(IEBlockEntities.TURRET_GUN, p)
 		);
 		public static final BlockEntry<ClocheBlock> CLOCHE = new BlockEntry<>("cloche", METAL_PROPERTIES_NO_OCCLUSION, ClocheBlock::new);
 		public static final Map<IConveyorType<?>, BlockEntry<ConveyorBlock>> CONVEYORS = new HashMap<>();
@@ -444,7 +471,7 @@ public final class IEBlocks
 		private static void init()
 		{
 			for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
-				CHUTES.put(metal, new BlockEntry<>("chute_"+metal.tagName(), METAL_PROPERTIES_NO_OCCLUSION, ChuteBlock::new));
+				CHUTES.put(metal, new BlockEntry<>("chute_"+metal.tagName(), METAL_PROPERTIES_DYNAMIC, ChuteBlock::new));
 
 		}
 
@@ -555,6 +582,11 @@ public final class IEBlocks
 		));
 	}
 
+	private static Supplier<BlockBehaviour.Properties> dynamicShape(Supplier<BlockBehaviour.Properties> baseProps)
+	{
+		return () -> baseProps.get().dynamicShape();
+	}
+
 	public static void init()
 	{
 		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -572,13 +604,17 @@ public final class IEBlocks
 		registerSlab(StoneDecoration.BLASTBRICK_REINFORCED);
 		registerSlab(StoneDecoration.COKE);
 		registerSlab(StoneDecoration.HEMPCRETE);
+		registerSlab(StoneDecoration.HEMPCRETE_BRICK);
 		registerSlab(StoneDecoration.CONCRETE);
+		registerSlab(StoneDecoration.CONCRETE_BRICK);
 		registerSlab(StoneDecoration.CONCRETE_TILE);
 		registerSlab(StoneDecoration.CONCRETE_LEADED);
 		registerSlab(StoneDecoration.INSULATING_GLASS);
 		registerSlab(StoneDecoration.ALLOYBRICK);
 		registerStairs(StoneDecoration.HEMPCRETE);
+		registerStairs(StoneDecoration.HEMPCRETE_BRICK);
 		registerStairs(StoneDecoration.CONCRETE);
+		registerStairs(StoneDecoration.CONCRETE_BRICK);
 		registerStairs(StoneDecoration.CONCRETE_TILE);
 		registerStairs(StoneDecoration.CONCRETE_LEADED);
 
@@ -645,7 +681,7 @@ public final class IEBlocks
 
 		public static BlockEntry<PostBlock> post(String name, Supplier<Properties> props)
 		{
-			return new BlockEntry<>(name, props, PostBlock::new);
+			return new BlockEntry<>(name, dynamicShape(props), PostBlock::new);
 		}
 
 		public static BlockEntry<WallmountBlock> wallmount(String name, Supplier<Properties> props)

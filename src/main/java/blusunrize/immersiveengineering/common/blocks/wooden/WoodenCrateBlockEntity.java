@@ -28,10 +28,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -155,7 +155,12 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	}
 
 	@Override
-	public void readOnPlacement(LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
+	{
+		onBEPlaced(ctx.getItemInHand());
+	}
+
+	public void onBEPlaced(ItemStack stack)
 	{
 		if(stack.hasTag())
 		{

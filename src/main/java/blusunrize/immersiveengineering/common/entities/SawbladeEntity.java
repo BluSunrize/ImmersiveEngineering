@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -24,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nonnull;
 
@@ -98,37 +98,50 @@ public class SawbladeEntity extends IEProjectileEntity
 		super.baseTick();
 	}
 
-	@Override
-	public void onHit(HitResult mop)
+	private void damageSawblade()
 	{
-		if(!this.level.isClientSide&&!getAmmo().isEmpty())
-		{
-			if(mop instanceof EntityHitResult)
-			{
-				Entity hit = ((EntityHitResult)mop).getEntity();
-				Entity shooter = getOwner();
-				// todo: make this configurable?
-				hit.hurt(IEDamageSources.causeSawbladeDamage(this, shooter), 12.0f);
-			}
-			int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
-			Entity shooter = getOwner();
-			if(getAmmo().hurt(dmg, level.random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
-				this.discard();
-			if(mop instanceof BlockHitResult)
-				this.onHitBlock((BlockHitResult)mop);
-		}
+		int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
+		Entity shooter = getOwner();
+		if(getAmmo().hurt(dmg, level.random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
+			this.discard();
+	}
+
+	@Override
+	protected void onHitBlock(BlockHitResult result)
+	{
+		super.onHitBlock(result);
+		damageSawblade();
+	}
+
+	@Override
+	protected void onHitEntity(EntityHitResult result)
+	{
+		Entity shooter = getOwner();
+		Entity target = result.getEntity();
+		float damage = (float)(12f*IEServerConfig.TOOLS.railgun_damage.get());
+		target.hurt(IEDamageSources.causeSawbladeDamage(this, shooter), damage);
+		this.handlePiecing(target);
+		damageSawblade();
 	}
 
 	@Override
 	protected void handlePiecing(Entity target)
 	{
 		super.handlePiecing(target);
-		if(this.piercedEntities.size() >= 3 && getShooterUUID() != null)
+		if(this.piercedEntities.size() >= 3&&getShooterUUID()!=null)
 		{
 			Player shooter = level.getPlayerByUUID(this.getShooterUUID());
 			if(shooter!=null)
 				Utils.unlockIEAdvancement(shooter, "tools/secret_ravenholm");
 		}
+	}
+
+	@Override
+	protected boolean canHitEntity(Entity target)
+	{
+		if(piercedEntities!=null&&piercedEntities.contains(target.getId()))
+			return false;
+		return !target.isSpectator()&&target.isAlive()&&target.isPickable();
 	}
 
 	@Override

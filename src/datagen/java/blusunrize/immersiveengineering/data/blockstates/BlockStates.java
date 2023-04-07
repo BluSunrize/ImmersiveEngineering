@@ -159,9 +159,17 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.SLAG_GRAVEL, rl("block/stone_decoration/slag_gravel"));
 		cubeAll(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
 		cubeAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
+		cubeAll(StoneDecoration.CONCRETE_BRICK, rl("block/stone_decoration/concrete_brick"));
+		cubeAll(StoneDecoration.CONCRETE_BRICK_CRACKED, rl("block/stone_decoration/concrete_brick_cracked"));
+		cubeAll(StoneDecoration.CONCRETE_CHISELED, rl("block/stone_decoration/concrete_chiseled"));
+		cubeSideVertical(StoneDecoration.CONCRETE_PILLAR, rl("block/stone_decoration/concrete_pillar"), rl("block/stone_decoration/concrete_tile"));
 		cubeAll(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
 		cubeAll(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
 		cubeAll(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
+		cubeAll(StoneDecoration.HEMPCRETE_BRICK, rl("block/stone_decoration/hempcrete_brick"));
+		cubeAll(StoneDecoration.HEMPCRETE_BRICK_CRACKED, rl("block/stone_decoration/hempcrete_brick_cracked"));
+		cubeAll(StoneDecoration.HEMPCRETE_CHISELED, rl("block/stone_decoration/hempcrete_chiseled"));
+		cubeSideVertical(StoneDecoration.HEMPCRETE_PILLAR, rl("block/stone_decoration/hempcrete_pillar"), rl("block/stone_decoration/hempcrete"));
 		cubeAll(StoneDecoration.INSULATING_GLASS, rl("block/stone_decoration/insulating_glass"), translucent());
 		cubeAll(StoneDecoration.SLAG_GLASS, rl("block/stone_decoration/slag_glass"), translucent());
 		cubeAll(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
@@ -200,16 +208,20 @@ public class BlockStates extends ExtendedBlockstateProvider
 		slabFor(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
 		slabFor(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
 		slabFor(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
+		slabFor(StoneDecoration.CONCRETE_BRICK, rl("block/stone_decoration/concrete_brick"));
 		slabFor(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
 		slabFor(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
 		slabFor(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
+		slabFor(StoneDecoration.HEMPCRETE_BRICK, rl("block/stone_decoration/hempcrete_brick"));
 		slabFor(StoneDecoration.INSULATING_GLASS, rl("block/stone_decoration/insulating_glass"), translucent());
 		slabFor(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			slabFor(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
 
 		stairsFor(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
+		stairsFor(StoneDecoration.HEMPCRETE_BRICK, rl("block/stone_decoration/hempcrete_brick"));
 		stairsFor(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
+		stairsFor(StoneDecoration.CONCRETE_BRICK, rl("block/stone_decoration/concrete_brick"));
 		stairsFor(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
 		stairsFor(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())

@@ -23,4 +23,9 @@ public class DummySyncManager implements IWireSyncManager
 	public void onConnectionRemoved(Connection c)
 	{
 	}
+
+	@Override
+	public void onConnectionEndpointsChanged(Connection c)
+	{
+	}
 }

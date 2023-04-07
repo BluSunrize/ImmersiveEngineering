@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.network.MessageWireSync;
+import blusunrize.immersiveengineering.common.network.MessageWireSync.Operation;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import net.minecraft.server.level.ServerChunkCache;
@@ -38,12 +39,15 @@ public class WireSyncManager implements IWireSyncManager
 	{
 		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(w);
 		Collection<ConnectionPoint> connsInChunk = net.getAllConnectorsIn(pos);
+		final Operation operation = add?Operation.ADD: Operation.REMOVE;
 		for(ConnectionPoint cp : connsInChunk)
 			for(Connection conn : net.getLocalNet(cp).getConnections(cp))
 				if(shouldSendConnection(conn, pos, player, add, cp))
 				{
 					WireLogger.logger.info("Sending connection {} ({}) for chunk change at {}", conn, add, pos);
-					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> player), new MessageWireSync(conn, add));
+					ImmersiveEngineering.packetHandler.send(
+							PacketDistributor.PLAYER.with(() -> player), new MessageWireSync(conn, operation)
+					);
 				}
 	}
 
@@ -70,12 +74,15 @@ public class WireSyncManager implements IWireSyncManager
 		}
 	}
 
-	private static <T> void sendToPlayersForConnection(T msg, ServerLevel world, Connection c)
+	private static void sendToPlayersForConnection(Operation operation, Level level, Connection connection)
 	{
-		ApiUtils.addFutureServerTask(world, () -> {
+		if(connection.isInternal()||!(level instanceof ServerLevel serverLevel))
+			return;
+		ApiUtils.addFutureServerTask(serverLevel, () -> {
 			Set<ServerPlayer> targets = new HashSet<>();
-			addPlayersTrackingPoint(targets, c.getEndA().getX(), c.getEndA().getZ(), world);
-			addPlayersTrackingPoint(targets, c.getEndB().getX(), c.getEndB().getZ(), world);
+			addPlayersTrackingPoint(targets, connection.getEndA().getX(), connection.getEndA().getZ(), serverLevel);
+			addPlayersTrackingPoint(targets, connection.getEndB().getX(), connection.getEndB().getZ(), serverLevel);
+			MessageWireSync msg = new MessageWireSync(connection, operation);
 			for(ServerPlayer p : targets)
 				ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> p), msg);
 		}, true);
@@ -110,13 +117,17 @@ public class WireSyncManager implements IWireSyncManager
 
 	public void onConnectionAdded(Connection c)
 	{
-		if(!c.isInternal()&&!world.isClientSide&&world instanceof ServerLevel)
-			sendToPlayersForConnection(new MessageWireSync(c, true), (ServerLevel)world, c);
+		sendToPlayersForConnection(Operation.ADD, world, c);
 	}
 
 	public void onConnectionRemoved(Connection c)
 	{
-		if(!c.isInternal()&&!world.isClientSide&&world instanceof ServerLevel)
-			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerLevel)world, c);
+		sendToPlayersForConnection(Operation.REMOVE, world, c);
+	}
+
+	@Override
+	public void onConnectionEndpointsChanged(Connection c)
+	{
+		sendToPlayersForConnection(Operation.UPDATE, world, c);
 	}
 }

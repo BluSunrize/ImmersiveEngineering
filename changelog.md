@@ -1,3 +1,49 @@
+##### Version 1.19.2-9.2.1-164
+- Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
+- Add Jade plugin for showing fill of sheetmetal tank (BluSunrize)
+- Add Concrete and Hempcrete bricks, pillars and chiseled variants (voidsong-dragonfly)
+- Add sawmill recipes for treated wood (TeamSpen210) 
+- Cache connection rendering at the section level rather than individual segments (Malte)
+- Improve chunk building performance by not marking all IE blocks as "dynamicShape" (Malte)
+- Overhaul villager trades (BluSunrize)
+    - Structural Engineer:
+        - Requests more raw materials (treated wood, metal rods, concrete) and sells finished products (scaffolding, leaded concrete)
+        - Requires more interesting items like insulated glass and duroplast, to make "speedrunning" the mineral vein maps a little harder
+        - Mineral Vein maps now focus on rare veins within 16 chunks of the villager and they can sell 2 of them
+    - Machinist:
+        - Blueprint for crafting components is an early trade that gives good XP
+        - Mostly focused on emerald-based sales of drill heads & upgrades
+        - Still has the blueprint for Arc Furnace electrodes as a master trade
+    - Electrician:
+        - Reduced cost of tools & added screwdriver to the options
+        - Removed railgun and revolver upgrades from the list
+        - Experts will purchase vacuum tubes and sell electronic components
+        - Master trades are tesla coil & cheap circuit backplanes
+    - Outfitter:
+        - Can now sell epic grabbags as well
+        - Will buy tough fabric, silver and gold grit 
+        - Can sell some of IE's banner patterns
+- Change Chemthrower to have a broader spread by default, making the effect of the Focused Nozzle more noticeable (BluSunrize)
+- Change Mixer to allow faster processing, provided it has enough power (BluSunrize)
+    - Can increase its speed by up to 700%!
+- Change Revolver Speedloader recipe to use Duroplast, making it cheaper and more enticing to use (BluSunrize)
+- Change Revolver ammunition to be much cheaper. This is an experimental change and may need more tuning in the future (BluSunrize)
+- Fix crash with the Engineer's Workbench when VBOs are disabled (Malte)
+- Fix z-fighting issues on the mod workbench with rubidium (Malte)
+- Fix visual issues when inverting powered lanterns (Malte)
+- Fix shift-clicking an output item in the mod workbench adding to the output stack (Malte)
+- Fix global sound of mixer as a result of stereo audio file (Malte)
+- Fix assemblers not outputting revolver speedloaders, because they were considered ingredients in their own recipe (BluSunrize)
+- Fix Jade plugin not displaying translated text for hemp growth (BluSunrize)
+- Fix sawblade projectiles not rendering and having a very broken piercing-functionality (BluSunrize)
+- Fix sawblade projectiles not using the config damage multiplier for the railgun (BluSunrize)
+    - In exchange, they no longer count as armorpiercing (they shouldn't have been to begin with)
+- Fix mixer not rendering its contained fluid (BluSunrize)
+- Fix heavy plated shield being raised when using mainhand items (Malte)
+- Fix toolbox being allowed to be placed in partial blocks, deleting them (BluSunrize)
+- Fix possible crash with Vanilla Tweaks and hemp seeds (BluSunrize)
+- Translations Added/Updated: zh_cn (RevenXXX-a, mc-kaishixiaxue), uk_ua (SKZGx, hnufelka)
+
 ##### Version 1.19.3-9.3.0-163
 - All features from 9.2.0
 - Fix cloche GUI not being transparent (BluSunrize)

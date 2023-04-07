@@ -164,14 +164,21 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 
 	protected boolean moveItemStackToWithMayPlace(ItemStack pStack, int pStartIndex, int pEndIndex)
 	{
+		return moveItemStackToWithMayPlace(slots, this::moveItemStackTo, pStack, pStartIndex, pEndIndex);
+	}
+
+	public static boolean moveItemStackToWithMayPlace(
+			List<Slot> slots, MoveItemsFunc move, ItemStack pStack, int pStartIndex, int pEndIndex
+	)
+	{
 		boolean inAllowedRange = true;
 		int allowedStart = pStartIndex;
 		for(int i = pStartIndex; i < pEndIndex; i++)
 		{
-			boolean mayplace = this.slots.get(i).mayPlace(pStack);
+			boolean mayplace = slots.get(i).mayPlace(pStack);
 			if(inAllowedRange&&!mayplace)
 			{
-				if(moveItemStackTo(pStack, allowedStart, i, false))
+				if(move.moveItemStackTo(pStack, allowedStart, i, false))
 					return true;
 				inAllowedRange = false;
 			}
@@ -181,7 +188,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 				inAllowedRange = true;
 			}
 		}
-		return inAllowedRange&&moveItemStackTo(pStack, allowedStart, pEndIndex, false);
+		return inAllowedRange&&move.moveItemStackTo(pStack, allowedStart, pEndIndex, false);
 	}
 
 	public void receiveMessageFromScreen(CompoundTag nbt)
@@ -277,5 +284,10 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 	public record MultiblockMenuContext<S extends IMultiblockState>(IMultiblockContext<S> mbContext,
 																	BlockPos clickedPos)
 	{
+	}
+
+	public interface MoveItemsFunc
+	{
+		boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection);
 	}
 }
