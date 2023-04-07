@@ -1,4 +1,4 @@
-##### Version 1.19.2-9.2.1-pre
+##### Version 1.19.2-9.2.1-164
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
 - Add Jade plugin for showing fill of sheetmetal tank (BluSunrize)
 - Add Concrete and Hempcrete bricks, pillars and chiseled variants (voidsong-dragonfly)
