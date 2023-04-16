@@ -38,6 +38,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -233,6 +234,7 @@ public class IEExplosion extends Explosion
 		else
 			this.world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
 
-		EventHandler.currentExplosions.add(this);
+		if(!this.world.isClientSide)
+			EventHandler.currentExplosions.computeIfAbsent(this.world, $ -> new HashSet<>()).add(this);
 	}
 }

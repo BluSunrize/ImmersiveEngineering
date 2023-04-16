@@ -91,7 +91,7 @@ import java.util.*;
 
 public class EventHandler
 {
-	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
+	public static Map<Level, Set<IEExplosion>> currentExplosions = new WeakHashMap<>();
 	public static final Queue<Runnable> SERVER_TASKS = new ArrayDeque<>();
 
 	@SubscribeEvent
@@ -187,31 +187,29 @@ public class EventHandler
 	@SubscribeEvent
 	public void onWorldTick(LevelTickEvent event)
 	{
-		if(event.phase==TickEvent.Phase.START&&!event.level.isClientSide)
-		{
-			GlobalWireNetwork.getNetwork(event.level).update(event.level);
+		if(event.level.isClientSide||event.phase!=TickEvent.Phase.START)
+			return;
+		GlobalWireNetwork.getNetwork(event.level).update(event.level);
 
-			// Explicitly support tasks adding more tasks to be delayed
-			int numToRun = SERVER_TASKS.size();
-			for(int i = 0; i < numToRun; ++i)
-			{
-				Runnable next = SERVER_TASKS.poll();
-				if(next!=null)
-					next.run();
-			}
-		}
-		if(event.phase==TickEvent.Phase.START)
+		// Explicitly support tasks adding more tasks to be delayed
+		int numToRun = SERVER_TASKS.size();
+		for(int i = 0; i < numToRun; ++i)
 		{
-			if(!currentExplosions.isEmpty())
+			Runnable next = SERVER_TASKS.poll();
+			if(next!=null)
+				next.run();
+		}
+
+		final Set<IEExplosion> explosionsInLevel = currentExplosions.get(event.level);
+		if(explosionsInLevel!=null)
+		{
+			Iterator<IEExplosion> itExplosion = explosionsInLevel.iterator();
+			while(itExplosion.hasNext())
 			{
-				Iterator<IEExplosion> itExplosion = currentExplosions.iterator();
-				while(itExplosion.hasNext())
-				{
-					IEExplosion ex = itExplosion.next();
-					ex.doExplosionTick();
-					if(ex.isExplosionFinished)
-						itExplosion.remove();
-				}
+				IEExplosion ex = itExplosion.next();
+				ex.doExplosionTick();
+				if(ex.isExplosionFinished)
+					itExplosion.remove();
 			}
 		}
 	}
