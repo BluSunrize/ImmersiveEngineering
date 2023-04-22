@@ -8,8 +8,9 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jade;
 
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockPartBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
@@ -29,6 +30,7 @@ public class IEWailaPlugin implements IWailaPlugin
 	@Override
 	public void register(IWailaCommonRegistration registration)
 	{
-		registration.registerFluidStorage(new SheetmetalTankDataProvider(), SheetmetalTankBlockEntity.class);
+		registration.registerFluidStorage(new SheetmetalTankDataProvider(), MultiblockBlockEntityDummy.class);
+		registration.registerFluidStorage(new SheetmetalTankDataProvider(), MultiblockBlockEntityMaster.class);
 	}
 }

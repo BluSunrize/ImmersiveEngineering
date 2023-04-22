@@ -147,7 +147,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 					//Width depends on distance
 					float texScale = blueprint.textureScale/16f;
 					transform.scale(1/texScale, 1/texScale, 1/texScale);
-					blueprint.draw(transform, builder, IVertexBufferHolder.BUFFER_FORMAT, light);
+					blueprint.draw(transform, builder, light);
 					transform.scale(texScale, texScale, texScale);
 					transform.translate(-dX, -dY/scale, 0);
 					rendered++;

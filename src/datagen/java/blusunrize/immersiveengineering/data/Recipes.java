@@ -1355,13 +1355,13 @@ public class Recipes extends RecipeProvider
 				makeIngredient(IETags.fiberHemp),
 				makeIngredient(IETags.clay),
 				has(IETags.fiberHemp), out);
-		ShapedRecipeBuilder.shaped(StoneDecoration.HEMPCRETE_BRICK, 4)
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.HEMPCRETE_BRICK, 4)
 				.pattern("hh")
 				.pattern("hh")
 				.define('h', StoneDecoration.HEMPCRETE)
 				.unlockedBy("has_hempcrete", has(StoneDecoration.HEMPCRETE))
 				.save(out, toRL(toPath(StoneDecoration.HEMPCRETE_BRICK)));
-		ShapedRecipeBuilder.shaped(StoneDecoration.HEMPCRETE_PILLAR, 2)
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.HEMPCRETE_PILLAR, 2)
 				.pattern("h")
 				.pattern("h")
 				.define('h', StoneDecoration.HEMPCRETE)

@@ -75,4 +75,14 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	BlockState getOriginalBlock(Level level);
 
 	ItemStack getPickBlock();
+
+	@Nullable
+	default <OtherState extends IMultiblockState>
+	IMultiblockBEHelper<OtherState> asType(MultiblockRegistration<OtherState> targetType)
+	{
+		if(targetType==getMultiblock())
+			return (IMultiblockBEHelper<OtherState>)this;
+		else
+			return null;
+	}
 }

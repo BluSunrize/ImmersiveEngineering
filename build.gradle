@@ -232,7 +232,7 @@ dependencies {
     compileOnly fg.deobf("cc.tweaked:cc-tweaked-1.19.3-forge:${version_cctweaked}")
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3825695")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.1:api")
-    compileOnly fg.deobf("curse.maven:jade-324717:4433884")
+    compileOnly fg.deobf("curse.maven:jade-324717:4434045")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:3630307")
 
     implementation "malte0811:BlockModelSplitter:2.0.1"
