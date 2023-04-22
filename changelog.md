@@ -1,6 +1,11 @@
 ##### Version 1.19.3-9.3.1-pre
 - All features from 9.2.1
 
+##### Version 1.19.2-9.2.1-pre
+- Fix crash with gunpowder barrels (Malte)
+    - Also makes their explosion speed more consistent
+- Refresh balloon hover text when the placement offset is changed (Malte)
+
 ##### Version 1.19.2-9.2.1-164
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
 - Add Jade plugin for showing fill of sheetmetal tank (BluSunrize)

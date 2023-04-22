@@ -235,7 +235,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			color = null;
 		byte oldConns = connections;
 		connections = nbt.getByte("connections");
-		if(level!=null&&level.isClientSide&&(connections!=oldConns||color!=oldColor)||cover!=oldCover)
+		if(level!=null&&level.isClientSide&&(connections!=oldConns||color!=oldColor||cover!=oldCover))
 		{
 			BlockState state = level.getBlockState(worldPosition);
 			level.sendBlockUpdated(worldPosition, state, state, 3);
@@ -699,6 +699,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				this.cover = Blocks.AIR;
 				this.markContainingBlockForUpdate(null);
 				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
+				markChunkDirty();
 			}
 			return true;
 		}
@@ -730,7 +731,9 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				{
 					dropCover(player);
 					this.cover = heldBlock;
-					heldItem.shrink(1);
+					markChunkDirty();
+					if(!player.getAbilities().instabuild)
+						heldItem.shrink(1);
 					this.markContainingBlockForUpdate(null);
 					level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 				}
