@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
