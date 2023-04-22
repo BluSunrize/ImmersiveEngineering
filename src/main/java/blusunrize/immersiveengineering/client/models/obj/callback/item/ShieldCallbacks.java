@@ -24,6 +24,8 @@ import org.joml.Quaternionf;
 
 import static net.minecraft.world.item.ItemDisplayContext.*;
 
+import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType.*;
+
 public class ShieldCallbacks implements ItemCallback<Key>
 {
 	public static final ShieldCallbacks INSTANCE = new ShieldCallbacks();

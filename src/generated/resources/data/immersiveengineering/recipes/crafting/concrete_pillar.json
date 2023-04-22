@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:concrete_tile"
+    }
+  },
+  "pattern": [
+    "c",
+    "c"
+  ],
+  "result": {
+    "count": 2,
+    "item": "immersiveengineering:concrete_pillar"
+  }
+}

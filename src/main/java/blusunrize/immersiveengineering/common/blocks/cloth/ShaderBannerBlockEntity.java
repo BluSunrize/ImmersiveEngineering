@@ -22,9 +22,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
@@ -66,7 +66,7 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity implements IBlock
 	}
 
 	@Override
-	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 	}
 

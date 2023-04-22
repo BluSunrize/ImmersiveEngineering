@@ -195,21 +195,18 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		float hitX = (float)context.getClickLocation().x-pos.getX();
 		float hitY = (float)context.getClickLocation().y-pos.getY();
 		float hitZ = (float)context.getClickLocation().z-pos.getZ();
-		ItemStack stack = context.getItemInHand();
 
-		if(tile instanceof IDirectionalBE)
+		if(tile instanceof IDirectionalBE directionalBE)
 		{
-			Direction f = ((IDirectionalBE)tile).getFacingForPlacement(context);
-			((IDirectionalBE)tile).setFacing(f);
-			if(tile instanceof IAdvancedDirectionalBE)
-				((IAdvancedDirectionalBE)tile).onDirectionalPlacement(side, hitX, hitY, hitZ, placer);
+			Direction f = directionalBE.getFacingForPlacement(context);
+			directionalBE.setFacing(f);
+			if(tile instanceof IAdvancedDirectionalBE advDirectional)
+				advDirectional.onDirectionalPlacement(side, hitX, hitY, hitZ, placer);
 		}
-		if(tile instanceof IReadOnPlacement)
-			((IReadOnPlacement)tile).readOnPlacement(placer, stack);
-		if(tile instanceof IHasDummyBlocks)
-			((IHasDummyBlocks)tile).placeDummies(context, state);
-		if(tile instanceof IPlacementInteraction)
-			((IPlacementInteraction)tile).onBEPlaced(world, pos, state, side, hitX, hitY, hitZ, placer, stack);
+		if(tile instanceof IHasDummyBlocks hasDummyBlocks)
+			hasDummyBlocks.placeDummies(context, state);
+		if(tile instanceof IPlacementInteraction placementInteractionBE)
+			placementInteractionBE.onBEPlaced(context);
 	}
 
 	@Override

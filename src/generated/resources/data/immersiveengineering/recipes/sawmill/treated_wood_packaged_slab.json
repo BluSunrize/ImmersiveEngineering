@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:sawmill",
+  "energy": 800,
+  "input": {
+    "item": "immersiveengineering:treated_wood_packaged"
+  },
+  "result": {
+    "count": 2,
+    "item": "immersiveengineering:slab_treated_wood_packaged"
+  },
+  "secondaries": [
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": false
+    }
+  ]
+}

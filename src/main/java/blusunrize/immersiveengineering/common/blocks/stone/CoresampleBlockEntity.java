@@ -31,6 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
@@ -175,9 +176,9 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	}
 
 	@Override
-	public void readOnPlacement(LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		this.coresample = stack.copy();
+		this.coresample = ctx.getItemInHand().copy();
 	}
 
 	private Component[] overlay = null;

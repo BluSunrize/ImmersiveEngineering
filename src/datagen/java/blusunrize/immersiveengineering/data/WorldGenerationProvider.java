@@ -52,6 +52,7 @@ import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers.AddFeaturesBiomeModifier;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
 import net.minecraftforge.registries.holdersets.AnyHolderSet;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -133,8 +134,8 @@ public class WorldGenerationProvider
 			if(entry.inBiomes!=null)
 				biomes = biomeReg.getOrThrow(entry.inBiomes);
 			else
-				biomes = new AnyHolderSet<>(new DummyRegistryLookup<>(Registries.BIOME));
-			final BiomeModifier modifier = new AddFeaturesBiomeModifier(
+				biomes = new AnyHolderSet<>(new DummyRegistryLookup<>(biomeReg, Registries.BIOME));
+			final AddFeaturesBiomeModifier modifier = new AddFeaturesBiomeModifier(
 					biomes, HolderSet.direct(entry.placed), Decoration.UNDERGROUND_ORES
 			);
 			ctx.register(ResourceKey.create(Keys.BIOME_MODIFIERS, entry.name), modifier);
@@ -199,41 +200,41 @@ public class WorldGenerationProvider
 	}
 
 	private record DummyRegistryLookup<T>(
-			ResourceKey<? extends Registry<? extends T>> key
+			HolderGetter<T> getter, ResourceKey<? extends Registry<? extends T>> key
 	) implements RegistryLookup<T>
 	{
 		@Override
-		public Lifecycle registryLifecycle()
+		public @NotNull Lifecycle registryLifecycle()
 		{
 			return Lifecycle.stable();
 		}
 
 		@Override
-		public Stream<Reference<T>> listElements()
+		public @NotNull Stream<Reference<T>> listElements()
 		{
 			return Stream.empty();
 		}
 
 		@Override
-		public Stream<Named<T>> listTags()
+		public @NotNull Stream<Named<T>> listTags()
 		{
 			return Stream.empty();
 		}
 
 		@Override
-		public Optional<Reference<T>> get(ResourceKey<T> p_255645_)
+		public @NotNull Optional<Reference<T>> get(@NotNull ResourceKey<T> p_255645_)
 		{
 			return Optional.empty();
 		}
 
 		@Override
-		public Optional<Named<T>> get(TagKey<T> p_256283_)
+		public @NotNull Optional<Named<T>> get(@NotNull TagKey<T> p_256283_)
 		{
 			return Optional.empty();
 		}
 
 		@Override
-		public boolean canSerializeIn(HolderOwner<T> p_255875_)
+		public boolean canSerializeIn(@NotNull HolderOwner<T> p_255875_)
 		{
 			return true;
 		}

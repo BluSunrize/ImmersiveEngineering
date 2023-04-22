@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_drum": {
+    "has_revolver": {
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:gunpart_drum"
+              "immersiveengineering:revolver"
             ]
           }
         ]
@@ -22,7 +22,7 @@
   },
   "requirements": [
     [
-      "has_drum",
+      "has_revolver",
       "has_the_recipe"
     ]
   ],

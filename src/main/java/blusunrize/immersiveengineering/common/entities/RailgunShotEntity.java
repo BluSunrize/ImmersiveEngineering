@@ -27,7 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -111,8 +110,9 @@ public class RailgunShotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	public void onHit(HitResult mop)
+	protected void onHitEntity(EntityHitResult result)
 	{
+		super.onHitEntity(result);
 		if(!this.level.isClientSide&&!getAmmo().isEmpty())
 		{
 			IRailgunProjectile projectileProperties = getProjectileProperties();
@@ -120,25 +120,32 @@ public class RailgunShotEntity extends IEProjectileEntity
 			{
 				Entity shooter = this.getOwner();
 				UUID shooterUuid = this.getShooterUUID();
-				if(mop instanceof EntityHitResult)
-				{
-					Entity hit = ((EntityHitResult)mop).getEntity();
-					double damage = projectileProperties.getDamage(this.level, hit, shooterUuid, this);
-					DamageSource source = projectileProperties.getDamageSource(this.level, hit, shooterUuid, this);
-					if(source==null)
-						source = IEDamageSources.causeRailgunDamage(this, shooter);
-					hit.hurt(source, (float)(damage*IEServerConfig.TOOLS.railgun_damage.get()));
-				}
-				else if(mop instanceof BlockHitResult)
-				{
-					double breakRoll = this.random.nextDouble();
-					if(breakRoll <= getProjectileProperties().getBreakChance(shooterUuid, ammo))
-						this.discard();
-				}
-				projectileProperties.onHitTarget(this.level, mop, shooterUuid, this);
+				Entity hit = result.getEntity();
+				double damage = projectileProperties.getDamage(this.level, hit, shooterUuid, this);
+				DamageSource source = projectileProperties.getDamageSource(this.level, hit, shooterUuid, this);
+				if(source==null)
+					source = IEDamageSources.causeRailgunDamage(this, shooter);
+				hit.hurt(source, (float)(damage*IEServerConfig.TOOLS.railgun_damage.get()));
+				projectileProperties.onHitTarget(this.level, result, shooterUuid, this);
 			}
-			if(mop instanceof BlockHitResult)
-				this.onHitBlock((BlockHitResult)mop);
+		}
+	}
+
+	@Override
+	protected void onHitBlock(BlockHitResult result)
+	{
+		super.onHitBlock(result);
+		if(!this.level.isClientSide&&!getAmmo().isEmpty())
+		{
+			IRailgunProjectile projectileProperties = getProjectileProperties();
+			if(projectileProperties!=null)
+			{
+				UUID shooterUuid = this.getShooterUUID();
+				double breakRoll = this.random.nextDouble();
+				if(breakRoll <= getProjectileProperties().getBreakChance(shooterUuid, ammo))
+					this.discard();
+				projectileProperties.onHitTarget(this.level, result, shooterUuid, this);
+			}
 		}
 	}
 

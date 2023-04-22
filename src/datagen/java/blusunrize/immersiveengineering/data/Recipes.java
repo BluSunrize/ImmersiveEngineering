@@ -424,26 +424,26 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("blueprint/"+toPath(mold)));
 
 
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.CASULL))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.CASULL), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
 				.build(out, toRL("blueprint/bullet_casull"));
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).nugget, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.CONSTANTAN).nugget, 2))
 				.build(out, toRL("blueprint/bullet_armorpiercing"));
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.SILVER))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.SILVER), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
-				.addInput(IETags.getTagsFor(EnumMetals.SILVER).nugget)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.SILVER).nugget, 2))
 				.build(out, toRL("blueprint/bullet_silver"));
-		BlueprintCraftingRecipeBuilder.builder("bullet", BulletHandler.getBulletItem(BulletItem.BUCKSHOT))
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("bullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.BUCKSHOT), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).dust, 2))
 				.build(out, toRL("blueprint/bullet_buckshot"));
 
@@ -452,9 +452,9 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.GUNPOWDER)
 				.addInput(Items.TNT)
 				.build(out, toRL("blueprint/bullet_explosive"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH))
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 4))
 				.build(out, toRL("blueprint/bullet_dragonsbreath"));
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.POTION))
@@ -463,31 +463,31 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.GLASS_BOTTLE)
 				.build(out, toRL("blueprint/bullet_potion"));
 
-		ItemStack flare = BulletHandler.getBulletStack(BulletItem.FLARE);
+		ItemStack flare = new ItemStack(BulletHandler.getBulletItem(BulletItem.FLARE), 4);
 		ItemNBTHelper.putInt(flare, "flareColour", 0xcc2e06);
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_RED)
 				.build(out, toRL("blueprint/bullet_flare_red"));
 		ItemNBTHelper.putInt(flare, "flareColour", 0x2ca30b);
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_GREEN)
 				.build(out, toRL("blueprint/bullet_flare_green"));
 		ItemNBTHelper.putInt(flare, "flareColour", 0xffff82);
 		BlueprintCraftingRecipeBuilder.builder("specialBullet", flare.copy())
-				.addInput(BulletHandler.emptyShell)
-				.addInput(Tags.Items.GUNPOWDER)
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.addInput(Tags.Items.DYES_YELLOW)
 				.build(out, toRL("blueprint/bullet_flare_yellow"));
-		BlueprintCraftingRecipeBuilder.builder("specialBullet", BulletHandler.getBulletItem(BulletItem.HOMING))
-				.addInput(BulletHandler.emptyCasing)
-				.addInput(Tags.Items.GUNPOWDER)
+		BlueprintCraftingRecipeBuilder.builder("specialBullet", new ItemStack(BulletHandler.getBulletItem(BulletItem.HOMING), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
+				.addInput(new IngredientWithSize(Tags.Items.GUNPOWDER, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
 				.addInput(Items.ENDER_EYE)
 				.build(out, toRL("blueprint/bullet_homing"));
@@ -985,7 +985,7 @@ public class Recipes extends RecipeProvider
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_stairs"));
 			}
-			// Stairs
+			// Slabs
 			if(wood.getSlab()!=null)
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getSlab(), 2))
@@ -995,6 +995,21 @@ public class Recipes extends RecipeProvider
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_slab"));
 			}
+		}
+		for(TreatedWoodStyles style : TreatedWoodStyles.values())
+		{
+			BlockEntry<IEBaseBlock> plank = WoodenDecoration.TREATED_WOOD.get(style);
+			SawmillRecipeBuilder.builder(new ItemStack(IEBlocks.TO_SLAB.get(plank.getId()), 2))
+					.addInput(plank.get())
+					.setEnergy(800)
+					.addSecondary(IETags.sawdust, false)
+					.build(out, toRL("sawmill/treated_wood_"+style.name().toLowerCase(Locale.ROOT)+"_slab"));
+
+			SawmillRecipeBuilder.builder(new ItemStack(plank.get(), 1))
+					.addInput(IEBlocks.TO_STAIRS.get(plank.getId()))
+					.setEnergy(1600)
+					.addSecondary(IETags.sawdust, false)
+					.build(out, toRL("sawmill/treated_wood_"+style.name().toLowerCase(Locale.ROOT)+"_stairs"));
 		}
 		SawmillRecipeBuilder.builder(new ItemStack(Items.OAK_PLANKS, 4))
 				.addInput(Items.BOOKSHELF)
@@ -1334,25 +1349,59 @@ public class Recipes extends RecipeProvider
 				makeIngredient(IETags.fiberHemp),
 				makeIngredient(IETags.clay),
 				has(IETags.fiberHemp), out);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.HEMPCRETE_BRICK, 4)
+				.pattern("hh")
+				.pattern("hh")
+				.define('h', StoneDecoration.HEMPCRETE)
+				.unlockedBy("has_hempcrete", has(StoneDecoration.HEMPCRETE))
+				.save(out, toRL(toPath(StoneDecoration.HEMPCRETE_BRICK)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.HEMPCRETE_PILLAR, 2)
+				.pattern("h")
+				.pattern("h")
+				.define('h', StoneDecoration.HEMPCRETE)
+				.unlockedBy("has_hempcrete", has(StoneDecoration.HEMPCRETE))
+				.save(out, toRL(toPath(StoneDecoration.HEMPCRETE_PILLAR)));
 		add3x3Conversion(StoneDecoration.COKE, IEItems.Ingredients.COAL_COKE, IETags.coalCoke, out);
 
 		addStairs(StoneDecoration.HEMPCRETE, out);
+		addStairs(StoneDecoration.HEMPCRETE_BRICK, out);
 		addStairs(StoneDecoration.CONCRETE, out);
+		addStairs(StoneDecoration.CONCRETE_BRICK, out);
 		addStairs(StoneDecoration.CONCRETE_TILE, out);
 		addStairs(StoneDecoration.CONCRETE_LEADED, out);
 
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_SHEET, 16, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_QUARTER, 4, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_THREE_QUARTER, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_TILE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_TILE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_LEADED.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_BRICK, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_CHISELED, out);
+		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_PILLAR, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_BRICK, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_CHISELED, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_PILLAR, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_BRICK, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_CHISELED, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, StoneDecoration.CONCRETE_PILLAR, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_TILE, out);
+
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(StoneDecoration.CONCRETE_BRICK), RecipeCategory.MISC, StoneDecoration.CONCRETE_BRICK_CRACKED, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL("smelting/"+toPath(StoneDecoration.CONCRETE_BRICK_CRACKED)));
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(StoneDecoration.HEMPCRETE_BRICK), RecipeCategory.MISC, StoneDecoration.HEMPCRETE_BRICK_CRACKED, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_hempcrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL("smelting/"+toPath(StoneDecoration.HEMPCRETE_BRICK_CRACKED)));
 
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.slag), RecipeCategory.MISC, StoneDecoration.SLAG_GLASS, 0.1f, standardSmeltingTime)
 				.unlockedBy("has_slag", has(IETags.slag))
@@ -1390,6 +1439,18 @@ public class Recipes extends RecipeProvider
 				.define('c', StoneDecoration.CONCRETE)
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL(toPath(StoneDecoration.CONCRETE_TILE)));
+		shapedMisc(StoneDecoration.CONCRETE_BRICK, 4)
+				.pattern("cc")
+				.pattern("cc")
+				.define('c', StoneDecoration.CONCRETE_TILE)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL(toPath(StoneDecoration.CONCRETE_BRICK)));
+		shapedMisc(StoneDecoration.CONCRETE_PILLAR, 2)
+				.pattern("c")
+				.pattern("c")
+				.define('c', StoneDecoration.CONCRETE_TILE)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL(toPath(StoneDecoration.CONCRETE_PILLAR)));
 		shapelessMisc(StoneDecoration.CONCRETE_LEADED)
 				.requires(StoneDecoration.CONCRETE)
 				.requires(IETags.getTagsFor(EnumMetals.LEAD).plate)
@@ -2980,11 +3041,12 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(Ingredients.WOODEN_GRIP), has(Ingredients.WOODEN_GRIP))
 				.save(out, toRL(toPath(Weapons.REVOLVER)));
 		shapedMisc(Weapons.SPEEDLOADER)
-				.pattern("sdc")
+				.pattern("sd")
+				.pattern("dc")
 				.define('s', IETags.ironRod)
-				.define('d', Ingredients.GUNPART_DRUM)
+				.define('d', IETags.plasticPlate)
 				.define('c', Ingredients.COMPONENT_IRON)
-				.unlockedBy("has_drum", has(Ingredients.GUNPART_DRUM))
+				.unlockedBy("has_revolver", has(Weapons.REVOLVER))
 				.save(out, toRL(toPath(Weapons.SPEEDLOADER)));
 
 		shapedMisc(BulletHandler.emptyShell, 3)
@@ -3005,7 +3067,6 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_coppper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.save(out, toRL(toPath(BulletHandler.emptyCasing)));
 
-		BulletHandler.getBulletStack(BulletItem.FLARE);
 		TurnAndCopyRecipeBuilder.builder(BulletHandler.getBulletItem(BulletItem.FIREWORK))
 				.setNBTCopyTargetRecipe(0, 1, 2, 3, 4, 5, 6) //Since this isn't relative positioning, we have to account for the top 6 slots >_>
 				.pattern("f")

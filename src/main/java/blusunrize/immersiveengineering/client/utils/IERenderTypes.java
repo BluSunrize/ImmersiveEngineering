@@ -186,7 +186,6 @@ public class IERenderTypes extends RenderStateShard
 						.setTextureState(new TextureStateShard(LOCATION_PARTICLES, false, false))
 						.setShaderState(new ShaderStateShard(GameRenderer::getParticleShader))
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-						.setOutputState(TRANSLUCENT_TARGET)
 						.setLightmapState(NO_LIGHTMAP)
 						.createCompositeState(true)
 		);

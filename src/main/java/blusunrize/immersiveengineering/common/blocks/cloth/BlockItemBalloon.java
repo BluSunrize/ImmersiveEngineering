@@ -36,11 +36,11 @@ public class BlockItemBalloon extends BlockItemIE
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand)
 	{
-		ItemStack itemStackIn = playerIn.getItemInHand(hand);
 		if(playerIn.isShiftKeyDown())
-			increaseOffset(itemStackIn);
+			return increaseOffset(playerIn, hand);
 		else
 		{
+			ItemStack itemStackIn = playerIn.getItemInHand(hand);
 			Vec3 pos = playerIn.position().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookAngle());
 			BlockPos bPos = BlockPos.containing(pos);
 			int offset = getOffset(itemStackIn);
@@ -56,8 +56,9 @@ public class BlockItemBalloon extends BlockItemIE
 				}
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStackIn);
 			}
+			else
+				return new InteractionResultHolder<>(InteractionResult.PASS, itemStackIn);
 		}
-		return new InteractionResultHolder<>(InteractionResult.PASS, itemStackIn);
 	}
 
 	@Override
@@ -66,9 +67,9 @@ public class BlockItemBalloon extends BlockItemIE
 		Player player = context.getPlayer();
 		if(player!=null&&player.isShiftKeyDown())
 		{
-			ItemStack stack = player.getItemInHand(context.getHand());
-			increaseOffset(stack);
-			return InteractionResult.SUCCESS;
+			final InteractionResultHolder<ItemStack> resultHolder = increaseOffset(player, context.getHand());
+			player.setItemInHand(context.getHand(), resultHolder.getObject());
+			return resultHolder.getResult();
 		}
 		return super.useOn(context);
 	}
@@ -91,10 +92,12 @@ public class BlockItemBalloon extends BlockItemIE
 		return ret;
 	}
 
-	private void increaseOffset(ItemStack s)
+	private InteractionResultHolder<ItemStack> increaseOffset(Player player, InteractionHand hand)
 	{
-		CompoundTag tag = s.getOrCreateTag();
-		tag.putByte("offset", (byte)((getOffset(s)+1)%5));
+		final ItemStack newStack = player.getItemInHand(hand).copy();
+		CompoundTag tag = newStack.getOrCreateTag();
+		tag.putByte("offset", (byte)((getOffset(newStack)+1)%5));
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, newStack);
 	}
 
 	private byte getOffset(ItemStack stack)

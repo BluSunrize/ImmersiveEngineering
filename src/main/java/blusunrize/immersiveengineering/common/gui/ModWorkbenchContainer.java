@@ -178,6 +178,12 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 	}
 
 	@Override
+	protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection)
+	{
+		return IEContainerMenu.moveItemStackToWithMayPlace(slots, super::moveItemStackTo, stack, startIndex, endIndex);
+	}
+
+	@Override
 	public void clicked(int id, int dragType, ClickType clickType, Player player)
 	{
 		super.clicked(id, dragType, clickType, player);

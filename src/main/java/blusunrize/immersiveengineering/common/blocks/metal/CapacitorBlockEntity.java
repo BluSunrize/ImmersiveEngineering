@@ -32,9 +32,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -216,8 +216,9 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
+		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
 			readCustomNBT(stack.getOrCreateTag(), false);
 	}

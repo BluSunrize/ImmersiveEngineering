@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
@@ -28,7 +27,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -178,7 +176,7 @@ public class IEBlockInterfaces
 		boolean toggleSide(Direction side, Player p);
 	}
 
-	public interface IBlockEntityDrop extends IReadOnPlacement
+	public interface IBlockEntityDrop extends IPlacementInteraction
 	{
 		List<ItemStack> getBlockEntityDrop(LootContext context);
 
@@ -196,11 +194,6 @@ public class IEBlockInterfaces
 							.create(LootContextParamSets.BLOCK)
 			).get(0);
 		}
-	}
-
-	public interface IReadOnPlacement
-	{
-		void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack);
 	}
 
 	public interface IAdditionalDrops
@@ -231,7 +224,7 @@ public class IEBlockInterfaces
 
 	public interface IPlacementInteraction
 	{
-		void onBEPlaced(Level world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
+		void onBEPlaced(BlockPlaceContext ctx);
 	}
 
 	public interface IActiveState extends BlockstateProvider

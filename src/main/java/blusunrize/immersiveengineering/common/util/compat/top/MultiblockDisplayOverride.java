@@ -8,7 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.top;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
 import mcjty.theoneprobe.config.Config;
@@ -29,7 +29,7 @@ public class MultiblockDisplayOverride implements IBlockDisplayOverride
 		BlockState blockState, IProbeHitData data)
 	{
 		BlockEntity te = world.getBlockEntity(data.getPos());
-		if(te instanceof MultiblockPartBlockEntity)
+		if(te instanceof IMultiblockBE<?>)
 		{
 			ItemStack stack = new ItemStack(blockState.getBlock(), 1);
 			if(Tools.show(mode, Config.getRealConfig().getShowModName()))

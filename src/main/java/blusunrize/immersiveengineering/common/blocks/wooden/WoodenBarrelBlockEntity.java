@@ -29,9 +29,9 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -344,7 +344,12 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public void readOnPlacement(LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
+	{
+		onBEPlaced(ctx.getItemInHand());
+	}
+
+	public void onBEPlaced(ItemStack stack)
 	{
 		if(stack.hasTag())
 			readTank(stack.getOrCreateTag());

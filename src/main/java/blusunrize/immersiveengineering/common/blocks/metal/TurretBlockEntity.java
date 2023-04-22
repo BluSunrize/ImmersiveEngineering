@@ -76,6 +76,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY);
 	public boolean redstoneControlInverted = false;
 
+	// TODO move to UUID?
 	public String owner;
 	public List<String> targetList = new ArrayList<>();
 	public boolean whitelist = false;
@@ -549,8 +550,10 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	}
 
 	@Override
-	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
+	public void onBEPlaced(BlockPlaceContext ctx)
 	{
+		final ItemStack stack = ctx.getItemInHand();
+		final Player placer = ctx.getPlayer();
 		if(stack.hasTag())
 		{
 			CompoundTag tag = stack.getOrCreateTag();
