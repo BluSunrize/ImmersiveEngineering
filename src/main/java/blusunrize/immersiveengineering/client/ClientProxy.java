@@ -425,6 +425,7 @@ public class ClientProxy extends CommonProxy
 		registerEntityRenderingHandler(event, IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer.provide(IEModelLayers.REINFORCED_CRATE_CART));
 		registerEntityRenderingHandler(event, IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer.provide(IEModelLayers.METAL_BARREL_CART));
 		registerEntityRenderingHandler(event, IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.FUSILIER, FusilierRenderer::new);
 	}
 
 	private static void registerContainersAndScreens()

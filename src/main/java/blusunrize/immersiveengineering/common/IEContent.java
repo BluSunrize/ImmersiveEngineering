@@ -44,6 +44,7 @@ import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
+import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
@@ -72,6 +73,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -145,6 +147,12 @@ public class IEContent
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		populateAPI();
+	}
+
+	@SubscribeEvent
+	public static void registerCaps(EntityAttributeCreationEvent ev)
+	{
+		ev.put(IEEntityTypes.FUSILIER.get(), Fusilier.createAttributes().build());
 	}
 
 	@SubscribeEvent
