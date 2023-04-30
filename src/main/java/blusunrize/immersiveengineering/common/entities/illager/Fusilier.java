@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.entities.illager;
 import blusunrize.immersiveengineering.common.entities.ai.RailgunAttackGoal;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -115,23 +116,23 @@ public class Fusilier extends AbstractIllager
 	}
 
 	@Override
+	protected float getEquipmentDropChance(EquipmentSlot slot)
+	{
+		return 0;
+	}
+
+	@Override
 	public void applyRaidBuffs(int wave, boolean unusedFalse)
 	{
 		Raid raid = this.getCurrentRaid();
 		boolean flag = this.random.nextFloat() <= raid.getEnchantOdds();
 		if(flag)
 		{
-			//TODO: upgrade item!
-//			ItemStack itemstack = new ItemStack(Items.CROSSBOW);
-//			Map<Enchantment, Integer> map = Maps.newHashMap();
-//			if(wave > raid.getNumGroups(Difficulty.NORMAL))
-//				map.put(Enchantments.QUICK_CHARGE, 2);
-//			else if(wave > raid.getNumGroups(Difficulty.EASY))
-//				map.put(Enchantments.QUICK_CHARGE, 1);
-//
-//			map.put(Enchantments.MULTISHOT, 1);
-//			EnchantmentHelper.setEnchantments(map, itemstack);
-//			this.setItemSlot(EquipmentSlot.MAINHAND, itemstack);
+			ItemStack railgun = new ItemStack(Weapons.RAILGUN);
+			CompoundTag upgrades = new CompoundTag();
+			upgrades.putFloat("speed", 1f);
+			ItemNBTHelper.setTagCompound(railgun, "upgrades", upgrades);
+			this.setItemSlot(EquipmentSlot.MAINHAND, railgun);
 		}
 
 	}
