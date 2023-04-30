@@ -19,6 +19,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -135,6 +136,24 @@ public class Fusilier extends AbstractIllager
 			this.setItemSlot(EquipmentSlot.MAINHAND, railgun);
 		}
 
+	}
+
+	@Override
+	protected SoundEvent getAmbientSound()
+	{
+		return SoundEvents.PILLAGER_AMBIENT;
+	}
+
+	@Override
+	protected SoundEvent getDeathSound()
+	{
+		return SoundEvents.PILLAGER_DEATH;
+	}
+
+	@Override
+	protected SoundEvent getHurtSound(DamageSource damageSource)
+	{
+		return SoundEvents.PILLAGER_DEATH;
 	}
 
 	@Override
