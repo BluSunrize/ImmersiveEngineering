@@ -26,6 +26,7 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -334,6 +335,12 @@ public final class IEItems
 		}
 	}
 
+	public static final class SpawnEggs
+	{
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_FUSILIER = register("fusilier_spawn_egg", () -> new ForgeSpawnEggItem(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+
+		private static void init() {}
+	}
 	public static void init()
 	{
 		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -345,6 +352,7 @@ public final class IEItems
 		Weapons.init();
 		Minecarts.init();
 		Misc.init();
+		SpawnEggs.init();
 	}
 
 	private static <T> Consumer<T> nothing()

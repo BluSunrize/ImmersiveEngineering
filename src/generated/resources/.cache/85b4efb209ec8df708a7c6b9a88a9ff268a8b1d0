@@ -1,4 +1,4 @@
-// 1.19.2	2023-02-26T17:43:55.2372053	Item models
+// 1.19.2	2023-04-30T19:28:48.8452345	Item models
 88d3c4ffa914af5a3f1ace93ca44a7a9de73bd8f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 9ccc4d7a0d7b18dbb71d95f07395ccc9db5454d5 assets/immersiveengineering/models/item/advanced_blast_furnace.json
 52c332b23e9b84d62d49c7b4e70bfd1193037cc7 assets/immersiveengineering/models/item/alloy_smelter.json
@@ -121,6 +121,7 @@ c2934598cfa26fd82d232bc0786ad980697e6cd4 assets/immersiveengineering/models/item
 d13b15c4bea5d495399b2581b838d0403686678f assets/immersiveengineering/models/item/fluid_pipe.json
 e2382cdeaea0a8af680920bc160884fffff68de8 assets/immersiveengineering/models/item/fluid_pump.json
 91eff02d8c1d33df91392241fa6e25a2d0661d3c assets/immersiveengineering/models/item/fluorescent_tube.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/immersiveengineering/models/item/fusilier_spawn_egg.json
 b6ef965c667832ecd0569476627133f2ccdfcc36 assets/immersiveengineering/models/item/glider.json
 d446f224456c48165e9c6714a25892a0ea5bb8fe assets/immersiveengineering/models/item/graphite_electrode.json
 2be0819c5209b4daf29547964747aa2eec489706 assets/immersiveengineering/models/item/grindingdisk.json
