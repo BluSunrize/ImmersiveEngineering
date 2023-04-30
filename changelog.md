@@ -1,8 +1,11 @@
-##### Version 1.19.2-9.2.1-pre
-
+##### Version 1.19.2-9.2.2-pre
+- Add Engineer Illagers (BluSunrize)
+    - The Fusilier, a ranged illager carrying a railgun
 - Fix crash with gunpowder barrels (Malte)
     - Also makes their explosion speed more consistent
 - Refresh balloon hover text when the placement offset is changed (Malte)
+- Fix particle rendering in cloche and charging station (Malte)
+- Fix fluid pipe covers not updating (Malte)
 
 ##### Version 1.19.2-9.2.1-164
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
