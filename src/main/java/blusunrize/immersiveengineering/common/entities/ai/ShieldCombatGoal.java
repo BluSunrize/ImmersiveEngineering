@@ -101,6 +101,17 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 		);
 	}
 
+	public void disableShield()
+	{
+		if(this.combatState == ShieldCombatState.STRAFE)
+		{
+			this.mob.stopUsingItem();
+			this.shieldCooldown = 100;
+			this.combatState = ShieldCombatState.SHIELD_COOLDOWN;
+			this.mob.level.broadcastEntityEvent(this.mob, (byte)30);
+		}
+	}
+
 	abstract boolean performAttack();
 
 	@Override

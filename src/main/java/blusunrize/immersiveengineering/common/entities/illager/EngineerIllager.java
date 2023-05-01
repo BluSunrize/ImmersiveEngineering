@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.common.entities.illager;
 
+import blusunrize.immersiveengineering.common.entities.ai.ShieldCombatGoal;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.level.Level;
 
@@ -40,5 +42,20 @@ public abstract class EngineerIllager extends AbstractIllager
 	{
 		return this.isCelebrating()?IllagerArmPose.CELEBRATING: IllagerArmPose.NEUTRAL;
 	}
+
+	@Override
+	protected void blockUsingShield(LivingEntity entity)
+	{
+		super.blockUsingShield(entity);
+		if(entity.getMainHandItem().canDisableShield(this.useItem, this, entity))
+		{
+			// shield disabling is supposed to be a random chance, with sprinting adding 75% to the chance
+			// however, this has been broken in vanilla Minecraft for years, so I won't bother with implementing it here
+			for(WrappedGoal goal : this.goalSelector.getAvailableGoals())
+				if(goal.getGoal() instanceof ShieldCombatGoal<?> shieldGoal)
+					shieldGoal.disableShield();
+		}
+	}
+
 
 }
