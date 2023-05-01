@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.tool.ShieldDisablingHandler;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
@@ -99,6 +100,15 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			{
 				return 10;
 			}
+
+			@Override
+			public void onHitTarget(Level world, HitResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
+			{
+				super.onHitTarget(world, rtr, shooterUUID, projectile, headshot);
+				if(rtr instanceof EntityHitResult target&&target.getEntity() instanceof LivingEntity livingTarget)
+					if(livingTarget.isBlocking() && livingTarget.getRandom().nextFloat()<.15f)
+						ShieldDisablingHandler.attemptDisabling(livingTarget);
+			}
 		});
 
 		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet(null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), new ResourceLocation("immersiveengineering:item/bullet_he"))
@@ -107,7 +117,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			public void onHitTarget(Level world, HitResult target, UUID shooterId, Entity projectile, boolean headshot)
 			{
 				Entity shooter = null;
-				if(shooterId!=null && world instanceof ServerLevel serverLevel)
+				if(shooterId!=null&&world instanceof ServerLevel serverLevel)
 					shooter = serverLevel.getEntity(shooterId);
 				world.explode(shooter, projectile.getX(), projectile.getY(), projectile.getZ(), 2, BlockInteraction.NONE);
 			}
@@ -250,10 +260,10 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				Potion potionType = PotionUtils.getPotion(bullet.bulletPotion);
 				List<MobEffectInstance> effects = PotionUtils.getMobEffects(bullet.bulletPotion);
 				LivingEntity shooter = null;
-				if(shooterUUID!=null && world instanceof ServerLevel serverLevel)
+				if(shooterUUID!=null&&world instanceof ServerLevel serverLevel)
 				{
 					Entity e = serverLevel.getEntity(shooterUUID);
-					if (e instanceof LivingEntity)
+					if(e instanceof LivingEntity)
 						shooter = (LivingEntity)e;
 				}
 				if(effects!=null)
@@ -510,7 +520,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 
 				WolfpackShotEntity bullet;
 				Entity shooter = null;
-				if(shooterUUID!=null && world instanceof ServerLevel serverLevel)
+				if(shooterUUID!=null&&world instanceof ServerLevel serverLevel)
 					shooter = serverLevel.getEntity(shooterUUID);
 				if(shooter instanceof LivingEntity living)
 					bullet = new WolfpackShotEntity(world, living, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
