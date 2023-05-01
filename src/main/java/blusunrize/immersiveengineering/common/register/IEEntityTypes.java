@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.entities.*;
+import blusunrize.immersiveengineering.common.entities.illager.Commando;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -102,6 +103,11 @@ public class IEEntityTypes
 	public static final RegistryObject<EntityType<Fusilier>> FUSILIER = register(
 			"fusilier",
 			() -> Builder.of(Fusilier::new, MobCategory.MONSTER)
+					.canSpawnFarFromPlayer().sized(0.6F, 1.95F).clientTrackingRange(8)
+	);
+	public static final RegistryObject<EntityType<Commando>> COMMANDO = register(
+			"commando",
+			() -> Builder.of(Commando::new, MobCategory.MONSTER)
 					.canSpawnFarFromPlayer().sized(0.6F, 1.95F).clientTrackingRange(8)
 	);
 

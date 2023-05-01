@@ -44,6 +44,7 @@ import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
+import blusunrize.immersiveengineering.common.entities.illager.Commando;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.register.*;
@@ -153,6 +154,7 @@ public class IEContent
 	public static void registerCaps(EntityAttributeCreationEvent ev)
 	{
 		ev.put(IEEntityTypes.FUSILIER.get(), Fusilier.createAttributes().build());
+		ev.put(IEEntityTypes.COMMANDO.get(), Commando.createAttributes().build());
 	}
 
 	@SubscribeEvent
