@@ -41,7 +41,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
 
-public class Fusilier extends AbstractIllager
+public class Fusilier extends EngineerIllager
 {
 	private static final EntityDataAccessor<Boolean> IS_AIMING_RAILGUN = SynchedEntityData.defineId(Fusilier.class, EntityDataSerializers.BOOLEAN);
 
@@ -68,7 +68,11 @@ public class Fusilier extends AbstractIllager
 
 	public static AttributeSupplier.Builder createAttributes()
 	{
-		return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, (double)0.35F).add(Attributes.MAX_HEALTH, 24.0D).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.FOLLOW_RANGE, 32.0D);
+		return Monster.createMonsterAttributes()
+				.add(Attributes.MOVEMENT_SPEED, 0.35F)
+				.add(Attributes.MAX_HEALTH, 24.0D)
+				.add(Attributes.ATTACK_DAMAGE, 5.0D)
+				.add(Attributes.FOLLOW_RANGE, 32.0D);
 	}
 
 	@Override
@@ -90,22 +94,11 @@ public class Fusilier extends AbstractIllager
 
 
 	@Override
-	public boolean isAlliedTo(Entity entity)
-	{
-		if(super.isAlliedTo(entity))
-			return true;
-		else if(entity instanceof LivingEntity&&((LivingEntity)entity).getMobType()==MobType.ILLAGER)
-			return this.getTeam()==null&&entity.getTeam()==null;
-		return false;
-	}
-
-	@Override
 	public AbstractIllager.IllagerArmPose getArmPose()
 	{
 		if(this.isAimingRailgun())
 			return IllagerArmPose.CROSSBOW_HOLD;
-		else
-			return this.isCelebrating()?IllagerArmPose.CELEBRATING: IllagerArmPose.NEUTRAL;
+		return super.getArmPose();
 	}
 
 	@Nullable
@@ -114,12 +107,6 @@ public class Fusilier extends AbstractIllager
 		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Weapons.RAILGUN));
 		this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Misc.POWERPACK));
 		return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
-	}
-
-	@Override
-	protected float getEquipmentDropChance(EquipmentSlot slot)
-	{
-		return 0;
 	}
 
 	@Override

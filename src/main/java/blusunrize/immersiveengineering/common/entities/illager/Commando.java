@@ -42,7 +42,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 
 import javax.annotation.Nullable;
 
-public class Commando extends AbstractIllager
+public class Commando extends EngineerIllager
 {
 	private static final EntityDataAccessor<Boolean> IS_AIMING = SynchedEntityData.defineId(Commando.class, EntityDataSerializers.BOOLEAN);
 
@@ -74,7 +74,11 @@ public class Commando extends AbstractIllager
 
 	public static AttributeSupplier.Builder createAttributes()
 	{
-		return Monster.createMonsterAttributes().add(Attributes.MOVEMENT_SPEED, (double)0.35F).add(Attributes.MAX_HEALTH, 24.0D).add(Attributes.ATTACK_DAMAGE, 5.0D).add(Attributes.FOLLOW_RANGE, 32.0D);
+		return Monster.createMonsterAttributes()
+				.add(Attributes.MOVEMENT_SPEED, 0.35F)
+				.add(Attributes.MAX_HEALTH, 24.0D)
+				.add(Attributes.ATTACK_DAMAGE, 5.0D)
+				.add(Attributes.FOLLOW_RANGE, 32.0D);
 	}
 
 	@Override
@@ -116,23 +120,6 @@ public class Commando extends AbstractIllager
 		return this.revolverAmmo;
 	}
 
-
-	@Override
-	public boolean isAlliedTo(Entity entity)
-	{
-		if(super.isAlliedTo(entity))
-			return true;
-		else if(entity instanceof LivingEntity&&((LivingEntity)entity).getMobType()==MobType.ILLAGER)
-			return this.getTeam()==null&&entity.getTeam()==null;
-		return false;
-	}
-
-	@Override
-	public IllagerArmPose getArmPose()
-	{
-		return this.isCelebrating()?IllagerArmPose.CELEBRATING: IllagerArmPose.NEUTRAL;
-	}
-
 	@Nullable
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag)
 	{
@@ -146,12 +133,6 @@ public class Commando extends AbstractIllager
 		else // and the rest are just normal guys
 			this.revolverAmmo = BulletHandler.getBulletStack(BulletItem.CASULL);
 		return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
-	}
-
-	@Override
-	protected float getEquipmentDropChance(EquipmentSlot slot)
-	{
-		return 0;
 	}
 
 	@Override
