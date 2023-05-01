@@ -31,20 +31,32 @@ public class CommandoRenderer extends IllagerRenderer<Commando>
 			public void setupAnim(Commando entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 			{
 				super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+				boolean isLefthanded = entity.isLeftHanded();
+				ModelPart rightArm = this.root().getChild("right_arm");
+				ModelPart leftArm = this.root().getChild("left_arm");
+				ModelPart head = this.root().getChild("head");
 				if(entity.isBlocking())
-				{
-					ModelPart leftArm = this.root().getChild("left_arm");
-					leftArm.xRot = leftArm.xRot*0.5F-0.9424779F;
-					leftArm.yRot = ((float)Math.PI/6F);
-
-				}
+					if(isLefthanded)
+					{
+						rightArm.xRot = rightArm.xRot*0.5F-0.9424779F;
+						rightArm.yRot = (-(float)Math.PI/6F);
+					}
+					else
+					{
+						leftArm.xRot = leftArm.xRot*0.5F-0.9424779F;
+						leftArm.yRot = ((float)Math.PI/6F);
+					}
 				if(entity.getArmPose()==IllagerArmPose.NEUTRAL&&entity.isAiming())
-				{
-					ModelPart rightArm = this.root().getChild("right_arm");
-					ModelPart head = this.root().getChild("head");
-					rightArm.xRot = -1.39626f+head.xRot;
-					rightArm.yRot = -.08726f+head.yRot;
-				}
+					if(isLefthanded)
+					{
+						leftArm.xRot = -1.39626f+head.xRot;
+						leftArm.yRot = .08726f+head.yRot;
+					}
+					else
+					{
+						rightArm.xRot = -1.39626f+head.xRot;
+						rightArm.yRot = -.08726f+head.yRot;
+					}
 			}
 		}, 0.5F);
 		this.model.getHat().visible = true;
