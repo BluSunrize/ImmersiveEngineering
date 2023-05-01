@@ -56,9 +56,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.PacketDistributor;
@@ -276,7 +274,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		if(ItemNBTHelper.hasKey(stack, "energy"))
 		{
 			int previousEnergy = ItemNBTHelper.getInt(stack, "energy");
-			IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElseThrow(RuntimeException::new);
+			IItemHandler inv = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
 			ItemStack newCapacitor = new ItemStack(IEBlocks.MetalDevices.CAPACITOR_LV);
 			ItemNBTHelper.putInt(newCapacitor, EnergyHelper.ENERGY_KEY, previousEnergy);
 			((IItemHandlerModifiable)inv).setStackInSlot(0, newCapacitor);
@@ -290,9 +288,9 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public static ItemStack getCapacitorStatic(ItemStack container)
 	{
-		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+		if(ForgeCapabilities.ITEM_HANDLER==null)
 			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = container.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		LazyOptional<IItemHandler> cap = container.getCapability(ForgeCapabilities.ITEM_HANDLER);
 		if(cap.isPresent())
 		{
 			ItemStack capacitor = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
@@ -303,9 +301,9 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public static ItemStack getBannerStatic(ItemStack container)
 	{
-		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
+		if(ForgeCapabilities.ITEM_HANDLER==null)
 			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = container.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+		LazyOptional<IItemHandler> cap = container.getCapability(ForgeCapabilities.ITEM_HANDLER);
 		if(cap.isPresent())
 		{
 			ItemStack banner = cap.map(handler -> handler.getStackInSlot(1)).orElse(ItemStack.EMPTY);
@@ -345,7 +343,7 @@ public class PowerpackItem extends UpgradeableToolItem
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
-					if(capability==CapabilityEnergy.ENERGY)
+					if(capability==ForgeCapabilities.ENERGY)
 						return getCapacitorStatic(stack).getCapability(capability, facing);
 					return super.getCapability(capability, facing);
 				}
@@ -375,7 +373,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
 				Utils.unlockIEAdvancement(player, "tools/upgrade_powerpack");
