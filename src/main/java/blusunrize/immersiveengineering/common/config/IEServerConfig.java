@@ -554,7 +554,7 @@ public class IEServerConfig
 				bulletDamage_Casull = addNonNegative(builder, "casull", 10, "The amount of base damage a Casull Cartridge inflicts");
 				bulletDamage_AP = addNonNegative(builder, "ap", 10, "The amount of base damage a armor piercing Cartridge inflicts");
 				bulletDamage_Buck = addNonNegative(builder, "buck", 2, "The amount of base damage a single part of buckshot inflicts");
-				bulletDamage_Dragon = addNonNegative(builder, "dragon", 3, "The amount of base damage a dragon breath cartridge inflicts");
+				bulletDamage_Dragon = addNonNegative(builder, "dragon", 1, "The amount of base damage a dragon breath cartridge inflicts");
 				bulletDamage_Homing = addNonNegative(builder, "homing", 10, "The amount of base damage a homing cartridge inflicts");
 				bulletDamage_Wolfpack = addNonNegative(builder, "wolfpack", 4, "The amount of base damage a wolfpack cartridge inflicts");
 				bulletDamage_WolfpackPart = addNonNegative(builder, "wolfpack_part", 8, "The amount of base damage the sub-projectiles of a  wolfpack cartridge inflicts");
