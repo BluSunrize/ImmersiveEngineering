@@ -1,6 +1,10 @@
 ##### Version 1.19.2-9.2.2-pre
 - Add Engineer Illagers (BluSunrize)
     - The Fusilier, a ranged illager carrying a railgun
+    - The Commando, using a shield to protect themselves when not firing their revolver
+- Change Buckshot to have a chance of disabling shields (BluSunrize)
+    - Works like vanilla axes
+    - Was added especially to combat shield-carrying illagers
 - Fix crash with gunpowder barrels (Malte)
     - Also makes their explosion speed more consistent
 - Refresh balloon hover text when the placement offset is changed (Malte)
