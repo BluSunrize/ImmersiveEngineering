@@ -48,13 +48,16 @@ public abstract class EngineerIllager extends AbstractIllager
 	{
 		super.blockUsingShield(entity);
 		if(entity.getMainHandItem().canDisableShield(this.useItem, this, entity))
-		{
-			// shield disabling is supposed to be a random chance, with sprinting adding 75% to the chance
-			// however, this has been broken in vanilla Minecraft for years, so I won't bother with implementing it here
-			for(WrappedGoal goal : this.goalSelector.getAvailableGoals())
-				if(goal.getGoal() instanceof ShieldCombatGoal<?> shieldGoal)
-					shieldGoal.disableShield();
-		}
+			disableShield();
+	}
+
+	public void disableShield()
+	{
+		// shield disabling is supposed to be a random chance, with sprinting adding 75% to the chance
+		// however, this has been broken in vanilla Minecraft for years, so I won't bother with implementing it here
+		for(WrappedGoal goal : this.goalSelector.getAvailableGoals())
+			if(goal.getGoal() instanceof ShieldCombatGoal<?> shieldGoal)
+				shieldGoal.disableShield();
 	}
 
 
