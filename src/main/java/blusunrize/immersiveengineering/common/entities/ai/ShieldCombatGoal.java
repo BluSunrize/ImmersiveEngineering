@@ -92,6 +92,11 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 		this.mob.stopUsingItem();
 	}
 
+	protected boolean isUsingShield()
+	{
+		return mob.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK);
+	}
+
 	protected void startUsingShield()
 	{
 		if(this.shieldCooldown > 0)
@@ -103,7 +108,7 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 
 	public void disableShield()
 	{
-		if(this.combatState == ShieldCombatState.STRAFE)
+		if(this.combatState==ShieldCombatState.STRAFE)
 		{
 			this.mob.stopUsingItem();
 			this.shieldCooldown = 100;
@@ -150,6 +155,8 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 				this.combatState = ShieldCombatState.APPROACH;
 		}
 
+		float strafeSpeed = isUsingShield()?0.15f: 0.5f;
+
 		if(this.strafingTime >= 20)
 		{
 			if((double)this.mob.getRandom().nextFloat() < 0.3D)
@@ -166,7 +173,7 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 			else if(d0 < (double)(this.attackRadiusSqr*0.25F))
 				this.strafingBackwards = true;
 
-			this.mob.getMoveControl().strafe(this.strafingBackwards?-0.5F: 0.5F, this.strafingClockwise?0.5F: -0.5F);
+			this.mob.getMoveControl().strafe(this.strafingBackwards?-strafeSpeed: strafeSpeed, this.strafingClockwise?strafeSpeed: -strafeSpeed);
 			this.mob.lookAt(target, 30.0F, 30.0F);
 		}
 		else
