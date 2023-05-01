@@ -104,9 +104,12 @@ public class Fusilier extends EngineerIllager
 	@Nullable
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag)
 	{
+		SpawnGroupData spawnGroupData = super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
 		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Weapons.RAILGUN));
 		this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Misc.POWERPACK));
-		return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+		// prevent left-handed, because rendering the railgun positioning is a nightmare
+		this.setLeftHanded(false);
+		return spawnGroupData;
 	}
 
 	@Override
