@@ -340,7 +340,7 @@ public final class IEItems
 	public static final class SpawnEggs
 	{
 		public static final ItemRegObject<ForgeSpawnEggItem> EGG_FUSILIER = registerEgg(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766);
-		public static final ItemRegObject<ForgeSpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x959b9b, 0xaf6766);
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x293a1e, 0x959b9b);
 
 		private static void init()
 		{
