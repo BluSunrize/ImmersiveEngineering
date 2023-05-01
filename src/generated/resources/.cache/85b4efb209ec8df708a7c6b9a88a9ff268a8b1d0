@@ -1,4 +1,4 @@
-// 1.19.2	2023-04-30T19:28:48.8452345	Item models
+// 1.19.2	2023-05-01T00:50:06.2583245	Item models
 88d3c4ffa914af5a3f1ace93ca44a7a9de73bd8f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 9ccc4d7a0d7b18dbb71d95f07395ccc9db5454d5 assets/immersiveengineering/models/item/advanced_blast_furnace.json
 52c332b23e9b84d62d49c7b4e70bfd1193037cc7 assets/immersiveengineering/models/item/alloy_smelter.json
@@ -46,6 +46,7 @@ c7b1bc3b7330dc3d3e72fb17e73be5651d8cd82b assets/immersiveengineering/models/item
 41b970d8d782f7b502896a0268f7a5458ccb8515 assets/immersiveengineering/models/item/cloche.json
 f4e0d4cc9c8aeb7b9ae1bf1831bbbc0002bc1718 assets/immersiveengineering/models/item/coal_coke.json
 c4a17ab295425e17902776bfc30f9c6d04b027f4 assets/immersiveengineering/models/item/coke_oven.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/immersiveengineering/models/item/commando_spawn_egg.json
 4c92646988cecceb4e113ba712fac526f356c4bb assets/immersiveengineering/models/item/component_electronic.json
 6482e0c8c1b749c6f6be57da31c124be3fe12e34 assets/immersiveengineering/models/item/component_electronic_adv.json
 99be512b6e5c0d5a6b687bd899c1429a55b47d8e assets/immersiveengineering/models/item/component_iron.json

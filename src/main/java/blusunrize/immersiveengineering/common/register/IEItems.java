@@ -21,8 +21,10 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
@@ -337,10 +339,19 @@ public final class IEItems
 
 	public static final class SpawnEggs
 	{
-		public static final ItemRegObject<ForgeSpawnEggItem> EGG_FUSILIER = register("fusilier_spawn_egg", () -> new ForgeSpawnEggItem(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_FUSILIER = registerEgg(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766);
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x959b9b, 0xaf6766);
 
-		private static void init() {}
+		private static void init()
+		{
+		}
+
+		private static ItemRegObject<ForgeSpawnEggItem> registerEgg(RegistryObject<? extends EntityType<? extends Mob>> type, int col1, int col2)
+		{
+			return register(type.getId().getPath()+"_spawn_egg", () -> new ForgeSpawnEggItem(type, col1, col2, new Item.Properties().tab(CreativeModeTab.TAB_MISC)));
+		}
 	}
+
 	public static void init()
 	{
 		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
