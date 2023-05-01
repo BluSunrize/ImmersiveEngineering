@@ -55,6 +55,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -350,42 +351,22 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 					if(!ItemNBTHelper.hasKey(revolver, "reload"))
 					{
-						Item bullet0 = bullets.get(0).getItem();
+						ItemStack bulletStack = bullets.get(0);
+						Item bullet0 = bulletStack.getItem();
 						if(bullet0 instanceof BulletItem)
 						{
 							IBullet bullet = ((BulletItem)bullet0).getType();
 							if(bullet!=null)
 							{
-								Vec3 vec = player.getLookAngle();
-								boolean electro = getUpgrades(revolver).getBoolean("electro");
-								int count = bullet.getProjectileCount(player);
-								if(count==1)
-								{
-									Entity entBullet = getBullet(player, vec, bullet, electro);
-									player.level.addFreshEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
-								}
-								else
-									for(int i = 0; i < count; i++)
-									{
-										Vec3 vecDir = vec.add(player.getRandom().nextGaussian()*.1, player.getRandom().nextGaussian()*.1, player.getRandom().nextGaussian()*.1);
-										Entity entBullet = getBullet(player, vecDir, bullet, electro);
-										player.level.addFreshEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
-									}
+								float noise = fireProjectile(world, player, revolver, bullet, bulletStack);
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
-
-								float noise = 0.5f;
-								if(hasUpgradeValue(revolver, RevolverPerk.NOISE.getNBTKey()))
-									noise *= (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
+								// alert nearby enemies
 								Utils.attractEnemies(player, 64*noise);
-								SoundEvent sound = bullet.getSound();
-								if(sound==null)
-									sound = IESounds.revolverFire.get();
-								world.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
 								// Revolvers with more than 60% noise reduction do not trigger sculk sensors
 								if(noise > .2f)
 								{
 									// anything louder than default is considered an explosion
-									GameEvent eventTriggered = noise > 0.5?GameEvent.EXPLODE:GameEvent.PROJECTILE_SHOOT;
+									GameEvent eventTriggered = noise > 0.5?GameEvent.EXPLODE: GameEvent.PROJECTILE_SHOOT;
 									world.gameEvent(eventTriggered, player.position(), GameEvent.Context.of(player));
 								}
 							}
@@ -424,6 +405,35 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 	}
 
+	public static float fireProjectile(Level world, LivingEntity shooter, ItemStack revolver, IBullet bullet, ItemStack bulletStack)
+	{
+		Player player = shooter instanceof Player p?p: null;
+		Vec3 vec = shooter.getLookAngle();
+		boolean electro = getUpgradesStatic(revolver).getBoolean("electro");
+		int count = bullet.getProjectileCount(player);
+		if(count==1)
+		{
+			Entity entBullet = getBullet(shooter, vec, bullet, electro);
+			shooter.level.addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
+		}
+		else
+			for(int i = 0; i < count; i++)
+			{
+				Vec3 vecDir = vec.add(shooter.getRandom().nextGaussian()*.1, shooter.getRandom().nextGaussian()*.1, shooter.getRandom().nextGaussian()*.1);
+				Entity entBullet = getBullet(shooter, vecDir, bullet, electro);
+				shooter.level.addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
+			}
+
+		float noise = 0.5f;
+		if(hasUpgradeValue(revolver, RevolverPerk.NOISE.getNBTKey()))
+			noise *= (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
+		SoundEvent sound = bullet.getSound();
+		if(sound==null)
+			sound = IESounds.revolverFire.get();
+		world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
+		return noise;
+	}
+
 	public int getShootCooldown(ItemStack stack)
 	{
 		return ItemNBTHelper.getInt(stack, "cooldown");
@@ -452,9 +462,9 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	/* ------------- BULLET UTILITY ------------- */
 
-	private RevolvershotEntity getBullet(Player player, Vec3 vecDir, IBullet type, boolean electro)
+	private static RevolvershotEntity getBullet(LivingEntity living, Vec3 vecDir, IBullet type, boolean electro)
 	{
-		RevolvershotEntity bullet = new RevolvershotEntity(player.level, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
+		RevolvershotEntity bullet = new RevolvershotEntity(living.level, living, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
 		bullet.setDeltaMovement(vecDir.scale(2));
 		bullet.bulletElectro = electro;
 		return bullet;
@@ -528,25 +538,25 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		return "";
 	}
 
-	public CompoundTag getPerks(ItemStack stack)
+	public static CompoundTag getPerks(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "perks");
 	}
 
-	public boolean hasUpgradeValue(ItemStack stack, String key)
+	public static boolean hasUpgradeValue(ItemStack stack, String key)
 	{
-		return getUpgrades(stack).contains(key)||getPerks(stack).contains(key);
+		return getUpgradesStatic(stack).contains(key)||getPerks(stack).contains(key);
 	}
 
-	public double getUpgradeValue_d(ItemStack stack, String key)
+	public static double getUpgradeValue_d(ItemStack stack, String key)
 	{
-		return getUpgrades(stack).getDouble(key)+getPerks(stack).getDouble(key);
+		return getUpgradesStatic(stack).getDouble(key)+getPerks(stack).getDouble(key);
 	}
 
 	@Override
 	public boolean canZoom(ItemStack stack, Player player)
 	{
-		return this.hasUpgradeValue(stack, "scope");
+		return hasUpgradeValue(stack, "scope");
 	}
 
 	float[] zoomSteps = new float[]{.3125f, .4f, .5f, .625f};
