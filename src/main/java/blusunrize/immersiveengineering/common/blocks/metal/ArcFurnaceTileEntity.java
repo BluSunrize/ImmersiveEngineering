@@ -676,9 +676,9 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			ArcFurnaceTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(posInMultiblock==MAIN_OUT_POS)
+			if(posInMultiblock.equals(MAIN_OUT_POS))
 				return master.outputHandler.cast();
-			else if(posInMultiblock==SLAG_OUT_POS)
+			else if(posInMultiblock.equals(SLAG_OUT_POS))
 				return master.slagHandler.cast();
 				//TODO are these swapped?
 			else if(new BlockPos(1, 3, 2).equals(posInMultiblock))
