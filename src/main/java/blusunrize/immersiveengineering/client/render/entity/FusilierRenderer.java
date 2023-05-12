@@ -42,9 +42,7 @@ public class FusilierRenderer extends IllagerRenderer<Fusilier>
 		this.addLayer(new IEBipedLayerRenderer<>(this, p_174354_.getModelSet()));
 	}
 
-	/**
-	 * Returns the location of an entity's texture.
-	 */
+	@Override
 	public ResourceLocation getTextureLocation(Fusilier entity)
 	{
 		return TEXTURE;

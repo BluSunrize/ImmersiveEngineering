@@ -45,6 +45,7 @@ import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
+import blusunrize.immersiveengineering.common.entities.illager.Bulwark;
 import blusunrize.immersiveengineering.common.entities.illager.Commando;
 import blusunrize.immersiveengineering.common.entities.illager.EngineerIllager;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
@@ -159,6 +160,7 @@ public class IEContent
 	{
 		ev.put(IEEntityTypes.FUSILIER.get(), Fusilier.createAttributes().build());
 		ev.put(IEEntityTypes.COMMANDO.get(), Commando.createAttributes().build());
+		ev.put(IEEntityTypes.BULWARK.get(), Bulwark.createAttributes().build());
 	}
 
 	@SubscribeEvent

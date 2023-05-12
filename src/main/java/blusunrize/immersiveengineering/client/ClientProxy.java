@@ -427,6 +427,7 @@ public class ClientProxy extends CommonProxy
 		registerEntityRenderingHandler(event, IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
 		registerEntityRenderingHandler(event, IEEntityTypes.FUSILIER, FusilierRenderer::new);
 		registerEntityRenderingHandler(event, IEEntityTypes.COMMANDO, CommandoRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.BULWARK, BulwarkRenderer::new);
 	}
 
 	private static void registerContainersAndScreens()

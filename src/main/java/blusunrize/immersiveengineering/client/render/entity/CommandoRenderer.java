@@ -63,9 +63,7 @@ public class CommandoRenderer extends IllagerRenderer<Commando>
 		this.addLayer(new ItemInHandLayer<>(this, p_174354_.getItemInHandRenderer()));
 	}
 
-	/**
-	 * Returns the location of an entity's texture.
-	 */
+	@Override
 	public ResourceLocation getTextureLocation(Commando entity)
 	{
 		return TEXTURE;

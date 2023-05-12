@@ -341,6 +341,7 @@ public final class IEItems
 	{
 		public static final ItemRegObject<ForgeSpawnEggItem> EGG_FUSILIER = registerEgg(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766);
 		public static final ItemRegObject<ForgeSpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x293a1e, 0x959b9b);
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_BULWARK = registerEgg(IEEntityTypes.BULWARK, 0x959b9b, 0xc75538);
 
 		private static void init()
 		{
