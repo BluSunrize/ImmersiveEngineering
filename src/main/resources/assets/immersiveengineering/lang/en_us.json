@@ -192,6 +192,7 @@
   "desc.immersiveengineering.info.ticks": "%1$s Ticks",
   "desc.immersiveengineering.info.ift": "%1$s IF / tick",
   "desc.immersiveengineering.info.percent": "%1$s%%",
+  "desc.immersiveengineering.info.noChargeOnArmor": "Can not be charged while attached to armor",
   "desc.immersiveengineering.info.potionMod": "Potion added by %1$s",
   "desc.immersiveengineering.info.multiblocksAllowed": "Allowed Multiblocks:",
   "desc.immersiveengineering.info.multiblockForbidden": "Forbidden Multiblocks:",
