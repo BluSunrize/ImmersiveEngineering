@@ -1,4 +1,4 @@
-##### Version 1.19.4-9.4.0-pre
+##### Version 1.19.4-9.4.0-166
 - First release for 1.19.4!
 - Includes all features from 9.2.2
 

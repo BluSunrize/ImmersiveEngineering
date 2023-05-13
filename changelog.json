@@ -1,6 +1,10 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/immersive-engineering",
     "promos": {
-        
+        "1.19.4-latest": "1.19.4-9.4.0-166",
+        "1.19.4-recommended": "1.19.4-9.4.0-166"
+    },
+    "1.19.4": {
+        "1.19.4-9.4.0-166": "- First release for 1.19.4!\n- Includes all features from 9.2.2"
     }
 }
