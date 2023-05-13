@@ -1,0 +1,97 @@
+{
+  "parent": "immersiveengineering:main/villager",
+  "criteria": {
+    "chemthrower_kill": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "#minecraft:raiders"
+            }
+          }
+        ],
+        "killing_blow": {
+          "direct_entity": {
+            "type": "immersiveengineering:chemthrower_shot"
+          }
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    },
+    "railgun_kill": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "#minecraft:raiders"
+            }
+          }
+        ],
+        "killing_blow": {
+          "is_projectile": true,
+          "source_entity": {
+            "equipment": {
+              "mainhand": {
+                "items": [
+                  "immersiveengineering:railgun"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    },
+    "revolver_kill": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "#minecraft:raiders"
+            }
+          }
+        ],
+        "killing_blow": {
+          "direct_entity": {
+            "type": "immersiveengineering:revolver_shot"
+          }
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.kill_illager.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:white_banner",
+      "nbt": "{BlockEntityTag:{Patterns:[{Color:9,Pattern:\"mr\"},{Color:8,Pattern:\"bs\"},{Color:7,Pattern:\"cs\"},{Color:8,Pattern:\"bo\"},{Color:15,Pattern:\"ms\"},{Color:8,Pattern:\"hh\"},{Color:8,Pattern:\"mc\"},{Color:15,Pattern:\"bo\"}],id:\"minecraft:banner\"},HideFlags:32,display:{Name:'{\"color\":\"gold\",\"translate\":\"block.minecraft.ominous_banner\"}'}}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.kill_illager"
+    }
+  },
+  "requirements": [
+    [
+      "revolver_kill",
+      "railgun_kill",
+      "chemthrower_kill"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "immersiveengineering:advancements/shader_rare"
+    ]
+  }
+}

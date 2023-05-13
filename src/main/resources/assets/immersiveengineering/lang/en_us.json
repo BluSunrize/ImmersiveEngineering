@@ -620,6 +620,8 @@
   "advancement.immersiveengineering.buy_shaderbag.desc": "Buy a Shader Grabbag from the Outfitter",
   "advancement.immersiveengineering.buy_oremap": "X Marks the Spot",
   "advancement.immersiveengineering.buy_oremap.desc": "Buy a Mineral Deposit Map from the Structural Engineer",
+  "advancement.immersiveengineering.kill_illager": "Superior Weaponry",
+  "advancement.immersiveengineering.kill_illager.desc": "Kill an Illager with Revolver, Railgun or Chemthrower",
   "advancement.immersiveengineering.multiblocks_root": "Multiblocks",
   "advancement.immersiveengineering.multiblocks_root.desc": "Large machines for large factories",
   "advancement.immersiveengineering.mb_improvedblastfurnace": "Next Level Blasting",
