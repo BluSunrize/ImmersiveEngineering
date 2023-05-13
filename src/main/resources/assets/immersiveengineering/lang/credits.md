@@ -13,3 +13,4 @@ LOCALIZATION
     - ko_KR: Taki_B, PixVoxel, FreddyYJ
     - ja_JP: karakufire
     - fr_FR: Juknum
+	- uk_ua: Сommunity «СУМ», CakesTwix, ICHTLAY, hnufelka, Sinqoire, SKZGx
