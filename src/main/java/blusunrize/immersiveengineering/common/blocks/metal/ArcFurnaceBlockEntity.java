@@ -706,9 +706,9 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	{
 		if(capability==ForgeCapabilities.ITEM_HANDLER)
 		{
-			if(posInMultiblock==MAIN_OUT_POS)
+			if(MAIN_OUT_POS.equals(posInMultiblock))
 				return outputHandler.getAndCast();
-			else if(posInMultiblock==SLAG_OUT_POS)
+			else if(SLAG_OUT_POS.equals(posInMultiblock))
 				return slagHandler.getAndCast();
 				//TODO are these swapped?
 			else if(new BlockPos(1, 3, 2).equals(posInMultiblock))
