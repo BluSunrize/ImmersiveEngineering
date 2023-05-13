@@ -762,7 +762,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("metalpress/melon"));
 
 		MetalPressRecipeBuilder.builder(Molds.MOLD_ROD, Items.BLAZE_ROD)
-				.addInput(new IngredientWithSize(Ingredient.of(Items.BLAZE_POWDER), 4))
+				.addInput(new IngredientWithSize(Ingredient.of(Items.BLAZE_POWDER), 5))
 				.setEnergy(3200)
 				.build(out, toRL("metalpress/blaze_rod"));
 

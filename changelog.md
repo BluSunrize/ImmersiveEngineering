@@ -12,6 +12,7 @@
 - Refresh balloon hover text when the placement offset is changed (Malte)
 - Fix particle rendering in cloche and charging station (Malte)
 - Fix fluid pipe covers not updating (Malte)
+- Fix infinite sulfur exploit from cycling blazerods (BluSunrize)
 
 ##### Version 1.19.2-9.2.1-164
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)

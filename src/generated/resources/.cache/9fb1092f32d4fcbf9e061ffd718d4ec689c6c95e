@@ -1,4 +1,4 @@
-// 1.19.2	2023-04-04T00:22:25.4742736	Recipes
+// 1.19.2	2023-05-13T08:49:52.7628343	Recipes
 7ccf8b2f4f413f7667689450565e5430a943d23a data/immersiveengineering/advancements/recipes/decorations/crafting/torch.json
 b79e3d9e28de7d73e18625fac2456b738b168fc9 data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick.json
 d518ed26bb86cca14c1400daadb64610c935cafc data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick_from_slab.json
@@ -1276,7 +1276,7 @@ f1b80ca7fe171e0e202d408ea0fab21f6a5ddfa8 data/immersiveengineering/recipes/flare
 4b5047f569666bd35f7429380b2e0541a07b2731 data/immersiveengineering/recipes/generator_fuel/creosote.json
 1c9aed34050e40d99a38fcb6eda196f048edf8ed data/immersiveengineering/recipes/ie_item_repair.json
 69381fa15da674ec8fa27802b58aca4e683f20cc data/immersiveengineering/recipes/jerrycan_refill.json
-761e22be6e9a474fdf6ab33d99302253f0684396 data/immersiveengineering/recipes/metalpress/blaze_rod.json
+50f0648ce13a41a44a071fbec0213322f493e2dd data/immersiveengineering/recipes/metalpress/blaze_rod.json
 30e86d488e74810e81e6ec64c03f9e46a437018d data/immersiveengineering/recipes/metalpress/bullet_casing.json
 6c3ad8978ef8da391aad7418a5ba9a64a107a113 data/immersiveengineering/recipes/metalpress/electrode.json
 8b949d7ccac76841dfbe2eedbb93ba0ba57f099a data/immersiveengineering/recipes/metalpress/gear_aluminum.json

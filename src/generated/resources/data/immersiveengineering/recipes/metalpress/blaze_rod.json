@@ -5,7 +5,7 @@
     "base_ingredient": {
       "item": "minecraft:blaze_powder"
     },
-    "count": 4
+    "count": 5
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
