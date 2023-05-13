@@ -24,12 +24,14 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SimpleSkyhookProvider;
+import blusunrize.immersiveengineering.common.entities.illager.EngineerIllager;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.network.MessageOpenManual;
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
@@ -37,10 +39,13 @@ import blusunrize.immersiveengineering.common.register.IEStats;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.wires.GlobalNetProvider;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -50,10 +55,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raid;
+import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -69,6 +77,7 @@ import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -87,6 +96,8 @@ import net.minecraftforge.network.PacketDistributor;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class EventHandler
 {
@@ -440,5 +451,62 @@ public class EventHandler
 		serverPlayer.awardStat(IEStats.WIRE_DEATHS.get());
 		if(serverPlayer.getAbilities().flying||serverPlayer.isFallFlying())
 			Utils.unlockIEAdvancement(serverPlayer, "main/secret_friedbird");
+	}
+
+	private static final List<IllagerUpgrade> ILLAGER_UPGRADES = List.of(
+			new IllagerUpgrade(EntityType.PILLAGER, IEEntityTypes.FUSILIER.get(), .5f),
+			new IllagerUpgrade(EntityType.VINDICATOR, IEEntityTypes.BULWARK.get(), .1f),
+			new IllagerUpgrade(EntityType.VINDICATOR, IEEntityTypes.COMMANDO.get(), .33f),
+			new IllagerUpgrade(EntityType.RAVAGER, IEEntityTypes.BULWARK.get(), .2f),
+			new IllagerUpgrade(EntityType.EVOKER, IEEntityTypes.COMMANDO.get(), .33f)
+	);
+
+	@SubscribeEvent
+	public void onMobSpawn(EntityJoinLevelEvent event)
+	{
+		if(event.isCanceled()||event.loadedFromDisk())
+			return;
+		if(event.getEntity() instanceof Raider raider&&raider.hasActiveRaid()&&event.getLevel() instanceof ServerLevel level)
+		{
+			// can't upgrade our own Illagers
+			if(raider instanceof EngineerIllager)
+				return;
+			Raid raid = raider.getCurrentRaid();
+			// check if there are any players in the raid with the advancement
+			if(level.players().stream().anyMatch(canTriggerEngineerRaid.apply(raid)))
+				for(IllagerUpgrade upgrade : ILLAGER_UPGRADES)
+					if(upgrade.shouldUpgrade(raider))
+					{
+						// data to keep
+						int wave = raider.getWave();
+						BlockPos pos = raider.blockPosition();
+						// configure new Illager
+						Raider replacement = upgrade.replacement.create(level);
+						if(raider.isPatrolLeader()&&replacement.canBeLeader())
+						{
+							replacement.setPatrolLeader(true);
+							raid.setLeader(wave, replacement);
+						}
+						raid.joinRaid(wave, replacement, pos, false);
+						// prevent original spawn
+						raid.removeFromRaid(raider, true);
+						event.setCanceled(true);
+					}
+		}
+	}
+
+	private static final Function<Raid, Predicate<ServerPlayer>> canTriggerEngineerRaid = raid -> serverPlayer -> {
+		ServerLevel level = serverPlayer.getLevel();
+		ServerAdvancementManager manager = level.getServer().getAdvancements();
+		Advancement advancement = manager.getAdvancement(new ResourceLocation(ImmersiveEngineering.MODID, "main/kill_illager"));
+		return level.getRaidAt(serverPlayer.blockPosition())==raid&&advancement!=null&&serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
+	};
+
+	record IllagerUpgrade(EntityType<? extends Raider> type, EntityType<? extends Raider> replacement, float chance)
+	{
+		boolean shouldUpgrade(Raider target)
+		{
+			return this.type==target.getType()&&target.getRandom().nextFloat() <= this.chance;
+		}
 	}
 }

@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
+import blusunrize.immersiveengineering.api.tool.ShieldDisablingHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidStackRecipeQuery;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidTagRecipeQuery;
@@ -47,6 +48,10 @@ import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
+import blusunrize.immersiveengineering.common.entities.illager.Bulwark;
+import blusunrize.immersiveengineering.common.entities.illager.Commando;
+import blusunrize.immersiveengineering.common.entities.illager.EngineerIllager;
+import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
@@ -68,12 +73,14 @@ import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -87,6 +94,8 @@ import net.minecraftforge.registries.NewRegistryEvent;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.io.IOException;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
@@ -152,6 +161,14 @@ public class IEContent
 		IEMultiblocks.init();
 		IEMultiblockLogic.init(modBus);
 		populateAPI();
+	}
+
+	@SubscribeEvent
+	public static void registerCaps(EntityAttributeCreationEvent ev)
+	{
+		ev.put(IEEntityTypes.FUSILIER.get(), Fusilier.createAttributes().build());
+		ev.put(IEEntityTypes.COMMANDO.get(), Commando.createAttributes().build());
+		ev.put(IEEntityTypes.BULWARK.get(), Bulwark.createAttributes().build());
 	}
 
 	@SubscribeEvent
@@ -301,6 +318,8 @@ public class IEContent
 		IMultiblockBEHelperMaster.MAKE_HELPER.setValue(MultiblockBEHelperMaster::new);
 		IMultiblockBEHelperDummy.MAKE_HELPER.setValue(MultiblockBEHelperDummy::new);
 		SetRestrictedField.lock(false);
+		ShieldDisablingHandler.registerDisablingFunction(Player.class, player -> player.disableShield(true));
+		ShieldDisablingHandler.registerDisablingFunction(EngineerIllager.class, EngineerIllager::disableShield);
 	}
 
 	public static void clearLastFuture()

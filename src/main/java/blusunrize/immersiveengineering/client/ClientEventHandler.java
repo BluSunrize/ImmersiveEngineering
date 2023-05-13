@@ -69,6 +69,7 @@ import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -109,6 +110,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
@@ -222,11 +225,17 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
-				event.getToolTip().add(TextUtils.applyFormat(powerpack.getHoverName(), ChatFormatting.GRAY));
-				event.getToolTip().add(TextUtils.applyFormat(
+				List<Component> tooltip = event.getToolTip();
+				// find gap
+				int idx = IntStream.range(0,tooltip.size() ).filter(i -> tooltip.get(i) == CommonComponents.EMPTY).findFirst().orElse(tooltip.size()-1);
+				// put tooltip in that gap
+				tooltip.add(idx++, CommonComponents.EMPTY);
+				tooltip.add(idx++, TextUtils.applyFormat(powerpack.getHoverName(), ChatFormatting.GRAY));
+				tooltip.add(idx++, TextUtils.applyFormat(
 						Component.literal(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
 						ChatFormatting.GRAY
 				));
+				tooltip.add(idx, TextUtils.applyFormat(Component.translatable("desc.immersiveengineering.info.noChargeOnArmor"), ChatFormatting.DARK_GRAY));
 			}
 		}
 		Level clientLevel = ClientUtils.mc().level;

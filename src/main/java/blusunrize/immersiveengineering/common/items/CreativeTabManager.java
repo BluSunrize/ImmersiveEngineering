@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEItems.SpawnEggs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -43,6 +44,12 @@ public class CreativeTabManager
 	{
 		if(ev.getTab()==CreativeModeTabs.FOOD_AND_DRINKS)
 			Misc.POTION_BUCKET.get().fillCreativeTab(ev);
+		if(ev.getTab()==CreativeModeTabs.SPAWN_EGGS)
+		{
+			ev.accept(SpawnEggs.EGG_FUSILIER.get());
+			ev.accept(SpawnEggs.EGG_COMMANDO.get());
+			ev.accept(SpawnEggs.EGG_BULWARK.get());
+		}
 		if(ev.getTab()!=TAB)
 			return;
 		for(final var itemRef : IEItems.REGISTER.getEntries())

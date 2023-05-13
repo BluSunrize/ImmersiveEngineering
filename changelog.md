@@ -1,10 +1,23 @@
-##### Version 1.19.3-9.3.1-pre
+##### Version 1.19.4-9.4.0-pre
 - All features from 9.2.1
 
-##### Version 1.19.2-9.2.1-pre
+##### Version 1.19.2-9.2.2-pre
+- Add Engineer Illagers (BluSunrize)
+    - The Fusilier, a ranged illager carrying a railgun
+    - The Commando, using a shield to protect themselves when not firing their revolver
+    - The Bulwark, a tank covered in steel armor, carrying a chemthrower and a heavy plated shield
+    - These enemies can join raids after the player has proven themselves dangerous and technologically advanced...
+- Change Buckshot to have a chance of disabling shields (BluSunrize)
+    - Works like vanilla axes
+    - Was added especially to combat shield-carrying illagers
 - Fix crash with gunpowder barrels (Malte)
     - Also makes their explosion speed more consistent
 - Refresh balloon hover text when the placement offset is changed (Malte)
+- Fix particle rendering in cloche and charging station (Malte)
+- Fix fluid pipe covers not updating (Malte)
+- Fix infinite sulfur exploit from cycling blazerods (BluSunrize)
+- Fix dropping conveyor trying to "drop" items into blocks that have inventories, resulting in flinging (BluSunrize)
+- Translations Added/Updated: uk_ua (SKZGx)
 
 ##### Version 1.19.2-9.2.1-164
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)

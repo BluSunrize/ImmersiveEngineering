@@ -37,6 +37,7 @@ public class IELootFunctions
 			Registries.LOOT_FUNCTION_TYPE, ImmersiveEngineering.MODID
 	);
 	public static final RegistryObject<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", () -> new SimpleSerializer<>(BluprintzLootFunction::new));
+	public static final RegistryObject<LootItemFunctionType> REVOLVERPERK = registerFunction("revolverperk", () -> new SimpleSerializer<>(RevolverperkLootFunction::new));
 	public static final RegistryObject<LootItemFunctionType> WINDMILL = registerFunction("windmill", () -> new SimpleSerializer<>(WindmillLootFunction::new));
 	public static final RegistryObject<LootItemFunctionType> CONVEYOR_COVER = registerFunction("conveyor_cover", () -> new SimpleSerializer<>(ConveyorCoverLootFunction::new));
 	public static final RegistryObject<LootItemFunctionType> PROPERTY_COUNT = registerFunction("property_count", PropertyCountLootFunction.Serializer::new);

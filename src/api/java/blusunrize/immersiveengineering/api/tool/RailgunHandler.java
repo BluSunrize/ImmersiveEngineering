@@ -62,6 +62,7 @@ public class RailgunHandler
 		 * @param ammo              the ItemStack used as ammo
 		 * @param defaultProjectile the default projectile that should be returned if no custom one is created
 		 * @return the given or a custom entity
+		 * TODO: Signature change, Make this accept & return Projectile
 		 */
 		default Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
 		{

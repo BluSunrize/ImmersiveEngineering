@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
@@ -42,6 +43,7 @@ public class EntityTypeTags extends EntityTypeTagsProvider
 	protected void addTags(Provider p_255894_)
 	{
 		tag(IETags.shaderbagBlacklist).add(EntityType.WITHER).add(EntityType.IRON_GOLEM);
+		tag(net.minecraft.tags.EntityTypeTags.RAIDERS).add(IEEntityTypes.FUSILIER.get(), IEEntityTypes.COMMANDO.get(), IEEntityTypes.BULWARK.get());
 	}
 
 

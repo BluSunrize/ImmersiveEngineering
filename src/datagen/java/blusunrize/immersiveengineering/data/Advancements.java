@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.register.IEPotions;
@@ -41,7 +42,10 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
@@ -126,6 +130,24 @@ public class Advancements extends ForgeAdvancementProvider
 						EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY,
 						ItemPredicate.Builder.item().of(Items.FILLED_MAP).hasNbt(mapNBT).build())
 				).save(consumer);
+
+		Advancement illager = AdvBuilder.child("kill_illager", villagers).goal().icon(Raid.getLeaderBannerInstance())
+				.orRequirements()
+				.addCriterion("revolver_kill", KilledTrigger.TriggerInstance.playerKilledEntity(
+						EntityPredicate.Builder.entity().of(EntityTypeTags.RAIDERS),
+						DamageSourcePredicate.Builder.damageType().direct(EntityPredicate.Builder.entity().of(IEEntityTypes.REVOLVERSHOT.get()))
+				)).addCriterion("railgun_kill", KilledTrigger.TriggerInstance.playerKilledEntity(
+						EntityPredicate.Builder.entity().of(EntityTypeTags.RAIDERS),
+						DamageSourcePredicate.Builder.damageType().tag(TagPredicate.is(DamageTypeTags.IS_PROJECTILE)).source(EntityPredicate.Builder.entity().equipment(
+								EntityEquipmentPredicate.Builder.equipment().mainhand(
+										ItemPredicate.Builder.item().of(Weapons.RAILGUN.asItem()).build()
+								).build()
+						))
+				)).addCriterion("chemthrower_kill", KilledTrigger.TriggerInstance.playerKilledEntity(
+						EntityPredicate.Builder.entity().of(EntityTypeTags.RAIDERS),
+						DamageSourcePredicate.Builder.damageType().direct(EntityPredicate.Builder.entity().of(IEEntityTypes.CHEMTHROWER_SHOT.get()))
+				))
+				.loot("shader_rare").save(consumer);
 
 		Advancement friedbird = AdvBuilder.child("secret_friedbird", wire).challenge().hidden()
 				.icon(Misc.ICON_FRIED).codeTriggered().loot("shader_masterwork").save(consumer);

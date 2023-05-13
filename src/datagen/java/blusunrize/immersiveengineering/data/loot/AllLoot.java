@@ -33,7 +33,8 @@ public class AllLoot extends LootTableProvider
 	{
 		return ImmutableList.of(
 				new SubProviderEntry(GeneralLoot::new, LootContextParamSets.EMPTY),
-				new SubProviderEntry(BlockLoot::new, LootContextParamSets.BLOCK)
+				new SubProviderEntry(BlockLoot::new, LootContextParamSets.BLOCK),
+				new SubProviderEntry(EntityLoot::new, LootContextParamSets.ENTITY)
 		);
 	}
 

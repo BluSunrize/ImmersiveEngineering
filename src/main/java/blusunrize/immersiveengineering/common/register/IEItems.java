@@ -21,10 +21,13 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -318,7 +321,7 @@ public final class IEItems
 				));
 			for(Type slot : Type.values())
 				IEItems.Misc.FARADAY_SUIT.put(slot, register(
-						"armor_faraday_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
+						"armor_faraday_"+slot.name().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
 				));
 		}
 
@@ -328,6 +331,22 @@ public final class IEItems
 				IEItems.Misc.SHADER_BAG.put(r, register(
 						"shader_bag_"+r.name().toLowerCase(Locale.US).replace(':', '_'), () -> new ShaderBagItem(r)
 				));
+		}
+	}
+
+	public static final class SpawnEggs
+	{
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_FUSILIER = registerEgg(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766);
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x293a1e, 0x959b9b);
+		public static final ItemRegObject<ForgeSpawnEggItem> EGG_BULWARK = registerEgg(IEEntityTypes.BULWARK, 0x959b9b, 0xc75538);
+
+		private static void init()
+		{
+		}
+
+		private static ItemRegObject<ForgeSpawnEggItem> registerEgg(RegistryObject<? extends EntityType<? extends Mob>> type, int col1, int col2)
+		{
+			return register(type.getId().getPath()+"_spawn_egg", () -> new ForgeSpawnEggItem(type, col1, col2, new Item.Properties()));
 		}
 	}
 
@@ -342,6 +361,7 @@ public final class IEItems
 		Weapons.init();
 		Minecarts.init();
 		Misc.init();
+		SpawnEggs.init();
 	}
 
 	private static <T> Consumer<T> nothing()

@@ -1,4 +1,4 @@
-// 1.19.4	2023-03-16T08:28:09.944022278	Advancements
+// 1.19.4	2023-05-13T14:38:13.0684774	Advancements
 4eb7b593905374d0f8c4b5bf0399f27ac270ec43 data/immersiveengineering/advancements/main/buy_oremap.json
 a4960d01e55deb2776143ded099867575eedf5b4 data/immersiveengineering/advancements/main/buy_shaderbag.json
 e5df5372bdec9de7c77204617522d65c9ecb9672 data/immersiveengineering/advancements/main/chorus_cloche.json
@@ -14,6 +14,7 @@ e5df5372bdec9de7c77204617522d65c9ecb9672 data/immersiveengineering/advancements/
 9d0e6322939441aa6f4ce01ddc8d45f5d0f1f6e1 data/immersiveengineering/advancements/main/craft_treatedwood.json
 10d55b0abb1f92a3daa2957572dacff40e2da4f4 data/immersiveengineering/advancements/main/craft_workbench.json
 bc3d7e090a40a09a67f3aacc94304b4adadc2601 data/immersiveengineering/advancements/main/creosote.json
+de7181aab1887ec8e8324674e3da619a50a5c49a data/immersiveengineering/advancements/main/kill_illager.json
 1cf4034b9353a3a793979960f8c166fa37add75e data/immersiveengineering/advancements/main/main_root.json
 ca09d28e6f077798970ca7a39d8c31a3fd2658ca data/immersiveengineering/advancements/main/make_steel.json
 fd6f9fe4b7291f6f02539b316d2ff2730f333c3b data/immersiveengineering/advancements/main/mb_blastfurnace.json

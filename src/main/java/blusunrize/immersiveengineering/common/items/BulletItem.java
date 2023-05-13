@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.api.tool.ShieldDisablingHandler;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
@@ -27,6 +28,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -100,6 +102,15 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			{
 				return 10;
 			}
+
+			@Override
+			public void onHitTarget(Level world, HitResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
+			{
+				super.onHitTarget(world, rtr, shooterUUID, projectile, headshot);
+				if(rtr instanceof EntityHitResult target&&target.getEntity() instanceof LivingEntity livingTarget)
+					if(livingTarget.isBlocking() && livingTarget.getRandom().nextFloat()<.15f)
+						ShieldDisablingHandler.attemptDisabling(livingTarget);
+			}
 		});
 
 		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet(null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), new ResourceLocation("immersiveengineering:item/bullet_he"))
@@ -108,8 +119,8 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			public void onHitTarget(Level world, HitResult target, UUID shooterId, Entity projectile, boolean headshot)
 			{
 				Entity shooter = null;
-				if(shooterId!=null)
-					shooter = world.getPlayerByUUID(shooterId);
+				if(shooterId!=null&&world instanceof ServerLevel serverLevel)
+					shooter = serverLevel.getEntity(shooterId);
 				world.explode(shooter, projectile.getX(), projectile.getY(), projectile.getZ(), 2, ExplosionInteraction.MOB);
 			}
 
@@ -251,8 +262,12 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				Potion potionType = PotionUtils.getPotion(bullet.bulletPotion);
 				List<MobEffectInstance> effects = PotionUtils.getMobEffects(bullet.bulletPotion);
 				LivingEntity shooter = null;
-				if(shooterUUID!=null)
-					shooter = world.getPlayerByUUID(shooterUUID);
+				if(shooterUUID!=null&&world instanceof ServerLevel serverLevel)
+				{
+					Entity e = serverLevel.getEntity(shooterUUID);
+					if(e instanceof LivingEntity)
+						shooter = (LivingEntity)e;
+				}
 				if(effects!=null)
 					if(bullet.bulletPotion.getItem() instanceof LingeringPotionItem)
 					{
@@ -492,9 +507,9 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		}
 
 		@Override
-		public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(Level world, HitResult target, UUID shooterUUID, Entity projectile, boolean headshot)
 		{
-			super.onHitTarget(world, target, shooter, projectile, headshot);
+			super.onHitTarget(world, target, shooterUUID, projectile, headshot);
 			Vec3 v = projectile.getDeltaMovement().scale(-1);
 			int split = 6;
 			for(int i = 0; i < split; i++)
@@ -506,9 +521,11 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				vecDir = matrix.apply(vecDir);
 
 				WolfpackShotEntity bullet;
-				Player player = shooter!=null?world.getPlayerByUUID(shooter): null;
-				if(player!=null)
-					bullet = new WolfpackShotEntity(world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
+				Entity shooter = null;
+				if(shooterUUID!=null&&world instanceof ServerLevel serverLevel)
+					shooter = serverLevel.getEntity(shooterUUID);
+				if(shooter instanceof LivingEntity living)
+					bullet = new WolfpackShotEntity(world, living, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
 				else
 					bullet = new WolfpackShotEntity(world, 0, 0, 0, 0, 0, 0, this);
 				if(target instanceof EntityHitResult)
