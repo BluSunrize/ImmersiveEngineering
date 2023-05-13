@@ -3,6 +3,7 @@
     - The Fusilier, a ranged illager carrying a railgun
     - The Commando, using a shield to protect themselves when not firing their revolver
     - The Bulwark, a tank covered in steel armor, carrying a chemthrower and a heavy plated shield
+    - These enemies can join raids after the player has proven themselves dangerous and technologically advanced...
 - Change Buckshot to have a chance of disabling shields (BluSunrize)
     - Works like vanilla axes
     - Was added especially to combat shield-carrying illagers
