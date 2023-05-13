@@ -1,7 +1,8 @@
 ##### Version 1.19.4-9.4.0-pre
-- All features from 9.2.1
+- First release for 1.19.4!
+- Includes all features from 9.2.2
 
-##### Version 1.19.2-9.2.2-pre
+##### Version 1.19.2-9.2.2-165
 - Add Engineer Illagers (BluSunrize)
     - The Fusilier, a ranged illager carrying a railgun
     - The Commando, using a shield to protect themselves when not firing their revolver
