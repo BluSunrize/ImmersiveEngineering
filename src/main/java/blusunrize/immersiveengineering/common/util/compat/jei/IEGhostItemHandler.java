@@ -9,33 +9,38 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.client.gui.FluidSorterScreen;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.common.gui.IESlot.ItemHandlerGhost;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
+import java.util.Optional;
 
 public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerScreen>
 {
 	@Override
-	public <I> List<Target<I>> getTargets(IEContainerScreen gui, I ingredient, boolean doStart)
+	public <I> List<Target<I>> getTargetsTyped(IEContainerScreen gui, ITypedIngredient<I> ingredient, boolean doStart)
 	{
-		if(ingredient instanceof ItemStack)
-		{
-			ImmutableList.Builder<Target<I>> builder = ImmutableList.builder();
-			for(Slot s : gui.getMenu().slots)
-				if(s instanceof ItemHandlerGhost)
-					builder.add((Target<I>)new GhostSlotTarget((ItemHandlerGhost)s, gui));
-			return builder.build();
-		}
-		return ImmutableList.of();
+		Optional<ItemStack> ingr = ingredient.getIngredient(VanillaTypes.ITEM_STACK);
+		if(ingr.isEmpty())
+			return ImmutableList.of();
+		ImmutableList.Builder<Target<I>> builder = ImmutableList.builder();
+		for(Slot s : gui.getMenu().slots)
+			if(s instanceof ItemHandlerGhost)
+				builder.add((Target<I>)new GhostSlotTarget((ItemHandlerGhost)s, gui));
+		return builder.build();
 	}
 
 	@Override

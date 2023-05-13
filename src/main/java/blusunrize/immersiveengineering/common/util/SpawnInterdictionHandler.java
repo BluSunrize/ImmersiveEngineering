@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -42,10 +42,9 @@ public class SpawnInterdictionHandler
 	}
 
 	@SubscribeEvent
-	public static void onEntitySpawnCheck(LivingSpawnEvent.CheckSpawn event)
+	public static void onEntitySpawnCheck(MobSpawnEvent.FinalizeSpawn event)
 	{
-		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY
-				||event.isSpawner())
+		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY||event.getSpawner()!=null)
 			return;
 		if(shouldCancel(event.getEntity()))
 			event.setResult(Event.Result.DENY);

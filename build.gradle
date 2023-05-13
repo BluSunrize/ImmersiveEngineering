@@ -224,8 +224,8 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.19.3-forge-api:${version_jei}")
-    compileOnly fg.deobf("mezz.jei:jei-1.19.3-common-api:${version_jei}")
+    compileOnly fg.deobf("mezz.jei:jei-1.19.4-forge-api:${version_jei}")
+    compileOnly fg.deobf("mezz.jei:jei-1.19.4-common-api:${version_jei}")
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.137")
     //TODO only API. For some reason IPeripheral (an API class) does not show up in the API artifact
     // compileOnly fg.deobf("cc.tweaked:cc-tweaked-1.19.3-forge-api:${version_cctweaked}")
