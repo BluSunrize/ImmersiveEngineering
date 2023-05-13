@@ -14,6 +14,7 @@
 - Fix fluid pipe covers not updating (Malte)
 - Fix infinite sulfur exploit from cycling blazerods (BluSunrize)
 - Fix dropping conveyor trying to "drop" items into blocks that have inventories, resulting in flinging (BluSunrize)
+- Translations Added/Updated: uk_ua (SKZGx)
 
 ##### Version 1.19.2-9.2.1-164
 - Add the ability to apply dye and scaffolds to pipes by holding them in your offhand (Malte)
