@@ -77,7 +77,7 @@ public class IngredientFluidStack extends Ingredient
 	@Override
 	public boolean test(@Nullable ItemStack stack)
 	{
-		if(stack==null)
+		if(stack==null||stack.isEmpty())
 			return false;
 		Optional<IFluidHandlerItem> handler = FluidUtil.getFluidHandler(stack).resolve();
 		return handler.isPresent()&&fluidTagInput.extractFrom(handler.get(), FluidAction.SIMULATE);
