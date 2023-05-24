@@ -1,0 +1,7 @@
+Chemické ingredience
+6.022x10²³
+Ne všechy materiály v inženýrství jsou přímočaré jako dřevo, kámen a různé kovy. Základní rozumění chemických procesů je důležité pro cenění šířky materiálů kolem tebe.
+<&fertilizer>§lDusičnanový prášek§r (také známý jako ledek) je alkalická sůl získaná zpracováním §2Pískovce§r v <link;crusher;Drtiči>.
+Je použita jako katalyzátor ve výrobě <link;refinery;Bionafty;diesel>, a může být použita pro výrobu hnojiv.
+<&gunpowder>§lSirný prášek§r je prášek nalezený v nějakých rudách a běžneji v <link;minerals;Minerálních ložiskách>. Může být nalezen <link;crusher;drcením> §2Lazuritu§r nebo §2Uhelné rudy§r a většinou §2Křemenné rudy§r. Může také být extrahován ze §2žhavé holi§r.
+<br>Míchání dusičnanu, síry a dřeveného uhlí vyrobí střelný prach ve více vědeckém procesu než získáváním z příšer.

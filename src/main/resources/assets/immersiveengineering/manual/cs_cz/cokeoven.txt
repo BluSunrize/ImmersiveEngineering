@@ -1,0 +1,5 @@
+Koksovací pec
+Žhavé téma!
+<&recipe>Koksovací pec je první stroj který musíš vyrobit aby jsi mohl pokračovat v módu Immersive Engineering. Jeho funkce je jednoduchá, zahřívá uhlí nebo uhelné bloky bez doplnění kyslíku, vytvářející §2Koks§r, což je palivo bohaté na uhlík.
+<&outputs>Také tento proces vytváří §2Kreosot§r, který je použit jako <link;treated_wood;impregnace pro dřevo>. Také můžeš spálit dřevo na §2dřevěné uhlí§r s touto pecí, ale toto dává méně kreosotu.<np>
+<&multiblock>Pro stvoření koksovací pece, umísti 27 bloků do 3x3x3 kostky, a klikni na jednu ze stran s inženýrovým kladivem.
