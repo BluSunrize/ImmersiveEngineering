@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -91,12 +90,8 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
-		PoseStack modelviewStack = RenderSystem.getModelViewStack();
-		modelviewStack.pushPose();
-		if(modelviewStack!=transform)
-			modelviewStack.mulPoseMatrix(transform.last().pose());
-		modelviewStack.translate(0, 0, 10);
-		RenderSystem.applyModelViewMatrix();
+		transform.pushPose();
+		transform.translate(0, 0, 10);
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);
@@ -123,7 +118,6 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 				ir.renderAndDecorateItem(transform, b, x, y);
 			}
 		}
-		modelviewStack.popPose();
-		RenderSystem.applyModelViewMatrix();
+		transform.popPose();
 	}
 }

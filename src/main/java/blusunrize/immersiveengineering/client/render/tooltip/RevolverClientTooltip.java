@@ -30,12 +30,12 @@ public record RevolverClientTooltip(RevolverServerTooltip data) implements Clien
 	}
 
 	@Override
-	public void renderImage(Font pFont, int pMouseX, int pMouseY, PoseStack pPoseStack, ItemRenderer pItemRenderer)
+	public void renderImage(Font font, int mouseX, int mouseY, PoseStack transform, ItemRenderer itemRender)
 	{
-		pPoseStack.pushPose();
-		pPoseStack.translate(pMouseX, pMouseY, 0);
-		pPoseStack.scale(.5f, .5f, 1);
-		RevolverScreen.drawExternalGUI(data.bullets(), data.bulletCount(), pPoseStack);
-		pPoseStack.popPose();
+		transform.pushPose();
+		transform.translate(mouseX, mouseY, 0);
+		transform.scale(.5f, .5f, 1);
+		RevolverScreen.drawExternalGUI(data.bullets(), data.bulletCount(), transform);
+		transform.popPose();
 	}
 }
