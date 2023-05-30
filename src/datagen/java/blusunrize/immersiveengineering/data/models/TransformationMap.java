@@ -142,7 +142,7 @@ public class TransformationMap
 	private Transformation readMatrix(JsonObject json, Gson GSON)
 	{
 		if(!json.has("origin"))
-			json.addProperty("origin", "center");
+			json.addProperty("origin", "corner");
 		return GSON.fromJson(json, Transformation.class);
 	}
 
