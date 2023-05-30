@@ -66,30 +66,38 @@ public class MixingProcess extends MultiblockProcessInMachine<MixerRecipe>
 			this.clearProcess = true;
 			return;
 		}
-		int timerStep = Math.max(levelData.maxTicks()/levelData.recipe().fluidAmount, 1);
-		if(timerStep!=0&&this.processTick%timerStep==0)
-		{
-			int amount = levelData.recipe().fluidAmount/levelData.maxTicks();
-			int leftover = levelData.recipe().fluidAmount%levelData.maxTicks();
-			if(leftover > 0)
-			{
-				double distBetweenExtra = levelData.maxTicks()/(double)leftover;
-				if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
-					amount++;
-			}
-			FluidStack drained = tank.drain(levelData.recipe().fluidInput.withAmount(amount), FluidAction.EXECUTE);
-			if(!drained.isEmpty())
-			{
-				NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
-				for(int i = 0; i < components.size(); i++)
-					components.set(i, context.getInventory().getStackInSlot(this.inputSlots[i]));
-				FluidStack output = levelData.recipe().getFluidOutput(drained, components);
-
-				FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
-				tank.fill(fs, FluidAction.EXECUTE);
-			}
-		}
+		// store current process tick, then increment
+		int processPre = this.processTick;
 		super.doProcessTick(context, level);
+		// calculate increment step for converting some fluid
+		int timerStep = Math.max(levelData.maxTicks()/levelData.recipe().fluidAmount, 1);
+		// catch up on elapsed ticks, performing fluid conversion for each step passed
+		while(processPre < this.processTick)
+		{
+			if(processPre%timerStep==0)
+			{
+				int amount = levelData.recipe().fluidAmount/levelData.maxTicks();
+				int leftover = levelData.recipe().fluidAmount%levelData.maxTicks();
+				if(leftover > 0)
+				{
+					double distBetweenExtra = levelData.maxTicks()/(double)leftover;
+					if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
+						amount++;
+				}
+				FluidStack drained = this.tank.drain(levelData.recipe().fluidInput.withAmount(amount), FluidAction.EXECUTE);
+				if(!drained.isEmpty())
+				{
+					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
+					for(int i = 0; i < components.size(); i++)
+						components.set(i, context.getInventory().getStackInSlot(this.inputSlots[i]));
+					FluidStack output = levelData.recipe().getFluidOutput(drained, components);
+
+					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
+					this.tank.fill(fs, FluidAction.EXECUTE);
+				}
+			}
+			processPre++;
+		}
 	}
 
 	@Override
