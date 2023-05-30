@@ -133,7 +133,7 @@ public class SkylineHookEntity extends Entity
 	@Override
 	public void tick()
 	{
-		if(tickCount==1)
+		if(tickCount==1&&level.isClientSide)
 			ImmersiveEngineering.proxy.startSkyhookSound(this);
 		Player player = null;
 		List<Entity> list = this.getPassengers();
