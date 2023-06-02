@@ -116,6 +116,7 @@
       ]
     }
   },
+  "dynamic": true,
   "layers": [
     "cutout"
   ],
