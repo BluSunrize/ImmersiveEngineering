@@ -9,7 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,7 +22,7 @@ public abstract class SpecialManualElement
 
 	public abstract void onOpened(ManualScreen gui, int x, int y, List<Button> buttons);
 
-	public abstract void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY);
+	public abstract void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mouseX, int mouseY);
 
 	public abstract void mouseDragged(int x, int y, double clickX, double clickY, double mx, double my, double lastX,
 									  double lastY, int mouseButton);

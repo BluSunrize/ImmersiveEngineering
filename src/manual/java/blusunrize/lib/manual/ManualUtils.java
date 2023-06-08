@@ -24,6 +24,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -55,11 +56,7 @@ public class ManualUtils
 {
 	public static boolean stackMatchesObject(ItemStack stack, ItemStack o)
 	{
-		if(!ItemStack.isSame(o, stack))
-			return false;
-		if(o.hasTag())
-			return o.getTag().equals(stack.getTag());
-		return true;
+		return ItemStack.isSameItemSameTags(stack, o);
 	}
 
 	public static String getTitleForNode(AbstractNode<ResourceLocation, ManualEntry> node, ManualInstance inst)
@@ -70,19 +67,15 @@ public class ManualUtils
 			return inst.formatCategoryName(node.getNodeData());
 	}
 
-	public static void drawTexturedRect(ResourceLocation texture, int x, int y, int w, int h, float... uv)
+	public static void drawTexturedRect(GuiGraphics graphics, ResourceLocation texture, int x, int y, int w, int h, float... uv)
 	{
-		drawTexturedRect(RenderSystem.getModelViewStack(), texture, x, y, w, h, uv);
-	}
-
-	public static void drawTexturedRect(PoseStack transform, ResourceLocation texture, int x, int y, int w, int h, float... uv)
-	{
+		// TODO replace by graphics.blit?
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
-		Matrix4f mat = transform.last().pose();
+		Matrix4f mat = graphics.pose().last().pose();
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 		buffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		buffer.vertex(mat, x, y+h, 0)
@@ -251,11 +244,11 @@ public class ManualUtils
 	/**
 	 * Custom implementation of drawing a split string because Mojang's doesn't reset text colour between lines >___>
 	 */
-	public static void drawSplitString(PoseStack transform, Font fontRenderer, List<String> text, int x, int y, int colour)
+	public static void drawSplitString(GuiGraphics graphics, Font fontRenderer, List<String> text, int x, int y, int colour)
 	{
 		for(String s : text)
 		{
-			fontRenderer.draw(transform, s, x, y, colour);
+			graphics.drawString(fontRenderer, s, x, y, colour);
 			y += fontRenderer.lineHeight;
 		}
 	}
@@ -326,7 +319,7 @@ public class ManualUtils
 		else
 			try
 			{
-				return new PositionedItemStack(CraftingHelper.getIngredient(json), x, y);
+				return new PositionedItemStack(CraftingHelper.getIngredient(json, false), x, y);
 			} catch(JsonSyntaxException xcp)
 			{
 				return null;
@@ -378,25 +371,22 @@ public class ManualUtils
 		return stack.getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search);
 	}
 
-	public static void renderItemStack(PoseStack transform, ItemStack stack, int x, int y, boolean overlay)
+	public static void renderItemStack(GuiGraphics graphics, ItemStack stack, int x, int y, boolean overlay)
 	{
-		renderItemStack(transform, stack, x, y, overlay, null);
+		renderItemStack(graphics, stack, x, y, overlay, null);
 	}
 
-	public static void renderItemStack(PoseStack transform, ItemStack stack, int x, int y, boolean overlay, String count)
+	public static void renderItemStack(GuiGraphics graphics, ItemStack stack, int x, int y, boolean overlay, String count)
 	{
-		if(!stack.isEmpty())
+		if(stack.isEmpty())
+			return;
+		graphics.renderItem(stack, x, y);
+		if(overlay)
 		{
-			ItemRenderer itemRenderer = renderItem();
-			itemRenderer.renderAndDecorateItem(transform, stack, x, y);
-
-			if(overlay)
-			{
-				// Use the Item's font renderer, if available
-				Font font = IClientItemExtensions.of(stack.getItem()).getFont(stack, FontContext.ITEM_COUNT);
-				font = font!=null?font: Minecraft.getInstance().font;
-				itemRenderer.renderGuiItemDecorations(transform, font, stack, x, y, count);
-			}
+			// Use the Item's font renderer, if available
+			Font font = IClientItemExtensions.of(stack.getItem()).getFont(stack, FontContext.ITEM_COUNT);
+			font = font!=null?font: Minecraft.getInstance().font;
+			graphics.renderItemDecorations(font, stack, x, y, count);
 		}
 	}
 }

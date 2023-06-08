@@ -10,12 +10,19 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class SpecialManualElements extends SpecialManualElement
 {
@@ -56,10 +63,10 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	{
 	}
 
-	protected void renderHighlightedTooltip(PoseStack transform, ManualScreen gui, int mx, int my)
+	protected void renderHighlightedTooltip(GuiGraphics graphics, int mx, int my)
 	{
 		if(!highlighted.isEmpty())
-			gui.renderTooltip(transform, highlighted, mx, my);
+			graphics.renderTooltip(manual.fontRenderer(), highlighted, mx, my);
 	}
 
 	public void addProvidedItem(ItemStack s)

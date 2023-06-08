@@ -265,14 +265,6 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 	{
 	}
 
-	public void tooltipRenderPre()
-	{
-	}
-
-	public void tooltipRenderPost()
-	{
-	}
-
 	public ManualScreen getGui()
 	{
 		return this.getGui(true);

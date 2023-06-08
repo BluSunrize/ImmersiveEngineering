@@ -24,6 +24,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -129,7 +130,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		initialized = true;
 	}
 
-	public void renderPage(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void renderPage(GuiGraphics graphics, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		ensureInitialized();
 		int page = gui.page;
@@ -143,12 +144,12 @@ public class ManualEntry implements Comparable<ManualEntry>
 			offsetText = toRender.special.getPixelsTaken();
 			offsetSpecial = 0;
 		}
-		ManualUtils.drawSplitString(transform, manual.fontRenderer(), toRender.renderText, x, y+offsetText,
+		ManualUtils.drawSplitString(graphics, manual.fontRenderer(), toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
-		transform.pushPose();
-		transform.translate(x, y+offsetSpecial, 0);
-		toRender.special.render(transform, gui, 0, 0, mouseX, mouseY);
-		transform.popPose();
+		graphics.pose().pushPose();
+		graphics.pose().translate(x, y+offsetSpecial, 0);
+		toRender.special.render(graphics, gui, 0, 0, mouseX, mouseY);
+		graphics.pose().popPose();
 	}
 
 	public String getTitle()
@@ -395,7 +396,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void render(PoseStack transform, ManualScreen m, int x, int y, int mouseX, int mouseY)
+		public void render(GuiGraphics graphics, ManualScreen m, int x, int y, int mouseX, int mouseY)
 		{
 		}
 

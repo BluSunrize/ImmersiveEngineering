@@ -9,7 +9,7 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class ManualElementImage extends SpecialManualElements
@@ -28,15 +28,15 @@ public class ManualElementImage extends SpecialManualElements
 	}
 
 	@Override
-	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		int yOff = 0;
 		for(ManualImage image1 : images)
 		{
 			int xOff = 60-image1.uSize/2;
-			gui.fillGradientPublic(transform, x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
+			graphics.fillGradient(x+xOff-2, y+yOff-2, x+xOff+image1.uSize+2, y+yOff+image1.vSize+2,
 					0xffeaa74c, 0xfff6b059);
-			gui.fillGradientPublic(transform, x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
+			graphics.fillGradient(x+xOff-1, y+yOff-1, x+xOff+image1.uSize+1, y+yOff+image1.vSize+1,
 					0xffc68e46, 0xffbe8844);
 			yOff += image1.vSize+5;
 		}
@@ -44,7 +44,7 @@ public class ManualElementImage extends SpecialManualElements
 		for(ManualImage image : images)
 		{
 			int xOff = 60-image.uSize/2;
-			ManualUtils.drawTexturedRect(transform, image.resource, x+xOff, y+yOff, image.uSize, image.vSize, (image.uMin)/256f,
+			ManualUtils.drawTexturedRect(graphics, image.resource, x+xOff, y+yOff, image.uSize, image.vSize, (image.uMin)/256f,
 					(image.uMin+image.uSize)/256f, (image.vMin)/256f, (image.vMin+image.vSize)/256f);
 			yOff += image.vSize+5;
 		}

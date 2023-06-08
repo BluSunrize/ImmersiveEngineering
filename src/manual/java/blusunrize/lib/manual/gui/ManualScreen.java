@@ -19,12 +19,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -179,8 +179,9 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float f)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float f)
 	{
+		final PoseStack transform = graphics.pose();
 		transform.pushPose();
 		if(scaleFactor!=1)
 		{
@@ -191,33 +192,32 @@ public class ManualScreen extends Screen
 
 		manual.entryRenderPre();
 
-		ManualUtils.bindTexture(texture);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		graphics.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
 		if(this.searchField!=null)
 		{
 			int l = searchField.getValue().length()*6;
 			if(l > 20)
-				this.blit(transform, guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
+				graphics.blit(texture, guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
 			if(suggestionList.visible)
 			{
-				this.blit(transform, guiLeft+174, guiTop+100, 214, 212, 16, 26);
+				graphics.blit(texture, guiLeft+174, guiTop+100, 214, 212, 16, 26);
 				int h = suggestionList.getHeight();
 				int w = 76;
-				this.blit(transform, guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
-				this.blit(transform, guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
-				this.blit(transform, guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
-				this.blit(transform, guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
+				graphics.blit(texture, guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
+				graphics.blit(texture, guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
+				graphics.blit(texture, guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
+				graphics.blit(texture, guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
 				for(int hh = 0; hh < h; hh++)
 				{
-					this.blit(transform, guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
+					graphics.blit(texture, guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
 					for(int ww = 0; ww < w; ww++)
-						this.blit(transform, guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
-					this.blit(transform, guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
+						graphics.blit(texture, guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
+					graphics.blit(texture, guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
 				}
 				for(int ww = 0; ww < w; ww++)
 				{
-					this.blit(transform, guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
-					this.blit(transform, guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
+					graphics.blit(texture, guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
+					graphics.blit(texture, guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
 
 				}
 			}
@@ -233,20 +233,20 @@ public class ManualScreen extends Screen
 
 			RenderSystem.enableBlend();
 			if(page > 0)
-				this.blit(transform, guiLeft+32, guiTop+179, 0, 216+(b0?20: 0), 16, 10);
+				graphics.blit(texture, guiLeft+32, guiTop+179, 0, 216+(b0?20: 0), 16, 10);
 			if(page < selectedEntry.getPageCount()-1)
-				this.blit(transform, guiLeft+136, guiTop+179, 0, 226+(b1?20: 0), 16, 10);
+				graphics.blit(texture, guiLeft+136, guiTop+179, 0, 226+(b1?20: 0), 16, 10);
 
 			manual.titleRenderPre();
 			//Title
-			this.drawCenteredStringScaled(transform, manual.fontRenderer(), ChatFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
-			this.drawCenteredStringScaled(transform, manual.fontRenderer(), manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
-					guiTop+22, manual.getSubTitleColour(), 1, true);
+			this.drawCenteredStringScaled(graphics, manual.fontRenderer(), ChatFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), true);
+			this.drawCenteredStringScaled(graphics, manual.fontRenderer(), manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
+					guiTop+22, manual.getSubTitleColour(), true);
 			//Page Number
-			this.drawCenteredStringScaled(transform, manual.fontRenderer(), ChatFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
+			this.drawCenteredStringScaled(graphics, manual.fontRenderer(), ChatFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), false);
 			manual.titleRenderPost();
 
-			selectedEntry.renderPage(transform, this, guiLeft+32, guiTop+28, mouseX-32, mouseY-28);
+			selectedEntry.renderPage(graphics, this, guiLeft+32, guiTop+28, mouseX-32, mouseY-28);
 
 			mouseX += guiLeft;
 			mouseY += guiTop;
@@ -255,19 +255,19 @@ public class ManualScreen extends Screen
 		{
 			String title = ManualUtils.getTitleForNode(currentNode, manual);
 			manual.titleRenderPre();
-			this.drawCenteredStringScaled(transform, manual.fontRenderer(), ChatFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(graphics, manual.fontRenderer(), ChatFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), true);
 			manual.titleRenderPost();
 		}
 		if(this.searchField!=null)
 		{
-			this.searchField.render(transform, mouseX, mouseY, f);
+			this.searchField.render(graphics, mouseX, mouseY, f);
 			if(suggestionList.visible)
 				//TODO translation
-				manual.fontRenderer().draw(transform, "It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
+				graphics.drawString(manual.fontRenderer(), "It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
 		}
 		for(Button btn : pageButtons)
-			btn.render(transform, mouseX, mouseY, f);
-		super.render(transform, mouseX, mouseY, f);
+			btn.render(graphics, mouseX, mouseY, f);
+		super.render(graphics, mouseX, mouseY, f);
 		RenderSystem.enableBlend();
 		manual.entryRenderPost();
 		transform.popPose();
@@ -280,27 +280,18 @@ public class ManualScreen extends Screen
 		super.removed();
 	}
 
-	private void drawCenteredStringScaled(PoseStack transform, Font fr, String s, int x, int y, int colour, float scale, boolean shadow)
+	private void drawCenteredStringScaled(GuiGraphics graphics, Font fr, String s, int x, int y, int colour, boolean shadow)
 	{
-		int xx = (int)Math.floor(x/scale-(fr.width(s)/2.));
-		int yy = (int)Math.floor(y/scale-(fr.lineHeight/2.));
-		if(scale!=1)
-		{
-			transform.pushPose();
-			transform.scale(scale, scale, scale);
-		}
-		if(shadow)
-			fr.drawShadow(transform, s, xx, yy, colour);
-		else
-			fr.draw(transform, s, xx, yy, colour);
-		if(scale!=1)
-			transform.popPose();
+		int xx = (int)Math.floor(x-(fr.width(s)/2.));
+		int yy = (int)Math.floor(y-(fr.lineHeight/2.));
+		graphics.drawString(fr, s, xx, yy, colour, shadow);
 	}
 
-	@Override
+	// TODO How to make this work with the new static method?
+	// @Override
 	public List<Component> getTooltipFromItem(ItemStack stack)
 	{
-		List<Component> tooltip = super.getTooltipFromItem(stack);
+		List<Component> tooltip = getTooltipFromItem(minecraft, stack);
 		if(currentNode.isLeaf())
 		{
 			if(currentNode.getLeafData().getHighlightedStack(page)==stack)
@@ -311,18 +302,6 @@ public class ManualScreen extends Screen
 			}
 		}
 		return tooltip;
-	}
-
-	@Override
-	public void renderTooltip(PoseStack transform, List<? extends FormattedCharSequence> text, int x, int y, Font font)
-	{
-		// Unscale the Z axis here, because otherwise the tooltip is out of view
-		transform.pushPose();
-		transform.scale(1, 1, 1/scaleFactor);
-		manual.tooltipRenderPre();
-		super.renderTooltip(transform, text, x, y, font);
-		manual.tooltipRenderPost();
-		transform.popPose();
 	}
 
 	@Override
@@ -498,22 +477,9 @@ public class ManualScreen extends Screen
 		}
 	}
 
-	//Make public as a utility
-	public void fillGradientPublic(PoseStack transform, int x1, int yA, int x2, int yB, int colorA, int colorB)
-	{
-		fillGradient(transform, x1, yA, x2, yB, colorA, colorB);
-	}
-
 	@Override
 	public boolean isPauseScreen()
 	{
 		return false;
-	}
-
-	// Override to make public
-	@Override
-	public void renderTooltip(PoseStack pPoseStack, ItemStack pItemStack, int pMouseX, int pMouseY)
-	{
-		super.renderTooltip(pPoseStack, pItemStack, pMouseX, pMouseY);
 	}
 }

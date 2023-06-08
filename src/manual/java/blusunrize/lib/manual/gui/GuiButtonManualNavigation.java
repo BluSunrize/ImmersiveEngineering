@@ -11,6 +11,7 @@ package blusunrize.lib.manual.gui;
 import blusunrize.lib.manual.ManualUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -36,9 +37,8 @@ public class GuiButtonManualNavigation extends Button
 	}
 
 	@Override
-	public void renderWidget(PoseStack transform, int mx, int my, float partial)
+	public void renderWidget(GuiGraphics graphics, int mx, int my, float partial)
 	{
-		ManualUtils.bindTexture(gui.texture);
 		isHovered = mx >= this.getX()&&mx < (this.getX()+this.width)&&my >= this.getY()&&my < (this.getY()+this.height);
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
@@ -46,6 +46,6 @@ public class GuiButtonManualNavigation extends Button
 		int v = 216+(type==0?0: type==1?10: type==2?(16-height): type==3?0: type==4||type==5?10: 0);
 		if(isHovered)
 			v += 20;
-		this.blit(transform, this.getX(), this.getY(), u, v, width, height);
+		graphics.blit(gui.texture, this.getX(), this.getY(), u, v, width, height);
 	}
 }

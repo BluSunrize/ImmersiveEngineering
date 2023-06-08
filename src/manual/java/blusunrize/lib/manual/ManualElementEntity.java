@@ -12,6 +12,7 @@ import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.CompoundTag;
@@ -35,9 +36,10 @@ public class ManualElementEntity extends SpecialManualElements
 	}
 
 	@Override
-	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		// Entity rendering code was largely borrowed from JustEnoughResources by way2muchnoise
+		// TODO needs to be updated properly to 1.20, I suspect that it's got "too many" transforms now
 
 		Entity entity = renderData.get().entity;
 		float yOff = renderData.get().ySize-4;
@@ -45,7 +47,7 @@ public class ManualElementEntity extends SpecialManualElements
 
 		PoseStack modelViewStack = RenderSystem.getModelViewStack();
 		modelViewStack.pushPose();
-		modelViewStack.mulPoseMatrix(transform.last().pose());
+		modelViewStack.mulPoseMatrix(graphics.pose().last().pose());
 		modelViewStack.translate(x+60, y+yOff, 50);
 		modelViewStack.scale(-scale, scale, scale);
 

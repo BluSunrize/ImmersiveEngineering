@@ -10,8 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -63,12 +62,12 @@ public class ManualElementTable extends SpecialManualElements
 	}
 
 	@Override
-	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		if(table!=null)
 		{
 			int col = manual.getHighlightColour()|0xff000000;
-			GuiComponent.fill(transform, x, y-2, x+120, y-1, col);
+			graphics.fill(x, y-2, x+120, y-1, col);
 
 			final int lineHeight = manual.fontRenderer().lineHeight;
 			int yOff = 0;
@@ -84,8 +83,8 @@ public class ManualElementTable extends SpecialManualElements
 							Component lineText = line[j];
 							List<FormattedCharSequence> lines = manual.fontRenderer().split(lineText, w);
 							for(int i = 0; i < lines.size(); i++)
-								manual.fontRenderer().draw(
-										transform, lines.get(i), xx, y+yOff+i*lineHeight, manual.getTextColour()
+								graphics.drawString(
+										manual.fontRenderer(), lines.get(i), xx, y+yOff+i*lineHeight, manual.getTextColour()
 								);
 							if(lines.size() > height)
 								height = lines.size();
@@ -94,11 +93,10 @@ public class ManualElementTable extends SpecialManualElements
 					if(horizontalBars)
 					{
 						float scale = .5f;
-						transform.scale(1, scale, 1);
+						graphics.pose().scale(1, scale, 1);
 						int barHeight = (int)((y+yOff+height*lineHeight)/scale);
-						GuiComponent.fill(transform, x, barHeight, x+120, barHeight+1,
-								manual.getTextColour()|0xff000000);
-						transform.scale(1, 1/scale, 1);
+						graphics.fill(x, barHeight, x+120, barHeight+1, manual.getTextColour()|0xff000000);
+						graphics.pose().scale(1, 1/scale, 1);
 					}
 
 					yOff += height*(lineHeight+1);
@@ -106,7 +104,7 @@ public class ManualElementTable extends SpecialManualElements
 
 			if(bars!=null)
 				for(int i = 0; i < bars.length; i++)
-					GuiComponent.fill(transform, textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
+					graphics.fill(textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
 		}
 	}
 

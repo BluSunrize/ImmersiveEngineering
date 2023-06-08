@@ -10,7 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -67,14 +67,14 @@ public class ManualElementItem extends SpecialManualElements
 	}
 
 	@Override
-	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		highlighted = ItemStack.EMPTY;
 		int length = stacks.size();
 		if(length > 0)
 		{
-			transform.pushPose();
-			transform.scale(scale, scale, scale);
+			graphics.pose().pushPose();
+			graphics.pose().scale(scale, scale, scale);
 			for(int line = 0; line < lines; line++)
 			{
 				int perLine = line==lines-1?itemsLastLine: line%2==0?longLineLen: shortLineLen;
@@ -89,16 +89,16 @@ public class ManualElementItem extends SpecialManualElements
 					int xx = x+60-w2+(int)(i*18*scale);
 					int yy = y+(lines < 2?4: 0)+line*(int)(18*scale);
 
-					ManualUtils.renderItemStack(transform, stacks.get(item), (int)(xx/scale), (int)(yy/scale), false);
+					ManualUtils.renderItemStack(graphics, stacks.get(item), (int)(xx/scale), (int)(yy/scale), false);
 					if(mx >= xx&&mx < xx+(16*scale)&&my >= yy&&my < yy+(16*scale))
 						highlighted = stacks.get(item);
 				}
 			}
-			transform.popPose();
+			graphics.pose().popPose();
 		}
 		RenderSystem.enableBlend();
 
-		this.renderHighlightedTooltip(transform, gui, mx, my);
+		this.renderHighlightedTooltip(graphics, mx, my);
 	}
 
 	@Override

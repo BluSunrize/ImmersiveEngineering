@@ -16,8 +16,8 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.item.ItemStack;
 
@@ -63,7 +63,7 @@ public abstract class ManualElementIECrafting extends SpecialManualElements
 	}
 
 	@Override
-	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		highlighted = ItemStack.EMPTY;
 
@@ -77,21 +77,21 @@ public abstract class ManualElementIECrafting extends SpecialManualElements
 				{
 					if(pStack.x() > maxX)
 						maxX = pStack.x();
-					GuiComponent.fill(transform, x+pStack.x(), y+pStack.y(), x+pStack.x()+16, y+pStack.y()+16, 0x33666666);
+					GuiComponent.fill(graphics, x+pStack.x(), y+pStack.y(), x+pStack.x()+16, y+pStack.y()+16, 0x33666666);
 
 					if(!pStack.getStackAtCurrentTime().isEmpty())
 					{
-						ManualUtils.renderItemStack(transform, pStack.getStackAtCurrentTime(), x+pStack.x(), y+pStack.y(), true, pStack.amount());
+						ManualUtils.renderItemStack(graphics, pStack.getStackAtCurrentTime(), x+pStack.x(), y+pStack.y(), true, pStack.amount());
 						if(mouseX >= x+pStack.x()&&mouseX < x+pStack.x()+16&&mouseY >= y+pStack.y()&&mouseY < y+pStack.y()+16)
 							highlighted = pStack.getStackAtCurrentTime();
 					}
 				}
 			}
 			ArrowPosition arrow = arrowPositions.get(recipePage);
-			ManualUtils.drawTexturedRect(transform, manual.texture, x+arrow.x(), y+arrow.y(), 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
+			ManualUtils.drawTexturedRect(graphics, manual.texture, x+arrow.x(), y+arrow.y(), 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 		}
 
-		this.renderHighlightedTooltip(transform, gui, mouseX, mouseY);
+		this.renderHighlightedTooltip(graphics, mouseX, mouseY);
 	}
 
 	@Override

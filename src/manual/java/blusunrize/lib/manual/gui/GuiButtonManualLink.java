@@ -14,6 +14,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
@@ -43,29 +44,29 @@ public class GuiButtonManualLink extends Button
 	}
 
 	@Override
-	public void render(PoseStack transform, int mx, int my, float partialTicks)
+	public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
 		isHovered = mx >= this.getX()&&my >= this.getY()&&mx < this.getX()+this.width&&my < this.getY()+this.height;
 		if(isHovered)
 		{
-			drawHovered(transform, mx, my);
+			drawHovered(graphics, mx, my);
 			for(GuiButtonManualLink btn : otherParts)
 				if(btn!=this)
-					btn.drawHovered(transform, mx, my);
+					btn.drawHovered(graphics, mx, my);
 		}
 	}
 
-	private void drawHovered(PoseStack transform, int mx, int my)
+	private void drawHovered(GuiGraphics graphics, int mx, int my)
 	{
 		Font font = gui.manual.fontRenderer();
-		font.draw(transform, localized, getX(), getY(), gui.manual.getHighlightColour());
+		graphics.drawString(font, localized, getX(), getY(), gui.manual.getHighlightColour());
 		String tooltip;
 		if(link!=null)
 			tooltip = gui.manual.formatLink(link);
 		else
 			tooltip = "Invalid link";
-		gui.renderTooltip(transform, Language.getInstance().getVisualOrder(
+		graphics.renderTooltip(font, Language.getInstance().getVisualOrder(
 				ImmutableList.of(Component.literal(tooltip))
-		), mx+8, my+4, font);
+		), mx+8, my+4);
 	}
 }

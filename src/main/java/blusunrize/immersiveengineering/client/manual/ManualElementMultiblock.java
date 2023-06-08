@@ -24,6 +24,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Transformation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -183,12 +184,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	@Override
-	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		if(multiblock.getStructure(level)!=null)
 		{
 			MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-			PoseStack.Pose lastEntryBeforeTry = transform.last();
+			PoseStack.Pose lastEntryBeforeTry = graphics.last();
 			try
 			{
 				long currentTime = System.currentTimeMillis();
@@ -204,22 +205,22 @@ public class ManualElementMultiblock extends SpecialManualElements
 				int structureWidth = renderInfo.structureWidth;
 				int structureHeight = renderInfo.structureHeight;
 
-				transform.pushPose();
+				graphics.pushPose();
 
 				final BlockRenderDispatcher blockRender = Minecraft.getInstance().getBlockRenderer();
 
-				transform.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
-				transform.scale(scale, -scale, 1);
-				transform.pushTransformation(additionalTransform);
-				transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.HALF_PI, 0));
+				graphics.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
+				graphics.scale(scale, -scale, 1);
+				graphics.pushTransformation(additionalTransform);
+				graphics.mulPose(new Quaternionf().rotateXYZ(0, Mth.HALF_PI, 0));
 
-				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
+				graphics.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
 
 				if(showCompleted&&renderProperties.canRenderFormedStructure())
 				{
-					transform.pushPose();
-					renderProperties.renderFormedStructure(transform, buffer);
-					transform.popPose();
+					graphics.pushPose();
+					renderProperties.renderFormedStructure(graphics, buffer);
+					graphics.popPose();
 				}
 				else
 				{
@@ -234,8 +235,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 								BlockState state = structureWorld.getBlockState(pos);
 								if(!state.isAir())
 								{
-									transform.pushPose();
-									transform.translate(l, h, w);
+									graphics.pushPose();
+									graphics.translate(l, h, w);
 									int overlay;
 									if(pos.equals(multiblock.getTriggerOffset()))
 										overlay = OverlayTexture.pack(0, true);
@@ -247,16 +248,16 @@ public class ManualElementMultiblock extends SpecialManualElements
 									if(te!=null)
 										modelData = te.getModelData();
 									blockRender.getModelRenderer().tesselateBlock(
-											structureWorld, blockRender.getBlockModel(state), state, pos, transform,
+											structureWorld, blockRender.getBlockModel(state), state, pos, graphics,
 											translucentFullbright, false, structureWorld.random, state.getSeed(pos),
 											overlay, modelData, null
 									);
-									transform.popPose();
+									graphics.popPose();
 								}
 							}
 				}
-				transform.popPose();
-				transform.popPose();
+				graphics.popPose();
+				graphics.popPose();
 			} catch(Exception e)
 			{
 				final long now = System.currentTimeMillis();
@@ -265,16 +266,16 @@ public class ManualElementMultiblock extends SpecialManualElements
 					e.printStackTrace();
 					lastPrintedErrorTimeMs = now;
 				}
-				while(lastEntryBeforeTry!=transform.last())
-					transform.popPose();
+				while(lastEntryBeforeTry!=graphics.last())
+					graphics.popPose();
 			}
 			buffer.endBatch();
 
 			if(componentTooltip!=null)
 			{
-				manual.fontRenderer().draw(transform, "?", 116, yOffTotal/2-4, manual.getTextColour());
+				manual.fontRenderer().draw(graphics, "?", 116, yOffTotal/2-4, manual.getTextColour());
 				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
-					gui.renderTooltip(transform, Language.getInstance().getVisualOrder(
+					gui.renderTooltip(graphics, Language.getInstance().getVisualOrder(
 							Collections.unmodifiableList(componentTooltip)
 					), mouseX, mouseY, manual.fontRenderer());
 			}

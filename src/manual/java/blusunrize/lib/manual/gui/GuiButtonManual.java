@@ -11,6 +11,7 @@ package blusunrize.lib.manual.gui;
 import blusunrize.lib.manual.ManualUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -44,7 +45,7 @@ public class GuiButtonManual extends Button
 	}
 
 	@Override
-	public void render(PoseStack transform, int mx, int my, float partialTicks)
+	public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
 		if(this.visible)
 		{
@@ -54,11 +55,12 @@ public class GuiButtonManual extends Button
 			RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 
 			int col = colour[isHovered?1: 0];
-			fill(transform, getX(), getY(), getX()+width, getY()+height, col);
+			graphics.fill(getX(), getY(), getX()+width, getY()+height, col);
 			int txtCol = textColour[isHovered?1: 0];
 			int sw = gui.manual.fontRenderer().width(getMessage().getString());
-			gui.manual.fontRenderer().draw(transform, getMessage().getString(), getX()+width/2-sw/2, getY()+height/2-gui.manual.fontRenderer().lineHeight/2, txtCol);
-			//TODO this.mouseDragged(mc, mx, my);
+			graphics.drawString(
+					gui.manual.fontRenderer(), getMessage().getString(), getX()+width/2-sw/2, getY()+height/2-gui.manual.fontRenderer().lineHeight/2, txtCol
+			);
 		}
 	}
 }

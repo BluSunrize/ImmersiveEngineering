@@ -15,9 +15,11 @@ import blusunrize.lib.manual.Tree.AbstractNode;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,8 +64,9 @@ public class ClickableList extends Button
 	}
 
 	@Override
-	public void render(PoseStack transform, int mx, int my, float partialTicks)
+	public void render(@NotNull GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
+		PoseStack transform = graphics.pose();
 		if(!visible)
 			return;
 		Font fr = gui.manual.fontRenderer();
@@ -87,12 +90,11 @@ public class ClickableList extends Button
 			String s = headers[j];
 			if(isCategory[j])
 			{
-				ManualUtils.bindTexture(gui.texture);
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
-				this.blit(transform, 0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
+				graphics.blit(gui.texture, 0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
 			}
-			fr.draw(transform, s, isCategory[j]?7: 0, 0, col);
+			graphics.drawString(fr, s, isCategory[j]?7: 0, 0, col);
 		}
 		transform.scale(1/textScale, 1/textScale, 1/textScale);
 		transform.popPose();
@@ -105,8 +107,8 @@ public class ClickableList extends Button
 			final float heightBottomRel = (offset*getFontHeight()+height)/totalHeight;
 			final int heightTopAbs = (int)(heightTopRel*height);
 			final int heightBottomAbs = (int)(heightBottomRel*height);
-			fill(transform, getX()+width, getY(), getX()+width+8, getY()+height, minVisibleBlack);
-			fill(transform, getX()+width+1, getY()+heightTopAbs, getX()+width+7, getY()+heightBottomAbs, mainBarBlack);
+			graphics.fill(getX()+width, getY(), getX()+width+8, getY()+height, minVisibleBlack);
+			graphics.fill(getX()+width+1, getY()+heightTopAbs, getX()+width+7, getY()+heightBottomAbs, mainBarBlack);
 		}
 	}
 
