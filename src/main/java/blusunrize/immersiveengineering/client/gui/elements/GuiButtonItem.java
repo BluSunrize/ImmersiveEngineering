@@ -8,10 +8,9 @@
 
 package blusunrize.immersiveengineering.client.gui.elements;
 
-import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -29,25 +28,24 @@ public class GuiButtonItem extends Button
 	}
 
 	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{
-			ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
 			this.isHovered = mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
 			RenderSystem.defaultBlendFunc();
-			this.blit(transform, getX(), getY(), 24+(state?18: 0), 128, width, height);
+			graphics.blit(GuiReactiveList.TEXTURE, getX(), getY(), 24+(state?18: 0), 128, width, height);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				mc.getItemRenderer().renderAndDecorateItem(transform, item, getX()+1, getY()+1);
+				graphics.renderItem(item, getX()+1, getY()+1);
 
 				if(!state)
 				{
 					RenderSystem.disableDepthTest();
-					fill(transform, getX()+1, getY()+1, getX()+17, getY()+17, 0x77444444);
+					graphics.fill(getX()+1, getY()+1, getX()+17, getY()+17, 0x77444444);
 					RenderSystem.enableDepthTest();
 				}
 			}

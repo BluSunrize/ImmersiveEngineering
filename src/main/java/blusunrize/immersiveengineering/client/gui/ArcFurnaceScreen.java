@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -52,13 +52,13 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		for(var process : menu.processes.get())
 		{
 			int slot = process.slot();
 			int h = process.processStep();
-			this.blit(transform, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
+			graphics.blit(background, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 		}
 	}
 

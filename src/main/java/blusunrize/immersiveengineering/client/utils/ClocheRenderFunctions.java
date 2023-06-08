@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
+import blusunrize.immersiveengineering.mixin.accessors.CropBlockAccess;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.joml.Vector3f;
 
 import java.util.Collection;
 
@@ -61,7 +62,7 @@ public class ClocheRenderFunctions
 			if(cropBlock instanceof CropBlock)
 			{
 				this.maxAge = ((CropBlock)cropBlock).getMaxAge();
-				this.ageProperty = ((CropBlock)cropBlock).getAgeProperty();
+				this.ageProperty = ((CropBlockAccess)cropBlock).invokeGetAgeProperty();
 			}
 			else
 			{

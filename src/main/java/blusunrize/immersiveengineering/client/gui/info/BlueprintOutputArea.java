@@ -14,9 +14,8 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -72,16 +71,14 @@ public class BlueprintOutputArea extends InfoArea
 	}
 
 	@Override
-	public void draw(PoseStack transform)
+	public void draw(GuiGraphics graphics)
 	{
 		ItemStack ghostStack = slot.recipe.output.get();
 		if(ghostStack.isEmpty()||slot.hasItem())
 			return;
-		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(
-				transform, ghostStack, area.getX(), area.getY()
-		);
+		graphics.renderItem(ghostStack, area.getX(), area.getY());
 		RenderSystem.depthFunc(GL11.GL_GREATER);
-		fill(transform, area.getX(), area.getY(), area.getX()+area.getWidth(), area.getY()+area.getHeight(), 0xbb333333);
+		graphics.fill(area.getX(), area.getY(), area.getX()+area.getWidth(), area.getY()+area.getHeight(), 0xbb333333);
 		RenderSystem.depthFunc(GL11.GL_LEQUAL);
 	}
 }

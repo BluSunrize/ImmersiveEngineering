@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import blusunrize.immersiveengineering.common.gui.CrateMenu;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -23,12 +23,12 @@ public abstract class CrateScreen<C extends CrateMenu> extends IEContainerScreen
 	}
 
 	@Override
-	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
+	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
 		// Only difference to super version is the text color
 		final int color = 0x190b06;
-		this.font.draw(transform, title, titleLabelX, titleLabelY, color);
-		this.font.draw(transform, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
+		graphics.drawString(this.font, title, titleLabelX, titleLabelY, color);
+		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
 	}
 
 	// Unfortunately necessary to calm down the compiler wrt generics

@@ -17,9 +17,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
-import org.joml.Quaternionf;
 import com.mojang.math.Transformation;
-import org.joml.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.font.FontManager;
@@ -34,6 +32,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.IOUtils;
+import org.joml.Quaternionf;
+import org.joml.Vector4f;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -48,6 +48,8 @@ public class ClientUtils
 		return Minecraft.getInstance();
 	}
 
+	// Should probably be replaced by passing the texture to blit directly in most cases
+	@Deprecated
 	public static void bindTexture(ResourceLocation texture)
 	{
 		RenderSystem.setShaderTexture(0, texture);

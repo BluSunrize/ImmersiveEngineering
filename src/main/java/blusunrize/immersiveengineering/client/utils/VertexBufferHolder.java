@@ -15,14 +15,15 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import org.joml.Matrix4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullSupplier;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -74,7 +75,8 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		this.renderer = renderer;
 		this.buffer = new ResettableLazy<>(
 				() -> {
-					VertexBuffer vb = new VertexBuffer();
+					// TODO WTF does "Usage" do?
+					VertexBuffer vb = new VertexBuffer(Usage.STATIC);
 					RenderSystem.setShader(IEGLShaders::getVboShader);
 					Tesselator tes = Tesselator.getInstance();
 					BufferBuilder bb = tes.getBuilder();

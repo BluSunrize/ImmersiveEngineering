@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.gui.ClocheMenu;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -44,13 +44,13 @@ public class ClocheScreen extends IEContainerScreen<ClocheMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		float process = menu.guiProgress.get();
 		if(process > 0)
 		{
 			int w = (int)Math.max(1, process*12);
-			this.blit(transform, leftPos+101, topPos+36, 181, 2, w, 12);
+			graphics.blit(TEXTURE, leftPos+101, topPos+36, 181, 2, w, 12);
 		}
 	}
 }

@@ -153,7 +153,7 @@ public class ModelPowerpack
 			{
 				// set up to render the large-texture banner
 				PowerpackCallbacks.THIRD_PERSON_PASS = 3;
-				BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
+				BakedModel bakedModel = renderer.getModel(powerpack, toRender.level(), toRender, 0);
 				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
 				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 				VertexConsumer consumer = buffers.getBuffer(RenderType.entitySolid(shaderTexture));
@@ -165,7 +165,7 @@ public class ModelPowerpack
 			{
 				// set up to render the small-texture banner
 				PowerpackCallbacks.THIRD_PERSON_PASS = 2;
-				BakedModel bakedModel = renderer.getModel(powerpack, toRender.getLevel(), toRender, 0);
+				BakedModel bakedModel = renderer.getModel(powerpack, toRender.level(), toRender, 0);
 				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
 				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 				for(BannerLayer layer : getBannerLayers(banner, bakedModel))
@@ -185,7 +185,7 @@ public class ModelPowerpack
 				powerpack, ItemDisplayContext.FIXED, false,
 				matrixStackIn, buffers,
 				LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-				renderer.getModel(powerpack, toRender.getLevel(), toRender, 0)
+				renderer.getModel(powerpack, toRender.level(), toRender, 0)
 		);
 		PowerpackCallbacks.THIRD_PERSON_PASS = 0;
 		matrixStackIn.popPose();

@@ -29,7 +29,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import org.joml.*;
 
 import java.lang.Math;
@@ -230,7 +229,7 @@ public class RenderUtils
 			if(!hasBreak)
 			{
 				BlockState iblockstate = world.getBlockState(blockpos);
-				if(iblockstate.getMaterial()!=Material.AIR)
+				if(!iblockstate.isAir())
 					blockrendererdispatcher.renderBreakingTexture(iblockstate, blockpos, world, matrix, worldRendererIn);
 			}
 			matrix.popPose();

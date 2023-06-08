@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.NonNullList;
@@ -55,43 +55,43 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float par1, int par2, int par3)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float par1, int par2, int par3)
 	{
 		int off = (offset < 0?-offset: 0);
 		for(int hand = 0; hand < (otherRevolver?2: 1); hand++)
 		{
 			int side = !otherRevolver?0: (hand==0)==(ImmersiveEngineering.proxy.getClientPlayer().getMainArm()==HumanoidArm.RIGHT)?1: 0;
-			this.blit(transform, leftPos+off+00, topPos+1, 00, 51, 74, 74);
+			graphics.blit(TEXTURE, leftPos+off+00, topPos+1, 00, 51, 74, 74);
 			if(bullets[side] >= 18)
-				this.blit(transform, leftPos+off+47, topPos+1, 74, 51, 103, 74);
+				graphics.blit(TEXTURE, leftPos+off+47, topPos+1, 74, 51, 103, 74);
 			else if(bullets[side] > 8)
-				this.blit(transform, leftPos+off+57, topPos+1, 57, 12, 79, 39);
+				graphics.blit(TEXTURE, leftPos+off+57, topPos+1, 57, 12, 79, 39);
 			off += (bullets[side] >= 18?150: bullets[side] > 8?136: 74)+4;
 		}
 	}
 
 	@Override
-	protected void drawBackgroundTexture(PoseStack transform)
+	protected void drawBackgroundTexture(GuiGraphics graphics)
 	{
-		this.blit(transform, leftPos+Math.max(offset, 0), topPos+77, 0, 125, 176, 89);
+		graphics.blit(TEXTURE, leftPos+Math.max(offset, 0), topPos+77, 0, 125, 176, 89);
 	}
 
-	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount, PoseStack transform)
+	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount, GuiGraphics graphics)
 	{
 		MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(TEXTURE));
 
-		GuiHelper.drawTexturedColoredRect(builder, transform, 0, 1, 74, 74, 1, 1, 1, 1, 0/256f, 74/256f, 51/256f, 125/256f);
+		GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 0, 1, 74, 74, 1, 1, 1, 1, 0/256f, 74/256f, 51/256f, 125/256f);
 		if(bulletAmount >= 18)
-			GuiHelper.drawTexturedColoredRect(builder, transform, 47, 1, 103, 74, 1, 1, 1, 1, 74/256f, 177/256f, 51/256f, 125/256f);
+			GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 47, 1, 103, 74, 1, 1, 1, 1, 74/256f, 177/256f, 51/256f, 125/256f);
 		else if(bulletAmount > 8)
-			GuiHelper.drawTexturedColoredRect(builder, transform, 57, 1, 79, 39, 1, 1, 1, 1, 57/256f, 136/256f, 12/256f, 51/256f);
+			GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 57, 1, 79, 39, 1, 1, 1, 1, 57/256f, 136/256f, 12/256f, 51/256f);
 		buffer.endBatch();
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
-		transform.pushPose();
-		transform.translate(0, 0, 10);
+		graphics.pose().pushPose();
+		graphics.pose().translate(0, 0, 10);
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);
@@ -115,9 +115,9 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 					x = ii==0?48: ii==1?29: ii==3?2: 10;
 					y = ii==1?57: ii==3?30: ii==4?11: 49;
 				}
-				ir.renderAndDecorateItem(transform, b, x, y);
+				graphics.renderItem(b, x, y);
 			}
 		}
-		transform.popPose();
+		graphics.pose().popPose();
 	}
 }

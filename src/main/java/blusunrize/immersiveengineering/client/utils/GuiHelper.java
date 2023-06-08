@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.utils;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -139,32 +139,32 @@ public class GuiHelper
 		}
 	}
 
-	public static void drawSlot(int x, int y, int w, int h, PoseStack transform)
+	public static void drawSlot(int x, int y, int w, int h, GuiGraphics graphics)
 	{
-		drawSlot(x, y, w, h, 0xff, transform);
+		drawSlot(x, y, w, h, 0xff, graphics);
 	}
 
-	public static void drawSlot(PoseStack transform, int x, int y, int w, int h, int dark, int main, int light)
+	public static void drawSlot(GuiGraphics graphics, int x, int y, int w, int h, int dark, int main, int light)
 	{
 		final int minX = x+8-w/2;
 		final int minY = y+8-h/2;
 		final int maxX = minX+w;
 		final int maxY = minY+h;
-		GuiComponent.fill(transform, minX, minY-1, maxX, minY, dark);
-		GuiComponent.fill(transform, minX-1, minY-1, minX, maxY, dark);
-		GuiComponent.fill(transform, minX, minY, maxX, maxY, main);
-		GuiComponent.fill(transform, minX, maxY, maxX+1, maxY+1, light);
-		GuiComponent.fill(transform, maxX, minY, maxX+1, maxY, light);
+		graphics.fill(minX, minY-1, maxX, minY, dark);
+		graphics.fill(minX-1, minY-1, minX, maxY, dark);
+		graphics.fill(minX, minY, maxX, maxY, main);
+		graphics.fill(minX, maxY, maxX+1, maxY+1, light);
+		graphics.fill(maxX, minY, maxX+1, maxY, light);
 	}
 
-	public static void drawSlot(int x, int y, int w, int h, int alpha, PoseStack transform)
+	public static void drawSlot(int x, int y, int w, int h, int alpha, GuiGraphics graphics)
 	{
-		drawSlot(transform, x, y, w, h, (alpha<<24)|0x373737, (alpha<<24)|0x8b8b8b, (alpha<<24)|0xffffff);
+		drawSlot(graphics, x, y, w, h, (alpha<<24)|0x373737, (alpha<<24)|0x8b8b8b, (alpha<<24)|0xffffff);
 	}
 
-	public static void drawDarkSlot(PoseStack transform, int x, int y, int w, int h)
+	public static void drawDarkSlot(GuiGraphics graphics, int x, int y, int w, int h)
 	{
-		drawSlot(transform, x, y, w, h, 0x77222222, 0x77111111, 0x77999999);
+		drawSlot(graphics, x, y, w, h, 0x77222222, 0x77111111, 0x77999999);
 	}
 
 	public static void renderItemWithOverlayIntoGUI(

@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -26,14 +26,14 @@ public class GuiSelectingList extends GuiReactiveList
 	}
 
 	@Override
-	public void render(PoseStack transform, int mx, int my, float partialTicks)
+	public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
-		super.render(transform, mx, my, partialTicks);
+		super.render(graphics, mx, my, partialTicks);
 		if(selectedOption >= offset&&selectedOption-offset < perPage)
 		{
 			Font fr = ClientUtils.mc().font;
 			int yOff = (selectedOption-offset)*fr.lineHeight;
-			fill(transform, getX(), getY()+yOff, getX()+width, getY()+yOff+fr.lineHeight, Lib.COLOUR_I_ImmersiveOrange&0x88ffffff);
+			graphics.fill(getX(), getY()+yOff, getX()+width, getY()+yOff+fr.lineHeight, Lib.COLOUR_I_ImmersiveOrange&0x88ffffff);
 		}
 	}
 

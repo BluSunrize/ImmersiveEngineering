@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.common.gui.AlloySmelterMenu;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -27,9 +27,9 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		ContainerData state = menu.getStateView();
-		BlastFurnaceScreen.drawFlameAndArrow(this, state, transform, leftPos, topPos, 84);
+		BlastFurnaceScreen.drawFlameAndArrow(state, graphics, leftPos, topPos, 84);
 	}
 }

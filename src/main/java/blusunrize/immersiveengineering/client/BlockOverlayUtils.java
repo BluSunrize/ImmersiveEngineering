@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -288,7 +289,7 @@ public class BlockOverlayUtils
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		MultiPlayerGameMode controllerMP = ClientUtils.mc().gameMode;
 		if(controllerMP.isDestroying())
-			RenderUtils.drawBlockDamageTexture(transform, ev.getMultiBufferSource(), player.level, blocks);
+			RenderUtils.drawBlockDamageTexture(transform, ev.getMultiBufferSource(), player.level(), blocks);
 		transform.popPose();
 	}
 
@@ -297,101 +298,106 @@ public class BlockOverlayUtils
 	/**
 	 * Draw overlay for a map in a frame, based on where the player's cursor is on the map
 	 */
-	public static void renderOreveinMapOverlays(PoseStack transform, ItemFrame frameEntity, HitResult rayTraceResult, int scaledWidth, int scaledHeight)
+	public static void renderOreveinMapOverlays(GuiGraphics graphics, ItemFrame frameEntity, HitResult rayTraceResult, int scaledWidth, int scaledHeight)
 	{
-		if(frameEntity!=null)
+		if(frameEntity==null)
+			return;
+		ItemStack frameItem = frameEntity.getItem();
+		if(frameItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(frameItem, "Decorations", 9))
 		{
-			ItemStack frameItem = frameEntity.getItem();
-			if(frameItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(frameItem, "Decorations", 9))
+			Level world = frameEntity.getCommandSenderWorld();
+			MapItemSavedData mapData = MapItem.getSavedData(frameItem, world);
+			if(mapData!=null)
 			{
-				Level world = frameEntity.getCommandSenderWorld();
-				MapItemSavedData mapData = MapItem.getSavedData(frameItem, world);
-				if(mapData!=null)
+				Font font = ClientUtils.font();
+				int mapScale = 1<<mapData.scale;
+				float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
+
+				// Player hit vector, relative to frame block pos
+				Vec3 hitVec = rayTraceResult.getLocation().subtract(Vec3.atLowerCornerOf(frameEntity.getPos()));
+				Direction frameDir = frameEntity.getDirection();
+				double cursorH = 0;
+				double cursorV = 0;
+				// Get a 0-1 cursor coordinate; this could be ternary operator, but switchcase is easier to read
+				switch(frameDir)
 				{
-					Font font = ClientUtils.font();
-					int mapScale = 1<<mapData.scale;
-					float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
-
-					// Player hit vector, relative to frame block pos
-					Vec3 hitVec = rayTraceResult.getLocation().subtract(Vec3.atLowerCornerOf(frameEntity.getPos()));
-					Direction frameDir = frameEntity.getDirection();
-					double cursorH = 0;
-					double cursorV = 0;
-					// Get a 0-1 cursor coordinate; this could be ternary operator, but switchcase is easier to read
-					switch(frameDir)
+					case DOWN ->
 					{
-						case DOWN -> {
-							cursorH = hitVec.x;
-							cursorV = 1-hitVec.z;
-						}
-						case UP -> {
-							cursorH = hitVec.x;
-							cursorV = hitVec.z;
-						}
-						case NORTH -> {
-							cursorH = 1-hitVec.x;
-							cursorV = 1-hitVec.y;
-						}
-						case SOUTH -> {
-							cursorH = hitVec.x;
-							cursorV = 1-hitVec.y;
-						}
-						case WEST -> {
-							cursorH = hitVec.z;
-							cursorV = 1-hitVec.y;
-						}
-						case EAST -> {
-							cursorH = 1-hitVec.z;
-							cursorV = 1-hitVec.y;
-						}
+						cursorH = hitVec.x;
+						cursorV = 1-hitVec.z;
 					}
-					// Multiply it to the number scale vanilla maps use
-					cursorH *= 128;
-					cursorV *= 128;
-
-					ListTag minerals = null;
-					double lastDist = Double.MAX_VALUE;
-					ListTag nbttaglist = frameItem.getTag().getList("Decorations", 10);
-					for(Tag inbt : nbttaglist)
+					case UP ->
 					{
-						CompoundTag tagCompound = (CompoundTag)inbt;
-						String id = tagCompound.getString("id");
-						if(id.startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
-						{
-							double sampleX = tagCompound.getDouble("x");
-							double sampleZ = tagCompound.getDouble("z");
-							// Map coordinates require some pretty funky maths. I tried to simplify this,
-							// and ran into issues that made highlighting fail on certain markers.
-							// This implementation works, so I just won't touch it again.
-							float f = (float)(sampleX-(double)mapData.centerX)/(float)mapScale;
-							float f1 = (float)(sampleZ-(double)mapData.centerZ)/(float)mapScale;
-							byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
-							byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
-							// Make it a vector, rotate it around the map center
-							Vec3 mapPos = new Vec3(0, b1, b0);
-							mapPos = mapPos.xRot(mapRotation);
-							// Turn it into a 0.0 to 128.0 offset
-							double offsetH = (mapPos.z/2.0F+64.0F);
-							double offsetV = (mapPos.y/2.0F+64.0F);
-							// Get cursor distance
-							double dH = cursorH-offsetH;
-							double dV = cursorV-offsetV;
-							double dist = dH*dH+dV*dV;
-							if(dist < 10&&dist < lastDist)
-							{
-								lastDist = dist;
-								minerals = tagCompound.getList("minerals", Tag.TAG_STRING);
-							}
-						}
+						cursorH = hitVec.x;
+						cursorV = hitVec.z;
 					}
-					if(minerals!=null)
-						for(int i = 0; i < minerals.size(); i++)
-						{
-							MineralMix mix = MineralMix.RECIPES.getById(Minecraft.getInstance().level, new ResourceLocation(minerals.getString(i)));
-							if(mix!=null)
-								font.drawShadow(transform, I18n.get(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.lineHeight, 0xffffff);
-						}
+					case NORTH ->
+					{
+						cursorH = 1-hitVec.x;
+						cursorV = 1-hitVec.y;
+					}
+					case SOUTH ->
+					{
+						cursorH = hitVec.x;
+						cursorV = 1-hitVec.y;
+					}
+					case WEST ->
+					{
+						cursorH = hitVec.z;
+						cursorV = 1-hitVec.y;
+					}
+					case EAST ->
+					{
+						cursorH = 1-hitVec.z;
+						cursorV = 1-hitVec.y;
+					}
 				}
+				// Multiply it to the number scale vanilla maps use
+				cursorH *= 128;
+				cursorV *= 128;
+
+				ListTag minerals = null;
+				double lastDist = Double.MAX_VALUE;
+				ListTag nbttaglist = frameItem.getTag().getList("Decorations", 10);
+				for(Tag inbt : nbttaglist)
+				{
+					CompoundTag tagCompound = (CompoundTag)inbt;
+					String id = tagCompound.getString("id");
+					if(id.startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
+					{
+						double sampleX = tagCompound.getDouble("x");
+						double sampleZ = tagCompound.getDouble("z");
+						// Map coordinates require some pretty funky maths. I tried to simplify this,
+						// and ran into issues that made highlighting fail on certain markers.
+						// This implementation works, so I just won't touch it again.
+						float f = (float)(sampleX-(double)mapData.centerX)/(float)mapScale;
+						float f1 = (float)(sampleZ-(double)mapData.centerZ)/(float)mapScale;
+						byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
+						byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
+						// Make it a vector, rotate it around the map center
+						Vec3 mapPos = new Vec3(0, b1, b0);
+						mapPos = mapPos.xRot(mapRotation);
+						// Turn it into a 0.0 to 128.0 offset
+						double offsetH = (mapPos.z/2.0F+64.0F);
+						double offsetV = (mapPos.y/2.0F+64.0F);
+						// Get cursor distance
+						double dH = cursorH-offsetH;
+						double dV = cursorV-offsetV;
+						double dist = dH*dH+dV*dV;
+						if(dist < 10&&dist < lastDist)
+						{
+							lastDist = dist;
+							minerals = tagCompound.getList("minerals", Tag.TAG_STRING);
+						}
+					}
+				}
+				if(minerals!=null)
+					for(int i = 0; i < minerals.size(); i++)
+					{
+						MineralMix mix = MineralMix.RECIPES.getById(Minecraft.getInstance().level, new ResourceLocation(minerals.getString(i)));
+						if(mix!=null)
+							graphics.drawString(font, I18n.get(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.lineHeight, 0xffffff, true);
+					}
 			}
 		}
 	}

@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot.AlwaysEmptySlot;
 import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -63,13 +63,13 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		for(int i = 0; i < menu.ownSlotCount; i++)
 		{
 			Slot s = menu.getSlot(i);
 			if(!(s instanceof AlwaysEmptySlot))
-				GuiHelper.drawSlot(transform, leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
+				GuiHelper.drawSlot(graphics.pose(), leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
 		}
 	}
 }

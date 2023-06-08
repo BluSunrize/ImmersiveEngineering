@@ -38,7 +38,7 @@ public class UnionMBManualData implements MultiblockManualData
 				{
 					boolean added = false;
 					for(ItemStack ex : stacks)
-						if(ItemStack.isSame(ex, stack))
+						if(ItemStack.isSameItem(ex, stack))
 						{
 							ex.grow(stack.getCount());
 							added = true;

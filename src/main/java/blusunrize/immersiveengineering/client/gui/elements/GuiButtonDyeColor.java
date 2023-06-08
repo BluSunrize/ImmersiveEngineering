@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 
@@ -28,10 +28,10 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 	}
 
 	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
-		super.render(transform, mouseX, mouseY, partialTicks);
+		super.render(graphics, mouseX, mouseY, partialTicks);
 		if(this.visible)
-			GuiHelper.drawColouredRect(transform, getX()+2, getY()+2, 4, 4, getState());
+			GuiHelper.drawColouredRect(graphics.pose(), getX()+2, getY()+2, 4, 4, getState());
 	}
 }

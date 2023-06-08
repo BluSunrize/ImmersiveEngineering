@@ -57,7 +57,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		matrixStackIn.translate(0, 0, .03125);
 		matrixStackIn.mulPose(new Quaternionf().rotateXYZ(entity.angleHorizontal * Mth.DEG_TO_RAD, 0, 0));
 		matrixStackIn.translate(0, -entity.TUBE_LENGTH/2, 0);
-		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, entity.level);
+		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, entity.level());
 		matrixStackIn.popPose();
 		matrixStackIn.translate(-0.25, -1, 0);
 		if(tex==null)

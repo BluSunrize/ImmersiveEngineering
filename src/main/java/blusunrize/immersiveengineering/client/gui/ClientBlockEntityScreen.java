@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,23 +35,23 @@ public abstract class ClientBlockEntityScreen<T extends BlockEntity> extends Scr
 		this.guiTop = (this.height-this.ySize)/2;
 	}
 
-	protected abstract void drawGuiContainerBackgroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
 
-	protected abstract void drawGuiContainerForegroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerForegroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
 
 	@Override
-	public void render(PoseStack transform, int mx, int my, float partial)
+	public void render(GuiGraphics graphics, int mx, int my, float partial)
 	{
 		// Render dark background
-		this.renderBackground(transform);
+		this.renderBackground(graphics);
 		// Background texture
-		drawGuiContainerBackgroundLayer(transform, mx, my, partial);
+		drawGuiContainerBackgroundLayer(graphics, mx, my, partial);
 
 		// Buttons
-		super.render(transform, mx, my, partial);
+		super.render(graphics, mx, my, partial);
 
 		// Foreground
-		drawGuiContainerForegroundLayer(transform, mx, my, partial);
+		drawGuiContainerForegroundLayer(graphics, mx, my, partial);
 	}
 
 	@Override

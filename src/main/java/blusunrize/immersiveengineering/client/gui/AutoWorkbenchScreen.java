@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.gui.AutoWorkbenchMenu;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -91,10 +91,10 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float partialTicks, int x, int y)
 	{
 		for(int i = 0; i < selectionButtons.size(); ++i)
 			selectionButtons.get(i).state = (i==menu.selectedRecipe.get());
-		super.drawContainerBackgroundPre(matrixStack, partialTicks, x, y);
+		super.drawContainerBackgroundPre(graphics, partialTicks, x, y);
 	}
 }

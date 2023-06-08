@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.gui.TurretMenu.ChemTurretMenu;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -47,10 +47,10 @@ public class ChemTurretScreen extends TurretScreen<ChemTurretMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
-		super.drawContainerBackgroundPre(transform, f, mx, my);
-		this.blit(transform, leftPos+132, topPos+14, 176, 0, 20, 51);
+		super.drawContainerBackgroundPre(graphics, f, mx, my);
+		graphics.blit(TEXTURE, leftPos+132, topPos+14, 176, 0, 20, 51);
 	}
 
 	@Override

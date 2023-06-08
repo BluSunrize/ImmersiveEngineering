@@ -9,13 +9,12 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -48,21 +47,20 @@ public class GuiButtonIE extends Button
 	}
 
 	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{
 			Minecraft mc = Minecraft.getInstance();
-			ClientUtils.bindTexture(texture);
 			Font fontrenderer = mc.font;
 			this.isHovered = isPressable(mouseX, mouseY);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 			RenderSystem.blendFunc(770, 771);
 			if(hoverOffset!=null&&this.isHovered)
-				this.blit(transform, getX(), getY(), texU+hoverOffset[0], texV+hoverOffset[1], width, height);
+				graphics.blit(texture, getX(), getY(), texU+hoverOffset[0], texV+hoverOffset[1], width, height);
 			else
-				this.blit(transform, getX(), getY(), texU, texV, width, height);
+				graphics.blit(texture, getX(), getY(), texU, texV, width, height);
 			if(!getMessage().getString().isEmpty())
 			{
 				int txtCol = 0xE0E0E0;
@@ -70,7 +68,7 @@ public class GuiButtonIE extends Button
 					txtCol = 0xA0A0A0;
 				else if(this.isHovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
-				this.drawCenteredString(transform, fontrenderer, getMessage(), this.getX()+this.width/2, this.getY()+(this.height-8)/2, txtCol);
+				graphics.drawCenteredString(fontrenderer, getMessage(), this.getX()+this.width/2, this.getY()+(this.height-8)/2, txtCol);
 			}
 		}
 	}

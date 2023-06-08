@@ -9,6 +9,7 @@
     "accessors.ConcretePowderBlockAccess",
     "accessors.ContainerAccess",
     "accessors.CraftingContainerAccess",
+    "accessors.CropBlockAccess",
     "accessors.DamageSourcesAccess",
     "accessors.ExplosionAccess",
     "accessors.FlowingFluidAccess",

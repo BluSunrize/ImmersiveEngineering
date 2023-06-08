@@ -20,9 +20,9 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.Assembler
 import blusunrize.immersiveengineering.common.gui.AssemblerMenu;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -114,26 +114,23 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		for(int i = 0; i < AssemblerLogic.NUM_PATTERNS; i++)
 			if(menu.inv.getStackInSlot(18+i).isEmpty()&&!menu.patterns.get(i).getStackInSlot(9).isEmpty())
 			{
 				ItemStack stack = menu.patterns.get(i).getStackInSlot(9);
-				transform.pushPose();
 				Font font = null;
 				if(!stack.isEmpty())
 					font = IClientItemExtensions.of(stack.getItem()).getFont(stack, FontContext.ITEM_COUNT);
 				if(font==null)
 					font = this.font;
-				itemRenderer.renderAndDecorateItem(transform, stack, leftPos+27+i*58, topPos+64);
-				itemRenderer.renderGuiItemDecorations(transform, font, stack, leftPos+27+i*58, topPos+64, ChatFormatting.GRAY.toString()+stack.getCount());
+				graphics.renderItem(stack, leftPos+27+i*58, topPos+64);
+				graphics.renderItemDecorations(font, stack, leftPos+27+i*58, topPos+64, ChatFormatting.GRAY.toString()+stack.getCount());
 
 				RenderSystem.disableDepthTest();
-				fill(transform, leftPos+27+i*58, topPos+64, leftPos+27+i*74, topPos+80, 0x77444444);
+				graphics.fill(leftPos+27+i*58, topPos+64, leftPos+27+i*74, topPos+80, 0x77444444);
 				RenderSystem.enableDepthTest();
-
-				transform.popPose();
 			}
 	}
 }

@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -86,7 +86,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGui(InventoryMenu.BLOCK_ATLAS));
@@ -101,7 +101,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 					Rect2i slotArea = getSlotArea(side, i);
 					int col = props.getTintColor(filter);
 					GuiHelper.drawTexturedColoredRect(
-							builder, transform,
+							builder, graphics.pose(),
 							slotArea.getX(), slotArea.getY(), slotArea.getWidth(), slotArea.getHeight(),
 							(col>>16&255)/255.0f, (col>>8&255)/255.0f, (col&255)/255.0f, 1,
 							sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1());
@@ -113,7 +113,9 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			int x = leftPos+30+(side/2)*58;
 			int y = topPos+44+(side%2)*76;
 			String s = I18n.get("desc.immersiveengineering.info.blockSide."+Direction.from3DDataValue(side)).substring(0, 1);
-			ClientUtils.font().drawShadow(transform, s, x-(ClientUtils.font().width(s)/2), y, 0xaacccccc);
+			graphics.drawString(
+					ClientUtils.font(), s, x-(ClientUtils.font().width(s)/2), y, 0xaacccccc, true
+			);
 		}
 	}
 

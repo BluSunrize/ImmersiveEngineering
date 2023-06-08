@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.common.gui.SorterMenu;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
@@ -47,15 +47,15 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		for(int side = 0; side < 6; side++)
 		{
 			int x = leftPos+30+(side/2)*58;
 			int y = topPos+44+(side%2)*76;
-			String s = I18n.get("desc.immersiveengineering.info.blockSide."+Direction.from3DDataValue(side).toString()).substring(0, 1);
+			String s = I18n.get("desc.immersiveengineering.info.blockSide."+Direction.from3DDataValue(side)).substring(0, 1);
 			RenderSystem.enableBlend();
-			ClientUtils.font().drawShadow(transform, s, x-(ClientUtils.font().width(s)/2), y, 0xaacccccc);
+			graphics.drawString(ClientUtils.font(), s, x-(ClientUtils.font().width(s)/2), y, 0xaacccccc, true);
 		}
 	}
 
@@ -95,7 +95,7 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 		}
 
 		@Override
-		public void render(PoseStack transform, int mx, int my, float partialTicks)
+		public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
 		{
 			if(this.visible)
 			{
@@ -104,7 +104,7 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 				RenderSystem.enableBlend();
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 				final boolean active = (state.getAsInt()&type.mask())!=0;
-				this.blit(transform, this.getX(), this.getY(), 176+type.ordinal()*18, (active?3: 21), this.width, this.height);
+				graphics.blit(TEXTURE, this.getX(), this.getY(), 176+type.ordinal()*18, (active?3: 21), this.width, this.height);
 			}
 		}
 

@@ -25,8 +25,8 @@ import blusunrize.immersiveengineering.common.gui.CircuitTableMenu;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -41,7 +41,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 import static blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity.SLOT_TYPES;
 
 public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
@@ -200,11 +199,11 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 	}
 
 	@Override
-	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
+	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
-		drawCenteredString(transform, this.font, "Operator:", 76, 4, DyeColor.LIGHT_GRAY.getTextColor());
-		drawCenteredString(transform, this.font, "Inputs:", 130, 8, DyeColor.LIGHT_GRAY.getTextColor());
-		drawCenteredString(transform, this.font, "Outputs:", 130, 42, DyeColor.LIGHT_GRAY.getTextColor());
+		graphics.drawCenteredString(this.font, "Operator:", 76, 4, DyeColor.LIGHT_GRAY.getTextColor());
+		graphics.drawCenteredString(this.font, "Inputs:", 130, 8, DyeColor.LIGHT_GRAY.getTextColor());
+		graphics.drawCenteredString(this.font, "Outputs:", 130, 42, DyeColor.LIGHT_GRAY.getTextColor());
 
 		for(int i = 0; i < SLOT_TYPES.length; i++)
 		{
@@ -218,7 +217,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 				else
 					col = DyeColor.RED;
 			}
-			this.font.draw(transform, "x "+amount, 30, 18+20*i, col.getTextColor());
+			graphics.drawString(this.font, "x "+amount, 30, 18+20*i, col.getTextColor());
 		}
 	}
 

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.gui.IESlot.AlwaysEmptySlot;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,13 +36,13 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		for(int i = 0; i < menu.internalSlots; i++)
 		{
 			Slot s = menu.getSlot(i);
 			if(!(s instanceof AlwaysEmptySlot))
-				GuiHelper.drawSlot(leftPos+s.x, topPos+s.y, 16, 16, 0x44, transform);
+				GuiHelper.drawSlot(leftPos+s.x, topPos+s.y, 16, 16, 0x44, graphics);
 		}
 	}
 }

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui.info;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
@@ -38,14 +38,13 @@ public class FertilizerInfoArea extends InfoArea
 	}
 
 	@Override
-	public void draw(PoseStack transform)
+	public void draw(GuiGraphics graphics)
 	{
 		final int height = area.getHeight();
 		int stored = (int)(height*(fertilizerAmount.get()/(float)IEServerConfig.MACHINES.cloche_fertilizer.get()));
-		fillGradient(
-				transform,
+		graphics.fillGradient(
 				area.getX(), area.getY()+(height-stored),
-				area.getX() + area.getWidth(), area.getY()+area.getHeight(),
+				area.getX()+area.getWidth(), area.getY()+area.getHeight(),
 				0xff95ed00, 0xff8a5a00
 		);
 	}

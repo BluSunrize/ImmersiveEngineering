@@ -168,16 +168,17 @@ public class ShaderManualElement extends SpecialManualElements
 	{
 		Lighting.setupFor3DItems();
 		float scale = 2;
-		graphics.pushPose();
-		graphics.translate(x, y, 0);
-		graphics.scale(scale, scale, scale);
+		PoseStack transform = graphics.pose();
+		transform.pushPose();
+		transform.translate(x, y, 0);
+		transform.scale(scale, scale, scale);
 		boolean examples = exampleItems!=null&&exampleItems.length > 0;
 
 		ManualUtils.renderItemStack(graphics, shaderItem, (int)((10+(examples?0: 34))/scale), (int)((-8)/scale), false);
 		if(examples&&example >= 0&&example < exampleItems.length)
 			ManualUtils.renderItemStack(graphics, exampleItems[example], (int)((63)/scale), (int)((-8)/scale), false);
 
-		graphics.scale(1/scale, 1/scale, 1/scale);
+		transform.scale(1/scale, 1/scale, 1/scale);
 		if(unlocked)
 			ManualUtils.renderItemStack(graphics, replicationCost.getRandomizedExampleStack(mc().player.tickCount), 102, 118, false);
 
@@ -188,16 +189,16 @@ public class ShaderManualElement extends SpecialManualElements
 		if(this.text!=null&&!this.text.getString().isEmpty())
 			drawWrappedWithTransform(graphics, this.text, 0, 38);
 
-		graphics.popPose();
+		transform.popPose();
 	}
 
 	private void drawWrappedWithTransform(
-			PoseStack transform, FormattedText text, int x, int y
+			GuiGraphics graphics, FormattedText text, int x, int y
 	)
 	{
 		for(FormattedCharSequence line : manual.fontRenderer().split(text, 120))
 		{
-			manual.fontRenderer().draw(transform, line, (float)x, (float)y, manual.getTextColour());
+			graphics.drawString(manual.fontRenderer(), line, (float)x, (float)y, manual.getTextColour(), false);
 			y += manual.fontRenderer().lineHeight;
 		}
 	}

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.common.gui.LogicUnitMenu;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,9 +25,9 @@ public class LogicUnitScreen extends IEContainerScreen<LogicUnitMenu>
 	}
 
 	@Override
-	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
+	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
 		for(int i = 0; i < 10; i++)
-			drawCenteredString(transform, this.font, ""+(i+1), 52+(i%5)*18, 23+(i/5)*18, DyeColor.GRAY.getTextColor());
+			graphics.drawCenteredString(this.font, ""+(i+1), 52+(i%5)*18, 23+(i/5)*18, DyeColor.GRAY.getTextColor());
 	}
 }

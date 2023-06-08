@@ -9,11 +9,10 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -73,12 +72,11 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 	}
 
 	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		if(this.visible)
 		{
-			ClientUtils.bindTexture(texture);
 			Font fontrenderer = mc.font;
 			this.isHovered = mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
 			RenderSystem.enableBlend();
@@ -86,7 +84,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 			RenderSystem.blendFunc(770, 771);
 			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state.getAsInt();
 			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state.getAsInt();
-			this.blit(transform, getX(), getY(), u, v, width, height);
+			graphics.blit(texture, getX(), getY(), u, v, width, height);
 			if(!getMessage().getString().isEmpty())
 			{
 				int txtCol = 0xE0E0E0;
@@ -95,7 +93,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 				else if(this.isHovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
 				int[] offset = getTextOffset(fontrenderer);
-				this.drawString(transform, fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], txtCol);
+				graphics.drawString(fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], txtCol);
 			}
 		}
 	}

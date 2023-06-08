@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -64,14 +64,14 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 	}
 
 	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
-		super.render(transform, mouseX, mouseY, partialTicks);
+		super.render(graphics, mouseX, mouseY, partialTicks);
 		if(this.visible)
 		{
 			LogicCircuitRegister state = getState();
 			if(state.ordinal() < 16)
-				GuiHelper.drawColouredRect(transform, getX()+3, getY()+3, 12, 12, DyeColor.byId(state.ordinal()));
+				GuiHelper.drawColouredRect(graphics.pose(), getX()+3, getY()+3, 12, 12, DyeColor.byId(state.ordinal()));
 		}
 	}
 

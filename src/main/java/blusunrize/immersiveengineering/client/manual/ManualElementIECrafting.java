@@ -16,7 +16,6 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import com.google.common.base.Preconditions;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.item.ItemStack;
@@ -77,7 +76,7 @@ public abstract class ManualElementIECrafting extends SpecialManualElements
 				{
 					if(pStack.x() > maxX)
 						maxX = pStack.x();
-					GuiComponent.fill(graphics, x+pStack.x(), y+pStack.y(), x+pStack.x()+16, y+pStack.y()+16, 0x33666666);
+					graphics.fill(x+pStack.x(), y+pStack.y(), x+pStack.x()+16, y+pStack.y()+16, 0x33666666);
 
 					if(!pStack.getStackAtCurrentTime().isEmpty())
 					{

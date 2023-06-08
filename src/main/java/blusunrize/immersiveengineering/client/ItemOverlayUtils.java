@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletCont
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.Font.DisplayMode;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +46,7 @@ public class ItemOverlayUtils
 		return buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 	}
 
-	public static void renderRevolverOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+	public static void renderRevolverOverlay(MultiBufferSource.BufferSource buffer, GuiGraphics graphics, int scaledWidth, int scaledHeight,
 											 Player player, InteractionHand hand, ItemStack equipped)
 	{
 		NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped);
@@ -56,11 +57,12 @@ public class ItemOverlayUtils
 			boolean right = side==HumanoidArm.RIGHT;
 			float dx = right?scaledWidth-32-48: 48;
 			float dy = scaledHeight-64;
+			PoseStack transform = graphics.pose();
 			transform.pushPose();
 			transform.pushPose();
 			transform.translate(dx, dy, 0);
 			transform.scale(.5f, .5f, 1);
-			RevolverScreen.drawExternalGUI(bullets, bulletAmount, transform);
+			RevolverScreen.drawExternalGUI(bullets, bulletAmount, graphics);
 			transform.popPose();
 
 			if(equipped.getItem() instanceof RevolverItem)
@@ -123,7 +125,7 @@ public class ItemOverlayUtils
 
 		ItemStack ammo = RailgunItem.findAmmo(equipped, player);
 		if(!ammo.isEmpty())
-			GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, ammo, 6, -22, player.level);
+			GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, ammo, 6, -22, player.level());
 
 		transform.translate(30, -27.5, 0);
 		transform.scale(scale, scale, 1);
@@ -190,7 +192,7 @@ public class ItemOverlayUtils
 			GuiHelper.drawTexturedColoredRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
 			ItemStack head = ((DrillItem)equipped.getItem()).getHead(equipped);
 			if(!head.isEmpty())
-				GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, head, -51, -45, player.level);
+				GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, head, -51, -45, player.level());
 		});
 	}
 
@@ -201,7 +203,7 @@ public class ItemOverlayUtils
 			GuiHelper.drawTexturedColoredRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
 			ItemStack blade = ((BuzzsawItem)equipped.getItem()).getHead(equipped);
 			if(!blade.isEmpty())
-				GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45, player.level);
+				GuiHelper.renderItemWithOverlayIntoGUI(buffer, transform, blade, -51, -45, player.level());
 		});
 	}
 

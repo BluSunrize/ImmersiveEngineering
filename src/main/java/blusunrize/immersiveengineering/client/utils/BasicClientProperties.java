@@ -75,12 +75,12 @@ public class BasicClientProperties implements MultiblockManualData
 			for(StructureBlockInfo info : structure)
 			{
 				// Skip dummy blocks in total
-				if(info.state.hasProperty(IEProperties.MULTIBLOCKSLAVE) && info.state.getValue(IEProperties.MULTIBLOCKSLAVE))
+				if(info.state().hasProperty(IEProperties.MULTIBLOCKSLAVE)&&info.state().getValue(IEProperties.MULTIBLOCKSLAVE))
 					continue;
-				ItemStack picked = Utils.getPickBlock(info.state);
+				ItemStack picked = Utils.getPickBlock(info.state());
 				boolean added = false;
 				for(ItemStack existing : materials)
-					if(ItemStack.isSame(existing, picked))
+					if(ItemStack.isSameItem(existing, picked))
 					{
 						existing.grow(1);
 						added = true;

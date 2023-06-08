@@ -147,7 +147,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 				for(int slot = 0; slot < ManualUtils.mc().player.getInventory().getContainerSize(); slot++)
 				{
 					ItemStack inSlot = ManualUtils.mc().player.getInventory().getItem(slot);
-					if(!inSlot.isEmpty()&&ItemStack.isSame(inSlot, req))
+					if(!inSlot.isEmpty()&&ItemStack.isSameItem(inSlot, req))
 						if((reqSize -= inSlot.getCount()) <= 0)
 							break;
 				}
@@ -189,7 +189,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 		if(multiblock.getStructure(level)!=null)
 		{
 			MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-			PoseStack.Pose lastEntryBeforeTry = graphics.last();
+			PoseStack transform = graphics.pose();
+			PoseStack.Pose lastEntryBeforeTry = transform.last();
 			try
 			{
 				long currentTime = System.currentTimeMillis();
@@ -205,22 +206,22 @@ public class ManualElementMultiblock extends SpecialManualElements
 				int structureWidth = renderInfo.structureWidth;
 				int structureHeight = renderInfo.structureHeight;
 
-				graphics.pushPose();
+				transform.pushPose();
 
 				final BlockRenderDispatcher blockRender = Minecraft.getInstance().getBlockRenderer();
 
-				graphics.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
-				graphics.scale(scale, -scale, 1);
-				graphics.pushTransformation(additionalTransform);
-				graphics.mulPose(new Quaternionf().rotateXYZ(0, Mth.HALF_PI, 0));
+				transform.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
+				transform.scale(scale, -scale, 1);
+				transform.pushTransformation(additionalTransform);
+				transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.HALF_PI, 0));
 
-				graphics.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
+				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
 
 				if(showCompleted&&renderProperties.canRenderFormedStructure())
 				{
-					graphics.pushPose();
-					renderProperties.renderFormedStructure(graphics, buffer);
-					graphics.popPose();
+					transform.pushPose();
+					renderProperties.renderFormedStructure(transform, buffer);
+					transform.popPose();
 				}
 				else
 				{
@@ -235,8 +236,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 								BlockState state = structureWorld.getBlockState(pos);
 								if(!state.isAir())
 								{
-									graphics.pushPose();
-									graphics.translate(l, h, w);
+									transform.pushPose();
+									transform.translate(l, h, w);
 									int overlay;
 									if(pos.equals(multiblock.getTriggerOffset()))
 										overlay = OverlayTexture.pack(0, true);
@@ -248,16 +249,16 @@ public class ManualElementMultiblock extends SpecialManualElements
 									if(te!=null)
 										modelData = te.getModelData();
 									blockRender.getModelRenderer().tesselateBlock(
-											structureWorld, blockRender.getBlockModel(state), state, pos, graphics,
+											structureWorld, blockRender.getBlockModel(state), state, pos, transform,
 											translucentFullbright, false, structureWorld.random, state.getSeed(pos),
 											overlay, modelData, null
 									);
-									graphics.popPose();
+									transform.popPose();
 								}
 							}
 				}
-				graphics.popPose();
-				graphics.popPose();
+				transform.popPose();
+				transform.popPose();
 			} catch(Exception e)
 			{
 				final long now = System.currentTimeMillis();
@@ -266,18 +267,18 @@ public class ManualElementMultiblock extends SpecialManualElements
 					e.printStackTrace();
 					lastPrintedErrorTimeMs = now;
 				}
-				while(lastEntryBeforeTry!=graphics.last())
-					graphics.popPose();
+				while(lastEntryBeforeTry!=transform.last())
+					transform.popPose();
 			}
 			buffer.endBatch();
 
 			if(componentTooltip!=null)
 			{
-				manual.fontRenderer().draw(graphics, "?", 116, yOffTotal/2-4, manual.getTextColour());
+				graphics.drawString(manual.fontRenderer(), "?", 116, yOffTotal/2-4, manual.getTextColour());
 				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
-					gui.renderTooltip(graphics, Language.getInstance().getVisualOrder(
+					graphics.renderTooltip(manual.fontRenderer(), Language.getInstance().getVisualOrder(
 							Collections.unmodifiableList(componentTooltip)
-					), mouseX, mouseY, manual.fontRenderer());
+					), mouseX, mouseY);
 			}
 		}
 	}
@@ -339,10 +340,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 			int structureLength = 0;
 			for(StructureBlockInfo block : structure)
 			{
-				structureHeight = Math.max(structureHeight, block.pos.getY()+1);
-				structureWidth = Math.max(structureWidth, block.pos.getZ()+1);
-				structureLength = Math.max(structureLength, block.pos.getX()+1);
-				data.put(block.pos, block);
+				structureHeight = Math.max(structureHeight, block.pos().getY()+1);
+				structureWidth = Math.max(structureWidth, block.pos().getZ()+1);
+				structureLength = Math.max(structureLength, block.pos().getX()+1);
+				data.put(block.pos(), block);
 			}
 			this.maxBlockIndex = this.blockIndex = structureHeight*structureLength*structureWidth;
 			this.structureHeight = structureHeight;

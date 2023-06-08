@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.gui.info;
 
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -47,11 +47,11 @@ public class MultitankArea extends InfoArea
 	}
 
 	@Override
-	public void draw(PoseStack transform)
+	public void draw(GuiGraphics graphics)
 	{
 		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		forEachFluid((fluid, lastY, newY) -> GuiHelper.drawRepeatedFluidSpriteGui(
-				buffers, transform, fluid, area.getX(), area.getY()+area.getHeight()-newY, area.getWidth(), newY-lastY
+				buffers, graphics.pose(), fluid, area.getX(), area.getY()+area.getHeight()-newY, area.getWidth(), newY-lastY
 		));
 		buffers.endBatch();
 	}

@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
@@ -26,9 +26,9 @@ public class GuiButtonCheckbox extends GuiButtonBoolean
 	}
 
 	@Override
-	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
-		super.render(transform, mouseX, mouseY, partialTicks);
+		super.render(graphics, mouseX, mouseY, partialTicks);
 		if(this.visible&&getState())
 		{
 			int color;
@@ -38,7 +38,7 @@ public class GuiButtonCheckbox extends GuiButtonBoolean
 				color = Lib.COLOUR_I_ImmersiveOrange;
 			else
 				color = 0xE0E0E0;
-			this.drawCenteredString(transform, Minecraft.getInstance().font, "\u2714", getX()+width/2, getY()-2, color);
+			graphics.drawCenteredString(Minecraft.getInstance().font, "\u2714", getX()+width/2, getY()-2, color);
 		}
 	}
 }

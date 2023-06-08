@@ -19,7 +19,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -75,9 +74,8 @@ public class FluidSplashParticle extends TextureSheetParticle
 
 		BlockPos blockpos = BlockPos.containing(this.x, this.y, this.z);
 		BlockState iblockstate = this.level.getBlockState(blockpos);
-		Material material = iblockstate.getMaterial();
 
-		if(material.isLiquid()||material.isSolid())
+		if(iblockstate.liquid()||iblockstate.isSolid())
 		{
 			double d0;
 			/*TODO if(iblockstate.getBlock() instanceof BlockLiquid)

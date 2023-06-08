@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.gui.CokeOvenMenu;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,14 +41,14 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenMenu>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		int processMax = menu.data.get(CokeOvenLogic.State.MAX_BURN_TIME);
 		int process = menu.data.get(CokeOvenLogic.State.BURN_TIME);
 		if(processMax > 0&&process > 0)
 		{
 			int h = (int)(12*(process/(float)processMax));
-			this.blit(transform, leftPos+59, topPos+37+12-h, 179, 1+12-h, 9, h);
+			graphics.blit(TEXTURE, leftPos+59, topPos+37+12-h, 179, 1+12-h, 9, h);
 		}
 	}
 }
