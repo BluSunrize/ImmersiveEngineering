@@ -57,7 +57,7 @@ public class EntityCollisionTracker
 
 	public void onEntityCollided(Entity collided)
 	{
-		updateForTick(collided.level.getGameTime());
+		updateForTick(collided.level().getGameTime());
 		collidingInCurrentTick.entities.add(collided.getId());
 	}
 

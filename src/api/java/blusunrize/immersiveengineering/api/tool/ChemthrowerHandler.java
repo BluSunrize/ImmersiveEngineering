@@ -231,13 +231,13 @@ public class ChemthrowerHandler
 				double x = target.getX()-8+ApiUtils.RANDOM.nextInt(17);
 				double y = target.getY()+ApiUtils.RANDOM.nextInt(8);
 				double z = target.getZ()-8+ApiUtils.RANDOM.nextInt(17);
-				if(!target.level.getBlockState(BlockPos.containing(x, y, z)).getMaterial().isSolid())
+				if(!target.level().getBlockState(BlockPos.containing(x, y, z)).isSolid())
 				{
 					EntityTeleportEvent event = new EntityTeleportEvent.EnderEntity(target, x, y, z);
 					if(MinecraftForge.EVENT_BUS.post(event))
 						return;
 					target.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-					target.level.playLocalSound(target.getX(), target.getY(), target.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F, false);
+					target.level().playLocalSound(target.getX(), target.getY(), target.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F, false);
 				}
 			}
 		}

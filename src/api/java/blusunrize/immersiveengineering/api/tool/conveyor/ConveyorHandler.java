@@ -57,7 +57,7 @@ public class ConveyorHandler
 	{
 		MutableLong currentTick;
 		IntSet entitiesHandledInCurrentTick;
-		if(e.level.isClientSide)
+		if(e.level().isClientSide)
 		{
 			currentTick = currentTickClient;
 			entitiesHandledInCurrentTick = entitiesHandledInCurrentTickClient;
@@ -67,7 +67,7 @@ public class ConveyorHandler
 			currentTick = currentTickServer;
 			entitiesHandledInCurrentTick = entitiesHandledInCurrentTickServer;
 		}
-		long now = e.level.getGameTime();
+		long now = e.level().getGameTime();
 		if(now!=currentTick.getValue())
 		{
 			currentTick.setValue(now);

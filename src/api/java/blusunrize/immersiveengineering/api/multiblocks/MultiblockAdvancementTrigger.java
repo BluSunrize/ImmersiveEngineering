@@ -16,7 +16,6 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.critereon.*;
-import net.minecraft.advancements.critereon.EntityPredicate.Composite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
@@ -75,7 +74,7 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 	@Override
 	public Instance createInstance(JsonObject json, DeserializationContext context)
 	{
-		EntityPredicate.Composite and = EntityPredicate.Composite.fromJson(json, "player", context);
+		ContextAwarePredicate and = EntityPredicate.fromJson(json, "player", context);
 		return new MultiblockAdvancementTrigger.Instance(
 				new ResourceLocation(GsonHelper.getAsString(json, "multiblock")),
 				ItemPredicate.fromJson(json.get("item")),
@@ -92,7 +91,7 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 
 	public static Instance create(ResourceLocation multiblock, ItemPredicate hammer)
 	{
-		return new Instance(multiblock, hammer, Composite.ANY);
+		return new Instance(multiblock, hammer, ContextAwarePredicate.ANY);
 	}
 
 	public static class Instance extends AbstractCriterionTriggerInstance
@@ -100,7 +99,7 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 		private final ResourceLocation multiblock;
 		private final ItemPredicate hammer;
 
-		public Instance(ResourceLocation multiblock, ItemPredicate hammer, Composite and)
+		public Instance(ResourceLocation multiblock, ItemPredicate hammer, ContextAwarePredicate and)
 		{
 			super(MultiblockAdvancementTrigger.ID, and);
 			this.multiblock = multiblock;

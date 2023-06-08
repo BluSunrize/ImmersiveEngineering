@@ -98,7 +98,7 @@ public class ApiUtils
 		Vec3 toAdd = (new Vec3(xRatio, 0.0D, zRatio)).normalize().scale(strength);
 		entity.setDeltaMovement(
 				motionOld.x/2.0D-toAdd.x,
-				entity.isOnGround()?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
+				entity.onGround()?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
 				motionOld.z/2.0D-toAdd.z);
 	}
 

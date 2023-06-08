@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.api;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Objects;
+
 public class ComparableItemStack
 {
 	public ItemStack stack;
@@ -75,10 +77,10 @@ public class ComparableItemStack
 			return false;
 
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
-		if(!ItemStack.isSame(stack, otherStack))
+		if(!ItemStack.isSameItem(stack, otherStack))
 			return false;
 		if(this.useNBT)
-			return ItemStack.tagMatches(stack, otherStack);
+			return Objects.equals(stack.getTag(), otherStack.getTag()) && stack.areCapsCompatible(otherStack);
 		return true;
 	}
 

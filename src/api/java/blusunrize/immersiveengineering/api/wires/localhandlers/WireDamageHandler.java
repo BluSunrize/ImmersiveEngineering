@@ -74,7 +74,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		if(maxPossibleDamage <= 0)
 			return;
 		IElectricDamageSource dmg = GET_WIRE_DAMAGE.getValue().make(
-				e.level, maxPossibleDamage, shockWire.getElectricSource()
+				e.level(), maxPossibleDamage, shockWire.getElectricSource()
 		);
 		if(!dmg.apply(e))
 			return;

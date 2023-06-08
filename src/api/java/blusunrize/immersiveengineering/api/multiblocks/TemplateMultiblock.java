@@ -126,11 +126,11 @@ public abstract class TemplateMultiblock implements IMultiblock
 		while(it.hasNext())
 		{
 			StructureBlockInfo info = it.next();
-			if(info.pos.equals(triggerFromOrigin))
-				trigger = info.state;
-			if(info.state==Blocks.AIR.defaultBlockState())
+			if(info.pos().equals(triggerFromOrigin))
+				trigger = info.state();
+			if(info.state()==Blocks.AIR.defaultBlockState())
 				it.remove();
-			else if(info.state.isAir())
+			else if(info.state().isAir())
 				// Usually means it contains a block that has been renamed
 				LOGGER.error("Found non-default air block in template {}", loc);
 		}
@@ -175,10 +175,10 @@ public abstract class TemplateMultiblock implements IMultiblock
 			BlockPos origin = pos.subtract(StructureTemplate.calculateRelativePosition(placeSet, triggerFromOrigin));
 			for(StructureBlockInfo info : structure)
 			{
-				BlockPos realRelPos = StructureTemplate.calculateRelativePosition(placeSet, info.pos);
+				BlockPos realRelPos = StructureTemplate.calculateRelativePosition(placeSet, info.pos());
 				BlockPos here = origin.offset(realRelPos);
 
-				BlockState expected = applyToState(info.state, mirror, rot);
+				BlockState expected = applyToState(info.state(), mirror, rot);
 				BlockState inWorld = world.getBlockState(here);
 				if(!BlockMatcher.matches(expected, inWorld, world, here, additionalPredicates).isAllow())
 					continue mirrorLoop;
@@ -207,7 +207,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 		BlockPos masterPos = withSettingsAndOffset(pos, masterFromOrigin, mirror, rot);
 		for(StructureBlockInfo block : getStructure(world))
 		{
-			BlockPos actualPos = withSettingsAndOffset(pos, block.pos, mirror, rot);
+			BlockPos actualPos = withSettingsAndOffset(pos, block.pos(), mirror, rot);
 			replaceStructureBlock(block, world, actualPos, mirror!=Mirror.NONE, sideHit,
 					actualPos.subtract(masterPos));
 		}
@@ -269,9 +269,9 @@ public abstract class TemplateMultiblock implements IMultiblock
 		Preconditions.checkNotNull(rot);
 		for(StructureBlockInfo block : getStructure(world))
 		{
-			BlockPos actualPos = withSettingsAndOffset(origin, block.pos, mirror, rot);
+			BlockPos actualPos = withSettingsAndOffset(origin, block.pos(), mirror, rot);
 			prepareBlockForDisassembly(world, actualPos);
-			world.setBlockAndUpdate(actualPos, applyToState(block.state, mirror, rot));
+			world.setBlockAndUpdate(actualPos, applyToState(block.state(), mirror, rot));
 		}
 	}
 
