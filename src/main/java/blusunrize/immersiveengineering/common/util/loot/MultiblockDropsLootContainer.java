@@ -16,15 +16,16 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.ComponentInstance;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperCommon;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
@@ -52,10 +53,12 @@ public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 	private void dropOriginalBlock(IMultiblockBEHelper<?> helper, LootContext context, Consumer<ItemStack> drop)
 	{
 		final BlockState originalBlock = helper.getOriginalBlock(context.getLevel());
-		final LootContext.Builder dropCTX = new LootContext.Builder(context.getLevel())
+		final LootParams dropCTX = new LootParams.Builder(context.getLevel())
 				.withOptionalParameter(LootContextParams.TOOL, context.getParamOrNull(LootContextParams.TOOL))
-				.withOptionalParameter(LootContextParams.ORIGIN, context.getParamOrNull(LootContextParams.ORIGIN));
-		Utils.getDrops(originalBlock, dropCTX).forEach(drop);
+				.withOptionalParameter(LootContextParams.ORIGIN, context.getParamOrNull(LootContextParams.ORIGIN))
+				.create(LootContextParamSets.BLOCK);
+		//Utils.getDrops(originalBlock, new LootParams.Builder(dropCTX)).forEach(drop);
+		throw new UnsupportedOperationException();
 	}
 
 	private <S extends IMultiblockState>

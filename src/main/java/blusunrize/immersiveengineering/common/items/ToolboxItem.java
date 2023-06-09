@@ -70,7 +70,7 @@ public class ToolboxItem extends InternalStorageItem
 			int i = addItem(toolbox, otherStack);
 			if(i > 0)
 			{
-				player.playSound(SoundEvents.BUNDLE_INSERT, 0.8F, 0.8F+player.getLevel().getRandom().nextFloat()*0.4F);
+				player.playSound(SoundEvents.BUNDLE_INSERT, 0.8F, 0.8F+player.level().getRandom().nextFloat()*0.4F);
 				otherStack.shrink(i);
 			}
 			return true;

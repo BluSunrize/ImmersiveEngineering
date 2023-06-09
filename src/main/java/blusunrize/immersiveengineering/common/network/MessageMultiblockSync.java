@@ -103,9 +103,9 @@ public class MessageMultiblockSync implements IMessage
 		private static void writePart(StructureBlockInfo info, FriendlyByteBuf buffer)
 		{
 			IdMapper<BlockState> stateIds = GameData.getBlockStateIDMap();
-			buffer.writeVarInt(stateIds.getId(info.state));
-			buffer.writeBlockPos(info.pos);
-			buffer.writeNbt(info.nbt);
+			buffer.writeVarInt(stateIds.getId(info.state()));
+			buffer.writeBlockPos(info.pos());
+			buffer.writeNbt(info.nbt());
 		}
 	}
 }

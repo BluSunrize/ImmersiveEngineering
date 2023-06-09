@@ -118,7 +118,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 				slot.set(ItemStack.EMPTY);
 			else if(slot.mayPlace(stackHeld))
 			{
-				if(ItemStack.isSame(stackSlot, stackHeld))
+				if(ItemStack.isSameItem(stackSlot, stackHeld))
 					stackSlot.grow(amount);
 				else
 					slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
@@ -265,7 +265,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 		}, p -> {
 			if(p!=playerInv.player)
 				return false;
-			return ItemStack.isSame(p.getItemBySlot(slot), stack);
+			return ItemStack.isSameItem(p.getItemBySlot(slot), stack);
 		});
 	}
 

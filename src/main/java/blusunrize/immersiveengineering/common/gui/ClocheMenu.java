@@ -73,7 +73,7 @@ public class ClocheMenu extends IEContainerMenu
 		this.fertilizerAmount = fertilizerAmount;
 		this.fertilizerMod = fertilizerMod;
 		this.guiProgress = guiProgress;
-		Level level = inventoryPlayer.player.level;
+		Level level = inventoryPlayer.player.level();
 		this.addSlot(new Cloche(SLOT_SOIL, inv, SLOT_SOIL, 62, 54, level));
 		this.addSlot(new Cloche(SLOT_SEED, inv, SLOT_SEED, 62, 34, level));
 		this.addSlot(new Cloche(SLOT_FERTILIZER, inv, SLOT_FERTILIZER, 8, 59, level));

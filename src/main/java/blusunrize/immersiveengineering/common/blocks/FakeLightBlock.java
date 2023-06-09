@@ -22,7 +22,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -33,8 +32,11 @@ import java.util.function.Supplier;
 
 public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.AIR)
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.of()
+			.replaceable()
+			.air()
 			.noOcclusion()
+			.pushReaction(PushReaction.DESTROY)
 			.lightLevel(b -> 15);
 
 	public FakeLightBlock(Properties props)
@@ -52,12 +54,6 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
 	{
 		return Shapes.empty();
-	}
-
-	@Override
-	public PushReaction getPistonPushReaction(BlockState state)
-	{
-		return PushReaction.DESTROY;
 	}
 
 	@Override

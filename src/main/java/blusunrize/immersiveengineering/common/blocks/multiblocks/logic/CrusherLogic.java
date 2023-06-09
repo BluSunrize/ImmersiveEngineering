@@ -147,7 +147,7 @@ public class CrusherLogic implements
 	@Override
 	public void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
 	{
-		if(collided.level.isClientSide||!isInInput(posInMultiblock, true))
+		if(collided.level().isClientSide||!isInInput(posInMultiblock, true))
 			return;
 		final State state = ctx.getState();
 		if(!collided.isAlive()||!state.rsState.isEnabled(ctx))
@@ -174,7 +174,7 @@ public class CrusherLogic implements
 			if(consumed > 0)
 			{
 				EventHandler.crusherMap.put(collided.getUUID(), s -> state.doProcessOutput(s, level));
-				collided.hurt(IEDamageSources.crusher(collided.level), consumed/20f);
+				collided.hurt(IEDamageSources.crusher(collided.level()), consumed/20f);
 			}
 		}
 	}

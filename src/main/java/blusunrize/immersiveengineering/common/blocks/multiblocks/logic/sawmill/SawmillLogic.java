@@ -289,7 +289,7 @@ public class SawmillLogic
 			{
 				dist = p.getRelativeProcessStep(rawLevel);
 				// either it's a different item or we have 3 together already
-				if(!stack.sameItem(p.getInput())||state.combinedLogs > 2)
+				if(!ItemStack.isSameItem(stack, p.getInput())||state.combinedLogs > 2)
 				{
 					if(!simulate)
 						state.combinedLogs = 0;

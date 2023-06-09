@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -102,8 +102,7 @@ public class IEExplosion extends Explosion
 				if(this.world instanceof ServerLevel&&state.canDropFromExplosion(this.world, pos, this))
 				{
 					BlockEntity tile = this.world.getBlockEntity(pos);
-					LootContext.Builder lootCtx = new LootContext.Builder((ServerLevel)this.world)
-							.withRandom(this.world.random)
+					LootParams.Builder lootCtx = new LootParams.Builder((ServerLevel)this.world)
 							.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
 							.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
 							.withOptionalParameter(LootContextParams.BLOCK_ENTITY, tile);

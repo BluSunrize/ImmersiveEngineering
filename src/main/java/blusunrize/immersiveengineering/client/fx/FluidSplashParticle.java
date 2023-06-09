@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
@@ -106,11 +105,11 @@ public class FluidSplashParticle extends TextureSheetParticle
 		return ParticleRenderType.TERRAIN_SHEET;
 	}
 
-	public static class Factory implements ParticleProvider<FluidSplashOptions>
+	public static class Factory implements ParticleProvider.Sprite<FluidSplashOptions>
 	{
 		@Nullable
 		@Override
-		public Particle createParticle(FluidSplashOptions typeIn, @Nonnull ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public TextureSheetParticle createParticle(FluidSplashOptions typeIn, @Nonnull ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new FluidSplashParticle(typeIn.fluid(), worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
 		}

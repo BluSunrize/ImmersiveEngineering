@@ -21,12 +21,14 @@ import java.util.function.Predicate;
 
 public class TemplateChunkSection extends LevelChunkSection
 {
+	private final int sectionY;
 	private final Predicate<BlockPos> shouldShow;
 	private final ChunkPos chunkPos;
 
 	public TemplateChunkSection(int sectionY, Registry<Biome> biomeRegistry, Predicate<BlockPos> shouldShow, ChunkPos chunkPos)
 	{
-		super(sectionY, biomeRegistry);
+		super(biomeRegistry);
+		this.sectionY = sectionY;
 		this.shouldShow = shouldShow;
 		this.chunkPos = chunkPos;
 	}
@@ -47,7 +49,7 @@ public class TemplateChunkSection extends LevelChunkSection
 	@Override
 	public BlockState getBlockState(int x, int y, int z)
 	{
-		if(!shouldShow.test(new BlockPos(chunkPos.getMinBlockX()+x, bottomBlockY()+y, chunkPos.getMinBlockZ()+z)))
+		if(!shouldShow.test(new BlockPos(chunkPos.getMinBlockX()+x, 16*sectionY+y, chunkPos.getMinBlockZ()+z)))
 			return Blocks.AIR.defaultBlockState();
 		return super.getBlockState(x, y, z);
 	}

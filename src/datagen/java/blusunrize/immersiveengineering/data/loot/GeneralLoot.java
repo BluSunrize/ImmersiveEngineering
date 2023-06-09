@@ -73,17 +73,17 @@ public class GeneralLoot implements LootTableSubProvider
 		/* Add Advancement Loot Tables */
 
 		builder = LootTable.lootTable();
-		builder.withPool(LootPool.lootPool().name("rare_shader").setRolls(ConstantValue.exactly(1))
+		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Misc.SHADER_BAG.get(Rarity.RARE), 1, 1, 1)));
 		out.accept(rl("advancements/shader_rare"), builder);
 
 		builder = LootTable.lootTable();
-		builder.withPool(LootPool.lootPool().name("epic_shader").setRolls(ConstantValue.exactly(1))
+		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Misc.SHADER_BAG.get(Rarity.EPIC), 1, 1, 1)));
 		out.accept(rl("advancements/shader_epic"), builder);
 
 		builder = LootTable.lootTable();
-		builder.withPool(LootPool.lootPool().name("masterwork_shader").setRolls(ConstantValue.exactly(1))
+		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK), 1, 1, 1)));
 		out.accept(rl("advancements/shader_masterwork"), builder);
 

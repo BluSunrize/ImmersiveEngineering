@@ -13,7 +13,8 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 
 public class BarrelBlock
 {
@@ -29,9 +30,15 @@ public class BarrelBlock
 	{
 		Block.Properties base;
 		if(metal)
-			base = Block.Properties.of(Material.METAL).sound(SoundType.METAL);
+			base = Block.Properties.of()
+					.mapColor(MapColor.METAL)
+					.sound(SoundType.METAL);
 		else
-			base = Block.Properties.of(Material.WOOD).sound(SoundType.WOOD);
+			base = Block.Properties.of()
+					.mapColor(MapColor.WOOD)
+					.ignitedByLava()
+					.instrument(NoteBlockInstrument.BASS)
+					.sound(SoundType.WOOD);
 		return base.strength(2, 5);
 	}
 }

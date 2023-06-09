@@ -10,12 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.plant;
 
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -23,7 +20,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -35,7 +33,9 @@ import java.util.function.Supplier;
 
 public class HempBlock extends BushBlock implements BonemealableBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.PLANT)
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.PLANT)
+			.pushReaction(PushReaction.DESTROY)
 			.sound(SoundType.CROP)
 			.noCollission()
 			.strength(0)

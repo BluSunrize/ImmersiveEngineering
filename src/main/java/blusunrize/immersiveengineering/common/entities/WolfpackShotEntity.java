@@ -45,12 +45,12 @@ public class WolfpackShotEntity extends RevolvershotHomingEntity
 	@Override
 	public void onHit(HitResult mop)
 	{
-		if(!this.level.isClientSide&&mop instanceof EntityHitResult)
+		if(!this.level().isClientSide&&mop instanceof EntityHitResult)
 		{
 			Entity hit = ((EntityHitResult)mop).getEntity();
 			if(hit.invulnerableTime > 0)
 				hit.invulnerableTime = 0;
-			Entity shooter = shooterUUID!=null?level.getPlayerByUUID(shooterUUID): null;
+			Entity shooter = shooterUUID!=null?level().getPlayerByUUID(shooterUUID): null;
 			hit.hurt(IEDamageSources.causeWolfpackDamage(this, shooter),
 					IEServerConfig.TOOLS.bulletDamage_WolfpackPart.get().floatValue());
 		}

@@ -37,7 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.capabilities.Capability;
@@ -208,7 +208,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	public List<ItemStack> getBlockEntityDrop(Builder context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		writeCustomNBT(stack.getOrCreateTag(), false);

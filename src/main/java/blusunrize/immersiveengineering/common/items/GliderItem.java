@@ -70,19 +70,19 @@ public class GliderItem extends IEBaseItem implements Equipable
 	@Override
 	public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks)
 	{
-		if(!entity.level.isClientSide)
+		if(!entity.level().isClientSide)
 		{
 			int nextFlightTick = flightTicks+1;
 			if(nextFlightTick%10==0)
 			{
 				// if the player goes too fast, the glider takes additional damage
 				double speed = entity.getDeltaMovement().length();
-				int itemDamage = speed>1.5?3:1;
-				if(itemDamage>1 && entity instanceof Player player)
+				int itemDamage = speed > 1.5?3: 1;
+				if(itemDamage > 1&&entity instanceof Player player)
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"glider.too_fast"), true);
 				// It also makes worrying noises!
 				if(itemDamage>1 && (nextFlightTick+40)%60==0)
-					entity.getLevel().playSound(null, entity, IESounds.glider.get(), SoundSource.PLAYERS, 1, 1);
+					entity.level().playSound(null, entity, IESounds.glider.get(), SoundSource.PLAYERS, 1, 1);
 
 				if(nextFlightTick%20==0)
 				{

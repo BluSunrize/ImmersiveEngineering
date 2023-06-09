@@ -13,7 +13,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
@@ -41,8 +40,6 @@ public class AllLoot extends LootTableProvider
 	@Override
 	protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationtracker)
 	{
-		map.forEach((p_218436_2_, p_218436_3_) -> {
-			LootTables.validate(validationtracker, p_218436_2_, p_218436_3_);
-		});
+		map.forEach((p_218436_2_, p_218436_3_) -> p_218436_3_.validate(validationtracker));
 	}
 }

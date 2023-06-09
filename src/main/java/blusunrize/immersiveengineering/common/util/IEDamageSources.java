@@ -173,7 +173,7 @@ public class IEDamageSources
 
 	private static DamageSourcesAccess sources(Entity entity)
 	{
-		return sources(entity.level);
+		return sources(entity.level());
 	}
 
 	private static Holder<DamageType> typeHolder(Level level, ResourceKey<DamageType> typeKey)

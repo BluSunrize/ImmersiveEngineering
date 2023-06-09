@@ -86,7 +86,7 @@ public class MessageWireSync implements IMessage
 					start, end, type, operation.name()
 			);
 			Player player = ImmersiveEngineering.proxy.getClientPlayer();
-			Level w = player.level;
+			Level w = player.level();
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			Connection connection = new Connection(type, start, end, offsetStart, offsetEnd);

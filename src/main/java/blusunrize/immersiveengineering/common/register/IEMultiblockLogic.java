@@ -24,7 +24,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -168,7 +169,9 @@ public class IEMultiblockLogic
 	private static <S extends IMultiblockState>
 	IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{
-		Properties properties = Properties.of(Material.STONE)
+		Properties properties = Properties.of()
+				.mapColor(MapColor.STONE)
+				.instrument(NoteBlockInstrument.BASEDRUM)
 				.strength(2, 20);
 		if(!solid)
 			properties.noOcclusion();

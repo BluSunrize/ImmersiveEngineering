@@ -37,7 +37,7 @@ import static blusunrize.immersiveengineering.common.blocks.wooden.CraftingTable
 @ChestContainer
 public class CraftingTableMenu extends IEContainerMenu
 {
-	private final CraftingContainer craftingInventory = new CraftingContainer(this, GRID_SIZE, GRID_SIZE);
+	private final CraftingContainer craftingInventory = new TransientCraftingContainer(this, GRID_SIZE, GRID_SIZE);
 	private final ResultContainer craftResultInventory = new ResultContainer();
 	private final Player player;
 	private final ContainerLevelAccess access;

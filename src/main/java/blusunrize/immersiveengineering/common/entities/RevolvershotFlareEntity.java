@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import org.joml.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,6 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class RevolvershotFlareEntity extends RevolvershotEntity
 {
@@ -80,17 +80,17 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		super.tick();
 		if(colour < 0)
 			colour = getColourSynced();
-		if(level.isClientSide)
+		if(level().isClientSide)
 		{
-			float r = (getColour() >> 16&255)/255f;
-			float g = (getColour() >> 8&255)/255f;
+			float r = (getColour()>>16&255)/255f;
+			float g = (getColour()>>8&255)/255f;
 			float b = (getColour()&255)/255f;
-			level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX(), getY(), getZ(), 0, 0, 0);
+			level().addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX(), getY(), getZ(), 0, 0, 0);
 			if(tickCount > 40)
 				for(int i = 0; i < 20; i++)
 				{
 					Vec3 v = new Vec3(ApiUtils.RANDOM.nextDouble()-.5, ApiUtils.RANDOM.nextDouble()-.5, ApiUtils.RANDOM.nextDouble()-.5);
-					level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
+					level().addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 				}
 		}
 		if(tickCount==40)
@@ -99,7 +99,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 			spawnParticles();
 			lightPos = this.blockPosition();
 			for(int i = 0; i < 128; i++)
-				if(level.isEmptyBlock(lightPos))
+				if(level().isEmptyBlock(lightPos))
 					lightPos = lightPos.below();
 				else
 				{
@@ -114,7 +114,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 	{
 		if(tickCount <= 40)
 		{
-			if(!this.level.isClientSide)
+			if(!this.level().isClientSide)
 				if(mop instanceof EntityHitResult)
 				{
 					Entity hit = ((EntityHitResult)mop).getEntity();
@@ -125,8 +125,8 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 				{
 					BlockHitResult blockRTR = (BlockHitResult)mop;
 					BlockPos pos = blockRTR.getBlockPos().relative(blockRTR.getDirection());
-					if(this.level.isEmptyBlock(pos))
-						this.level.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
+					if(this.level().isEmptyBlock(pos))
+						this.level().setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
 				}
 			spawnParticles();
 		}
@@ -141,7 +141,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		for(int i = 0; i < 80; i++)
 		{
 			Vec3 v = new Vec3((ApiUtils.RANDOM.nextDouble()-.5)*i > 40?2: 1, (ApiUtils.RANDOM.nextDouble()-.5)*i > 40?2: 1, (ApiUtils.RANDOM.nextDouble()-.5)*i > 40?2: 1);
-			level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
+			level().addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 		}
 	}
 }

@@ -41,8 +41,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -58,42 +58,59 @@ import java.util.function.Supplier;
 public final class IEBlocks
 {
 	public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, Lib.MODID);
-	private static final Supplier<Properties> STONE_DECO_PROPS = () -> Block.Properties.of(Material.STONE)
+	private static final Supplier<Properties> STONE_DECO_PROPS = () -> Block.Properties.of()
+			.mapColor(MapColor.STONE)
+			.instrument(NoteBlockInstrument.BASEDRUM)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
 			.strength(2, 10);
 
-	private static final Supplier<Properties> STONE_DECO_BRICK_PROPS = () -> Block.Properties.of(Material.STONE)
+	private static final Supplier<Properties> STONE_DECO_BRICK_PROPS = () -> Block.Properties.of()
 			.sound(SoundType.STONE)
+			.mapColor(MapColor.STONE)
+			.instrument(NoteBlockInstrument.BASEDRUM)
 			.requiresCorrectToolForDrops()
 			.strength(1.75f, 10);
-	private static final Supplier<Properties> STONE_DECO_LEADED_PROPS = () -> Block.Properties.of(Material.STONE)
+	private static final Supplier<Properties> STONE_DECO_LEADED_PROPS = () -> Block.Properties.of()
 			.sound(SoundType.STONE)
+			.mapColor(MapColor.STONE)
+			.instrument(NoteBlockInstrument.BASEDRUM)
 			.requiresCorrectToolForDrops()
 			.strength(2, 180);
-	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of(Material.STONE)
+	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of()
 			.sound(SoundType.STONE)
+			.mapColor(MapColor.STONE)
+			.instrument(NoteBlockInstrument.BASEDRUM)
 			.requiresCorrectToolForDrops()
 			.strength(0.5f, 0.5f) //Glass & Tinted Glass are 0.3f,0.3f. These glasses are stronger, thus 0.5f,0.5f
 			.noOcclusion();
-	private static final Supplier<Properties> SHEETMETAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
+	private static final Supplier<Properties> SHEETMETAL_PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
 			.strength(2, 2); //Cauldron props are 2,2 and sheetmetal is similar
-	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES = () -> Block.Properties.of(Material.WOOD)
+	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.WOOD)
+			.ignitedByLava()
+			.instrument(NoteBlockInstrument.BASS)
 			.sound(SoundType.WOOD)
 			.strength(2, 5);
 	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OVERLAY =
-			() -> Block.Properties.of(Material.WOOD)
+			() -> Block.Properties.of()
+					.mapColor(MapColor.WOOD)
+					.ignitedByLava()
+					.instrument(NoteBlockInstrument.BASS)
 					.sound(SoundType.WOOD)
 					.strength(2, 5)
 					.isViewBlocking((state, blockReader, pos) -> false);
 	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion();
-	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
+	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
 			.requiresCorrectToolForDrops()
 			.strength(3, 15);
 	private static final Supplier<Properties> METAL_PROPERTIES_NO_OVERLAY =
-			() -> Block.Properties.of(Material.METAL)
+			() -> Block.Properties.of()
+					.mapColor(MapColor.METAL)
 					.sound(SoundType.METAL)
 					.strength(3, 15)
 					.requiresCorrectToolForDrops()
@@ -113,15 +130,22 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> COKEBRICK = BlockEntry.simple("cokebrick", STONE_DECO_BRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> BLASTBRICK = BlockEntry.simple("blastbrick", STONE_DECO_BRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> BLASTBRICK_REINFORCED = BlockEntry.simple(
-				"blastbrick_reinforced", () -> Block.Properties.of(Material.STONE)
+				"blastbrick_reinforced", () -> Block.Properties.of()
+						.mapColor(MapColor.STONE)
+						.instrument(NoteBlockInstrument.BASEDRUM)
 						.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(2.5f, 12)
 		);
 		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple(
-				"coke", () -> Block.Properties.of(Material.STONE)
-				.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(5, 6));
+				"coke", () -> Block.Properties.of()
+						.mapColor(MapColor.STONE)
+						.instrument(NoteBlockInstrument.BASEDRUM)
+						.sound(SoundType.STONE).requiresCorrectToolForDrops().strength(5, 6));
 		public static final BlockEntry<SlagGravelBlock> SLAG_GRAVEL = new BlockEntry<>(
 				"slag_gravel",
-				() -> Block.Properties.of(Material.SAND, MaterialColor.STONE).strength(0.6F).sound(SoundType.GRAVEL),
+				() -> Block.Properties.of()
+						.mapColor(MapColor.STONE)
+						.instrument(NoteBlockInstrument.SNARE)
+						.strength(0.6F).sound(SoundType.GRAVEL),
 				SlagGravelBlock::new
 		);
 
@@ -146,7 +170,9 @@ public final class IEBlocks
 				"slag_glass", STONE_DECO_PROPS_NOT_SOLID, shouldHave -> shouldHave.setLightOpacity(8)
 		);
 		public static final BlockEntry<IEBaseBlock> CONCRETE_SPRAYED = BlockEntry.simple(
-				"concrete_sprayed", () -> Block.Properties.of(Material.STONE)
+				"concrete_sprayed", () -> Block.Properties.of()
+						.mapColor(MapColor.STONE)
+						.instrument(NoteBlockInstrument.BASEDRUM)
 						.strength(.2F, 1)
 						.noOcclusion());
 		public static final BlockEntry<IEBaseBlock> ALLOYBRICK = BlockEntry.simple("alloybrick", STONE_DECO_BRICK_PROPS);
@@ -202,24 +228,31 @@ public final class IEBlocks
 				if(m.shouldAddOre())
 				{
 					ore = new BlockEntry<>(BlockEntry.simple("ore_"+name,
-							() -> Block.Properties.of(Material.STONE)
+							() -> Block.Properties.of()
+									.mapColor(MapColor.STONE)
+									.instrument(NoteBlockInstrument.BASEDRUM)
 									.strength(3, 3)
 									.requiresCorrectToolForDrops()));
 					deepslateOre = new BlockEntry<>(BlockEntry.simple("deepslate_ore_"+name,
-							() -> Block.Properties.of(Material.STONE)
-									.color(MaterialColor.DEEPSLATE)
+							() -> Block.Properties.of()
+									.mapColor(MapColor.STONE)
+									.instrument(NoteBlockInstrument.BASEDRUM)
+									.mapColor(MapColor.DEEPSLATE)
 									.sound(SoundType.DEEPSLATE)
 									.strength(4.5f, 3)
 									.requiresCorrectToolForDrops()));
 					rawOre = new BlockEntry<>(BlockEntry.simple("raw_block_"+name,
-							() -> Block.Properties.of(Material.STONE)
+							() -> Block.Properties.of()
+									.mapColor(MapColor.STONE)
+									.instrument(NoteBlockInstrument.BASEDRUM)
 									.strength(5, 6)
 									.requiresCorrectToolForDrops()));
 				}
 				if(!m.isVanillaMetal())
 				{
 					BlockEntry<IEBaseBlock> storageIE = BlockEntry.simple(
-							"storage_"+name, () -> Block.Properties.of(Material.METAL)
+							"storage_"+name, () -> Block.Properties.of()
+									.mapColor(MapColor.METAL)
 									.sound(m==EnumMetals.STEEL?SoundType.NETHERITE_BLOCK: SoundType.METAL)
 									.strength(5, 10)
 									.requiresCorrectToolForDrops());
@@ -268,14 +301,20 @@ public final class IEBlocks
 		public static final BlockEntry<PostBlock> TREATED_POST = BlockEntry.post("treated_post", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<SawdustBlock> SAWDUST = new BlockEntry<>(
 				"sawdust",
-				() -> Block.Properties.of(Material.WOOD, MaterialColor.SAND)
+				() -> Block.Properties.of()
+						.mapColor(MapColor.SAND)
+						.ignitedByLava()
+						.instrument(NoteBlockInstrument.BASS)
 						.sound(SoundType.SAND)
 						.strength(0.5F)
 						.noCollission().noOcclusion(),
 				SawdustBlock::new
 		);
 		public static final BlockEntry<IEBaseBlock> FIBERBOARD = BlockEntry.simple("fiberboard",
-				() -> Block.Properties.of(Material.WOOD, MaterialColor.WOOD)
+				() -> Block.Properties.of()
+						.mapColor(MapColor.WOOD)
+						.ignitedByLava()
+						.instrument(NoteBlockInstrument.BASS)
 						.strength(1.25f, 1)
 		);
 
@@ -314,7 +353,12 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<IEEntityBlock<WoodenCrateBlockEntity>> REINFORCED_CRATE = new BlockEntry<>(
 				"reinforced_crate",
-				() -> Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 1200000),
+				() -> Properties.of()
+						.sound(SoundType.WOOD)
+						.strength(2, 1200000)
+						.mapColor(MapColor.WOOD)
+						.ignitedByLava()
+						.instrument(NoteBlockInstrument.BASS),
 				p -> new IEEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p, false)
 		);
 		public static final BlockEntry<IEEntityBlock<SorterBlockEntity>> SORTER = new BlockEntry<>(

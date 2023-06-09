@@ -126,12 +126,13 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, LivingEntity player, int count)
+	public void onUseTick(Level level, LivingEntity player, ItemStack stack, int remainingUseDuration)
 	{
 		FluidStack fs = this.getFluid(stack);
 		if(!fs.isEmpty())
 		{
-			int duration = getUseDuration(stack)-count;
+			// TODO may be broken
+			int duration = getUseDuration(stack)-remainingUseDuration;
 			int consumed = IEServerConfig.TOOLS.chemthrower_consumption.get();
 			if(consumed*duration <= fs.getAmount())
 			{
@@ -151,25 +152,25 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				for(int i = 0; i < split; i++)
 				{
 					Vec3 vecDir = v.add(player.getRandom().nextGaussian()*scatter, player.getRandom().nextGaussian()*scatter, player.getRandom().nextGaussian()*scatter);
-					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(player.level, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
+					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(player.level(), player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
 
 					// Apply momentum from the player.
 					chem.setDeltaMovement(player.getDeltaMovement().add(vecDir.scale(range)));
 
 					// Apply a small amount of backforce.
-					if(!player.isOnGround())
+					if(!player.onGround())
 						player.setDeltaMovement(player.getDeltaMovement().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
 						chem.setSecondsOnFire(10);
-					if(!player.level.isClientSide)
-						player.level.addFreshEntity(chem);
+					if(!player.level().isClientSide)
+						player.level().addFreshEntity(chem);
 				}
-				if(count%4==0)
+				if(remainingUseDuration%4==0)
 				{
 					if(ignite)
-						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.sprayFire.get(), SoundSource.PLAYERS, .5f, 1.5f);
+						player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.sprayFire.get(), SoundSource.PLAYERS, .5f, 1.5f);
 					else
-						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spray.get(), SoundSource.PLAYERS, .5f, .75f);
+						player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spray.get(), SoundSource.PLAYERS, .5f, .75f);
 				}
 			}
 			else

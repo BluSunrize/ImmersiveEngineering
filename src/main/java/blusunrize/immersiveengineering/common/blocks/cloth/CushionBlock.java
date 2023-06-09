@@ -15,13 +15,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 import java.util.function.Supplier;
 
 public class CushionBlock extends IEBaseBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.WOOL)
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.WOOL)
+			.ignitedByLava()
 			.sound(SoundType.WOOL)
 			.strength(0.8F);
 

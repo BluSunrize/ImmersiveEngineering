@@ -47,7 +47,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -507,10 +508,11 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	public List<ItemStack> getBlockEntityDrop(LootParams.Builder builder)
 	{
-		BlockState state = context.getParamOrNull(LootContextParams.BLOCK_STATE);
-		Entity player = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+		LootParams parms = builder.create(LootContextParamSets.BLOCK);
+		BlockState state = parms.getParamOrNull(LootContextParams.BLOCK_STATE);
+		Entity player = parms.getParamOrNull(LootContextParams.THIS_ENTITY);
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		TurretBlockEntity<?> turret = this;
 		if(isDummy())

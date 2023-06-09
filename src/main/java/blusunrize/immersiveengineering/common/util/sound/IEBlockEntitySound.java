@@ -139,7 +139,7 @@ public class IEBlockEntitySound implements TickableSoundInstance
 				volumeAjustment = EarmuffsItem.getVolumeMod(earmuffs);
 		}
 
-		BlockEntity tile = ClientUtils.mc().player.level.getBlockEntity(tilePos);
+		BlockEntity tile = ClientUtils.mc().player.level().getBlockEntity(tilePos);
 		if(!(tile instanceof ISoundBE soundBE))
 			donePlaying = true;
 		else
@@ -164,7 +164,7 @@ public class IEBlockEntitySound implements TickableSoundInstance
 	@Override
 	public void tick()
 	{
-		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.level.getGameTime()%40==0)
+		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.level().getGameTime()%40==0)
 			evaluateVolume();
 	}
 

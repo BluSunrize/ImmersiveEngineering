@@ -104,7 +104,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 	@Override
 	public void baseTick()
 	{
-		if(this.getAmmo().isEmpty()&&this.level.isClientSide)
+		if(this.getAmmo().isEmpty()&&this.level().isClientSide)
 			this.ammo = getAmmoSynced();
 		super.baseTick();
 	}
@@ -113,7 +113,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 	protected void onHitEntity(EntityHitResult result)
 	{
 		super.onHitEntity(result);
-		if(!this.level.isClientSide&&!getAmmo().isEmpty())
+		if(!this.level().isClientSide&&!getAmmo().isEmpty())
 		{
 			IRailgunProjectile projectileProperties = getProjectileProperties();
 			if(projectileProperties!=null)
@@ -121,12 +121,12 @@ public class RailgunShotEntity extends IEProjectileEntity
 				Entity shooter = this.getOwner();
 				UUID shooterUuid = this.getShooterUUID();
 				Entity hit = result.getEntity();
-				double damage = projectileProperties.getDamage(this.level, hit, shooterUuid, this);
-				DamageSource source = projectileProperties.getDamageSource(this.level, hit, shooterUuid, this);
+				double damage = projectileProperties.getDamage(this.level(), hit, shooterUuid, this);
+				DamageSource source = projectileProperties.getDamageSource(this.level(), hit, shooterUuid, this);
 				if(source==null)
 					source = IEDamageSources.causeRailgunDamage(this, shooter);
 				hit.hurt(source, (float)(damage*IEServerConfig.TOOLS.railgun_damage.get()));
-				projectileProperties.onHitTarget(this.level, result, shooterUuid, this);
+				projectileProperties.onHitTarget(this.level(), result, shooterUuid, this);
 			}
 		}
 	}
@@ -135,7 +135,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 	protected void onHitBlock(BlockHitResult result)
 	{
 		super.onHitBlock(result);
-		if(!this.level.isClientSide&&!getAmmo().isEmpty())
+		if(!this.level().isClientSide&&!getAmmo().isEmpty())
 		{
 			IRailgunProjectile projectileProperties = getProjectileProperties();
 			if(projectileProperties!=null)
@@ -144,7 +144,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 				double breakRoll = this.random.nextDouble();
 				if(breakRoll <= getProjectileProperties().getBreakChance(shooterUuid, ammo))
 					this.discard();
-				projectileProperties.onHitTarget(this.level, result, shooterUuid, this);
+				projectileProperties.onHitTarget(this.level(), result, shooterUuid, this);
 			}
 		}
 	}

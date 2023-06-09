@@ -176,7 +176,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	private void handleAntennaTick(ItemStack itemStack, Level world, Player player)
 	{
 		// attachment only works when grounded
-		boolean grounded = player.getRootVehicle().isOnGround();
+		boolean grounded = player.getRootVehicle().onGround();
 		if(!grounded&&player.getRootVehicle() instanceof AbstractMinecart minecart)
 		{
 			BlockPos railPos = minecart.getCurrentRailPosition();

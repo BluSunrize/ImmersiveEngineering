@@ -286,7 +286,7 @@ public abstract class IESlot extends Slot
 		{
 			if(preventDoubles)
 				for(Slot slot : container.slots)
-					if(this!=slot&&slot instanceof Upgrades&&ItemStack.isSame(slot.getItem(), itemStack))
+					if(this!=slot&&slot instanceof Upgrades&&ItemStack.isSameItem(slot.getItem(), itemStack))
 						return false;
 			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IUpgrade&&((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type)&&((IUpgrade)itemStack.getItem()).canApplyUpgrades(toolStack, itemStack);
 		}

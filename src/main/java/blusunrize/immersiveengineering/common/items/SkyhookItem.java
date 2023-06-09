@@ -134,14 +134,13 @@ public class SkyhookItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, LivingEntity player, int count)
+	public void onUseTick(Level level, LivingEntity player, ItemStack stack, int count)
 	{
-		super.onUsingTick(stack, player, count);
+		super.onUseTick(level, player, stack, count);
 		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, Direction.UP).orElseThrow(RuntimeException::new);
 		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
 			return;
-		Level world = player.level;
-		Connection con = WireUtils.getConnectionMovedThrough(world, player);
+		Connection con = WireUtils.getConnectionMovedThrough(level, player);
 		if(con!=null)
 			SkylineHelper.spawnHook(player, con, player.getUsedItemHand(), shouldLimitSpeed(stack));
 	}

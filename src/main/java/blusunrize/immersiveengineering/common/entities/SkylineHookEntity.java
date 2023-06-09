@@ -107,7 +107,7 @@ public class SkylineHookEntity extends Entity
 		if(!connection.getCatenaryData().isVertical())
 			this.angle = Math.atan2(connection.getCatenaryData().getDeltaZ(), connection.getCatenaryData().getDeltaX());
 		ignoreCollisions.clear();
-		LocalWireNetwork net = GlobalWireNetwork.getNetwork(level).getLocalNet(start);
+		LocalWireNetwork net = GlobalWireNetwork.getNetwork(level()).getLocalNet(start);
 		IImmersiveConnectable iicStart = net.getConnector(start);
 		IImmersiveConnectable iicEnd = net.getConnector(c.getOtherEnd(start));
 		if(iicStart!=null&&iicEnd!=null)
@@ -142,12 +142,12 @@ public class SkylineHookEntity extends Entity
 			player = (Player)list.get(0);
 		if(connection==null||player==null||(hand!=null&&player.getItemInHand(hand).getItem()!=Misc.SKYHOOK.asItem()))
 		{
-			if(!level.isClientSide)
+			if(!level().isClientSide)
 				discard();
 			return;
 		}
 		//TODO figure out how to get the speed keeping on dismount working with less sync packets
-		if(this.tickCount%5==0&&!level.isClientSide)
+		if(this.tickCount%5==0&&!level().isClientSide)
 			sendUpdatePacketTo(player);
 		PlayerUtils.resetFloatingState(player);
 		boolean moved = false;
@@ -262,7 +262,7 @@ public class SkylineHookEntity extends Entity
 			for(int j = 0; j < 4; ++j)
 			{
 				float f3 = 0.25F;
-				this.level.addParticle(ParticleTypes.BUBBLE,
+				this.level().addParticle(ParticleTypes.BUBBLE,
 						this.getX()-motion.x*(double)f3,
 						this.getY()-motion.y*(double)f3,
 						this.getZ()-motion.z*(double)f3,
@@ -297,7 +297,7 @@ public class SkylineHookEntity extends Entity
 	public void switchConnection(ConnectionPoint posForSwitch, Player player, double lastHorSpeed)
 	{
 		Optional<Connection> line = Optional.empty();
-		LocalWireNetwork net = GlobalWireNetwork.getNetwork(level).getLocalNet(posForSwitch);
+		LocalWireNetwork net = GlobalWireNetwork.getNetwork(level()).getLocalNet(posForSwitch);
 		Collection<Connection> possible = net.getConnections(posForSwitch);
 		if(possible!=null)
 		{
@@ -348,7 +348,7 @@ public class SkylineHookEntity extends Entity
 		double playerHeight = playerBB.maxY-playerBB.minY;
 		AABB feet = new AABB(playerBB.minX, playerBB.minY, playerBB.minZ,
 				playerBB.maxX, playerBB.minY+.05*playerHeight, playerBB.maxZ);
-		List<VoxelShape> shapes = SkylineHelper.getCollisionBoxes(player, playerBB, level, ignoreCollisions);
+		List<VoxelShape> shapes = SkylineHelper.getCollisionBoxes(player, playerBB, level(), ignoreCollisions);
 		// Heuristic to prevent dragging players through blocks too much, but also keep most setups working
 		// Allow positions where the intersection is less than 10% of the player BB volume
 		double totalCollisionVolume = 0;
@@ -487,11 +487,11 @@ public class SkylineHookEntity extends Entity
 	protected void removePassenger(Entity passenger)
 	{
 		super.removePassenger(passenger);
-		if(!level.isClientSide)
-			ApiUtils.addFutureServerTask(level, () -> handleDismount(passenger));
+		if(!level().isClientSide)
+			ApiUtils.addFutureServerTask(level(), () -> handleDismount(passenger));
 		else
 			//TODO is this still needed?
-			ApiUtils.addFutureServerTask(level, () -> handleDismount(passenger), true);
+			ApiUtils.addFutureServerTask(level(), () -> handleDismount(passenger), true);
 	}
 
 	@Override

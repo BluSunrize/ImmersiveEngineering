@@ -78,7 +78,7 @@ public class BlastFurnaceMenu extends IEContainerMenu
 		this.leftHeater = leftHeater;
 		this.rightHeater = rightHeater;
 
-		Level level = inventoryPlayer.player.level;
+		Level level = inventoryPlayer.player.level();
 		this.addSlot(new SlotItemHandler(inv, 0, 52, 17)
 		{
 			@Override

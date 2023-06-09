@@ -49,7 +49,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.IItemHandler;
@@ -288,7 +287,7 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, Player player)
 	{
-		Level world = player.level;
+		Level world = player.level();
 		// early exit for client
 		if(world.isClientSide||!(player instanceof ServerPlayer))
 			return false;

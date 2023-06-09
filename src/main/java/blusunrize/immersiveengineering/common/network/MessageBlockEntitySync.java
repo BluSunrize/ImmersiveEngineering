@@ -53,7 +53,7 @@ public class MessageBlockEntitySync implements IMessage
 		Context ctx = context.get();
 		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
 			ctx.enqueueWork(() -> {
-				ServerLevel world = Objects.requireNonNull(ctx.getSender()).getLevel();
+				ServerLevel world = Objects.requireNonNull(ctx.getSender()).serverLevel();
 				if(world.isAreaLoaded(pos, 1))
 				{
 					BlockEntity tile = world.getBlockEntity(pos);

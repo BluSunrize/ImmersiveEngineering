@@ -42,7 +42,7 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 	{
 		Context ctx = context.get();
 		ctx.enqueueWork(() -> {
-			ServerLevel level = Objects.requireNonNull(ctx.getSender()).getLevel();
+			ServerLevel level = Objects.requireNonNull(ctx.getSender()).serverLevel();
 			ICapabilityProvider provider;
 			BlockState blockState = level.getBlockState(pos);
 			RemoteRedstoneData data = new RemoteRedstoneData(pos, level.getGameTime(), blockState.isSignalSource(), redstoneLevel(level, pos));

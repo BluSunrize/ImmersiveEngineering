@@ -28,7 +28,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -93,7 +92,7 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 			state = level.getBlockState(pos);
 			if(state.hasAnalogOutputSignal())
 				return state.getAnalogOutputSignal(level, pos);
-			else if(state.getMaterial()==Material.AIR)
+			else if(state.isAir())
 			{
 				ItemFrame entityitemframe = this.findItemFrame(level, getFacing(), pos);
 				if(entityitemframe!=null)

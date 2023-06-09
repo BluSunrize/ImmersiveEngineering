@@ -93,7 +93,7 @@ public class SawbladeEntity extends IEProjectileEntity
 	@Override
 	public void baseTick()
 	{
-		if(this.getAmmo().isEmpty()&&this.level.isClientSide)
+		if(this.getAmmo().isEmpty()&&this.level().isClientSide)
 			this.ammo = getAmmoSynced();
 		super.baseTick();
 	}
@@ -102,7 +102,7 @@ public class SawbladeEntity extends IEProjectileEntity
 	{
 		int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
 		Entity shooter = getOwner();
-		if(getAmmo().hurt(dmg, level.random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
+		if(getAmmo().hurt(dmg, level().random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
 			this.discard();
 	}
 
@@ -130,7 +130,7 @@ public class SawbladeEntity extends IEProjectileEntity
 		super.handlePiecing(target);
 		if(this.piercedEntities.size() >= 3&&getShooterUUID()!=null)
 		{
-			Player shooter = level.getPlayerByUUID(this.getShooterUUID());
+			Player shooter = level().getPlayerByUUID(this.getShooterUUID());
 			if(shooter!=null)
 				Utils.unlockIEAdvancement(shooter, "tools/secret_ravenholm");
 		}

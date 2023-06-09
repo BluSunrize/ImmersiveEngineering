@@ -14,7 +14,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -31,7 +32,11 @@ public class PartialConcreteBlock extends IEBaseBlock
 
 	public static Block.Properties makeProperties()
 	{
-		return Block.Properties.of(Material.STONE).strength(2, 20).noOcclusion();
+		return Block.Properties.of()
+				.mapColor(MapColor.STONE)
+				.instrument(NoteBlockInstrument.BASEDRUM)
+				.strength(2, 20)
+				.noOcclusion();
 	}
 
 	@Override

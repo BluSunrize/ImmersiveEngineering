@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.storage.loot.LootContext.Builder;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -47,7 +46,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Locale;
 
 public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetProvider
@@ -59,8 +57,7 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 
 	public PostBlock(Properties blockProps)
 	{
-		super(blockProps);
-		setMobility(PushReaction.BLOCK);
+		super(blockProps.pushReaction(PushReaction.BLOCK));
 		lightOpacity = 0;
 	}
 
@@ -69,12 +66,6 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(POST_SLAVE, HORIZONTAL_OFFSET, BlockStateProperties.WATERLOGGED);
-	}
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, Builder builder)
-	{
-		return ImmutableList.of();
 	}
 
 	@Override
@@ -350,7 +341,7 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 				else
 				{
 					BlockState neighborState = world.getBlockState(neighborPos);
-					if(neighborState.getMaterial().isReplaceable())
+					if(neighborState.canBeReplaced())
 						ret = false;
 					else
 					{

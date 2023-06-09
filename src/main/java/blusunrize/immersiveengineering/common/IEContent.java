@@ -94,8 +94,6 @@ import net.minecraftforge.registries.NewRegistryEvent;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.io.IOException;
-import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
@@ -141,6 +139,7 @@ public class IEContent
 		IEBlockEntities.REGISTER.register(modBus);
 		IEEntityTypes.REGISTER.register(modBus);
 		IEMenuTypes.REGISTER.register(modBus);
+		IECreativeTabs.REGISTER.register(modBus);
 		IEEntityDataSerializers.REGISTER.register(modBus);
 		IEStats.modConstruction();
 		IEItems.init();

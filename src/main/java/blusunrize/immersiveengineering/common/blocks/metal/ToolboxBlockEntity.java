@@ -38,7 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -152,7 +152,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	public List<ItemStack> getBlockEntityDrop(LootParams.Builder context)
 	{
 		ItemStack stack = new ItemStack(Tools.TOOLBOX);
 		Tools.TOOLBOX.get().setContainedItems(stack, inventory);

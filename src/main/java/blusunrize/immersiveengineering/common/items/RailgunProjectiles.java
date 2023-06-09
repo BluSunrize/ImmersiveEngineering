@@ -110,7 +110,7 @@ public class RailgunProjectiles
 			@Override
 			public Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
 			{
-				return new SawbladeEntity(defaultProjectile.getLevel(), shooter, 20, 0, ammo);
+				return new SawbladeEntity(defaultProjectile.level(), shooter, 20, 0, ammo);
 			}
 		});
 
@@ -129,7 +129,7 @@ public class RailgunProjectiles
 				if(shooter!=null)
 				{
 					ammo.hurtAndBreak(1, shooter, (player) -> player.broadcastBreakEvent(shooter.getUsedItemHand()));
-					ThrownTrident trident = new ThrownTrident(shooter.level, shooter, ammo);
+					ThrownTrident trident = new ThrownTrident(shooter.level(), shooter, ammo);
 					trident.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 5F, 0F);
 					if(shooter.getAbilities().instabuild)
 						trident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
@@ -153,7 +153,7 @@ public class RailgunProjectiles
 			{
 				if(shooter!=null)
 				{
-					ThrownEnderpearl pearl = new ThrownEnderpearl(shooter.level, shooter);
+					ThrownEnderpearl pearl = new ThrownEnderpearl(shooter.level(), shooter);
 					pearl.setItem(ammo);
 					pearl.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 2.5F, 0);
 					return pearl;

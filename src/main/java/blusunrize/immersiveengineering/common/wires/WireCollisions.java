@@ -38,10 +38,10 @@ public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.level.isClientSide&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity living&&
+		if(!e.level().isClientSide&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity living&&
 				!(e instanceof Player player&&player.getAbilities().invulnerable))
 		{
-			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.level);
+			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.level());
 			WireCollisionData wireData = global.getCollisionData();
 			Collection<WireCollisionData.CollisionInfo> atBlock = wireData.getCollisionInfo(p);
 			for(CollisionInfo info : atBlock)

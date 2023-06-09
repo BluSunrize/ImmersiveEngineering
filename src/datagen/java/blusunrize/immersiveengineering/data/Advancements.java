@@ -34,8 +34,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.world.Villages;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
-import net.minecraft.advancements.critereon.EntityPredicate.Composite;
-import net.minecraft.advancements.critereon.PlacedBlockTrigger.TriggerInstance;
+import net.minecraft.advancements.critereon.ItemUsedOnLocationTrigger.TriggerInstance;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -117,7 +116,7 @@ public class Advancements extends ForgeAdvancementProvider
 				.save(consumer);
 		Advancement shaderbag = AdvBuilder.child("buy_shaderbag", villagers).icon(Misc.SHADER_BAG.get(Rarity.COMMON))
 				.addCriterion("buy_shaderbag", new TradeTrigger.TriggerInstance(
-						EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY,
+						ContextAwarePredicate.ANY, ContextAwarePredicate.ANY,
 						ItemPredicate.Builder.item().of(Misc.SHADER_BAG.get(Rarity.COMMON), Misc.SHADER_BAG.get(Rarity.UNCOMMON), Misc.SHADER_BAG.get(Rarity.RARE)).build())
 				).save(consumer);
 
@@ -127,7 +126,7 @@ public class Advancements extends ForgeAdvancementProvider
 		mapNBT.put("display", displayTag);
 		Advancement oremap = AdvBuilder.child("buy_oremap", villagers).icon(Items.FILLED_MAP)
 				.addCriterion("buy_oremap", new TradeTrigger.TriggerInstance(
-						EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY,
+						ContextAwarePredicate.ANY, ContextAwarePredicate.ANY,
 						ItemPredicate.Builder.item().of(Items.FILLED_MAP).hasNbt(mapNBT).build())
 				).save(consumer);
 
@@ -310,7 +309,7 @@ public class Advancements extends ForgeAdvancementProvider
 
 		public AdvBuilder placeBlock(BlockEntry<?> block)
 		{
-			return this.icon(block).addCriterion("place_block", PlacedBlockTrigger.TriggerInstance.placedBlock(block.get()));
+			return this.icon(block).addCriterion("place_block", TriggerInstance.placedBlock(block.get()));
 		}
 
 		public AdvBuilder multiblock(IETemplateMultiblock multiblock)
@@ -415,9 +414,9 @@ public class Advancements extends ForgeAdvancementProvider
 						CompoundTag entityNBT = new CompoundTag();
 						entityNBT.put("VillagerData", villagerData);
 						addCriterion("meet_"+prof.getPath(), PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
-								Composite.ANY,
+								ContextAwarePredicate.ANY,
 								ItemPredicate.Builder.item(),
-								EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().of(EntityType.VILLAGER).nbt(new NbtPredicate(entityNBT)).build())
+								EntityPredicate.wrap(EntityPredicate.Builder.entity().of(EntityType.VILLAGER).nbt(new NbtPredicate(entityNBT)).build())
 						));
 					});
 			return this;

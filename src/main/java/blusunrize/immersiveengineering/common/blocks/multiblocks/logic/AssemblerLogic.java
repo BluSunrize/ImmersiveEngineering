@@ -203,7 +203,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			{
 				CrafterPatternInventory pattern = state.patterns[p];
 				for(int i = 0; i < 9; i++)
-					if(!pattern.inv.get(i).isEmpty()&&ItemStack.isSame(pattern.inv.get(i), stack))
+					if(!pattern.inv.get(i).isEmpty()&&ItemStack.isSameItem(pattern.inv.get(i), stack))
 						return true;
 			}
 		return false;

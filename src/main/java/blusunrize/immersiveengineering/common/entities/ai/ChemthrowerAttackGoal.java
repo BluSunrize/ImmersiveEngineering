@@ -60,16 +60,16 @@ public class ChemthrowerAttackGoal<T extends Bulwark> extends ShieldCombatGoal<T
 		for(int i = 0; i < split; i++)
 		{
 			Vec3 vecDir = v.add(random.nextGaussian()*scatter, random.nextGaussian()*scatter, random.nextGaussian()*scatter);
-			ChemthrowerShotEntity chem = new ChemthrowerShotEntity(this.mob.level, this.mob, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fluidStack);
+			ChemthrowerShotEntity chem = new ChemthrowerShotEntity(this.mob.level(), this.mob, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fluidStack);
 
 			// Apply momentum from the player.
 			chem.setDeltaMovement(this.mob.getDeltaMovement().add(vecDir.scale(range)));
 			chem.setSecondsOnFire(10);
-			if(!this.mob.level.isClientSide)
-				this.mob.level.addFreshEntity(chem);
+			if(!this.mob.level().isClientSide)
+				this.mob.level().addFreshEntity(chem);
 		}
 		if(counter%4==0)
-			this.mob.level.playSound(null, this.mob.getX(), this.mob.getY(), this.mob.getZ(), IESounds.sprayFire.get(), SoundSource.PLAYERS, .5f, 1.5f);
+			this.mob.level().playSound(null, this.mob.getX(), this.mob.getY(), this.mob.getZ(), IESounds.sprayFire.get(), SoundSource.PLAYERS, .5f, 1.5f);
 
 		if(counter >= 40)
 		{

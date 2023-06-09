@@ -52,7 +52,7 @@ public class CommandMineral
 			int i = 0;
 			for(MineralMix mm : MineralMix.RECIPES.getRecipes(command.getSource().getLevel()))
 				s.append((i++) > 0?", ": "").append(mm.getId());
-			command.getSource().sendSuccess(Component.literal(s.toString()), true);
+			command.getSource().sendSuccess(() -> Component.literal(s.toString()), true);
 			return Command.SINGLE_SUCCESS;
 		});
 		return list;
@@ -106,7 +106,7 @@ public class CommandMineral
 				ret.append(component.withStyle(ChatFormatting.GRAY));
 			}
 		}
-		sender.sendSuccess(ret, true);
+		sender.sendSuccess(() -> ret, true);
 	}
 
 	private static LiteralArgumentBuilder<CommandSourceStack> putMineral()
@@ -139,11 +139,11 @@ public class CommandMineral
 			MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
 			ExcavatorHandler.addVein(sender.getLevel().dimension(), vein);
 			IESaveData.markInstanceDirty();
-			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
+			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
 					"mineral.put.success", mineral.getId(), radius, pos.x(), pos.z()), true);
 		}
 		else
-			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
+			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
 					"mineral.put.invalid_mineral", mineral.getId()), true);
 	}
 
@@ -176,11 +176,11 @@ public class CommandMineral
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 				pair.getFirst().setDepletion(depletion);
 			IESaveData.markInstanceDirty();
-			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
+			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
 					"mineral.set_depletion.success", depletion), true);
 		}
 		else
-			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
+			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
 					"mineral.set_depletion.no_mineral", pos.x(), pos.z()), true);
 	}
 

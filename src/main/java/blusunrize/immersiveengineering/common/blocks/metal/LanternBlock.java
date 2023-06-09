@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -32,7 +32,8 @@ import java.util.function.Supplier;
 
 public class LanternBlock extends IEBaseBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.METAL)
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.of()
+			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
 			.strength(3, 15)
 			.lightLevel(b -> 14)

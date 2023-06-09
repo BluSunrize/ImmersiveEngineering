@@ -36,7 +36,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -50,7 +49,6 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	boolean hasFlavour;
 	//TODO wtf is variable opacity?
 	protected int lightOpacity;
-	protected PushReaction mobilityFlag = PushReaction.NORMAL;
 	protected final boolean notNormalBlock;
 	private final boolean fitsIntoContainer;
 
@@ -114,19 +112,6 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 			return 0;
 		else
 			return super.getLightBlock(state, worldIn, pos);
-	}
-
-	public IEBaseBlock setMobility(PushReaction flag)
-	{
-		mobilityFlag = flag;
-		return this;
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public PushReaction getPistonPushReaction(BlockState state)
-	{
-		return mobilityFlag;
 	}
 
 	@Override

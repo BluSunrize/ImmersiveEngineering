@@ -203,14 +203,14 @@ public class IEShieldItem extends UpgradeableToolItem
 			}
 			if(event.getSource().getEntity()!=null&&event.getSource().getEntity() instanceof LivingEntity&&event.getSource().getEntity().distanceToSqr(player) < 4)
 			{
-				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(event.getEntity().level, 1, true);
+				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(event.getEntity().level(), 1, true);
 				dmgsrc.apply(event.getSource().getEntity());
 				b = true;
 			}
 			if(b)
 			{
 				getUpgrades(stack).putInt("shock_cooldown", 40);
-				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
+				player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
 						SoundSource.BLOCKS, 2.5F, 0.5F+ApiUtils.RANDOM.nextFloat());
 			}
 		}

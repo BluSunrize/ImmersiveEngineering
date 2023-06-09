@@ -48,7 +48,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -257,7 +256,7 @@ public class HammerItem extends IEBaseItem
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand)
 	{
-		if(!player.level.isClientSide&&RotationUtil.rotateEntity(entity, player))
+		if(!player.level().isClientSide&&RotationUtil.rotateEntity(entity, player))
 			return InteractionResult.SUCCESS;
 		else
 			return InteractionResult.PASS;

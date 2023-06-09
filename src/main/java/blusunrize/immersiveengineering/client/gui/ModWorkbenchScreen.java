@@ -69,7 +69,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 		{
 			Slot s = menu.getSlot(i);
 			if(!(s instanceof AlwaysEmptySlot))
-				GuiHelper.drawSlot(graphics.pose(), leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
+				GuiHelper.drawSlot(graphics, leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
 		}
 	}
 }

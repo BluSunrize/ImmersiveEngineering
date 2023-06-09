@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.FullChunkStatus;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -42,14 +42,14 @@ public class TemplateChunk extends LevelChunk
 		this.biome = worldIn.getUncachedNoiseBiome(0, 0, 0);
 		for(StructureBlockInfo info : blocksInChunk)
 		{
-			actuallSetBlockState(info.pos, info.state);
-			if(info.nbt!=null)
+			actuallSetBlockState(info.pos(), info.state());
+			if(info.nbt()!=null)
 			{
-				BlockEntity tile = BlockEntity.loadStatic(info.pos, info.state, info.nbt);
+				BlockEntity tile = BlockEntity.loadStatic(info.pos(), info.state(), info.nbt());
 				if(tile!=null)
 				{
 					tile.setLevel(worldIn);
-					getBlockEntities().put(info.pos, tile);
+					getBlockEntities().put(info.pos(), tile);
 				}
 			}
 		}
@@ -125,9 +125,9 @@ public class TemplateChunk extends LevelChunk
 
 	@Nonnull
 	@Override
-	public ChunkHolder.FullChunkStatus getFullStatus()
+	public FullChunkStatus getFullStatus()
 	{
-		return ChunkHolder.FullChunkStatus.BORDER;
+		return FullChunkStatus.INACCESSIBLE;
 	}
 
 	@Nonnull

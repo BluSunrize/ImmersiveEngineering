@@ -196,7 +196,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 
 	public static void playChargeSound(LivingEntity living, ItemStack railgun)
 	{
-		living.level.playSound(null,
+		living.level().playSound(null,
 				living.getX(), living.getY(), living.getZ(),
 				getChargeTime(railgun) <= 20?IESounds.chargeFast.get(): IESounds.chargeSlow.get(), SoundSource.PLAYERS,
 				1.5f, 1f
@@ -205,17 +205,17 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	}
 
 	@Override
-	public void onUsingTick(ItemStack stack, LivingEntity user, int count)
+	public void onUseTick(Level level, LivingEntity user, ItemStack stack, int count)
 	{
 		int inUse = this.getUseDuration(stack)-count;
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRandom().nextInt(20))
 		{
-			user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark.get(), SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
+			user.level().playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark.get(), SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
 			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
 				Vec3 pos = Utils.getLivingFrontPos(user, .4375, user.getBbHeight()*.75, ItemUtils.getLivingHand(user, user.getUsedItemHand()), false, 1);
-				shader.registryEntry().getEffectFunction().execute(user.level, shader.shader(), stack, shader.sCase().getShaderType().toString(), pos, null, .0625f);
+				shader.registryEntry().getEffectFunction().execute(user.level(), shader.shader(), stack, shader.sCase().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
 	}
@@ -250,11 +250,11 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammo);
 		float speed = 20;
-		Entity shot = new RailgunShotEntity(user.level, user, speed, 0, ammo);
+		Entity shot = new RailgunShotEntity(user.level(), user, speed, 0, ammo);
 		shot = projectileProperties.getProjectile(user instanceof Player player?player: null, ammo, shot);
-		user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
+		user.level().playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
 		if(!world.isClientSide)
-			user.level.addFreshEntity(shot);
+			user.level().addFreshEntity(shot);
 
 		ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(railgun);
 		if(shader!=null)

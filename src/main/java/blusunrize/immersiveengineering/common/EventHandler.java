@@ -252,7 +252,7 @@ public class EventHandler
 			if(!isBoss||event.getEntity().getType().is(IETags.shaderbagBlacklist))
 				return;
 			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(Rarity.EPIC));
-			event.getDrops().add(new ItemEntity(event.getEntity().level, event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), bag));
+			event.getDrops().add(new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), bag));
 		}
 	}
 
@@ -276,10 +276,10 @@ public class EventHandler
 					if(EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, true)==PowerpackItem.TESLA_CONSUMPTION)
 					{
 						EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, false);
-						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(player.getLevel(), 2+player.getRandom().nextInt(4), true);
+						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(player.level(), 2+player.getRandom().nextInt(4), true);
 						if(dmgsrc.apply(attacker))
 							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 60));
-						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
+						player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
 								SoundSource.BLOCKS, 2.5F, 0.5F+rng.nextFloat());
 					}
 		}
@@ -496,7 +496,7 @@ public class EventHandler
 	}
 
 	private static final Function<Raid, Predicate<ServerPlayer>> canTriggerEngineerRaid = raid -> serverPlayer -> {
-		ServerLevel level = serverPlayer.getLevel();
+		ServerLevel level = serverPlayer.serverLevel();
 		ServerAdvancementManager manager = level.getServer().getAdvancements();
 		Advancement advancement = manager.getAdvancement(new ResourceLocation(ImmersiveEngineering.MODID, "main/kill_illager"));
 		return level.getRaidAt(serverPlayer.blockPosition())==raid&&advancement!=null&&serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();

@@ -33,7 +33,7 @@ public class TemplateSyncManager
 	public static void onLogin(PlayerLoggedInEvent ev)
 	{
 		// TODO run when StructureTemplateManager#onResourceManagerReload is called and send to all players then
-		if(!(ev.getEntity().level instanceof ServerLevel level)||!(ev.getEntity() instanceof ServerPlayer player))
+		if(!(ev.getEntity().level() instanceof ServerLevel level)||!(ev.getEntity() instanceof ServerPlayer player))
 			return;
 		List<MessageMultiblockSync.SyncedTemplate> toSync = new ArrayList<>();
 		for(IMultiblock mb : MultiblockHandler.getMultiblocks())

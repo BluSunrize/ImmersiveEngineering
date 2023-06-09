@@ -30,9 +30,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootContext.Builder;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -178,7 +177,7 @@ public class IEBlockInterfaces
 
 	public interface IBlockEntityDrop extends IPlacementInteraction
 	{
-		List<ItemStack> getBlockEntityDrop(LootContext context);
+		List<ItemStack> getBlockEntityDrop(Builder parms);
 
 		default ItemStack getPickBlock(@Nullable Player player, BlockState state, HitResult rayRes)
 		{
@@ -187,11 +186,10 @@ public class IEBlockInterfaces
 			if(!(tile.getLevel() instanceof ServerLevel world))
 				return new ItemStack(state.getBlock());
 			return getBlockEntityDrop(
-					new Builder(world)
+					new LootParams.Builder(world)
 							.withOptionalParameter(LootContextParams.TOOL, ItemStack.EMPTY)
 							.withOptionalParameter(LootContextParams.BLOCK_STATE, world.getBlockState(tile.getBlockPos()))
 							.withOptionalParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(tile.getBlockPos()))
-							.create(LootContextParamSets.BLOCK)
 			).get(0);
 		}
 	}

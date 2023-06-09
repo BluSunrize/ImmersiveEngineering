@@ -39,9 +39,9 @@ public class NonMirrorableWithActiveBlock<S extends IMultiblockState> extends Mu
 	{
 		for(StructureBlockInfo info : multiblock.getStructure(level.getRawLevel()))
 		{
-			final BlockState state = level.getBlockState(info.pos);
+			final BlockState state = level.getBlockState(info.pos());
 			if(state.is(multiblock.getBlock()))
-				level.setBlock(info.pos, state.setValue(NonMirrorableWithActiveBlock.ACTIVE, active));
+				level.setBlock(info.pos(), state.setValue(NonMirrorableWithActiveBlock.ACTIVE, active));
 		}
 	}
 

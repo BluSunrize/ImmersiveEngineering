@@ -113,7 +113,7 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 			this.mob.stopUsingItem();
 			this.shieldCooldown = 100;
 			this.combatState = ShieldCombatState.SHIELD_COOLDOWN;
-			this.mob.level.broadcastEntityEvent(this.mob, (byte)30);
+			this.mob.level().broadcastEntityEvent(this.mob, (byte)30);
 		}
 	}
 

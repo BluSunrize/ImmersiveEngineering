@@ -138,7 +138,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	@Override
 	public void tick()
 	{
-		if(this.getOwner()==null&&this.level.isClientSide)
+		if(this.getOwner()==null&&this.level().isClientSide)
 			this.shooterUUID = getShooterSynced();
 
 		// store previous movement
@@ -162,7 +162,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 		{
 			Vec3 vec32 = this.position();
 			Vec3 vec33 = vec32.add(delta);
-			BlockHitResult blockHitResult = this.level.clip(new ClipContext(vec32, vec33, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+			BlockHitResult blockHitResult = this.level().clip(new ClipContext(vec32, vec33, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
 			if(blockHitResult.getType()!=HitResult.Type.MISS&&!ForgeEventFactory.onProjectileImpact(this, blockHitResult))
 			{
 				this.onHit(blockHitResult);
@@ -203,7 +203,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	@Override
 	public void playerTouch(Player player)
 	{
-		if(!this.level.isClientSide&&(this.inGround||this.isNoPhysics())&&this.shakeTime <= 0)
+		if(!this.level().isClientSide&&(this.inGround||this.isNoPhysics())&&this.shakeTime <= 0)
 		{
 			boolean flag = this.pickup==AbstractArrow.Pickup.ALLOWED
 					||this.pickup==AbstractArrow.Pickup.CREATIVE_ONLY&&player.getAbilities().instabuild

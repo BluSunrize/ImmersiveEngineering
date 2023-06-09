@@ -25,7 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,7 +35,9 @@ public class StripCurtainBlock extends IEEntityBlock<StripCurtainBlockEntity>
 {
 	public static BooleanProperty CEILING_ATTACHED = BooleanProperty.create("ceiling_attached");
 	public static EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
-	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.WOOL)
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.WOOL)
+			.ignitedByLava()
 			.sound(SoundType.WOOL)
 			.strength(0.8F)
 			.noOcclusion();

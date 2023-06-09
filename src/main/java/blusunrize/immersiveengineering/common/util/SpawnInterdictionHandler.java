@@ -54,7 +54,7 @@ public class SpawnInterdictionHandler
 	{
 		if(entity.getType().getCategory()!=MobCategory.MONSTER)
 			return false;
-		ResourceKey<Level> dimension = entity.level.dimension();
+		ResourceKey<Level> dimension = entity.level().dimension();
 		synchronized(interdictionTiles)
 		{
 			if(!interdictionTiles.containsKey(dimension))

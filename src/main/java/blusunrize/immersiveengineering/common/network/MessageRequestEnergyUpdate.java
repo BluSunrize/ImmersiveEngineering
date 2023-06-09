@@ -43,7 +43,7 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 	{
 		Context ctx = context.get();
 		ctx.enqueueWork(() -> {
-			ServerLevel level = Objects.requireNonNull(ctx.getSender()).getLevel();
+			ServerLevel level = Objects.requireNonNull(ctx.getSender()).serverLevel();
 			ICapabilityProvider provider;
 			if(pos.isLeft())
 				provider = SafeChunkUtils.getSafeBE(level, pos.leftNonnull());

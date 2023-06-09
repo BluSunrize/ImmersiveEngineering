@@ -156,7 +156,7 @@ public class RailgunAttackGoal<T extends Fusilier> extends Goal
 			else if(this.railgunState==RailgunState.READY_TO_ATTACK&&hasLineOfSight)
 			{
 				ItemStack itemstack = this.mob.getUseItem();
-				Entity shot = RailgunItem.fireProjectile(itemstack, this.mob.level, this.mob, new ItemStack(Ingredients.STICK_STEEL));
+				Entity shot = RailgunItem.fireProjectile(itemstack, this.mob.level(), this.mob, new ItemStack(Ingredients.STICK_STEEL));
 				if(shot instanceof Projectile projectile)
 					this.shootProjectile(this.mob, livingentity, projectile, 3f);
 				this.mob.releaseUsingItem();
@@ -176,7 +176,7 @@ public class RailgunAttackGoal<T extends Fusilier> extends Goal
 		double distSqrt = Math.sqrt(dx*dx+dz*dz);
 		double dy = target.getY(0.3333333333333333D)-projectile.getY()+distSqrt*(double)0.2F;
 		Vec3 vec3 = new Vec3(dx, dy, dz).normalize();
-		projectile.shoot(vec3.x(), vec3.y(), vec3.z(), velocity, (float)(14-user.level.getDifficulty().getId()*4));
+		projectile.shoot(vec3.x(), vec3.y(), vec3.z(), velocity, (float)(14-user.level().getDifficulty().getId()*4));
 	}
 
 	private boolean canRun()

@@ -32,7 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -184,9 +184,9 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 		// Can't fill source blocks
 		if(isFullFluidBlock(targetPos, state))
 			return false;
-		boolean canFill = !state.getMaterial().isSolid();
-		if(!canFill&&state.getBlock() instanceof SimpleWaterloggedBlock)
-			canFill = ((SimpleWaterloggedBlock)state.getBlock()).canPlaceLiquid(level, targetPos, state, tank.getFluid().getFluid());
+		boolean canFill = !state.isSolid();
+		if(!canFill&&state.getBlock() instanceof LiquidBlockContainer container)
+			canFill = container.canPlaceLiquid(level, targetPos, state, tank.getFluid().getFluid());
 		return canFill;
 	}
 

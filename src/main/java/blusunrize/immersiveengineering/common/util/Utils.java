@@ -50,6 +50,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -64,10 +65,12 @@ import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.LiquidBlockContainer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.*;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootContext.Builder;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -522,9 +525,8 @@ public class Utils
 		else
 		{
 			BlockState blockstate = worldIn.getBlockState(posIn);
-			Material material = blockstate.getMaterial();
-			boolean flag = !material.isSolid();
-			boolean flag1 = material.isReplaceable();
+			boolean flag = !blockstate.isSolid();
+			boolean flag1 = blockstate.canBeReplaced();
 			if(worldIn.isEmptyBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof LiquidBlockContainer&&((LiquidBlockContainer)blockstate.getBlock()).canPlaceLiquid(worldIn, posIn, blockstate, fluid))
 			{
 				if(worldIn.dimensionType().ultraWarm()&&fluid.is(FluidTags.WATER))
@@ -541,7 +543,7 @@ public class Utils
 					((LiquidBlockContainer)blockstate.getBlock()).placeLiquid(worldIn, posIn, blockstate, ((FlowingFluid)fluid).getSource(false));
 				else
 				{
-					if(!worldIn.isClientSide&&(flag||flag1)&&!material.isLiquid())
+					if(!worldIn.isClientSide&&(flag||flag1)&&!blockstate.liquid())
 						worldIn.destroyBlock(posIn, true);
 
 					worldIn.setBlock(posIn, fluid.defaultFluidState().createLegacyBlock(), 11);
@@ -694,7 +696,7 @@ public class Utils
 		return vertex;
 	}
 
-	public static class InventoryCraftingFalse extends CraftingContainer
+	public static class InventoryCraftingFalse extends TransientCraftingContainer
 	{
 		private static final AbstractContainerMenu nullContainer = new AbstractContainerMenu(MenuType.CRAFTING, 0)
 		{
@@ -824,16 +826,16 @@ public class Utils
 		return Mth.floor(f*14.0F)+(i > 0?1: 0);
 	}
 
-	public static List<ItemStack> getDrops(BlockState state, Builder builder)
+	public static List<ItemStack> getDrops(BlockState state, LootParams.Builder builder)
 	{
 		ResourceLocation resourcelocation = state.getBlock().getLootTable();
 		if(resourcelocation==BuiltInLootTables.EMPTY)
 			return Collections.emptyList();
 		else
 		{
-			LootContext lootcontext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+			LootParams lootcontext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
 			ServerLevel serverworld = lootcontext.getLevel();
-			LootTable loottable = serverworld.getServer().getLootTables().get(resourcelocation);
+			LootTable loottable = serverworld.getServer().getLootData().getLootTable(resourcelocation);
 			return loottable.getRandomItems(lootcontext);
 		}
 	}

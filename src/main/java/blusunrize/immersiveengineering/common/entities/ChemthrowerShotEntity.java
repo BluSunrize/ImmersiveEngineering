@@ -23,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -104,11 +103,12 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	@Override
 	public void baseTick()
 	{
-		if(this.level.isClientSide)
+		if(this.level().isClientSide)
 			this.fluid = getFluidSynced();
-		BlockState state = level.getBlockState(blockPosition());
-		if(this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
-			this.setSecondsOnFire(6);
+		BlockState state = level().getBlockState(blockPosition());
+		// TODO how do I do this without materials?
+		//if(this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
+		//	this.setSecondsOnFire(6);
 		super.baseTick();
 	}
 
@@ -123,7 +123,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	@Override
 	public void onHit(HitResult mop)
 	{
-		if(this.level.isClientSide||getFluid().isEmpty())
+		if(this.level().isClientSide||getFluid().isEmpty())
 			return;
 		FluidStack fluidStack = getFluid();
 		Fluid fluid = fluidStack.getFluid();
@@ -139,7 +139,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			if(mop.getType()==Type.ENTITY&&((EntityHitResult)mop).getEntity() instanceof LivingEntity)
 				effect.applyToEntity((LivingEntity)((EntityHitResult)mop).getEntity(), shooter, thrower, fluidStack);
 			else if(mop.getType()==Type.BLOCK)
-				effect.applyToBlock(level, mop, shooter, thrower, fluidStack);
+				effect.applyToBlock(level(), mop, shooter, thrower, fluidStack);
 		}
 		else if(mop.getType()==Type.ENTITY&&fluid.getFluidType().getTemperature(fluidStack) > 500)
 		{

@@ -64,7 +64,7 @@ public class CokeOvenMenu extends IEContainerMenu
 			@Override
 			public boolean mayPlace(@Nonnull ItemStack itemStack)
 			{
-				return CokeOvenRecipe.findRecipe(inventoryPlayer.player.level, itemStack)!=null;
+				return CokeOvenRecipe.findRecipe(inventoryPlayer.player.level(), itemStack)!=null;
 			}
 		});
 		this.addSlot(new IESlot.NewOutput(inv, 1, 85, 35));

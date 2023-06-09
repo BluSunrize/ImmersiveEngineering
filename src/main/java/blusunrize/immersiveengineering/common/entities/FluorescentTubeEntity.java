@@ -78,9 +78,9 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 		this.move(MoverType.SELF, motion);
 		motion = motion.scale(0.98);
 
-		if(this.onGround)
+		if(this.onGround())
 			motion = new Vec3(motion.x*0.7, motion.y*-0.5, motion.z*0.7);
-		if(firstTick&&!level.isClientSide&&rgb!=null)
+		if(firstTick&&!level().isClientSide&&rgb!=null)
 		{
 			entityData.set(dataMarker_r, rgb[0]);
 			entityData.set(dataMarker_g, rgb[1]);
@@ -89,13 +89,13 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 			firstTick = false;
 		}
 		// tube logic
-		if(timer > 0&&!level.isClientSide)
+		if(timer > 0&&!level().isClientSide)
 		{
 			timer--;
 			if(timer <= 0)
 				entityData.set(dataMarker_active, false);
 		}
-		if(level.isClientSide)
+		if(level().isClientSide)
 		{
 			active = entityData.get(dataMarker_active);
 			rgb = new float[]{entityData.get(dataMarker_r),
@@ -147,12 +147,12 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	@Override
 	public boolean hurt(DamageSource source, float amount)
 	{
-		if(isAlive()&&!level.isClientSide)
+		if(isAlive()&&!level().isClientSide)
 		{
 			ItemStack tube = new ItemStack(Misc.FLUORESCENT_TUBE);
 			FluorescentTubeItem.setRGB(tube, rgb);
-			ItemEntity ent = new ItemEntity(level, getX(), getY(), getZ(), tube);
-			level.addFreshEntity(ent);
+			ItemEntity ent = new ItemEntity(level(), getX(), getY(), getZ(), tube);
+			level().addFreshEntity(ent);
 			discard();
 		}
 		return super.hurt(source, amount);

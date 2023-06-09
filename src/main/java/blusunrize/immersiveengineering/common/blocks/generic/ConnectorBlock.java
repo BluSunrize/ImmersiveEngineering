@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -39,7 +39,8 @@ import java.util.function.Supplier;
 
 public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends IEEntityBlock<T>
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.METAL)
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
 			.strength(3.0F, 15.0F)
 			.noOcclusion()
@@ -48,16 +49,14 @@ public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectab
 
 	public ConnectorBlock(Properties props, RegistryObject<BlockEntityType<T>> entityType)
 	{
-		super(entityType, props);
+		super(entityType, props.pushReaction(PushReaction.BLOCK));
 		lightOpacity = 0;
-		setMobility(PushReaction.BLOCK);
 	}
 
 	public ConnectorBlock(Properties props, BiFunction<BlockPos, BlockState, T> entityType)
 	{
-		super(entityType, props);
+		super(entityType, props.pushReaction(PushReaction.BLOCK));
 		lightOpacity = 0;
-		setMobility(PushReaction.BLOCK);
 	}
 
 	@Override

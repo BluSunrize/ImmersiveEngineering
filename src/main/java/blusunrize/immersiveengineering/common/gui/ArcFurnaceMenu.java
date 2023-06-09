@@ -66,7 +66,7 @@ public class ArcFurnaceMenu extends IEContainerMenu
 		super(ctx);
 		this.energy = energy;
 		this.processes = processes;
-		Level level = inventoryPlayer.player.level;
+		Level level = inventoryPlayer.player.level();
 		for(int i = 0; i < 12; i++)
 			this.addSlot(new IESlot.ArcInput(inv, i, 10+i%3*21, 34+i/3*18, level));
 		for(int i = 0; i < 4; i++)

@@ -156,7 +156,7 @@ public class IEExplosiveEntity extends PrimedTnt
 	@Override
 	public void tick()
 	{
-		if(level.isClientSide&&this.block==null)
+		if(level().isClientSide&&this.block==null)
 			this.getBlockSynced();
 
 		this.xo = this.getX();
@@ -169,7 +169,7 @@ public class IEExplosiveEntity extends PrimedTnt
 
 		this.move(MoverType.SELF, this.getDeltaMovement());
 		this.setDeltaMovement(this.getDeltaMovement().scale(0.98D));
-		if(this.onGround)
+		if(this.onGround())
 		{
 			this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
 		}
@@ -179,9 +179,9 @@ public class IEExplosiveEntity extends PrimedTnt
 		{
 			this.discard();
 
-			Explosion explosion = new IEExplosion(level, this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming, mode)
+			Explosion explosion = new IEExplosion(level(), this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming, mode)
 					.setDropChance(explosionDropChance);
-			if(!ForgeEventFactory.onExplosionStart(level, explosion))
+			if(!ForgeEventFactory.onExplosionStart(level(), explosion))
 			{
 				explosion.explode();
 				explosion.finalizeExplosion(true);
@@ -190,7 +190,7 @@ public class IEExplosiveEntity extends PrimedTnt
 		else
 		{
 			this.updateInWaterStateAndDoFluidPushing();
-			this.level.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY()+0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
+			this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY()+0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
 		}
 	}
 

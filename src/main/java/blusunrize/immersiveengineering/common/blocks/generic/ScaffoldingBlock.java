@@ -68,7 +68,8 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 	@Override
 	public boolean skipRendering(@Nonnull BlockState state, BlockState adjState, @Nonnull Direction side)
 	{
-		return (adjState.getBlock() instanceof ScaffoldingBlock&&adjState.getMaterial()==state.getMaterial())
+		// TODO a similar check for vanilla fences was replaced by "inTag(wooden_fence) is same for both". Similar here?
+		return (adjState.getBlock() instanceof ScaffoldingBlock/*&&adjState.getMaterial()==state.getMaterial()*/)
 				||super.skipRendering(state, adjState, side);
 	}
 }

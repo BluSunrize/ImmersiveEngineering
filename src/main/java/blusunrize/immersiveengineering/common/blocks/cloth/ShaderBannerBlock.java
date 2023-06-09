@@ -17,7 +17,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -27,7 +27,9 @@ import java.util.function.Supplier;
 
 public abstract class ShaderBannerBlock extends IEEntityBlock<ShaderBannerBlockEntity>
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.WOOL)
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.WOOL)
+			.ignitedByLava()
 			.strength(1.0F)
 			.sound(SoundType.WOOL)
 			.noCollission()

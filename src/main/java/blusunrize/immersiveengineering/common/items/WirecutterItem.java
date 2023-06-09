@@ -176,7 +176,7 @@ public class WirecutterItem extends IEBaseItem
 		ItemStack stack = player.getItemInHand(hand);
 		if(!world.isClientSide)
 		{
-			double reachDistance = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
+			double reachDistance = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
 			Connection target = WireUtils.getTargetConnection(world, player, null, reachDistance);
 			if(target!=null)
 			{

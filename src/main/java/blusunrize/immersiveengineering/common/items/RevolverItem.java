@@ -414,14 +414,14 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		if(count==1)
 		{
 			Entity entBullet = getBullet(shooter, vec, bullet, electro);
-			shooter.level.addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
+			shooter.level().addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
 		}
 		else
 			for(int i = 0; i < count; i++)
 			{
 				Vec3 vecDir = vec.add(shooter.getRandom().nextGaussian()*.1, shooter.getRandom().nextGaussian()*.1, shooter.getRandom().nextGaussian()*.1);
 				Entity entBullet = getBullet(shooter, vecDir, bullet, electro);
-				shooter.level.addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
+				shooter.level().addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
 			}
 
 		float noise = 0.5f;
@@ -464,7 +464,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	private static RevolvershotEntity getBullet(LivingEntity living, Vec3 vecDir, IBullet type, boolean electro)
 	{
-		RevolvershotEntity bullet = new RevolvershotEntity(living.level, living, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
+		RevolvershotEntity bullet = new RevolvershotEntity(living.level(), living, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
 		bullet.setDeltaMovement(vecDir.scale(2));
 		bullet.bulletElectro = electro;
 		return bullet;

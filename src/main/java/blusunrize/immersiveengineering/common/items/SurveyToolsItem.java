@@ -33,7 +33,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.common.Tags;
@@ -53,8 +52,9 @@ public class SurveyToolsItem extends IEBaseItem
 		// earthen materials
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);
-			return state.getMaterial()==Material.CLAY||state.getMaterial()==Material.DIRT
-					||state.getMaterial()==Material.GRASS||state.getMaterial()==Material.SAND;
+			throw new UnsupportedOperationException();
+			//return state.getMaterial()==Material.CLAY||state.getMaterial()==Material.DIRT
+			//		||state.getMaterial()==Material.GRASS||state.getMaterial()==Material.SAND;
 		});
 		// Stone, Diorite, Andesite, etc.
 		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(Tags.Blocks.STONE));
@@ -66,7 +66,8 @@ public class SurveyToolsItem extends IEBaseItem
 		// soft rocks
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);
-			return state.getMaterial()==Material.STONE&&state.getDestroySpeed(world, pos) < 0.5;
+			//return state.getMaterial()==Material.STONE&&state.getDestroySpeed(world, pos) < 0.5;
+			throw new UnsupportedOperationException();
 		});
 	}
 

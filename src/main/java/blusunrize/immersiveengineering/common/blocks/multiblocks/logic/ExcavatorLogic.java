@@ -50,8 +50,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootContext.Builder;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -266,7 +265,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 
 				ItemStack tool = new ItemStack(Items.IRON_PICKAXE);
 				tool.enchant(Enchantments.SILK_TOUCH, 1);
-				LootContext.Builder dropContext = new Builder(serverLevel)
+				LootParams.Builder dropContext = new LootParams.Builder(serverLevel)
 						.withOptionalParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(absolutePos))
 						.withOptionalParameter(LootContextParams.TOOL, tool);
 

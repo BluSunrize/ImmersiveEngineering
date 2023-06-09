@@ -80,7 +80,7 @@ public abstract class ItemContainer extends AbstractContainerMenu implements Sup
 					Slot s = slots.get(i);
 					if(s!=null&&s.mayPlace(stackInSlot))
 					{
-						if(!s.getItem().isEmpty()&&(!ItemStack.isSame(stackInSlot, s.getItem())||!Utils.compareItemNBT(stackInSlot, s.getItem())))
+						if(!s.getItem().isEmpty()&&(!ItemStack.isSameItem(stackInSlot, s.getItem())||!Utils.compareItemNBT(stackInSlot, s.getItem())))
 							continue;
 						int space = Math.min(s.getMaxStackSize(stackInSlot), stackInSlot.getMaxStackSize());
 						if(!s.getItem().isEmpty())
@@ -123,7 +123,7 @@ public abstract class ItemContainer extends AbstractContainerMenu implements Sup
 	@Override
 	public boolean stillValid(@Nonnull Player entityplayer)
 	{
-		return ItemStack.isSame(player.getItemBySlot(equipmentSlot), heldItem);
+		return ItemStack.isSameItem(player.getItemBySlot(equipmentSlot), heldItem);
 	}
 
 	@Override

@@ -91,7 +91,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	public void destroy(@Nonnull DamageSource source)
 	{
 		this.kill();
-		if(this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
+		if(this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
 		{
 			ItemStack itemstack = getPickResult();
 			this.writeTileToItem(itemstack);

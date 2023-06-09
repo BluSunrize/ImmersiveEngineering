@@ -75,7 +75,7 @@ public class UnionMultiblock implements IMultiblock
 		List<StructureBlockInfo> ret = new ArrayList<>();
 		for(TransformedMultiblock part : parts)
 			for(StructureBlockInfo i : part.multiblock.getStructure(world))
-				ret.add(new StructureBlockInfo(part.toUnionCoords(i.pos).subtract(min), i.state, i.nbt));
+				ret.add(new StructureBlockInfo(part.toUnionCoords(i.pos()).subtract(min), i.state(), i.nbt()));
 		return ret;
 	}
 

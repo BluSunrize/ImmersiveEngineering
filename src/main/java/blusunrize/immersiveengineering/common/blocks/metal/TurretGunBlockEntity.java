@@ -98,7 +98,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 			if(bullet!=null&&bullet.isValidForTurret())
 			{
 				ItemStack casing = bullet.getCasing(bulletStack);
-				if(expelCasings||casing.isEmpty()||inventory.get(1).isEmpty()||(ItemStack.isSame(casing, inventory.get(1))&&
+				if(expelCasings||casing.isEmpty()||inventory.get(1).isEmpty()||(ItemStack.isSameItem(casing, inventory.get(1))&&
 						inventory.get(1).getCount()+casing.getCount() <= inventory.get(1).getMaxStackSize()))
 				{
 					this.energyStorage.extractEnergy(energy, false);

@@ -9,18 +9,16 @@
 package blusunrize.immersiveengineering.common.blocks.plant;
 
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 
 import java.util.function.Supplier;
 
 public class PottedHempBlock extends FlowerPotBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.DECORATION)
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.of()
+			.pushReaction(PushReaction.DESTROY)
 			.strength(0.0F)
 			.noOcclusion();
 

@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +38,6 @@ import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.EntityHitResult;
@@ -271,7 +269,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				if(effects!=null)
 					if(bullet.bulletPotion.getItem() instanceof LingeringPotionItem)
 					{
-						AreaEffectCloud entityareaeffectcloud = new AreaEffectCloud(bullet.level, bullet.getX(), bullet.getY(), bullet.getZ());
+						AreaEffectCloud entityareaeffectcloud = new AreaEffectCloud(bullet.level(), bullet.getX(), bullet.getY(), bullet.getZ());
 						entityareaeffectcloud.setOwner(shooter);
 						entityareaeffectcloud.setRadius(3.0F);
 						entityareaeffectcloud.setRadiusOnUse(-0.5F);
@@ -280,11 +278,11 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 						entityareaeffectcloud.setPotion(potionType);
 						for(MobEffectInstance potioneffect : effects)
 							entityareaeffectcloud.addEffect(new MobEffectInstance(potioneffect.getEffect(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-						bullet.level.addFreshEntity(entityareaeffectcloud);
+						bullet.level().addFreshEntity(entityareaeffectcloud);
 					}
 					else if(bullet.bulletPotion.getItem() instanceof SplashPotionItem)
 					{
-						List<LivingEntity> livingEntities = bullet.level.getEntitiesOfClass(LivingEntity.class, bullet.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
+						List<LivingEntity> livingEntities = bullet.level().getEntitiesOfClass(LivingEntity.class, bullet.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
 						if(livingEntities!=null&&!livingEntities.isEmpty())
 							for(LivingEntity living : livingEntities)
 								if(living.isAffectedByPotions())
@@ -351,11 +349,11 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		@Override
 		public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			RevolvershotFlareEntity flare = shooter!=null?new RevolvershotFlareEntity(projectile.level, shooter,
+			RevolvershotFlareEntity flare = shooter!=null?new RevolvershotFlareEntity(projectile.level(), shooter,
 					projectile.getDeltaMovement().x*1.5,
 					projectile.getDeltaMovement().y*1.5,
 					projectile.getDeltaMovement().z*1.5, this, cartridge):
-					new RevolvershotFlareEntity(projectile.level, projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, this);
+					new RevolvershotFlareEntity(projectile.level(), projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, this);
 			flare.setDeltaMovement(projectile.getDeltaMovement());
 			flare.bulletElectro = electro;
 			flare.colour = this.getColour(cartridge, 1);
@@ -421,7 +419,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		{
 			ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
 			fireworkStack.setTag(cartridge.hasTag()?cartridge.getTag().copy(): null);
-			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.level, fireworkStack, projectile.getX(), projectile.getY(), projectile.getZ(), true);
+			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.level(), fireworkStack, projectile.getX(), projectile.getY(), projectile.getZ(), true);
 			Vec3 vector = projectile.getDeltaMovement();
 			firework.shoot(vector.x(), vector.y(), vector.z(), 1.6f, 1.0f);
 			return firework;
@@ -482,8 +480,8 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		@Override
 		public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			RevolvershotHomingEntity shot = shooter!=null?new RevolvershotHomingEntity(projectile.level, shooter,
-					projectile.getDeltaMovement().x*1.5, projectile.getDeltaMovement().y*1.5, projectile.getDeltaMovement().z*1.5, this): new RevolvershotHomingEntity(projectile.level, projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, this);
+			RevolvershotHomingEntity shot = shooter!=null?new RevolvershotHomingEntity(projectile.level(), shooter,
+					projectile.getDeltaMovement().x*1.5, projectile.getDeltaMovement().y*1.5, projectile.getDeltaMovement().z*1.5, this): new RevolvershotHomingEntity(projectile.level(), projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, this);
 			shot.setDeltaMovement(projectile.getDeltaMovement());
 			shot.bulletElectro = electro;
 			return shot;

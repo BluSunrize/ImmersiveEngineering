@@ -85,7 +85,7 @@ public class ChemthrowerEffects
 			@Override
 			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
 			{
-				hit(target.level, target.blockPosition(), Direction.UP);
+				hit(target.level(), target.blockPosition(), Direction.UP);
 			}
 
 			@Override

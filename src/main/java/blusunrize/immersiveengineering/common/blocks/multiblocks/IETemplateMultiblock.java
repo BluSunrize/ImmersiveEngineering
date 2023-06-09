@@ -59,7 +59,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
 		if(curr instanceof MultiblockBlockEntityDummy<?> dummy)
-			dummy.getHelper().setPositionInMB(info.pos);
+			dummy.getHelper().setPositionInMB(info.pos());
 		else if(!(curr instanceof MultiblockBlockEntityMaster<?>))
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
 	}

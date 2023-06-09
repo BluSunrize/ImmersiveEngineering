@@ -30,13 +30,12 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -142,21 +141,14 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	public List<ItemStack> getBlockEntityDrop(Builder context)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if(offset==0)
-		{
-			LootContext.Builder builder = new LootContext.Builder(context.getLevel())
-					.withOptionalParameter(LootContextParams.TOOL, context.getParamOrNull(LootContextParams.TOOL))
-					.withOptionalParameter(LootContextParams.THIS_ENTITY, context.getParamOrNull(LootContextParams.THIS_ENTITY))
-					.withOptionalParameter(LootContextParams.ORIGIN, context.getParamOrNull(LootContextParams.ORIGIN));
-			return Utils.getDrops(stateForMiddle, builder);
-		}
+			return Utils.getDrops(stateForMiddle, context);
 		else
 		{
-			return NonNullList.of(ItemStack.EMPTY,
-					new ItemStack(info.connector().getBlock(), 1));
+			return NonNullList.of(ItemStack.EMPTY, new ItemStack(info.connector().getBlock(), 1));
 		}
 	}
 

@@ -31,7 +31,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -198,7 +198,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	public List<ItemStack> getBlockEntityDrop(Builder context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		if(colour!=0xffffff)

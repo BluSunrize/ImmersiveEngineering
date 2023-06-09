@@ -217,6 +217,6 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
 	{
-		return !ItemStack.isSame(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
+		return !ItemStack.isSameItem(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
 	}
 }

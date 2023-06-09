@@ -53,8 +53,8 @@ public class TestMultiblocks
 		BlockPos testRelative = Util.make(() -> {
 			for(StructureBlockInfo block : multiblock.getStructure(helper.getLevel()))
 			{
-				BlockPos testPos = block.pos.above();
-				if(!testPos.equals(triggerRelative)&&!block.state.isAir())
+				BlockPos testPos = block.pos().above();
+				if(!testPos.equals(triggerRelative)&&!block.state().isAir())
 					return testPos;
 			}
 			throw new GameTestAssertException("Multiblock only consists of trigger block???");

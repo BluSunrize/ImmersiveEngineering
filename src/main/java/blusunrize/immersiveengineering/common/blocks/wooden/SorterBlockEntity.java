@@ -31,7 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -223,7 +223,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			if(!stack.getItem().builtInRegistryHolder().tags().anyMatch(filterStack::is))
 				return false;
 		}
-		else if(!ItemStack.isSame(filterStack, stack))
+		else if(!ItemStack.isSameItem(filterStack, stack))
 			return false;
 		// "NBT level" tests
 		if(!fuzzy&&(stack.isDamageableItem()||filterStack.isDamageableItem()))
@@ -344,7 +344,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	public List<ItemStack> getBlockEntityDrop(Builder parms)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		writeCustomNBT(stack.getOrCreateTag(), false);

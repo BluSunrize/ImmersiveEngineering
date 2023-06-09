@@ -120,7 +120,7 @@ public class BottlingMachineLogic
 	@Override
 	public void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
 	{
-		final Level level = collided.level;
+		final Level level = collided.level();
 		if(!new BlockPos(0, 1, 1).equals(posInMultiblock)||level.isClientSide)
 			return;
 		else if(!(collided instanceof ItemEntity)||!collided.isAlive())

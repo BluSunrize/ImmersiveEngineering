@@ -96,21 +96,21 @@ public class RevolvershotEntity extends IEProjectileEntity
 
 		if(this.bulletType!=null)
 		{
-			bulletType.onHitTarget(level, mop, this.shooterUUID, this, headshot);
+			bulletType.onHitTarget(level(), mop, this.shooterUUID, this, headshot);
 			if(mop instanceof EntityHitResult)
 			{
 				Entity hitEntity = ((EntityHitResult)mop).getEntity();
 				if(shooterUUID!=null&&headshot&&hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isBaby()&&((LivingEntity)hitEntity).getHealth() <= 0)
 				{
-					Player shooter = level.getPlayerByUUID(shooterUUID);
+					Player shooter = level().getPlayerByUUID(shooterUUID);
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "tools/secret_birthdayparty");
-					level.playSound(null, getX(), getY(), getZ(), IESounds.birthdayParty.get(), SoundSource.PLAYERS, 1.0F, 1.2F/(this.random.nextFloat()*0.2F+0.9F));
+					level().playSound(null, getX(), getY(), getZ(), IESounds.birthdayParty.get(), SoundSource.PLAYERS, 1.0F, 1.2F/(this.random.nextFloat()*0.2F+0.9F));
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> hitEntity), new MessageBirthdayParty((LivingEntity)hitEntity));
 				}
 			}
 		}
-		if(!this.level.isClientSide)
+		if(!this.level().isClientSide)
 			this.secondaryImpact(mop);
 		if(mop instanceof BlockHitResult)
 			this.onHitBlock((BlockHitResult)mop);
@@ -125,7 +125,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		Entity hitEntity = ((EntityHitResult)mop).getEntity();
 		if(bulletElectro&&hitEntity instanceof LivingEntity&&shooterUUID!=null)
 		{
-			Player shooter = level.getPlayerByUUID(shooterUUID);
+			Player shooter = level().getPlayerByUUID(shooterUUID);
 			float percentualDrain = .15f/(bulletType==null?1: bulletType.getProjectileCount(shooter));
 			((LivingEntity)hitEntity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 15, 4));
 			for(EquipmentSlot slot : EquipmentSlot.values())
@@ -145,16 +145,6 @@ public class RevolvershotEntity extends IEProjectileEntity
 				}
 			}
 		}
-	}
-
-	public void onExpire()
-	{
-
-	}
-
-	protected float getMotionFactor()
-	{
-		return 0.95F;
 	}
 
 	@Override

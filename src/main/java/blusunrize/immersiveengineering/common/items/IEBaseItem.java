@@ -85,7 +85,7 @@ public class IEBaseItem extends Item
 			ItemContainerType<?> typeOld = getContainerType();
 			if(typeOld!=null)
 				NetworkHooks.openScreen((ServerPlayer)player, new SimpleMenuProvider(
-						(id, inv, p) -> typeOld.create(id, inv, player.level, slot, stack),
+						(id, inv, p) -> typeOld.create(id, inv, player.level(), slot, stack),
 						Component.empty()
 				), buffer -> buffer.writeInt(slot.ordinal()));
 		}

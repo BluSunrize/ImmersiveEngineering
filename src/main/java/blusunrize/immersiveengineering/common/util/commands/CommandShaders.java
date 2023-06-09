@@ -40,7 +40,7 @@ public class CommandShaders
 			ShaderRegistry.receivedShaders.get(uuid).clear();
 		ShaderRegistry.recalculatePlayerTotalWeight(uuid);
 		context.getSource().sendSuccess(
-				Component.translatable(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
+				() -> Component.translatable(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
 				true);
 		return Command.SINGLE_SUCCESS;
 	}

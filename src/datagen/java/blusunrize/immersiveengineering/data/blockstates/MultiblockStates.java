@@ -330,7 +330,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		final Vec3i offset = multiblock.getMasterFromOriginOffset();
 		Stream<Vec3i> partsStream = multiblock.getTemplate(null).blocksWithoutAir()
 				.stream()
-				.map(info -> info.pos)
+				.map(info -> info.pos())
 				.map(transform)
 				.map(p -> p.subtract(offset));
 		return split(name, partsStream.collect(Collectors.toList()), dynamic);

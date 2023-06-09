@@ -40,7 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -49,7 +49,8 @@ import java.util.function.Supplier;
 
 public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> implements ConveyorHandler.IConveyorBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.METAL)
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.of()
+			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
 			.strength(3.0F, 15.0F)
 			.noOcclusion();

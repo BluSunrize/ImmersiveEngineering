@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import blusunrize.immersiveengineering.common.blocks.IEStairsBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
@@ -23,16 +22,12 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
-import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -41,8 +36,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -137,12 +130,12 @@ public class IEBlockTags extends BlockTagsProvider
 			tag(IETags.scaffoldingAlu).add(MetalDecoration.ALU_SCAFFOLDING.get(t).get());
 		}
 		//Scaffolding stairs & such
-		for (final BlockEntry<ScaffoldingBlock> entry : IEBlocks.MetalDecoration.STEEL_SCAFFOLDING.values())
+		for(final BlockEntry<ScaffoldingBlock> entry : IEBlocks.MetalDecoration.STEEL_SCAFFOLDING.values())
 		{
 			tag(IETags.scaffoldingSteelStair).add(IEBlocks.TO_STAIRS.get(entry.getId()).get());
 			tag(IETags.scaffoldingSteelSlab).add(IEBlocks.TO_SLAB.get(entry.getId()).get());
 		}
-		for (final BlockEntry<ScaffoldingBlock> entry : IEBlocks.MetalDecoration.ALU_SCAFFOLDING.values())
+		for(final BlockEntry<ScaffoldingBlock> entry : IEBlocks.MetalDecoration.ALU_SCAFFOLDING.values())
 		{
 			tag(IETags.scaffoldingAluStair).add(IEBlocks.TO_STAIRS.get(entry.getId()).get());
 			tag(IETags.scaffoldingAluSlab).add(IEBlocks.TO_SLAB.get(entry.getId()).get());
@@ -167,20 +160,21 @@ public class IEBlockTags extends BlockTagsProvider
 				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
 		tag(IETags.buzzsawTreeBlacklist)
-				.addOptionalTag(new ResourceLocation("dynamictrees","branches"))
-				.addOptionalTag(new ResourceLocation("dynamictrees","leaves"));
+				.addOptionalTag(new ResourceLocation("dynamictrees", "branches"))
+				.addOptionalTag(new ResourceLocation("dynamictrees", "leaves"));
 		checkAllRegisteredForBreaking();
 
-		for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values())
-			if(slab.get().defaultBlockState().getMaterial()==Material.WOOD)
-				tag(BlockTags.WOODEN_SLABS).add(slab.get());
-			else
-				tag(BlockTags.SLABS).add(slab.get());
-		for(BlockEntry<IEStairsBlock> stairs : IEBlocks.TO_STAIRS.values())
-			if(stairs.get().defaultBlockState().getMaterial()==Material.WOOD)
-				tag(BlockTags.WOODEN_STAIRS).add(stairs.get());
-			else
-				tag(BlockTags.STAIRS).add(stairs.get());
+		// TODO fix!
+		//for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values())
+		//	if(slab.get().defaultBlockState().getMaterial()==Material.WOOD)
+		//		tag(BlockTags.WOODEN_SLABS).add(slab.get());
+		//	else
+		//		tag(BlockTags.SLABS).add(slab.get());
+		//for(BlockEntry<IEStairsBlock> stairs : IEBlocks.TO_STAIRS.values())
+		//	if(stairs.get().defaultBlockState().getMaterial()==Material.WOOD)
+		//		tag(BlockTags.WOODEN_STAIRS).add(stairs.get());
+		//	else
+		//		tag(BlockTags.STAIRS).add(stairs.get());
 
 		/* MOD COMPAT STARTS HERE */
 
@@ -225,25 +219,27 @@ public class IEBlockTags extends BlockTagsProvider
 
 	private void registerAxeMineable()
 	{
-		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
-		Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
-				.map(RegistryObject::get)
-				.filter(b -> b.defaultBlockState().getMaterial()==Material.WOOD)
-				.forEach(tag::add);
-		tag.add(Cloth.SHADER_BANNER_WALL.get());
-		tag.add(Cloth.SHADER_BANNER.get());
+		// TODO fix
+		//IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
+		//Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
+		//		.map(RegistryObject::get)
+		//		.filter(b -> b.defaultBlockState().getMaterial()==Material.WOOD)
+		//		.forEach(tag::add);
+		//tag.add(Cloth.SHADER_BANNER_WALL.get());
+		//tag.add(Cloth.SHADER_BANNER.get());
 	}
 
 	private void registerPickaxeMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_PICKAXE);
-		Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
-				.map(RegistryObject::get)
-				.filter(b -> {
-					Material material = b.defaultBlockState().getMaterial();
-					return material==Material.STONE||material==Material.METAL;
-				})
-				.forEach(tag::add);
+		// TODO fix
+		//Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
+		//		.map(RegistryObject::get)
+		//		.filter(b -> {
+		//			Material material = b.defaultBlockState().getMaterial();
+		//			return material==Material.STONE||material==Material.METAL;
+		//		})
+		//		.forEach(tag::add);
 		setOreMiningLevel(EnumMetals.COPPER, Tiers.STONE);
 		setOreMiningLevel(EnumMetals.ALUMINUM, Tiers.STONE);
 		setOreMiningLevel(EnumMetals.LEAD, Tiers.IRON);
@@ -276,12 +272,12 @@ public class IEBlockTags extends BlockTagsProvider
 	private void setMiningLevel(Supplier<Block> block, Tiers level)
 	{
 		TagKey<Block> tag = switch(level)
-				{
-					case STONE -> BlockTags.NEEDS_STONE_TOOL;
-					case IRON -> BlockTags.NEEDS_IRON_TOOL;
-					case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
-					default -> throw new IllegalArgumentException("No tag available for "+level.name());
-				};
+		{
+			case STONE -> BlockTags.NEEDS_STONE_TOOL;
+			case IRON -> BlockTags.NEEDS_IRON_TOOL;
+			case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
+			default -> throw new IllegalArgumentException("No tag available for "+level.name());
+		};
 		tag(tag).add(block.get());
 	}
 

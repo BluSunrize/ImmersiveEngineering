@@ -28,8 +28,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -49,7 +50,10 @@ public class DeskBlock<T extends BlockEntity> extends IEEntityBlock<T>
 				);
 			}
 	);
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.WOOD)
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.of()
+			.mapColor(MapColor.WOOD)
+			.ignitedByLava()
+			.instrument(NoteBlockInstrument.BASS)
 			.sound(SoundType.WOOD)
 			.strength(2, 5)
 			.noOcclusion();

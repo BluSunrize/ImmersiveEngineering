@@ -45,7 +45,7 @@ public class RevolverAttackGoal<T extends Commando> extends ShieldCombatGoal<T>
 		super.tick();
 		if(this.combatState==ShieldCombatState.STRAFE&&bulletCount > 0&&this.mob.tickCount%20==0)
 			if(--bulletCount==0)
-				this.mob.level.playSound(null, mob.getX(), mob.getY(), mob.getZ(), IESounds.revolverReload.get(), SoundSource.PLAYERS, 1f, 1f);
+				this.mob.level().playSound(null, mob.getX(), mob.getY(), mob.getZ(), IESounds.revolverReload.get(), SoundSource.PLAYERS, 1f, 1f);
 		if(this.combatState==ShieldCombatState.ATTACK && !this.mob.isAiming())
 			this.mob.setAiming(true);
 		if(this.combatState!=ShieldCombatState.ATTACK && this.mob.isAiming())
@@ -58,7 +58,7 @@ public class RevolverAttackGoal<T extends Commando> extends ShieldCombatGoal<T>
 		ItemStack revolver = this.mob.getItemInHand(InteractionHand.MAIN_HAND);
 		ItemStack bulletStack = this.mob.getRevolverAmmo();
 		IBullet bulletType = ((BulletItem)bulletStack.getItem()).getType();
-		RevolverItem.fireProjectile(this.mob.level, this.mob, revolver, bulletType, bulletStack);
+		RevolverItem.fireProjectile(this.mob.level(), this.mob, revolver, bulletType, bulletStack);
 		bulletCount++;
 		return bulletCount >= maxBullets;
 	}

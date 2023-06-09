@@ -52,7 +52,7 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 	{
 		super.tick();
 
-		if(!level.isClientSide&&this.tickCount > trackCountdown)
+		if(!level().isClientSide&&this.tickCount > trackCountdown)
 		{
 			LivingEntity target = getTarget();
 			if(target!=null)
@@ -75,7 +75,7 @@ public class RevolvershotHomingEntity extends RevolvershotEntity
 		double r = 20D;
 		AABB aabb = new AABB(getX()-r, getY()-r, getZ()-r, getX()+r, getY()+r, getZ()+r);
 		LivingEntity target = null;
-		for(Object o : level.getEntitiesOfClass(LivingEntity.class, aabb))
+		for(Object o : level().getEntitiesOfClass(LivingEntity.class, aabb))
 			if(o instanceof LivingEntity&&!((LivingEntity)o).getUUID().equals(this.shooterUUID))
 				if(target==null||((LivingEntity)o).distanceToSqr(this) < target.distanceToSqr(this))
 					target = (LivingEntity)o;

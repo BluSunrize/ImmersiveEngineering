@@ -693,7 +693,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	{
 		if(heldItem.isEmpty()&&player.isShiftKeyDown()&&hasCover())
 		{
-			if(!player.level.isClientSide)
+			if(!player.level().isClientSide)
 			{
 				dropCover(player);
 				this.cover = Blocks.AIR;
@@ -713,7 +713,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		DyeColor heldDye = Utils.getDye(heldItem);
 		if(heldDye!=null)
 		{
-			if(!player.level.isClientSide)
+			if(!player.level().isClientSide)
 			{
 				color = heldDye;
 				markContainingBlockForUpdate(null);
@@ -727,7 +727,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		for(Predicate<Block> func : validPipeCovers)
 			if(func.test(heldBlock)&&this.cover!=heldBlock)
 			{
-				if(!player.level.isClientSide)
+				if(!player.level().isClientSide)
 				{
 					dropCover(player);
 					this.cover = heldBlock;

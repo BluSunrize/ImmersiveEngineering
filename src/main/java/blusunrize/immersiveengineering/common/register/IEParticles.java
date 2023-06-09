@@ -47,10 +47,10 @@ public class IEParticles
 		@SubscribeEvent
 		public static void registerParticleFactories(RegisterParticleProvidersEvent event)
 		{
-			event.register(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
-			event.register(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
-			event.register(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
-			event.register(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
+			event.registerSprite(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
+			event.registerSpecial(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
+			event.registerSpriteSet(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
+			event.registerSpriteSet(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
 		}
 	}
 }

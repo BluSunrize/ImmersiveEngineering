@@ -22,14 +22,18 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class GunpowderBarrelBlock extends TntBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.WOOD)
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.WOOD)
+			.ignitedByLava()
+			.instrument(NoteBlockInstrument.BASS)
 			.sound(SoundType.WOOD)
 			.strength(2, 5);
 

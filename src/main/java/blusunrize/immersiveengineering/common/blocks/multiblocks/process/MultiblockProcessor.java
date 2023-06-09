@@ -151,7 +151,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 					for(ItemStack old : existingProcess.inputItems)
 					{
 						for(ItemStack in : newProcess.inputItems)
-							if(ItemStack.isSame(old, in)&&Utils.compareItemNBT(old, in))
+							if(ItemStack.isSameItem(old, in)&&Utils.compareItemNBT(old, in))
 								if(old.getCount()+in.getCount() > old.getMaxStackSize())
 								{
 									canStack = false;
@@ -166,7 +166,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 							for(ItemStack old : existingProcess.inputItems)
 							{
 								for(ItemStack in : newProcess.inputItems)
-									if(ItemStack.isSame(old, in)&&Utils.compareItemNBT(old, in))
+									if(ItemStack.isSameItem(old, in)&&Utils.compareItemNBT(old, in))
 									{
 										old.grow(in.getCount());
 										break;

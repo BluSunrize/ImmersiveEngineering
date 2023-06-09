@@ -80,7 +80,7 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 	{
 		int protection = (!entity.getItemBySlot(EquipmentSlot.FEET).isEmpty()?1: 0)+(!entity.getItemBySlot(EquipmentSlot.LEGS).isEmpty()?1: 0);
 		float dmg = protection==2?.5f: protection==1?1: 1.5f;
-		entity.hurt(IEDamageSources.razorWire(entity.level), dmg);
+		entity.hurt(IEDamageSources.razorWire(entity.level()), dmg);
 	}
 
 	@Override

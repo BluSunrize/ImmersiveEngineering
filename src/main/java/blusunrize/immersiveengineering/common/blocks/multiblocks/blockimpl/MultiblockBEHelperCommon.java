@@ -111,12 +111,12 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 		for(final ComponentInstance<?> component : helper.getComponentInstances())
 		{
 			final InteractionResult componentResult = component.click(
-					getPositionInMB(), player, hand, hit, player.level.isClientSide
+					getPositionInMB(), player, hand, hit, player.level().isClientSide
 			);
 			if(componentResult!=InteractionResult.PASS)
 				return componentResult;
 		}
-		return multiblock.logic().click(ctx, getPositionInMB(), player, hand, hit, player.level.isClientSide);
+		return multiblock.logic().click(ctx, getPositionInMB(), player, hand, hit, player.level().isClientSide);
 	}
 
 	@Override
@@ -199,8 +199,8 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	public BlockState getOriginalBlock(Level level)
 	{
 		for(StructureBlockInfo block : multiblock.getStructure().apply(level))
-			if(block.pos.equals(getPositionInMB()))
-				return block.state;
+			if(block.pos().equals(getPositionInMB()))
+				return block.state();
 		return Blocks.AIR.defaultBlockState();
 	}
 

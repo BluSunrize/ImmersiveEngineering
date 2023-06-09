@@ -173,7 +173,7 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 			ItemStack outputSlot = out.get(recipe);
 			if(!currentStack.isEmpty())
 			{
-				if(!ItemStack.isSame(currentStack, outputSlot))
+				if(!ItemStack.isSameItem(currentStack, outputSlot))
 					return null;
 				else if(currentStack.getCount()+outputSlot.getCount() > inv.getSlotLimit(out.slotIndex))
 					return null;

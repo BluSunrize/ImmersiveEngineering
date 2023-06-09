@@ -62,7 +62,7 @@ public class MessageMinecartShaderSync implements IMessage
 		Context ctx = context.get();
 		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerLevel world = Objects.requireNonNull(ctx.getSender()).getLevel();
+			ServerLevel world = Objects.requireNonNull(ctx.getSender()).serverLevel();
 			ctx.enqueueWork(() -> {
 				Entity entity = world.getEntity(entityID);
 				if(entity==null)
