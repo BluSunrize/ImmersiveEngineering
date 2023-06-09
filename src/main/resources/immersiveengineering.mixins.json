@@ -23,8 +23,6 @@
     "accessors.TemplatePoolAccess",
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
-    "coremods.BlockEntityMixin",
-    "coremods.DataFixersMixin",
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin"
   ],

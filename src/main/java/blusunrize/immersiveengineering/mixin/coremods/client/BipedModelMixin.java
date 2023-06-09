@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(HumanoidModel.class)
 public class BipedModelMixin<T extends LivingEntity>
 {
-	@Inject(method = "setupAnim", at = @At("RETURN"))
+	@Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At("RETURN"))
 	public void rotationAngleCallback(
 			T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch,
 			CallbackInfo info
