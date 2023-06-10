@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/gunpowder_from_dusts"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

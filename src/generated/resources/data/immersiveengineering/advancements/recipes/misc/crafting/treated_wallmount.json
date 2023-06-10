@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/treated_wallmount"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

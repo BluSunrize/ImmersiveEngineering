@@ -45,5 +45,6 @@
       ],
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "immersiveengineering:blocks/deepslate_ore_silver"
 }

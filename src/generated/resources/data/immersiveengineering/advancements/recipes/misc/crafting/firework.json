@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/firework"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

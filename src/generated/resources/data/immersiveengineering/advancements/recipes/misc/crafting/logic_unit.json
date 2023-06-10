@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/logic_unit"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

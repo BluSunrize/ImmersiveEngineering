@@ -33,5 +33,6 @@
     [
       "has_item"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

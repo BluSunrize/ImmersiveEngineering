@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/raw_uranium_to_raw_block_uranium"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

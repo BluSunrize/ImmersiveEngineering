@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/gunpart_drum"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

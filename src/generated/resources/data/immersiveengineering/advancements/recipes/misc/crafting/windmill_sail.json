@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/windmill_sail"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

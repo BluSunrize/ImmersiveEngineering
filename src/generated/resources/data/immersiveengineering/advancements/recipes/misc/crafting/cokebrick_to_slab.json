@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/cokebrick_to_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

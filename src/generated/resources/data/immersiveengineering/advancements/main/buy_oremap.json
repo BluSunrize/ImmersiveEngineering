@@ -32,5 +32,6 @@
     [
       "buy_oremap"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/wire_aluminum"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

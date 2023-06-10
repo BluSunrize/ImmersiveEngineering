@@ -32,5 +32,6 @@
     [
       "form_multiblock"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

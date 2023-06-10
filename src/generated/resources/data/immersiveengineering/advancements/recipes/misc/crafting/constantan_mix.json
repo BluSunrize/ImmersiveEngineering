@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/constantan_mix"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

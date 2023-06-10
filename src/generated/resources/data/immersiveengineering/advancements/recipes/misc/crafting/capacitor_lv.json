@@ -39,5 +39,6 @@
     "recipes": [
       "immersiveengineering:crafting/capacitor_lv"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

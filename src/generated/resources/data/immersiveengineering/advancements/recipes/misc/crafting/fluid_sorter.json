@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/fluid_sorter"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

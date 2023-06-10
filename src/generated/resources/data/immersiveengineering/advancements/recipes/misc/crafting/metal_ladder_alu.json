@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/metal_ladder_alu"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

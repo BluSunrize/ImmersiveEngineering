@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_drill_lube"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

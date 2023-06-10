@@ -20,8 +20,8 @@
           "name": "immersiveengineering:shader_bag_ie_masterwork"
         }
       ],
-      "name": "masterwork_shader",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "immersiveengineering:advancements/shader_masterwork"
 }

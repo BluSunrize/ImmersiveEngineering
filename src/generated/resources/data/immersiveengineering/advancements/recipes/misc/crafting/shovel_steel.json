@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/shovel_steel"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

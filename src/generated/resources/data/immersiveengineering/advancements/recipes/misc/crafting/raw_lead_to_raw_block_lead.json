@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/raw_lead_to_raw_block_lead"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/ingot_electrum_to_nugget_electrum"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

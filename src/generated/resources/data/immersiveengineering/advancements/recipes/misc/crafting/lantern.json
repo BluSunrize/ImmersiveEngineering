@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/lantern"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

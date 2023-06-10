@@ -98,5 +98,6 @@
     "loot": [
       "immersiveengineering:advancements/shader_rare"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

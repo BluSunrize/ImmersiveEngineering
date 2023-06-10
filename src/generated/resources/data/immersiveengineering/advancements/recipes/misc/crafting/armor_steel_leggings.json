@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/armor_steel_leggings"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/stick_treated"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

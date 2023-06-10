@@ -39,5 +39,6 @@
     "recipes": [
       "immersiveengineering:crafting/alu_scaffolding_standard"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

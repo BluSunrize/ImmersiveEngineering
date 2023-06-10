@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/coal_coke_to_coke"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

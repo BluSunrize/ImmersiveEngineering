@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/treated_wood_vertical_to_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

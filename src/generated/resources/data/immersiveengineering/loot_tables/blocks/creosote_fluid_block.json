@@ -16,5 +16,6 @@
       ],
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "immersiveengineering:blocks/creosote_fluid_block"
 }

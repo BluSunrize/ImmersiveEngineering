@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/coke_from_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

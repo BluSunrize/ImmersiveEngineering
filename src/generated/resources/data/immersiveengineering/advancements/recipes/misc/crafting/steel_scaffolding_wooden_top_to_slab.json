@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/steel_scaffolding_wooden_top_to_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

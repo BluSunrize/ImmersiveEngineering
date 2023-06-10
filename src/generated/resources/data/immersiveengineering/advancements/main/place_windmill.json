@@ -3,7 +3,12 @@
   "criteria": {
     "place_block": {
       "conditions": {
-        "block": "immersiveengineering:windmill"
+        "location": [
+          {
+            "block": "immersiveengineering:windmill",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
       },
       "trigger": "minecraft:placed_block"
     }
@@ -27,5 +32,6 @@
     [
       "place_block"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

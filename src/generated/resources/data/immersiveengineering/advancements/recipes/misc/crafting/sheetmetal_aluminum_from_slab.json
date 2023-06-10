@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_aluminum_from_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

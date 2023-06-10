@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/paper_from_sawdust"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

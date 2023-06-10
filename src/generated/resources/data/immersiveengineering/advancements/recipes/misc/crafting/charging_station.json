@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/charging_station"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

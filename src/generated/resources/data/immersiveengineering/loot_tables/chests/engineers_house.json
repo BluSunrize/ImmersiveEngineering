@@ -291,5 +291,6 @@
       ],
       "rolls": 4.0
     }
-  ]
+  ],
+  "random_sequence": "immersiveengineering:chests/engineers_house"
 }

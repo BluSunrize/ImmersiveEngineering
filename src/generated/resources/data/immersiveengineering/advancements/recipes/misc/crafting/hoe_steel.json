@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/hoe_steel"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/redstone_acid"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

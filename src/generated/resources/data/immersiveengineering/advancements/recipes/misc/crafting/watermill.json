@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/watermill"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

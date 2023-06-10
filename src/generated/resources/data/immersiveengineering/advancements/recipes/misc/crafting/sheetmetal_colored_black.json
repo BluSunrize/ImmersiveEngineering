@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_colored_black"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

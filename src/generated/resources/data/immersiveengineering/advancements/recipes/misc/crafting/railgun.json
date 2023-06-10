@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/railgun"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

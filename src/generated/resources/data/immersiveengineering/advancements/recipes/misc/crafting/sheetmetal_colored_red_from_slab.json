@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_colored_red_from_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

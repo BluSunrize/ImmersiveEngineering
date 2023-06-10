@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/concrete_tile"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

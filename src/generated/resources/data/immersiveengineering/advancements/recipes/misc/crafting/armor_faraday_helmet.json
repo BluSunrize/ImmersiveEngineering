@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/armor_faraday_helmet"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

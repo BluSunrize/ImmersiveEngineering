@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:smelting/ingot_silver2"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

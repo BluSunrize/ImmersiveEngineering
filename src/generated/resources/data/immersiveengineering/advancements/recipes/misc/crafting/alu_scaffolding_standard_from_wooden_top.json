@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/alu_scaffolding_standard_from_wooden_top"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

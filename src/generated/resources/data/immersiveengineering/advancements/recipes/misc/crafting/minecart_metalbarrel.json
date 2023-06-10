@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/minecart_metalbarrel"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

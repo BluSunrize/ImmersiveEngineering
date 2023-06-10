@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/metal_ladder_none"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

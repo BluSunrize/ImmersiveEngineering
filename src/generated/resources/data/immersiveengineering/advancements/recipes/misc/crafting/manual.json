@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/manual"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

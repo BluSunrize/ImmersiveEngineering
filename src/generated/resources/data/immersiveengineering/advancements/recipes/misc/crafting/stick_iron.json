@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/stick_iron"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

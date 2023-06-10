@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/plate_steel_hammering"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

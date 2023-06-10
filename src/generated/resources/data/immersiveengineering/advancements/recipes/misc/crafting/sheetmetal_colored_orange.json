@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_colored_orange"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

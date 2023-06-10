@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/component_iron"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

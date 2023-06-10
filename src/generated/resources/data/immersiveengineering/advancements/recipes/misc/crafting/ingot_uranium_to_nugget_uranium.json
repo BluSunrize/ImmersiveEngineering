@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/ingot_uranium_to_nugget_uranium"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

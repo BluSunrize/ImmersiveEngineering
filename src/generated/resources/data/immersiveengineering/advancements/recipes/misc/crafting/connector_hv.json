@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/connector_hv"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

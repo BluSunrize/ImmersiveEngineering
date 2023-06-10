@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/treated_post"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

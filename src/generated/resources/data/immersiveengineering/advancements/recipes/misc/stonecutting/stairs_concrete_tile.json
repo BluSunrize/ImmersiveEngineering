@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:stonecutting/stairs_concrete_tile"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

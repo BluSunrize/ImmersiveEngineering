@@ -39,5 +39,6 @@
     "recipes": [
       "immersiveengineering:crafting/alu_fence"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

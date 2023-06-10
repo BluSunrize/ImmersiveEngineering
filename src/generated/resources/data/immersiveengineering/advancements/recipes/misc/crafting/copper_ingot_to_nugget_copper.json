@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/copper_ingot_to_nugget_copper"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

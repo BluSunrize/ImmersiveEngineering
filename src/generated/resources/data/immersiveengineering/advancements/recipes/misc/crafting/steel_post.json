@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/steel_post"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

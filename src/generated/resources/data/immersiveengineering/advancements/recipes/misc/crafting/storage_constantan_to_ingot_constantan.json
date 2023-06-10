@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/storage_constantan_to_ingot_constantan"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

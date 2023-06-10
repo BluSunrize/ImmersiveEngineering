@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/connector_mv_relay"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

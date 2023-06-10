@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/hemp_fabric"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

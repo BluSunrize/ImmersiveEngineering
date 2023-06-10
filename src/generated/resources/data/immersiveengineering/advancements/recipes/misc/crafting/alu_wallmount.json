@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/alu_wallmount"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

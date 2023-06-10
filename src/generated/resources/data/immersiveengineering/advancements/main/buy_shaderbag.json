@@ -33,5 +33,6 @@
     [
       "buy_shaderbag"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

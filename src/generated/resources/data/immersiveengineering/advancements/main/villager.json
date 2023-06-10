@@ -105,5 +105,6 @@
       "meet_machinist",
       "meet_outfitter"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

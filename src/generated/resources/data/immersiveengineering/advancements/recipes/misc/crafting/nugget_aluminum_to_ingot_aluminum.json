@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/nugget_aluminum_to_ingot_aluminum"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

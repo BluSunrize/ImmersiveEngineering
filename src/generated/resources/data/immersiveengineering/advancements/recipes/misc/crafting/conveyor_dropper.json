@@ -43,5 +43,6 @@
     "recipes": [
       "immersiveengineering:crafting/conveyor_dropper"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

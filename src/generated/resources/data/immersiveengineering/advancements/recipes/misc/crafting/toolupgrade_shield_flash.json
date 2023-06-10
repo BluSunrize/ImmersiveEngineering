@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_shield_flash"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

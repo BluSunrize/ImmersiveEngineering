@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/electrum_mix"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

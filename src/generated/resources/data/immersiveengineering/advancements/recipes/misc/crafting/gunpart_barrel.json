@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/gunpart_barrel"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

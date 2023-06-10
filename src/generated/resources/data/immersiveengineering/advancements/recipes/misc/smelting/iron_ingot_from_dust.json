@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:smelting/iron_ingot_from_dust"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/wirecoil_structure_rope"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:smelting/slag_glass"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

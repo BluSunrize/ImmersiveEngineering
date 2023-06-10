@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/floodlight"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

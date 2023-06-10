@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_gold_to_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

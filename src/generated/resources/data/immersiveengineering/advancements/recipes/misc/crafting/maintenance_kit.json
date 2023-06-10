@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/maintenance_kit"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -29,5 +29,6 @@
     [
       "concrete_feet"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/chemthrower"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

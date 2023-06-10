@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/item_batcher"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

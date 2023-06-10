@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/strip_lv"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

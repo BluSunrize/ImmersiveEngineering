@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/transformer_hv"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

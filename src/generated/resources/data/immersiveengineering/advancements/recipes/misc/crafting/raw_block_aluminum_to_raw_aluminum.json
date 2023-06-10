@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/raw_block_aluminum_to_raw_aluminum"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/conveyor_redstone"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

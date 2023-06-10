@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/plate_copper_hammering"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

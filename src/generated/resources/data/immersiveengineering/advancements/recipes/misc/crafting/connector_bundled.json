@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/connector_bundled"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

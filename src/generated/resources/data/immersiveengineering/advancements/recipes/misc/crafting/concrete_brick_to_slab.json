@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/concrete_brick_to_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

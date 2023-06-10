@@ -54,5 +54,6 @@
     "recipes": [
       "immersiveengineering:crafting/toolbox"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

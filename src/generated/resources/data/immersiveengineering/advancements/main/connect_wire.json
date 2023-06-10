@@ -24,5 +24,6 @@
     [
       "code_trigger"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/shield"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

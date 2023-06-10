@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/wirecutter"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

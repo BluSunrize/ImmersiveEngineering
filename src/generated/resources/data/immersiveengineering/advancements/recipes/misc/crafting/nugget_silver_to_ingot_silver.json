@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/nugget_silver_to_ingot_silver"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

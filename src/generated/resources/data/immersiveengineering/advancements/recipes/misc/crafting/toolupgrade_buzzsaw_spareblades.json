@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_buzzsaw_spareblades"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

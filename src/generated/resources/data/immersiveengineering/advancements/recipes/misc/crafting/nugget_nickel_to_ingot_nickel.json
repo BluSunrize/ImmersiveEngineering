@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/nugget_nickel_to_ingot_nickel"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

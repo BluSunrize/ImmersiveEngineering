@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:smelting/nugget_steel_recycle_axe"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

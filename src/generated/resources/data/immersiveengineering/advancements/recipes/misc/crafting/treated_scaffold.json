@@ -39,5 +39,6 @@
     "recipes": [
       "immersiveengineering:crafting/treated_scaffold"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

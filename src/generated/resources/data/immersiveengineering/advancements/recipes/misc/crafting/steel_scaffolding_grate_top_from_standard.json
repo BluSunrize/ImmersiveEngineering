@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/steel_scaffolding_grate_top_from_standard"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

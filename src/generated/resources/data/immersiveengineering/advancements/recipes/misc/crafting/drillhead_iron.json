@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/drillhead_iron"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/ingot_lead_to_nugget_lead"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

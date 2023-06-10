@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/blastfurnace_preheater"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

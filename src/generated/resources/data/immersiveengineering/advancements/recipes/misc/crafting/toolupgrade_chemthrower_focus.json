@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_chemthrower_focus"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/ingot_aluminum_to_storage_aluminum"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

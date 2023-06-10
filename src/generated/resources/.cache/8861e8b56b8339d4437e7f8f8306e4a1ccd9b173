@@ -1,4 +1,4 @@
-// 1.19.4	2023-04-22T13:31:11.95226981	Tags for minecraft:block mod id immersiveengineering
+// 1.20	2023-06-10T09:32:44.967053427	Tags for minecraft:block mod id immersiveengineering
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -59,15 +59,15 @@ b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/blocks/s
 3cd6a3f387dbdf003ef362dd1a6c26b1d8322e17 data/minecraft/tags/blocks/climbable.json
 0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/blocks/fences.json
 1e227ef3a7c211db28ed17222728fdae19bba054 data/minecraft/tags/blocks/flower_pots.json
-a8c0f2ea0d8eb4b1bafe89c57c00bd173c8ddab6 data/minecraft/tags/blocks/mineable/axe.json
-a15b27d456b1ba431663d834e4a9eff56cf55faf data/minecraft/tags/blocks/mineable/pickaxe.json
+554dd83553db13e0c7d93909cc36d414a8eedcc2 data/minecraft/tags/blocks/mineable/axe.json
+0fbd5c3e4a77c7fac2e6cb33bb2a2c33cf24e096 data/minecraft/tags/blocks/mineable/pickaxe.json
 90d779ffc3de5333ab5ba332cbb108af237493df data/minecraft/tags/blocks/mineable/shovel.json
 7664fa2d24e4cac313d34871e35bfc4550d30dd8 data/minecraft/tags/blocks/needs_iron_tool.json
 0b44260a4bbb8be99039b3054c7e1faa8813d4a8 data/minecraft/tags/blocks/needs_stone_tool.json
 da83d2c4f2c93e3c8b94aaa7391d094b109192f9 data/minecraft/tags/blocks/planks.json
-e42b97be0dbdd3fc25e640ee4a2f6be17a7e99b4 data/minecraft/tags/blocks/slabs.json
-a5ed7315225fd88d9d974a689ff5e30dc08a2a56 data/minecraft/tags/blocks/stairs.json
+f195fd5da6a1f9d3816179864eda9bdb3a8871c1 data/minecraft/tags/blocks/slabs.json
+b1dad1e9baa66ffd3513cd24d5765c6fdc760ae5 data/minecraft/tags/blocks/stairs.json
 31aec3619b657eb55bc44a76ed1dba40e168472b data/minecraft/tags/blocks/wooden_fences.json
-4032d6002cc7e1160440993785fc797ab0f06481 data/minecraft/tags/blocks/wooden_slabs.json
-8df24af02f025c5e587901c704ac2c09e8d7d0aa data/minecraft/tags/blocks/wooden_stairs.json
+485ca26048e0c430a7ab442ed9e5b1a1ea596bb5 data/minecraft/tags/blocks/wooden_slabs.json
+fcdf4c2b6abbfbd23b9e637503dacf20f77a9105 data/minecraft/tags/blocks/wooden_stairs.json
 570f4747fd57b1bd476af0e54e7c4b0542ec975d data/tconstruct/tags/blocks/harvestable/stackable.json

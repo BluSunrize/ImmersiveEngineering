@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/empty_casing"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

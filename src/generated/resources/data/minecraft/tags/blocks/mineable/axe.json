@@ -20,6 +20,8 @@
     "immersiveengineering:treated_post",
     "immersiveengineering:sawdust",
     "immersiveengineering:fiberboard",
+    "immersiveengineering:shader_banner",
+    "immersiveengineering:shader_banner_wall",
     "immersiveengineering:treated_wood_horizontal",
     "immersiveengineering:slab_treated_wood_horizontal",
     "immersiveengineering:stairs_treated_wood_horizontal",
@@ -28,8 +30,6 @@
     "immersiveengineering:stairs_treated_wood_vertical",
     "immersiveengineering:treated_wood_packaged",
     "immersiveengineering:slab_treated_wood_packaged",
-    "immersiveengineering:stairs_treated_wood_packaged",
-    "immersiveengineering:shader_banner_wall",
-    "immersiveengineering:shader_banner"
+    "immersiveengineering:stairs_treated_wood_packaged"
   ]
 }

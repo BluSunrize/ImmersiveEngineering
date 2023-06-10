@@ -3,37 +3,67 @@
   "criteria": {
     "conveyor_basic": {
       "conditions": {
-        "block": "immersiveengineering:conveyor_basic"
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_basic",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
       },
       "trigger": "minecraft:placed_block"
     },
     "conveyor_dropper": {
       "conditions": {
-        "block": "immersiveengineering:conveyor_dropper"
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_dropper",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
       },
       "trigger": "minecraft:placed_block"
     },
     "conveyor_extract": {
       "conditions": {
-        "block": "immersiveengineering:conveyor_extract"
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_extract",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
       },
       "trigger": "minecraft:placed_block"
     },
     "conveyor_redstone": {
       "conditions": {
-        "block": "immersiveengineering:conveyor_redstone"
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_redstone",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
       },
       "trigger": "minecraft:placed_block"
     },
     "conveyor_splitter": {
       "conditions": {
-        "block": "immersiveengineering:conveyor_splitter"
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_splitter",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
       },
       "trigger": "minecraft:placed_block"
     },
     "conveyor_vertical": {
       "conditions": {
-        "block": "immersiveengineering:conveyor_vertical"
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_vertical",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
       },
       "trigger": "minecraft:placed_block"
     }
@@ -62,5 +92,6 @@
       "conveyor_splitter",
       "conveyor_vertical"
     ]
-  ]
+  ],
+  "sends_telemetry_event": false
 }

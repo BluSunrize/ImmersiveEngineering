@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/windmill_blade"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

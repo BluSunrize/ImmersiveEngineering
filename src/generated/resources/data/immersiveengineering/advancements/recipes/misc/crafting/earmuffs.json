@@ -28,5 +28,6 @@
     "recipes": [
       "immersiveengineering:crafting/earmuffs"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

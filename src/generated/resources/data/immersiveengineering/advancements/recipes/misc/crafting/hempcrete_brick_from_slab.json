@@ -30,5 +30,6 @@
     "recipes": [
       "immersiveengineering:crafting/hempcrete_brick_from_slab"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
