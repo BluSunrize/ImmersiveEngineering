@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
@@ -22,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -164,17 +166,15 @@ public class IEBlockTags extends BlockTagsProvider
 				.addOptionalTag(new ResourceLocation("dynamictrees", "leaves"));
 		checkAllRegisteredForBreaking();
 
-		// TODO fix!
-		//for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values())
-		//	if(slab.get().defaultBlockState().getMaterial()==Material.WOOD)
-		//		tag(BlockTags.WOODEN_SLABS).add(slab.get());
-		//	else
-		//		tag(BlockTags.SLABS).add(slab.get());
-		//for(BlockEntry<IEStairsBlock> stairs : IEBlocks.TO_STAIRS.values())
-		//	if(stairs.get().defaultBlockState().getMaterial()==Material.WOOD)
-		//		tag(BlockTags.WOODEN_STAIRS).add(stairs.get());
-		//	else
-		//		tag(BlockTags.STAIRS).add(stairs.get());
+		for(BlockEntry<?> treatedWood : WoodenDecoration.TREATED_WOOD.values())
+		{
+			tag(BlockTags.WOODEN_SLABS).add(IEBlocks.TO_SLAB.get(treatedWood.getId()).get());
+			tag(BlockTags.WOODEN_STAIRS).add(IEBlocks.TO_STAIRS.get(treatedWood.getId()).get());
+		}
+		for(BlockEntry<?> slab : IEBlocks.TO_SLAB.values())
+			tag(BlockTags.SLABS).add(slab.get());
+		for(BlockEntry<?> stairs : IEBlocks.TO_STAIRS.values())
+			tag(BlockTags.STAIRS).add(stairs.get());
 
 		/* MOD COMPAT STARTS HERE */
 
@@ -219,27 +219,179 @@ public class IEBlockTags extends BlockTagsProvider
 
 	private void registerAxeMineable()
 	{
-		// TODO fix
-		//IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
-		//Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
-		//		.map(RegistryObject::get)
-		//		.filter(b -> b.defaultBlockState().getMaterial()==Material.WOOD)
-		//		.forEach(tag::add);
-		//tag.add(Cloth.SHADER_BANNER_WALL.get());
-		//tag.add(Cloth.SHADER_BANNER.get());
+		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
+		registerMineable(
+				tag,
+				WoodenDevices.CRAFTING_TABLE,
+				WoodenDevices.WORKBENCH,
+				WoodenDevices.CIRCUIT_TABLE,
+				WoodenDevices.GUNPOWDER_BARREL,
+				WoodenDevices.WOODEN_BARREL,
+				WoodenDevices.TURNTABLE,
+				WoodenDevices.CRATE,
+				WoodenDevices.REINFORCED_CRATE,
+				WoodenDevices.SORTER,
+				WoodenDevices.ITEM_BATCHER,
+				WoodenDevices.FLUID_SORTER,
+				WoodenDevices.WINDMILL,
+				WoodenDevices.WATERMILL,
+				WoodenDevices.TREATED_WALLMOUNT,
+				WoodenDevices.LOGIC_UNIT,
+				WoodenDecoration.TREATED_FENCE,
+				WoodenDecoration.TREATED_SCAFFOLDING,
+				WoodenDecoration.TREATED_POST,
+				WoodenDecoration.SAWDUST,
+				WoodenDecoration.FIBERBOARD,
+				Cloth.SHADER_BANNER,
+				Cloth.SHADER_BANNER_WALL
+		);
+		for(BlockEntry<?> treatedWood : WoodenDecoration.TREATED_WOOD.values())
+			registerMineable(tag, treatedWood);
+	}
+
+	private void registerMineable(IntrinsicTagAppender<Block> tag, MultiblockRegistration<?>... entries)
+	{
+		for(MultiblockRegistration<?> entry : entries)
+			tag.add(entry.block().get());
+	}
+
+	private void registerMineable(IntrinsicTagAppender<Block> tag, BlockEntry<?>... entries)
+	{
+		for(BlockEntry<?> entry : entries)
+		{
+			tag.add(entry.get());
+			BlockEntry<?> slab = IEBlocks.TO_SLAB.get(entry.getId());
+			if(slab!=null)
+				tag.add(slab.get());
+			BlockEntry<?> stairs = IEBlocks.TO_STAIRS.get(entry.getId());
+			if(stairs!=null)
+				tag.add(stairs.get());
+		}
 	}
 
 	private void registerPickaxeMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_PICKAXE);
-		// TODO fix
-		//Stream.concat(IEBlocks.REGISTER.getEntries().stream(), IEMultiblockLogic.BLOCK_REGISTER.getEntries().stream())
-		//		.map(RegistryObject::get)
-		//		.filter(b -> {
-		//			Material material = b.defaultBlockState().getMaterial();
-		//			return material==Material.STONE||material==Material.METAL;
-		//		})
-		//		.forEach(tag::add);
+
+		registerMineable(
+				tag,
+				IEMultiblockLogic.COKE_OVEN,
+				IEMultiblockLogic.BLAST_FURNACE,
+				IEMultiblockLogic.ALLOY_SMELTER,
+				IEMultiblockLogic.ADV_BLAST_FURNACE,
+				IEMultiblockLogic.METAL_PRESS,
+				IEMultiblockLogic.CRUSHER,
+				IEMultiblockLogic.SAWMILL,
+				IEMultiblockLogic.TANK,
+				IEMultiblockLogic.SILO,
+				IEMultiblockLogic.ASSEMBLER,
+				IEMultiblockLogic.AUTO_WORKBENCH,
+				IEMultiblockLogic.BOTTLING_MACHINE,
+				IEMultiblockLogic.SQUEEZER,
+				IEMultiblockLogic.FERMENTER,
+				IEMultiblockLogic.REFINERY,
+				IEMultiblockLogic.DIESEL_GENERATOR,
+				IEMultiblockLogic.EXCAVATOR,
+				IEMultiblockLogic.BUCKET_WHEEL,
+				IEMultiblockLogic.ARC_FURNACE,
+				IEMultiblockLogic.LIGHTNING_ROD,
+				IEMultiblockLogic.MIXER
+		);
+		registerMineable(
+				tag,
+				StoneDecoration.COKEBRICK,
+				StoneDecoration.BLASTBRICK,
+				StoneDecoration.BLASTBRICK_REINFORCED,
+				StoneDecoration.COKE,
+				StoneDecoration.HEMPCRETE,
+				StoneDecoration.HEMPCRETE_BRICK,
+				StoneDecoration.HEMPCRETE_BRICK_CRACKED,
+				StoneDecoration.HEMPCRETE_CHISELED,
+				StoneDecoration.HEMPCRETE_PILLAR,
+				StoneDecoration.CONCRETE,
+				StoneDecoration.CONCRETE_BRICK,
+				StoneDecoration.CONCRETE_BRICK_CRACKED,
+				StoneDecoration.CONCRETE_CHISELED,
+				StoneDecoration.CONCRETE_PILLAR,
+				StoneDecoration.CONCRETE_TILE,
+				StoneDecoration.CONCRETE_LEADED,
+				StoneDecoration.INSULATING_GLASS,
+				StoneDecoration.SLAG_GLASS,
+				StoneDecoration.CONCRETE_SPRAYED,
+				StoneDecoration.ALLOYBRICK,
+				StoneDecoration.CONCRETE_SHEET,
+				StoneDecoration.CONCRETE_QUARTER,
+				StoneDecoration.CONCRETE_THREE_QUARTER,
+				StoneDecoration.CORESAMPLE,
+				StoneDecoration.DUROPLAST,
+				MetalDevices.RAZOR_WIRE,
+				MetalDevices.TOOLBOX,
+				MetalDevices.CAPACITOR_LV,
+				MetalDevices.CAPACITOR_MV,
+				MetalDevices.CAPACITOR_HV,
+				MetalDevices.CAPACITOR_CREATIVE,
+				MetalDevices.BARREL,
+				MetalDevices.FLUID_PUMP,
+				MetalDevices.FLUID_PLACER,
+				MetalDevices.BLAST_FURNACE_PREHEATER,
+				MetalDevices.FURNACE_HEATER,
+				MetalDevices.DYNAMO,
+				MetalDevices.THERMOELECTRIC_GEN,
+				MetalDevices.ELECTRIC_LANTERN,
+				MetalDevices.CHARGING_STATION,
+				MetalDevices.FLUID_PIPE,
+				MetalDevices.SAMPLE_DRILL,
+				MetalDevices.TESLA_COIL,
+				MetalDevices.FLOODLIGHT,
+				MetalDevices.TURRET_CHEM,
+				MetalDevices.TURRET_GUN,
+				MetalDevices.CLOCHE,
+				MetalDecoration.LV_COIL,
+				MetalDecoration.MV_COIL,
+				MetalDecoration.HV_COIL,
+				MetalDecoration.ENGINEERING_RS,
+				MetalDecoration.ENGINEERING_HEAVY,
+				MetalDecoration.ENGINEERING_LIGHT,
+				MetalDecoration.GENERATOR,
+				MetalDecoration.RADIATOR,
+				MetalDecoration.STEEL_FENCE,
+				MetalDecoration.ALU_FENCE,
+				MetalDecoration.STEEL_WALLMOUNT,
+				MetalDecoration.ALU_WALLMOUNT,
+				MetalDecoration.STEEL_POST,
+				MetalDecoration.ALU_POST,
+				MetalDecoration.LANTERN,
+				MetalDecoration.STEEL_SLOPE,
+				MetalDecoration.ALU_SLOPE,
+				Connectors.CONNECTOR_STRUCTURAL,
+				Connectors.TRANSFORMER,
+				Connectors.POST_TRANSFORMER,
+				Connectors.TRANSFORMER_HV,
+				Connectors.BREAKER_SWITCH,
+				Connectors.REDSTONE_BREAKER,
+				Connectors.CURRENT_TRANSFORMER,
+				Connectors.CONNECTOR_REDSTONE,
+				Connectors.CONNECTOR_PROBE,
+				Connectors.CONNECTOR_BUNDLED,
+				Connectors.FEEDTHROUGH
+		);
+		for(BlockEntry<?> sheetmetal : Metals.SHEETMETAL.values())
+			registerMineable(tag, sheetmetal);
+		for(BlockEntry<?> sheetmetal : MetalDecoration.COLORED_SHEETMETAL.values())
+			registerMineable(tag, sheetmetal);
+		for(BlockEntry<?> sheetmetal : MetalDecoration.METAL_LADDER.values())
+			registerMineable(tag, sheetmetal);
+		for(BlockEntry<?> sheetmetal : MetalDecoration.STEEL_SCAFFOLDING.values())
+			registerMineable(tag, sheetmetal);
+		for(BlockEntry<?> sheetmetal : MetalDecoration.ALU_SCAFFOLDING.values())
+			registerMineable(tag, sheetmetal);
+		for(BlockEntry<?> sheetmetal : MetalDevices.CHUTES.values())
+			registerMineable(tag, sheetmetal);
+		for(BlockEntry<?> sheetmetal : Connectors.ENERGY_CONNECTORS.values())
+			registerMineable(tag, sheetmetal);
+		for(BlockEntry<?> sheetmetal : MetalDevices.CONVEYORS.values())
+			registerMineable(tag, sheetmetal);
+
 		setOreMiningLevel(EnumMetals.COPPER, Tiers.STONE);
 		setOreMiningLevel(EnumMetals.ALUMINUM, Tiers.STONE);
 		setOreMiningLevel(EnumMetals.LEAD, Tiers.IRON);
@@ -259,14 +411,20 @@ public class IEBlockTags extends BlockTagsProvider
 
 	private void setOreMiningLevel(EnumMetals metal, Tiers level)
 	{
-		setMiningLevel(Metals.ORES.get(metal), level);
-		setMiningLevel(Metals.DEEPSLATE_ORES.get(metal), level);
-		setMiningLevel(Metals.RAW_ORES.get(metal), level);
+		final BlockEntry<Block> ore = Metals.ORES.get(metal);
+		final BlockEntry<Block> deepslateOre = Metals.DEEPSLATE_ORES.get(metal);
+		final BlockEntry<Block> rawOre = Metals.RAW_ORES.get(metal);
+		setMiningLevel(ore, level);
+		setMiningLevel(deepslateOre, level);
+		setMiningLevel(rawOre, level);
+		registerMineable(tag(BlockTags.MINEABLE_WITH_PICKAXE), ore, deepslateOre, rawOre);
 	}
 
 	private void setStorageMiningLevel(EnumMetals metal, Tiers level)
 	{
-		setMiningLevel(Metals.STORAGE.get(metal), level);
+		final BlockEntry<Block> storage = Metals.STORAGE.get(metal);
+		setMiningLevel(storage, level);
+		registerMineable(tag(BlockTags.MINEABLE_WITH_PICKAXE), storage);
 	}
 
 	private void setMiningLevel(Supplier<Block> block, Tiers level)

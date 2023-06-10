@@ -271,7 +271,9 @@ public class Advancements extends ForgeAdvancementProvider
 	{
 		public static String page = null;
 
-		private final Advancement.Builder builder = Advancement.Builder.advancement();
+		// recipeAdvancement is badly named, it just means that telemetry is disabled for this advancement. Since
+		// telemetry only applies to vanilla events (minecraft namespace) it does not matter much.
+		private final Advancement.Builder builder = Advancement.Builder.recipeAdvancement();
 
 		private final String name;
 		private ItemStack icon;
