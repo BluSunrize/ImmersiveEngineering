@@ -20,7 +20,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -248,7 +251,7 @@ public class ManualUtils
 	{
 		for(String s : text)
 		{
-			graphics.drawString(fontRenderer, s, x, y, colour);
+			graphics.drawString(fontRenderer, s, x, y, colour, false);
 			y += fontRenderer.lineHeight;
 		}
 	}

@@ -94,7 +94,7 @@ public class ClickableList extends Button
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 				graphics.blit(gui.texture, 0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
 			}
-			graphics.drawString(fr, s, isCategory[j]?7: 0, 0, col);
+			graphics.drawString(fr, s, isCategory[j]?7: 0, 0, col, false);
 		}
 		transform.scale(1/textScale, 1/textScale, 1/textScale);
 		transform.popPose();

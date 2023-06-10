@@ -10,9 +10,7 @@ package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -59,7 +57,7 @@ public class GuiButtonManualLink extends Button
 	private void drawHovered(GuiGraphics graphics, int mx, int my)
 	{
 		Font font = gui.manual.fontRenderer();
-		graphics.drawString(font, localized, getX(), getY(), gui.manual.getHighlightColour());
+		graphics.drawString(font, localized, getX(), getY(), gui.manual.getHighlightColour(), false);
 		String tooltip;
 		if(link!=null)
 			tooltip = gui.manual.formatLink(link);
