@@ -188,10 +188,20 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		if(energy.extractEnergy(consumption, true)==consumption&&!findAmmo(stack, player).isEmpty())
 		{
 			player.startUsingItem(hand);
-			player.level.playSound(null, player.getX(), player.getY(), player.getZ(), getChargeTime(stack) <= 20?IESounds.chargeFast.get(): IESounds.chargeSlow.get(), SoundSource.PLAYERS, 1.5f, 1f);
+			playChargeSound(player, stack);
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 		return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+	}
+
+	public static void playChargeSound(LivingEntity living, ItemStack railgun)
+	{
+		living.level.playSound(null,
+				living.getX(), living.getY(), living.getZ(),
+				getChargeTime(railgun) <= 20?IESounds.chargeFast.get(): IESounds.chargeSlow.get(), SoundSource.PLAYERS,
+				1.5f, 1f
+		);
+
 	}
 
 	@Override
@@ -229,29 +239,35 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 				if(!ammo.isEmpty())
 				{
 					ItemStack ammoConsumed = ammo.split(1);
-					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
-					float speed = 20;
-					Entity shot = new RailgunShotEntity(user.level, user, speed, 0, ammoConsumed);
-					shot = projectileProperties.getProjectile(player, ammoConsumed, shot);
-					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
+					fireProjectile(stack, world, user, ammoConsumed);
 					energy.extractEnergy(consumption, false);
-					if(!world.isClientSide)
-						user.level.addFreshEntity(shot);
-
-					ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(stack);
-					if(shader!=null)
-					{
-						HumanoidArm handside = user.getMainArm();
-						if(user.getUsedItemHand()!=InteractionHand.MAIN_HAND)
-							handside = handside==HumanoidArm.LEFT?HumanoidArm.RIGHT: HumanoidArm.LEFT;
-						Vec3 pos = Utils.getLivingFrontPos(user, .75, user.getBbHeight()*.75, handside, false, 1);
-						shader.registryEntry().getEffectFunction().execute(world, shader.shader(), stack,
-								shader.sCase().getShaderType().toString(), pos,
-								Vec3.directionFromRotation(user.getRotationVector()), .125f);
-					}
 				}
 			}
 		}
+	}
+
+	public static Entity fireProjectile(ItemStack railgun, Level world, LivingEntity user, ItemStack ammo)
+	{
+		IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammo);
+		float speed = 20;
+		Entity shot = new RailgunShotEntity(user.level, user, speed, 0, ammo);
+		shot = projectileProperties.getProjectile(user instanceof Player player?player: null, ammo, shot);
+		user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
+		if(!world.isClientSide)
+			user.level.addFreshEntity(shot);
+
+		ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(railgun);
+		if(shader!=null)
+		{
+			HumanoidArm handside = user.getMainArm();
+			if(user.getUsedItemHand()!=InteractionHand.MAIN_HAND)
+				handside = handside==HumanoidArm.LEFT?HumanoidArm.RIGHT: HumanoidArm.LEFT;
+			Vec3 pos = Utils.getLivingFrontPos(user, .75, user.getBbHeight()*.75, handside, false, 1);
+			shader.registryEntry().getEffectFunction().execute(world, shader.shader(), railgun,
+					shader.sCase().getShaderType().toString(), pos,
+					Vec3.directionFromRotation(user.getRotationVector()), .125f);
+		}
+		return shot;
 	}
 
 	public static ItemStack findAmmo(ItemStack railgun, Player player)
@@ -339,9 +355,9 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		}
 	}
 
-	public int getChargeTime(ItemStack railgun)
+	public static int getChargeTime(ItemStack railgun)
 	{
-		return (int)(40/(1+this.getUpgrades(railgun).getFloat("speed")));
+		return (int)(40/(1+getUpgradesStatic(railgun).getFloat("speed")));
 	}
 
 	@Override

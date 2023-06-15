@@ -265,6 +265,10 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
 				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
 
+		withExistingParent(name(SpawnEggs.EGG_FUSILIER), new ResourceLocation("minecraft:item/template_spawn_egg"));
+		withExistingParent(name(SpawnEggs.EGG_COMMANDO), new ResourceLocation("minecraft:item/template_spawn_egg"));
+		withExistingParent(name(SpawnEggs.EGG_BULWARK), new ResourceLocation("minecraft:item/template_spawn_egg"));
+
 		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));
 		obj(Tools.TOOLBOX, rl("item/toolbox.obj"))

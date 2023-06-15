@@ -15,6 +15,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -211,8 +212,8 @@ public class BulletHandler
 			if(!world.isClientSide&&hitEntity!=null&&damageSourceGetter!=null)
 			{
 				Entity shooter = null;
-				if(shooterUUID!=null)
-					shooter = world.getPlayerByUUID(shooterUUID);
+				if(shooterUUID!=null && world instanceof ServerLevel serverLevel)
+					shooter = serverLevel.getEntity(shooterUUID);
 				if(hitEntity.hurt(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(hitEntity, headshot)))
 				{
 					if(resetHurt)

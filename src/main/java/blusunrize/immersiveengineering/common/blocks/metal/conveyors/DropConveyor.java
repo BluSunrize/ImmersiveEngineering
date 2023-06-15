@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -88,12 +89,15 @@ public class DropConveyor extends ConveyorBase
 		// Special case conveyors, so items can be dropped through covered ones.
 		if(tile instanceof IConveyorBlockEntity)
 			return true;
+		// Inventories should only be targeted by insertion, not dropping
+		if(tile!=null&&tile.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.UP).isPresent())
+			return false;
 		BlockState state = world.getBlockState(pos);
 		VoxelShape shape = state.getCollisionShape(world, pos);
 		// Combining voxelshapes is a little expensive, so only calculate
 		// when the voxelshape changes. Identity compare is sufficent since they're
 		// usually precomputed.
-		if (shape != cachedDownShape)
+		if(shape!=cachedDownShape)
 		{
 			cachedOpenBelow = !Shapes.joinIsNotEmpty(REQUIRED_SPACE, shape, BooleanOp.AND);
 			cachedDownShape = shape;

@@ -30,7 +30,8 @@ public class AllLoot extends LootTableProvider
 	{
 		return ImmutableList.of(
 				Pair.of(GeneralLoot::new, LootContextParamSets.EMPTY),
-				Pair.of(BlockLoot::new, LootContextParamSets.BLOCK)
+				Pair.of(BlockLoot::new, LootContextParamSets.BLOCK),
+				Pair.of(EntityLoot::new, LootContextParamSets.ENTITY)
 		);
 	}
 

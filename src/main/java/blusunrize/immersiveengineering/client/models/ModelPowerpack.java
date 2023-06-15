@@ -26,9 +26,15 @@ import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.AgeableListModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
@@ -84,13 +90,40 @@ public class ModelPowerpack
 
 	public static void render(
 			LivingEntity toRender, ItemStack powerpack,
-			PoseStack matrixStackIn, MultiBufferSource buffers,
+			EntityModel<?> baseModel, PoseStack matrixStackIn, MultiBufferSource buffers,
 			int packedLightIn, int packedOverlayIn,
 			float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch
 	)
 	{
-		ArmorModel model = MODEL.get();
-		model.setupAnim(toRender, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		matrixStackIn.pushPose();
+//		ArmorModel model = MODEL.get();
+//		model.setupAnim(toRender, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		boolean isCrouching = false;
+		ModelPart leftArm = null;
+		ModelPart rightArm = null;
+		if(baseModel instanceof HumanoidModel humanoidModel)
+		{
+			isCrouching = humanoidModel.crouching;
+			leftArm = humanoidModel.leftArm;
+			rightArm = humanoidModel.rightArm;
+		}
+		else if(baseModel instanceof HierarchicalModel hierarchicalModel)
+		{
+			// Attempt to find limbs for illagers or similar
+			try
+			{
+				leftArm = hierarchicalModel.root().getChild("left_arm");
+				rightArm = hierarchicalModel.root().getChild("right_arm");
+			} catch(NoSuchElementException ignored)
+			{
+			}
+		}
+		if(baseModel instanceof AgeableListModel ageable&&baseModel.young)
+		{
+			matrixStackIn.scale(.5f, .5f, .5f);
+			matrixStackIn.translate(0, 1.5f, 0);
+		}
+
 		if(powerpack!=null)
 		{
 			float max = EnergyHelper.getMaxEnergyStored(powerpack);
@@ -101,7 +134,7 @@ public class ModelPowerpack
 		ItemRenderer renderer = Minecraft.getInstance().getItemRenderer();
 		matrixStackIn.pushPose();
 		matrixStackIn.mulPose(new Quaternion(180, 0, 0, true));
-		if(model.crouching)
+		if(isCrouching)
 		{
 			matrixStackIn.translate(0, -.2f, 0);
 			matrixStackIn.mulPose(new Quaternion(0.5f, 0, 0, false));
@@ -160,22 +193,25 @@ public class ModelPowerpack
 		for(InteractionHand hand : InteractionHand.values())
 		{
 			ItemStack stack = toRender.getItemInHand(hand);
-			if(!stack.isEmpty()&&EnergyHelper.isFluxRelated(stack))
+			boolean right = (hand==InteractionHand.MAIN_HAND)==(toRender.getMainArm()==HumanoidArm.RIGHT);
+			ModelPart arm = right?rightArm: leftArm;
+			if(!stack.isEmpty()&&EnergyHelper.isFluxRelated(stack)&&arm!=null)
 			{
-				boolean right = (hand==InteractionHand.MAIN_HAND)==(toRender.getMainArm()==HumanoidArm.RIGHT);
-				float angleX = (right?model.rightArm: model.leftArm).xRot;
-				float angleZ = (right?model.rightArm: model.leftArm).zRot;
+				int armHash = (int)(1024*arm.xRot)*31
+						+(int)(1024*arm.yRot)*31
+						+(int)(1024*arm.zRot)*31
+						+(int)(arm.x*31)+(int)(arm.y*31)+(int)(arm.z*31)
+						+(int)(arm.xScale*31)+(int)(arm.yScale*31)+(int)(arm.zScale*31)
+						+(right?17*31: 0)+(isCrouching?11*31: 0);
 
 				matrixStackIn.pushPose();
-				matrixStackIn.scale(right?-1: 1, -1, 1);
+				matrixStackIn.scale(1, -1, 1);
 				TransformingVertexBuilder builder = new TransformingVertexBuilder(
 						buffers, RenderType.entitySolid(InventoryMenu.BLOCK_ATLAS), matrixStackIn
 				);
 				ConnectionRenderer.renderConnection(
 						builder,
-						CATENARY_DATA_CACHE.getUnchecked(
-								new CatenaryKey((int)(1024*angleX), (int)(1024*angleZ), model.crouching, right)
-						),
+						CATENARY_DATA_CACHE.getUnchecked(new CatenaryKey(arm, isCrouching, right, armHash)),
 						-.015625, 0xeda044,
 						packedLightIn, packedOverlayIn
 				);
@@ -212,6 +248,7 @@ public class ModelPowerpack
 			);
 			matrixStackIn.popPose();
 		}
+		matrixStackIn.popPose();
 	}
 
 	private record BannerKey(DyeColor base, String patternText)
@@ -253,22 +290,34 @@ public class ModelPowerpack
 		return cached;
 	}
 
-	private record CatenaryKey(int xTimes1024, int zTimes1024, boolean crouched, boolean right)
+	private record CatenaryKey(ModelPart arm, boolean crouched, boolean right, int hash)
 	{
+		@Override
+		public int hashCode()
+		{
+			return hash;
+		}
 	}
 
 	public static final LoadingCache<CatenaryKey, CatenaryData> CATENARY_DATA_CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(10, TimeUnit.SECONDS)
 			.build(CacheLoader.from(key -> {
-				double angleX = key.xTimes1024()/1024.;
-				double angleZ = key.zTimes1024()/1024.;
-				double armLength = .75f;
-				double x = .3125+(key.right?1: -1)*armLength*Math.sin(angleZ);
-				double y = armLength*Math.cos(angleX);
-				double z = armLength*Math.sin(angleX);
+				Vector4f vec4f = new Vector4f(key.right?-.0625f: .0265f, -.625f, 0, 1);
+				Matrix4f mat4f = new Matrix4f();
+				mat4f.setIdentity();
+				mat4f.setTranslation(key.arm.x/16f, -key.arm.y/16f, key.arm.z/16f);
+				mat4f.multiply(Vector3f.ZP.rotation(-key.arm.zRot));
+				mat4f.multiply(Vector3f.YP.rotation(key.arm.yRot));
+				mat4f.multiply(Vector3f.XP.rotation(-key.arm.xRot));
+				vec4f.transform(mat4f);
+				vec4f.mul(new Vector3f(key.arm.xScale, key.arm.yScale, key.arm.zScale));
 				double zFrom = key.crouched?.625: .25;
 				double slack = key.crouched?1.25: 1.5;
-				return Connection.makeCatenaryData(new Vec3(.484375, -.75, zFrom), new Vec3(x, -y, z), slack);
+				return Connection.makeCatenaryData(
+						new Vec3(key.right?-.484375: .484375, -.75, zFrom),
+						new Vec3(vec4f.x(), vec4f.y(), vec4f.z()),
+						slack
+				);
 			}));
 
 
