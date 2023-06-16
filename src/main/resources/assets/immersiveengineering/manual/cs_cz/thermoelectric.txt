@@ -1,0 +1,5 @@
+Termoelektrický generátor
+Studený a žhavý
+<&recipe>Termoelektrické generátory jsou další možnost pro generování energie a fungují bez použití mechanických částí. Místo toho používají tepelnou rovnováhu.
+Položení žhavé kapaliny na jednu stranu a položení studené kapaliny na protější generuje energii záležící na rozdílu obou teplot.
+<&values>Seznam pod obsahuje ostatní nekapalné bloky které můžou být použity jako zdroje teploty.
