@@ -1,0 +1,7 @@
+Chrániče uší
+HLASITÉ ZVUKY!
+<&recipe>Chrániče uší jsou zařízení pro ochranu tvých uší. Jsou důležité pro inženýry kteří pracují u <link;diesel_generator;Dieselových generátorů;> nebo jiných hlasitých strojů.
+Při nošení sluchátek, všechny zvuky jsou redukovány o 90% a tvé uši mají lepší pocit! :D
+<&color_and_armor>Položení sluchátek do<link;workbench;inženýrova pracovního stolu;> ti umožnuje které zvuky zrušit a o kolik redukovat jejich zvuk.
+Můžeš je nabarvit jako kožené brnění.
+Kombinování s helmou připojí sluchátka k této výbavě, pokládání této helmy do výroby je odstraní kvůli úpravám.
