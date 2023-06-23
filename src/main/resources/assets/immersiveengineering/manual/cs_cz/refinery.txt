@@ -1,0 +1,8 @@
+Rafinerie
+Míchání kapalin"
+<&multiblock>Rafinerie je složitý multiblok který může zpracovat jednu nebo dvě kapaliny do sebe. Nejvíc běžné využití rafinerie je výroba bionafty.
+Pro stvoření struktury, klikni pravým tlačítkem na těžký blok inženýrství v prostřední vrstvě.
+Kapaliny jsou napojeny dvěma průduchy na stranách bloku a vypumpovány oranžově označeným průduchem. Použití kbelíků pro interakci s nádržemi rafinerie je také možné.
+Aplikování ruditového signálu na ovládací panel stroje zastaví proces, toto chování může být obráceno použitím Inženýrova šroubováku.
+<&diesel>Většina procesů v rafinerii vyžaduje katalyzátor pro spuštení reakce. Tento katalyzátor není použit, ale proces bez něj nebude fungovat.
+<br>Pro výrobu §lBionafty§r, zkombinuj stejné části <link;squeezer;Rostlinného oleje;start> a <link;fermenter;Ethanolu;start> při použití <link;chemicals;Ledkového prášku> jako katalyzátor.
