@@ -1,0 +1,4 @@
+Inženýrův kufr
+Inženýrova taška
+Kufr je jednoduchá, nošená nádoba použitá pro uložení všech inženýrových předmetů! Přejetí nad políčka ukáže, které předměty přijme.
+'Jídlo' a 'Vše' jsou docela vysvětlitelné, políčko 'Dráty' je pro cívky, spojovače a podobné předměty, a 'Nástroje' uloží jakékoliv IE nářadí které vezmou, lopaty a sekery! Skrčení a kliknutí pravým tlačítkem umožnuje kufru být položen. Při položení lze otevřít jeho inventář pravým tlačítkem. Skrčení a kliknutí pravým tlačítkem znovu zvedne kufr.
