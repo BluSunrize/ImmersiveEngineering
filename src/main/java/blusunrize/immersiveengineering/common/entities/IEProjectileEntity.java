@@ -140,6 +140,11 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	@Override
 	public void tick()
 	{
+		if(!isInGround())
+			++ticksInAir;
+		if(this.ticksInAir >= this.tickLimit||this.inGroundTime >= this.getMaxTicksInGround())
+			this.discard();
+
 		if(this.getOwner()==null&&this.level.isClientSide)
 			this.shooterUUID = getShooterSynced();
 
