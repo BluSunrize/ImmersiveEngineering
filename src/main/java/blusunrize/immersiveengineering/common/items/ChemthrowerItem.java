@@ -131,7 +131,6 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		FluidStack fs = this.getFluid(stack);
 		if(!fs.isEmpty())
 		{
-			// TODO may be broken
 			int duration = getUseDuration(stack)-remainingUseDuration;
 			int consumed = IEServerConfig.TOOLS.chemthrower_consumption.get();
 			if(consumed*duration <= fs.getAmount())

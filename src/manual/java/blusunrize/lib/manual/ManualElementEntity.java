@@ -39,7 +39,6 @@ public class ManualElementEntity extends SpecialManualElements
 	public void render(GuiGraphics graphics, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		// Entity rendering code was largely borrowed from JustEnoughResources by way2muchnoise
-		// TODO needs to be updated properly to 1.20, I suspect that it's got "too many" transforms now
 
 		Entity entity = renderData.get().entity;
 		float yOff = renderData.get().ySize-4;

@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.common.register.IEEntityDataSerializers;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -106,9 +108,9 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		if(this.level().isClientSide)
 			this.fluid = getFluidSynced();
 		BlockState state = level().getBlockState(blockPosition());
-		// TODO how do I do this without materials?
-		//if(this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
-		//	this.setSecondsOnFire(6);
+		// TODO this is a very rough port of the previous material-based check
+		if(this.canIgnite()&&(state.is(BlockTags.FIRE)||state.getFluidState().is(FluidTags.LAVA)))
+			this.setSecondsOnFire(6);
 		super.baseTick();
 	}
 

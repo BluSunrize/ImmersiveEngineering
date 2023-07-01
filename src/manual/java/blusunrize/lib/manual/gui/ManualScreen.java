@@ -26,11 +26,17 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
+@EventBusSubscriber(value = Dist.CLIENT, modid = "immersiveengineering", bus = Bus.FORGE)
 public class ManualScreen extends Screen
 {
 	private Minecraft mc = Minecraft.getInstance();
@@ -287,21 +293,20 @@ public class ManualScreen extends Screen
 		graphics.drawString(fr, s, xx, yy, colour, shadow);
 	}
 
-	// TODO How to make this work with the new static method?
-	// @Override
-	public List<Component> getTooltipFromItem(ItemStack stack)
+	@SubscribeEvent
+	public static void appendLinkToTooltip(ItemTooltipEvent ev)
 	{
-		List<Component> tooltip = getTooltipFromItem(minecraft, stack);
-		if(currentNode.isLeaf())
+		if(!(Minecraft.getInstance().screen instanceof ManualScreen manualScreen))
+			return;
+		if(!manualScreen.currentNode.isLeaf())
+			return;
+		final ItemStack stack = ev.getItemStack();
+		if(manualScreen.currentNode.getLeafData().getHighlightedStack(manualScreen.page)==stack)
 		{
-			if(currentNode.getLeafData().getHighlightedStack(page)==stack)
-			{
-				ManualLink link = this.manual.getManualLink(stack);
-				if(link!=null)
-					tooltip.add(Component.literal(manual.formatLink(link)));
-			}
+			ManualLink link = manualScreen.manual.getManualLink(stack);
+			if(link!=null)
+				ev.getToolTip().add(Component.literal(manualScreen.manual.formatLink(link)));
 		}
-		return tooltip;
 	}
 
 	@Override
