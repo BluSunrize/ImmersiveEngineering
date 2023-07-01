@@ -42,6 +42,9 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	protected IntSet piercedEntities;
 	@Nullable
 	protected UUID shooterUUID;
+	// Hack to disable vanilla gravity code in tick(). Using the vanilla setter would make MC sync the data value every
+	// tick
+	private boolean forceNoGravity;
 
 	private int tickLimit = 40;
 
@@ -147,13 +150,13 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 		float xRot0Prev = this.xRotO;
 		float yRot0Prev = this.yRotO;
 		// disable vanilla gravity
-		this.setNoGravity(true);
+		this.forceNoGravity = true;
 
 		// perform vanilla tick
 		super.tick();
 
 		// enable gravity
-		this.setNoGravity(false);
+		this.forceNoGravity = false;
 
 		// Vanilla has a fun issue where it ignores a block hit result if it found any entities instead
 		// so we check for block hits here again...
@@ -293,5 +296,11 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 		super.setOwner(entityIn);
 		if(entityIn!=null)
 			this.shooterUUID = entityIn.getUUID();
+	}
+
+	@Override
+	public boolean isNoGravity()
+	{
+		return this.forceNoGravity||super.isNoGravity();
 	}
 }
