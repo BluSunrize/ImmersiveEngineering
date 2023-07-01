@@ -29,6 +29,7 @@ import net.minecraftforge.client.RenderTypeGroup;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.CompositeModel.Baked.Builder;
+import net.minecraftforge.client.model.DynamicFluidContainerModel;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
@@ -46,14 +47,14 @@ import java.util.function.Function;
 public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketModel>
 {
 	private final IQuadTransformer recolorTransformer;
-	// TODO I hate Forge's approach of "let's make all the things private for fun"
-	private final IUnbakedGeometry<?> baseGeometry = /*new DynamicFluidContainerModel(
-			IEFluids.POTION.get(), false, true, true
-	)*/null;
+	private final IUnbakedGeometry<?> baseGeometry;
 
 	public PotionBucketModel(int color)
 	{
 		this.recolorTransformer = QuadTransformer.color($ -> color);
+		JsonObject baseModelJSON = new JsonObject();
+		baseModelJSON.addProperty("fluid", IEFluids.POTION.getId().toString());
+		this.baseGeometry = DynamicFluidContainerModel.Loader.INSTANCE.read(baseModelJSON, null);
 	}
 
 	@Override
