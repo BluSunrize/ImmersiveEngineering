@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -23,11 +24,6 @@ import java.util.function.Predicate;
 
 public class RockcutterItem extends SawbladeItem
 {
-	// TODO
-	//private static final Set<Material> silktouchMaterials = ImmutableSet.of(
-	//		Material.PLANT, Material.REPLACEABLE_PLANT, Material.GRASS,
-	//		Material.STONE, Material.GLASS, Material.ICE, Material.ICE_SOLID
-	//);
 	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
 			ToolActions.PICKAXE_DIG
 	);
@@ -53,9 +49,7 @@ public class RockcutterItem extends SawbladeItem
 	@Override
 	public Predicate<BlockState> getSawbladeMaterials()
 	{
-		return s -> {
-			throw new UnsupportedOperationException();
-		};//silktouchMaterials.contains(s.getMaterial());
+		return s -> s.is(IETags.rockcutterHarvestable);
 	}
 
 	@Override

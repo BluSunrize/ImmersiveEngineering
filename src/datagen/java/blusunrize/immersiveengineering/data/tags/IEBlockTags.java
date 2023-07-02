@@ -151,6 +151,8 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(Misc.POTTED_HEMP.get());
 
 		registerHammerMineable();
+		registerRockcutterMineable();
+		registerGrindingDiskMineable();
 		registerPickaxeMineable();
 		registerAxeMineable();
 		tag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -215,6 +217,25 @@ public class IEBlockTags extends BlockTagsProvider
 			if(block instanceof ConnectorBlock<?>||block instanceof ConveyorBlock)
 				tag.add(block);
 		}
+	}
+
+	// TODO rockcutter and grinding disk tags are nowhere near complete at this point, they were determined based on
+	//  block material in <=1.19.4
+	private void registerRockcutterMineable()
+	{
+		IntrinsicTagAppender<Block> tag = tag(IETags.rockcutterHarvestable);
+		tag.addTag(Tags.Blocks.STONE);
+		tag.addTag(Tags.Blocks.GLASS);
+		tag.addTag(BlockTags.ICE);
+	}
+
+	private void registerGrindingDiskMineable()
+	{
+		IntrinsicTagAppender<Block> tag = tag(IETags.grindingDiskHarvestable);
+		tag.addTag(Tags.Blocks.STORAGE_BLOCKS);
+		tag.addTag(IETags.sheetmetals);
+		tag.addTag(IETags.scaffoldingSteel);
+		tag.addTag(IETags.scaffoldingAlu);
 	}
 
 	private void registerAxeMineable()
