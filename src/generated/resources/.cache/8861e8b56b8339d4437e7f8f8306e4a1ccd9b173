@@ -1,4 +1,4 @@
-// 1.20	2023-06-10T09:32:44.967053427	Tags for minecraft:block mod id immersiveengineering
+// 1.20.1	2023-07-02T10:02:54.3365159	Tags for minecraft:block mod id immersiveengineering
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -48,7 +48,9 @@ e563b87b316084581f07d20d80466bc0014fce68 data/forge/tags/blocks/storage_blocks/u
 485ca26048e0c430a7ab442ed9e5b1a1ea596bb5 data/forge/tags/blocks/treated_wood_slab.json
 fb960fb69ed7f923b8ddb20685e869b6cfeb1a55 data/immersiveengineering/tags/blocks/buzzsaw/tree_blacklist.json
 f7dc293929a2176bc6e428c765f6bf49fbeccdb5 data/immersiveengineering/tags/blocks/mineable/drill.json
+cd10cf41a3388eed9cdbbb2ff72ed2e51e140fd9 data/immersiveengineering/tags/blocks/mineable/grinding_disk.json
 7204f37efe73e4ab8e5d05aef0e7c1fc973a8771 data/immersiveengineering/tags/blocks/mineable/hammer.json
+9ee1b70e3cd040c74f13cb38486921d7a3bf7442 data/immersiveengineering/tags/blocks/mineable/rockcutter.json
 22c291dd8a303b2f6629a7430880a0678e679ac4 data/immersiveengineering/tags/blocks/mineable/wirecutter.json
 c3d387e89fbb8dfb53e5e91ad3b45e07f5202650 data/immersiveengineering/tags/blocks/scaffolding_slabs/aluminum.json
 56c051f4ddf6a8bfb51631d88f7553d13e908a69 data/immersiveengineering/tags/blocks/scaffolding_slabs/steel.json
@@ -60,7 +62,7 @@ b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/blocks/s
 0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/blocks/fences.json
 1e227ef3a7c211db28ed17222728fdae19bba054 data/minecraft/tags/blocks/flower_pots.json
 554dd83553db13e0c7d93909cc36d414a8eedcc2 data/minecraft/tags/blocks/mineable/axe.json
-0fbd5c3e4a77c7fac2e6cb33bb2a2c33cf24e096 data/minecraft/tags/blocks/mineable/pickaxe.json
+2534125dffe0a3a29ecff568b4c40b768329d43a data/minecraft/tags/blocks/mineable/pickaxe.json
 90d779ffc3de5333ab5ba332cbb108af237493df data/minecraft/tags/blocks/mineable/shovel.json
 7664fa2d24e4cac313d34871e35bfc4550d30dd8 data/minecraft/tags/blocks/needs_iron_tool.json
 0b44260a4bbb8be99039b3054c7e1faa8813d4a8 data/minecraft/tags/blocks/needs_stone_tool.json
