@@ -43,9 +43,7 @@ import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -276,8 +274,19 @@ public class IEBlockTags extends BlockTagsProvider
 			tag.add(entry.block().get());
 	}
 
+	private <T extends Block> void registerMineable(IntrinsicTagAppender<Block> tag, Map<?, BlockEntry<T>> entries)
+	{
+		registerMineable(tag, new ArrayList<>(entries.values()));
+	}
+
 	private void registerMineable(IntrinsicTagAppender<Block> tag, BlockEntry<?>... entries)
 	{
+		registerMineable(tag, Arrays.asList(entries));
+	}
+
+	private void registerMineable(IntrinsicTagAppender<Block> tag, List<BlockEntry<?>> entries)
+	{
+		entries.sort(Comparator.comparing(BlockEntry::getId));
 		for(BlockEntry<?> entry : entries)
 		{
 			tag.add(entry.get());
@@ -396,23 +405,14 @@ public class IEBlockTags extends BlockTagsProvider
 				Connectors.CONNECTOR_BUNDLED,
 				Connectors.FEEDTHROUGH
 		);
-		for(BlockEntry<?> sheetmetal : Metals.SHEETMETAL.values())
-			registerMineable(tag, sheetmetal);
-		for(BlockEntry<?> sheetmetal : MetalDecoration.COLORED_SHEETMETAL.values())
-			registerMineable(tag, sheetmetal);
-		for(BlockEntry<?> sheetmetal : MetalDecoration.METAL_LADDER.values())
-			registerMineable(tag, sheetmetal);
-		for(BlockEntry<?> sheetmetal : MetalDecoration.STEEL_SCAFFOLDING.values())
-			registerMineable(tag, sheetmetal);
-		for(BlockEntry<?> sheetmetal : MetalDecoration.ALU_SCAFFOLDING.values())
-			registerMineable(tag, sheetmetal);
-		for(BlockEntry<?> sheetmetal : MetalDevices.CHUTES.values())
-			registerMineable(tag, sheetmetal);
-		for(BlockEntry<?> sheetmetal : Connectors.ENERGY_CONNECTORS.values())
-			registerMineable(tag, sheetmetal);
-		for(BlockEntry<?> sheetmetal : MetalDevices.CONVEYORS.values())
-			registerMineable(tag, sheetmetal);
-
+		registerMineable(tag, Metals.SHEETMETAL);
+		registerMineable(tag, MetalDecoration.COLORED_SHEETMETAL);
+		registerMineable(tag, MetalDecoration.METAL_LADDER);
+		registerMineable(tag, MetalDecoration.STEEL_SCAFFOLDING);
+		registerMineable(tag, MetalDecoration.ALU_SCAFFOLDING);
+		registerMineable(tag, MetalDevices.CHUTES);
+		registerMineable(tag, Connectors.ENERGY_CONNECTORS);
+		registerMineable(tag, MetalDevices.CONVEYORS);
 		setOreMiningLevel(EnumMetals.COPPER, Tiers.STONE);
 		setOreMiningLevel(EnumMetals.ALUMINUM, Tiers.STONE);
 		setOreMiningLevel(EnumMetals.LEAD, Tiers.IRON);
