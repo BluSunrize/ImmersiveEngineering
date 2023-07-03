@@ -1,0 +1,6 @@
+Těžce plátovaný štít
+Armáda jednoho muže
+<&recipe>Těžce plátovaný štít je přímé vylepšení pro štít na který jseš zvyklý. Stejně jako normální štít, tento štít bude blokovat většinu poškození ze předu, ale jeho výdrž byla zvýšena, a může být vylepšen.<np>
+<&flashbulb>§2Žárovkové§r vylepšení přidává žárovku a reflektorovou obrazovku ke štítu. Při napadení, toto zařízení udělá velké bliknutí což zblbne nepřátele před hráčem.<np>
+<&electric>Přidání §2Vypouštěčů šoku§r na štít ti dovoluje poranit nepřátele se štítem. Když je štít zasažen, vyšle šok což dá poškození útočníkovi. Navíc vypaří projektily místo blokování<np>
+<&magnetic>§2Magnetická rukavice§r slouží jako lehká cesta pro přístup ke štítu. S tímto vylepšením dvojté klepnutí na §l<keybind;key.immersiveengineering.magnetEquip>§r klávesu vytáhne štít a položí jej do tvé vedlejší ruky.
