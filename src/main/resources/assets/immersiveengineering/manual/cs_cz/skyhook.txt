@@ -1,0 +1,8 @@
+Nebeský hák
+Broku, chytej!
+Inženýrův nebeský hák je systém určený pro zaháknutí do drátu, konopných lan nebo ocelových drátů.
+S ním, inženýři můžou přejet dálku drátů pro přesun mezi podstanicemi nebo dalšími instalacemi. Jen podrž pravé tlačítko myši když jseš u drátu a budeš k němu připojen.
+Tlačítko lze uvolnit při jízdě po drátu, ale spouštení z háku nebo skrčení tě shodí.
+
+Gravitace bude dostatečná pro pohyb po klesajících drátech s dobrou rychlostí, také lze použít standardní klíče pro pohyb po zvedajících drátech.
+Když hák dosáhne křižovatku bude pokračovat ve směru na který se kouká hráč, pokud možno.
