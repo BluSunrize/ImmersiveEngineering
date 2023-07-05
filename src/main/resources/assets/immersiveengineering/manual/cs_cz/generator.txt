@@ -1,0 +1,7 @@
+Generace energie
+
+<&dynamo_recipe>Přenos energie je dobrý když máš energie. Pro generaci fluxu, můžeš použit kinetické energie větrných mlýnů a vodních kol. Připojení těchto věcí k dynamu bude generovat energii záležící na tom jak se rychle otáčejí.<np>
+<&waterwheel_recipes>Vodní kolo je docela jednoduchý pohon pro pohon dynama. Jeho otočná rychlost záleží na proudění vody takže pro optimální výsledky, budeš chtít směrovat vodu do polo-kruhu z vrchu jedné strany a kolem spodku. K sobe můžou být položeny až tři vodní kola.<np>
+<&windmill_recipes>Větrný mlýn je jednoduchá cesta pro výrobu energie, ale není moc silná. Jeho rychlost záleží na místě před nim, s jeho kinetickým výstupem zpomalujícím pokud je omezeno proudění vzduchu. Navíc, počasí jako déšť a bouře mají větší vítr, takže zrychlují točený mlýna.<np>
+<&sail_recipe>Tvá generace větrné energie může být zlepšena pokrytím čepelí tkaninou. Udělání této věci zvyšuje povrchovou oblast a s tím otočnou rychlost a výstup energie.
+Vyžadované plachty jsou vytvořeny z <link;hemp;tvrdé konopné tkaniny;start> a aplikovány na větrný mlýn kliknutím na něj ve světě.

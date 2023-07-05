@@ -1,0 +1,7 @@
+Uzavíratelný kluzák
+Pluji v nebi
+<&recipe>§oVesničani vyprávějí příběhy o městech v nebi hlídaných draky, kde odvážní dobrodruzi můžou získat křídla která jim umožnujou plachtit ve vzduchu.§r
+<br>Humbuk, jistě - ale koncepce blázní inženýrovu mysl. §2Uzavíratelný kluzák§r je zařízení které nabízí tyto svobody, umožnující ti plachtit po nebi.
+<br>Chová se stejně jako "Krovky" o kterých mluvili vesničani, ale přichází s nějakými mínusy: Má menší výdrž a žádný magický potenciál pro kouzla.
+Jeho lehká konstrukce z konopí a hliníku jej dělá problematický při vysokých rychlostí a dostává více poškození při plachtění nebo zrychlení ohňostrojem.
+Jeho materiály jsou lehce získatelné a může být opraven s nějakou konopnou tkaninou...pokud se nerozbije při rychlém plachtění.
