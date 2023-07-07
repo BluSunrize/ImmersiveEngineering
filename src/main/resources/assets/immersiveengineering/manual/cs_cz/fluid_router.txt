@@ -1,0 +1,6 @@
+Kapalinový směrovač
+Mléko jde vlevo, kyselina vpravo
+<&recipe>Kapalinový směrovač funguje stejně jako <link;item_router;Předmětový směrovač;start>. Kapaliny zaslány dovnitř budou přesunuty jak ne nastaveno šest filtrů.
+Kliknutí s kbelíkem nebo jinou nádobou na tekutiny na políčka rozhraní nakonfiguruje filtr na tuto kapaliny<np>
+Když jsou do směrovače napumpovány jakékoliv kapaliny, budou směrovány do výstupu ve kterém se shoduje filtr, nebo když není nalezen žádný filtr, kapalina je směrována do nefiltrovaného výstpu. Pokud není k dispozici žádná nebo platná cesta, kapalina nebude přijata.
+Tlačítka nad každým filtrem nastaví pokud filtr bude respektovat nebo ignorovat NBT data kapaliny.
