@@ -1,0 +1,11 @@
+Beton
+Pevnostní materiál
+<&recipe>Beton je velmi tvrdý a odolný kompozitní materiál. Je levný na výrobu a dělá dobré využití pro <link;slag;strusku> vyrobenou vypékáním oceli.
+<&brick>Beton lze rozřezat a smontovat na různé cihly a pilíře pomocí §2Řezače kamení§r.
+Betonové cihly mají stejnou odolnost proti výbuchu jako normální beton, ale můžou být rozmontovány rychleji než normální verze, což je dělá dobrým strukturním materiálem.
+<&partial>Beton lze rozřezat na půlbloky různé šířky pomocí §2Řezače kamení§r.
+Můžeš také použít tento stroj na výrobu půlbloků a schodů z betonu, ale také betonové dlaždice které jsou více hladké a lesklé.
+<&leaded>Olověný beton je vystužený materiál, který je vysoce odolný proti výbuchům. Může také nabídnou ochranu proti radiaci, jestli je to čeho se bojíš.
+<&liquid>Tekutý beton lze vyrobit v <link;mixer;Mixéru> kombinováním polovinu kbelíku vody se §2štěrkem§r, §2jílem§r a §2dvěma díly písku§r. Když je vylit na zem bude téct jako vody, před tím než se za nějakou chvíli zpevní.
+<br>Také lze použít více kbelíků pro naplnění když je položíš na klíčové lokace. Poznámka: pokud se beton rozteče příliš nízko, tekutina zaschne na půlblok místo celého bloku.
+Pokud beton zaschne se stvořením uvnitř, bude zaseknuto a nebude se moci pohnout. Můžeš také naplnit <link;chemthrower;Chemický vrhač> s tekutým betonem pro vyrobení plošin nebo zaseknutí nepřátel.

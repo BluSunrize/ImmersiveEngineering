@@ -1,0 +1,12 @@
+Kotoučová pila
+Nejedem do Ravenholmu
+<&recipes>Tato velká přenosná pila pro udělání rychlé práce na stromech a dalších dílech přírody které můžou stát v cestě skvělé stavby továrny.
+Po použití <link;workbench;Inženýrova pracovního stolu;start> pro položení pilového kotouče, a naplnění  <link;refinery;Bionaftou;diesel> nebo jiným palivem, může být použita pro drcení od malých bříz po velké tropické stromy.
+
+Jako nějaké ostatní nástroje, pilu lze modifikovat v <link;workbench;Inženýrově pracovním stole>. Tyto vylepšení ovlivní objem nádrže a výdrž čepele.
+<np>
+<&rockcutter_recipe>Nahrazením normální čepelí s §2Drtící čepelí§r, pilu lze použít na řezání jemných kostek kamene, jako kouzlo §2Něžného dotekuh§r. Ale, diamantová čepel není vhodná na dlabání dřevem nebo kácením stromů.<np>
+<&grinding_recipe>§2Drtící disk§r je vyroben z jemného hliníkového prášku zapuštěném v <link;plastic;Fenolové pryskyřici>. I když nemá takovou výdrž, tyto disky jsou dobré pro řezání ostatních materiálů, ale rozbíjejí se rychleji na ostatních materiálech. Také můžou být použity na odstranění patiny nebo vosku z mědi nebo oloupat kůru ze stromů jako §2sekera§r.<np>
+<&tank_recipe>§2Velká nádrž§r zvětší kapacitu palivové nádrže o 2000 mb.<np>
+<&lube_recipe>§Pokročilý leštící systém§r aplikuje leštidlo navíc na čepel snižující rychlost ve které se čepel rozbíjí.<np>
+<&quiver_recipe>Připojením §2Čepelového zásobníku§r na stranu kotoučové pily, můžeš nosit další dvě čepele. Můžeš přepínat mezi uloženými čepelemi pomocí <config;b;tools.chemthrower.scroll;skrčení a použití kolečka myši, nebo použitím;using> klávesy §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r pokud byla nastavena v nastavení.
