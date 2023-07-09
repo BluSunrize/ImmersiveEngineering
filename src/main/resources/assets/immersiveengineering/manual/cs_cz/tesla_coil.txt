@@ -1,0 +1,9 @@
+Teslův transformátor
+Toto jde až do 11
+<&tesla_coil_recipe>Teslův transformátor začal jako koncept bezdrátového přenosu energie. Ale kvůli jeho vysokých ztrátových hodnot a jeho zajímavé vlastnosti smažení žijících věcí kolem, byl rychle převeden na Inženýrův sen obrany domova.<np>
+Cena běhu je velmi vysoká, dosahující 256 Fluxu v pasivní spotřebě a dalších 512 pokaždé co dá poškození.
+Transformátor je vypnut pokud není napájen ruditem. Pravé kliknutí s Inženýrovym šroubovákem obrátí toto chování.
+Kromě poškození, šoky také aplikují efekt, "Omráčení", zabraňující entitě se teleportovat.
+Pravé kliknutí s Inženýrovym šroubovákem při skrčení will přepne transformátor mezi vysoko- a nízko- energickým režimem. Abys toto mohl udělat, transformátor musí být vypnut. Je nastaven na vysokém režimu defaultně. Když je transformátor v nízko nastaveném režimu bude spotřebovávat jen polovinu energie ale také bude mít polovinu dosahu.<np>
+<&faraday_recipes>Pokud nosíš plný Faradyův oblek, transformátor v nízko energickém režimu tě neporaní, ale bude stále střílet blesky. Tento oblek tě také ochrání před neizolovanými dráty. Transformátory ve vyskoko energickém režimu používají speciální techniky, aby jejich vybití byla více smrtelná a způsobí roztavení obleku, což zvyšuje poškození dané tobě a poškození obleku.<np>
+<&tube_recipes>Fluorescenční trubice svítí když jsou položeny do silného vysokofrekvenčního pole. Taková frekvence je generována Teslovym transformátorem, takže položení trubky blízko Teslova transformátoru způsobí že se rozsvítí. Dosah je kolem 1.5krát více dosahu ve kterém budeš zasáhnut. Můžou být nabarveny v Inženýrově pracovním stole a otočeny shiftem + kliknutím pravým tlačítkem s Inženýrovym kladivem.
