@@ -1,0 +1,7 @@
+Kovolis
+Pod tlakem!
+<&multiblock>Kovolis je automatizovaná cesta tvarování kovu. Používá vysokotlaký píst pro zmáčknutí formy na ingot, tvarující jej na plát, tyč nebo jiný komponent.
+Struktura je sestavena jako nahoře, pro stvoření multibloku klikni na píst s Inženýrovým kladivem. Energie je napájena přes vrch a předměty na pásy směrem pohybu. Nižší střední blok je ruditový otvor, pravé kliknutí s Inženýrovym šroubovákem obrátí toto chování.<np>
+<&mold_blueprint>Pro funkci kovolis vyžaduje formu připojenou k pístu. Tyto formy jsou vytvořeny v <link;workbench;§o§nInženýrově §o§npracovním stole§r> pomocí nahoře ukázané šablony.<np>
+<&mold_recipes>Formy jsou vytvořeny jak ukázáno nahoře, se štípačkami dostávající poškození při každé výrobní operaci. Potom jsou vloženy do kovolisu by pravým kliknutím na multiblok s formou v ruce.<np>
+<&packing>Balící a rozbalovací formy slisují 4 nebo 9 stejných předmětů do jejich formy úložiště, nebo také je rozbalí. Toto lze použít pro uložení ingotů jako bloky, nebo pro vytvoření jednoduchých bloků jako třeba pískovec.
