@@ -1,0 +1,19 @@
+Minerální ložiska
+Oresome
+Ložiska rud kolem tvého světa nejsou nic nového. Co jsi ale zapoměl jsou minerální ložiska, která obsahují směs různých rud. Kvůli jejich širokému a malému rozšíření, hornící je nemůžou nalézt, ale <link;excavator;speciální stroj> s tím může pomoci.
+<&survey_tools>Pro začnutí hledání minerálních žil, měl by jsi vyrobit §2Průzkumné nástroje§r. Při dobrodružství můžeš použít tento nástroj na bloky půdy a můžes identifikovat žíly a jejich pozice.
+
+Každý vzorek ze stejné žíly ti dává přesnější čtení co obsahuje a odkud pochází. Poznámka: žíly se můžou překrývat, takže můžeš najít stopy jiných žil u sebe.
+
+Také poznamenej že pokud je žíla vykopaná z dálky, takže oblast vykopávky bude extrakhována neúčinně, vykopávajíc více odpadu jako třeba kameny a půda.
+
+Kvůli neúčinné vykopávce žíla vyprodukuje méně věcí než účinně vykopaná žíla.
+<&sample_drill>Po zůžení typu a pozice žíly, použit §2Vrták jádrových vzorů§r pro přesné čtení jaké žíly jsou nalezeny na této pozici.
+Napájej stroj energií a klikni pravým tlačítkem nebo použij ruditový signál. Vrták spotřebováva <config;i;machines.coredrill.consumption> Fluxu/t pro extrahování vzorku na jeho místě který obsahuje přesné informace o minerální žíle.
+<np>
+<&core_sample>Vzorek ti neřekne jenom jaké jsou tam minerály, počítaje jejich relativní hojnost a jejich individuální §2nasycení§r. Větší nasycení znamená větší šance na vrácení rudy.
+
+Skrč se a klikni pro položení jádrového vzorku do světa, umožnující ti číst jeho pozici a informace. Také při položení na něj můžes kliknout pravým tlačítkem s mapou pro označení jeho pozice.
+
+Tyto stránky mají zapsané typy žíly a ložiska, a odpadu, který z nich lze získat.
+<np>

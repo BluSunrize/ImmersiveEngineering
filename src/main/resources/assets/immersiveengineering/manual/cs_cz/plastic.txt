@@ -1,0 +1,12 @@
+Pryskyřice a duroplast
+Je to úžasné!
+<&resin>Fenolová pryskyřice je lepivá a viskózní kapalina, která může být tvarovány na tvrdý Duroplast. Tento nový materiál je tvrdý, nehořlavý a nevodivý, což ho dělá dobrou izolaci v elektrickém inženýrství.
+Také jeho schopnost tvarování jej dělá lepší v sériové výrobě než dřevo nebo keramika.<np>
+<&acetaldehyde>Jeho výrobní proces je ale víc těžký a záleží na těžkém chemickém procesu v <link;refinery;§o§nRafinerii§r>.<br>
+Zaprvé, <link;fermenter;Ethanol;start> získaný kvašením rostlin musí být oxidován na Acetaldehyd. Tento proces je udělán použitím §2Stříbrného plátu§r jako katalyzátor a naplněním jedné nádrží rafinerie ethanolem, zatímco druhá nádrž ostane prázdná.
+Vzniklý acetaldehyd je přesunut do §odruhé§r rafinerie, kde je zkombinován s <link;cokeoven;Kreosotem> pro vytvoření §2Fenolové pryskyřice§r. Tento proces nevyžaduje žádný katalyzátor.<np>
+<&duroplast_sheet>Duroplastové předměty jsou vytvořeny naplněním platných <link;metal_press;forem;mold_recipes> s pryskyřicí v <link;bottling_machine;§o§nBPlnícím §o§nstroji§r>. Tento stroj umí držet plno tepla a tlaku v těchto formách pro ztvrdnutí pryskyřice.<br>
+Tyto desky jsou použity ve vytváření <link;components;Pokročilých elektronických součástí;elec_components> a <link;components;Obvodových desek;pcb>, kde se chovají jako izolátory.<np>
+<&duroplast_block>Pevné bloky duroplastu lze použít na stavbu a dekoraci, ale někomu se nelíbí jejich barva. Zaprvé slouží pro nahrazení §2Terakoty§r při výrobě <link;wiring;drátových spojovačů a relé;connector_recipes>, takže snižující vyžadovaný počet jílu!<np>
+<&fiberboard>Dřevovláknitá deska je vytvořena z <link;sawmill;pilin;sawdust>, smíchaná s pryskyřicí pro vytvoření pevného bloku. Má vlastnosti jako dřevo a může být použita místo prken. Úžasná cesta jak zrecyklovat co půjde do odpadu!
+<&empty_shell> Také můžeš použít pryskyřici ve výrobě prázdných nábojnic pro <link;bullets;Revolvérové náboje;empty>, což je dělá levnější a lehčí pro sériovou výrobu.

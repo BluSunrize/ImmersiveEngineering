@@ -1,0 +1,7 @@
+Drtič
+Dávej pozor na ruce!
+Drcení rudy zvyšuje výtěžky z rud, za každou rudu se vytvoří dva prášky které lze roztavit. Tento průmyslový drtič je rychlá cesta. Rychlost zpracování stroje záleží na napájení energií.
+Aplikování ruditového signálu zastaví proces stroje, toto chování lze obrátit použitím inženýrova šroubováku.
+Struktura je stvořena pravým kliknutím s Inženýrovym kladivem na střední blok předku. Předek je široká strana, která má lehký blok inženýrství na spodku.
+Tento drtič není jen použit k drcení rud. Každé spadlé živé stvoření bude rozdrceno a drtič vyšle relevantní předměty. Všechny předměty které nelze zpracovat budou zničeny.
+
