@@ -1,0 +1,17 @@
+Logické obvody
+Turingovo dokončení
+S úžasnou rychlostí a použití <link;redstone_wire;Ruditových drátů> a unikátních vlastností<link;components;Vakuových trubic;tubes>, je nyní možné snižit stopu složitých ruditových obvodů.
+Použitím obvodového stolu, můžeš vyrobit menší logické obvody. Aby jsi mohl vyrobit obvod, budeš potřebovat <link;components;obvodovou desku;pcb>, nějaké vakuové trubice a nějakou pájku jako třeba měděné nebo olověné dráty. Stůl také musí být napájen energií přes zadní část stolu.
+
+Použitím různých součástí, pak vybereš vzor obvodu který chceš vytvořit a rozhodneš vstupní hodnoty a určený výstup.
+Vstupy a výstupy k dispozici je 16 barev ruditových drátů a  8 "Registrátorů". Tyto umožnují dočasné uložení hodnoty v obvodu který ovládá logic - o tomto více později.
+
+Po nastavení operátoru, vstupů a výstupů, uvidíš seznam požadovaných dílů u vstupních políček nalevo. Počet vyžadovaných dílů záleží na složitosti obvodu, s §lNAND§r obvodem nejlehčí na výrobu. Jak jsou vložené součásti. můžeš vzít ten obvod ze stolu z pravé části.<np>
+Dobré zkratky:
+- Při najíždení nad vstupním nebo výstupním tlačítek, zmáčkni číslovanou klávesu pro změnení na číslovaný registrátor. Zmáčkni písmeno pro projíždění mezi barvami začínající na toto písmeno.
+- Vezmi dokončený logický obvod a klikni s ním na střed rozhraní obvodového stolu pro kopírování instrukcí na stůl.<np>
+<&unit>Logická jednotka je blok ve kterém jsou logické obvody uloženy pro použití. Má dostatek místa na §210 obvodů§r, a obsahuje plných §28 vestavěných registrátorů§r, dovolující použití pro jakýkoliv obvod.
+Pro rozhraní logické jednotky s barevným ruditem je potřeba <link;redstone_wire;Spojovače ruditového rozhraní;bundled> připojené na jeho stranu.
+Pokaždé co spojovače změní jejich stav, jednotka se přepne mezi  jeho obvody a vykoná všech 10 operací.
+Pokud nějaký obvod použije registrátor jako výstup, výsledná hodnota zůstane v registrátoru a může být později použita jiným obvodem jako vstup.
+Stejný spojovač rozhraní  může být také použit jako výstup.
