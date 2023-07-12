@@ -4,12 +4,11 @@ import net.minecraftforge.gradle.common.tasks.SignJar
 import org.gradle.work.Incremental
 
 plugins {
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'net.neoforged.gradle' version '6.0.+'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.6'
-    id 'org.moddingx.modgradle.mapping' version '3.0.2'
     id 'eclipse'
 }
 
@@ -96,8 +95,6 @@ afterEvaluate {
 }
 
 minecraft {
-    // TODO switch back once I figure out whether this was causing the issues I ran into
-    //mappings channel: 'sugarcane', version: '2022.11.04-1.19.2'
     mappings channel: 'parchment', version: "$version_parchment-$version_minecraft"
     //mappings channel: 'official', version: version_minecraft
 
@@ -222,7 +219,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
+    minecraft "net.neoforged:forge:${version_minecraft}-${version_forge}"
 
     compileOnly fg.deobf("mezz.jei:jei-1.19.4-forge-api:${version_jei}")
     compileOnly fg.deobf("mezz.jei:jei-1.19.4-common-api:${version_jei}")
@@ -307,7 +304,7 @@ String buildVersionString() {
 }
 
 task datagenJar(type: Jar, dependsOn: datagenClasses) {
-    classifier = 'datagen'
+    archiveClassifier = 'datagen'
     from sourceSets.datagen.output
     manifest {
         attributes "FMLModType": "GAMELIBRARY"
@@ -315,13 +312,13 @@ task datagenJar(type: Jar, dependsOn: datagenClasses) {
 }
 
 task apiJar(type: Jar, dependsOn: apiClasses) {
-    classifier = 'api'
+    archiveClassifier = 'api'
     from sourceSets.api.output
     from sourceSets.manual.output
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from sourceSets.main.allSource
     from sourceSets.manual.allSource
     from sourceSets.api.allSource
@@ -336,7 +333,7 @@ artifacts {
 }
 
 shadowJar {
-    classifier = ''
+    archiveClassifier = ''
     dependencies {
         include(dependency('malte0811:BlockModelSplitter:.*'))
     }
