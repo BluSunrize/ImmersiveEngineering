@@ -70,6 +70,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -97,6 +98,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
@@ -826,18 +828,19 @@ public class Utils
 		return Mth.floor(f*14.0F)+(i > 0?1: 0);
 	}
 
-	public static List<ItemStack> getDrops(BlockState state, LootParams.Builder builder)
+	public static void getDrops(BlockState state, LootContext originalCtx, Consumer<ItemStack> out)
 	{
 		ResourceLocation resourcelocation = state.getBlock().getLootTable();
 		if(resourcelocation==BuiltInLootTables.EMPTY)
-			return Collections.emptyList();
-		else
-		{
-			LootParams lootcontext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
-			ServerLevel serverworld = lootcontext.getLevel();
-			LootTable loottable = serverworld.getServer().getLootData().getLootTable(resourcelocation);
-			return loottable.getRandomItems(lootcontext);
-		}
+			return;
+		LootParams lootcontext = new LootParams.Builder(originalCtx.getLevel())
+				.withOptionalParameter(LootContextParams.TOOL, originalCtx.getParamOrNull(LootContextParams.TOOL))
+				.withOptionalParameter(LootContextParams.ORIGIN, originalCtx.getParamOrNull(LootContextParams.ORIGIN))
+				.withParameter(LootContextParams.BLOCK_STATE, state)
+				.create(LootContextParamSets.BLOCK);
+		ServerLevel serverworld = lootcontext.getLevel();
+		LootTable loottable = serverworld.getServer().getLootData().getLootTable(resourcelocation);
+		loottable.getRandomItems(lootcontext, out);
 	}
 
 	public static ItemStack getPickBlock(BlockState state, HitResult rtr, Player player)

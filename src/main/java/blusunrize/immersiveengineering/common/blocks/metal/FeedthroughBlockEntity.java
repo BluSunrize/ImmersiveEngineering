@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -45,8 +45,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 
@@ -141,15 +141,13 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if(offset==0)
-			return Utils.getDrops(stateForMiddle, context);
+			Utils.getDrops(stateForMiddle, context, drop);
 		else
-		{
-			return NonNullList.of(ItemStack.EMPTY, new ItemStack(info.connector().getBlock(), 1));
-		}
+			drop.accept(new ItemStack(info.connector().getBlock()));
 	}
 
 	@Override

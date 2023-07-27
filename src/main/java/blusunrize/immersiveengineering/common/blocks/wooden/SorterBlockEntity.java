@@ -31,7 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -41,6 +41,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER;
@@ -344,11 +345,11 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder parms)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		writeCustomNBT(stack.getOrCreateTag(), false);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override

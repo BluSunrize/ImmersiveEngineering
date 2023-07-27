@@ -38,8 +38,7 @@ public class BEDropLootEntry extends LootPoolSingletonContainer
 		{
 			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
 			if(te instanceof IBlockEntityDrop dropBE)
-				//dropBE.getBlockEntityDrop().forEach(output);
-				throw new UnsupportedOperationException();
+				dropBE.getBlockEntityDrop(context, output);
 		}
 	}
 

@@ -36,7 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -45,6 +45,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IBlockEntityDrop, IPlayerInteraction,
 		IBlockOverlayText, IBlockBounds
@@ -170,9 +171,9 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
-		return ImmutableList.of(this.coresample);
+		drop.accept(this.coresample);
 	}
 
 	@Override

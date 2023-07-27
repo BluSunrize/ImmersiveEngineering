@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,6 +40,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
 
@@ -218,11 +219,11 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		writeCustomNBT(stack.getOrCreateTag(), false);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override

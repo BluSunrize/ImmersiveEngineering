@@ -31,7 +31,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -42,6 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author BluSunrize - 01.10.2016
@@ -198,12 +199,12 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		if(colour!=0xffffff)
 			ItemNBTHelper.putInt(stack, "colour", colour);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override

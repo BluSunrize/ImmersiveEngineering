@@ -34,7 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -51,6 +51,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
@@ -333,14 +334,14 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag tag = new CompoundTag();
 		writeTank(tag, true);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override

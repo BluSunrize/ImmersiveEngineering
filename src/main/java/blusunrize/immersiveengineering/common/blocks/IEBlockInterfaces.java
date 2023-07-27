@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
@@ -30,18 +32,21 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class IEBlockInterfaces
 {
@@ -177,20 +182,26 @@ public class IEBlockInterfaces
 
 	public interface IBlockEntityDrop extends IPlacementInteraction
 	{
-		List<ItemStack> getBlockEntityDrop(Builder parms);
+		void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop);
 
 		default ItemStack getPickBlock(@Nullable Player player, BlockState state, HitResult rayRes)
 		{
 			//TODO make this work properly on the client side
 			BlockEntity tile = (BlockEntity)this;
-			if(!(tile.getLevel() instanceof ServerLevel world))
-				return new ItemStack(state.getBlock());
-			return getBlockEntityDrop(
-					new LootParams.Builder(world)
-							.withOptionalParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-							.withOptionalParameter(LootContextParams.BLOCK_STATE, world.getBlockState(tile.getBlockPos()))
-							.withOptionalParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(tile.getBlockPos()))
-			).get(0);
+			Mutable<ItemStack> drop = new MutableObject<>(new ItemStack(state.getBlock()));
+			if(tile.getLevel() instanceof ServerLevel world)
+			{
+				final LootParams parms = new LootParams.Builder(world)
+						.withOptionalParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+						.withOptionalParameter(LootContextParams.BLOCK_STATE, world.getBlockState(tile.getBlockPos()))
+						.withOptionalParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(tile.getBlockPos()))
+						.create(LootContextParamSets.BLOCK);
+				getBlockEntityDrop(
+						new LootContext.Builder(parms).create(IEApi.ieLoc("pick_block")),
+						drop::setValue
+				);
+			}
+			return drop.getValue();
 		}
 	}
 

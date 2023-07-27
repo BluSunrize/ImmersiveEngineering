@@ -39,12 +39,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInventory, IBlockEntityDrop,
 		IInteractionObjectIE<LogicUnitBlockEntity>, IStateBasedDirectional, ILogicCircuitHandler
@@ -96,14 +97,14 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag nbt = new CompoundTag();
 		ContainerHelper.saveAllItems(nbt, inventory);
 		if(!nbt.isEmpty())
 			stack.setTag(nbt);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override

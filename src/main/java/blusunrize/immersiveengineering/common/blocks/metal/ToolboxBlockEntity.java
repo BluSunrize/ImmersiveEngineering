@@ -38,7 +38,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -47,7 +47,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IBlockBounds, IIEInventory,
 		IInteractionObjectIE<ToolboxBlockEntity>, IBlockEntityDrop, IPlayerInteraction
@@ -152,7 +152,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootParams.Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(Tools.TOOLBOX);
 		Tools.TOOLBOX.get().setContainedItems(stack, inventory);
@@ -160,7 +160,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 			stack.setHoverName(this.name);
 		if(enchantments!=null)
 			stack.getOrCreateTag().put("ench", enchantments);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
@@ -96,8 +97,8 @@ public class BlockLoot implements LootTableSubProvider
 		register(WoodenDevices.FLUID_SORTER, tileDrop());
 		register(StoneDecoration.CORESAMPLE, tileDrop());
 		register(MetalDevices.TOOLBOX, tileDrop());
-		register(Cloth.SHADER_BANNER, tileDrop());
-		register(Cloth.SHADER_BANNER_WALL, tileDrop());
+		register(Cloth.SHADER_BANNER, singleItem(Items.WHITE_BANNER));
+		register(Cloth.SHADER_BANNER_WALL, singleItem(Items.WHITE_BANNER));
 		register(Cloth.STRIP_CURTAIN, tileDrop());
 		for(BlockEntry<? extends IEEntityBlock<? extends CapacitorBlockEntity>> cap : ImmutableList.of(
 				MetalDevices.CAPACITOR_LV, MetalDevices.CAPACITOR_MV, MetalDevices.CAPACITOR_HV, MetalDevices.CAPACITOR_CREATIVE

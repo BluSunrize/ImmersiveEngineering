@@ -35,7 +35,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -43,7 +43,7 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		implements IIEInventory, IBlockEntityDrop, IComparatorOverride
@@ -139,7 +139,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(Builder context)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag tag = new CompoundTag();
@@ -151,7 +151,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 			stack.setHoverName(customName);
 		if(enchantments!=null&&enchantments.size() > 0)
 			stack.getOrCreateTag().put("ench", enchantments);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override

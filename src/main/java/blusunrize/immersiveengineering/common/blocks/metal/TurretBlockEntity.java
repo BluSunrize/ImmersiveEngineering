@@ -47,6 +47,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -66,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends IEBaseBlockEntity implements
 		IEServerTickableBE, IEClientTickableBE, IIEInventory, IHasDummyBlocks, IBlockEntityDrop,
@@ -508,11 +510,10 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	}
 
 	@Override
-	public List<ItemStack> getBlockEntityDrop(LootParams.Builder builder)
+	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
-		LootParams parms = builder.create(LootContextParamSets.BLOCK);
-		BlockState state = parms.getParamOrNull(LootContextParams.BLOCK_STATE);
-		Entity player = parms.getParamOrNull(LootContextParams.THIS_ENTITY);
+		BlockState state = context.getParamOrNull(LootContextParams.BLOCK_STATE);
+		Entity player = context.getParamOrNull(LootContextParams.THIS_ENTITY);
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		TurretBlockEntity<?> turret = this;
 		if(isDummy())
@@ -521,7 +522,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			if(t instanceof TurretBlockEntity<?>)
 				turret = (TurretBlockEntity<?>)t;
 			else
-				return ImmutableList.of(stack);
+				drop.accept(stack);
 		}
 
 		CompoundTag tag = new CompoundTag();
@@ -548,7 +549,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 
 		if(!tag.isEmpty())
 			stack.setTag(tag);
-		return ImmutableList.of(stack);
+		drop.accept(stack);
 	}
 
 	@Override
