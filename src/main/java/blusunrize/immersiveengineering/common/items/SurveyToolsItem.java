@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
@@ -50,12 +51,7 @@ public class SurveyToolsItem extends IEBaseItem
 	{
 		super(new Properties().stacksTo(1).defaultDurability(300));
 		// earthen materials
-		CAN_USE_ON.add((world, pos) -> {
-			BlockState state = world.getBlockState(pos);
-			throw new UnsupportedOperationException();
-			//return state.getMaterial()==Material.CLAY||state.getMaterial()==Material.DIRT
-			//		||state.getMaterial()==Material.GRASS||state.getMaterial()==Material.SAND;
-		});
+		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(IETags.surveyToolTargets));
 		// Stone, Diorite, Andesite, etc.
 		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(Tags.Blocks.STONE));
 		// Stone, Diorite, Andesite, etc.
@@ -66,8 +62,7 @@ public class SurveyToolsItem extends IEBaseItem
 		// soft rocks
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);
-			//return state.getMaterial()==Material.STONE&&state.getDestroySpeed(world, pos) < 0.5;
-			throw new UnsupportedOperationException();
+			return state.is(Tags.Blocks.STONE)&&state.getDestroySpeed(world, pos) < 0.5;
 		});
 	}
 

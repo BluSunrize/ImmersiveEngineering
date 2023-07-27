@@ -112,6 +112,7 @@ public class IETags
 	public static final TagKey<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));
 	public static final TagKey<Block> rockcutterHarvestable = createBlockWrapper(rl("mineable/rockcutter"));
 	public static final TagKey<Block> grindingDiskHarvestable = createBlockWrapper(rl("mineable/grinding_disk"));
+	public static final TagKey<Block> surveyToolTargets = createBlockWrapper(rl("survey_tool_targets"));
 
 	public static final TagKey<Block> buzzsawTreeBlacklist = createBlockWrapper(rl("buzzsaw/tree_blacklist"));
 	public static final TagKey<Item> tools = createItemWrapper(forgeLoc("tools"));

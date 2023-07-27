@@ -164,6 +164,11 @@ public class IEBlockTags extends BlockTagsProvider
 		tag(IETags.buzzsawTreeBlacklist)
 				.addOptionalTag(new ResourceLocation("dynamictrees", "branches"))
 				.addOptionalTag(new ResourceLocation("dynamictrees", "leaves"));
+		tag(IETags.surveyToolTargets)
+				.addTag(BlockTags.DIRT)
+				.addTag(Tags.Blocks.GRAVEL)
+				.add(Blocks.GRASS_BLOCK)
+				.add(Blocks.CLAY);
 		checkAllRegisteredForBreaking();
 
 		for(BlockEntry<?> treatedWood : WoodenDecoration.TREATED_WOOD.values())

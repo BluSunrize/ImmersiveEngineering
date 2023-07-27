@@ -1,0 +1,8 @@
+{
+  "values": [
+    "#minecraft:dirt",
+    "#forge:gravel",
+    "minecraft:grass_block",
+    "minecraft:clay"
+  ]
+}

@@ -10,7 +10,8 @@
       ],
       "entries": [
         {
-          "type": "immersiveengineering:tile_drop"
+          "type": "minecraft:item",
+          "name": "minecraft:white_banner"
         }
       ],
       "rolls": 1.0
