@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -24,6 +23,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidType;
@@ -69,13 +69,13 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	}
 
 	@Override
-	public void draw(BottlingMachineRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
+	public void draw(BottlingMachineRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY)
 	{
-		GuiHelper.drawSlot(24, 20, 16, 52, transform);
+		GuiHelper.drawSlot(24, 20, 16, 52, graphics);
 
-		transform.pushPose();
-		transform.scale(3, 3, 1);
-		this.getIcon().draw(transform, 14, 0);
-		transform.popPose();
+		graphics.pose().pushPose();
+		graphics.pose().scale(3, 3, 1);
+		this.getIcon().draw(graphics, 14, 0);
+		graphics.pose().popPose();
 	}
 }

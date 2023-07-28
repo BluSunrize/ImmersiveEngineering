@@ -16,12 +16,12 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	}
 
 	@Override
-	public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
+	public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY)
 	{
 		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
 		int yBase = validSecondaries.isEmpty()?36: validSecondaries.size() < 2?27: 18;
@@ -64,18 +64,19 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		{
 			int x = 77+i/2*44;
 			int y = yBase+i%2*18;
-			ClientUtils.font().draw(
-					transform,
+			graphics.drawString(
+					ClientUtils.font(),
 					Utils.formatDouble(validSecondaries.get(i).chance()*100, "0.##")+"%",
 					x+21,
 					y+6,
-					0x777777
+					0x777777,
+					false
 			);
 		}
-		transform.pushPose();
-		transform.scale(3f, 3f, 1);
-		this.getIcon().draw(transform, 8, 0);
-		transform.popPose();
+		graphics.pose().pushPose();
+		graphics.pose().scale(3f, 3f, 1);
+		this.getIcon().draw(graphics, 8, 0);
+		graphics.pose().popPose();
 	}
 
 	private List<StackWithChance> getValidSecondaryOutputs(CrusherRecipe recipe)

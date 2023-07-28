@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -23,6 +22,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidType;
 
@@ -71,11 +71,11 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	}
 
 	@Override
-	public void draw(MixerRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
+	public void draw(MixerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY)
 	{
-		tankTexture.draw(transform, 40, 0);
-		arrowDrawable.draw(transform, 117, 19);
-		GuiHelper.drawSlot(139, 18, 16, 47, transform);
+		tankTexture.draw(graphics, 40, 0);
+		arrowDrawable.draw(graphics, 117, 19);
+		GuiHelper.drawSlot(139, 18, 16, 47, graphics);
 	}
 
 }

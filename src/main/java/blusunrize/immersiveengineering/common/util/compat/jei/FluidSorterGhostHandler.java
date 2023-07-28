@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.client.gui.FluidSorterScreen;
 import com.google.common.collect.ImmutableList;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;

@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -23,6 +22,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 
@@ -55,11 +55,11 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 	}
 
 	@Override
-	public void draw(BlastFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY)
+	public void draw(BlastFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY)
 	{
-		flame.draw(stack, 12, 27);
-		arrow.draw(stack, 33, 26);
+		flame.draw(graphics, 12, 27);
+		arrow.draw(graphics, 33, 26);
 		String burnTime = I18n.get("desc.immersiveengineering.info.seconds", Utils.formatDouble(recipe.time/20f, "#.##"));
-		ClientUtils.font().draw(stack, burnTime, 68-ClientUtils.font().width(burnTime), 48, 0x777777);
+		graphics.drawString(ClientUtils.font(), burnTime, 68-ClientUtils.font().width(burnTime), 48, 0x777777, false);
 	}
 }

@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
@@ -49,9 +49,9 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	}
 
 	@Override
-	public void draw(AlloyRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY)
+	public void draw(AlloyRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY)
 	{
-		flame.draw(stack, 18, 21);
-		arrow.draw(stack, 47, 20);
+		flame.draw(graphics, 18, 21);
+		arrow.draw(graphics, 47, 20);
 	}
 }

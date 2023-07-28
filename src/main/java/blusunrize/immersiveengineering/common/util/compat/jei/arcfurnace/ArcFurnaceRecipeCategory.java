@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -25,6 +24,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -97,30 +97,31 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	}
 
 	@Override
-	public void draw(ArcFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
+	public void draw(ArcFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY)
 	{
 		int x = (148-getWidth(recipe))/2;
-		arrow.draw(transform, x+40, 10);
+		arrow.draw(graphics, x+40, 10);
 
-		JEIHelper.slotDrawable.draw(transform, x+8, 0);
+		JEIHelper.slotDrawable.draw(graphics, x+8, 0);
 		for(int j = 0; j < 4; j++)
-			JEIHelper.slotDrawable.draw(transform, x+j%2*18, 18+j/2*18);
+			JEIHelper.slotDrawable.draw(graphics, x+j%2*18, 18+j/2*18);
 		for(int j = 0; j < recipe.getBaseOutputs().size(); j++)
-			JEIHelper.slotDrawable.draw(transform, x+68+j%2*18, j/2*18);
+			JEIHelper.slotDrawable.draw(graphics, x+68+j%2*18, j/2*18);
 
 		int xSecondary = x+(recipe.getBaseOutputs().size() > 1?106: 88);
 		for(int j = 0; j < recipe.secondaryOutputs.size(); j++)
 		{
-			JEIHelper.slotDrawable.draw(transform, xSecondary, j*18);
-			ClientUtils.font().draw(
-					transform,
+			JEIHelper.slotDrawable.draw(graphics, xSecondary, j*18);
+			graphics.drawString(
+					ClientUtils.font(),
 					Utils.formatDouble(recipe.secondaryOutputs.get(j).chance()*100, "0.##")+"%",
 					xSecondary+20,
 					j*18+6,
-					0x777777
+					0x777777,
+					false
 			);
 		}
-		JEIHelper.slotDrawable.draw(transform, x+68, 36);
+		JEIHelper.slotDrawable.draw(graphics, x+68, 36);
 	}
 
 	@Override
