@@ -93,7 +93,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 				else if(this.isHovered)
 					txtCol = Lib.COLOUR_I_ImmersiveOrange;
 				int[] offset = getTextOffset(fontrenderer);
-				graphics.drawString(fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], txtCol);
+				graphics.drawString(fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], txtCol, false);
 			}
 		}
 	}

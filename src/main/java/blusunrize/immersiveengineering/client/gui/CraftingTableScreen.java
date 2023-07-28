@@ -26,6 +26,6 @@ public class CraftingTableScreen extends IEContainerScreen<CraftingTableMenu>
 	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
 		super.renderLabels(graphics, mouseX, mouseY);
-		graphics.drawString(this.font, title, 8, 6, 0x190b06);
+		graphics.drawString(this.font, title, 8, 6, 0x190b06, false);
 	}
 }

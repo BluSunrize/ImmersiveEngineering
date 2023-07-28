@@ -84,7 +84,7 @@ public class ManualElementTable extends SpecialManualElements
 							List<FormattedCharSequence> lines = manual.fontRenderer().split(lineText, w);
 							for(int i = 0; i < lines.size(); i++)
 								graphics.drawString(
-										manual.fontRenderer(), lines.get(i), xx, y+yOff+i*lineHeight, manual.getTextColour()
+										manual.fontRenderer(), lines.get(i), xx, y+yOff+i*lineHeight, manual.getTextColour(), false
 								);
 							if(lines.size() > height)
 								height = lines.size();

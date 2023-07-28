@@ -64,8 +64,8 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	{
 		// Only difference to super version is the text color
 		final int color = 0x190b06;
-		graphics.drawString(this.font, title, titleLabelX, titleLabelY, color);
-		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
+		graphics.drawString(this.font, title, titleLabelX, titleLabelY, color, false);
+		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color, false);
 	}
 
 	@Override

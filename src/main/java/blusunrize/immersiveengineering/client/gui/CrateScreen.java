@@ -27,8 +27,8 @@ public abstract class CrateScreen<C extends CrateMenu> extends IEContainerScreen
 	{
 		// Only difference to super version is the text color
 		final int color = 0x190b06;
-		graphics.drawString(this.font, title, titleLabelX, titleLabelY, color);
-		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
+		graphics.drawString(this.font, title, titleLabelX, titleLabelY, color, false);
+		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color, false);
 	}
 
 	// Unfortunately necessary to calm down the compiler wrt generics
