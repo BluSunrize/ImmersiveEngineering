@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -20,6 +21,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -72,7 +74,9 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
-		rotateForFacingNoCentering(matrixStack, helper.getContext().getLevel().getOrientation().front());
+		MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
+		Direction effectiveFacing = orientation.mirrored()?orientation.front().getOpposite(): orientation.front();
+		rotateForFacingNoCentering(matrixStack, effectiveFacing);
 		matrixStack.pushPose();
 		matrixStack.translate(0, -piston*.6875f, 0);
 		matrixStack.pushPose();
