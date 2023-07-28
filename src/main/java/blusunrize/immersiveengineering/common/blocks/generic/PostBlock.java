@@ -23,7 +23,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -79,7 +78,6 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 				world.setBlockAndUpdate(pos.below(dummyState), Blocks.AIR.defaultBlockState());
 			else if(dummyState==0)
 			{
-				popResource(world, pos, new ItemStack(this));
 				final int highestBlock = 3;
 				BlockPos armStart = pos.above(highestBlock);
 				for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
