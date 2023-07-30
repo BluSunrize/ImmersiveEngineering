@@ -37,13 +37,15 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.*;
+import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.SLOT_SEED;
+import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.SLOT_SOIL;
 
 // TODO test various onTake implementations. May need to move to tryRemove
 public abstract class IESlot extends Slot
@@ -76,7 +78,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class NewOutput extends SlotItemHandler
+	public static class NewOutput extends SlotItemHandlerIE
 	{
 		public NewOutput(IItemHandler inv, int id, int x, int y)
 		{
@@ -90,7 +92,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class IEFurnaceSFuelSlot extends SlotItemHandler
+	public static class IEFurnaceSFuelSlot extends SlotItemHandlerIE
 	{
 		public IEFurnaceSFuelSlot(IItemHandler inv, int id, int x, int y)
 		{
@@ -104,7 +106,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public int getMaxStackSize(ItemStack stack)
+		public int getMaxStackSize(@NotNull ItemStack stack)
 		{
 			return isBucket(stack)?1: super.getMaxStackSize(stack);
 		}
@@ -115,7 +117,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class NewFluidContainer extends SlotItemHandler
+	public static class NewFluidContainer extends SlotItemHandlerIE
 	{
 		private final Filter filter;
 
@@ -174,7 +176,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class BlastFuel extends SlotItemHandler
+	public static class BlastFuel extends SlotItemHandlerIE
 	{
 		private final Level level;
 
@@ -191,7 +193,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Bullet extends SlotItemHandler
+	public static class Bullet extends SlotItemHandlerIE
 	{
 		int limit;
 
@@ -212,15 +214,9 @@ public abstract class IESlot extends Slot
 		{
 			return limit;
 		}
-
-		@Override
-		public int getMaxStackSize(@Nonnull ItemStack stack)
-		{
-			return limit;
-		}
 	}
 
-	public static class WithPredicate extends SlotItemHandler
+	public static class WithPredicate extends SlotItemHandlerIE
 	{
 		final Predicate<ItemStack> predicate;
 		final Consumer<ItemStack> onChange;
@@ -258,7 +254,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Upgrades extends SlotItemHandler
+	public static class Upgrades extends SlotItemHandlerIE
 	{
 		final ItemStack toolStack;
 		private final IUpgradeableTool upgradeableTool;
@@ -454,7 +450,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class AutoBlueprint extends SlotItemHandler
+	public static class AutoBlueprint extends SlotItemHandlerIE
 	{
 		public AutoBlueprint(IItemHandler inv, int id, int x, int y)
 		{
@@ -481,7 +477,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ItemHandlerGhost extends SlotItemHandler
+	public static class ItemHandlerGhost extends SlotItemHandlerIE
 	{
 
 		public ItemHandlerGhost(IItemHandler itemHandler, int index, int xPosition, int yPosition)
@@ -567,7 +563,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ArcInput extends SlotItemHandler
+	public static class ArcInput extends SlotItemHandlerIE
 	{
 		private final Level level;
 
@@ -584,7 +580,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ArcAdditive extends SlotItemHandler
+	public static class ArcAdditive extends SlotItemHandlerIE
 	{
 		private final Level level;
 
@@ -601,7 +597,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ArcElectrode extends SlotItemHandler
+	public static class ArcElectrode extends SlotItemHandlerIE
 	{
 		public ArcElectrode(IItemHandler inv, int id, int x, int y)
 		{
@@ -621,12 +617,12 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Cloche extends SlotItemHandler
+	public static class Cloche extends SlotItemHandlerIE
 	{
 		private final Level level;
-		int type = 0;
+		Type type;
 
-		public Cloche(int type, IItemHandler inv, int id, int x, int y, Level level)
+		public Cloche(Type type, IItemHandler inv, int id, int x, int y, Level level)
 		{
 			super(inv, id, x, y);
 			this.type = type;
@@ -636,7 +632,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public int getMaxStackSize()
 		{
-			return type < 2?1: 64;
+			return type!=Type.FERTILIZER?1: 64;
 		}
 
 		@Override
@@ -644,18 +640,23 @@ public abstract class IESlot extends Slot
 		{
 			if(itemStack.isEmpty())
 				return false;
-			if(type==SLOT_FERTILIZER)
+			if(type==Type.FERTILIZER)
 				return ClocheFertilizer.isValidFertilizer(level, itemStack);
 			IItemHandler inv = getItemHandler();
-			if(type==SLOT_SOIL)
+			if(type==Type.SOIL)
 				return ClocheRecipe.isValidCombinationInMenu(inv.getStackInSlot(SLOT_SEED), itemStack, level);
-			if(type==SLOT_SEED)
+			if(type==Type.SEED)
 				return ClocheRecipe.isValidCombinationInMenu(itemStack, inv.getStackInSlot(SLOT_SOIL), level);
 			return true;
 		}
+
+		public enum Type
+		{
+			SOIL, SEED, FERTILIZER
+		}
 	}
 
-	public static class Tagged extends SlotItemHandler
+	public static class Tagged extends SlotItemHandlerIE
 	{
 		private final TagKey<Item> tag;
 
@@ -693,7 +694,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ContainerCallback extends SlotItemHandler
+	public static class ContainerCallback extends SlotItemHandlerIE
 	{
 		ICallbackContainer container;
 
@@ -716,7 +717,7 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class LogicCircuit extends SlotItemHandler
+	public static class LogicCircuit extends SlotItemHandlerIE
 	{
 		public LogicCircuit(IItemHandler inv, int id, int x, int y)
 		{
@@ -733,6 +734,20 @@ public abstract class IESlot extends Slot
 		public boolean mayPlace(ItemStack itemStack)
 		{
 			return itemStack.getItem().equals(Misc.LOGIC_CIRCUIT_BOARD.get());
+		}
+	}
+
+	private static class SlotItemHandlerIE extends SlotItemHandler
+	{
+		public SlotItemHandlerIE(IItemHandler itemHandler, int index, int xPosition, int yPosition)
+		{
+			super(itemHandler, index, xPosition, yPosition);
+		}
+
+		@Override
+		public int getMaxStackSize(@NotNull ItemStack stack)
+		{
+			return Math.min(Math.min(this.getMaxStackSize(), stack.getMaxStackSize()), super.getMaxStackSize(stack));
 		}
 	}
 
