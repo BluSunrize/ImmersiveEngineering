@@ -66,8 +66,10 @@ public record TagExports(PackOutput output, ExistingFileHelper helper, Path outP
 			for(Entry<ResourceLocation, Collection<Item>> entry : tags.entrySet())
 			{
 				JsonArray elements = new JsonArray();
-				for(Item item : entry.getValue())
-					elements.add(BuiltInRegistries.ITEM.getKey(item).toString());
+				entry.getValue().stream()
+						.map(item -> BuiltInRegistries.ITEM.getKey(item).toString())
+						.sorted()
+						.forEach(elements::add);
 				ResourceLocation tagName = entry.getKey();
 				Path tagPath = outPath.resolve(tagName.getNamespace()).resolve(tagName.getPath()+".json");
 				Files.createDirectories(tagPath.getParent());
