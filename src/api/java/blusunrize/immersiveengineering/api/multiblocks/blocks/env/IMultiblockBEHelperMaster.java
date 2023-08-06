@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
@@ -33,8 +31,6 @@ public interface IMultiblockBEHelperMaster<State extends IMultiblockState> exten
 	@Nonnull
 	@Override
 	IMultiblockContext<State> getContext();
-
-	Packet<ClientGamePacketListener> getUpdatePacket();
 
 	AABB getRenderBoundingBox();
 

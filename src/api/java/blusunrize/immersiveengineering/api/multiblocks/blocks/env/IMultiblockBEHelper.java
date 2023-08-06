@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -47,6 +49,8 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	CompoundTag getUpdateTag();
 
 	void handleUpdateTag(CompoundTag tag);
+
+	Packet<ClientGamePacketListener> getUpdatePacket();
 
 	void onDataPacket(CompoundTag tag);
 
