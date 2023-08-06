@@ -183,7 +183,8 @@ public abstract class TemplateMultiblock implements IMultiblock
 				if(!BlockMatcher.matches(expected, inWorld, world, here, additionalPredicates).isAllow())
 					continue mirrorLoop;
 			}
-			form(world, origin, rot, mirror, side);
+			if(!world.isClientSide)
+				form(world, origin, rot, mirror, side);
 			return true;
 		}
 		return false;
