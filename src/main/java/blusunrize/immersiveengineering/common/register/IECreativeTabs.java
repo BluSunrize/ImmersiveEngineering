@@ -21,6 +21,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTab.Row;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -41,6 +42,7 @@ public class IECreativeTabs
 			() -> new CreativeModeTab.Builder(Row.TOP, 0)
 					.icon(() -> IEItems.Misc.WIRE_COILS.get(WireType.COPPER).get().getDefaultInstance())
 					.title(Component.literal(ImmersiveEngineering.MODNAME))
+					.displayItems(IECreativeTabs::fillIETab)
 					.build()
 	);
 
@@ -55,19 +57,21 @@ public class IECreativeTabs
 			ev.accept(SpawnEggs.EGG_COMMANDO.get());
 			ev.accept(SpawnEggs.EGG_BULWARK.get());
 		}
-		if(ev.getTabKey()!=TAB.getKey())
-			return;
-		for(final var itemRef : IEItems.REGISTER.getEntries())
+	}
+
+	private static void fillIETab(CreativeModeTab.ItemDisplayParameters parms, CreativeModeTab.Output out)
+	{
+		for(final RegistryObject<Item> itemRef : IEItems.REGISTER.getEntries())
 		{
-			final var item = itemRef.get();
+			final Item item = itemRef.get();
 			if(item==Misc.POTION_BUCKET.get())
 				continue;
 			if(item instanceof IEBaseItem ieItem)
-				ieItem.fillCreativeTab(ev);
+				ieItem.fillCreativeTab(out);
 			else if(item instanceof BlockItem blockItem&&blockItem.getBlock() instanceof IEBaseBlock ieBlock)
-				ieBlock.fillCreativeTab(ev);
+				ieBlock.fillCreativeTab(out);
 			else
-				ev.accept(itemRef);
+				out.accept(itemRef.get());
 		}
 	}
 }
