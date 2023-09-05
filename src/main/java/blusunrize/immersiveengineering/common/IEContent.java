@@ -787,9 +787,13 @@ public class IEContent
 			}
 		});
 
-		DieselHandler.registerFuel(fluidBiodiesel, 125);
-		DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
-		DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
+		if(IEConfig.Machines.diesel_registerFuels == true)
+		{
+			DieselHandler.registerFuel(fluidBiodiesel, 125);
+			DieselHandler.registerFuel(FluidRegistry.getFluid("fuel"), 375);
+			DieselHandler.registerFuel(FluidRegistry.getFluid("diesel"), 175);
+		}
+
 		DieselHandler.registerDrillFuel(fluidBiodiesel);
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("fuel"));
 		DieselHandler.registerDrillFuel(FluidRegistry.getFluid("diesel"));
