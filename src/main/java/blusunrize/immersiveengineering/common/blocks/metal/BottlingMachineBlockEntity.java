@@ -202,8 +202,9 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			NonNullList<ItemStack> displayStacks;
 			if(recipe==null)
 			{
+				ItemStack inputItem = ItemHandlerHelper.copyStackWithSize(stacks[0], 1);
 				displayStacks = Utils.createNonNullItemStackListFromItemStack(stacks[0]);
-				process = new MultiblockProcessBottling(displayStacks);
+				process = new MultiblockProcessBottling(inputItem);
 			}
 			else
 			{
