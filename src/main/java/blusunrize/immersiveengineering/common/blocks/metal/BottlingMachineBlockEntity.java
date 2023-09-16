@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -37,7 +36,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.ContainerHelper;
@@ -65,9 +63,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -203,8 +203,8 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			if(recipe==null)
 			{
 				ItemStack inputItem = ItemHandlerHelper.copyStackWithSize(stacks[0], 1);
-				displayStacks = Utils.createNonNullItemStackListFromItemStack(stacks[0]);
-				process = new MultiblockProcessBottling(inputItem);
+				process = new MultiblockProcessBottling(inputItem, inputItem.copy());
+				displayStacks = Utils.createNonNullItemStackListFromItemStack(inputItem);
 			}
 			else
 			{
@@ -363,7 +363,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		NonNullList<ItemStack> inputs = NonNullList.withSize(tag.getInt("numInputs"), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(tag, inputs);
 		if(tag.getBoolean("isFilling"))
-			return new MultiblockProcessBottling(inputs);
+			return new MultiblockProcessBottling(inputs.get(0), ItemStack.of(tag.getCompound("currentDisplay")));
 		ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
 		return new MultiblockProcessBottling(id, this::getRecipeForId, inputs);
 	}
@@ -422,7 +422,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	public static class MultiblockProcessBottling extends MultiblockProcessInWorld<BottlingMachineRecipe>
 	{
 		private final boolean isFilling;
-		private final NonNullList<ItemStack> filledContainer = Utils.createNonNullItemStackListFromItemStack(ItemStack.EMPTY);
+		private final List<ItemStack> filledContainer;
 		private static final BottlingMachineRecipe DUMMY_RECIPE = new BottlingMachineRecipe(
 				new ResourceLocation(Lib.MODID, "bottling_dummy_recipe"),
 				List.of(Lazy.of(() -> ItemStack.EMPTY)), IngredientWithSize.of(ItemStack.EMPTY),
@@ -433,14 +433,15 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		{
 			super(recipeId, getRecipe, 0.45f, inputItem);
 			this.isFilling = false;
+			this.filledContainer = List.of();
 		}
 
-		public MultiblockProcessBottling(NonNullList<ItemStack> inputItem)
+		public MultiblockProcessBottling(ItemStack inputItem, ItemStack currentContainer)
 		{
-			super(DUMMY_RECIPE.getId(), (level, resourceLocation) -> DUMMY_RECIPE, 0.45f, inputItem);
+			super(DUMMY_RECIPE.getId(), (level, resourceLocation) -> DUMMY_RECIPE, 0.45f, NonNullList.withSize(1, inputItem));
 			this.isFilling = true;
 			// copy item into output already, to be filled later
-			this.filledContainer.set(0, inputItem.get(0));
+			this.filledContainer = Arrays.asList(currentContainer);
 		}
 
 		@Override
@@ -494,6 +495,8 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		{
 			super.writeExtraDataToNBT(nbt);
 			nbt.putBoolean("isFilling", isFilling);
+			if(isFilling)
+				nbt.put("currentDisplay", this.filledContainer.get(0).save(new CompoundTag()));
 		}
 	}
 
@@ -516,7 +519,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			MultiblockProcess<BottlingMachineRecipe> process;
 			int inputAmount = 1;
 			if(recipe==null)
-				process = new MultiblockProcessBottling(Utils.createNonNullItemStackListFromItemStack(stack.copy()));
+				process = new MultiblockProcessBottling(stack.copy(), stack.copy());
 			else
 			{
 				ItemStack displayStack = recipe.getDisplayStack(stack);
