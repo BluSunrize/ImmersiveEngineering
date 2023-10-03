@@ -145,7 +145,7 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 	{
 		final State state = ctx.getState();
 		final BlockPos posInMultiblock = position.posInMultiblock();
-		if(position.side()==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1))
+		if(cap==ForgeCapabilities.ENERGY&&(position.side()==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1)))
 			return ForgeCapabilities.ENERGY.orEmpty(cap, state.energyCap.get(ctx));
 		else
 			return LazyOptional.empty();

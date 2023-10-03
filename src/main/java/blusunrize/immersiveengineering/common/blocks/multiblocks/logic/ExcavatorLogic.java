@@ -56,6 +56,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -313,7 +314,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(position.side()==null||ENERGY_INPUTS.contains(position))
+		if(cap==ForgeCapabilities.ENERGY&&(position.side()==null||ENERGY_INPUTS.contains(position)))
 			return ctx.getState().energyCap.cast(ctx);
 		return LazyOptional.empty();
 	}
