@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
-import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.mixin.accessors.CropBlockAccess;
@@ -237,11 +236,11 @@ public class ClocheRenderFunctions
 			{
 				Transformation top = new Transformation(new Vector3f(0, 1, 0), null, null, null);
 				return ImmutableList.of(
-						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new Transformation(null)),
-						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
+						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.AGE, 4), new Transformation(null)),
+						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.TOP, true), top)
 				);
 			}
-			return ImmutableList.of(Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new Transformation(null)));
+			return ImmutableList.of(Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.AGE, age), new Transformation(null)));
 		}
 	}
 }

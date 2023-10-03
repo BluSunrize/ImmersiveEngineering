@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-03T22:20:53.6481463	Loot Tables
+// 1.20.1	2023-10-03T23:54:11.5534264	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -101,7 +101,7 @@ ee76bfccde4d9fe66e34d5c093c8aed29fb35fc2 data/immersiveengineering/loot_tables/b
 a29bae50fea9a510680ceb23d506d866f88dd865 data/immersiveengineering/loot_tables/blocks/generator.json
 edd4f8bbe57c1d60bc60a7cb2a32b42232b88844 data/immersiveengineering/loot_tables/blocks/gunpowder_barrel.json
 a6e7f1e1ce039904b48a07c8be8f6547acf9bf55 data/immersiveengineering/loot_tables/blocks/heavy_engineering.json
-18ca5f5f971cecca62e6e43257d5f988eb230076 data/immersiveengineering/loot_tables/blocks/hemp.json
+83c42972d158504a1158ea44f1136df92fbb1fd6 data/immersiveengineering/loot_tables/blocks/hemp.json
 404d2769c5939ae3e940a7f51c8f7b4f05310bb8 data/immersiveengineering/loot_tables/blocks/hempcrete.json
 573d9ae44faef5621a19a77006df07d7d9b851d4 data/immersiveengineering/loot_tables/blocks/hempcrete_brick.json
 1fb9b8d9baa117be86a41d0ec58af00570233686 data/immersiveengineering/loot_tables/blocks/hempcrete_brick_cracked.json

@@ -26,7 +26,7 @@
           "block": "immersiveengineering:hemp",
           "condition": "minecraft:block_state_property",
           "properties": {
-            "growth": "bottom4"
+            "age": "4"
           }
         }
       ],
@@ -59,7 +59,7 @@
           "block": "immersiveengineering:hemp",
           "condition": "minecraft:block_state_property",
           "properties": {
-            "growth": "top0"
+            "top": "true"
           }
         }
       ],

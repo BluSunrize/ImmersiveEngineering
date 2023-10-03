@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
-import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
@@ -608,16 +607,21 @@ public class BlockStates extends ExtendedBlockstateProvider
 	private void createHemp()
 	{
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.HEMP_PLANT.get());
-		for(EnumHempGrowth g : EnumHempGrowth.values())
+		// Top
+		ModelFile model = models()
+				.withExistingParent("block/hemp/top", new ResourceLocation("block/crop"))
+				.texture("crop", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/top0"))
+				.renderType(ModelProviderUtils.getName(cutout()));
+		builder.partialState().with(HempBlock.TOP, true).setModels(new ConfiguredModel(model));
+
+		// Bottoms
+		for(int i = 0; i <= 4; i++)
 		{
-			ModelFile model = models().withExistingParent(
-							"block/hemp/"+g.getSerializedName(), new ResourceLocation("block/crop")
-					)
-					.texture("crop", g.getTextureName())
+			model = models()
+					.withExistingParent("block/hemp/bottom"+i, new ResourceLocation("block/crop"))
+					.texture("crop", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/bottom"+i))
 					.renderType(ModelProviderUtils.getName(cutout()));
-			builder.partialState()
-					.with(HempBlock.GROWTH, g)
-					.setModels(new ConfiguredModel(model));
+			builder.partialState().with(HempBlock.TOP, false).with(HempBlock.AGE, i).setModels(new ConfiguredModel(model));
 		}
 	}
 

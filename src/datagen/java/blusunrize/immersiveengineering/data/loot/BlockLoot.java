@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistra
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
-import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
@@ -256,14 +255,18 @@ public class BlockLoot implements LootTableSubProvider
 	{
 		LootTable.Builder ret = LootTable.lootTable()
 				.withPool(singleItem(Misc.HEMP_SEEDS));
-		for(EnumHempGrowth g : EnumHempGrowth.values())
-			if(g==g.getMax())
-			{
-				ret.withPool(
-						binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.BLOCK_FORTUNE, g.ordinal()/8f, 3)
-								.when(propertyIs(IEBlocks.Misc.HEMP_PLANT, HempBlock.GROWTH, g))
-				);
-			}
+		ret.withPool(
+				binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.BLOCK_FORTUNE, 4/8f, 3).when(
+						LootItemBlockStatePropertyCondition.hasBlockStateProperties(IEBlocks.Misc.HEMP_PLANT.get())
+								.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(HempBlock.AGE, 4))
+				)
+		);
+		ret.withPool(
+				binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.BLOCK_FORTUNE, 5/8f, 3).when(
+						LootItemBlockStatePropertyCondition.hasBlockStateProperties(IEBlocks.Misc.HEMP_PLANT.get())
+								.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(HempBlock.TOP, true))
+				)
+		);
 		register(IEBlocks.Misc.HEMP_PLANT, ret);
 	}
 

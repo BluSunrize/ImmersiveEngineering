@@ -1,22 +1,22 @@
 {
   "variants": {
-    "growth=bottom0": {
+    "age=0,top=false": {
       "model": "immersiveengineering:block/hemp/bottom0"
     },
-    "growth=bottom1": {
+    "age=1,top=false": {
       "model": "immersiveengineering:block/hemp/bottom1"
     },
-    "growth=bottom2": {
+    "age=2,top=false": {
       "model": "immersiveengineering:block/hemp/bottom2"
     },
-    "growth=bottom3": {
+    "age=3,top=false": {
       "model": "immersiveengineering:block/hemp/bottom3"
     },
-    "growth=bottom4": {
+    "age=4,top=false": {
       "model": "immersiveengineering:block/hemp/bottom4"
     },
-    "growth=top0": {
-      "model": "immersiveengineering:block/hemp/top0"
+    "top=true": {
+      "model": "immersiveengineering:block/hemp/top"
     }
   }
 }
