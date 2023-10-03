@@ -118,6 +118,7 @@ public class IETags
 	public static final TagKey<Item> shovels = createItemWrapper(forgeLoc("tools/shovels"));
 	public static final TagKey<Item> axes = createItemWrapper(forgeLoc("tools/axes"));
 	public static final TagKey<Item> hoes = createItemWrapper(forgeLoc("tools/hoes"));
+	public static final TagKey<Item> swords = createItemWrapper(forgeLoc("tools/swords"));
 	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(rl("powerpack/forbid_attach"));
 
 	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(rl("recycling/ignored_components"));

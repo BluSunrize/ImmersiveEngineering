@@ -1,4 +1,4 @@
-// 1.19.2	2022-12-18T14:15:19.8495488	Tags for minecraft:item
+// 1.19.2	2023-10-03T13:37:48.3314717	Tags for minecraft:item
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/charcoal.json
@@ -121,6 +121,7 @@ e563b87b316084581f07d20d80466bc0014fce68 data/forge/tags/items/storage_blocks/ur
 96897870ad0c4522070bcffe62f75fbf24bcf02c data/forge/tags/items/tools/hoes.json
 36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/forge/tags/items/tools/pickaxes.json
 82e2d58612939f6cbe908271fe3e29e0377cb65a data/forge/tags/items/tools/shovels.json
+14b6fbc33f38b39ff12d50b57d6c84f847296fa2 data/forge/tags/items/tools/swords.json
 1ecedf0824d3b4f49aec34b67416c1243d1d23a0 data/forge/tags/items/treated_wood.json
 485ca26048e0c430a7ab442ed9e5b1a1ea596bb5 data/forge/tags/items/treated_wood_slab.json
 06bc75bd6a52a44cc4698546e932a0e43c98ee85 data/forge/tags/items/wires.json
