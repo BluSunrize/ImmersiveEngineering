@@ -518,11 +518,12 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		TurretBlockEntity<?> turret = this;
 		if(isDummy())
 		{
-			BlockEntity t = level.getBlockEntity(getBlockPos().below());
-			if(t instanceof TurretBlockEntity<?>)
-				turret = (TurretBlockEntity<?>)t;
-			else
+			turret = master();
+			if(turret==null)
+			{
 				drop.accept(stack);
+				return;
+			}
 		}
 
 		CompoundTag tag = new CompoundTag();
