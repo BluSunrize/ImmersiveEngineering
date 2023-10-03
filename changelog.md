@@ -2,6 +2,7 @@
 - All features from 9.2.3
 - Fix localization of perks on revolver parts (BluSunrize)
 - Fix potential crashes when supplying power to arc furnace or excavator with other mod's cables (BluSunrize)
+- Fix metal press not rendering items in the correct direction (BluSunrize)
 
 ##### Version 1.19.2-9.2.3-167
 - Change "Superior Weaponry" advancement to hint at its potential to spawn new illagers in raids (BluSunrize)
