@@ -1,0 +1,6 @@
+Lisovač
+Na lisování záleží
+Lisovač je multibloková struktura která lisuje štávu nebo olej z organických materiálů použitím velkého pístu. Struktura je postavena jak ukázáno nahoře a stvořena inženýrovým kladivem kliknutím na prostřední sud, ze strany která má Bloky inženýrství.
+Předměty do lisovače lze vhodit poklopy vzadu které jsou označeny modrými tečkami. Poklop s oranžovou tečkou slouží jako výstup a blok pod nim pro výstup kapalin.
+Aplikování ruditového signálu do ovládacího panelu ve předu pozastaví proces stroje, toto chování lze obrátít použitím Inženýrova šroubováku.
+<np>Tento následující seznam ukazuje které suroviny lze vylisovat na rostlinný olej a počet který vyrobí.<&list>

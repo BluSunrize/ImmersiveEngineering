@@ -1,0 +1,7 @@
+Dávkovač předmětů
+Přijďte teď spolu
+<&recipe>Dávkovač předmětů je určený pro sbírání dávek předmětů ze vstupního pásu předtím než je pošle pro přenesení optimizovaných dávek do strojů<np>
+Polož ten blok a otevři jeho rozhraní pro nastavení filtrů. Přichozí přeměty budou přijmuty do políček pod filtry, a sesbíraná dávka bude vyslána ven pokud je vše splněno.
+Toto chování lze upravit tlačítkem "Výstupní režim". Vychozí chování je známo jako §2dávkový režim§r. V §2jednotném režimu§r, předmět který splňuje filtrovanou kvantitu bude vyslán ven.<np>
+Použitím 9 tlačítkem pod zesilovačem, můžeš přepínat mezi barvami <link;redstone_wire;ruditových drátů>. Napojením <link;redstone_wire;Spojovače ruditového rozhraní;bundled>, dávkovač předmětů bude posílat ruditové signály pokud jsou splněny filtry.
+Toto ti dovoluje vypnout extrakční pásy nebo výrobní stroje pokud je dosažen tvůj počet vyžadovaných předmětů. Pamatuj si pokud všechny filtry používají stejnou barvu, musí být všechny splněny pro zaslání signálu.

@@ -1,0 +1,7 @@
+Zahradní poklop
+Lokalizovaný deštný les
+<&recipe>Zahradní poklop neboli sklenice je zařízení pro zrychlení růstu rostlin. Dovoluje I nejvíc vyzývavým inženýrům pěstovat rostliny a získávat jejich výtěžel.<np>
+Zařízení přijmá energii, kapaliny a předměty respektivními otvory.
+Voda a energie jsou vždy vyžadovány, a můžeš přidat hnojivo do políčka na levo pro urychlení růstu rostlin.
+Půda a semínka jsou položeny do středu; každé semínko vyžaduje správnou půdu pro růst. Hlína je také automaticky zorána.<np>
+Vyprodukované předměty jsou uloženy do políček vpravo, a budou automaticky vyslány poklopem ve předu sklěneného dómu.

@@ -1,0 +1,6 @@
+Pracovní stůl a plány
+Vždy zaplněný
+Inženýrův pracovní stůl je profesionální stůl pro inženýra. Je použit pro sestavení předmětů zapsaných v <link;blueprints;Inženýrových šablonách>.
+Také lze vyrobit velkou varietu šablon, které jsou detailované v manuálu, ale pár vybraných lze získat ve světě nebo od vesničanů.
+Pro použití šablony, dej jí do políčka v levé části rozhraní a správně předměty do šesti políček ve středu. Výsledné předměty lze získat ze strany. Přejíždením myši nad výstupní políčka ukáže které materiály jsou potřeba pro každý předmět.<np>
+Druhá funkce pracovního stolu je úprava a konfigurace pokročilých nástrojů a pomůcek. <link;mining_drill;Vrták>, <link;shield;Štít> nebo <link;revolver;Revolvér> jsou příklady těchto předmětů. Když jsou položeny do hlavního políčka stolu, jeho použití je k modifikaci nářadí a přidání předmětů do políček které se objeví.

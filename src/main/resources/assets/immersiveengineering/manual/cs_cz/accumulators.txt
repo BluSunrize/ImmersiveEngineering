@@ -1,0 +1,3 @@
+Akumulátory
+Síla pro jízdu
+<&recipes>§lAkumulátory§r slouží jako úložiště pro energie. Můžeš použít kladivo pro nastavení každé strany, s modrou značící vstup, oranžovou výstup a žádné zbarvení zabraňující spojení. Skrč se při použití kladiva pro nastavení strany naproti které jsi kliknul.

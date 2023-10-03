@@ -1,0 +1,23 @@
+Ruditové dráty
+Převezmutí integrace
+<&coil>§2Ruditové dráty§r jsou hliník obalený v ruditovém prášku. Tyto kabely umožnují lehkou cestu pro přenos ruditových signálů přes dlouhou dálku.<&connector>§2Spojovače§r fungují jako jakýkoliv spojovač na spojení, ale ruditové dráty nepotřebují relé; spojovače a relé jsou stejný blok.
+S inženýrovym šroubovákem, spojovače lze přepnout mezi vstupním a výstupním režimem a nastavit je na jednu ze 16 barevných frekvencí.
+<&probe>§2Spojovače ruditových sond§r mají funkci stejnou jako ruditové porovnávače, předčítající inventáře jak jsou plné. Kromě toho je lze nastavit na §llimit signálu§r a vyšlou signál jen pokud je limit splněn - jako porovnávač.
+Také tyto sondy můžou fungovat na dvou kanálech, posílání jejich čteného signálu a stále přijmání na druhé. Všechy tyto nastavení jsou konfigurovány pomocí Inženýrova šroubováku.
+
+Pamatuj si že plno IE multibloků má kompatibilitu s porovnávači, jak je napsáno na následujících stránkách Pokud k dispozici, ruditový ovládací povrch je určené místo pro připojení porovnávače<np>
+§lNádrž: §rNapsáno v její části <link;tank;příručky>
+§lSilo: §rNapsáno v jeho části <link;silo;příručky>
+§lMontovač: §rVysílá signál rovný naplnění inventáře.
+§lAutomatický pracovní stůl: §rVysílá signal rovný naplnění inventáře.
+§lCrusher: §rVysílá signal rovný naplnění inventáře.
+§lSqueezer: §rVysílá signal rovný naplnění inventáře.
+§lFermenter: §rVysílá signal rovný naplnění inventáře.
+§lExcavator: §rVysílá signal rovný zbývající rudě v žíle.
+§lArcFurnace: §rVysílá signal rovný naplnění inventáře.
+Také připojení porovnávače na elektrody na vrchu pošle signál o jejich integritě.
+§lMixér: §rVysílá signal rovný naplnění inventáře..<np>
+<&bundled>§2Spojovače ruditového rozhraní§r jsou určeny k připojení k ostatním blokům které přijmají barevné ruditové signály.
+Spojovač nemá barvu, vstupní nebo výstupní stav, ale dovoluje blokům jako třeba <link;item_batcher;Dávkovač předmětů> pro rozhraní se sítí.
+
+

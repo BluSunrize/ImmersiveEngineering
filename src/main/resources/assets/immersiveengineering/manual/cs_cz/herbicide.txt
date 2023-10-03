@@ -1,0 +1,6 @@
+Herbicid
+Otrava pro kytky
+<&items>Herbicid je chemická směs která je jedovatá pro místní rostliny.<br>
+Když je nabita do <link;chemthrower;chemického vrhače> je rozptýlena jako jemná pára, která způsobí uschnutí a spálení rostlin.
+Kapalina odstraní listy ze stromů, zničí kytky, keře a plodiny a odstraní trávu z hlíny. Také vysuší a spálí ornici.<br>
+<&mixing>Pro výrobu herbicidu, smíchej kbelík <link;fermenter;ethanolu> s §2měděným práškem§r a §2sírovým práškem§r v <link;mixer;Mixéru>.

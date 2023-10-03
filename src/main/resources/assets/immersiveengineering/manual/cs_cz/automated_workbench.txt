@@ -1,0 +1,7 @@
+Automatický pracovní stůl
+Pro ty, kteří nemůžou řídit tyčku
+<&multiblock>Automatický pracovní stůl je jeden z prvních velkých úspěchů inženýrství na malé škále.
+Stroj může poslouchat sadu instrukcí <link;blueprints;Šablon;start> pro sestavení načrtnutých předmětů.<np>
+Po sestavení multibloku může být na jeho kreslící stůl položena šablona. Po vybrání předmětu který má být stvořen, začne jej montovat. Pro funkci tohoto stroje je potřeba zásoba energie a surovin.<br>
+Vstupy pro předměty jsou dvě modrá políčka a vstup pro energii leží nad nimi. Dokončené předměty jsou vyhozeny na pás.<br>
+Aplikování ruditového signálu na ovládací panel pod kreslícím stolem jej zastaví, toto chování může být obráceno použitím Inženýrova šroubováku.

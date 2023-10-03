@@ -1,0 +1,8 @@
+Úvod
+Začínáme s inženýrstvím!
+Ahoj inženýre, a vítej v Immersive Engineering. Tato kniha ti bude sloužit jako tvůj návod pro sestavení všech strojů a funkcí tento mód má na nabídku.
+Nejdříve začneme se základy: Immersive Engineering je stavěno kolem retrofuturistické generace a přenosu energie. Energie v tomto módu je Forge Energy, kterou používá více módů.
+Energie je přenášena mezi §lspojovači§r pomocí §lDrátů§r. Dráty můžou být napojeny mezi omezeným počtem bloků, takže budeš muset používat spojovače jako §lrelé§r mezi dráty.
+Máš výběr mezi třemi různými typy drátů, které mají rozdílné přenosové rychlosti, <config;iA;wires.wireTransferRate;l3> Flux/tick. Pro vyměnění drátů potřebuješ §ltransformátory§r.
+<&hammer>Inženýrovo kladivo je nejvíc důležitý nástroj. Je použit pro multibloky jako koksovací pec a vysoká pec, drcení rud a nebo nastavování bloků jako dřevené pilíře.
+<&screwdriver>Inženýrův šroubovák je další nástroj, který budeš potřebovat pro nastavení strojů.

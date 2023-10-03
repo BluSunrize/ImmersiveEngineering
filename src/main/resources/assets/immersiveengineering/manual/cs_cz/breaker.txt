@@ -1,0 +1,6 @@
+Pojistka
+Zapnout - vypnout
+<&manual_breaker>Pojistky jsou jednoduché spínače které můžou zastavit proud energie. Můžou spojit dva dráty stejného typu a dovolí projít energii jen když jsou aktivní. Toto může být použito pro oddělení náročných strojů a nebo přidání sady generátorů. Kvůli nebezpečí, tyto spínače nepřijmou vysokonapěťové dráty.
+Také vyšlou ruditový signál když jsou zapnuty; toto chování může být obráceno kliknutím s inženýrovým šroubovákem.
+Navíc jsou také dobré pro ovládání <link;lighting;elektrických světel;electric_lantern>!<np>
+<&rs_breaker>Ruditová pojistka je podobná jako klasická, ale nemůže být ručně operována. Místo toho, vyžaduje ruditový signál pro přerušení. Za to, toto zařízení je izolováno pro dovolení připojení vysokonapěťových drátů!

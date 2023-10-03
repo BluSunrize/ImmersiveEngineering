@@ -1,0 +1,8 @@
+Shadery
+Modrá! Ne, žlutá!
+Shadery jsou předměty které můžeš získat ve světě nebo obchodováním s vesničany. Samy o sobě nemají použití, ale můžou být aplikovány na <link;revolver;Revolvéry>, <link;mining_drill;Vrtáky>, <link;chemthrower;Chemické vrhače>, <link;shield;Plátované štíty> or <link;railgun;Kolejnicová děla>(a ostatní věci které musíš objevit) pro změnení designu předmětu. Jednoduše vlož předmět do <link;workbench;inženýrova pracovního stolu> and vybav shader ve vhodném políčku.
+Můžeš je také aplikovat na Vozík, Prapor nebo <link;balloon;Balón> pravým kliknutím!
+
+Pro plný seznam shaderů, jejich vzhledy, reference a detaily, <link;shader_list;klikni zde><np>
+<&grab_bag>Shaderové pytle jsou předměty, které ti dají náhodný shader. Můžou být nalezeny v bednách, získání obchodováním nebo padnout z bossů. Rarita shaderu je rovná, nebo lepší raritě pytle. Když použiješ pytel, máš větší šanci pro získání shaderu který nevlastníš, než který máš.
+Shaderové pytle můžou být přetvořeny na dva nižší pytle. Toto sníží šanci na získání lepších shaderů, ale zvýší počet pokusů.

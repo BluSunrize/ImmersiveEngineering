@@ -1,0 +1,6 @@
+Externí ohřívač
+Nyní pečeš s Fluxem!
+<&recipe>Externí ohřívač vyrábí tepelnou energii z Fluxu. Když je položen u normální pece, tato tepelná energie bude pohánět pec, umožnující tavení bez paliva.<np>
+Klikni na stranu ohřívače s kladivem abys jej udělal přijmačem energie, skrč se pro zaměření protější strany.
+Ohřívač bude spotřebovávat §o8 Flux/t§r na každou přidanou tepelnou jednotku. Při první fázi pece, ohřívač vyrobí až §o4§r jednotek tepla na tick, ale jakmile pec dosáhne maximální teploty, bude potřeba jen §o1§r jednotka tepla aby mohla stále pracovat.<np>
+Ještě lépe, když je pec na maximální teplotě, ohřívač bude spotřebovávat dalších §o24 Flux/t§r pro zvýšení zpracovací rychlosti pece. Ohřívač ovlivní jen pec s platným vstupem a místem ve výstupním poli aby mohl šetřit energií. Můžeš aplikovat ruditový signál do ohřívače pro vypnutí této funkce a zahřívání pece na plnou teplotu.

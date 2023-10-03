@@ -1,0 +1,7 @@
+Dřevěná bedna
+Pohni s tím!
+<&normal>Dřevěné bedny jsou bloky podobné s truhlami. Vyrobeny z ošetřeného dřeva, nabízejí 27 políček úložiště, ale při rozbití uchovají svůj inventář, což ti dovoluje je přesunout.
+Jako truhly, vyšlou signál do ruditového porovnávače záležící na naplnění bedny.
+
+<&reinforced>Vystužená bedna nabízí stejné úložiště jako normální bedna, ale narozdíl od nich jsou tyto bedny odolné proti výbuchům. Už ti nikdy syčáci nebo nálože nezničí cennosti!
+Recept vylepšení uchová své předměty v bedně.

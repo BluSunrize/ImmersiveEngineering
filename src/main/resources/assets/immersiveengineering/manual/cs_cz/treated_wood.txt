@@ -1,0 +1,9 @@
+Ošetřené dřevo
+Vysoce tvrdé
+<&treated_wood>Ošetřené dřevo jsou, docela jednoduše, dřevěná prkna namočená v <link;cokeoven;kreosotu;outputs>. I když je obyčejné, je to jeden z nejvíc důležitých materiálů v Immersive Engineering, takže buď připraven na velkou výrobu.<np>
+<&recipes>
+<&posts>Sloupy z ošetřeného dřeva jsou velmi dobrá konstrukce pro připojení drátů. Jsou 4 bloky vysoké, takže je nemůžeš položit bez dostatečné výšky.
+Použití kladiva na nejvyšší blok připojí ruku ke sloupu.
+Můžeš na ně také pokládat <link;wiring;transformátory;transformer_recipes> což je dělá méně dotěrné.
+Pokládání bloků pod ruce sloupu je otočí.<np>
+<&wallmount>Ošetřené dřevo může být použité pro výrobu §2Nástěnných montáží§r, které můžou být použitelné pro napojení napojovačů s více vizuálně atraktivním vzhledem.

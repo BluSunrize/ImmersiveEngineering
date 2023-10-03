@@ -1,0 +1,7 @@
+Inženýrská světla
+Osvětlování pouště
+<&lantern>Hluboko v halách továren může být tma.  Abys mohl najít cestu kolem strojů, měl by jsi položit nějaké lucerny. Tyto lucerny dávají tolik světla jako jeden světlitový blok.
+<&electric_lantern>Elektrické lucerny jsou jedno z vynalezených prvních použití pro elektřinu. Pro zapnutí je musíš zapojit do své elektrické sítě. Umožnují přenos energie přes sebe, takže je můžeš zapojit po řadách.
+Použítí inženýrova kladiva jej otočí. Pokud jsou nápájeny energií, osvítí oblast kolem jako lucerna, ale také zabrání spawnování příšer v 32 blokovém rozsahu!<np>
+<&floodlight>Reflektory jsou silné světelné zdroje. Zatímco potřebují více energie než normální lucerny, vytvoří světelný kužel 32 bloků dlouhý. Použij inženýrovo kladivo na vrchní nebo spodní část pro otočení, nebo klikni na jeho strany pro změnění jeho výšky.
+Obecně, reflektory vyžadují ruditový signál, ale jejich ovládací chování lze obrátit pravým kliknutím na jejich základnu s Inženýrovym šroubovákem.

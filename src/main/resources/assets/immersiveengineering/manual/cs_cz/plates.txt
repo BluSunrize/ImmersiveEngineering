@@ -1,0 +1,3 @@
+Pláty
+Ploché jako platýs
+Kovové pláty jsou materiál důležitý pro vytvoření nějakých strojů nebo bloků. Jsou vyrobeny zmáčknutím ingotu inženýrovým kladivem nebo v <link;metal_press;Kovolisu>.

@@ -1,0 +1,6 @@
+Kvasič
+Skál!
+Kvasič je multibloková struktura která extrahuje ethanol z ovoce, zrnin a zeleniny pomocí kvasícího procesu. Struktura je postavena jako ukázáno nad a smontována použitím kladiva na střední kotel, ze strany na které jsou bloky inženýrství.
+Předměty můžou být vloženy do kvasiče pomocí poklopů které jsou značeny modrými tečkami. Poklop s oranžovou tečkou slouží jako předmětový výstup a blok pod nim jako výstup pro kapaliny
+Aplikováním ruditového signálu na ovládací panel v předu pozastaví proces stroje, toto chování může být obráceno pomocí Inženýrova šroubováku.
+<np>Následující seznam ukazuje předměty které mohou být zkvašeny na ethanol a kolik ho produkují.<&list>

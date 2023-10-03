@@ -1,0 +1,6 @@
+Ruditová kyselina
+Barevný elektrolyt!
+Zatímco přímé vlastnosti Ruditu jsou tajemství i pro hodně studované inženýry, aktuální pokusy ukázaly že je to kyselá sůl vytvářející Ruditovou kyselinu při rozpuštění.
+Kyselina není dostatečně silná aby rozpustila organickou hmotu, ale je trochu žíravá pro kovy a chová se jako dobrý elektrolyt pro <link;accumulators;Akumulátory;recipes>.<br>
+<&mixer>Pro sériovou výrobu lze vytvořit kyselinu v <link;mixer;Mixéru>, použitím jednoho kusu §2Ruditového prášku§r pro jednu čtvrtinu kbelíku vody.
+<&copper>Když je použita v <link;chemthrower;Chemickém vrhači> může být použita pro oxidaci měděných bloků vyrábějící mědenou patinu. Tento stejný efekt může být dosažen pomocí <link;bottling_machine;Plnícího stroje> použitím jedné osminy kbelíku pro oxidaci měděného bloku.

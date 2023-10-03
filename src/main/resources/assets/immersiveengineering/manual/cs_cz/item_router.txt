@@ -1,0 +1,9 @@
+Směrovač předmětů
+Žlutá vlevo, zelená vpravo
+<&recipe>Směrovač předmětů je blok který přijme předměty a rozešle je po filtrovaných cestách. Polož jej dolů a otevři jeho rozhraní, které obsahuje 6 barevně a směrove koordinované filtry.<np>
+Když předmět vstoupí do směrovače, bude směrován do výstupu který má tento filtr, nebo pokud není nalezen žádný shodný filtr, předmět půjde to nefiltrovaného vstupu. Pokud směrovač nemůže přesměrovat předmět, tento předmět nebude mít povolený vstup.
+Předměty nemůžou být také vyslány stranou kterou byly předměty poslány.<np>
+Tlačítka nad každým filtrem lze použít pro nastavení filtru pro další nastavení:
+§2Štítkové filtrování§r pouští předměty přes filtr pokud štítky se shodují s filtrem. Toto lze použít pro filtrování ingotů stejných kovů z různých módů.
+Možnost §2NBT filtru§r umožnuje respektovat další data na předmětu, jako třeba kouzla.
+Možnost §2Filtru poškození§r dovoluje filtru ignorovat hodnotu poškození zbraně nebo nástroje.

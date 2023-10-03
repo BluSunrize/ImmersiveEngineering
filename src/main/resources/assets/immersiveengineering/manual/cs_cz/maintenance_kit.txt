@@ -1,0 +1,6 @@
+Údržbová sada
+Opravy na cestě
+<&recipe>Mezi inženýry kteří objevují svět nebo jsou pořád v dolech, jeden problem vzniká.
+Jejich nástroje vyžadují nepřetržitou údržbu a přenášení celého pracovního stolu je náročné.
+Štestí že údržbová sada může udělat malé opravy a přenastavení.<br>
+Sadá nástrojů zabalená v konopném plátně, údržbová sada ti dovoluje upravit tvé nástroje stejně jako <link;workbench;Inženýrův pracovní stůl> does. Už nebudeš muset vylézt na povrch pro změnění hlavice vrtáku nebo jít zpátky do tvé dílny pro nastavení tvých Chráničů uší. Všechno toto nyní lze provést na cestě s údržbovou sadou!
