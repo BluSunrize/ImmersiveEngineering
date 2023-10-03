@@ -731,7 +731,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 				if(iTier==0)
 					iTier = 1;
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase(Locale.US)+".tier"+iTier;
-				name = Component.translatable(translate).append(name);
+				name = Component.translatable(translate, name);
 			}
 
 			int rarityTier = (int)Math.ceil(Mth.clamp(averageTier+3, 0, 6)/6*5);
