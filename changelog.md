@@ -1,4 +1,4 @@
-##### Version 1.19.2-9.2.3-pre
+##### Version 1.19.2-9.2.3-167
 - Change "Superior Weaponry" advancement to hint at its potential to spawn new illagers in raids (BluSunrize)
 - Change item renders for Railgun, Chemthrower and Shield to be dynamic, to allow use of dynamic shaders (Drullkus)
 - Fix erroneous capability check on empty FluidStacks (Malte)
