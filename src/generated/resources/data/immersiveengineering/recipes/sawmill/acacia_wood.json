@@ -2,11 +2,11 @@
   "type": "immersiveengineering:sawmill",
   "energy": 1600,
   "input": {
-    "item": "minecraft:birch_log"
+    "item": "minecraft:acacia_wood"
   },
   "result": {
     "count": 6,
-    "item": "minecraft:birch_planks"
+    "item": "minecraft:acacia_planks"
   },
   "secondaries": [
     {
@@ -23,6 +23,6 @@
     }
   ],
   "stripped": {
-    "item": "minecraft:stripped_birch_log"
+    "item": "minecraft:stripped_acacia_wood"
   }
 }

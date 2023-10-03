@@ -1,9 +1,14 @@
 {
   "type": "immersiveengineering:sawmill",
   "energy": 800,
-  "input": {
-    "item": "minecraft:stripped_jungle_log"
-  },
+  "input": [
+    {
+      "item": "minecraft:stripped_jungle_log"
+    },
+    {
+      "item": "minecraft:stripped_jungle_wood"
+    }
+  ],
   "result": {
     "count": 6,
     "item": "minecraft:jungle_planks"

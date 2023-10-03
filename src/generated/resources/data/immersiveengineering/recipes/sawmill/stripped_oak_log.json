@@ -1,9 +1,14 @@
 {
   "type": "immersiveengineering:sawmill",
   "energy": 800,
-  "input": {
-    "item": "minecraft:stripped_oak_log"
-  },
+  "input": [
+    {
+      "item": "minecraft:stripped_oak_log"
+    },
+    {
+      "item": "minecraft:stripped_oak_wood"
+    }
+  ],
   "result": {
     "count": 6,
     "item": "minecraft:oak_planks"

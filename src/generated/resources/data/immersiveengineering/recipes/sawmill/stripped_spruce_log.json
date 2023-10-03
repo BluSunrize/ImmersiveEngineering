@@ -1,9 +1,14 @@
 {
   "type": "immersiveengineering:sawmill",
   "energy": 800,
-  "input": {
-    "item": "minecraft:stripped_spruce_log"
-  },
+  "input": [
+    {
+      "item": "minecraft:stripped_spruce_log"
+    },
+    {
+      "item": "minecraft:stripped_spruce_wood"
+    }
+  ],
   "result": {
     "count": 6,
     "item": "minecraft:spruce_planks"

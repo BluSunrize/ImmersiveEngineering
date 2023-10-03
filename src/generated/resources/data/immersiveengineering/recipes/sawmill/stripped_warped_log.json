@@ -1,9 +1,14 @@
 {
   "type": "immersiveengineering:sawmill",
   "energy": 800,
-  "input": {
-    "item": "minecraft:stripped_warped_stem"
-  },
+  "input": [
+    {
+      "item": "minecraft:stripped_warped_stem"
+    },
+    {
+      "item": "minecraft:stripped_warped_hyphae"
+    }
+  ],
   "result": {
     "count": 6,
     "item": "minecraft:warped_planks"

@@ -1,14 +1,9 @@
 {
   "type": "immersiveengineering:sawmill",
   "energy": 1600,
-  "input": [
-    {
-      "item": "minecraft:dark_oak_log"
-    },
-    {
-      "item": "minecraft:dark_oak_wood"
-    }
-  ],
+  "input": {
+    "item": "minecraft:dark_oak_log"
+  },
   "result": {
     "count": 6,
     "item": "minecraft:dark_oak_planks"

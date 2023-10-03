@@ -939,12 +939,8 @@ public class Recipes extends RecipeProvider
 			if(wood.getLog()!=null)
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+						.addInput(wood.getLog())
 						.setEnergy(1600);
-				// If there is an all-bark block
-				if(wood.getWood()!=null)
-					sawmillBuilder.addInput(wood.getLog(), wood.getWood());
-				else
-					sawmillBuilder.addInput(wood.getLog());
 				if(wood.getStripped()!=null)
 				{
 					sawmillBuilder.addStripped(wood.getStripped());
@@ -955,12 +951,31 @@ public class Recipes extends RecipeProvider
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_log"));
 			}
+			// All-bark block
+			if(wood.getWood()!=null)
+			{
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+						.addInput(wood.getWood())
+						.setEnergy(1600);
+				if(wood.getStrippedWood()!=null)
+				{
+					sawmillBuilder.addStripped(wood.getStrippedWood());
+					if(wood.produceSawdust())
+						sawmillBuilder.addSecondary(IETags.sawdust, true);
+				}
+				if(wood.produceSawdust())
+					sawmillBuilder.addSecondary(IETags.sawdust, false);
+				sawmillBuilder.build(out, toRL("sawmill/"+wood.getName()+"_wood"));
+			}
 			// Already stripped log
 			if(wood.getStripped()!=null)
 			{
 				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
-						.addInput(wood.getStripped())
 						.setEnergy(800);
+				if(wood.getWood()!=null)
+					sawmillBuilder.addInput(wood.getStripped(), wood.getStrippedWood());
+				else
+					sawmillBuilder.addInput(wood.getStripped());
 				if(wood.produceSawdust())
 					sawmillBuilder.addSecondary(IETags.sawdust, false);
 				sawmillBuilder.build(out, toRL("sawmill/stripped_"+wood.getName()+"_log"));

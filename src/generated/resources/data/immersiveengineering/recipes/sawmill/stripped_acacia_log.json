@@ -1,9 +1,14 @@
 {
   "type": "immersiveengineering:sawmill",
   "energy": 800,
-  "input": {
-    "item": "minecraft:stripped_acacia_log"
-  },
+  "input": [
+    {
+      "item": "minecraft:stripped_acacia_log"
+    },
+    {
+      "item": "minecraft:stripped_acacia_wood"
+    }
+  ],
   "result": {
     "count": 6,
     "item": "minecraft:acacia_planks"
