@@ -1,0 +1,5 @@
+Nabíjecí stanice
+Nabij své brýle!
+<&recipe>Nabíjecí stanice je zařízení které ti umožnuje nabít předměty a nástroje.
+Energie může být napájena spodkem nebo zadem, a předměty můžou být umístěny uvnitř ručně nebo automaticky.<np>
+Elektronové trubice ve předu dávají signál o aktuálním nabití předmětu, ale blok vyšle signál do porovnávače ze stejných důvodů.

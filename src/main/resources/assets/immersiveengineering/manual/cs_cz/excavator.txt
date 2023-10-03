@@ -1,0 +1,4 @@
+Vykopávač
+Lepší než trpaslíci
+<&excavator>Vykopávač je jeden z moderních strojů. Umí vykopat <link;minerals;minerály> ze žil nepřístupných normální metodou. Za to ale je vykopávač složitá struktura která vyžaduje <config;i;machines.excavator.consumption> Flux/t pro operaci.
+<&wheel><&full>Struktura je složena ze dvou dílů: Motor ukázaný na první straně a kolo ukázáné na druhé, které se vejde do 'kolejnic' motoru jak ukázáno na první straně. Vstup energie do motoru je na jeho straně, zadní část obsahuje ovládací panel a předmětový výstup.<br>Jak vykopávač vykopává rudy, výtěžek žíly se snižuje, ale žíla minerálů může dát až <config;i;machines.excavator.yield> bloků rudy.

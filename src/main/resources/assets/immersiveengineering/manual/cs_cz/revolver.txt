@@ -1,0 +1,14 @@
+Revolvér
+Hledá se: živý nebo mrtvý
+<&recipe>Revolvér, lepší zbraň z modernější doby, je oceněním malých mechaniků. Je malý protože tato zbraň má komoru na dvanáctkový náboj.
+Podobně jako vrták revolvér umožní modifikace v <link;workbench;Inženýrově pracovním stole>, jak napsáno na posledních stránkách
+
+Poznámka: Střílení z revolvéru je hlasité, takže příláká nepřátelé nablízko!
+
+Jsou tu různé <link;bullets;typy nábojů;> které revolvér přijme. Pro nabití se skrč a klikni pravým tlačítkem, a pak polož náboje do políček.<np>
+<&speedloader>Nabitý rychlonabíječ bude použit pro doplnění revolvéru, jakmile jsi vystřelil poslední střelu.
+<np>
+<&scope>§2Přesný zaměřovač§r dovoluje zaměření s revolvérem. Použij §l<keybind;key.immersiveengineering.railgunZoom>§r pro použití zaměřovače a otoč s kolečkem myši pro přepnutí mezi úrovněmi zaměření.
+<&bayonet>Připojením §2bajonetu§r na revolvér ho vybavíš s možnostmi boje na blízko, dovolující poškození na blízko silnější než železný meč.<np>
+<&extmag>§2Rozšíření zázobník§r dovoluje nabití 6 více nábojů. Tento zásobník není znovu naplněn rychlonabíječem.<np>
+<&tubes>The §2Zesilovací elektronové trubice§r aplikují elektrický šok do vystřelených projektilů. Tento šok trvá dokud netrefí cíl (neptej se jak to funguje) na neprojde. Cíl bude omráčen na zlomek sekundy a všechna elektrická výbava co na sobě mají utrpí malé vybití.

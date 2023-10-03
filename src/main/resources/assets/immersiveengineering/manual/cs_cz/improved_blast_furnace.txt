@@ -1,0 +1,6 @@
+Zlepšená vysoká pec
+Průmyslové obohacení
+<&brick_recipe>Zlepšená vysoká pec je mnohem profesionálnější cesta pro <link;crude_blast_furnace;výrobu oceli>. Kromě umožnění automatizace vstupu a výstupu, může být také vybavena s <link;improved_blast_furnace;preheaters;předehřivači> pro urychlení procesu obohacení přidáním vzduchu.
+Tato pec je vyrobena z cihel, takže doporučujeme utratit první dávky oceli na tomto vylepšení.
+<&multiblock>Struktura pece je stejná jako předchozí verze, ale cihly byly vystuženy a byla na vrch přidána násypka pro vysypání vstupu. Ocel je poslána vstupem na předku, struska zezadu, a pec může automaticky vyhodit předměty na <link;conveyors;pásy>. Železo a koks jsou sypány vrchem.<np>
+<&preheater>Předehřívače pece předehřejí vzduch a fouknou ho do pece pro zrychlení obohacení železa. Každá pec může mít napojena dva předehřívače, a každý předehřívač vyžaduje <config;i;machines.preheater_consumption> Flux/t pro funkci.

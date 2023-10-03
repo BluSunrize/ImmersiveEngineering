@@ -103,6 +103,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 			);
 		}
 		matrixStack.popPose();
+		bufferIn = BERenderUtils.mirror(helper.getContext().getLevel().getOrientation(), matrixStack, bufferIn);
 		matrixStack.translate(-1.25, -.35, 0);
 		for(int i = 0; i < shift.length; i++)
 		{

@@ -27,6 +27,11 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
@@ -81,6 +86,7 @@ public class IEItemTags extends ItemTagsProvider
 
 		tag(net.minecraft.tags.ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
 		tag(Tags.Items.SEEDS).add(Misc.HEMP_SEEDS.get());
+		tag(IETags.seedsHemp).add(Misc.HEMP_SEEDS.get());
 		tag(Tags.Items.RODS_WOODEN).add(Ingredients.STICK_TREATED.get());
 		tag(ItemTags.COALS).add(Ingredients.COAL_COKE.get());
 		tag(Tags.Items.LEATHER).add(Ingredients.ERSATZ_LEATHER.get());
@@ -141,6 +147,24 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.pickaxes).add(Tools.STEEL_PICK.get());
 		tag(IETags.hoes).add(Tools.STEEL_HOE.get());
 		tag(IETags.axes).add(Tools.STEEL_AXE.get());
+		tag(IETags.swords).add(Tools.STEEL_SWORD.get());
+
+		for(var slot : ArmorItem.Type.values())
+				tag(Tags.Items.ARMORS)
+						.add(Tools.STEEL_ARMOR.get(slot).asItem())
+						.add(Misc.FARADAY_SUIT.get(slot).asItem());
+		tag(Tags.Items.ARMORS_HELMETS)
+				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.HELMET).asItem())
+				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.HELMET).asItem());
+		tag(Tags.Items.ARMORS_CHESTPLATES)
+				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.CHESTPLATE).asItem())
+				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.CHESTPLATE).asItem());
+		tag(Tags.Items.ARMORS_LEGGINGS)
+				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.LEGGINGS).asItem())
+				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.LEGGINGS).asItem());
+		tag(Tags.Items.ARMORS_BOOTS)
+				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.BOOTS).asItem())
+				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.BOOTS).asItem());
 
 		tag(IETags.recyclingIgnoredComponents)
 				// Ignore bricks for outputting

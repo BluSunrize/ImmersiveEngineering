@@ -1,0 +1,9 @@
+Reyklace strusky
+Žádný odpad!
+<&slag_gravel>Zatímco struska je odpadový produkt z <link;crude_blast_furnace;Vysoké pece>, its mineral composition allows it to be reused in various ways!
+§2Struskový šterk§r je struska která byla zpracována v <link;crusher;Drtiči> na hrubý prach. Sdílí své chování s jakýmkoliv štěrkem, a může být dále zpracována na písek.
+Také, struskový šterk obsahuje důležité živiny. Jakékoliv vodní rostliny (jako třeba chaluha) rostou rychleji než na ostatních blocích.
+<br><&slag_glass>Tavením strusky v normální peci místo drcení z ní vznikne §2struskové sklo§r, což je tvrdý, částečně průhledný materiál. Oslabuje sílu procházejícího světla it a může být použito jako izolace <link;wiring;vysokonapěťových relé;connector_recipes>.<np>
+Kvůli jeho živným vlastnostem, struska také je ingredience v <link;chemicals;průmyslovém hnojivu;fertilizer>.
+<br>Také s možností jej rozdrtit na šterk a písek, struska dělá dvě třetiny <link;concrete;betonu>, což jí dělá dobrou na stavění.
+

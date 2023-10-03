@@ -35,7 +35,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
@@ -60,12 +62,15 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		bufferIn = BERenderUtils.mirror(orientation, matrixStack, bufferIn);
 
 		//Item Displacement
-		float[][] itemDisplays = new float[state.processor.getQueueSize()][];
+		record ItemDisplay(float itemFill, Vector3f translation, BottlingProcess process)
+		{
+		}
+		List<ItemDisplay> itemDisplays = new ArrayList<>();
 		//Animations
 		float lift = 0;
 
 		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());
-		for(int i = 0; i < itemDisplays.length; i++)
+		for(int i = 0; i < state.processor.getQueueSize(); i++)
 		{
 			BottlingProcess process = (BottlingProcess)state.processor.getQueue().get(i);
 			if(process==null)
@@ -105,7 +110,11 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 				itemX = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 				itemFill = 1;
 			}
-			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineLogic.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
+			itemDisplays.add(new ItemDisplay(
+					itemFill,
+					new Vector3f((itemX-0.5f)*BottlingMachineLogic.TRANSLATION_DISTANCE, itemY-.15625f, 1),
+					process
+			));
 		}
 
 		matrixStack.pushPose();
@@ -119,7 +128,6 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		float dir = facing==Direction.SOUTH?Mth.PI: facing==Direction.NORTH?0: facing==Direction.EAST?-Mth.HALF_PI: Mth.HALF_PI;
 		matrixStack.mulPose(new Quaternionf().rotateY(dir));
 
-		float scale = pixelHeight;
 		FluidStack fs = state.tank.getFluid();
 		if(!fs.isEmpty())
 		{
@@ -127,7 +135,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 			matrixStack.pushPose();
 			float level = fs.getAmount()/(float)state.tank.getCapacity();
 			matrixStack.translate(-.21875, .376, 1.21875);
-			matrixStack.scale(scale, scale, scale);
+			matrixStack.scale(pixelHeight, pixelHeight, pixelHeight);
 			matrixStack.translate(tankWidth/2, 0, -tankWidth/2);
 			float h = level*9;
 			// TODO does not work on fabulous
@@ -152,42 +160,36 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 
 
 		//DRAW ITEMS HERE
-		for(int i = 0; i < itemDisplays.length; i++)
-			if(itemDisplays[i]!=null)
+		for(ItemDisplay item : itemDisplays)
+		{
+			List<ItemStack> display = item.process.getDisplayItem(te.getLevel());
+
+			matrixStack.pushPose();
+			matrixStack.translate(item.translation.x(), item.translation.y(), item.translation.z());
+			matrixStack.scale(.4375f, .4375f, .4375f);
+
+			if(!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
 			{
-				BottlingProcess process = (BottlingProcess)state.processor.getQueue().get(i);
-				if(process==null)
-					continue;
-
-				List<ItemStack> display = process.getDisplayItem(te.getLevel());
-				scale = .4375f;
-
-				matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
-				matrixStack.scale(scale, scale, scale);
-
-				if(!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
-				{
-					for(ItemStack displayS : display)
-						ClientUtils.mc().getItemRenderer().renderStatic(
-								displayS, ItemDisplayContext.FIXED,
-								combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
-								te.getLevel(), 0
-						);
-				}
-				else
-				{
-					float h0 = -.5f;
-					float h1 = h0+itemDisplays[i][4];
-
-					for(ItemStack inputS : process.inputItems)
-						renderItemPart(bufferIn, matrixStack, inputS, h0, h1, combinedLightIn, combinedOverlayIn, 0, te.getLevel());
-					for(ItemStack displayS : display)
-						renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1, te.getLevel());
-				}
-
-				matrixStack.scale(1/scale, 1/scale, 1/scale);
-				matrixStack.translate(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
+				for(ItemStack displayS : display)
+					ClientUtils.mc().getItemRenderer().renderStatic(
+							displayS, ItemDisplayContext.FIXED,
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
+							te.getLevel(), 0
+					);
 			}
+			else
+			{
+				float h0 = -.5f;
+				float h1 = h0+item.itemFill;
+
+				for(ItemStack inputS : item.process.inputItems)
+					renderItemPart(bufferIn, matrixStack, inputS, h0, h1, combinedLightIn, combinedOverlayIn, 0, te.getLevel());
+				for(ItemStack displayS : display)
+					renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1, te.getLevel());
+			}
+
+			matrixStack.popPose();
+		}
 		matrixStack.popPose();
 	}
 

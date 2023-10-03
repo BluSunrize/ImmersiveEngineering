@@ -76,6 +76,7 @@ public class IETags
 	public static final TagKey<Item> steelRod = createItemWrapper(getRod("steel"));
 	public static final TagKey<Item> metalRods = createItemWrapper(getRod("all_metal"));
 	public static final TagKey<Item> aluminumRod = createItemWrapper(getRod("aluminum"));
+	public static final TagKey<Item> seedsHemp = createItemWrapper(getRod("seeds/hemp"));
 	public static final TagKey<Item> fiberHemp = createItemWrapper(forgeLoc("fiber_hemp"));
 	public static final TagKey<Item> fabricHemp = createItemWrapper(forgeLoc("fabric_hemp"));
 	public static final TagKey<Item> coalCoke = createItemWrapper(forgeLoc("coal_coke"));
@@ -120,6 +121,7 @@ public class IETags
 	public static final TagKey<Item> shovels = createItemWrapper(forgeLoc("tools/shovels"));
 	public static final TagKey<Item> axes = createItemWrapper(forgeLoc("tools/axes"));
 	public static final TagKey<Item> hoes = createItemWrapper(forgeLoc("tools/hoes"));
+	public static final TagKey<Item> swords = createItemWrapper(forgeLoc("tools/swords"));
 	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(rl("powerpack/forbid_attach"));
 
 	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(rl("recycling/ignored_components"));

@@ -57,6 +57,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -142,8 +143,9 @@ public class BottlingMachineLogic
 		NonNullList<ItemStack> displayStacks;
 		if(recipe==null)
 		{
+			ItemStack inputItem = ItemHandlerHelper.copyStackWithSize(stacks[0], 1);
 			displayStacks = Utils.createNonNullItemStackListFromItemStack(stacks[0]);
-			process = new BottlingProcess(displayStacks, state);
+			process = new BottlingProcess(inputItem, inputItem.copy(), state);
 		}
 		else
 		{

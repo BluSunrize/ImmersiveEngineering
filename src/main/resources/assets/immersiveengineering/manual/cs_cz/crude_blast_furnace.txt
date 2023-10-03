@@ -1,0 +1,6 @@
+Hrubá vysoká pec
+Jednoduchá ocel
+<&block>Hrubá vysoká pec je použita pro zvýšení obsahu uhlíku v železu, měnící jej na §2ocel§r. Pro dosažení lze použít jen čistá paliva s vysokým obsahem uhlíku v peci, specificky <link;cokeoven;Koks a dřevěné uhlí>.
+<&outputs>Kromě oceli, pec také vytvoří §2strusku§r, kterou musíš odstranit nebo pec přestane fungovat. I když je to odpadový produkt, jsou to možnosti pro <link;slag;recyklaci>.<np>
+<&multiblock>Pro stvoření vysoké peci, umísti 27 těchto bloků do 3x3x3 krychle, a klikni pravým tlačítkem na jednu ze středních cihel s inženýrovým kladivem.
+Hrubá vysoká pec §lnení§r automatizovatelná. Všechny vstupy a výstupy musí být získány pomocí jejího GUI. Jestli chceš automatizovat výrobu oceli, měl by jsi se podívat na vytvoření <link;improved_blast_furnace;Vylepšené vysoké pece;>.

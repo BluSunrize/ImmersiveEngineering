@@ -1,0 +1,12 @@
+Rudy
+Kopeme kopeme díru
+<&alu>§lBauxitová ruda§r je nalezena ve světě mezi vrstvami <config;i;ores.bauxite.min_y> a <config;i;ores.bauxite.max_y>, a vyžaduje kamenný krumpáč pro zničení.
+Surová ruda se roztaví na hliníkové ingoty, které jsou důležitá součást vysokonapěťové architektury.
+<&lead>§lOlověná ruda§r je nalezena ve světě mezi vrstvami <config;i;ores.lead.min_y> a <config;i;ores.lead.max_y>, a vyžaduje železný krumpáč pro zničení.
+Surová ruda se roztaví na olověné ingoty, které jsou použity v prvních akumulátorech.
+<&silver>§lStříbrná ruda§r je nalezena ve světě mezi vrstvami <config;i;ores.silver.min_y> a <config;i;ores.silver.max_y>, a vyžaduje železný krumpáč pro zničení
+Surová ruda se roztaví na stříbrné ingoty, které vytvoří slitinu se zlatem nazývanou elektrum, což je více účinný vodič.
+<&nickel>§lNiklová ruda§r je nalezena ve světě mezi vrstvami <config;i;ores.nickel.min_y> a <config;i;ores.nickel.max_y>, ale více pod <config;i;ores.deep_nickel.max_y>. Vyžaduje železný krumpáč pro zničení.
+Surová ruda se roztaví na niklové ingoty, které vytvoří slitinu s mědí nazývanou konstantan, což je teplovzdorný vodič použitý ve stavbě <link;thermoelectric;Termoelektrických generátorů;start>.
+<&uranium>§lUranová ruda§r je nalezena ve světě mezi vrstvami <config;i;ores.uranium.min_y> a <config;i;ores.uranium.max_y>, a vyžaduje železný krumpáč pro zničení.
+Surová ruda se roztaví na uranové ingoty, ale není tu moc použití pro tento kov. Uranový blok může sloužit jako tepelný zdroj pro <link;thermoelectric;Termoelektrický generátor;start> a kov bude použit v budoucí době.

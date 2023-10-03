@@ -1,0 +1,9 @@
+Průmyslové konopí
+530 udělej tkaninu
+<&items>Průmyslové konopí je důležitá rostlina! Ne jen semínka jsou důležitá pro výrobu <link;refinery;Bionafty;diesel>, konopná vlákna jsou také použitelná pro výrobu tvrdé tkaniny.
+Semínka lze získat zničením vysoké trávy.<np>
+<&fabric_recipe>Tvrdá tkanina je vyrobená z konopných vláken. Je použita pro vytvoření <link;generator;Zlepšených větrných mlýnů;sail_recipe> a také<link;balloon;Balónů;start> a <link;this;Skákacích prken;cushion_recipe>.<np>
+<&cushion_recipe>Skákací prkna jsou jednoduše vytvořená z tvrdé tkaniny a naplněny vzduchem. Umějí absorbovat poškození a zabrání nárazy ale narozdíl od slizových bloků tě neodrazí.<np>
+<&curtain_recipe>Záclony jsou kusy tkaniny napojené na dveřní rámy nebo ostatní výhledy pro zablokování.
+Když přes ně projde entita, vyšlou ruditový signál. Klikni na ně s inženrýrovým šroubovákem pro zapnutí silných signálů.
+Můžou být nabarveny jako kožené brnění.

@@ -30,6 +30,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -118,13 +119,19 @@ public class ArcRecyclingCalculator
 				fillInRecipes(ServerLifecycleHooks.getCurrentServer());
 			}
 
+			@SubscribeEvent
+			public void onDatapackSync(OnDatapackSyncEvent ev)
+			{
+				fillInRecipes(ev.getPlayerList().getServer());
+			}
+
 			private void fillInRecipes(MinecraftServer server)
 			{
 				Preconditions.checkState(result.getValue()==null);
+				MinecraftForge.EVENT_BUS.unregister(eventListener.getValue());
 				Collection<Recipe<?>> recipes = server.getRecipeManager().getRecipes();
 				ArcRecyclingCalculator calculator = new ArcRecyclingCalculator(recipes, server.registryAccess());
 				result.setValue(calculator.run());
-				MinecraftForge.EVENT_BUS.unregister(eventListener.getValue());
 			}
 		});
 		MinecraftForge.EVENT_BUS.register(eventListener.getValue());

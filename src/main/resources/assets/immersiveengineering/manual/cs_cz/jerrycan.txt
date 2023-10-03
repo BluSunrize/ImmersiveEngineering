@@ -1,0 +1,5 @@
+Kanistr
+Lepší než kbelíky
+<&recipe>Kanistry jsou jednoduché kovové nádoby pro uložení kapalin. Můžou uložit až 10 kbelíků a vylít jej do světa nebo do strojů.
+Nemůžou za to nabrat kapaliny.<br>
+Také můžou být použity pro naplnění předmětů na palivo jako třeba <link;mining_drill;Vrták;start> při položení do výrobní mřížky.

@@ -275,6 +275,7 @@ public class ItemModels extends TRSRItemModelProvider
 		obj(Tools.TOOLBOX, rl("item/toolbox.obj"))
 				.transforms(rl("item/toolbox"));
 		ieObjBuilder(IEItems.Misc.SHIELD, rl("item/shield.obj.ie"))
+				.dynamic(true)
 				.callback(ShieldCallbacks.INSTANCE)
 				.layer(RenderType.translucent())
 				.end()
@@ -296,11 +297,13 @@ public class ItemModels extends TRSRItemModelProvider
 				.end()
 				.transforms(modLoc("item/buzzsaw"));
 		ieObjBuilder(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))
+				.dynamic(true)
 				.callback(RailgunCallbacks.INSTANCE)
 				.layer(RenderType.translucent())
 				.end()
 				.transforms(modLoc("item/railgun"));
 		ieObjBuilder(Weapons.CHEMTHROWER, modLoc("item/chemthrower.obj.ie"))
+				.dynamic(true)
 				.callback(ChemthrowerCallbacks.INSTANCE)
 				.layer(RenderType.cutout())
 				.end()

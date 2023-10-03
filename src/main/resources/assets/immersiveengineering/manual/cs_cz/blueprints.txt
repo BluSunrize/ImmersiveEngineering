@@ -1,0 +1,3 @@
+Inženýrovy šablony
+Zpátky ke kreslící tabuli
+Tato stránka obsahuje všechny šablony které můžou být normálně vyrobeny. Ostatní šablony musí být získány od vesničanů nebo ve světě. Všechy tyto můžou být použity v <link;workbench;Inženýrově pracovním stolu> pro vyrobení předmětů které popisují.

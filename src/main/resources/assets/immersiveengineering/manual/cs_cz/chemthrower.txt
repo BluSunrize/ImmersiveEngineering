@@ -1,0 +1,9 @@
+Chemický vrhač
+SPAL VŠECHNY VĚCI!
+Chemický vrhač je zařízení které střílí kapaliny z jeho vnitřní nádrže. Toto zařízení lze nabít tekutinou, kapalinou nebo plynem, a při pravém kliknutí jej vystřelí.
+Chemický vrhač také obsahuje funkci vznítit kapalinu, pokud je hořlavá. Pro zapnutí světla, skrč se a klikni pravým tlačítkem.
+Jako nějaké ostatní nástroje, chemický vrhač může být modifikován v <link;workbench;inženýrově pracovním stole>. Tyto vylepšení ovlivní velikost nádrže, dostřel a rozptyl a jsou popsány na následujících stránkách.<np>
+<&large>§2Velká nádrž§r zvyšuje kapacitu nádrže o 2000 mB.
+<&focus>The §2Zaměřená tryska§r snižuje rozptyl vystřelených kapalin a trochu zvyšuje dostřel, umožnující ti trefit dále s větší přesností.
+<&multi>The §2Multinádrž§r umožnuje uložit až tři kapaliny do chemického vrhače. Můžeš vybrat aktivní nádrž <config;b;tools.chemthrower.scroll;skrčením a použitím kolečka myši, nebo použitím;using> klávesy §l<keybind;key.immersiveengineering.chemthrowerSwitch>§r pokud byla zapnuta v možnostech.
+Toto vylepšení je společně exklusivní s §2Velkou nádrží§r.

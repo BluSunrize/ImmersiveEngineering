@@ -1,0 +1,5 @@
+Grafit
+Uhelná věc
+Vysoce řazený pyrolitický grafit (HOP) je složitý, vysoce slisovaný, uhlíkový materiál použitý ve speciálních inženýrských stavbách.
+HOP Grafitový prášek je vytvořen slisováním osmi uhelných prášků v <link;squeezer;Průmyslovém lisovač>. Tento prášek lze roztavit na ingot.
+<&electrode>Nejvíc běžné použití pro grafit je jako elektroda v <link;arc_furnace;Obloukové peci>. Tyto elektrody jsou vytvořeny s <link;blueprints;Inženýrovými plány>, které můžeš najít v truhlách nebo při obchodu s vesničany. Můžeš také vytvořit elektrody v kovolisu, pomocí tyčové formy na 4 ingoty, ale takto vyrobené elektrody mají menší výdrž.

@@ -1,3 +1,25 @@
+##### Version 1.19.4-9.4.1-168
+- All features from 9.2.3
+- Fix localization of perks on revolver parts (BluSunrize)
+- Fix potential crashes when supplying power to arc furnace or excavator with other mod's cables (BluSunrize)
+- Fix metal press not rendering items in the correct direction (BluSunrize)
+
+##### Version 1.19.2-9.2.3-167
+- Change "Superior Weaponry" advancement to hint at its potential to spawn new illagers in raids (BluSunrize)
+- Change item renders for Railgun, Chemthrower and Shield to be dynamic, to allow use of dynamic shaders (Drullkus)
+- Fix erroneous capability check on empty FluidStacks (Malte)
+- Fix sound issues with the Skyhook (Malte)
+- Fix IE projectiles failing to despawn (Malte)
+- Fix handling of stacked items on the Bottling Machine (Malte)
+- Fix error in recycling recipe generation (Malte)
+- Fix minor typo in External Heater manual page (Logging4J)
+- Fix steel sword not using the "forge:tools/swords" tag (BluSunrize)
+- Fix hemp plants not using the "minecraft/crops" tag (BluSunrize)
+- Fix steel and faraday armor not using "armor" tags (BluSunrize)
+- Fix broken animations for revolvers in the left hand (BluSunrize)
+- Fix revolver perks trying to localize at "tier0" (BluSunrize)
+- Translations Added/Updated: cs_cz (RomanPlayer22), ja_jp (karakufire)
+
 ##### Version 1.19.4-9.4.0-166
 - First release for 1.19.4!
 - Includes all features from 9.2.2

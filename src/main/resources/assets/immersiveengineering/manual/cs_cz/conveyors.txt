@@ -1,0 +1,22 @@
+Pásy
+Kdo potřebuje koleje?
+<&conveyor_recipes>Pásy jsou lehká metoda pro přepravu věcí po tvé základně. I když jsou silné pro přesun krav nebo ovcí, jejich pravá síla leží v přepravě předmětů.
+Házení předmětů na ně je přesune po pásech. Když by měl pás vést do inventáře, předmět bude vložen. Bloky jako násypky můžou shodit předměty na pás.
+Použitím inženýrova kladiva pro otočení pásů (pravé kliknutí) nebo nastavení jestli mají jet nahoru (skrčení + kliknutí).
+Pravým kliknutím na stěny pásu s barvou je nabarví  pro označení kam vedou<np>
+<&conveyor_redstone_recipe>Ruditem ovládaný pás lze vypnout pomocí ruditového signálu.
+Panel na jeho straně dovoluje připojit páku, ale ruditový signál lze napájit jiným směrem. Skrč se + klikni s inženýrovym kladivem pro přesunutí panelu na jinou stranu.<np>
+<&conveyor_dropper_recipe>The Dropping Conveyor Belt is quite simply a conveyor with a hatch in the middle, allowing it to drop items that pass over it downwards.
+Předměty budou vloženy do inventářů nebo shozeny pokud je pod pásem prázdné místo.
+Poklop lze uzavřít ruditovým signálem, pokud chceš.<np>
+<&conveyor_extract_recipe>Extrakční pás extrahuje předměty z inventáře jako násypka. Narozdíl od násypky nemá inventář a položí předměty na pás
+Skrč se a klikni pravým tlačítkem s inženýrovym kladivem pro změnení jeho extrakční strany. Použij inženýrův šroubovák pro změnení jeho extrakční rychlosti.<np>
+<&conveyor_vertical_recipe>Vertikální pás je pás který je určen pro napojení na stěny. Použitím kbelíku k němu připojeného zvedne předměty. I když je použito slovo "Kbelík", nemůže zvednout kapaliny.
+Tento pás může vložit předměty do inventáře nad ním nebo vyhodit předměty na kraji do jiných pásů.<np>
+<&conveyor_splitter_recipe>Dělící pás střídá mezi dělěním předmětů a entit vlevo a vpravo obyčejně a jednoduše. Tato funkce může být použita pro dosažení rovnější ve tvých továrnách.<np>
+<&conveyor_covered_recipe>Chráněný pás funguje jako normální pás, ale je pokryt lešením což zabraňuje sbírat z něj předměty.
+Můžeš na něj kliknout s ostatními typy lešení nebo skla pro změnění vzhledu pokrývky.<np>
+<&conveyor_other_covered_recipes>Podobně, Shazující, Extrakční, Dělící a Vertikální pásy můžou být obaleny lešením pro zabránění sbírání předmětů zatímco budou fungovat stejně jak mají.
+<&chute_recipes>Násypky jsou jednoduché konstrukce vyrobené z plechu které umožnují entitám spadnout dolů.
+Můžou vkládat do inventářů a vykládat předměty na pásy nebo podobná zařízení. Předměty uvnitř nemůžou sebrat hráči a měli by být odolné proti většině forem přitáhnutí jako třeba magnetického nebo magického.
+Skrč se a klikni pravým tlačítkem s inženýrovym kladivem pro otočení násypky na rohový díl který směruje entitu do strany.
