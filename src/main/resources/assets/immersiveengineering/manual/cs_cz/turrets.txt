@@ -1,0 +1,14 @@
+Palebné věže
+Jsi stále tu?
+Palebné věže jsou následující krok obrany tvé továrny. Obsahují složitý optický systém s elektronickým "mozkem" pro rozeznání a zaměření cílů a použití vestavěných zbraní pro zneškodnění.
+Všechy palebné věže mají energickou zásuvku na jejich základě a vyžadují ruditový signál aby byly aktivní, ale toto chování lze obrátit skrčením a pravým kliknutím s Inženýrovým šroubovákem.<np>
+Po položení, palebné věže si pamatují majitele a nepovolí jiným uživatelům je zničit nebo upravit. Pravým kliknutím na palebnou věž ukáže rozhraní se seznamem jmen a vstupní políčkem, a mnoho zaměrovacích možností.
+Vychozí režim je černá listina cílů které nebudou napadeny. Tento seznam obsahuje jména stvoření, takže je možné dát zvířata na bílou listinu.<np>
+<&turret_chemthrower_recipe>Chemická věž využívá střílení kapalin jako <link;chemthrower;stejný nástroj;start> pro pokrytí cílů v čemkoliv, rozsahující mezi vodou pro uhašení nebo ropou a olejem pro zapálení.<np>
+This Turret features a fluid port in the bottom and back of the base to allow pipes to connect to it. Additionally, the GUI has a button on the left which dis- or enables the pilot flame, igniting the dispensed fluid, provided that it is flammable.
+
+§oThe providers of this blueprint are not liable for any damage to user, neighbours or various farm animals that may incur.§r<np>
+<&turret_gun_recipe>The Gun Turret features a heavily modified version of the <link;revolver;Revolver's;start> internals in a far bigger and more imposing casing. The construction also involves an extended magazine to allow for increased internal storage of ammunition.<np>
+A port for the automatic insertion of ammo and extraction of spent casing is located within the back and bottom of the base. This Turret can store up to a full stack of cartridges and the GUI features a button to toggle the automatic expulsion of spent casings.
+
+§oNote that certain ammunitions may cause collateral damage to the user or their property.§r

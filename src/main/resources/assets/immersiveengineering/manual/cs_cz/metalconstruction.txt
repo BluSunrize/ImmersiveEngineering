@@ -1,0 +1,9 @@
+Kovové konstrukce
+Nýtování
+<&storage_and_sheetmetal_recipes>Kromě ošetřeného dřeva zpracované kovy dělají běžné stavební bloky. Z jakéhokoliv kovu můžeš vyrobit půlbloky, nebo zmáčknout železné ingoty na plechový blok.<np>
+<&architecture_recipes>Ocel není jen důležitá část vysokonapěťové architektury, je také použitelná v... architektuře. Z ocelového lešení můžeš dělat stavby na které lze vylézt, ocelový plot blokuje nepřátelé a strukturní ruce dělají dobré spojení pro tvé vysokonapěťové relé.<np>
+<&connector_recipes>Strukturní spojovače fungují stejně jako normální spojovače, ale místo přenosu energie jsou jen pro dekoraci.
+Nepřijmou normální dráty, ale konopný provaz a ocelový kabel (ostatní recepty na této stránce).
+Můžeš je také otočit kliknutím s inženýrovym kladivem.<np>
+<&ladder_recipes>Kovové žebříky jsou prostě... žebříky. Můžeš na ně vylézt. a vypadají skvěle.
+Můžeš je také kombinovat s lešením aby z nich byly chráněné žebříky.

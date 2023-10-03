@@ -1,0 +1,3 @@
+Kovový sud
+Nekutálí se
+Kovové sudy fungují stejně jako <link;barrel;Dřevěné sudy;>. Můžou uložit stejný počet tekutiny a jejich vstup a výstup je stejný, ale narozdíl od dřevěné verze můžou uchovat plyny a žhavé tekutiny, a nevyšlou výstup automaticky když jsou vypnuty ruditovým signálem.

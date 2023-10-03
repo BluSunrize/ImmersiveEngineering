@@ -1,0 +1,14 @@
+Vesničani
+Učnové s výučním listem
+Při cestách možná najdeš vesnice a jejich studující obyvatelé.<br>
+Nějací z nich jsou kvalifikovaní jako inženýři! Jejich profese a obchodní zboží jsou uvedeny zde.<np>
+<&engineer>§lStrukturní inženýr§r prodává materiály jako ošetřené dřevo, lešení a beton. Pokud se s nimi zpřátelíš, možná ti prodají mapu k nejbližší <link;minerals;Minerální žíle;start>...
+Jejich pracovní stanice je  §2Točna§r.<np>
+<&machinist>§lStrojník§r je expert v kovech, mechanikách a nářadí. Prodávají kladiva, kufry a vrtákové hlavice. Velmi zkušení strojnící vědí jak načrtnout šablony pro <link;graphite;grafitové elektrody;electrode>.
+Jejich pracovní stanice je §2Inženýrův výrobní stůl§r.<np>
+<&electrician>§lElektrikář§r nabízí štípačky, cívky drátů a díly Faradayova obleku. Někteří méně důvěrní vesničani možná také mají úložiště experimentálních vylepšení pro zbraně...
+Jejich pracovní stanice je §2Inženýrův obvodový stůl§r.<np>
+<&gunsmith>§lPuškař§r prodává nyní populární zbraně. Kromě prodávání různých munic, také vyrábějí nějaké díly pro <link;revolver;Revolvér;start> které ovlivňují jeho výkon.
+Jejich pracovní stanice je §2Inženýrův pracovní stůl§r.<np>
+<&outfitter>§lOutfitér§r možná nevypadá jako tradiční inženýr, ale jejich obor není nijak méně precizní! Zatímco ostatní vyrábějí díly a montují velké struktury, tito dělají unikátní vzory nazývané <link;shader;Shadery;start>.
+Prodávají shaderové pytle, umožnující ti získat díly jejich výroby. Jejich pracovní stanice je §2Shaderový prapor§r, který je vyroben použitím shaderu na normální položený prapor.

@@ -1,0 +1,13 @@
+Pila
+???
+Pila je stroj který řeže klády na prkna. Stroj funguje tak že sloupne kůru ze dřeva a pak použije svou <link;buzzsaw;čepel> pro rozřezání klády.<np>
+<&sawdust>Oba kroky procesu vytvářejí §2Piliny§r, které jsou sbírány a poslány ven výstupem ve předu stroje. Tyto piliny lze pak zpracovat na papír.<np>
+Stroj je sestaven podle první stránky a stvořen pomocí §2Inženýrova kladiva§r kliknutím na střední plechový blok
+Aplikováním ruditového signálu na panel ve předu vypne stroj, toto chování lze vypnout použitím §2Inženýrova šroubováku§r.
+
+Pokusy o sundání čepele při prácí vyústí ve zranění. Pro ověření že stroj není v práci, vypni stroj s ruditem když je prázdný. <np>
+Pro přípravu na zpracování, musíš vyrobit <link;buzzsaw;čepel> a vložit jí do políčka které je vzadu pomocí kliknutí na pravé tlačítko myši. Skrč se a klikni znovu pro odstranění čepele.
+
+Vkládání klád do stroje bez čepele vytvoří §2oloupané kmeny§r které nebudou rozřezány. Tento proces je rychlejší než je loupat ručně
+
+Čepel pily bude poškozena při používání a bude muset být někdy vyměněna.

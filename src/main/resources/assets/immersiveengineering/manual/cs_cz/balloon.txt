@@ -1,0 +1,8 @@
+Balón
+...vyrob jich 99
+<&recipe>Balóny jsou pytle látky with s tepelným zdrojem pod, aby letěly. Budou vyzařovat světlo, ale i když mají louč, nejsou ohnivým nebezpečím.
+Balóny můžou být položeny jako normální bloky, nebo když není zaměřen žádný blok, budou se vznášet.
+Podobně jako <link;metalconstruction;Strukturní spojovače;connector_recipes>, můžeš připojit konopné lano nebo ocelový drát k balónu.
+Skrčení a kliknutí dovolí přednastavit výšku balónu, umožnující jej položit až pět bloků nad cílem.
+Můžeš také použít barvy na položené balóny; část kterou nabarvíš záleží kam klikneš.
+Pravým kliknutím na balón s inženýrovým kladivem přemění styl balónu mezi horizontálnímí a vertikálnímí pruhy.

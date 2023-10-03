@@ -1,0 +1,5 @@
+Silo
+Plné až na vrchu
+Sila nabízí místo pro plno předmětů stejného typu, což je dělá dobré pro hromadné úložiště semínek, strusky nebo kamení. Mají místo na 41472 předmětů, rovnající se 24 truhlám.
+Předměty musí být vloženy vrchem a extrahovány spodkem. Aplikování ruditového signálu na spodní blok zapne automatický výstup.
+Porovnávač na spodní střední blok vyšle signál rovný tomu, jak je silo plné. Připojení porovnávače na jednu ze šesti vrchních vrstev vyšle signál rovný výšce porovnávače. Jako příklad, porovnávač ve třetí vrstvě nevyšle signál dokud silo není 2/6 plné a bude mít sílu signálu 15 pokud je silo napůl nebo více plné.

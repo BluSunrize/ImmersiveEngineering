@@ -30,6 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
@@ -44,22 +45,9 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	private static final float TRANSFORMATION_POINT = 0.45f;
 
 	private final boolean isFilling;
-	private ItemStack filledContainer = ItemStack.EMPTY;
+	private final List<ItemStack> filledContainer;
 	private final FluidTank tank;
 	private final BooleanSupplier allowPartialFill;
-
-	public BottlingProcess(
-			ResourceLocation recipeId,
-			BiFunction<Level, ResourceLocation, BottlingMachineRecipe> getRecipe,
-			NonNullList<ItemStack> inputItem,
-			State state
-	)
-	{
-		super(recipeId, getRecipe, TRANSFORMATION_POINT, inputItem);
-		this.tank = state.tank;
-		this.allowPartialFill = () -> state.allowPartialFill;
-		this.isFilling = false;
-	}
 
 	public BottlingProcess(
 			BiFunction<Level, ResourceLocation, BottlingMachineRecipe> getRecipe, CompoundTag nbt, State state
@@ -69,8 +57,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 		this.tank = state.tank;
 		this.allowPartialFill = () -> state.allowPartialFill;
 		this.isFilling = nbt.getBoolean("isFilling");
-		if(isFilling)
-			this.filledContainer = inputItems.get(0);
+		this.filledContainer = List.of();
 	}
 
 	public BottlingProcess(BottlingMachineRecipe recipe, NonNullList<ItemStack> inputItem, State state)
@@ -79,16 +66,17 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 		this.tank = state.tank;
 		this.allowPartialFill = () -> state.allowPartialFill;
 		this.isFilling = false;
+		this.filledContainer = List.of();
 	}
 
-	public BottlingProcess(NonNullList<ItemStack> inputItem, State state)
+	public BottlingProcess(ItemStack inputItem, ItemStack currentContainer, State state)
 	{
-		super(DUMMY_RECIPE, TRANSFORMATION_POINT, inputItem);
+		super(DUMMY_RECIPE, TRANSFORMATION_POINT, NonNullList.withSize(1, inputItem));
 		this.tank = state.tank;
 		this.allowPartialFill = () -> state.allowPartialFill;
 		this.isFilling = true;
 		// copy item into output already, to be filled later
-		this.filledContainer = inputItem.get(0);
+		this.filledContainer = Arrays.asList(currentContainer);
 	}
 
 	public static InWorldProcessLoader<BottlingMachineRecipe> loader(State state)
@@ -111,9 +99,9 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 				// filling recipes use custom logic
 				if(isFilling)
 				{
-					ItemStack ret = FluidUtils.fillFluidContainer(tank, filledContainer, ItemStack.EMPTY, null);
+					ItemStack ret = FluidUtils.fillFluidContainer(tank, filledContainer.get(0), ItemStack.EMPTY, null);
 					if(!ret.isEmpty())
-						filledContainer = ret;
+						filledContainer.set(0, ret);
 					// reduce process tick, if the item should be held in place
 					if(!allowPartialFill.getAsBoolean()&&!FluidUtils.isFluidContainerFull(ret))
 						processTick--;
@@ -129,7 +117,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	public List<ItemStack> getDisplayItem(Level level)
 	{
 		if(isFilling)
-			return List.of(filledContainer);
+			return filledContainer;
 		return super.getDisplayItem(level);
 	}
 
@@ -137,7 +125,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	protected List<ItemStack> getRecipeItemOutputs(Level level, ProcessContextInWorld<BottlingMachineRecipe> context)
 	{
 		if(isFilling)
-			return List.of(filledContainer);
+			return filledContainer;
 		return super.getRecipeItemOutputs(level, context);
 	}
 

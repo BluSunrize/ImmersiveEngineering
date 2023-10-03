@@ -1,0 +1,13 @@
+Přeprava kapalin
+Profesionální instalatér
+<&pipe_recipe>Přeprava kapalin je velmi důležitá v byznysu inženýrství. Kapalinové trubky a Kapalinové pumpy dělají toto. Samy o sobě, kapalinové trubky pomalu přenáší kapaliny, ale pokud je použita pumpa pro vložení kapalin, kapalina se bude pohybovat rychleji.<np>
+Můžeš kliknout na spojovací díl pravým tlačítkem s Inženýrovy kladivem pro zabránění spojení s touto stranou.
+Kapalinové trubky lze pokrýt lešením. Klikni pravým tlačítkem s lešením na trubku abys jí pokryl. Rozbij trubku pro vrácení lešení.
+Pravým kliknutím na trubku s barvivem ji lze nabarvit, pro identifikaci kam vede. Barevné trubky se nenapojí automaticky k trubkám.<np>
+<&pump_recipe>Pumpy mají tři důležité funkce. Můžou být použity pro vklad kapalin nebo pro rychlejší přenos kapalin, a nebo také brát kapaliny ze světa.
+Použitím tvého kladiva na základnu nastaví její vstup a výstup.<np>
+Pumpa pro popadnutí kapalin potřebuje napájení energie na vrch a ruditový signál. Pumpy také lze použít pro extrakci z nádrží a ostatních nádob které nemají automatický výstup. Toto také vyžaduje ruditový signál, ale nevyžaduje energii.<np>
+Vodní bloky budou sloužit jako nekonečný kapalinový zdroj, jak jsou spojeny 3 bloky.
+
+Kapalinové bloky které byly extrahovány budou nahrazeny kamením pro omezení sekání od tekoucích kapalin Toto chování lze zapnout a vypnout použitím Inženýrova kladiva na pumpu.<np>
+<&outlet_recipe>Kapalinový výstup se chová jako konec trubek umožnující položení kapalin do světa. Strany lze nastavit mezi vstupem, výstupem (otevřená brána) nebo zavřením. Také lze použít ruditový signál pro vypnutí výstupu . Tento blok bude čerpat jenom do své úrovně umístění.

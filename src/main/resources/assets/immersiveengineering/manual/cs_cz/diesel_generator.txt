@@ -1,0 +1,7 @@
+Dieselový generátor
+Lepší než objem: více objemu.
+Vysokonapěťová architektura může být úžasná, ale není moc použitelná pokud nemáš pro ní generátor který může vyrobit správný výstup pro ní..
+Dieselový generátor je jedna z těchto cest jak vyrobit tuto energii. Je vytvořen jako složitá multibloková struktura a bude spalovat <link;refinery;Bionaftu;diesel> nebo jiné typy hořlavých paliv. Kvůli jeho vysokému výstupu energie spaluje hodně paliva, takže budeš potřebovat zásobu paliva.
+<&structure>Struktura je postavena z bloků Inženýrství, Generátorových a Radiátorových blocích a také kapalinových trubek a lešení. Smontuj je do tvaru ukázaného nahoře a klikni praým tlačítkem na střední generátor s Inženýrovym kladivem.
+Palivo je napájeno spodním rohem generátoru, zatímco energie je vysláná třemi spojeními na vrchu. <config;i;machines.dieselGen_output>Flux/t vyráběný generátorem bude rozdělěn mezi výstupy. Generátor bude bežet jen pokud jeden z výstupů bude přijmat energii.
+Malý terminál na straně vypne generátor pokud napájen ruditovým signálem, toto chování lze obrátit použitím inženýrova šroubováku.

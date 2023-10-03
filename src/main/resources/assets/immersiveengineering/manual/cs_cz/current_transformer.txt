@@ -1,0 +1,3 @@
+Transformátor napětí
+88 fluxu za hodinu!
+Transformátor napětí je měřící zařízení pro elektrickou energii. Může být napojen na jakékoliv dráty sledující energii která přes něj projde, ukazující průměrný Flux na tick při kliknutí pravým tlačítkem.

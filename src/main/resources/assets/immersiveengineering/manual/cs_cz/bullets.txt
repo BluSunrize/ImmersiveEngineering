@@ -1,0 +1,14 @@
+Revolvérové zásobníky
+
+Zásobníky jsou vytvořeny v inženýrově pracovním stole použitím specifických <link;blueprints;Inženýrových šablon>. Šablony pro normální náboje si můžeš vytvořit, ale pokročilé typy bude potřeba zakoupit od někoho jiného.<np>
+<&empty>§lPrázdné §lnábojnice§r a §lbroky§r jsou základ každého projektilu. Prázdné nábojnice můžou být vyrobeny v <link;metal_press;Kovolisu> pomocí formy nábojnice, což redukuje vyžadovanou měď. Podobně, prázdné náboje můžou být vyrobeny z <link;plastic;Fenolové pryskyřice;empty_shell> v plnícím stroji.<np>
+<&casull>§lCasullové §lnáboje§r jsou vytvořeny se šablonou "Běžných projektilů". Jsou běžný olověný projektil který dává poškození.<np>
+<&ap>§lPrůrazné §lnáboje§r jsou vytvořeny se stejnou šablonou. Dávájí stejné poškození ale prorazí brnění silou.<np>
+<&buckshot>§lBrokovnicové §lNáboje§r, vytvořeny se stejným zmíněným plánem, jsou plněny malými projektily které se rozptýlí do tvaru kuželu. Tento náboj je vysoce účinný na blízko.<np>
+<&he>§lVýbušné §lnáboje§r jsou vytvořeny se šablonou "Běžných projektilů". Vystřelí projektil, který vybouchne a způsobí poškození živým tvorům a terénu.<np>
+<&silver>§lStříbrné §lnáboje§r, také vytvořeny se šablonou "Běžných projektilů", se skládají ze stříbrného jádra, což je dělá účinné proti nemrtvým.<np>
+<&dragon>§lDračí §lnáboje§r jsou vytvořeny se šablonou "Specializované projektily". Podobně jako brokovnicové náboje, jsou efektivní na blízko, ale místo malých kovovývch střel jsou naplněny hořlavým kovem který způsobí výbuch ohně.<np>
+<&potion>§lLektvarové §lnáboje§r jsou také vytvořeny se "Specializovanou" šablonou. Můžou být vyrobeny s lektvarem ve výrobní mřížce což při střelení aplikuje efekt. Normální lektvary vyžadují přímý zásah, vrhací lektvary mají rozsahový efekt a doznívající lektvary vytvoří dočasný oblak.<np>
+<&flare>§lSvětlicové §lnáboje§r jsou vytvořeny se "Specializovanou" šablonou. Po výstřelu, světlice vybouchne a pak spadne na zem. Můžeš zkombinovat náboj a barvu v pracovním stole pro zbarvení světlice.<np>
+<&homing>§lNaváděné §lnáboje§r jsou vytvořeny se šablonou "Specializovaných projektilů". Použitím vlastností endového oka, tyto projektily mají schopnost sledování a honění cílů.
+<&wolfpack>§lSmečkové §lnáboje§r jsou vytvořeny se stejnou šablonou a skládají se z více naváděných projektilů v jednom náboji. První projektil není naváděný, ale po zásahu se rozdělí na více projektilů, které rozdrtí blízké cíle.

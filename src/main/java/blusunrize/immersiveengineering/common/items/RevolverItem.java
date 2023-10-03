@@ -728,6 +728,8 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
 				averageTier += dTier;
 				int iTier = (int)Mth.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
+				if(iTier==0)
+					iTier = 1;
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase(Locale.US)+".tier"+iTier;
 				name = Component.translatable(translate).append(name);
 			}

@@ -14,3 +14,4 @@ LOCALIZATION
     - ja_JP: karakufire
     - fr_FR: Juknum
     - uk_ua: Сommunity «СУМ», CakesTwix, ICHTLAY, hnufelka, Sinqoire, SKZGx
+    - cs_CZ: RomanPlayer22

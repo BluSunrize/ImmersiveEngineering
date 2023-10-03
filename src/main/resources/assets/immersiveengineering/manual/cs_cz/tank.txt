@@ -1,0 +1,3 @@
+Nádrž
+Plná až na vrch!
+Nádrž je multiblok který může uložit hodně kapaliny. Uloží až 512 kbelíků jakékoliv kapaliny, která může být dovnitř napumpována vrchním nebo spodním blokem. Kapaliny můžou být vypumpovány jen spodním středním blokem. Aplikování ruditového signálu na spodní střední blok způsobí že nádrž bude mít automatický výstup, položený porovnávač vyšle signál se silou záležící na tom jak je nádrž plná. Připojení porovnávače na jednu ze 4 vrchních vrstev vyšle signál záležící na výšce. Třeba, porovnávač na druhé vrstvě nádrže nevyšle žádný signál dokud nádrž není 1/4 plná a bude mít sílu signálu 15 a více pokud je nádrž plná přes polovinu.

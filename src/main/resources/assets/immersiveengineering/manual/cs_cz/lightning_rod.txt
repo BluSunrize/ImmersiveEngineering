@@ -1,0 +1,7 @@
+Hromosvod
+Zásah bleskem"
+Bouřka je fenomén přírody. Obsahuje plno energie, a tento hromosvod může využít tuto energii.
+Vrstvením hodně ocelových plotů na tento multiblok, zvýšíš šanci na zásah bleskem při dešti nebo bouři.
+Když je ocelová tyč zasáhnuta, velké počty energie jsou uloženy v základně hromosvodu a pak rozprostřeny v přípojkách.
+
+Můžeš zlepšit šanci na zásáh blesku vytvořením "sítě" z ocelových kovů napojenou na vrchní stranu.

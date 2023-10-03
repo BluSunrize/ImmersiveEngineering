@@ -1,0 +1,4 @@
+Multiblokové stavby
+Kde je můj klíč?
+Stavění složitých strojů do 1x1x1 kostky vypadá jako nemožná úloha bez kouzel nebo zmenšovacího paprsku. Takže pro vytvoření složitých strojů, budeš potřebovat součásti. Nejběžnější z nich byly napsány na následujících stránkách.
+<&recipes>

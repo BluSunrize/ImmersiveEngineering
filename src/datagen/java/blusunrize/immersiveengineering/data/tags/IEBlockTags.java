@@ -67,6 +67,8 @@ public class IEBlockTags extends BlockTagsProvider
 	@Override
 	protected void addTags(Provider p_256380_)
 	{
+		tag(BlockTags.CROPS)
+				.add(Misc.HEMP_PLANT.get());
 		tag(BlockTags.FENCES)
 				.add(MetalDecoration.ALU_FENCE.get())
 				.add(MetalDecoration.STEEL_FENCE.get())

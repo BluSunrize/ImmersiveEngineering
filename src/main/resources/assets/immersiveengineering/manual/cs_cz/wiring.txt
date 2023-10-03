@@ -1,0 +1,18 @@
+Základní dráty
+Bzzz!
+Energická sít Immersive Engineering má 4 důležité bloky: §lspojovače§r jako vstup a výstup pro sít, §lrelé§r pro spojení drátů a  §ltransformátory§r pro přepnutí mezi úrovněmi.<np>
+<&wire_recipes>Pro spojení dvou bloků klikni na první blok s drátovou cívkou a pak použij stejnou cívku na druhý blok. Celková přenosová rychlost mezi dvěma body záleží na nejslabším typu drátu mezi nimi.
+<&images>Pamatuj si, že pro bloky platí omezení: Spojovače a relé přijmou jen napojené dráty stejného typu, transformátory vezmou jen dva dráty různého typu, a dráty se můžou spojit k blokům se shodným napětím. Jsou tu dvě důležité hodnoty které by jsi si měl zapamatovat:
+Každý spojovač má vstupovou hodnotu (§o<config;iA;machines.wireConnectorInput>§r) a každý drát má maximální přenosovou rychlost (§o<config;iA;wires.wireTransferRate;l3>§r).
+Spojovač omezuje kolik energie může být napájeno a vysláno ven, ale více spojovačů se může §osjednotit§r na jeden drát, dovolující ti kombinovat přenos na větší dálku. Poznamenej si také že §omaximální přenosová rychlost nesmí být překročena nebo se dráty §ospálí§r.<br>
+Dráty také přepraví energii přes §onenačtené chunky§r když jsou načteny chunky s napájením a výstupem.<br>
+Neizolované dráty připojené k energickému zdroji způsobí hráčům a entitám poškození. Izolované dráty jsou k dispozici pro nízké a střední napěťí<br>
+Skrčení při použití funkce "Vzít blok" na spojovač vezme spojený drát z inventáře.<br>
+Spojení drátů se rozbijí pokud je položen blok který blokuje.<np>
+<&connector_recipes>§lSpojovače§r slouží jako vstupy a výstupy pro energickou síť. Můžeš je položit na akumulátory nebo Fluxové držáky a budou přepravovat energii přes spojené dráty. §lRelé§r slouží jako spojovací bod mezi dráty který nemůže napájet a posílat energii pryč.<np>
+<&transformer_recipes>§lTransformátory§r ti dovolují měnit mezi dráty. Nejslabší drát omezuje přenosovou rychlost. Pamatuj si že Vysokonapěťové transformátory umí snížít napěťí na střední nebo nízke, takže nepotřebuješ spojit dva transformátory.
+Můžeš připojit <link;this;transformátory k dřeveným tyčím;images+1> jak je ukázáno na druhém obrázku 4 stránky, ale položit lze jen nízkonapěťové a středněnapěťové transformátory.<np>
+<&wirecutter_recipe>§lŠtípačky§r jsou použity pro odstranění všech drátů kliknutím pravým tlačítkem.<np>
+<&voltmeter_recipe>§lMultimetr§r je použit pro změnení připojení. Zamířením na úložiště energie nebo pravé kliknutí přečte jeho úložiště. Skrčením a pravým kliknutím na dva spojovače změříš průměrnou ztrátu mezi nimi.
+Může být také použit pro přečtení ruditových úrovní.<np>
+<&feedthrough>Průchodkové izolátory dovolují spojení drátů z jedné strany stěny na druhou stranu bez díry. Můžou být použity s jakýmkoliv "normálním" pevným blokem ve středu kliknutím pravým tlačítkem na jeden ze dvou spojovačů. Všechny běžné typy spojovačů (energické a ruditové) lze použít na vytvoření průchodkových izolátorů pro stejný typ drátů.

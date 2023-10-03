@@ -61,7 +61,7 @@ public class BottlingInsertionHandler implements IItemHandler
 		MultiblockProcessInWorld<BottlingMachineRecipe> process;
 		int inputAmount = 1;
 		if(recipe==null)
-			process = new BottlingProcess(Utils.createNonNullItemStackListFromItemStack(stack.copy()), state);
+			process = new BottlingProcess(stack.copy(), stack.copy(), state);
 		else
 		{
 			ItemStack displayStack = recipe.getDisplayStack(stack);

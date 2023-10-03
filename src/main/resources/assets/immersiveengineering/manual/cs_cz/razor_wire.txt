@@ -1,0 +1,4 @@
+Ostnitý drát
+Zvetšený kráječ na vejce
+<&recipe>Ostnitý drát je drát s kusy ostrého kovu. Zpomalí a pořeže stvoření které zkusí projít přes.
+Ostnité dráty můžou být odstraněny pouze se štípačkami, ostatní pokusy poraní hráče. Pro zvýšení poškození může také být napojen Nízkonapěťový drát.

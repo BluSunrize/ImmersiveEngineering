@@ -1,0 +1,7 @@
+Točna
+Nemůžu to vydržet
+<&recipe>Točna otáčí bloky naproti ní.
+Držení inženýrova kladiva při koukání se na stranu stroje ukáže její stranu otočení a směr otočení spojený se zaměřenou stranou.
+Směr otočení je nastaven individuálně pro každou ze čtyř stran na otočné ose, umožnující otočky o ±90° nebo 180°, záležící na straně která dostane ruditové napájení.
+
+Pravým kliknutím s kladivem jí přenastaví, krčení při kliknutí projde přes otočné směry točny.

@@ -1,0 +1,4 @@
+Dřevěný sud
+Nekutálí se
+<&recipe>Dřevěné sudy jsou jednoduché nádoby pro uložení kapalin. Můžou uložit až 12 kbelíků, ale že jsou ze dřeva, nemůžou uložit žhavé plyny a nebo kapaliny.
+Pravým kliknutím na vrch nebo spodek sudu s inženýrovým kladivem nastaví vstupní, žádný, nebo výstupní otvor.

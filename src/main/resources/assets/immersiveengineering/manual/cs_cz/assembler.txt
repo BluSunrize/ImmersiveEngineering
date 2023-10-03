@@ -1,0 +1,10 @@
+Montovač
+Vyžadováno nějaké smontování
+<&multiblock>Montovač je složitý stroj pro vyrábění předmětů, podobně jako by vyráběl hráč.
+Pro stvoření struktury, postav jej jako ukázáno nahoře a klikni s inženýrovým kladivem na jeden z pásů.<np>
+Pás, na který jsi kliknul bude vstupní strana, označeno modrou značkou nad a šipkou na straně stroje.
+Montovač dovoluje uložit až 3 recepty najednou, které budou smontovány v řádech. Výstupy předchozích receptů můžou být použity jako vstupy pro následující recepty.
+Tři výrobní mřížky ukládají recepty, a 18 políček pod nimi je pro materiály.<np>
+Vstupní strana, která má předmětový vstup také obsahuje tekutinový vstup pro naplnění vnitřních nádrží stroje.
+Tekutina v těchto nádržích může být použita pro nahrazení tekutinových nádob jako vodní kbelíky v receptech.
+Energie pro stroj je napájena vrchním středním blokem.

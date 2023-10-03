@@ -42,6 +42,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BooleanSupplier;
@@ -57,11 +58,11 @@ public class GlobalWireNetwork implements IWorldTickable
 	public static final SetRestrictedField<BooleanSupplier> SANITIZE_CONNECTIONS = SetRestrictedField.common();
 	public static final SetRestrictedField<BooleanSupplier> VALIDATE_CONNECTIONS = SetRestrictedField.common();
 
-	private static Level lastServerWorld = null;
-	private static GlobalWireNetwork lastServerNet = null;
+	private static WeakReference<Level> lastServerWorld = new WeakReference<>(null);
+	private static WeakReference<GlobalWireNetwork> lastServerNet = new WeakReference<>(null);
 
-	private static Level lastClientWorld;
-	private static GlobalWireNetwork lastClientNet;
+	private static WeakReference<Level> lastClientWorld = new WeakReference<>(null);
+	private static WeakReference<GlobalWireNetwork> lastClientNet = new WeakReference<>(null);
 
 	private final Map<ConnectionPoint, LocalWireNetwork> localNetsByPos = new HashMap<>();
 	private final Set<LocalWireNetwork> localNetSet = new ReferenceOpenHashSet<>();
@@ -76,23 +77,31 @@ public class GlobalWireNetwork implements IWorldTickable
 	{
 		// This and onWorldUnload should only ever be called with non-remote worlds from the server thread, so this
 		// does not need any synchronization
-		if(!w.isClientSide&&w==lastServerWorld)
-			return lastServerNet;
-		if(w.isClientSide&&w==lastClientWorld)
-			return lastClientNet;
+		if(!w.isClientSide&&w==lastServerWorld.get())
+		{
+			final GlobalWireNetwork lastNet = lastServerNet.get();
+			if(lastNet!=null)
+				return lastNet;
+		}
+		else if(w.isClientSide&&w==lastClientWorld.get())
+		{
+			final GlobalWireNetwork lastNet = lastClientNet.get();
+			if(lastNet!=null)
+				return lastNet;
+		}
 		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
 		if(!netOptional.isPresent())
 			throw new RuntimeException("No net handler found for dimension "+w.dimension().location()+", client: "+w.isClientSide);
 		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
 		if(!w.isClientSide)
 		{
-			lastServerWorld = w;
-			lastServerNet = ret;
+			lastServerWorld = new WeakReference<>(w);
+			lastServerNet = new WeakReference<>(ret);
 		}
 		else
 		{
-			lastClientWorld = w;
-			lastClientNet = ret;
+			lastClientWorld = new WeakReference<>(w);
+			lastClientNet = new WeakReference<>(ret);
 		}
 		return ret;
 	}

@@ -1,0 +1,10 @@
+Plnící stroj
+Naplň jej!
+<&multiblock>Plnící stroj plní tekutiny do strojů.
+Struktura je vytvořena jako ukázána na vrchu, ale může být obrácená. Pro stvoření, klikni na střední pás s inženýrovým kladivem. Směr pásů je důležitý.<np>
+Stroj může uložit 8 kbelíků kapaliny, která je vložena otvory na kovové nádrži. Energie je napájena spojením na vrchu protější strany.<br>
+Obecně, plnící stroj může naplnit jakoukoliv nádobu která ma svou plněnou verzi (kbelík, sklěněná láhev). Také může přijmout jiné předměty které lze napltin, jako třeba <link;mining_drill;Těžební vrták;start> nebo <link;jerrycan;Kanistr;start>.
+Tento stroj bude plnit kapalinu do nádoby, dokud není plná, nebo stroj není napájen kapalinou. Toto stroji umožnuje naplnit větší nádoby, když má proudící kapalinu dovnitř.
+Toto chování může být vypnuto skrčením a kliknutím s inženýrovým kladivem.<np>
+<&potions>Stroj může být použit pro naplnění lahví s lektvary které byly vařeny v<link;mixer;Mixéru>.<br>
+Také slouží pro výrobu <link;plastic;duroplastových předmětů;duroplast_sheet> z pryskyřice a <link;redstone_acid;oxidaci měděných bloků;copper> s ruditovou kyselinou.
