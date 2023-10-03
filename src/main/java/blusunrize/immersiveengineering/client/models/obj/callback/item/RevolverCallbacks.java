@@ -162,33 +162,33 @@ public class RevolverCallbacks implements ItemCallback<Key>
 					if(f < .5)
 					{
 						mat.translate((.35-f)*2, 0, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(f-.35F), false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), 2.64F*(f-.35F), false));
 					}
 					else if(f < .6)
 					{
 						mat.translate((f-.5)*6, (.5-f)*1, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), .87266F, false));
 					}
 					else if(f < 1.7)
 					{
 						mat.translate(0, -.6, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), .87266F, false));
 					}
 					else if(f < 1.8)
 					{
 						mat.translate((1.8-f)*6, (f-1.8)*1, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), .87266F, false));
 					}
 					else
 					{
 						mat.translate((f-1.95f)*2, 0, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(1.95F-f), false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), 2.64F*(1.95F-f), false));
 					}
 			}
 			else if(player.containerMenu instanceof RevolverContainer)
 			{
 				mat.translate(left?.4: -.4, .4, 0);
-				mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+				mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), .87266F, false));
 			}
 		}
 	}
