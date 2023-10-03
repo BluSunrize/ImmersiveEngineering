@@ -1,3 +1,8 @@
+##### Version 1.20.1-10.0.0-pre
+- First release for 1.20.1, now supporting NeoForged!
+- Includes all features from 9.4.1
+- Change hemp blocks to extend vanilla's CropBlock (BluSunrize)
+
 ##### Version 1.19.4-9.4.1-168
 - All features from 9.2.3
 - Fix localization of perks on revolver parts (BluSunrize)
