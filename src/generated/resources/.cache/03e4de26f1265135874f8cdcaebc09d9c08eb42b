@@ -1,4 +1,4 @@
-// 1.19.2	2023-10-03T13:37:48.3314717	Tags for minecraft:item
+// 1.19.2	2023-10-03T14:00:19.6450224	Tags for minecraft:item
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/charcoal.json
@@ -78,6 +78,7 @@ b60ddad4fd1c2aab06f2e15a6e8ce5be8a5669a0 data/forge/tags/items/plates/uranium.js
 ada6a87147f3701010a02139808a5705aaa5b4a4 data/forge/tags/items/rods/all_metal.json
 0386cca1fc75d8a29b17bb25b05b6e9f73ff0270 data/forge/tags/items/rods/aluminum.json
 544689d2afab25e854136be08f9a6537997f514b data/forge/tags/items/rods/iron.json
+e1fcb72ddbe4430266625044432e9752bb0890e6 data/forge/tags/items/rods/seeds/hemp.json
 33dad48f4867df6318ed25cb425b0b0094d2aa8a data/forge/tags/items/rods/steel.json
 a8288ef96b46a0f3026247e045d3666b6047e685 data/forge/tags/items/rods/treated_wood.json
 a8288ef96b46a0f3026247e045d3666b6047e685 data/forge/tags/items/rods/wooden.json
