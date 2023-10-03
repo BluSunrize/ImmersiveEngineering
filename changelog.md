@@ -9,6 +9,7 @@
 - Fix minor typo in External Heater manual page (Logging4J)
 - Fix steel sword not using the "forge:tools/swords" tag (BluSunrize)
 - Fix hemp plants not using the "minecraft/crops" tag (BluSunrize)
+- Fix steel and faraday armor not using "armor" tags (BluSunrize)
 - Fix broken animations for revolvers in the left hand (BluSunrize)
 - Fix revolver perks trying to localize at "tier0" (BluSunrize)
 - Translations Added/Updated: cs_cz (RomanPlayer22), ja_jp (karakufire)

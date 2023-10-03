@@ -1,6 +1,11 @@
-// 1.19.2	2023-10-03T14:00:19.6450224	Tags for minecraft:item
+// 1.19.2	2023-10-03T15:29:12.5488577	Tags for minecraft:item
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
+12af21b60a1c7cfb849c3d5c5858715afcc31f86 data/forge/tags/items/armors.json
+ea61e18f463af42341673a7664f55685f3977696 data/forge/tags/items/armors/boots.json
+0491350e3d479e1bb4a01435181cc5d05c237853 data/forge/tags/items/armors/chestplates.json
+6b42b5d507f3b00629732c933f67c4ba718597f3 data/forge/tags/items/armors/helmets.json
+97e589821993ec144a86baa70015dafcd4b6a178 data/forge/tags/items/armors/leggings.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/charcoal.json
 0b4e9eb2e57b7d0790ad2a0344733be5de39a297 data/forge/tags/items/clay.json
 721903046c1e90c28d2fede7814f04994baaf913 data/forge/tags/items/coal_coke.json

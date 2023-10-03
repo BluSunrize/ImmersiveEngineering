@@ -27,6 +27,10 @@ import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
@@ -136,6 +140,24 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.hoes).add(Tools.STEEL_HOE.get());
 		tag(IETags.axes).add(Tools.STEEL_AXE.get());
 		tag(IETags.swords).add(Tools.STEEL_SWORD.get());
+
+		for(EquipmentSlot slot : EquipmentSlot.values())
+			if(slot.getType()==Type.ARMOR)
+				tag(Tags.Items.ARMORS)
+						.add(Tools.STEEL_ARMOR.get(slot).asItem())
+						.add(Misc.FARADAY_SUIT.get(slot).asItem());
+		tag(Tags.Items.ARMORS_HELMETS)
+				.add(Tools.STEEL_ARMOR.get(EquipmentSlot.HEAD).asItem())
+				.add(Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD).asItem());
+		tag(Tags.Items.ARMORS_CHESTPLATES)
+				.add(Tools.STEEL_ARMOR.get(EquipmentSlot.CHEST).asItem())
+				.add(Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST).asItem());
+		tag(Tags.Items.ARMORS_LEGGINGS)
+				.add(Tools.STEEL_ARMOR.get(EquipmentSlot.LEGS).asItem())
+				.add(Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS).asItem());
+		tag(Tags.Items.ARMORS_BOOTS)
+				.add(Tools.STEEL_ARMOR.get(EquipmentSlot.FEET).asItem())
+				.add(Misc.FARADAY_SUIT.get(EquipmentSlot.FEET).asItem());
 
 		tag(IETags.recyclingIgnoredComponents)
 				// Ignore bricks for outputting
