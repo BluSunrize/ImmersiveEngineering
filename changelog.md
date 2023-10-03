@@ -1,4 +1,4 @@
-##### Version 1.19.4-9.4.1-pre
+##### Version 1.19.4-9.4.1-168
 - All features from 9.2.3
 - Fix localization of perks on revolver parts (BluSunrize)
 - Fix potential crashes when supplying power to arc furnace or excavator with other mod's cables (BluSunrize)

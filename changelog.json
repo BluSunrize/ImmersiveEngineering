@@ -1,10 +1,11 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/immersive-engineering",
     "promos": {
-        "1.19.4-latest": "1.19.4-9.4.0-166",
-        "1.19.4-recommended": "1.19.4-9.4.0-166"
+        "1.19.4-latest": "1.19.4-9.4.1-168",
+        "1.19.4-recommended": "1.19.4-9.4.1-168"
     },
     "1.19.4": {
-        "1.19.4-9.4.0-166": "- First release for 1.19.4!\n- Includes all features from 9.2.2"
+        "1.19.4-9.4.0-166": "- First release for 1.19.4!\n- Includes all features from 9.2.2",
+        "1.19.4-9.4.1-168": "- All features from 9.2.3\n- Fix localization of perks on revolver parts (BluSunrize)\n- Fix potential crashes when supplying power to arc furnace or excavator with other mod's cables (BluSunrize)\n- Fix metal press not rendering items in the correct direction (BluSunrize)"
     }
 }
