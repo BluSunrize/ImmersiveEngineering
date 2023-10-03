@@ -96,6 +96,7 @@
       ]
     }
   },
+  "dynamic": true,
   "layers": [
     "translucent"
   ],
