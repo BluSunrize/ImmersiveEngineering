@@ -281,7 +281,7 @@ public abstract class TileEntityMultiblockPart<T extends TileEntityMultiblockPar
 
 	public boolean isDummy()
 	{
-		return offset[0]!=0||offset[1]!=0||offset[2]!=0;
+		return offset.length>=3 && (offset[0]!=0||offset[1]!=0||offset[2]!=0);
 	}
 
 	@Override
