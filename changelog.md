@@ -1,4 +1,4 @@
-##### Version 1.20.1-10.0.0-pre
+##### Version 1.20.1-10.0.0-169
 - First release for 1.20.1, now supporting NeoForged!
 - Includes all features from 9.4.1
 - Add sawmill support for stripped wood (BluSunrize)
