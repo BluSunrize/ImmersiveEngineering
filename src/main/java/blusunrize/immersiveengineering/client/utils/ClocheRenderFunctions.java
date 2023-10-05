@@ -94,7 +94,12 @@ public class ClocheRenderFunctions
 		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
 			int age = Math.min(this.maxAge, Math.round(this.maxAge*growth));
-			return ImmutableList.of(Pair.of(this.cropBlock.defaultBlockState().setValue(this.ageProperty, age), new Transformation(null)));
+			BlockState state;
+			if(this.cropBlock instanceof CropBlock crop)
+				state = crop.getStateForAge(age);
+			else
+				state = this.cropBlock.defaultBlockState().setValue(this.ageProperty, age);
+			return ImmutableList.of(Pair.of(state, new Transformation(null)));
 		}
 	}
 

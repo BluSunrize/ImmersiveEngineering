@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:torchflower_seeds"
+  },
+  "render": {
+    "type": "crop",
+    "block": "minecraft:torchflower_crop"
+  },
+  "results": [
+    {
+      "item": "minecraft:torchflower"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 1200
+}

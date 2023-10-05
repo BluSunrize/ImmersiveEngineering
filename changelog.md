@@ -3,6 +3,7 @@
 - Includes all features from 9.4.1
 - Add sawmill support for stripped wood (BluSunrize)
 - Add sawmill support for cherry wood (BluSunrize)
+- Add cloche support for torchflowers (BluSunrize)
 - Change hemp blocks to extend vanilla's CropBlock (BluSunrize)
 
 ##### Version 1.19.4-9.4.1-168

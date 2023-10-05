@@ -326,6 +326,13 @@ public class Recipes extends RecipeProvider
 				.setRender(new ClocheRenderReference("stem", Blocks.MELON))
 				.build(out, toRL("cloche/melon"));
 
+		ClocheRecipeBuilder.builder(Items.TORCHFLOWER)
+				.addInput(Items.TORCHFLOWER_SEEDS)
+				.addSoil(Blocks.DIRT)
+				.setTime(1200)
+				.setRender(new ClocheRenderReference("crop", Blocks.TORCHFLOWER_CROP))
+				.build(out, toRL("cloche/torchflower"));
+
 		ClocheRecipeBuilder.builder(Items.SUGAR_CANE)
 				.addInput(Items.SUGAR_CANE)
 				.addSoil(Tags.Items.SAND)
