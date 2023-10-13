@@ -180,7 +180,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 			this.buffer = buffer;
 			this.light = light;
 			this.overlay = overlay;
-			this.transform = transform.last().pose();
+			this.transform = new Matrix4f(transform.last().pose());
 			this.inverted = inverted;
 		}
 	}
