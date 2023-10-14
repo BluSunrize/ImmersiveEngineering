@@ -30,6 +30,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
@@ -248,8 +249,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 									BlockEntity te = structureWorld.getBlockEntity(pos);
 									if(te!=null)
 										modelData = te.getModelData();
+									final BakedModel model = blockRender.getBlockModel(state);
+									modelData = model.getModelData(structureWorld, pos, state, modelData);
 									blockRender.getModelRenderer().tesselateBlock(
-											structureWorld, blockRender.getBlockModel(state), state, pos, transform,
+											structureWorld, model, state, pos, transform,
 											translucentFullbright, false, structureWorld.random, state.getSeed(pos),
 											overlay, modelData, null
 									);
