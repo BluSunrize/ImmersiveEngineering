@@ -189,14 +189,6 @@ minecraft {
 }
 
 repositories {
-	maven { // TOP (The one probe)
-        name 'tterrag maven'
-        url "https://maven.tterrag.com/"
-    }
-    maven { // JEI & Tinkers
-        name 'DVS1 Maven FS'
-        url 'https://dvs1.progwml6.com/files/maven'
-    }
     maven { // BlockModelSplitter
         name 'Jared maven'
         url 'https://maven.blamejared.com/'
@@ -213,9 +205,6 @@ repositories {
             includeGroup 'org.squiddev'
         }
     }
-    maven { //Curious
-        url "https://maven.theillusivec4.top/"
-    }
 }
 
 dependencies {
@@ -226,7 +215,7 @@ dependencies {
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.137")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-${version_minecraft}:${version_cctweaked}")
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3825695")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19-5.1.0.1:api")
+    compileOnly fg.deobf("curse.maven:curios-309927:4523009")
     compileOnly fg.deobf("curse.maven:jade-324717:4433884")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:3630307")
 
