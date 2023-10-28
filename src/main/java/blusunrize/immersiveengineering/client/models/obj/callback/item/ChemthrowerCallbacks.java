@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.client.models.obj.callback.item;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ChemthrowerCallbacks.Key;
 import blusunrize.immersiveengineering.common.entities.illager.Bulwark;
-import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -66,6 +65,11 @@ public class ChemthrowerCallbacks implements ItemCallback<Key>
 			}
 	}
 
+	@Override
+	public Key getDefaultKey()
+	{
+		return new Key(false, false);
+	}
 
 	public record Key(boolean upgradedCapacity, boolean multitank)
 	{

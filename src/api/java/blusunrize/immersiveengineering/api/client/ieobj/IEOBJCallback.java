@@ -57,4 +57,6 @@ public interface IEOBJCallback<Key>
 	{
 		return new IEObjState(VisibilityList.showAll());
 	}
+
+	Key getDefaultKey();
 }

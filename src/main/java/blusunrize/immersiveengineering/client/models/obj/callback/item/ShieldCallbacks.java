@@ -83,6 +83,12 @@ public class ShieldCallbacks implements ItemCallback<Key>
 		}
 	}
 
+	@Override
+	public Key getDefaultKey()
+	{
+		return new Key(false, false);
+	}
+
 	public record Key(boolean flash, boolean shock)
 	{
 	}

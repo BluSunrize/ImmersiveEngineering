@@ -15,11 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
-public interface BlockCallback<T> extends IEOBJCallback<T>
+public interface BlockCallback<Key> extends IEOBJCallback<Key>
 {
-	T extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity);
-
-	T getDefaultKey();
+	Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity);
 
 	default boolean dependsOnLayer()
 	{
