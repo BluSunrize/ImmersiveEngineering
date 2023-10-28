@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
@@ -49,17 +50,18 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	@Override
 	protected void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
 	{
-		BlockState state = baseState.get().defaultBlockState();
+		BlockState newState = baseState.get().defaultBlockState();
 		if(!offsetFromMaster.equals(Vec3i.ZERO))
-			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
-		world.setBlockAndUpdate(actualPos, state);
+			newState = newState.setValue(IEProperties.MULTIBLOCKSLAVE, true);
+		final BlockState oldState = world.getBlockState(actualPos);
+		world.setBlock(actualPos, newState, 0);
 		BlockEntity curr = world.getBlockEntity(actualPos);
 		if(curr instanceof MultiblockPartBlockEntity<?> tile)
 		{
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
-			if(state.hasProperty(IEProperties.MIRRORED))
+			if(newState.hasProperty(IEProperties.MIRRORED))
 				tile.setMirrored(mirrored);
 			tile.setFacing(transformDirection(clickDirection.getOpposite()));
 			tile.setChanged();
@@ -67,6 +69,8 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		}
 		else
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
+		final LevelChunk chunk = world.getChunkAt(actualPos);
+		world.markAndNotifyBlock(actualPos, chunk, oldState, newState, Block.UPDATE_ALL, 512);
 	}
 
 	public Direction transformDirection(Direction original)
