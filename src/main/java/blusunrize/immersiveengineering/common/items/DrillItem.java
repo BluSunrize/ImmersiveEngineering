@@ -49,7 +49,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.IItemHandler;
@@ -273,16 +272,13 @@ public class DrillItem extends DieselToolItem
 		return super.getDestroySpeed(stack, state);
 	}
 
-	public boolean canBreakExtraBlock(Level world, Block block, BlockPos pos, BlockState state, Player player, ItemStack drill, ItemStack head, boolean inWorld)
+	public boolean canBreakExtraBlock(
+			Level world, BlockPos pos, BlockState state, Player player, ItemStack drill, ItemStack head
+	)
 	{
-		if(block.canHarvestBlock(state, world, pos, player)&&isEffective(drill, state)&&canToolBeUsed(drill))
-		{
-			if(inWorld)
-				return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
-			else
-				return true;
-		}
-		return false;
+		if(!state.canHarvestBlock(world, pos, player)||!isEffective(drill, state)||!canToolBeUsed(drill))
+			return false;
+		return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
 	}
 
 	@Override
@@ -309,7 +305,7 @@ public class DrillItem extends DieselToolItem
 
 			if(!state.isAir()&&state.getDestroyProgress(player, world, pos)!=0)
 			{
-				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
+				if(!this.canBreakExtraBlock(world, pos, state, player, stack, head))
 					continue;
 				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayer)player).gameMode.getGameModeForPlayer(), (ServerPlayer)player, pos);
 				if(xpDropEvent < 0)

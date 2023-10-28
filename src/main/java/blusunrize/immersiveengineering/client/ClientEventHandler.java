@@ -85,6 +85,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -104,7 +105,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.IntPredicate;
 import java.util.stream.IntStream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -692,7 +692,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(RenderHighlightEvent.Block event)
 	{
-		if(event.getTarget().getType()==Type.BLOCK&&event.getCamera().getEntity() instanceof LivingEntity player)
+		if(event.getTarget().getType()==Type.BLOCK&&event.getCamera().getEntity() instanceof LivingEntity living)
 		{
 			PoseStack transform = event.getPoseStack();
 			MultiBufferSource buffer = event.getMultiBufferSource();
@@ -703,8 +703,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
 			float eps = 0.002F;
-			BlockEntity tile = player.level.getBlockEntity(rtr.getBlockPos());
-			ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+			BlockEntity tile = living.level.getBlockEntity(rtr.getBlockPos());
+			ItemStack stack = living.getItemInHand(InteractionHand.MAIN_HAND);
 
 			if(tile instanceof TurntableBlockEntity turntableTile&&Utils.isHammer(stack))
 			{
@@ -714,15 +714,15 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				{
 					transform.pushPose();
 					transform.translate(0.5, 0.5, 0.5);
-					ClientUtils.toModelRotation(side).getRotation().push(transform);
+					transform.pushTransformation(ClientUtils.toModelRotation(side).getRotation());
 					transform.mulPose(new Quaternion(-90, 0, 0, true));
 					Rotation rotation = turntableTile.getRotationFromSide(side);
 					boolean cw180 = rotation==Rotation.CLOCKWISE_180;
 					double angle;
 					if(cw180)
-						angle = player.tickCount%40/20d;
+						angle = living.tickCount%40/20d;
 					else
-						angle = player.tickCount%80/40d;
+						angle = living.tickCount%80/40d;
 					double stepDistance = (cw180?2: 4)*Math.PI;
 					angle = -(angle-Math.sin(angle*stepDistance)/stepDistance)*Math.PI;
 					BlockOverlayUtils.drawCircularRotationArrows(buffer, transform, (float)angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
@@ -731,7 +731,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				}
 			}
 
-			Level world = player.level;
+			Level world = living.level;
 			if(!stack.isEmpty()&&ConveyorHandler.isConveyorBlock(Block.byItem(stack.getItem()))&&rtr.getDirection().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getDirection();
@@ -773,15 +773,23 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			}
 
 			transform.popPose();
-			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
-					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getBlockPos())))
+			BlockState targetBlock = world.getBlockState(rtr.getBlockPos());
+			if(stack.getItem() instanceof DrillItem drillItem&&drillItem.isEffective(stack, targetBlock))
 			{
-				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
-				if(!head.isEmpty()&&player instanceof Player&&!player.isShiftKeyDown()&&!DrillItem.isSingleBlockMode(stack))
+				ItemStack head = drillItem.getHead(stack);
+				if(!head.isEmpty()&&living instanceof Player player&&!living.isShiftKeyDown()&&!DrillItem.isSingleBlockMode(stack))
 				{
-					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
-							(Player)player, event.getTarget());
-					BlockOverlayUtils.drawAdditionalBlockbreak(event, (Player)player, blocks);
+					ImmutableList<BlockPos> potentialBlocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(
+							head, world, player, event.getTarget()
+					);
+					List<BlockPos> breakingBlocks = new ArrayList<>();
+					for(BlockPos candidate : potentialBlocks)
+					{
+						BlockState targetState = world.getBlockState(candidate);
+						if(drillItem.canBreakExtraBlock(world, candidate, targetState, player, stack, head))
+							breakingBlocks.add(candidate);
+					}
+					BlockOverlayUtils.drawAdditionalBlockbreak(event, player, breakingBlocks);
 				}
 			}
 		}
