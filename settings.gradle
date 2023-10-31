@@ -5,20 +5,6 @@ pluginManagement {
         maven {url 'https://repo.spongepowered.org/repository/maven-public/'}
         maven { url 'https://maven.parchmentmc.org' }
     }
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.toString() == 'org.spongepowered.mixin') {
-                useModule("org.spongepowered:mixingradle:${requested.version}")
-            } else if (requested.id.toString() == 'org.moddingx.modgradle.mapping') {
-                useModule("org.moddingx:ModGradle:${requested.version}")
-                //} else if (requested.id.toString() == 'net.minecraftforge.gradle') {
-                //    // This is neccessary to get gradle to work in offline mode. ./gradlew --offline is enough to reproduce;
-                //    // if that works without these lines they can be removed.
-                //    useModule('org.apache.logging.log4j:log4j-core:2.19.0')
-                //    useModule('org.apache.logging.log4j:log4j-api:2.19.0')
-            }
-        }
-    }
 }
 
 rootProject.name = "ImmersiveEngineering-${version_minecraft}"

@@ -1,15 +1,11 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import net.minecraftforge.gradle.common.tasks.SignJar
 import org.gradle.work.Incremental
 
 plugins {
-    id 'net.neoforged.gradle' version '6.0.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.8'
+    id 'net.neoforged.gradle.mixin' version '7.0.8'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.6'
-    id 'eclipse'
 }
 
 version = buildVersionString()
@@ -80,6 +76,7 @@ processResources {
     }
 }
 
+// TODO update for NG
 // When using "Run using IntelliJ" (the only option with well-working hotswapping) the used "resources" directory is
 // different from the one used by gradle/the processResources task
 task copyModsTomlForIntelliJ(type: Copy) {
@@ -88,102 +85,29 @@ task copyModsTomlForIntelliJ(type: Copy) {
     include "META-INF/mods.toml"
 }
 
-copyModsTomlForIntelliJ.dependsOn processResources
-afterEvaluate {
-    // prepareRuns doesn't exist before afterEvaluate
-    prepareRuns.dependsOn copyModsTomlForIntelliJ
-}
+//copyModsTomlForIntelliJ.dependsOn processResources
+//afterEvaluate {
+//    // prepareRuns doesn't exist before afterEvaluate
+//    prepareRuns.dependsOn copyModsTomlForIntelliJ
+//}
 
-minecraft {
-    mappings channel: 'parchment', version: "$version_parchment-$version_minecraft"
-    //mappings channel: 'official', version: version_minecraft
+runs {
+    configureEach {
+        workingDirectory project.file('run')
+        systemProperty 'forge.logging.console.level', 'debug'
+        modSource sourceSets.main
+        modSource sourceSets.manual
+        modSource sourceSets.api
+        modSource sourceSets.gametest
+    }
+    client
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN'
-            property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            // TODO not really ideal, is it?
-            ideaModule project.name + ".gametest"
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.manual
-                    source sourceSets.api
-                    source sourceSets.gametest
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
-
-            // Disable GUI by default, the IDE console can be used to enter commands
-            arg '-nogui'
-
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.api
-                    // Never actually used on the server, but not having it apparently breaks cpw's silly "let's just
-                    // load the wrong supplier in DistExecutor"
-                    source sourceSets.manual
-                }
-            }
-        }
-        data {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            property 'fml.earlyprogresswindow', 'false'
-
-            args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
-                    '--existing', sourceSets.main.resources.srcDirs[0]
-            ideaModule project.name+".datagen"
-
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.datagen
-                    source sourceSets.manual
-                    source sourceSets.api
-                }
-            }
-        }
-        gameTestServer {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', ''
-
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
-
-            ideaModule project.name + ".gametest"
-
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.gametest
-                    source sourceSets.manual
-                    source sourceSets.api
-                }
-            }
-        }
+    server {
+        programArguments.add '-nogui'
+    }
+    data {
+        programArguments.addAll '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'),
+                '--validate', '--existing', sourceSets.main.resources.srcDirs[0]
     }
 }
 
@@ -208,22 +132,21 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.neoforged:forge:${version_minecraft}-${version_forge}"
+    implementation "net.neoforged:neoforge:${version_forge}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${version_jei}")
-    compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${version_jei}")
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.137")
+    compileOnly "mezz.jei:jei-1.20.1-forge-api:${version_jei}"
+    compileOnly "mezz.jei:jei-1.20.1-common-api:${version_jei}"
+    compileOnly "com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.137"
     //TODO only API. For some reason IPeripheral (an API class) does not show up in the API artifact
-    // compileOnly fg.deobf("cc.tweaked:cc-tweaked-1.19.3-forge-api:${version_cctweaked}")
-    compileOnly fg.deobf("cc.tweaked:cc-tweaked-1.19.3-forge:${version_cctweaked}")
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:3825695")
-    compileOnly fg.deobf("curse.maven:curios-309927:4780213")
-    compileOnly fg.deobf("curse.maven:jade-324717:4434045")
-    compileOnly fg.deobf("curse.maven:opencomputers2-437654:3630307")
+    // compileOnly "cc.tweaked:cc-tweaked-1.19.3-forge-api:${version_cctweaked}")
+    compileOnly "cc.tweaked:cc-tweaked-1.19.3-forge:${version_cctweaked}"
+    compileOnly "curse.maven:the-one-probe-245211:3825695"
+    compileOnly "curse.maven:curios-309927:4780213"
+    compileOnly "curse.maven:jade-324717:4434045"
+    compileOnly "curse.maven:opencomputers2-437654:3630307"
 
     implementation "malte0811:BlockModelSplitter:2.0.1"
     testImplementation('junit:junit:4.13.2')
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 def customGradle = rootProject.file('custom.gradle');
@@ -231,28 +154,11 @@ if (customGradle.exists()) {
     apply from: customGradle;
 }
 
-task signJar(type: SignJar) {
-    onlyIf {
-        project.hasProperty('keyStore')
-    }
-    if (project.hasProperty('keyStore')) {
-        keyStore = project.keyStore
-        alias = project.storeAlias
-        storePass = project.storePass
-        keyPass = project.storePass
-        inputFile = shadowJar.archiveFile
-        outputFile = shadowJar.archiveFile
-    } else {
-        logger.warn("No key store found, not signing the output jar\n")
-    }
+// TODO check what needs to be done with this
+task signJar(type: Jar) {
 }
 
 build.dependsOn signJar
-
-afterEvaluate {
-    signJar.dependsOn reobfShadowJar
-    reobfJar.enabled = false
-}
 
 String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
@@ -328,10 +234,6 @@ shadowJar {
     }
     from(sourceSets.manual.output)
     from(sourceSets.api.output)
-}
-
-reobf {
-    shadowJar {}
 }
 
 //Minimize/optimize all png files, requires optipng on the PATH
@@ -545,35 +447,5 @@ task updateJson(type: GenerateUpdateJSON) {
 processResources.dependsOn updateJson
 
 mixin {
-    add sourceSets.main, "${modid}.refmap.json"
     config "${modid}.mixins.json"
-}
-
-// Running this is equivalent to running genIntellijRuns, but it exists before afterEvaluate
-task genIntellijRunsDummy {}
-
-task speedUpPreRun {
-    doLast {
-        for (String s : new String[]{"Client", "Server", "Data"}) {
-            ant.replace(
-                    file: ".idea/runConfigurations/run"+s+".xml",
-                    // prepareRunX is prepareRuns + compile, but compiling is already handled by IntelliJ
-                    token: "prepareRun"+s,
-                    value: "prepareRuns"
-            )
-        }
-    }
-}
-
-tasks.withType(Task) {
-    if (it.name == "genIntellijRuns") {
-        it.finalizedBy speedUpPreRun
-        genIntellijRunsDummy.dependsOn it
-    } else if (it.name == "runServer") {
-        it.standardInput = System.in
-    }
-}
-
-idea.project.settings.taskTriggers {
-    afterSync genIntellijRunsDummy
 }
