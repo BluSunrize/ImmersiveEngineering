@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.data.Recipes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 

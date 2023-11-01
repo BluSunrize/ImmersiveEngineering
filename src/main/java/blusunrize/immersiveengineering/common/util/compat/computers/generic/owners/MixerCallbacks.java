@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Comp
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 

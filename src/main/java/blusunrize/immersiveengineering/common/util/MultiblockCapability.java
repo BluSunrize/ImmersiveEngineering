@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.util.LazyOptional;
 
 import java.util.function.Function;
 

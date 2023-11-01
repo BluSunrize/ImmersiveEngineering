@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.imp
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class MBEnergyCallbacks extends Callback<IEnergyStorage>
 {

@@ -19,8 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraftforge.client.model.ExtendedBlockModelDeserializer;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.ExtendedBlockModelDeserializer;
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

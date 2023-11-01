@@ -16,7 +16,7 @@ import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Collection;
 import java.util.List;

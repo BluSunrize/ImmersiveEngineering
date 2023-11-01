@@ -22,10 +22,10 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -49,7 +49,7 @@ public class CraftingTableMenu extends IEContainerMenu
 		return new CraftingTableMenu(
 				blockCtx(type, id, be), invPlayer,
 				be.getCraftingInventory(),
-				CapabilityUtils.getPresentCapability(be, ForgeCapabilities.ITEM_HANDLER),
+				CapabilityUtils.getPresentCapability(be, Capabilities.ITEM_HANDLER),
 				ContainerLevelAccess.create(be.getLevel(), be.getBlockPos())
 		);
 	}

@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries.Keys;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 public class IEEntityDataSerializers
 {

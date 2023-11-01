@@ -47,12 +47,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -98,7 +98,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	private final ResettableCapability<IEnergyStorage> energyCap;
 
 	private final CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(
-			this, ForgeCapabilities.ENERGY, this::getFacing
+			this, Capabilities.ENERGY, this::getFacing
 	);
 
 	public EnergyConnectorBlockEntity(BlockEntityType<? extends EnergyConnectorBlockEntity> type, BlockPos pos, BlockState state)
@@ -206,7 +206,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap==ForgeCapabilities.ENERGY&&!relay&&(side==null||side==getFacing()))
+		if(cap==Capabilities.ENERGY&&!relay&&(side==null||side==getFacing()))
 			return energyCap.cast();
 		return super.getCapability(cap, side);
 	}

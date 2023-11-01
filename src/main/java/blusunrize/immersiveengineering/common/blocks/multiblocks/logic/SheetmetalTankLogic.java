@@ -35,14 +35,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -89,7 +89,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(cap==ForgeCapabilities.FLUID_HANDLER)
+		if(cap==Capabilities.FLUID_HANDLER)
 		{
 			if(IO_POS.equals(position.posInMultiblock()))
 				return ctx.getState().ioHandler.cast(ctx);
@@ -152,7 +152,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 				if(face!=RelativeBlockFace.DOWN)
 				{
 					final BlockPos neighbor = face.offsetRelative(IO_POS, -1);
-					outputBuilder.add(capabilitySource.getCapabilityAt(ForgeCapabilities.FLUID_HANDLER, neighbor, face));
+					outputBuilder.add(capabilitySource.getCapabilityAt(Capabilities.FLUID_HANDLER, neighbor, face));
 				}
 			this.outputs = outputBuilder.build();
 			Runnable changedAndSync = () -> {

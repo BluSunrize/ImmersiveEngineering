@@ -41,8 +41,8 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.resource.DelegatingPackResources;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.resource.DelegatingPackResources;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 
 public abstract class IESerializableRecipe implements Recipe<Container>
 {
@@ -64,11 +64,12 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 		return false;
 	}
 
-	@Override
-	public ResourceLocation getId()
-	{
-		return this.id;
-	}
+	//TODO
+	//@Override
+	//public ResourceLocation getId()
+	//{
+	//	return this.id;
+	//}
 
 	@Override
 	public RecipeSerializer<?> getSerializer()

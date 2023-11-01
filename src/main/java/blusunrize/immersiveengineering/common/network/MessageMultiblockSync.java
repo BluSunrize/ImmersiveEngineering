@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.network.NetworkEvent.Context;
-import net.minecraftforge.registries.GameData;
+import net.neoforged.neoforge.registries.GameData;
 
 import java.util.List;
 import java.util.Objects;

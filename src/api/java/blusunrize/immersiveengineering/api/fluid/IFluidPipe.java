@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
-import net.minecraftforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public interface IFluidPipe
 {

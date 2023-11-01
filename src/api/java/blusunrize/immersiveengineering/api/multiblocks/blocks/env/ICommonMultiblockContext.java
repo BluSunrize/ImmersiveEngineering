@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFac
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 @NonExtendable

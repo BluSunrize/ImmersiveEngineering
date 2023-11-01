@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -34,11 +35,12 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 	private static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "multiblock_formed");
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 
-	@Override
-	public ResourceLocation getId()
-	{
-		return ID;
-	}
+	//TODO
+	//@Override
+	//public ResourceLocation getId()
+	//{
+	//	return ID;
+	//}
 
 	@Override
 	public void addPlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener)
@@ -74,10 +76,11 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 	@Override
 	public Instance createInstance(JsonObject json, DeserializationContext context)
 	{
-		ContextAwarePredicate and = EntityPredicate.fromJson(json, "player", context);
+		Optional<ContextAwarePredicate> and = EntityPredicate.fromJson(json, "player", context);
 		return new MultiblockAdvancementTrigger.Instance(
 				new ResourceLocation(GsonHelper.getAsString(json, "multiblock")),
-				ItemPredicate.fromJson(json.get("item")),
+				//TODO
+				ItemPredicate.fromJson(json.get("item")).get(),
 				and
 		);
 	}
@@ -91,7 +94,9 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 
 	public static Instance create(ResourceLocation multiblock, ItemPredicate hammer)
 	{
-		return new Instance(multiblock, hammer, ContextAwarePredicate.ANY);
+		//TODO
+		throw new UnsupportedOperationException();
+		//return new Instance(multiblock, hammer, ContextAwarePredicate.ANY);
 	}
 
 	public static class Instance extends AbstractCriterionTriggerInstance
@@ -99,9 +104,9 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 		private final ResourceLocation multiblock;
 		private final ItemPredicate hammer;
 
-		public Instance(ResourceLocation multiblock, ItemPredicate hammer, ContextAwarePredicate and)
+		public Instance(ResourceLocation multiblock, ItemPredicate hammer, Optional<ContextAwarePredicate> and)
 		{
-			super(MultiblockAdvancementTrigger.ID, and);
+			super(and);
 			this.multiblock = multiblock;
 			this.hammer = hammer;
 		}
@@ -112,9 +117,9 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 		}
 
 		@Override
-		public JsonObject serializeToJson(SerializationContext conditions)
+		public JsonObject serializeToJson()
 		{
-			JsonObject jsonobject = super.serializeToJson(conditions);
+			JsonObject jsonobject = super.serializeToJson();
 			jsonobject.addProperty("multiblock", this.multiblock.toString());
 			jsonobject.add("item", this.hammer.serializeToJson());
 			return jsonobject;
@@ -150,7 +155,7 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 		{
 			List<Listener<Instance>> list = null;
 			for(CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener : this.listeners)
-				if(listener.getTriggerInstance().test(multiblock, hammer))
+				if(listener.trigger().test(multiblock, hammer))
 				{
 					if(list==null)
 						list = Lists.newArrayList();

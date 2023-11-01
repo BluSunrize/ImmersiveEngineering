@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.inventory;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class InsertOnlyInventory implements IItemHandler

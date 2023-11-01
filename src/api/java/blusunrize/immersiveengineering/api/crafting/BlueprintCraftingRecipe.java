@@ -17,9 +17,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -177,8 +177,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			return;
 		recipesByCategory = RECIPES.getRecipes(level).stream()
 				.collect(Collectors.groupingBy(r -> r.blueprintCategory));
-		for(Entry<String, List<BlueprintCraftingRecipe>> e : recipesByCategory.entrySet())
-			e.getValue().sort(Comparator.comparing(BlueprintCraftingRecipe::getId));
+		//TODO
+		//for(Entry<String, List<BlueprintCraftingRecipe>> e : recipesByCategory.entrySet())
+		//	e.getValue().sort(Comparator.comparing(BlueprintCraftingRecipe::getId));
 		reloadCountForCategories = CachedRecipeList.getReloadCount();
 	}
 

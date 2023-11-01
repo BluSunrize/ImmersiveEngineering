@@ -22,7 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.Random;
@@ -66,8 +66,10 @@ public class MineralMix extends IESerializableRecipe
 
 	public String getPlainName()
 	{
-		String path = getId().getPath();
-		return path.substring(path.lastIndexOf("/")+1);
+		//TODO
+		throw new UnsupportedOperationException();
+		//String path = getId().getPath();
+		//return path.substring(path.lastIndexOf("/")+1);
 	}
 
 	public String getTranslationKey()

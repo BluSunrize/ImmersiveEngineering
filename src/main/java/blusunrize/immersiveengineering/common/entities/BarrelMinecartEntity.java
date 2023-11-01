@@ -24,12 +24,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-import static net.minecraftforge.common.capabilities.ForgeCapabilities.FLUID_HANDLER;
+import static net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER;
 
 public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEntity>
 {

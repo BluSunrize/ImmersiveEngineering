@@ -15,10 +15,10 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -91,16 +91,17 @@ public class CachedRecipeList<R extends Recipe<?>>
 	{
 		if(recipes!=null&&cachedAtReloadCount==reloadCount&&(!cachedDataIsClient||isClient))
 			return;
-		this.recipes = manager.getRecipes().stream()
-				.filter(iRecipe -> iRecipe.getType()==type.get())
-				.flatMap(r -> {
-					if(r instanceof IListRecipe listRecipe)
-						return listRecipe.getSubRecipes().stream();
-					else
-						return Stream.of(r);
-				})
-				.map(recipeClass::cast)
-				.collect(Collectors.toMap(R::getId, Function.identity()));
+		//TODO
+		//this.recipes = manager.getRecipes().stream()
+		//		.filter(iRecipe -> iRecipe.getType()==type.get())
+		//		.flatMap(r -> {
+		//			if(r instanceof IListRecipe listRecipe)
+		//				return listRecipe.getSubRecipes().stream();
+		//			else
+		//				return Stream.of(r);
+		//		})
+		//		.map(recipeClass::cast)
+		//		.collect(Collectors.toMap(R::getId, Function.identity()));
 		this.cachedDataIsClient = isClient;
 		this.cachedAtReloadCount = reloadCount;
 	}

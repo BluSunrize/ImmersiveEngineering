@@ -12,7 +12,7 @@ import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.fluid.MCFluidStackMutable;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ActionAddRecipeCustomOutput<T extends Recipe<?>> extends ActionAddRecipe<T>
 {

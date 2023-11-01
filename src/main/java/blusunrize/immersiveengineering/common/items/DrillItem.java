@@ -42,17 +42,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.ForgeHooks;
+import net.neoforged.neoforge.common.ForgeMod;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.HarvestCheck;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -98,7 +98,7 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
 				Utils.unlockIEAdvancement(player, "tools/upgrade_drill");
@@ -122,9 +122,9 @@ public class DrillItem extends DieselToolItem
 
 	public static ItemStack getHeadStatic(ItemStack drill)
 	{
-		if(ForgeCapabilities.ITEM_HANDLER==null)
+		if(Capabilities.ITEM_HANDLER==null)
 			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = drill.getCapability(ForgeCapabilities.ITEM_HANDLER);
+		LazyOptional<IItemHandler> cap = drill.getCapability(Capabilities.ITEM_HANDLER);
 		if(cap.isPresent())
 		{
 			ItemStack head = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
@@ -136,7 +136,7 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public void setHead(ItemStack drill, ItemStack head)
 	{
-		IItemHandler inv = drill.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
+		IItemHandler inv = drill.getCapability(Capabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
 		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
 	}
 

@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraftforge.common.util.NonNullConsumer;
-import net.minecraftforge.common.util.NonNullSupplier;
+import net.neoforged.neoforge.common.util.NonNullConsumer;
+import net.neoforged.neoforge.common.util.NonNullSupplier;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

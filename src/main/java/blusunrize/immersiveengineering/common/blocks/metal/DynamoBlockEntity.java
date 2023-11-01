@@ -24,10 +24,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,14 +71,14 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 	private final ResettableCapability<IEnergyStorage> energyCap = registerCapability(NullEnergyStorage.INSTANCE);
 	private final ResettableCapability<IRotationAcceptor> rotationCap = registerCapability(new RotationAcceptor());
 	private final Map<Direction, CapabilityReference<IEnergyStorage>> neighbors = CapabilityReference.forAllNeighbors(
-			this, ForgeCapabilities.ENERGY
+			this, Capabilities.ENERGY
 	);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap==ForgeCapabilities.ENERGY)
+		if(cap==Capabilities.ENERGY)
 			return energyCap.cast();
 		if(cap==IRotationAcceptor.CAPABILITY&&side==getFacing())
 			return rotationCap.cast();

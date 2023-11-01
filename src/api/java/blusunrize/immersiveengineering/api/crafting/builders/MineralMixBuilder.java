@@ -23,8 +23,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 {
@@ -106,7 +106,8 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		if(condition!=null)
 		{
 			JsonArray array = new JsonArray();
-			array.add(CraftingHelper.serialize(condition));
+			//TODO
+			// array.add(CraftingHelper.serialize(condition));
 			jsonObject.add("conditions", array);
 		}
 

@@ -133,19 +133,19 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 			if(notMaxAge||canGrowTop)
 			{
 				float f = getGrowthSpeed(this, world, pos);
-				if(net.minecraftforge.common.ForgeHooks.onCropsGrowPre(world, pos, state, rand.nextInt((int)(25.0F/f)+1)==0))
+				if(net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPre(world, pos, state, rand.nextInt((int)(25.0F/f)+1)==0))
 				{
 					if(notMaxAge)
 					{
 						world.setBlock(pos, this.getStateForAge(i+1), 2);
-						net.minecraftforge.common.ForgeHooks.onCropsGrowPost(world, pos, state);
+						net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPost(world, pos, state);
 					}
 					else if(canGrowTop)
 					{
 						BlockPos above = pos.above();
 						BlockState aboveState = this.getStateForAge(getMaxAge()).setValue(TOP, true);
 						world.setBlock(above, aboveState, 2);
-						net.minecraftforge.common.ForgeHooks.onCropsGrowPost(world, above, aboveState);
+						net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPost(world, above, aboveState);
 					}
 				}
 			}

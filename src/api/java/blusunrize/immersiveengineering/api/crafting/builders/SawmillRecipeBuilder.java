@@ -17,8 +17,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 {
@@ -92,8 +92,9 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		if(conditions.length > 0)
 		{
 			JsonArray conditionArray = new JsonArray();
-			for(ICondition condition : conditions)
-				conditionArray.add(CraftingHelper.serialize(condition));
+			//TODO
+			//for(ICondition condition : conditions)
+			//	conditionArray.add(CraftingHelper.serialize(condition));
 			jsonObject.add("conditions", conditionArray);
 		}
 		secondaryArray.add(jsonObject);

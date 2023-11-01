@@ -39,17 +39,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -161,12 +161,12 @@ public class SqueezerLogic
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
 		final State state = ctx.getState();
-		if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
+		if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return state.energyCap.cast(ctx);
 
-		else if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_OUTPUT_CAP.equalsOrNullFace(position))
+		else if(cap==Capabilities.FLUID_HANDLER&&FLUID_OUTPUT_CAP.equalsOrNullFace(position))
 			return state.fluidOutputCap.cast(ctx);
-		else if(cap==ForgeCapabilities.ITEM_HANDLER)
+		else if(cap==Capabilities.ITEM_HANDLER)
 		{
 			if(ITEM_INPUT.equals(position.posInMultiblock()))
 				return state.itemInputCap.cast(ctx);
@@ -228,8 +228,8 @@ public class SqueezerLogic
 			this.processor = new InMachineProcessor<>(
 					NUM_INPUT_SLOTS, 0, NUM_INPUT_SLOTS, markDirty, SqueezerRecipe.RECIPES::getById
 			);
-			this.itemOutput = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, ITEM_OUTPUT);
-			this.fluidOutput = ctx.getCapabilityAt(ForgeCapabilities.FLUID_HANDLER, FLUID_OUTPUT);
+			this.itemOutput = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, ITEM_OUTPUT);
+			this.fluidOutput = ctx.getCapabilityAt(Capabilities.FLUID_HANDLER, FLUID_OUTPUT);
 			this.energyCap = new StoredCapability<>(energy);
 			this.fluidOutputCap = new StoredCapability<>(ArrayFluidHandler.drainOnly(tank, markDirty));
 			this.itemInputCap = new StoredCapability<>(new WrappingItemHandler(

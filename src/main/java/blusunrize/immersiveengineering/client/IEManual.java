@@ -43,11 +43,11 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.VersionChecker;
-import net.minecraftforge.fml.VersionChecker.CheckResult;
-import net.minecraftforge.fml.VersionChecker.Status;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.VersionChecker;
+import net.neoforged.fml.VersionChecker.CheckResult;
+import net.neoforged.fml.VersionChecker.Status;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.io.IOException;

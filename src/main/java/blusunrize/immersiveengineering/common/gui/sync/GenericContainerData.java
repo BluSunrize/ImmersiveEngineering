@@ -12,8 +12,8 @@ package blusunrize.immersiveengineering.common.gui.sync;
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataSerializer;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

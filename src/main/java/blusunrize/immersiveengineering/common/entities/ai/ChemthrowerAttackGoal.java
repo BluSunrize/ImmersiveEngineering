@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ChemthrowerAttackGoal<T extends Bulwark> extends ShieldCombatGoal<T>
 {

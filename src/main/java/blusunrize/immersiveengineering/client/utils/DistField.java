@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.DistExecutor.SafeCallable;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.DistExecutor.SafeCallable;
 
 import java.util.function.Supplier;
 

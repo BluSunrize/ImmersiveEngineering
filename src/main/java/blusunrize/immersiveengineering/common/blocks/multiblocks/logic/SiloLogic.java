@@ -29,11 +29,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -83,7 +83,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(cap==ForgeCapabilities.ITEM_HANDLER&&IO_OFFSETS.contains(position.posInMultiblock()))
+		if(cap==Capabilities.ITEM_HANDLER&&IO_OFFSETS.contains(position.posInMultiblock()))
 			return ctx.getState().inputHandler.cast(ctx);
 		return LazyOptional.empty();
 	}
@@ -113,7 +113,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 				if(face!=RelativeBlockFace.DOWN)
 				{
 					final BlockPos neighbor = face.offsetRelative(OUTPUT_POS, -1);
-					outputBuilder.add(capabilitySource.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, neighbor, face));
+					outputBuilder.add(capabilitySource.getCapabilityAt(Capabilities.ITEM_HANDLER, neighbor, face));
 				}
 			this.outputs = outputBuilder.build();
 			this.inputHandler = new StoredCapability<>(new InventoryHandler(this, () -> {

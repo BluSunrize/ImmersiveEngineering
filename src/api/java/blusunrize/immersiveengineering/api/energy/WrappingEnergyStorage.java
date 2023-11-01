@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public record WrappingEnergyStorage(
 		IEnergyStorage base, boolean allowInsert, boolean allowExtract, Runnable afterTransfer

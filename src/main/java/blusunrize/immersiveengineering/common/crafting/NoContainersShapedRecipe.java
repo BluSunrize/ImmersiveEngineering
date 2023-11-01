@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 
 public class NoContainersShapedRecipe<T extends CraftingRecipe & IShapedRecipe<CraftingContainer>>
 		extends NoContainersRecipe<T> implements IShapedRecipe<CraftingContainer>

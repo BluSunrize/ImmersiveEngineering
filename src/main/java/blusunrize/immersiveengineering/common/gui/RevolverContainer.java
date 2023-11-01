@@ -18,8 +18,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class RevolverContainer extends InternalStorageItemContainer
 {
@@ -93,7 +93,7 @@ public class RevolverContainer extends InternalStorageItemContainer
 		{
 			int i = 0;
 			ItemStack held = this.secondHand==null?heldItem: (hand==0)==(player.getMainArm()==HumanoidArm.RIGHT)?secondRevolver: heldItem;
-			IItemHandler secondRevolverInventory = secondRevolver.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
+			IItemHandler secondRevolverInventory = secondRevolver.getCapability(Capabilities.ITEM_HANDLER, null)
 					.orElse(null);
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getMainArm()==HumanoidArm.RIGHT)?secondRevolverInventory: this.inv;
 			int revolverSlots = ((IBulletContainer)(held).getItem()).getBulletCount(held);
@@ -143,7 +143,7 @@ public class RevolverContainer extends InternalStorageItemContainer
 
 		for(int hand = 0; hand < (this.secondHand!=null?2: 1); hand++)
 		{
-			IItemHandler secondRevolverInventory = secondRevolver.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
+			IItemHandler secondRevolverInventory = secondRevolver.getCapability(Capabilities.ITEM_HANDLER, null)
 					.orElse(null);
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getMainArm()==HumanoidArm.RIGHT)?secondRevolverInventory: this.inv;
 			if(inv instanceof IEItemStackHandler)

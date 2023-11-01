@@ -15,8 +15,8 @@ import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
 import li.cil.oc2.api.API;
 import mcjty.theoneprobe.TheOneProbe;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.neoforge.common.ForgeConfigSpec.BooleanValue;
+import net.neoforged.fml.ModList;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;

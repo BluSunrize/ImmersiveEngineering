@@ -69,13 +69,13 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
@@ -117,7 +117,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		else
 			ret = ret.copy();
 		final CompoundTag retFinal = ret;
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler ->
+		stack.getCapability(Capabilities.ITEM_HANDLER, null).ifPresent(handler ->
 		{
 			IBulletContainer container = (IBulletContainer)stack.getItem();
 			NonNullList<ItemStack> bullets = NonNullList.withSize(container.getBulletCount(stack), ItemStack.EMPTY);
@@ -138,7 +138,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	public static void readBulletsFromShareTag(ItemStack stack, @Nullable CompoundTag nbt)
 	{
 		if(nbt!=null)
-			stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(handler ->
+			stack.getCapability(Capabilities.ITEM_HANDLER, null).ifPresent(handler ->
 			{
 				if(!(handler instanceof IItemHandlerModifiable modifiable))
 					return;
@@ -198,7 +198,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
+		stack.getCapability(Capabilities.ITEM_HANDLER, null)
 				.ifPresent(inv -> {
 					if(!inv.getStackInSlot(18).isEmpty()&&!inv.getStackInSlot(19).isEmpty())
 						Utils.unlockIEAdvancement(player, "tools/upgrade_revolver");
@@ -472,7 +472,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets, boolean ignoreExtendedMag)
 	{
-		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(ForgeCapabilities.ITEM_HANDLER, null)
+		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(Capabilities.ITEM_HANDLER, null)
 				.orElseThrow(RuntimeException::new);
 		for(int i = 0; i < 18; i++)
 			inv.setStackInSlot(i, ItemStack.EMPTY);
@@ -502,7 +502,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public boolean isEmpty(ItemStack stack, boolean allowCasing)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
 		return invCap.map(inv -> {
 			for(int i = 0; i < inv.getSlots(); i++)
 			{

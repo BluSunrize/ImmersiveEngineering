@@ -42,17 +42,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -179,11 +179,11 @@ public class FermenterLogic
 			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
 	)
 	{
-		if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
+		if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return ctx.getState().energyHandler.cast(ctx);
-		if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_OUTPUT_CAP.equalsOrNullFace(position))
+		if(cap==Capabilities.FLUID_HANDLER&&FLUID_OUTPUT_CAP.equalsOrNullFace(position))
 			return ctx.getState().fluidHandler.cast(ctx);
-		if(cap==ForgeCapabilities.ITEM_HANDLER)
+		if(cap==Capabilities.ITEM_HANDLER)
 		{
 			if(new BlockPos(0, 1, 0).equals(position.posInMultiblock()))
 				return ctx.getState().insertionHandler.cast(ctx);
@@ -242,9 +242,9 @@ public class FermenterLogic
 					new IOConstraintGroup(IOConstraint.FLUID_INPUT, 1),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1)
 			), ctx.getMarkDirtyRunnable());
-			this.fluidOutput = ctx.getCapabilityAt(ForgeCapabilities.FLUID_HANDLER, FLUID_OUTPUT);
+			this.fluidOutput = ctx.getCapabilityAt(Capabilities.FLUID_HANDLER, FLUID_OUTPUT);
 			this.itemOutput = ctx.getCapabilityAt(
-					ForgeCapabilities.ITEM_HANDLER, new BlockPos(2, 1, 1), RelativeBlockFace.LEFT
+					Capabilities.ITEM_HANDLER, new BlockPos(2, 1, 1), RelativeBlockFace.LEFT
 			);
 			this.insertionHandler = new StoredCapability<>(new WrappingItemHandler(
 					this.inventory, true, false, new IntRange(0, NUM_INPUT_SLOTS)

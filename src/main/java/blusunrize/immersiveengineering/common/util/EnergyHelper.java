@@ -15,10 +15,10 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -89,7 +89,7 @@ public class EnergyHelper
 	{
 		if(stack==null)
 			return 0;
-		return stack.getCapability(ForgeCapabilities.ENERGY, side)
+		return stack.getCapability(Capabilities.ENERGY, side)
 				.map(IEnergyStorage::getEnergyStored)
 				.orElse(0);
 	}
@@ -103,7 +103,7 @@ public class EnergyHelper
 	{
 		if(stack==null)
 			return 0;
-		return stack.getCapability(ForgeCapabilities.ENERGY, side)
+		return stack.getCapability(Capabilities.ENERGY, side)
 				.map(IEnergyStorage::getMaxEnergyStored)
 				.orElse(0);
 	}
@@ -117,7 +117,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return false;
-		return tile.getCapability(ForgeCapabilities.ENERGY, facing)
+		return tile.getCapability(Capabilities.ENERGY, facing)
 				.map(IEnergyStorage::canReceive)
 				.orElse(false);
 	}
@@ -131,7 +131,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return false;
-		return tile.getCapability(ForgeCapabilities.ENERGY, facing).isPresent();
+		return tile.getCapability(Capabilities.ENERGY, facing).isPresent();
 	}
 
 	public static int insertFlux(ICapabilityProvider tile, int energy, boolean simulate)
@@ -143,7 +143,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return 0;
-		return tile.getCapability(ForgeCapabilities.ENERGY, facing)
+		return tile.getCapability(Capabilities.ENERGY, facing)
 				.map(storage -> storage.receiveEnergy(energy, simulate))
 				.orElse(0);
 	}
@@ -157,7 +157,7 @@ public class EnergyHelper
 	{
 		if(tile==null)
 			return 0;
-		return tile.getCapability(ForgeCapabilities.ENERGY, facing)
+		return tile.getCapability(Capabilities.ENERGY, facing)
 				.map(storage -> storage.extractEnergy(energy, simulate))
 				.orElse(0);
 	}

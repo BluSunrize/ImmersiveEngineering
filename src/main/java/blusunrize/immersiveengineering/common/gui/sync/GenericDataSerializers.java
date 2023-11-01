@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import blusunrize.immersiveengineering.common.gui.MixerMenu.SlotProgress;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.utils;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.minecraftforge.client.model.IQuadTransformer;
+import net.neoforged.neoforge.client.model.IQuadTransformer;
 
 public class QuadTransformer
 {

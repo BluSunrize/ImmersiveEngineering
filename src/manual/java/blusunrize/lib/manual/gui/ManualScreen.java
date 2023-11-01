@@ -26,11 +26,11 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -310,9 +310,9 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public boolean mouseScrolled(double x, double y, double wheel)
+	public boolean mouseScrolled(double x, double y, double wheel, double unknown)
 	{
-		super.mouseScrolled(x, y, wheel);
+		super.mouseScrolled(x, y, wheel, unknown);
 		if(wheel!=0&&currentNode.isLeaf())
 		{
 			if(wheel > 0&&page > 0)

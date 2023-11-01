@@ -27,7 +27,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -82,7 +82,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	{
 		super.invalidateCaps();
 		if(this.containedBlockEntity!=null)
-			this.containedBlockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).invalidate();
+			this.containedBlockEntity.getCapability(Capabilities.ITEM_HANDLER).invalidate();
 	}
 
 	@Nonnull

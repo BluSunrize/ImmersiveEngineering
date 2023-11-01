@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.client.ieobj;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nullable;
 import java.util.IdentityHashMap;

@@ -37,11 +37,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -117,7 +117,7 @@ public class AdvBlastFurnaceLogic
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(cap==ForgeCapabilities.ITEM_HANDLER)
+		if(cap==Capabilities.ITEM_HANDLER)
 		{
 			final State state = ctx.getState();
 			if(OUTPUT_CAP.equals(position))
@@ -154,8 +154,8 @@ public class AdvBlastFurnaceLogic
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.innerState = new BlastFurnaceLogic.State(ctx);
-			this.outputRef = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, OUTPUT_OFFSET);
-			this.slagRef = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, SLAG_OUTPUT_OFFSET);
+			this.outputRef = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, OUTPUT_OFFSET);
+			this.slagRef = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, SLAG_OUTPUT_OFFSET);
 			this.inputHandler = new StoredCapability<>(new WrappingItemHandler(
 					getInventory(), true, false, new IntRange(0, 2)
 			));

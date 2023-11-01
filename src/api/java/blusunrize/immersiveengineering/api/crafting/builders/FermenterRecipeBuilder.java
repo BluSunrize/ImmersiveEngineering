@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class FermenterRecipeBuilder extends IEFinishedRecipe<FermenterRecipeBuilder>
 {

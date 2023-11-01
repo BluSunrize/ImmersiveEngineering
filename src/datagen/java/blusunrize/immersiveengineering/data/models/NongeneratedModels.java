@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 /**
  * When wrapping models for splitting/mirroring/etc, we include the "inner" model JSON into the "outer" one. So there is

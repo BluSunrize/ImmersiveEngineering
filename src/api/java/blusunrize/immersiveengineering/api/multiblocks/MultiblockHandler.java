@@ -21,9 +21,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -112,7 +112,7 @@ public class MultiblockHandler
 	public static MultiblockFormEvent postMultiblockFormationEvent(Player player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
 	{
 		MultiblockFormEvent event = new MultiblockFormEvent(player, multiblock, clickedBlock, hammer);
-		MinecraftForge.EVENT_BUS.post(event);
+		NeoForge.EVENT_BUS.post(event);
 		return event;
 	}
 
@@ -120,8 +120,7 @@ public class MultiblockHandler
 	 * This event is fired BEFORE the multiblock is attempted to be formed.<br>
 	 * No checks of the structure have been made. The event simply exists to cancel the formation of the multiblock before it ever happens.
 	 */
-	@Cancelable
-	public static class MultiblockFormEvent extends PlayerEvent
+	public static class MultiblockFormEvent extends PlayerEvent implements ICancellableEvent
 	{
 		private final IMultiblock multiblock;
 		private final BlockPos clickedBlock;

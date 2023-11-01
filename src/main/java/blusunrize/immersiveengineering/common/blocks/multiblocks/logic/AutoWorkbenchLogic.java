@@ -41,11 +41,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -132,9 +132,9 @@ public class AutoWorkbenchLogic
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(cap==ForgeCapabilities.ITEM_HANDLER&&INPUT_POS.equals(position.posInMultiblock()))
+		if(cap==Capabilities.ITEM_HANDLER&&INPUT_POS.equals(position.posInMultiblock()))
 			return ctx.getState().input.cast(ctx);
-		else if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
+		else if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return ctx.getState().energyCap.cast(ctx);
 		else
 			return LazyOptional.empty();

@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import net.minecraftforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
 
 public class IngredientSerializers
 {

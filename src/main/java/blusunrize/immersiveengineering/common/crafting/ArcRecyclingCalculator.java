@@ -28,14 +28,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -128,13 +128,13 @@ public class ArcRecyclingCalculator
 			private void fillInRecipes(MinecraftServer server)
 			{
 				Preconditions.checkState(result.getValue()==null);
-				MinecraftForge.EVENT_BUS.unregister(eventListener.getValue());
+				NeoForge.EVENT_BUS.unregister(eventListener.getValue());
 				Collection<Recipe<?>> recipes = server.getRecipeManager().getRecipes();
 				ArcRecyclingCalculator calculator = new ArcRecyclingCalculator(recipes, server.registryAccess());
 				result.setValue(calculator.run());
 			}
 		});
-		MinecraftForge.EVENT_BUS.register(eventListener.getValue());
+		NeoForge.EVENT_BUS.register(eventListener.getValue());
 		return result;
 	}
 

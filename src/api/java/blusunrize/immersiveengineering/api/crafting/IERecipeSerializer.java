@@ -18,51 +18,54 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.conditions.ICondition.IContext;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+// TODO codecs
 public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeSerializer<R>
 {
 	public abstract ItemStack getIcon();
 
-	@Override
-	public R fromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		if(CraftingHelper.processConditions(json, "conditions", context))
-			return readFromJson(recipeId, json, context);
-		return null;
-	}
+	//@Override
+	//public R fromJson(ResourceLocation recipeId, JsonObject json, IContext context)
+	//{
+	//	if(CraftingHelper.processConditions(json, "conditions", context))
+	//		return readFromJson(recipeId, json, context);
+	//	return null;
+	//}
 
 	@SuppressWarnings("NullableProblems")
-	@Override
-	public R fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject serializedRecipe)
-	{
-		return null;
-	}
+	//@Override
+	//public R fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject serializedRecipe)
+	//{
+	//	return null;
+	//}
 
 	protected static Lazy<ItemStack> readOutput(JsonElement outputObject)
 	{
-		if(outputObject.isJsonObject()&&outputObject.getAsJsonObject().has("item"))
-			return Lazy.of(() -> ShapedRecipe.itemStackFromJson(outputObject.getAsJsonObject()));
-		IngredientWithSize outgredient = IngredientWithSize.deserialize(outputObject);
-		return Lazy.of(() -> IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks()));
+		throw new UnsupportedOperationException();
+		//if(outputObject.isJsonObject()&&outputObject.getAsJsonObject().has("item"))
+		//	return Lazy.of(() -> ShapedRecipe.itemStackFromJson(outputObject.getAsJsonObject()));
+		//IngredientWithSize outgredient = IngredientWithSize.deserialize(outputObject);
+		//return Lazy.of(() -> IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks()));
 	}
 
 	@Nullable
 	protected static StackWithChance readConditionalStackWithChance(JsonElement element, IContext context)
 	{
-		JsonObject object = element.getAsJsonObject();
-		if(CraftingHelper.processConditions(object, "conditions", context))
-		{
-			float chance = GsonHelper.getAsFloat(object, "chance");
-			Lazy<ItemStack> stack = readOutput(object.get("output"));
-			return new StackWithChance(stack, chance);
-		}
-		return null;
+		throw new UnsupportedOperationException();
+		//JsonObject object = element.getAsJsonObject();
+		//if(CraftingHelper.processConditions(object, "conditions", context))
+		//{
+		//	float chance = GsonHelper.getAsFloat(object, "chance");
+		//	Lazy<ItemStack> stack = readOutput(object.get("output"));
+		//	return new StackWithChance(stack, chance);
+		//}
+		//return null;
 	}
 
 	public abstract R readFromJson(ResourceLocation recipeId, JsonObject json, IContext context);

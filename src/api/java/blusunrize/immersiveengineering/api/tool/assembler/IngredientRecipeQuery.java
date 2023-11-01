@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.tool.assembler;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class IngredientRecipeQuery extends RecipeQuery
 {

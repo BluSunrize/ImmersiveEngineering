@@ -34,8 +34,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -81,7 +81,7 @@ public class VoltmeterItem extends IEBaseItem
 		BlockEntity bEntity = world.getBlockEntity(pos);
 		if((player==null||!player.isShiftKeyDown())&&bEntity!=null)
 		{
-			IEnergyStorage energyCap = CapabilityUtils.getCapability(bEntity, ForgeCapabilities.ENERGY);
+			IEnergyStorage energyCap = CapabilityUtils.getCapability(bEntity, Capabilities.ENERGY);
 			if(energyCap!=null)
 			{
 				int max = energyCap.getMaxEnergyStored();

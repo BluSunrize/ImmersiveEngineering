@@ -20,14 +20,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +46,7 @@ public class JerrycanItem extends IEBaseItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		if(ForgeCapabilities.FLUID_HANDLER_ITEM!=null) //cap is null until after ForgeMod.preInit, and Minecraft.init calls this method before that
+		if(Capabilities.FLUID_HANDLER_ITEM!=null) //cap is null until after ForgeMod.preInit, and Minecraft.init calls this method before that
 		{
 			Optional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
 			fsCap.ifPresent(fs -> list.add(IEItemFluidHandler.fluidItemInfoFlavor(fs, jerrycanMaxMB)));
@@ -61,7 +61,7 @@ public class JerrycanItem extends IEBaseItem
 		BlockPos pos = ctx.getClickedPos();
 		ItemStack stack = ctx.getItemInHand();
 		BlockEntity tileEntity = world.getBlockEntity(pos);
-		if(tileEntity==null||!tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).isPresent())
+		if(tileEntity==null||!tileEntity.getCapability(Capabilities.FLUID_HANDLER).isPresent())
 		{
 			Optional<FluidStack> fs = FluidUtil.getFluidContained(stack);
 			if(fs.isPresent()&&Utils.placeFluidBlock(world, pos.relative(ctx.getClickedFace()), fs.get()))

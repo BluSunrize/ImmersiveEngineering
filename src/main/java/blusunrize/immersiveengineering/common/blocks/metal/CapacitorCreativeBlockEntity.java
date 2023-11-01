@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.Cap
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class CapacitorCreativeBlockEntity extends CapacitorBlockEntity
 {

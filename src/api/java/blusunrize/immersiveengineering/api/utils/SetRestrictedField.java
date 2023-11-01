@@ -12,8 +12,8 @@ package blusunrize.immersiveengineering.api.utils;
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.loading.FMLLoader;
 
 import java.util.ArrayList;
 import java.util.List;

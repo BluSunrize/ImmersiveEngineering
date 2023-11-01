@@ -21,8 +21,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.NonNullSupplier;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 

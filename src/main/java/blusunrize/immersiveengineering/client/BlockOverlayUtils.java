@@ -49,7 +49,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 

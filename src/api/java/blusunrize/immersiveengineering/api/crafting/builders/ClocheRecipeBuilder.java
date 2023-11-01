@@ -61,7 +61,7 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 
 	public ClocheRecipeBuilder addSoil(Ingredient ingredient)
 	{
-		return addWriter(jsonObject -> jsonObject.add("soil", ingredient.toJson()));
+		return addWriter(jsonObject -> jsonObject.add("soil", ingredient.toJson(false)));
 	}
 
 	public ClocheRecipeBuilder setRender(ClocheRenderReference renderReference)

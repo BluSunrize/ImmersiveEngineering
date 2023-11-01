@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.Set;
 

@@ -52,13 +52,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
@@ -108,7 +108,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		IEnergyStorage energy = CapabilityUtils.getCapability(stack, ForgeCapabilities.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getCapability(stack, Capabilities.ENERGY);
 		if(energy!=null)
 		{
 			String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
@@ -274,7 +274,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		if(ItemNBTHelper.hasKey(stack, "energy"))
 		{
 			int previousEnergy = ItemNBTHelper.getInt(stack, "energy");
-			IItemHandler inv = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
+			IItemHandler inv = stack.getCapability(Capabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
 			ItemStack newCapacitor = new ItemStack(IEBlocks.MetalDevices.CAPACITOR_LV);
 			ItemNBTHelper.putInt(newCapacitor, EnergyHelper.ENERGY_KEY, previousEnergy);
 			((IItemHandlerModifiable)inv).setStackInSlot(0, newCapacitor);
@@ -288,9 +288,9 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public static ItemStack getCapacitorStatic(ItemStack container)
 	{
-		if(ForgeCapabilities.ITEM_HANDLER==null)
+		if(Capabilities.ITEM_HANDLER==null)
 			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = container.getCapability(ForgeCapabilities.ITEM_HANDLER);
+		LazyOptional<IItemHandler> cap = container.getCapability(Capabilities.ITEM_HANDLER);
 		if(cap.isPresent())
 		{
 			ItemStack capacitor = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
@@ -301,9 +301,9 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public static ItemStack getBannerStatic(ItemStack container)
 	{
-		if(ForgeCapabilities.ITEM_HANDLER==null)
+		if(Capabilities.ITEM_HANDLER==null)
 			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = container.getCapability(ForgeCapabilities.ITEM_HANDLER);
+		LazyOptional<IItemHandler> cap = container.getCapability(Capabilities.ITEM_HANDLER);
 		if(cap.isPresent())
 		{
 			ItemStack banner = cap.map(handler -> handler.getStackInSlot(1)).orElse(ItemStack.EMPTY);
@@ -343,7 +343,7 @@ public class PowerpackItem extends UpgradeableToolItem
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
-					if(capability==ForgeCapabilities.ENERGY)
+					if(capability==Capabilities.ENERGY)
 						return getCapacitorStatic(stack).getCapability(capability, facing);
 					return super.getCapability(capability, facing);
 				}
@@ -373,7 +373,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
 				Utils.unlockIEAdvancement(player, "tools/upgrade_powerpack");

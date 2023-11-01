@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
-import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.ModLoadingStage;
-import net.minecraftforge.fml.ModLoadingWarning;
+import net.neoforged.fml.ModLoader;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModLoadingStage;
+import net.neoforged.fml.ModLoadingWarning;
 import net.minecraftforge.forgespi.language.IModInfo;
 
 /**

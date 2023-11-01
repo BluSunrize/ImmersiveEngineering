@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import net.minecraftforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.EnergyStorage;
 
 public class MutableEnergyStorage extends EnergyStorage implements IMutableEnergyStorage
 {

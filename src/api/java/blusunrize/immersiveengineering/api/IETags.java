@@ -17,8 +17,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.Tags.Blocks;
-import net.minecraftforge.common.Tags.Items;
+import net.neoforged.neoforge.common.Tags.Blocks;
+import net.neoforged.neoforge.common.Tags.Items;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;

@@ -43,15 +43,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.List;
 import java.util.Set;
@@ -137,9 +137,9 @@ public class RefineryLogic
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
 		final State state = ctx.getState();
-		if(cap==ForgeCapabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
+		if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
 			return state.energyCap.cast(ctx);
-		else if(cap==ForgeCapabilities.FLUID_HANDLER)
+		else if(cap==Capabilities.FLUID_HANDLER)
 		{
 			if(FLUID_OUTPUT_CAP.equals(position))
 				return state.outputCap.cast(ctx);
@@ -205,7 +205,7 @@ public class RefineryLogic
 			this.inventory = SlotwiseItemHandler.makeWithGroups(
 					List.of(new IOConstraintGroup(IOConstraint.NO_CONSTRAINT, NUM_SLOTS)), ctx.getMarkDirtyRunnable()
 			);
-			this.fluidOutput = ctx.getCapabilityAt(ForgeCapabilities.FLUID_HANDLER, FLUID_OUTPUT);
+			this.fluidOutput = ctx.getCapabilityAt(Capabilities.FLUID_HANDLER, FLUID_OUTPUT);
 			this.energyCap = new StoredCapability<>(this.energy);
 			this.inputCap = new StoredCapability<>(new ArrayFluidHandler(
 					false, true, markDirty, tanks.leftInput, tanks.rightInput

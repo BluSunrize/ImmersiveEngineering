@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFlui
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.crafting.IIngredientSerializer;
+import net.neoforged.neoforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nonnull;
 

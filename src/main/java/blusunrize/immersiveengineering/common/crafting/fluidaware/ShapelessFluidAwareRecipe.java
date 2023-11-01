@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraftforge.common.util.RecipeMatcher;
+import net.neoforged.neoforge.common.util.RecipeMatcher;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

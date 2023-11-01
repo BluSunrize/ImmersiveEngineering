@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class ConveyorModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T>
 {

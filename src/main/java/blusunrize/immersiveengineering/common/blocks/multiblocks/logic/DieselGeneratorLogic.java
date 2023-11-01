@@ -38,14 +38,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.List;
 import java.util.Objects;
@@ -167,10 +167,10 @@ public class DieselGeneratorLogic
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(cap==ForgeCapabilities.FLUID_HANDLER)
+		if(cap==Capabilities.FLUID_HANDLER)
 			if(FLUID_INPUT_A.equalsOrNullFace(position)||FLUID_INPUT_B.equalsOrNullFace(position))
 				return ctx.getState().fluidCap.cast(ctx);
-		if(cap==ForgeCapabilities.ENERGY)
+		if(cap==Capabilities.ENERGY)
 			if(position.side()==null||(
 					position.side()==RelativeBlockFace.UP&&ENERGY_OUTPUTS.contains(position.posInMultiblock())
 			))
@@ -212,7 +212,7 @@ public class DieselGeneratorLogic
 		{
 			ImmutableList.Builder<CapabilityReference<IEnergyStorage>> outputs = ImmutableList.builder();
 			for(BlockPos pos : ENERGY_OUTPUTS)
-				outputs.add(ctx.getCapabilityAt(ForgeCapabilities.ENERGY, pos, RelativeBlockFace.DOWN));
+				outputs.add(ctx.getCapabilityAt(Capabilities.ENERGY, pos, RelativeBlockFace.DOWN));
 			this.energyOutputs = outputs.build();
 			this.energyView = new StoredCapability<>(NullEnergyStorage.INSTANCE);
 		}

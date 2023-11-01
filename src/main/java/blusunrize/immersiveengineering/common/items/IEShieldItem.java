@@ -48,16 +48,16 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -97,7 +97,7 @@ public class IEShieldItem extends UpgradeableToolItem
 				@Override
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 				{
-					if(capability==ForgeCapabilities.ENERGY)
+					if(capability==Capabilities.ENERGY)
 						return energyStorage.cast();
 					if(capability==CapabilityShader.SHADER_CAPABILITY)
 						return shaders.cast();
@@ -128,7 +128,7 @@ public class IEShieldItem extends UpgradeableToolItem
 	{
 		if(getMaxEnergyStored(stack) > 0)
 		{
-			IEnergyStorage energyStorage = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
+			IEnergyStorage energyStorage = CapabilityUtils.getPresentCapability(stack, Capabilities.ENERGY);
 			String stored = energyStorage.getEnergyStored()+"/"+getMaxEnergyStored(stack);
 			list.add(Component.translatable(Lib.DESC+"info.energyStored", stored));
 		}
@@ -145,7 +145,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			inHand |= ((LivingEntity)ent).getItemInHand(InteractionHand.OFF_HAND)==stack;
 
 		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isBlocking();
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, ForgeCapabilities.ENERGY);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, Capabilities.ENERGY);
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
 			if(getUpgrades(stack).contains("flash_cooldown", Tag.TAG_INT)&&energy.extractEnergy(10, true)==10)

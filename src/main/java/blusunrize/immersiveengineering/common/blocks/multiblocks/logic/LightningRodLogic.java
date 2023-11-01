@@ -36,10 +36,10 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -145,8 +145,8 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 	{
 		final State state = ctx.getState();
 		final BlockPos posInMultiblock = position.posInMultiblock();
-		if(cap==ForgeCapabilities.ENERGY&&(position.side()==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1)))
-			return ForgeCapabilities.ENERGY.orEmpty(cap, state.energyCap.get(ctx));
+		if(cap==Capabilities.ENERGY&&(position.side()==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1)))
+			return Capabilities.ENERGY.orEmpty(cap, state.energyCap.get(ctx));
 		else
 			return LazyOptional.empty();
 	}
@@ -177,7 +177,7 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 			ImmutableList.Builder<CapabilityReference<IEnergyStorage>> builder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.HORIZONTAL)
 				builder.add(capabilitySource.getCapabilityAt(
-						ForgeCapabilities.ENERGY,
+						Capabilities.ENERGY,
 						face.offsetRelative(MASTER_OFFSET, 2),
 						face.getOpposite()
 				));

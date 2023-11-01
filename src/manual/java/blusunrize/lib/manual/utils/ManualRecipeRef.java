@@ -19,6 +19,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -93,21 +94,14 @@ public class ManualRecipeRef
 		{
 			RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
 			R recipe = PrivateAccess.getRecipes(recipeManager, type).get(getRecipeName());
-			if(recipe!=null&&matches(recipe))
+			if(recipe!=null)
 				out.accept(recipe);
 		}
 		else
 			for(R recipe : allRecipes)
-				if(matches(recipe))
+				if(ManualUtils.stackMatchesObject(
+						recipe.getResultItem(Minecraft.getInstance().level.registryAccess()), getResult()
+				))
 					out.accept(recipe);
-	}
-
-	public boolean matches(Recipe<?> rec)
-	{
-		if(isResult()&&ManualUtils.stackMatchesObject(
-				rec.getResultItem(Minecraft.getInstance().level.registryAccess()), getResult()
-		))
-			return true;
-		return isRecipeName()&&getRecipeName().equals(rec.getId());
 	}
 }

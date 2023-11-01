@@ -16,9 +16,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public abstract class UpgradeableToolItem extends InternalStorageItem implements IUpgradeableTool
 {
@@ -64,7 +64,7 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 		if(w.isClientSide)
 			return;
 		clearUpgrades(stack);
-		LazyOptional<IItemHandler> lazyInv = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+		LazyOptional<IItemHandler> lazyInv = stack.getCapability(Capabilities.ITEM_HANDLER, null);
 		lazyInv.ifPresent(inv->
 		{
 			CompoundTag upgradeTag = getUpgradeBase(stack).copy();

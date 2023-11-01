@@ -50,15 +50,15 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -98,7 +98,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
-			this, ForgeCapabilities.FLUID_HANDLER
+			this, Capabilities.FLUID_HANDLER
 	);
 
 	@Override
@@ -372,9 +372,9 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==ForgeCapabilities.ENERGY&&(facing==null||(facing==Direction.UP&&isDummy())))
+		if(capability==Capabilities.ENERGY&&(facing==null||(facing==Direction.UP&&isDummy())))
 			return energyCap.getAndCast();
-		if(capability==ForgeCapabilities.FLUID_HANDLER&&facing!=null&&!isDummy())
+		if(capability==Capabilities.FLUID_HANDLER&&facing!=null&&!isDummy())
 		{
 			if(!sidedFluidHandler.containsKey(facing))
 				sidedFluidHandler.put(facing, registerCapability(new SidedFluidHandler(this, facing)));

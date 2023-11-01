@@ -46,11 +46,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -124,9 +124,9 @@ public class CrusherLogic implements
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
 		final State state = ctx.getState();
-		if(cap==ForgeCapabilities.ITEM_HANDLER&&isInInput(position.posInMultiblock(), false))
+		if(cap==Capabilities.ITEM_HANDLER&&isInInput(position.posInMultiblock(), false))
 			return state.insertionHandler.cast(ctx);
-		if(cap==ForgeCapabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
+		if(cap==Capabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
 			return state.energyHandler.cast(ctx);
 		return LazyOptional.empty();
 	}

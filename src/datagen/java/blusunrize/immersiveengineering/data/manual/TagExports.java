@@ -21,8 +21,8 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedWriter;

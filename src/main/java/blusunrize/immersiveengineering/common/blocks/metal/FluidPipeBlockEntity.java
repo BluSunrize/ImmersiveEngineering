@@ -55,17 +55,17 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -139,7 +139,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 							else
 							{
 								LazyOptional<IFluidHandler> handlerOptional = adjacentTile.getCapability(
-										ForgeCapabilities.FLUID_HANDLER, fd.getOpposite());
+										Capabilities.FLUID_HANDLER, fd.getOpposite());
 								handlerOptional.ifPresent(handler ->
 								{
 									if(handler.getTanks() > 0)
@@ -266,7 +266,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 
 	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = CapabilityReference.forAllNeighbors(
-			this, ForgeCapabilities.FLUID_HANDLER
+			this, Capabilities.FLUID_HANDLER
 	);
 
 	{
@@ -295,7 +295,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==ForgeCapabilities.FLUID_HANDLER&&facing!=null&&sideConfig.getBoolean(facing))
+		if(capability==Capabilities.FLUID_HANDLER&&facing!=null&&sideConfig.getBoolean(facing))
 			return sidedHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}

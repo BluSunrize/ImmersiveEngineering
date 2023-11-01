@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.data.models;
 import blusunrize.immersiveengineering.client.models.mirror.MirroredModelLoader;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import com.google.gson.JsonObject;
-import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MirroredModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T>
 {

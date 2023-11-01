@@ -37,16 +37,16 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -275,11 +275,11 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	public <T>
 	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
-		if(cap==ForgeCapabilities.ITEM_HANDLER&&ITEM_INPUT.equals(position))
+		if(cap==Capabilities.ITEM_HANDLER&&ITEM_INPUT.equals(position))
 			return ctx.getState().itemInput.cast(ctx);
-		else if(cap==ForgeCapabilities.FLUID_HANDLER&&FLUID_INPUT.equals(position))
+		else if(cap==Capabilities.FLUID_HANDLER&&FLUID_INPUT.equals(position))
 			return ctx.getState().fluidInput.cast(ctx);
-		else if(cap==ForgeCapabilities.ENERGY&&ENERGY_INPUT.equals(position))
+		else if(cap==Capabilities.ENERGY&&ENERGY_INPUT.equals(position))
 			return ctx.getState().energyInput.cast(ctx);
 		else
 			return LazyOptional.empty();
@@ -317,7 +317,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			output = ctx.getCapabilityAt(ForgeCapabilities.ITEM_HANDLER, new BlockPos(1, 1, -1), RelativeBlockFace.FRONT);
+			output = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, new BlockPos(1, 1, -1), RelativeBlockFace.FRONT);
 			inventory = SlotwiseItemHandler.makeWithGroups(
 					List.of(new IOConstraintGroup(IOConstraint.NO_CONSTRAINT, INVENTORY_SIZE)),
 					ctx.getMarkDirtyRunnable()

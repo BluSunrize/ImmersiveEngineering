@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.util.compat.top.*;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import mcjty.theoneprobe.api.ITheOneProbe;
-import net.minecraftforge.fml.InterModComms;
+import net.neoforged.fml.InterModComms;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;

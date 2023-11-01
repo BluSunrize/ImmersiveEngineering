@@ -25,6 +25,7 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,10 +36,12 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.FontContext;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -310,19 +313,21 @@ public class ManualUtils
 			return null;
 		int y = GsonHelper.getAsInt(json, "y");
 		if(GsonHelper.isStringValue(json, "item"))
-			return new PositionedItemStack(CraftingHelper.getItemStack(json, true), x, y);
+			return new PositionedItemStack(readItemStack(json), x, y);
 		else if(GsonHelper.isArrayNode(json, "stacks"))
 		{
 			JsonArray arr = json.getAsJsonArray("stacks");
 			List<ItemStack> stacks = new ArrayList<>(arr.size());
 			for(JsonElement stack : arr)
-				stacks.add(CraftingHelper.getItemStack(stack.getAsJsonObject(), true));
+				stacks.add(readItemStack(stack.getAsJsonObject()));
 			return new PositionedItemStack(stacks, x, y);
 		}
 		else
 			try
 			{
-				return new PositionedItemStack(CraftingHelper.getIngredient(json, false), x, y);
+				return new PositionedItemStack(
+						Ingredient.CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst(), x, y
+				);
 			} catch(JsonSyntaxException xcp)
 			{
 				return null;
@@ -337,7 +342,7 @@ public class ManualUtils
 			return new ItemStack(ForgeRegistries.ITEMS.getValue(itemName));
 		}
 		else
-			return CraftingHelper.getItemStack(jsonEle.getAsJsonObject(), true);
+			return readItemStack(jsonEle.getAsJsonObject());
 	}
 
 	public static ManualRecipeRef getRecipeObjFromJson(ManualInstance m, JsonElement jsonEle)
@@ -348,7 +353,7 @@ public class ManualUtils
 			if(GsonHelper.isStringValue(json, "recipe"))
 				return new ManualRecipeRef(ManualUtils.getLocationForManual(GsonHelper.getAsString(json, "recipe"), m));
 			else if(GsonHelper.isStringValue(json, "item"))
-				return new ManualRecipeRef(CraftingHelper.getItemStack(json, true));
+				return new ManualRecipeRef(readItemStack(json));
 		}
 		else if(jsonEle.isJsonArray())
 		{
@@ -391,5 +396,10 @@ public class ManualUtils
 			font = font!=null?font: Minecraft.getInstance().font;
 			graphics.renderItemDecorations(font, stack, x, y, count);
 		}
+	}
+
+	private static ItemStack readItemStack(JsonObject json)
+	{
+		return CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
 	}
 }

@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class NullEnergyStorage implements IEnergyStorage
 {

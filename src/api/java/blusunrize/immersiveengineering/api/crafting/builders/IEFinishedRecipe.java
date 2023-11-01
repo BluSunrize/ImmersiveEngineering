@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -29,11 +30,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -88,7 +89,8 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 			this.conditions = new JsonArray();
 			addWriter(jsonObject -> jsonObject.add("conditions", conditions));
 		}
-		this.conditions.add(CraftingHelper.serialize(condition));
+		// TODO
+		//this.conditions.add(CraftingHelper.serialize(condition));
 		return (R)this;
 	}
 
@@ -138,10 +140,11 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	public R addResult(Ingredient ingredient)
 	{
+		// TODO what is the bool in toJson
 		if(resultArray!=null)
-			return addMultiResult(ingredient.toJson());
+			return addMultiResult(ingredient.toJson(false));
 		else
-			return addWriter(jsonObject -> jsonObject.add("result", ingredient.toJson()));
+			return addWriter(jsonObject -> jsonObject.add("result", ingredient.toJson(false)));
 	}
 
 	public R addResult(IngredientWithSize ingredientWithSize)
@@ -178,7 +181,8 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	public R addMultiInput(Ingredient ingredient)
 	{
-		return addMultiInput(ingredient.toJson());
+		// TODO bool
+		return addMultiInput(ingredient.toJson(false));
 	}
 
 	public R addMultiInput(IngredientWithSize ingredient)
@@ -282,7 +286,8 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	public R addIngredient(String key, Ingredient ingredient)
 	{
-		return addWriter(jsonObject -> jsonObject.add(key, ingredient.toJson()));
+		// TODO bool
+		return addWriter(jsonObject -> jsonObject.add(key, ingredient.toJson(false)));
 	}
 
 	public R addIngredient(String key, IngredientWithSize ingredient)
@@ -332,28 +337,29 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 	}
 
 	@Override
-	public ResourceLocation getId()
+	public ResourceLocation id()
 	{
 		return id;
 	}
 
 	@Override
-	public RecipeSerializer<?> getType()
+	public RecipeSerializer<?> type()
 	{
 		return serializer;
 	}
 
 	@Nullable
 	@Override
-	public JsonObject serializeAdvancement()
+	public JsonObject serializedAdvancement()
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public ResourceLocation getAdvancementId()
+	public AdvancementHolder advancement()
 	{
+		// TODO
 		return null;
 	}
 
@@ -367,8 +373,9 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 		if(conditions.length > 0)
 		{
 			JsonArray conditionArray = new JsonArray();
-			for(ICondition condition : conditions)
-				conditionArray.add(CraftingHelper.serialize(condition));
+			//TODO
+			//for(ICondition condition : conditions)
+			//	conditionArray.add(CraftingHelper.serialize(condition));
 			jsonObject.add("conditions", conditionArray);
 		}
 		return jsonObject;

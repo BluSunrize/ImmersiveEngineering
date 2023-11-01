@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
 import java.util.List;

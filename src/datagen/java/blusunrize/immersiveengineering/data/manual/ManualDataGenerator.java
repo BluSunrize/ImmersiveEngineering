@@ -20,8 +20,8 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.util.Unit;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.component.Comparat
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.Arrays;
 import java.util.List;

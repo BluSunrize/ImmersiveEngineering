@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.fml.InterModComms.IMCMessage;
+import net.neoforged.fml.InterModComms.IMCMessage;
 
 import java.util.HashMap;
 import java.util.function.Consumer;

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import java.util.function.BooleanSupplier;

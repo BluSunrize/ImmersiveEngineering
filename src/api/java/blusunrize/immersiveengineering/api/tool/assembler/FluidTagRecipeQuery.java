@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.api.tool.assembler;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 
 public class FluidTagRecipeQuery extends RecipeQuery
 {

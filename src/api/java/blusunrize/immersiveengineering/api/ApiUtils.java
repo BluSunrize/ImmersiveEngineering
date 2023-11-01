@@ -27,11 +27,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.JsonUtils;
-import net.minecraftforge.common.util.LogicalSidedProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.util.JsonUtils;
+import net.neoforged.neoforge.common.util.LogicalSidedProvider;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.Random;
 

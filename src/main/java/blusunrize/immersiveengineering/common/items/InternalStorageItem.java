@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -43,7 +43,7 @@ public abstract class InternalStorageItem extends IEBaseItem
 
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)
 	{
-		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(Capabilities.ITEM_HANDLER, null);
 		lazyHandler.ifPresent(handler-> {
 			if(handler instanceof IItemHandlerModifiable)
 			{
@@ -59,7 +59,7 @@ public abstract class InternalStorageItem extends IEBaseItem
 
 	public NonNullList<ItemStack> getContainedItems(ItemStack stack)
 	{
-		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER, null);
+		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(Capabilities.ITEM_HANDLER, null);
 		Optional<NonNullList<ItemStack>> ret = lazyHandler.map(handler -> {
 			if(handler instanceof IEItemStackHandler)
 				return ((IEItemStackHandler)handler).getContainedItems();

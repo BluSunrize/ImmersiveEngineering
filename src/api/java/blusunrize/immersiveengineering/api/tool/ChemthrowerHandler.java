@@ -31,10 +31,10 @@ import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -234,7 +234,7 @@ public class ChemthrowerHandler
 				if(!target.level().getBlockState(BlockPos.containing(x, y, z)).isSolid())
 				{
 					EntityTeleportEvent event = new EntityTeleportEvent.EnderEntity(target, x, y, z);
-					if(MinecraftForge.EVENT_BUS.post(event))
+					if(NeoForge.EVENT_BUS.post(event).isCanceled())
 						return;
 					target.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
 					target.level().playLocalSound(target.getX(), target.getY(), target.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F, false);

@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.common.blocks.wooden.LogicUnitBlockEntity
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import static blusunrize.immersiveengineering.common.blocks.wooden.LogicUnitBlockEntity.NUM_SLOTS;
 

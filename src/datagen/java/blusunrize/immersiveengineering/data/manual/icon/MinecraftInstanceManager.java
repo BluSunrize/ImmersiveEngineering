@@ -30,8 +30,8 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.util.datafix.DataFixers;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import sun.misc.Unsafe;
 
 import java.io.File;

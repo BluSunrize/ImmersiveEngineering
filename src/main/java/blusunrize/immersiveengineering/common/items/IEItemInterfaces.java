@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Optional;
 

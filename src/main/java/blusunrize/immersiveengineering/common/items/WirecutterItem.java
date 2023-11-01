@@ -32,9 +32,9 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.ForgeMod;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.ToolAction;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.CustomLoaderBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class SideConfigBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T>
 {
