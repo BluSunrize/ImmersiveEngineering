@@ -13,39 +13,38 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 
 public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnaceRecipe>
 {
+	public static final Codec<BlastFurnaceRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
+			Codec.INT.optionalFieldOf("time", 200).forGetter(r -> r.time),
+			optionalItemOutput("slag").forGetter(r -> r.slag)
+	).apply(inst, BlastFurnaceRecipe::new));
+
+	@Override
+	public Codec<BlastFurnaceRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.BLAST_FURNACE.iconStack();
 	}
 
-	@Override
-	public BlastFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		Lazy<ItemStack> output = readOutput(json.get("result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		int time = GsonHelper.getAsInt(json, "time", 200);
-		Lazy<ItemStack> slag = IESerializableRecipe.LAZY_EMPTY;
-		if(json.has("slag"))
-			slag = readOutput(GsonHelper.getAsJsonObject(json, "slag"));
-		return new BlastFurnaceRecipe(recipeId, output, input, time, slag);
-	}
-
 	@Nullable
 	@Override
-	public BlastFurnaceRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public BlastFurnaceRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		Lazy<ItemStack> output = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
@@ -53,7 +52,7 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 		Lazy<ItemStack> slag = IESerializableRecipe.LAZY_EMPTY;
 		if(buffer.readBoolean())
 			slag = readLazyStack(buffer);
-		return new BlastFurnaceRecipe(recipeId, output, input, time, slag);
+		return new BlastFurnaceRecipe(output, input, time, slag);
 	}
 
 	@Override

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -35,9 +34,9 @@ public class JerrycanRefillRecipe extends CustomRecipe
 	private final int jerrycanIndex = 0;
 	private final int containerIndex = 1;
 
-	public JerrycanRefillRecipe(ResourceLocation resourceLocation)
+	public JerrycanRefillRecipe()
 	{
-		super(resourceLocation, CraftingBookCategory.MISC);
+		super(CraftingBookCategory.MISC);
 	}
 
 	@Override

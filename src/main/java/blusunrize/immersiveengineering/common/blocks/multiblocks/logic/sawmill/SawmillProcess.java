@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import java.util.Set;
@@ -66,17 +65,13 @@ public class SawmillProcess
 			if(!this.stripped&&relative >= STRIP_THRESHOLD)
 			{
 				this.stripped = true;
-				data.recipe.secondaryStripping.stream()
-						.map(Lazy::get)
-						.forEach(secondaries::add);
+				secondaries.addAll(data.recipe.secondaryStripping.get());
 			}
 			if(!this.sawed&&relative >= SAWING_THRESHOLD)
 			{
 				this.sawed = true;
 				if(!sawblade.isEmpty())
-					data.recipe.secondaryOutputs.stream()
-							.map(Lazy::get)
-							.forEach(secondaries::add);
+					secondaries.addAll(data.recipe.secondaryOutputs.get());
 			}
 		}
 		if(relative >= 1)

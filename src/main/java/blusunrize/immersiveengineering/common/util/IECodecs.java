@@ -10,7 +10,11 @@ package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.function.Function;
 
 public class IECodecs
 {
@@ -28,5 +32,14 @@ public class IECodecs
 					Codec.DOUBLE.fieldOf("y").forGetter(Vec3::y),
 					Codec.DOUBLE.fieldOf("z").forGetter(Vec3::z)
 			).apply(instance, Vec3::new)
+	);
+
+	public static final Codec<NonNullList<Ingredient>> NONNULL_INGREDIENTS = Ingredient.LIST_CODEC.xmap(
+			l -> {
+				NonNullList<Ingredient> result = NonNullList.create();
+				result.addAll(l);
+				return result;
+			},
+			Function.identity()
 	);
 }

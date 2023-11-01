@@ -9,10 +9,8 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -26,16 +24,21 @@ public class SawmillRecipe extends MultiblockRecipe
 
 	public final Ingredient input;
 	public final Lazy<ItemStack> stripped;
-	public final NonNullList<Lazy<ItemStack>> secondaryStripping = NonNullList.create();
+	public final Lazy<NonNullList<ItemStack>> secondaryStripping;
 	public final Lazy<ItemStack> output;
-	public final NonNullList<Lazy<ItemStack>> secondaryOutputs = NonNullList.create();
+	public final Lazy<NonNullList<ItemStack>> secondaryOutputs;
 
-	public SawmillRecipe(ResourceLocation id, Lazy<ItemStack> output, Lazy<ItemStack> stripped, Ingredient input, int energy)
+	public SawmillRecipe(
+			Lazy<ItemStack> output, Lazy<ItemStack> stripped, Ingredient input, int energy,
+			Lazy<NonNullList<ItemStack>> secondaryStripping, Lazy<NonNullList<ItemStack>> secondaryOutputs
+	)
 	{
-		super(output, IERecipeTypes.SAWMILL, id);
+		super(output, IERecipeTypes.SAWMILL);
 		this.output = output;
 		this.stripped = stripped;
 		this.input = input;
+		this.secondaryOutputs = secondaryOutputs;
+		this.secondaryStripping = secondaryStripping;
 		setTimeAndEnergy(80, energy);
 
 		setInputList(Lists.newArrayList(this.input));
@@ -53,28 +56,14 @@ public class SawmillRecipe extends MultiblockRecipe
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(stripped.get());
-		for(Lazy<ItemStack> output : secondaryStripping)
-			if(!output.get().isEmpty())
-				list.add(output.get());
+		for(ItemStack output : secondaryStripping.get())
+			if(!output.isEmpty())
+				list.add(output);
 		list.add(output.get());
-		for(Lazy<ItemStack> output : secondaryOutputs)
-			if(!output.get().isEmpty())
-				list.add(output.get());
+		for(ItemStack output : secondaryOutputs.get())
+			if(!output.isEmpty())
+				list.add(output);
 		return list;
-	}
-
-	public SawmillRecipe addToSecondaryStripping(Lazy<ItemStack> output)
-	{
-		Preconditions.checkNotNull(output);
-		secondaryStripping.add(output);
-		return this;
-	}
-
-	public SawmillRecipe addToSecondaryOutput(Lazy<ItemStack> output)
-	{
-		Preconditions.checkNotNull(output);
-		secondaryOutputs.add(output);
-		return this;
 	}
 
 	public static SawmillRecipe findRecipe(Level level, ItemStack input)

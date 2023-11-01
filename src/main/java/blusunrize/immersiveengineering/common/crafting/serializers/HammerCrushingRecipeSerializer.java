@@ -11,23 +11,32 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.crafting.LazyShapelessRecipe;
-import blusunrize.immersiveengineering.common.register.IEItems;
-import com.google.gson.JsonObject;
+import blusunrize.immersiveengineering.common.util.IECodecs;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 
 public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShapelessRecipe>
 {
+	private final Codec<LazyShapelessRecipe> codec = RecordCodecBuilder.create(inst -> inst.group(
+			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(LazyShapelessRecipe::getResult),
+			IECodecs.NONNULL_INGREDIENTS.fieldOf("inputs").forGetter(ShapelessRecipe::getIngredients)
+	).apply(inst, (result, ingredients) -> new LazyShapelessRecipe("", result, ingredients, this)));
+
+	@Override
+	public Codec<LazyShapelessRecipe> codec()
+	{
+		return codec;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
@@ -36,24 +45,14 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShape
 
 	@Nonnull
 	@Override
-	public LazyShapelessRecipe readFromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json, IContext context)
-	{
-		Lazy<ItemStack> output = readOutput(json.get("result"));
-		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
-		NonNullList<Ingredient> ingredients = NonNullList.of(Ingredient.EMPTY, input, Ingredient.of(IEItems.Tools.HAMMER));
-		return new LazyShapelessRecipe(recipeId, "", output, ingredients, this);
-	}
-
-	@Nonnull
-	@Override
-	public LazyShapelessRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
+	public LazyShapelessRecipe fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
 		int count = buffer.readInt();
 		NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.EMPTY);
 		for(int i = 0; i < count; i++)
 			ingredients.set(i, Ingredient.fromNetwork(buffer));
 		Lazy<ItemStack> output = readLazyStack(buffer);
-		return new LazyShapelessRecipe(recipeId, "", output, ingredients, this);
+		return new LazyShapelessRecipe("", output, ingredients, this);
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShape
 		NonNullList<Ingredient> ingredients = recipe.getIngredients();
 		buffer.writeInt(ingredients.size());
 		for(Ingredient ingredient : ingredients)
-			CraftingHelper.write(buffer, ingredient);
+			ingredient.toNetwork(buffer);
 		buffer.writeItem(recipe.getResultItem(null));
 	}
 }

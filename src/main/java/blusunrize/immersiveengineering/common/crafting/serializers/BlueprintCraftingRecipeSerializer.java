@@ -11,52 +11,48 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<BlueprintCraftingRecipe>
 {
+	public static final Codec<BlueprintCraftingRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Codec.STRING.fieldOf("category").forGetter(r -> r.blueprintCategory),
+			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			IngredientWithSize.CODEC.listOf().fieldOf("inputs").forGetter(r -> r.inputs)
+	).apply(inst, BlueprintCraftingRecipe::new));
+
+	@Override
+	public Codec<BlueprintCraftingRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return new ItemStack(WoodenDevices.WORKBENCH);
 	}
 
-	@Override
-	public BlueprintCraftingRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		String category = GsonHelper.getAsString(json, "category");
-		Lazy<ItemStack> output = readOutput(json.get("result"));
-		JsonArray inputs = json.getAsJsonArray("inputs");
-		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
-		for(int i = 0; i < ingredients.length; i++)
-			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
-		return IEServerConfig.MACHINES.autoWorkbenchConfig.apply(
-				new BlueprintCraftingRecipe(recipeId, category, output, ingredients)
-		);
-	}
-
 	@Nullable
 	@Override
-	public BlueprintCraftingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public BlueprintCraftingRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		String category = buffer.readUtf();
 		Lazy<ItemStack> output = readLazyStack(buffer);
 		int inputCount = buffer.readInt();
-		IngredientWithSize[] ingredients = new IngredientWithSize[inputCount];
-		for(int i = 0; i < ingredients.length; i++)
-			ingredients[i] = IngredientWithSize.read(buffer);
-		return new BlueprintCraftingRecipe(recipeId, category, output, ingredients);
+		List<IngredientWithSize> ingredients = new ArrayList<>();
+		for(int i = 0; i < inputCount; i++)
+			ingredients.add(IngredientWithSize.read(buffer));
+		return new BlueprintCraftingRecipe(category, output, ingredients);
 	}
 
 	@Override
@@ -64,7 +60,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	{
 		buffer.writeUtf(recipe.blueprintCategory);
 		writeLazyStack(buffer, recipe.output);
-		buffer.writeInt(recipe.inputs.length);
+		buffer.writeInt(recipe.inputs.size());
 		for(IngredientWithSize ingredient : recipe.inputs)
 			ingredient.write(buffer);
 	}

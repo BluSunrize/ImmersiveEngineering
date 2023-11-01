@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
@@ -41,9 +40,9 @@ public class FermenterRecipe extends MultiblockRecipe
 	@Nonnull
 	public final Lazy<ItemStack> itemOutput;
 
-	public FermenterRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull Lazy<ItemStack> itemOutput, IngredientWithSize input, int energy)
+	public FermenterRecipe(FluidStack fluidOutput, @Nonnull Lazy<ItemStack> itemOutput, IngredientWithSize input, int energy)
 	{
-		super(itemOutput, IERecipeTypes.FERMENTER, id);
+		super(itemOutput, IERecipeTypes.FERMENTER);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;

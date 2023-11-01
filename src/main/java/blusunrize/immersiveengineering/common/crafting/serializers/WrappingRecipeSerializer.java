@@ -9,9 +9,8 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -25,6 +24,7 @@ public class WrappingRecipeSerializer<WrappingType extends Recipe<?>, WrappedTyp
 	private final RecipeSerializer<WrappedType> inner;
 	private final Function<WrappingType, WrappedType> unwrap;
 	private final Function<WrappedType, WrappingType> wrap;
+	private final Codec<WrappingType> codec;
 
 	public WrappingRecipeSerializer(
 			RecipeSerializer<WrappedType> inner, Function<WrappingType, WrappedType> unwrap,
@@ -34,20 +34,20 @@ public class WrappingRecipeSerializer<WrappingType extends Recipe<?>, WrappedTyp
 		this.inner = inner;
 		this.unwrap = unwrap;
 		this.wrap = wrap;
+		this.codec = inner.codec().xmap(wrap, unwrap);
 	}
 
-	@Nonnull
 	@Override
-	public WrappingType fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
+	public Codec<WrappingType> codec()
 	{
-		return wrap.apply(inner.fromJson(recipeId, json));
+		return codec;
 	}
 
 	@Nullable
 	@Override
-	public WrappingType fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
+	public WrappingType fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
-		WrappedType vanilla = inner.fromNetwork(recipeId, buffer);
+		WrappedType vanilla = inner.fromNetwork(buffer);
 		if(vanilla!=null)
 			return wrap.apply(vanilla);
 		else

@@ -39,10 +39,10 @@ public class ManualElementMixer extends ManualElementIECrafting
 			for(int iFluid = 0; iFluid < fluids.length; iFluid++)
 				if(recipe.fluidOutput.getFluid()==fluids[iFluid])
 				{
-					int h = (int)Math.ceil(recipe.itemInputs.length/2f);
+					int h = (int)Math.ceil(recipe.itemInputs.size()/2f);
 					int middle = (int)(h/2f*18);
 
-					PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.itemInputs.length+2];
+					PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.itemInputs.size()+2];
 
 					// Fluid input
 					List<ItemStack> inputBucket = recipe.fluidInput.getMatchingFluidStacks().stream()
@@ -52,9 +52,9 @@ public class ManualElementMixer extends ManualElementIECrafting
 
 					// Item inputs
 					int i = 0;
-					for(; i < recipe.itemInputs.length; i++)
+					for(; i < recipe.itemInputs.size(); i++)
 						pIngredients[1+i] = new PositionedItemStack(
-								recipe.itemInputs[i].getMatchingStacks(),
+								recipe.itemInputs.get(i).getMatchingStacks(),
 								32+i%2*18,
 								i/2*18
 						);

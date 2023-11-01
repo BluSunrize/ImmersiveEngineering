@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidA
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -30,14 +29,12 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 
 	private final NonNullList<Ingredient> recipeItems;
 	private final ItemStack recipeOutput;
-	private final ResourceLocation id;
 	private final String group;
 
 	public AbstractFluidAwareRecipe(
-			ResourceLocation idIn, String groupIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn
+			String groupIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn
 	)
 	{
-		this.id = idIn;
 		this.group = groupIn;
 		this.recipeItems = recipeItemsIn;
 		this.recipeOutput = recipeOutputIn;

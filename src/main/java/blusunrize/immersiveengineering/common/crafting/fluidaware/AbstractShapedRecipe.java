@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.IMatchLocation;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -31,11 +30,11 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 	private final CraftingBookCategory category;
 
 	public AbstractShapedRecipe(
-			ResourceLocation idIn, String groupIn, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn,
+			String groupIn, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn,
 			CraftingBookCategory category
 	)
 	{
-		super(idIn, groupIn, recipeItemsIn, recipeOutputIn);
+		super(groupIn, recipeItemsIn, recipeOutputIn);
 		this.recipeWidth = recipeWidth;
 		this.recipeHeight = recipeHeight;
 		this.category = category;
@@ -66,7 +65,7 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 
 	public ShapedRecipe toVanilla()
 	{
-		return new ShapedRecipe(getId(), getGroup(), category, getWidth(), getHeight(), getIngredients(), getResultItem(null));
+		return new ShapedRecipe(getGroup(), category, getWidth(), getHeight(), getIngredients(), getResultItem(null));
 	}
 
 	@Override

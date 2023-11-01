@@ -19,14 +19,12 @@ import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.ShapelessFluidAwareRecipe;
 import blusunrize.immersiveengineering.common.crafting.serializers.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 import net.neoforged.neoforge.registries.RegistryObject;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RecipeSerializers
@@ -158,7 +156,7 @@ public class RecipeSerializers
 		);
 	}
 
-	private static <T extends Recipe<?>> Supplier<SimpleRecipeSerializer<T>> special(Function<ResourceLocation, T> create)
+	private static <T extends Recipe<?>> Supplier<SimpleRecipeSerializer<T>> special(Supplier<T> create)
 	{
 		return () -> new SimpleRecipeSerializer<>(create);
 	}

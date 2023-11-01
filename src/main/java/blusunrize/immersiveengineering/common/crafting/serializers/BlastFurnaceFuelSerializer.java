@@ -11,39 +11,40 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.register.IEItems;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 
 import javax.annotation.Nullable;
 
 public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceFuel>
 {
+	public static final Codec<BlastFurnaceFuel> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Ingredient.CODEC.fieldOf("input").forGetter(f -> f.input),
+			Codec.INT.fieldOf("time").forGetter(f -> f.burnTime)
+	).apply(inst, BlastFurnaceFuel::new));
+
+	@Override
+	public Codec<BlastFurnaceFuel> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return new ItemStack(IEItems.Ingredients.COAL_COKE);
 	}
 
-	@Override
-	public BlastFurnaceFuel readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		Ingredient input = Ingredient.fromJson(json.getAsJsonObject("input"));
-		int time = GsonHelper.getAsInt(json, "time", 1200);
-		return new BlastFurnaceFuel(recipeId, input, time);
-	}
-
 	@Nullable
 	@Override
-	public BlastFurnaceFuel fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public BlastFurnaceFuel fromNetwork(FriendlyByteBuf buffer)
 	{
 		Ingredient input = Ingredient.fromNetwork(buffer);
 		int time = buffer.readInt();
-		return new BlastFurnaceFuel(recipeId, input, time);
+		return new BlastFurnaceFuel(input, time);
 	}
 
 	@Override

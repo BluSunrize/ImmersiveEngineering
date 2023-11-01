@@ -12,6 +12,9 @@ package blusunrize.immersiveengineering.api.crafting;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -70,6 +73,12 @@ public interface ClocheRenderFunction
 
 	class ClocheRenderReference
 	{
+		// TODO hack, but maybe ok here?
+		public static final Codec<ClocheRenderReference> CODEC = Codec.PASSTHROUGH.xmap(
+				dyn -> deserialize(dyn.cast(JsonOps.INSTANCE).getAsJsonObject()),
+				ref -> new Dynamic<>(JsonOps.INSTANCE, ref.serialize())
+		);
+
 		private final String type;
 		private final Block block;
 

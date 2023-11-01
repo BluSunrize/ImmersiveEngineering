@@ -141,6 +141,7 @@ public class IEContent
 		IEMenuTypes.REGISTER.register(modBus);
 		IECreativeTabs.REGISTER.register(modBus);
 		IEEntityDataSerializers.REGISTER.register(modBus);
+		IEIngredients.REGISTER.register(modBus);
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();

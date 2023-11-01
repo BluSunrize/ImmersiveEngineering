@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine;
 
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -38,8 +37,7 @@ import java.util.function.BooleanSupplier;
 public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRecipe>
 {
 	private static final BottlingMachineRecipe DUMMY_RECIPE = new BottlingMachineRecipe(
-			new ResourceLocation(Lib.MODID, "bottling_dummy_recipe"),
-			List.of(Lazy.of(() -> ItemStack.EMPTY)), IngredientWithSize.of(ItemStack.EMPTY),
+			Lazy.of(NonNullList::create), IngredientWithSize.of(ItemStack.EMPTY),
 			new FluidTagInput(FluidTags.WATER, 0)
 	);
 	private static final float TRANSFORMATION_POINT = 0.45f;

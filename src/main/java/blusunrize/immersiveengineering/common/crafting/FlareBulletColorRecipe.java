@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -28,9 +27,9 @@ import javax.annotation.Nonnull;
 
 public class FlareBulletColorRecipe extends CustomRecipe
 {
-	public FlareBulletColorRecipe(ResourceLocation resourceLocation)
+	public FlareBulletColorRecipe()
 	{
-		super(resourceLocation, CraftingBookCategory.MISC);
+		super(CraftingBookCategory.MISC);
 	}
 
 	@Override

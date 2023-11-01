@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -33,9 +32,9 @@ public class AlloyRecipe extends IESerializableRecipe
 	public final Lazy<ItemStack> output;
 	public final int time;
 
-	public AlloyRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input0, IngredientWithSize input1, int time)
+	public AlloyRecipe(Lazy<ItemStack> output, IngredientWithSize input0, IngredientWithSize input1, int time)
 	{
-		super(output, IERecipeTypes.ALLOY, id);
+		super(output, IERecipeTypes.ALLOY);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;

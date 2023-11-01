@@ -12,76 +12,53 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BottlingMachineRecipeSerializer extends IERecipeSerializer<BottlingMachineRecipe>
 {
+	public static final Codec<BottlingMachineRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+					LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.output),
+					IngredientWithSize.CODEC.listOf().fieldOf("inputs").forGetter(r -> r.inputs),
+					FluidTagInput.CODEC.fieldOf("fluid").forGetter(r -> r.fluidInput)
+			).apply(inst, BottlingMachineRecipe::new)
+	);
+
+	@Override
+	public Codec<BottlingMachineRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.BOTTLING_MACHINE.iconStack();
 	}
 
-	@Override
-	public BottlingMachineRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		JsonArray results = json.getAsJsonArray("results");
-		List<Lazy<ItemStack>> outputs = new ArrayList<>();
-		for(int i = 0; i < results.size(); i++)
-			outputs.add(readOutput(results.get(i)));
-
-		IngredientWithSize[] ingredients;
-		if(json.has("input"))
-			ingredients = new IngredientWithSize[]{
-					IngredientWithSize.deserialize(GsonHelper.getAsJsonObject(json, "input"))
-			};
-		else
-		{
-			JsonArray inputs = json.getAsJsonArray("inputs");
-			ingredients = new IngredientWithSize[inputs.size()];
-			for(int i = 0; i < ingredients.length; i++)
-				ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
-		}
-		FluidTagInput fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
-		return IEServerConfig.MACHINES.bottlingMachineConfig.apply(
-				new BottlingMachineRecipe(recipeId, outputs, ingredients, fluidInput)
-		);
-	}
-
 	@Nullable
 	@Override
-	public BottlingMachineRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public BottlingMachineRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		List<Lazy<ItemStack>> outputs = PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack);
-		int inputCount = buffer.readInt();
-		IngredientWithSize[] ingredients = new IngredientWithSize[inputCount];
-		for(int i = 0; i < ingredients.length; i++)
-			ingredients[i] = IngredientWithSize.read(buffer);
+		List<IngredientWithSize> ingredients = PacketUtils.readList(buffer, IngredientWithSize::read);
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
-		return new BottlingMachineRecipe(recipeId, outputs, ingredients, fluidInput);
+		return new BottlingMachineRecipe(combineLazies(outputs), ingredients, fluidInput);
 	}
 
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, BottlingMachineRecipe recipe)
 	{
 		PacketUtils.writeListReverse(buffer, recipe.output.get(), FriendlyByteBuf::writeItem);
-		buffer.writeInt(recipe.inputs.length);
-		for(IngredientWithSize ingredient : recipe.inputs)
-			ingredient.write(buffer);
+		PacketUtils.writeList(buffer, recipe.inputs, IngredientWithSize::write);
 		recipe.fluidInput.write(buffer);
 	}
 }

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -23,9 +22,9 @@ import javax.annotation.Nonnull;
 
 public class RevolverCycleRecipe extends CustomRecipe
 {
-	public RevolverCycleRecipe(ResourceLocation id)
+	public RevolverCycleRecipe()
 	{
-		super(id, CraftingBookCategory.MISC);
+		super(CraftingBookCategory.MISC);
 	}
 
 	@Override

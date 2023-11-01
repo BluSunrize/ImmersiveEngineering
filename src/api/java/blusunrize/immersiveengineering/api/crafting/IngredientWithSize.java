@@ -11,6 +11,9 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -26,6 +29,12 @@ import java.util.function.Predicate;
 
 public class IngredientWithSize implements Predicate<ItemStack>
 {
+	public static final Codec<IngredientWithSize> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+					Ingredient.CODEC.fieldOf("basePredicate").forGetter(i -> i.basePredicate),
+					Codec.INT.fieldOf("count").forGetter(i -> i.count)
+			).apply(inst, IngredientWithSize::new)
+	);
+
 	public static final SetRestrictedField<IIngredientWithSizeSerializer> SERIALIZER = SetRestrictedField.common();
 	protected final Ingredient basePredicate;
 	protected final int count;
@@ -49,11 +58,6 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	public IngredientWithSize(TagKey<Item> basePredicate)
 	{
 		this(basePredicate, 1);
-	}
-
-	public static IngredientWithSize deserialize(JsonElement input)
-	{
-		return SERIALIZER.getValue().parse(input);
 	}
 
 	public static IngredientWithSize read(FriendlyByteBuf input)
@@ -88,7 +92,8 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	@Nonnull
 	public JsonElement serialize()
 	{
-		return SERIALIZER.getValue().write(this);
+		// TODO probably remove
+		return CODEC.encodeStart(JsonOps.INSTANCE, this).result().orElseThrow();
 	}
 
 	public boolean hasNoMatchingItems()

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -35,7 +33,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;
-	public final IngredientWithSize[] additives;
+	public final List<IngredientWithSize> additives;
 	public final Lazy<NonNullList<ItemStack>> output;
 	public final List<StackWithChance> secondaryOutputs;
 	@Nonnull
@@ -46,17 +44,14 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ARC_FURNACE);
 
 	public ArcFurnaceRecipe(
-			ResourceLocation id,
-			List<Lazy<ItemStack>> output, @Nonnull Lazy<ItemStack> slag, List<StackWithChance> secondaryOutputs,
+			Lazy<NonNullList<ItemStack>> output, @Nonnull Lazy<ItemStack> slag, List<StackWithChance> secondaryOutputs,
 			int time, int energy,
-			IngredientWithSize input, IngredientWithSize... additives
+			IngredientWithSize input,
+			List<IngredientWithSize> additives
 	)
 	{
-		super(output.get(0), IERecipeTypes.ARC_FURNACE, id);
-		this.output = Lazy.of(() -> output.stream()
-				.map(Lazy::get)
-				.collect(Collectors.toCollection(NonNullList::create))
-		);
+		super(Lazy.of(() -> output.get().get(0)), IERecipeTypes.ARC_FURNACE);
+		this.output = output;
 		this.secondaryOutputs = secondaryOutputs;
 		this.input = input;
 		this.slag = slag;
@@ -64,7 +59,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		this.additives = additives;
 
 		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);
-		if(this.additives.length > 0)
+		if(!this.additives.isEmpty())
 			inputList.addAll(Lists.newArrayList(this.additives));
 		setInputListWithSizes(inputList);
 		this.outputList = this.output;

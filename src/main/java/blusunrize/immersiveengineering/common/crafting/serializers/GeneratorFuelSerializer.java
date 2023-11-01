@@ -12,14 +12,14 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -31,28 +31,31 @@ import static blusunrize.immersiveengineering.api.crafting.builders.GeneratorFue
 
 public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 {
+	public static final Codec<GeneratorFuel> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			TagKey.codec(Registries.FLUID).optionalFieldOf(FLUID_TAG_KEY).forGetter(f -> f.getFluidsRaw().leftOptional()),
+			BuiltInRegistries.FLUID.byNameCodec().listOf().optionalFieldOf("fluidList").forGetter(f -> f.getFluidsRaw().rightOptional()),
+			Codec.INT.fieldOf(BURN_TIME_KEY).forGetter(GeneratorFuel::getBurnTime)
+	).apply(inst, GeneratorFuel::new));
+
+	@Override
+	public Codec<GeneratorFuel> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.DIESEL_GENERATOR.iconStack();
 	}
 
-	@Override
-	public GeneratorFuel readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		ResourceLocation tagName = new ResourceLocation(json.get(FLUID_TAG_KEY).getAsString());
-		TagKey<Fluid> tag = TagKey.create(Registries.FLUID, tagName);
-		int amount = json.get(BURN_TIME_KEY).getAsInt();
-		return new GeneratorFuel(recipeId, tag, amount);
-	}
-
 	@Nullable
 	@Override
-	public GeneratorFuel fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
+	public GeneratorFuel fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
 		List<Fluid> fluids = PacketUtils.readList(buffer, buf -> buf.readRegistryIdUnsafe(ForgeRegistries.FLUIDS));
 		int burnTime = buffer.readInt();
-		return new GeneratorFuel(recipeId, fluids, burnTime);
+		return new GeneratorFuel(fluids, burnTime);
 	}
 
 	@Override

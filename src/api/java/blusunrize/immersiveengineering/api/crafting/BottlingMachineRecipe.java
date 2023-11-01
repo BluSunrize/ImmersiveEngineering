@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -22,7 +21,6 @@ import net.neoforged.neoforge.registries.RegistryObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author BluSunrize - 14.01.2016
@@ -34,17 +32,14 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
 	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BOTTLING_MACHINE);
 
-	public final IngredientWithSize[] inputs;
+	public final List<IngredientWithSize> inputs;
 	public final FluidTagInput fluidInput;
 	public final Lazy<NonNullList<ItemStack>> output;
 
-	public BottlingMachineRecipe(ResourceLocation id, List<Lazy<ItemStack>> output, IngredientWithSize[] inputs, FluidTagInput fluidInput)
+	public BottlingMachineRecipe(Lazy<NonNullList<ItemStack>> output, List<IngredientWithSize> inputs, FluidTagInput fluidInput)
 	{
-		super(output.get(0), IERecipeTypes.BOTTLING_MACHINE, id);
-		this.output = Lazy.of(() -> output.stream()
-				.map(Lazy::get)
-				.collect(Collectors.toCollection(NonNullList::create))
-		);
+		super(Lazy.of(() -> output.get().get(0)), IERecipeTypes.BOTTLING_MACHINE);
+		this.output = output;
 		this.inputs = inputs;
 		this.fluidInput = fluidInput;
 		setTimeAndEnergy(60, 480);
@@ -54,9 +49,9 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		this.outputList = this.output;
 	}
 
-	public BottlingMachineRecipe(ResourceLocation id, List<Lazy<ItemStack>> output, IngredientWithSize input, FluidTagInput fluidInput)
+	public BottlingMachineRecipe(Lazy<NonNullList<ItemStack>> output, IngredientWithSize input, FluidTagInput fluidInput)
 	{
-		this(id, output, new IngredientWithSize[]{input}, fluidInput);
+		this(output, List.of(input), fluidInput);
 	}
 
 	@Override
@@ -92,12 +87,12 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public NonNullList<ItemStack> getDisplayStacks(ItemStack[] input)
 	{
-		NonNullList<ItemStack> list = NonNullList.withSize(this.inputs.length, ItemStack.EMPTY);
-		for(int i = 0; i < this.inputs.length; i++)
+		NonNullList<ItemStack> list = NonNullList.withSize(this.inputs.size(), ItemStack.EMPTY);
+		for(int i = 0; i < this.inputs.size(); i++)
 			for(ItemStack stack : input)
-				if(this.inputs[i].test(stack))
+				if(this.inputs.get(i).test(stack))
 				{
-					list.set(i, ItemHandlerHelper.copyStackWithSize(stack, this.inputs[i].getCount()));
+					list.set(i, ItemHandlerHelper.copyStackWithSize(stack, this.inputs.get(i).getCount()));
 					break;
 				}
 		return list;

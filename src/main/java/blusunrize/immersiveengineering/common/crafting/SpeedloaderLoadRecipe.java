@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -28,9 +27,9 @@ public class SpeedloaderLoadRecipe extends CustomRecipe
 {
 	private final byte[] offsetPattern = {0, 1, 1, 1, 0, -1, -1, -1};
 
-	public SpeedloaderLoadRecipe(ResourceLocation resourceLocation)
+	public SpeedloaderLoadRecipe()
 	{
-		super(resourceLocation, CraftingBookCategory.MISC);
+		super(CraftingBookCategory.MISC);
 	}
 
 	@Override

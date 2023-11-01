@@ -13,11 +13,9 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -40,10 +38,17 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		return ret;
 	});
 
-	public ArcRecyclingRecipe(ResourceLocation id, Supplier<RegistryAccess> tags, List<Pair<Lazy<ItemStack>, Double>> outputs, IngredientWithSize input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(Supplier<RegistryAccess> tags, List<Pair<Lazy<ItemStack>, Double>> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
-		super(id, outputs.stream().map(Pair::getFirst).collect(NonNullList::create, List::add, AbstractCollection::addAll),
-				LAZY_EMPTY, ImmutableList.of(), time, energyPerTick, input);
+		super(
+				Lazy.of(() -> outputs.stream().map(p -> p.getFirst().get()).collect(NonNullList::create, List::add, AbstractCollection::addAll)),
+				LAZY_EMPTY,
+				List.of(),
+				time,
+				energyPerTick,
+				input,
+				List.of()
+		);
 		this.tags = tags;
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");

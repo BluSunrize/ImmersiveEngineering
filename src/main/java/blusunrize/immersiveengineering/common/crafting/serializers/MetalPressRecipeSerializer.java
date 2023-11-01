@@ -11,15 +11,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
@@ -27,33 +25,34 @@ import javax.annotation.Nullable;
 
 public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRecipe>
 {
+	public static final Codec<MetalPressRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
+			ForgeRegistries.ITEMS.getCodec().fieldOf("mold").forGetter(r -> r.mold),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+	).apply(inst, MetalPressRecipe::new));
+
+	@Override
+	public Codec<MetalPressRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.METAL_PRESS.iconStack();
 	}
 
-	@Override
-	public MetalPressRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		Lazy<ItemStack> output = readOutput(json.get("result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		Item mold = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(json, "mold")));
-		int energy = GsonHelper.getAsInt(json, "energy");
-		return IEServerConfig.MACHINES.metalPressConfig.apply(
-				new MetalPressRecipe(recipeId, output, input, mold, energy)
-		);
-	}
-
 	@Nullable
 	@Override
-	public MetalPressRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public MetalPressRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		Lazy<ItemStack> output = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		Item mold = buffer.readRegistryIdSafe(Item.class);
 		int energy = buffer.readInt();
-		return new MetalPressRecipe(recipeId, output, input, mold, energy);
+		return new MetalPressRecipe(output, input, mold, energy);
 	}
 
 	@Override

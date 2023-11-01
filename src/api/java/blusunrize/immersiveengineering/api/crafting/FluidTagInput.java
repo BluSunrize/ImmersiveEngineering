@@ -18,8 +18,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -44,6 +46,12 @@ import java.util.stream.Collectors;
 
 public class FluidTagInput implements Predicate<FluidStack>
 {
+	//TODO convert into proper codec stuff
+	public static final Codec<FluidTagInput> CODEC = Codec.PASSTHROUGH.xmap(
+			dyn -> FluidTagInput.deserialize(dyn.cast(JsonOps.INSTANCE)),
+			fti -> new Dynamic<>(JsonOps.INSTANCE, fti.serialize())
+	);
+
 	// Generally left on the server, right on the client
 	// TODO FastEither
 	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;

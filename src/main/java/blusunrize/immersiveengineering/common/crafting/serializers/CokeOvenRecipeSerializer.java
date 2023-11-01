@@ -12,43 +12,44 @@ import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 
 public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 {
+	public static final Codec<CokeOvenRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
+			Codec.INT.optionalFieldOf("time", 200).forGetter(r -> r.time),
+			Codec.INT.fieldOf("creosote").forGetter(r -> r.creosoteOutput)
+	).apply(inst, CokeOvenRecipe::new));
+
+	@Override
+	public Codec<CokeOvenRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.COKE_OVEN.iconStack();
 	}
 
-	@Override
-	public CokeOvenRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		Lazy<ItemStack> output = readOutput(json.get("result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		int time = GsonHelper.getAsInt(json, "time");
-		int oil = GsonHelper.getAsInt(json, "creosote");
-		return new CokeOvenRecipe(recipeId, output, input, time, oil);
-	}
-
 	@Nullable
 	@Override
-	public CokeOvenRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public CokeOvenRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		Lazy<ItemStack> output = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		int time = buffer.readInt();
 		int oil = buffer.readInt();
-		return new CokeOvenRecipe(recipeId, output, input, time, oil);
+		return new CokeOvenRecipe(output, input, time, oil);
 	}
 
 	@Override

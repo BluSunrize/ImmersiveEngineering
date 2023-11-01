@@ -8,59 +8,48 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 {
+	public static final Codec<MixerRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.fluidOutput),
+			FluidTagInput.CODEC.fieldOf("fluid").forGetter(r -> r.fluidInput),
+			IngredientWithSize.CODEC.listOf().fieldOf("input").forGetter(r -> r.itemInputs),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+	).apply(inst, MixerRecipe::new));
+
+	@Override
+	public Codec<MixerRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.MIXER.iconStack();
 	}
 
-	@Override
-	public MixerRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		FluidStack fluidOutput = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "result"));
-		FluidTagInput fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
-		JsonArray inputs = json.getAsJsonArray("inputs");
-		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
-		for(int i = 0; i < ingredients.length; i++)
-			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
-		int energy = GsonHelper.getAsInt(json, "energy");
-		return IEServerConfig.MACHINES.mixerConfig.apply(
-				new MixerRecipe(recipeId, fluidOutput, fluidInput, ingredients, energy)
-		);
-	}
-
 	@Nullable
 	@Override
-	public MixerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public MixerRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
-		int ingredientCount = buffer.readInt();
-		IngredientWithSize[] itemInputs = new IngredientWithSize[ingredientCount];
-		for(int i = 0; i < ingredientCount; i++)
-			itemInputs[i] = IngredientWithSize.read(buffer);
+		List<IngredientWithSize> itemInputs = PacketUtils.readList(buffer, IngredientWithSize::read);
 		int energy = buffer.readInt();
-		return new MixerRecipe(recipeId, fluidOutput, fluidInput, itemInputs, energy);
+		return new MixerRecipe(fluidOutput, fluidInput, itemInputs, energy);
 	}
 
 	@Override
@@ -68,9 +57,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	{
 		buffer.writeFluidStack(recipe.fluidOutput);
 		recipe.fluidInput.write(buffer);
-		buffer.writeInt(recipe.itemInputs.length);
-		for(IngredientWithSize input : recipe.itemInputs)
-			input.write(buffer);
+		PacketUtils.writeList(buffer, recipe.itemInputs, IngredientWithSize::write);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

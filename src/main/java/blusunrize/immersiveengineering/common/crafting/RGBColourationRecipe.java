@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -30,13 +29,11 @@ public class RGBColourationRecipe implements CraftingRecipe
 {
 	private final Ingredient target;
 	private final String colorKey;
-	private final ResourceLocation id;
 
-	public RGBColourationRecipe(Ingredient target, String colorKey, ResourceLocation id)
+	public RGBColourationRecipe(Ingredient target, String colorKey)
 	{
 		this.target = target;
 		this.colorKey = colorKey;
-		this.id = id;
 	}
 
 	@Override
@@ -132,13 +129,6 @@ public class RGBColourationRecipe implements CraftingRecipe
 	public ItemStack getResultItem(RegistryAccess access)
 	{
 		return ItemStack.EMPTY;
-	}
-
-	@Nonnull
-	@Override
-	public ResourceLocation getId()
-	{
-		return id;
 	}
 
 	@Override

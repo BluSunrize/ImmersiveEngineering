@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -24,14 +23,12 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 
 	protected final Lazy<ItemStack> outputDummy;
 	protected final RecipeType<?> type;
-	protected final ResourceLocation id;
 
 	protected <T extends Recipe<?>>
-	IESerializableRecipe(Lazy<ItemStack> outputDummy, IERecipeTypes.TypeWithClass<T> type, ResourceLocation id)
+	IESerializableRecipe(Lazy<ItemStack> outputDummy, IERecipeTypes.TypeWithClass<T> type)
 	{
 		this.outputDummy = outputDummy;
 		this.type = type.get();
-		this.id = id;
 	}
 
 	@Override
@@ -63,13 +60,6 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 	{
 		return false;
 	}
-
-	//TODO
-	//@Override
-	//public ResourceLocation getId()
-	//{
-	//	return this.id;
-	//}
 
 	@Override
 	public RecipeSerializer<?> getSerializer()

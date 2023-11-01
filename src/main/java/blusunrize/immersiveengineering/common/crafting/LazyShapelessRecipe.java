@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -27,10 +26,10 @@ public class LazyShapelessRecipe extends ShapelessRecipe
 	private final RecipeSerializer<LazyShapelessRecipe> serializer;
 
 	public LazyShapelessRecipe(
-			ResourceLocation id, String groups, Lazy<ItemStack> result, NonNullList<Ingredient> ingredients, RecipeSerializer<LazyShapelessRecipe> serializer
+			String groups, Lazy<ItemStack> result, NonNullList<Ingredient> ingredients, RecipeSerializer<LazyShapelessRecipe> serializer
 	)
 	{
-		super(id, groups, CraftingBookCategory.MISC, ItemStack.EMPTY, ingredients);
+		super(groups, CraftingBookCategory.MISC, ItemStack.EMPTY, ingredients);
 		this.result = result;
 		this.serializer = serializer;
 	}
@@ -54,5 +53,10 @@ public class LazyShapelessRecipe extends ShapelessRecipe
 	public RecipeSerializer<LazyShapelessRecipe> getSerializer()
 	{
 		return serializer;
+	}
+
+	public Lazy<ItemStack> getResult()
+	{
+		return result;
 	}
 }

@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.api.utils;
 import com.google.common.base.Preconditions;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class FastEither<L, R>
@@ -54,6 +55,16 @@ public class FastEither<L, R>
 	public R rightNonnull()
 	{
 		return Preconditions.checkNotNull(right);
+	}
+
+	public Optional<R> rightOptional()
+	{
+		return Optional.ofNullable(right);
+	}
+
+	public Optional<L> leftOptional()
+	{
+		return Optional.ofNullable(left);
 	}
 
 	public <T> T map(Function<L, T> left, Function<R, T> right)

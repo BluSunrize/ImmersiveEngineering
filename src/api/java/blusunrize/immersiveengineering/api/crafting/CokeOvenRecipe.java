@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -33,9 +32,9 @@ public class CokeOvenRecipe extends IESerializableRecipe
 	public final int time;
 	public final int creosoteOutput;
 
-	public CokeOvenRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, int time, int creosoteOutput)
+	public CokeOvenRecipe(Lazy<ItemStack> output, IngredientWithSize input, int time, int creosoteOutput)
 	{
-		super(output, IERecipeTypes.COKE_OVEN, id);
+		super(output, IERecipeTypes.COKE_OVEN);
 		this.output = output;
 		this.input = input;
 		this.time = time;

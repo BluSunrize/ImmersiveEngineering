@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ArmorItem;
@@ -31,11 +30,8 @@ import javax.annotation.Nonnull;
 
 public class PowerpackRecipe implements CraftingRecipe
 {
-	private final ResourceLocation id;
-
-	public PowerpackRecipe(ResourceLocation id)
+	public PowerpackRecipe()
 	{
-		this.id = id;
 	}
 
 	@Override
@@ -132,13 +128,6 @@ public class PowerpackRecipe implements CraftingRecipe
 		if(stack.getItem()==Misc.POWERPACK.asItem())
 			return false;
 		return !stack.is(IETags.powerpackForbidAttach);
-	}
-
-	@Nonnull
-	@Override
-	public ResourceLocation getId()
-	{
-		return id;
 	}
 
 	@Nonnull

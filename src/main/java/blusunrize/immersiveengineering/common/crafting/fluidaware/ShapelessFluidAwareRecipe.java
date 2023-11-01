@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.ShapelessFluidAwareRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -29,15 +28,15 @@ import java.util.List;
 public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLocation>
 {
 	public ShapelessFluidAwareRecipe(
-			ResourceLocation idIn, String groupIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn
+			String groupIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn
 	)
 	{
-		super(idIn, groupIn, recipeItemsIn, recipeOutputIn);
+		super(groupIn, recipeItemsIn, recipeOutputIn);
 	}
 
 	public ShapelessFluidAwareRecipe(ShapelessRecipe in)
 	{
-		this(in.getId(), in.getGroup(), in.getIngredients(), in.getResultItem(null));
+		this(in.getGroup(), in.getIngredients(), in.getResultItem(null));
 	}
 
 	@Nullable
@@ -79,7 +78,7 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	public ShapelessRecipe toVanilla()
 	{
-		return new ShapelessRecipe(getId(), getGroup(), category(), getResultItem(null), getIngredients());
+		return new ShapelessRecipe(getGroup(), category(), getResultItem(null), getIngredients());
 	}
 
 	@Override

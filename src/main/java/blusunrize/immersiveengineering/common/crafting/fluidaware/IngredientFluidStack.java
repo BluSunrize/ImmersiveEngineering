@@ -10,14 +10,11 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.common.crafting.IngredientSerializerFluidStack;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.crafting.IIngredientSerializer;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -33,6 +30,10 @@ import java.util.stream.Stream;
  */
 public class IngredientFluidStack extends Ingredient
 {
+	public static final Codec<IngredientFluidStack> CODEC = FluidTagInput.CODEC.xmap(
+			IngredientFluidStack::new, IngredientFluidStack::getFluidTagInput
+	);
+
 	private final FluidTagInput fluidTagInput;
 
 	public IngredientFluidStack(FluidTagInput fluidTagInput)
@@ -81,22 +82,6 @@ public class IngredientFluidStack extends Ingredient
 			return false;
 		Optional<IFluidHandlerItem> handler = FluidUtil.getFluidHandler(stack).resolve();
 		return handler.isPresent()&&fluidTagInput.extractFrom(handler.get(), FluidAction.SIMULATE);
-	}
-
-	@Nonnull
-	@Override
-	public IIngredientSerializer<? extends Ingredient> getSerializer()
-	{
-		return IngredientSerializerFluidStack.INSTANCE;
-	}
-
-	@Nonnull
-	@Override
-	public JsonElement toJson()
-	{
-		JsonObject ret = (JsonObject)this.fluidTagInput.serialize();
-		ret.addProperty("type", IngredientSerializerFluidStack.NAME.toString());
-		return ret;
 	}
 
 	@Override

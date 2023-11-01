@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -24,6 +23,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -31,15 +32,15 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 {
 	protected boolean allowQuarter;
 	protected boolean allowEighth;
-	protected int[] nbtCopyTargetSlot = null;
+	protected List<Integer> nbtCopyTargetSlot = null;
 	protected Pattern nbtCopyPredicate = null;
 
 	public TurnAndCopyRecipe(
-			ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> ingr, ItemStack output,
+			String group, int width, int height, NonNullList<Ingredient> ingr, ItemStack output,
 			CraftingBookCategory category
 	)
 	{
-		super(id, group, width, height, ingr, output, category);
+		super(group, width, height, ingr, output, category);
 	}
 
 	public void allowQuarterTurn()
@@ -55,7 +56,15 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	public void setNBTCopyTargetRecipe(int... slot)
 	{
-		this.nbtCopyTargetSlot = slot;
+		List<Integer> asList = new ArrayList<>();
+		for(int i : slot)
+			asList.add(i);
+		setNBTCopyTargetRecipe(asList);
+	}
+
+	public void setNBTCopyTargetRecipe(List<Integer> slots)
+	{
+		this.nbtCopyTargetSlot = slots;
 	}
 
 	public void setNBTCopyPredicate(String pattern)
@@ -137,7 +146,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 		return allowEighth;
 	}
 
-	public int[] getCopyTargets()
+	public List<Integer> getCopyTargets()
 	{
 		return nbtCopyTargetSlot;
 	}

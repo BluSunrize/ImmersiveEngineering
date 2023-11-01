@@ -10,17 +10,14 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.RegistryObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,13 +32,14 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public final Ingredient input;
 	public final Lazy<ItemStack> output;
-	public final List<StackWithChance> secondaryOutputs = new ArrayList<>();
+	public final List<StackWithChance> secondaryOutputs;
 
-	public CrusherRecipe(ResourceLocation id, Lazy<ItemStack> output, Ingredient input, int energy)
+	public CrusherRecipe(Lazy<ItemStack> output, Ingredient input, int energy, List<StackWithChance> secondaryOutputs)
 	{
-		super(output, IERecipeTypes.CRUSHER, id);
+		super(output, IERecipeTypes.CRUSHER);
 		this.output = output;
 		this.input = input;
+		this.secondaryOutputs = secondaryOutputs;
 		setTimeAndEnergy(50, energy);
 
 		setInputList(Lists.newArrayList(this.input));
@@ -66,16 +64,6 @@ public class CrusherRecipe extends MultiblockRecipe
 				list.add(realStack);
 		}
 		return list;
-	}
-
-	/**
-	 * Adds secondary outputs to the recipe. Should the recipe have secondary outputs, these will be added /in addition/
-	 */
-	public CrusherRecipe addToSecondaryOutput(StackWithChance output)
-	{
-		Preconditions.checkNotNull(output);
-		secondaryOutputs.add(output);
-		return this;
 	}
 
 	public static CrusherRecipe findRecipe(Level level, ItemStack input)

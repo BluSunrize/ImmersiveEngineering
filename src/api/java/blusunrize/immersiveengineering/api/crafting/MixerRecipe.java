@@ -11,16 +11,12 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -32,14 +28,14 @@ public class MixerRecipe extends MultiblockRecipe
 	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
 	public static final CachedRecipeList<MixerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.MIXER);
 
-	public final IngredientWithSize[] itemInputs;
+	public final List<IngredientWithSize> itemInputs;
 	public final FluidTagInput fluidInput;
 	public final FluidStack fluidOutput;
 	public final int fluidAmount;
 
-	public MixerRecipe(ResourceLocation id, FluidStack fluidOutput, FluidTagInput fluidInput, IngredientWithSize[] itemInputs, int energy)
+	public MixerRecipe(FluidStack fluidOutput, FluidTagInput fluidInput, List<IngredientWithSize> itemInputs, int energy)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.MIXER, id);
+		super(LAZY_EMPTY, IERecipeTypes.MIXER);
 		this.fluidOutput = fluidOutput;
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;
@@ -78,7 +74,7 @@ public class MixerRecipe extends MultiblockRecipe
 	}
 
 	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidTagInput fluidInput,
-									  IngredientWithSize[] itemInputs)
+									  List<IngredientWithSize> itemInputs)
 	{
 		if(fluid!=null&&fluidInput.test(fluid))
 		{

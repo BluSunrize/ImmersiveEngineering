@@ -10,82 +10,43 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipe;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractShapedRecipe;
+import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class RevolverAssemblyRecipeSerializer implements RecipeSerializer<RevolverAssemblyRecipe>
 {
-	@Nonnull
+	public static final Codec<RevolverAssemblyRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			RecipeSerializer.SHAPED_RECIPE.codec().fieldOf("base").forGetter(AbstractShapedRecipe::toVanilla),
+			Codec.INT.listOf().optionalFieldOf("copyNBT", List.of()).forGetter(TurnAndCopyRecipe::getCopyTargets)
+	).apply(inst, RevolverAssemblyRecipe::new));
+
 	@Override
-	public RevolverAssemblyRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
+	public Codec<RevolverAssemblyRecipe> codec()
 	{
-		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json);
-		RevolverAssemblyRecipe recipe = new RevolverAssemblyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem(null));
-		if(GsonHelper.isValidNode(json, "copy_nbt"))
-		{
-			if(GsonHelper.isArrayNode(json, "copy_nbt"))
-			{
-				JsonArray jArray = GsonHelper.getAsJsonArray(json, "copy_nbt");
-				int[] array = new int[jArray.size()];
-				for(int i = 0; i < array.length; i++)
-					array[i] = jArray.get(i).getAsInt();
-				recipe.setNBTCopyTargetRecipe(array);
-			}
-			else
-				recipe.setNBTCopyTargetRecipe(GsonHelper.getAsInt(json, "copy_nbt"));
-		}
-		return recipe;
+		return CODEC;
 	}
 
 	@Nonnull
 	@Override
-	public RevolverAssemblyRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
+	public RevolverAssemblyRecipe fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
-		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer);
-		RevolverAssemblyRecipe recipe = new RevolverAssemblyRecipe(recipeId, basic.getGroup(), basic.getWidth(), basic.getHeight(),
-				basic.getIngredients(), basic.getResultItem(null));
-		if(buffer.readBoolean())
-			recipe.allowQuarterTurn();
-		if(buffer.readBoolean())
-			recipe.allowEighthTurn();
-		int[] array = buffer.readVarIntArray();
-		if(array.length > 0)
-		{
-			recipe.setNBTCopyTargetRecipe(array);
-			if(buffer.readBoolean())
-				recipe.setNBTCopyPredicate(buffer.readUtf(512));
-
-		}
-		return recipe;
+		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(buffer);
+		List<Integer> copySlots = buffer.readList(FriendlyByteBuf::readVarInt);
+		return new RevolverAssemblyRecipe(basic, copySlots);
 	}
 
 	@Override
 	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RevolverAssemblyRecipe recipe)
 	{
 		RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.toVanilla());
-		buffer.writeBoolean(recipe.isQuarterTurn());
-		buffer.writeBoolean(recipe.isEightTurn());
-		int[] copying = recipe.getCopyTargets();
-		if(copying==null)
-			copying = new int[0];
-		buffer.writeVarIntArray(copying);
-		if(copying.length > 0)
-		{
-			if(recipe.hasCopyPredicate())
-			{
-				buffer.writeBoolean(true);
-				buffer.writeUtf(recipe.getBufferPredicate());
-			}
-			else
-				buffer.writeBoolean(false);
-		}
+		buffer.writeCollection(recipe.getCopyTargets(), FriendlyByteBuf::writeVarInt);
 	}
 }

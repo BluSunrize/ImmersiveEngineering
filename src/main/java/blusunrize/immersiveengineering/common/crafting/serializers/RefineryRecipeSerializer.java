@@ -8,56 +8,52 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 
 public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 {
+	public static final Codec<RefineryRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.output),
+			FluidTagInput.CODEC.fieldOf("input0").forGetter(r -> r.input0),
+			FluidTagInput.CODEC.fieldOf("input1").forGetter(r -> r.input1),
+			Ingredient.CODEC.fieldOf("catalyst").forGetter(r -> r.catalyst),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+	).apply(inst, RefineryRecipe::new));
+
+	@Override
+	public Codec<RefineryRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.REFINERY.iconStack();
 	}
 
-	@Override
-	public RefineryRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		FluidStack output = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "result"));
-		FluidTagInput input0 = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "input0"));
-		FluidTagInput input1 = json.has("input1")?FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "input1")): null;
-		Ingredient catalyst = Ingredient.EMPTY;
-		if(json.has("catalyst"))
-			catalyst = Ingredient.fromJson(json.get("catalyst"));
-		int energy = GsonHelper.getAsInt(json, "energy");
-		RefineryRecipe recipe = new RefineryRecipe(recipeId, output, input0, input1, catalyst, energy);
-		recipe.modifyTimeAndEnergy(() -> 1, IEServerConfig.MACHINES.refineryConfig::get);
-		return recipe;
-	}
-
 	@Nullable
 	@Override
-	public RefineryRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public RefineryRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		FluidStack output = buffer.readFluidStack();
 		FluidTagInput input0 = FluidTagInput.read(buffer);
 		FluidTagInput input1 = buffer.readBoolean()?FluidTagInput.read(buffer): null;
 		Ingredient catalyst = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
-		return new RefineryRecipe(recipeId, output, input0, input1, catalyst, energy);
+		return new RefineryRecipe(output, input0, input1, catalyst, energy);
 	}
 
 	@Override

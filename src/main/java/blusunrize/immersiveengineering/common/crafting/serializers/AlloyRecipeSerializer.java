@@ -12,18 +12,25 @@ import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 
 public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 {
+	private static final Codec<AlloyRecipe> CODEC = RecordCodecBuilder.create(
+			inst -> inst.group(
+					LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+					IngredientWithSize.CODEC.fieldOf("input0").forGetter(r -> r.input0),
+					IngredientWithSize.CODEC.fieldOf("input1").forGetter(r -> r.input1),
+					Codec.INT.optionalFieldOf("time", 200).forGetter(r -> r.time)
+			).apply(inst, AlloyRecipe::new)
+	);
+
 	@Override
 	public ItemStack getIcon()
 	{
@@ -31,24 +38,20 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	}
 
 	@Override
-	public AlloyRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
+	public Codec<AlloyRecipe> codec()
 	{
-		Lazy<ItemStack> output = readOutput(json.get("result"));
-		IngredientWithSize input0 = IngredientWithSize.deserialize(json.get("input0"));
-		IngredientWithSize input1 = IngredientWithSize.deserialize(json.get("input1"));
-		int time = GsonHelper.getAsInt(json, "time", 200);
-		return new AlloyRecipe(recipeId, output, input0, input1, time);
+		return CODEC;
 	}
 
 	@Nullable
 	@Override
-	public AlloyRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public AlloyRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		Lazy<ItemStack> output = readLazyStack(buffer);
 		IngredientWithSize input0 = IngredientWithSize.read(buffer);
 		IngredientWithSize input1 = IngredientWithSize.read(buffer);
 		int time = buffer.readInt();
-		return new AlloyRecipe(recipeId, output, input0, input1, time);
+		return new AlloyRecipe(output, input0, input1, time);
 	}
 
 	@Override

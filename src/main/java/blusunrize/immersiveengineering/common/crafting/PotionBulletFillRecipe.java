@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
@@ -27,9 +26,9 @@ import javax.annotation.Nonnull;
 
 public class PotionBulletFillRecipe extends CustomRecipe
 {
-	public PotionBulletFillRecipe(ResourceLocation resourceLocation)
+	public PotionBulletFillRecipe()
 	{
-		super(resourceLocation, CraftingBookCategory.MISC);
+		super(CraftingBookCategory.MISC);
 	}
 
 	@Override

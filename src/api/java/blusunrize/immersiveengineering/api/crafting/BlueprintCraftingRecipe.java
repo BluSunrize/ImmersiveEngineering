@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -42,11 +41,11 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public final String blueprintCategory;
 	public final Lazy<ItemStack> output;
-	public final IngredientWithSize[] inputs;
+	public final List<IngredientWithSize> inputs;
 
-	public BlueprintCraftingRecipe(ResourceLocation id, String blueprintCategory, Lazy<ItemStack> output, IngredientWithSize[] inputs)
+	public BlueprintCraftingRecipe(String blueprintCategory, Lazy<ItemStack> output, List<IngredientWithSize> inputs)
 	{
-		super(output, IERecipeTypes.BLUEPRINT, id);
+		super(output, IERecipeTypes.BLUEPRINT);
 		this.blueprintCategory = blueprintCategory;
 		this.output = output;
 		this.inputs = inputs;
@@ -127,13 +126,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public NonNullList<ItemStack> consumeInputs(NonNullList<ItemStack> query, int crafted)
 	{
-		List<IngredientWithSize> inputList = new ArrayList<>(inputs.length);
-		for(IngredientWithSize i : inputs)
-			if(i!=null)
-				inputList.add(i);
-
 		NonNullList<ItemStack> consumed = NonNullList.create();
-		Iterator<IngredientWithSize> inputIt = inputList.iterator();
+		Iterator<IngredientWithSize> inputIt = inputs.iterator();
 		while(inputIt.hasNext())
 		{
 			IngredientWithSize ingr = inputIt.next();

@@ -13,16 +13,13 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -33,37 +30,37 @@ import static blusunrize.immersiveengineering.api.crafting.builders.Thermoelectr
 
 public class ThermoelectricSourceSerializer extends IERecipeSerializer<ThermoelectricSource>
 {
+	public static final Codec<ThermoelectricSource> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Codec.INT.fieldOf(TEMPERATURE_KEY).forGetter(r -> r.temperature),
+			TagKey.codec(Registries.BLOCK).optionalFieldOf(BLOCK_TAG_KEY).forGetter(r -> r.blocks.leftOptional()),
+			ForgeRegistries.BLOCKS.getCodec().listOf().optionalFieldOf(SINGLE_BLOCK_KEY).forGetter(r -> r.blocks.rightOptional())
+	).apply(inst, (temperature, tag, fixedBlocks) -> {
+		Preconditions.checkState(tag.isPresent()!=fixedBlocks.isPresent());
+		if(tag.isPresent())
+			return new ThermoelectricSource(tag.get(), temperature);
+		else
+			return new ThermoelectricSource(fixedBlocks.get(), temperature);
+	}));
+
+	@Override
+	public Codec<ThermoelectricSource> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return new ItemStack(MetalDevices.THERMOELECTRIC_GEN);
 	}
 
-	@Override
-	public ThermoelectricSource readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		int temperature = json.get(TEMPERATURE_KEY).getAsInt();
-		if(json.has(SINGLE_BLOCK_KEY))
-		{
-			ResourceLocation blockName = new ResourceLocation(json.get(SINGLE_BLOCK_KEY).getAsString());
-			Block singleBlock = Preconditions.checkNotNull(ForgeRegistries.BLOCKS.getValue(blockName));
-			return new ThermoelectricSource(recipeId, ImmutableList.of(singleBlock), temperature);
-		}
-		else
-		{
-			ResourceLocation tagName = new ResourceLocation(json.get(BLOCK_TAG_KEY).getAsString());
-			TagKey<Block> tag = TagKey.create(Registries.BLOCK, tagName);
-			return new ThermoelectricSource(recipeId, tag, temperature);
-		}
-	}
-
 	@Nullable
 	@Override
-	public ThermoelectricSource fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
+	public ThermoelectricSource fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
 		List<Block> blocks = PacketUtils.readList(buffer, buf -> buf.readRegistryIdUnsafe(ForgeRegistries.BLOCKS));
 		int temperature = buffer.readInt();
-		return new ThermoelectricSource(recipeId, blocks, temperature);
+		return new ThermoelectricSource(blocks, temperature);
 	}
 
 	@Override

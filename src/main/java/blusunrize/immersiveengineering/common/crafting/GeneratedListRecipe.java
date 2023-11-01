@@ -56,6 +56,7 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 	private List<? extends IESerializableRecipe> cachedRecipes;
 	private final RecipeListGenerator<R, E> generator;
 	private E earlyResult;
+	private final ResourceLocation generatorID;
 
 	public static GeneratedListRecipe<?, ?> from(ResourceLocation id)
 	{
@@ -80,8 +81,9 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 
 	private GeneratedListRecipe(ResourceLocation id, RecipeListGenerator<R, E> generator)
 	{
-		super(LAZY_EMPTY, generator.recipeType, id);
+		super(LAZY_EMPTY, generator.recipeType);
 		this.generator = generator;
+		this.generatorID = id;
 	}
 
 	private void initEarly()
@@ -113,6 +115,11 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 		if(cachedRecipes==null)
 			cachedRecipes = generator.generator().apply(earlyResult);
 		return cachedRecipes;
+	}
+
+	public ResourceLocation getGeneratorID()
+	{
+		return generatorID;
 	}
 
 	public ResourceLocation getSubSerializer()

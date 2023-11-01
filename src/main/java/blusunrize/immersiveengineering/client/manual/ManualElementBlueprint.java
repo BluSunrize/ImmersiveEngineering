@@ -32,12 +32,12 @@ public class ManualElementBlueprint extends ManualElementIECrafting
 		for(final var recipeRef : stacks)
 			recipeRef.forEachMatchingRecipe(IERecipeTypes.BLUEPRINT.get(), recipe -> {
 				final ItemStack output = recipe.output.get();
-				if(recipe.inputs==null||recipe.inputs.length==0)
+				if(recipe.inputs==null||recipe.inputs.isEmpty())
 					return;
-				int h = (int)Math.ceil(recipe.inputs.length/2f);
-				PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];
-				for(int i = 0; i < recipe.inputs.length; i++)
-					pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getMatchingStacks(), 32+i%2*18, i/2*18);
+				int h = (int)Math.ceil(recipe.inputs.size()/2f);
+				PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.size()+2];
+				for(int i = 0; i < recipe.inputs.size(); i++)
+					pIngredients[i] = new PositionedItemStack(recipe.inputs.get(i).getMatchingStacks(), 32+i%2*18, i/2*18);
 				int middle = (int)(h/2f*18);
 				pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output.get(), 86, middle-9);
 				pIngredients[pIngredients.length-1] = new PositionedItemStack(BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory), 8, middle-9);

@@ -20,7 +20,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -49,19 +48,19 @@ public class ThermoelectricSource extends IESerializableRecipe
 	public final FastEither<TagKey<Block>, List<Block>> blocks;
 	public final int temperature;
 
-	public ThermoelectricSource(ResourceLocation id, TagKey<Block> blocks, int temperature)
+	public ThermoelectricSource(TagKey<Block> blocks, int temperature)
 	{
-		this(id, FastEither.left(blocks), temperature);
+		this(FastEither.left(blocks), temperature);
 	}
 
-	public ThermoelectricSource(ResourceLocation id, List<Block> blocks, int temperature)
+	public ThermoelectricSource(List<Block> blocks, int temperature)
 	{
-		this(id, FastEither.right(blocks), temperature);
+		this(FastEither.right(blocks), temperature);
 	}
 
-	private ThermoelectricSource(ResourceLocation id, FastEither<TagKey<Block>, List<Block>> blocks, int temperature)
+	private ThermoelectricSource(FastEither<TagKey<Block>, List<Block>> blocks, int temperature)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.THERMOELECTRIC_SOURCE, id);
+		super(LAZY_EMPTY, IERecipeTypes.THERMOELECTRIC_SOURCE);
 		this.blocks = blocks;
 		this.temperature = temperature;
 	}

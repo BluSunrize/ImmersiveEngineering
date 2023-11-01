@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -25,9 +24,9 @@ import java.util.stream.Collectors;
 public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
 	protected <T extends Recipe<?>>
-	MultiblockRecipe(Lazy<ItemStack> outputDummy, IERecipeTypes.TypeWithClass<T> type, ResourceLocation id)
+	MultiblockRecipe(Lazy<ItemStack> outputDummy, IERecipeTypes.TypeWithClass<T> type)
 	{
-		super(outputDummy, type, id);
+		super(outputDummy, type);
 	}
 
 	@Override

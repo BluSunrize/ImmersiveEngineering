@@ -13,16 +13,14 @@ import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -33,45 +31,45 @@ import static blusunrize.immersiveengineering.api.crafting.builders.WindmillBiom
 
 public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 {
+	public static final Codec<WindmillBiome> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Codec.FLOAT.fieldOf(MODIFIER_KEY).forGetter(r -> r.modifier),
+			TagKey.codec(Registries.BIOME).optionalFieldOf(BIOME_TAG_KEY).forGetter(r -> r.biomes.leftOptional()),
+			ForgeRegistries.BIOMES.getCodec().listOf().optionalFieldOf(SINGLE_BIOME_KEY).forGetter(r -> r.biomes.rightOptional())
+	).apply(inst, (temperature, tag, fixedBiomes) -> {
+		Preconditions.checkState(tag.isPresent()!=fixedBiomes.isPresent());
+		if(tag.isPresent())
+			return new WindmillBiome(tag.get(), temperature);
+		else
+			return new WindmillBiome(fixedBiomes.get(), temperature);
+	}));
+
+	@Override
+	public Codec<WindmillBiome> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return new ItemStack(WoodenDevices.WINDMILL);
 	}
 
-	@Override
-	public WindmillBiome readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		int temperature = json.get(MODIFIER_KEY).getAsInt();
-		if(json.has(SINGLE_BIOME_KEY))
-		{
-			ResourceLocation biomeName = new ResourceLocation(json.get(SINGLE_BIOME_KEY).getAsString());
-			Biome singleBiome = Preconditions.checkNotNull(ForgeRegistries.BIOMES.getValue(biomeName));
-			return new WindmillBiome(recipeId, ImmutableList.of(singleBiome), temperature);
-		}
-		else
-		{
-			ResourceLocation tagName = new ResourceLocation(json.get(BIOME_TAG_KEY).getAsString());
-			TagKey<Biome> tag = TagKey.create(Registries.BIOME, tagName);
-			return new WindmillBiome(recipeId, tag, temperature);
-		}
-	}
-
 	@Nullable
 	@Override
-	public WindmillBiome fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
+	public WindmillBiome fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
 		boolean isTags = buffer.readBoolean();
 		if(isTags)
 		{
 			ResourceLocation tagName = buffer.readResourceLocation();
 			TagKey<Biome> tag = TagKey.create(Registries.BIOME, tagName);
-			return new WindmillBiome(recipeId, tag, buffer.readFloat());
+			return new WindmillBiome(tag, buffer.readFloat());
 		}
 		else
 		{
 			List<Biome> biomes = PacketUtils.readList(buffer, buf -> buf.readRegistryIdUnsafe(ForgeRegistries.BIOMES));
-			return new WindmillBiome(recipeId, biomes, buffer.readFloat());
+			return new WindmillBiome(biomes, buffer.readFloat());
 		}
 	}
 

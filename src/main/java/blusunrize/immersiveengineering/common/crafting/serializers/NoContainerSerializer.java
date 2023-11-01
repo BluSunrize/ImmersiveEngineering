@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
 import blusunrize.immersiveengineering.common.crafting.NoContainersShapedRecipe;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -28,23 +28,27 @@ public class NoContainerSerializer implements RecipeSerializer<NoContainersRecip
 {
 	public static final String BASE_RECIPE = "baseRecipe";
 
-	@Nonnull
-	@Override
-	public NoContainersRecipe<?> fromJson(@Nonnull ResourceLocation pRecipeId, @Nonnull JsonObject pSerializedRecipe)
-	{
-		CraftingRecipe baseRecipe = (CraftingRecipe)RecipeManager.fromJson(pRecipeId, pSerializedRecipe.getAsJsonObject(BASE_RECIPE));
-		if(baseRecipe instanceof IShapedRecipe<?>)
-			return new NoContainersShapedRecipe(baseRecipe);
+	public static final Codec<NoContainersRecipe<?>> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			RecipeManager.DISPATCH_CODEC.fieldOf(BASE_RECIPE).forGetter(r -> r.baseRecipe)
+	).apply(inst, inner -> {
+		if(inner instanceof IShapedRecipe<?>)
+			return new NoContainersShapedRecipe((CraftingRecipe)inner);
 		else
-			return new NoContainersRecipe(baseRecipe);
+			return new NoContainersRecipe((CraftingRecipe)inner);
+	}));
+
+	@Override
+	public Codec<NoContainersRecipe<?>> codec()
+	{
+		return CODEC;
 	}
 
 	@Nullable
 	@Override
-	public NoContainersRecipe<?> fromNetwork(@Nonnull ResourceLocation pRecipeId, @Nonnull FriendlyByteBuf pBuffer)
+	public NoContainersRecipe<?> fromNetwork(@Nonnull FriendlyByteBuf pBuffer)
 	{
 		RecipeSerializer<?> baseSerializer = pBuffer.readRegistryIdUnsafe(ForgeRegistries.RECIPE_SERIALIZERS);
-		CraftingRecipe baseRecipe = (CraftingRecipe)baseSerializer.fromNetwork(pRecipeId, pBuffer);
+		CraftingRecipe baseRecipe = (CraftingRecipe)baseSerializer.fromNetwork(pBuffer);
 		if(baseRecipe instanceof IShapedRecipe<?>)
 			return new NoContainersShapedRecipe(baseRecipe);
 		else

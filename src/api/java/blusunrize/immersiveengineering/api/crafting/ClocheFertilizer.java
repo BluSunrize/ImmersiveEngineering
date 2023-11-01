@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -26,9 +25,9 @@ public class ClocheFertilizer extends IESerializableRecipe
 	public final Ingredient input;
 	public final float growthModifier;
 
-	public ClocheFertilizer(ResourceLocation id, Ingredient input, float growthModifier)
+	public ClocheFertilizer(Ingredient input, float growthModifier)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.FERTILIZER, id);
+		super(LAZY_EMPTY, IERecipeTypes.FERTILIZER);
 		this.input = input;
 		this.growthModifier = growthModifier;
 	}

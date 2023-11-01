@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -35,9 +34,9 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	public final Lazy<ItemStack> slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, int time, @Nonnull Lazy<ItemStack> slag)
+	public BlastFurnaceRecipe(Lazy<ItemStack> output, IngredientWithSize input, int time, @Nonnull Lazy<ItemStack> slag)
 	{
-		super(output, IERecipeTypes.BLAST_FURNACE, id);
+		super(output, IERecipeTypes.BLAST_FURNACE);
 		this.output = output;
 		this.input = input;
 		this.time = time;

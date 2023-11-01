@@ -12,14 +12,11 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -28,33 +25,29 @@ import java.util.List;
 
 public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 {
+	public static final Codec<ClocheRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			OUTER_LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.outputs),
+			Ingredient.CODEC.fieldOf("seed").forGetter(r -> r.seed),
+			Ingredient.CODEC.fieldOf("soil").forGetter(r -> r.soil),
+			Codec.INT.fieldOf("time").forGetter(r -> r.time),
+			ClocheRenderReference.CODEC.fieldOf("render").forGetter(r -> r.renderReference)
+	).apply(inst, ClocheRecipe::new));
+
+	@Override
+	public Codec<ClocheRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return new ItemStack(MetalDevices.CLOCHE);
 	}
 
-	@Override
-	public ClocheRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		JsonArray results = json.getAsJsonArray("results");
-
-		List<Lazy<ItemStack>> outputs = new ArrayList<>(results.size());
-		for(int i = 0; i < results.size(); i++)
-			outputs.add(readOutput(results.get(i)));
-
-		Ingredient seed = Ingredient.fromJson(json.get("input"));
-		Ingredient soil = Ingredient.fromJson(json.get("soil"));
-		int time = GsonHelper.getAsInt(json, "time");
-
-		ClocheRenderReference renderReference = ClocheRenderReference.deserialize(GsonHelper.getAsJsonObject(json, "render"));
-
-		return new ClocheRecipe(recipeId, outputs, seed, soil, time, renderReference);
-	}
-
 	@Nullable
 	@Override
-	public ClocheRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public ClocheRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		int outputCount = buffer.readInt();
 		List<Lazy<ItemStack>> outputs = new ArrayList<>(outputCount);
@@ -64,7 +57,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 		Ingredient soil = Ingredient.fromNetwork(buffer);
 		int time = buffer.readInt();
 		ClocheRenderReference renderReference = ClocheRenderReference.read(buffer);
-		return new ClocheRecipe(recipeId, outputs, seed, soil, time, renderReference);
+		return new ClocheRecipe(outputs, seed, soil, time, renderReference);
 	}
 
 	@Override

@@ -9,83 +9,61 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRecipe>
 {
+	public static final Codec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.create(
+			inst -> inst.group(
+					LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.output),
+					LAZY_OUTPUT_CODEC.fieldOf("slag").forGetter(r -> r.slag),
+					CHANCE_LIST.fieldOf("secondaries").forGetter(r -> r.secondaryOutputs),
+					Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getTotalProcessTime),
+					Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
+					IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
+					IngredientWithSize.CODEC.listOf().fieldOf("additives").forGetter(r -> r.additives)
+			).apply(inst, ArcFurnaceRecipe::new)
+	);
+
+	@Override
+	public Codec<ArcFurnaceRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.ARC_FURNACE.iconStack();
 	}
 
-	@Override
-	public ArcFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		JsonArray results = json.getAsJsonArray("results");
-		List<Lazy<ItemStack>> outputs = new ArrayList<>();
-		for(int i = 0; i < results.size(); i++)
-			outputs.add(readOutput(results.get(i)));
-
-		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-
-		JsonArray additives = json.getAsJsonArray("additives");
-		IngredientWithSize[] ingredients = new IngredientWithSize[additives.size()];
-		for(int i = 0; i < additives.size(); i++)
-			ingredients[i] = IngredientWithSize.deserialize(additives.get(i));
-
-		Lazy<ItemStack> slag = IESerializableRecipe.LAZY_EMPTY;
-		if(json.has("slag"))
-			slag = readOutput(json.get("slag"));
-
-		int time = GsonHelper.getAsInt(json, "time");
-		int energy = GsonHelper.getAsInt(json, "energy");
-		JsonArray array = json.getAsJsonArray("secondaries");
-		List<StackWithChance> secondaries = new ArrayList<>();
-		if(array!=null)
-			for(int i = 0; i < array.size(); i++)
-			{
-				StackWithChance secondary = readConditionalStackWithChance(array.get(i), context);
-				if(secondary!=null)
-					secondaries.add(secondary);
-			}
-		return IEServerConfig.MACHINES.arcFurnaceConfig.apply(
-				new ArcFurnaceRecipe(recipeId, outputs, slag, secondaries, time, energy, input, ingredients)
-		);
-	}
-
 	@Nullable
 	@Override
-	public ArcFurnaceRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public ArcFurnaceRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
-		List<Lazy<ItemStack>> outputs = PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack);
+		Lazy<NonNullList<ItemStack>> outputs = combineLazies(PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack));
 		List<StackWithChance> secondaries = PacketUtils.readList(buffer, StackWithChance::read);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		IngredientWithSize[] additives = PacketUtils.readList(buffer, IngredientWithSize::read)
-				.toArray(new IngredientWithSize[0]);
+		List<IngredientWithSize> additives = PacketUtils.readList(buffer, IngredientWithSize::read);
 		Lazy<ItemStack> slag = readLazyStack(buffer);
 		int time = buffer.readInt();
 		int energy = buffer.readInt();
 		if(!buffer.readBoolean())
-			return new ArcFurnaceRecipe(recipeId, outputs, slag, secondaries, time, energy, input, additives);
+			return new ArcFurnaceRecipe(outputs, slag, secondaries, time, energy, input, additives);
 		else
 		{
 			final int numOutputs = buffer.readVarInt();
@@ -93,7 +71,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			for(int i = 0; i < numOutputs; ++i)
 				recyclingOutputs.add(Pair.of(readLazyStack(buffer), buffer.readDouble()));
 			return new ArcRecyclingRecipe(
-					recipeId, () -> Minecraft.getInstance().getConnection().registryAccess(), recyclingOutputs, input, time, energy
+					() -> Minecraft.getInstance().getConnection().registryAccess(), recyclingOutputs, input, time, energy
 			);
 		}
 	}
@@ -104,7 +82,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		PacketUtils.writeListReverse(buffer, recipe.output.get(), FriendlyByteBuf::writeItem);
 		PacketUtils.writeList(buffer, recipe.secondaryOutputs, StackWithChance::write);
 		recipe.input.write(buffer);
-		PacketUtils.writeList(buffer, Arrays.asList(recipe.additives), IngredientWithSize::write);
+		PacketUtils.writeList(buffer, recipe.additives, IngredientWithSize::write);
 		buffer.writeItem(recipe.slag.get());
 		buffer.writeInt(recipe.getTotalProcessTime());
 		buffer.writeInt(recipe.getTotalProcessEnergy());

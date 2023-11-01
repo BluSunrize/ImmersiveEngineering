@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -40,10 +39,10 @@ public class MineralMix extends IESerializableRecipe
 	public final ImmutableSet<ResourceKey<Level>> dimensions;
 	public final Block background;
 
-	public MineralMix(ResourceLocation id, StackWithChance[] outputs, StackWithChance[] spoils, int weight,
+	public MineralMix(StackWithChance[] outputs, StackWithChance[] spoils, int weight,
 					  float failChance, List<ResourceKey<Level>> dimensions, Block background)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.MINERAL_MIX, id);
+		super(LAZY_EMPTY, IERecipeTypes.MINERAL_MIX);
 		this.weight = weight;
 		this.failChance = failChance;
 		this.outputs = outputs;

@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -28,9 +27,9 @@ import javax.annotation.Nonnull;
 
 public class ShaderBagRecipe extends CustomRecipe
 {
-	public ShaderBagRecipe(ResourceLocation id)
+	public ShaderBagRecipe()
 	{
-		super(id, CraftingBookCategory.MISC);
+		super(CraftingBookCategory.MISC);
 	}
 
 	@Override

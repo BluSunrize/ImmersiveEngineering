@@ -391,6 +391,7 @@ public class IEServerConfig
 
 
 		//Multiblock Recipes
+		// TODO hook these up with the new codec system
 		public final MachineRecipeConfig<MetalPressRecipe> metalPressConfig;
 		public final MachineRecipeConfig<CrusherRecipe> crusherConfig;
 		public final MachineRecipeConfig<SqueezerRecipe> squeezerConfig;

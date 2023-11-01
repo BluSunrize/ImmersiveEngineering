@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
@@ -49,6 +48,7 @@ public class PotionHelper
 			if(mixPredicate.to.get()!=Potions.MUNDANE&&mixPredicate.to.get()!=Potions.THICK)
 				out.apply(
 						mixPredicate.to.get(), mixPredicate.from.get(),
+						// TODO Forge AT is broken???
 						new IngredientWithSize(mixPredicate.ingredient)
 				);
 

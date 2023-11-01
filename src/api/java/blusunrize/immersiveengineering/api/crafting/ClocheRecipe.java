@@ -39,9 +39,9 @@ public class ClocheRecipe extends IESerializableRecipe
 	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CLOCHE);
 	private static final List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
-	public ClocheRecipe(ResourceLocation id, List<Lazy<ItemStack>> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
+	public ClocheRecipe(List<Lazy<ItemStack>> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
-		super(outputs.get(0), IERecipeTypes.CLOCHE, id);
+		super(outputs.get(0), IERecipeTypes.CLOCHE);
 		this.outputs = outputs;
 		this.seed = seed;
 		this.soil = soil;
@@ -50,9 +50,9 @@ public class ClocheRecipe extends IESerializableRecipe
 		this.renderFunction = ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.get(renderReference.getType()).apply(renderReference.getBlock());
 	}
 
-	public ClocheRecipe(ResourceLocation id, Lazy<ItemStack> output, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
+	public ClocheRecipe(Lazy<ItemStack> output, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
-		this(id, ImmutableList.of(output), seed, soil, time, renderReference);
+		this(ImmutableList.of(output), seed, soil, time, renderReference);
 	}
 
 	// Allow for more dynamic recipes in subclasses

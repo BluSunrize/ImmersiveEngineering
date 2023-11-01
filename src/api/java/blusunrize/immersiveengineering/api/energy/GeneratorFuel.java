@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import com.google.common.base.Preconditions;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,6 +27,7 @@ import net.neoforged.neoforge.registries.RegistryObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class GeneratorFuel extends IESerializableRecipe
@@ -38,16 +39,27 @@ public class GeneratorFuel extends IESerializableRecipe
 	private final FastEither<TagKey<Fluid>, List<Fluid>> fluids;
 	private final int burnTime;
 
-	public GeneratorFuel(ResourceLocation id, TagKey<Fluid> fluids, int burnTime)
+	public GeneratorFuel(Optional<TagKey<Fluid>> tag, Optional<List<Fluid>> fluids, int burnTime)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL, id);
+		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL);
+		Preconditions.checkState(tag.isPresent()!=fluids.isPresent());
+		if(tag.isPresent())
+			this.fluids = FastEither.left(tag.get());
+		else
+			this.fluids = FastEither.right(fluids.get());
+		this.burnTime = burnTime;
+	}
+
+	public GeneratorFuel(TagKey<Fluid> fluids, int burnTime)
+	{
+		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL);
 		this.fluids = FastEither.left(fluids);
 		this.burnTime = burnTime;
 	}
 
-	public GeneratorFuel(ResourceLocation id, List<Fluid> fluids, int burnTime)
+	public GeneratorFuel(List<Fluid> fluids, int burnTime)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL, id);
+		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL);
 		this.fluids = FastEither.right(fluids);
 		this.burnTime = burnTime;
 	}
@@ -55,6 +67,11 @@ public class GeneratorFuel extends IESerializableRecipe
 	public List<Fluid> getFluids()
 	{
 		return fluids.map(t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t).toList(), Function.identity());
+	}
+
+	public FastEither<TagKey<Fluid>, List<Fluid>> getFluidsRaw()
+	{
+		return fluids;
 	}
 
 	public int getBurnTime()

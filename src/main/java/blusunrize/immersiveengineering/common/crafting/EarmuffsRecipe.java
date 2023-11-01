@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ArmorItem;
@@ -33,11 +32,8 @@ import java.util.List;
 
 public class EarmuffsRecipe implements CraftingRecipe
 {
-	private final ResourceLocation id;
-
-	public EarmuffsRecipe(ResourceLocation rl)
+	public EarmuffsRecipe()
 	{
-		id = rl;
 	}
 
 	@Override
@@ -182,12 +178,6 @@ public class EarmuffsRecipe implements CraftingRecipe
 				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Earmuffs));
 		}
 		return remaining;
-	}
-
-	@Override
-	public ResourceLocation getId()
-	{
-		return id;
 	}
 
 	@Nonnull

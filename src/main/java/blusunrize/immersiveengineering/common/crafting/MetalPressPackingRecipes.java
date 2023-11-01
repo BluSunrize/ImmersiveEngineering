@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
@@ -46,27 +46,32 @@ public class MetalPressPackingRecipes
 
 	public static void init()
 	{
-		MetalPressRecipe.addSpecialRecipe(new MetalPressPackingRecipe(
-				new ResourceLocation(Lib.MODID, "metalpress/packing2x2"), Molds.MOLD_PACKING_4.asItem(), 2
-		));
-		MetalPressRecipe.addSpecialRecipe(new MetalPressPackingRecipe(
-				new ResourceLocation(Lib.MODID, "metalpress/packing3x3"), Molds.MOLD_PACKING_9.asItem(), 3
-		));
-		MetalPressRecipe.addSpecialRecipe(new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.MOLD_UNPACKING.asItem())
-		{
-			@Override
-			protected MetalPressRecipe getRecipeFunction(ItemStack input, Level world)
-			{
-				return getUnpackingCached(input, world);
-			}
-		});
+		MetalPressRecipe.addSpecialRecipe(
+				IEApi.ieLoc("metalpress/packing2x2"),
+				new MetalPressPackingRecipe(Molds.MOLD_PACKING_4.asItem(), 2)
+		);
+		MetalPressRecipe.addSpecialRecipe(
+				IEApi.ieLoc("metalpress/packing3x3"),
+				new MetalPressPackingRecipe(Molds.MOLD_PACKING_9.asItem(), 3)
+		);
+		MetalPressRecipe.addSpecialRecipe(
+				IEApi.ieLoc("metalpress/unpacking"),
+				new MetalPressContainerRecipe(Molds.MOLD_UNPACKING.asItem())
+				{
+					@Override
+					protected MetalPressRecipe getRecipeFunction(ItemStack input, Level world)
+					{
+						return getUnpackingCached(input, world);
+					}
+				}
+		);
 	}
 
 	public static abstract class MetalPressContainerRecipe extends MetalPressRecipe
 	{
-		public MetalPressContainerRecipe(ResourceLocation id, Item mold)
+		public MetalPressContainerRecipe(Item mold)
 		{
-			super(id, LAZY_EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, 3200);
+			super(LAZY_EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, 3200);
 		}
 
 		@Override
@@ -95,9 +100,9 @@ public class MetalPressPackingRecipes
 		private final int size;
 		private final Map<ComparableItemStack, RecipeDelegate> PACKING_CACHE = new HashMap<>();
 
-		public MetalPressPackingRecipe(ResourceLocation id, Item mold, int size)
+		public MetalPressPackingRecipe(Item mold, int size)
 		{
-			super(id, mold);
+			super(mold);
 			this.size = size;
 		}
 
@@ -136,9 +141,9 @@ public class MetalPressPackingRecipes
 	{
 		public final CraftingRecipe baseRecipe;
 
-		private RecipeDelegate(ResourceLocation id, ItemStack output, ItemStack input, Item mold, CraftingRecipe baseRecipe)
+		private RecipeDelegate(ItemStack output, ItemStack input, Item mold, CraftingRecipe baseRecipe)
 		{
-			super(id, Lazy.of(() -> output), IngredientWithSize.of(input), mold, 3200);
+			super(Lazy.of(() -> output), IngredientWithSize.of(input), mold, 3200);
 			this.baseRecipe = baseRecipe;
 		}
 
@@ -147,7 +152,6 @@ public class MetalPressPackingRecipes
 			ItemStack output = originalRecipe.getSecond();
 			input = ItemHandlerHelper.copyStackWithSize(input, big?9: 4);
 			return new RecipeDelegate(
-					big?PACK9_ID: PACK4_ID,
 					output, input, (big?Molds.MOLD_PACKING_9: Molds.MOLD_PACKING_4).get(),
 					originalRecipe.getFirst()
 			);
@@ -156,7 +160,7 @@ public class MetalPressPackingRecipes
 		public static RecipeDelegate getUnpacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input)
 		{
 			ItemStack output = originalRecipe.getSecond();
-			return new RecipeDelegate(UNPACK_ID, output, input, Molds.MOLD_UNPACKING.get(), originalRecipe.getFirst());
+			return new RecipeDelegate(output, input, Molds.MOLD_UNPACKING.get(), originalRecipe.getFirst());
 		}
 
 		@Override
@@ -198,7 +202,7 @@ public class MetalPressPackingRecipes
 		);
 		return world.getRecipeManager()
 				.getRecipeFor(RecipeType.CRAFTING, invC, world)
-				.map(recipe -> Pair.of(recipe, recipe.assemble(invC, world.registryAccess())))
+				.map(recipe -> Pair.of(recipe.value(), recipe.value().assemble(invC, world.registryAccess())))
 				.orElse(null);
 	}
 

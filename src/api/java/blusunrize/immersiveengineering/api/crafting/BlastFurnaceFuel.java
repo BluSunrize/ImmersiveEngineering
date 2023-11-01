@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -26,9 +25,9 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 	public final Ingredient input;
 	public final int burnTime;
 
-	public BlastFurnaceFuel(ResourceLocation id, Ingredient input, int burnTime)
+	public BlastFurnaceFuel(Ingredient input, int burnTime)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.BLAST_FUEL, id);
+		super(LAZY_EMPTY, IERecipeTypes.BLAST_FUEL);
 		this.input = input;
 		this.burnTime = burnTime;
 	}

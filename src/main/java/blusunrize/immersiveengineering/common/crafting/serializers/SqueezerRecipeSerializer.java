@@ -8,19 +8,15 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -28,37 +24,34 @@ import javax.annotation.Nullable;
 
 public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 {
+	public static final Codec<SqueezerRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			optionalFluidOutput("fluid").forGetter(r -> r.fluidOutput),
+			optionalItemOutput("result").forGetter(r -> r.itemOutput),
+			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+	).apply(inst, SqueezerRecipe::new));
+
+	@Override
+	public Codec<SqueezerRecipe> codec()
+	{
+		return CODEC;
+	}
+
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.SQUEEZER.iconStack();
 	}
 
-	@Override
-	public SqueezerRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
-	{
-		FluidStack fluidOutput = FluidStack.EMPTY;
-		if(json.has("fluid"))
-			fluidOutput = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "fluid"));
-		Lazy<ItemStack> itemOutput = IESerializableRecipe.LAZY_EMPTY;
-		if(json.has("result"))
-			itemOutput = readOutput(json.get("result"));
-		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		int energy = GsonHelper.getAsInt(json, "energy");
-		return IEServerConfig.MACHINES.squeezerConfig.apply(
-				new SqueezerRecipe(recipeId, fluidOutput, itemOutput, input, energy)
-		);
-	}
-
 	@Nullable
 	@Override
-	public SqueezerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+	public SqueezerRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
 		Lazy<ItemStack> itemOutput = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		int energy = buffer.readInt();
-		return new SqueezerRecipe(recipeId, fluidOutput, itemOutput, input, energy);
+		return new SqueezerRecipe(fluidOutput, itemOutput, input, energy);
 	}
 
 	@Override

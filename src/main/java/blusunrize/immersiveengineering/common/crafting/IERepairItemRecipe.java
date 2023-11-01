@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -29,9 +28,9 @@ import java.util.Optional;
 // (see BluSunrize/ImmersiveEngineering#3994)
 public class IERepairItemRecipe extends CustomRecipe
 {
-	public IERepairItemRecipe(ResourceLocation name)
+	public IERepairItemRecipe()
 	{
-		super(name, CraftingBookCategory.MISC);
+		super(CraftingBookCategory.MISC);
 	}
 
 	@Override

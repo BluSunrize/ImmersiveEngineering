@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -37,9 +36,9 @@ public class RefineryRecipe extends MultiblockRecipe
 	public final FluidTagInput input1;
 	public final Ingredient catalyst;
 
-	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, @Nullable FluidTagInput input1, Ingredient catalyst, int energy)
+	public RefineryRecipe(FluidStack output, FluidTagInput input0, @Nullable FluidTagInput input1, Ingredient catalyst, int energy)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.REFINERY, id);
+		super(LAZY_EMPTY, IERecipeTypes.REFINERY);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;
