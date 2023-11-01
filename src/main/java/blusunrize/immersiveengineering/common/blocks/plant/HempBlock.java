@@ -144,7 +144,7 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 					{
 						BlockPos above = pos.above();
 						BlockState aboveState = this.getStateForAge(getMaxAge()).setValue(TOP, true);
-						world.setBlock(above, aboveState, 2);
+						world.setBlockAndUpdate(above, aboveState);
 						net.minecraftforge.common.ForgeHooks.onCropsGrowPost(world, above, aboveState);
 					}
 				}
@@ -172,6 +172,6 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 
 		world.setBlock(pos, this.getStateForAge(newAge), 2);
 		if(growTop)
-			world.setBlock(pos.above(), this.getStateForAge(getMaxAge()).setValue(TOP, true), 2);
+			world.setBlockAndUpdate(pos.above(), this.getStateForAge(getMaxAge()).setValue(TOP, true));
 	}
 }
