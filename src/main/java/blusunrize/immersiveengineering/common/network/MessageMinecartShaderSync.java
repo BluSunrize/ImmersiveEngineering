@@ -20,11 +20,10 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent.Context;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class MessageMinecartShaderSync implements IMessage
 {
@@ -57,13 +56,12 @@ public class MessageMinecartShaderSync implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		Context ctx = context.get();
-		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
+		if(context.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerLevel world = Objects.requireNonNull(ctx.getSender()).serverLevel();
-			ctx.enqueueWork(() -> {
+			ServerLevel world = Objects.requireNonNull(context.getSender()).serverLevel();
+			context.enqueueWork(() -> {
 				Entity entity = world.getEntity(entityID);
 				if(entity==null)
 					return;
@@ -76,7 +74,7 @@ public class MessageMinecartShaderSync implements IMessage
 			});
 		}
 		else
-			ctx.enqueueWork(() -> {
+			context.enqueueWork(() -> {
 				Level world = ImmersiveEngineering.proxy.getClientWorld();
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{

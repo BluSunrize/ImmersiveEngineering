@@ -46,8 +46,8 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -328,7 +328,9 @@ public class MetalPressLogic
 		public SpecialMetalPressProcess(RecipeDelegate recipe, ItemStack inputItem)
 		{
 			super(recipe, inputItem);
-			this.baseRecipeLocation = recipe.baseRecipe.getId();
+			//TODO
+			// this.baseRecipeLocation = recipe.baseRecipe.getId();
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

@@ -28,15 +28,16 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -47,19 +48,19 @@ import java.util.stream.Collectors;
 
 public class ArcRecyclingCalculator
 {
-	private final List<Recipe<?>> recipeList;
+	private final List<RecipeHolder<?>> recipeList;
 	private final long startTime;
 	private final ArcRecyclingChecker checker;
 	private final RegistryAccess tags;
 
-	public ArcRecyclingCalculator(Collection<Recipe<?>> allRecipes, RegistryAccess tags)
+	public ArcRecyclingCalculator(Collection<RecipeHolder<?>> allRecipes, RegistryAccess tags)
 	{
 		this.tags = tags;
 		this.startTime = System.currentTimeMillis();
 		Pair<Predicate<Recipe<?>>, ArcRecyclingChecker> pair = ArcRecyclingChecker.assembleRecyclingFilter(tags);
 		this.checker = pair.getSecond();
 		this.recipeList = allRecipes.stream()
-				.filter(pair.getFirst())
+				.filter(r -> pair.getFirst().test(r.value()))
 				.collect(Collectors.toList());
 	}
 
@@ -129,7 +130,7 @@ public class ArcRecyclingCalculator
 			{
 				Preconditions.checkState(result.getValue()==null);
 				NeoForge.EVENT_BUS.unregister(eventListener.getValue());
-				Collection<Recipe<?>> recipes = server.getRecipeManager().getRecipes();
+				Collection<RecipeHolder<?>> recipes = server.getRecipeManager().getRecipes();
 				ArcRecyclingCalculator calculator = new ArcRecyclingCalculator(recipes, server.registryAccess());
 				result.setValue(calculator.run());
 			}
@@ -151,14 +152,14 @@ public class ArcRecyclingCalculator
 
 	private static class RecipeIterator
 	{
-		final List<Recipe<?>> recipeList;
+		final List<RecipeHolder<?>> recipeList;
 		final List<RecyclingCalculation> validated = new ArrayList<>();
 		final Multimap<ItemStack, RecyclingCalculation> nonValidated = ArrayListMultimap.create();
 		private final ArcRecyclingChecker checker;
 		int invalidCount = 0;
 		private final RegistryAccess tags;
 
-		public RecipeIterator(List<Recipe<?>> recipeList, ArcRecyclingChecker checker, RegistryAccess tags)
+		public RecipeIterator(List<RecipeHolder<?>> recipeList, ArcRecyclingChecker checker, RegistryAccess tags)
 		{
 			this.recipeList = recipeList;
 			this.checker = checker;
@@ -167,9 +168,9 @@ public class ArcRecyclingCalculator
 
 		public void process()
 		{
-			for(Recipe<?> recipe : recipeList)
+			for(RecipeHolder<?> recipe : recipeList)
 			{
-				RecyclingCalculation calc = getRecycleCalculation(recipe.getResultItem(tags), recipe);
+				RecyclingCalculation calc = getRecycleCalculation(recipe.value().getResultItem(tags), recipe);
 				if(calc!=null)
 				{
 					if(calc.isValid())
@@ -184,16 +185,16 @@ public class ArcRecyclingCalculator
 			}
 		}
 
-		private RecyclingCalculation getRecycleCalculation(ItemStack stack, Recipe<?> recipe)
+		private RecyclingCalculation getRecycleCalculation(ItemStack stack, RecipeHolder<?> recipe)
 		{
 			// Check if recipe output is among the items that have fixed returns
 			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(tags, stack);
 			if(brokenDown!=null&&ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getFirst())&&brokenDown.getSecond() > 0)
-				return new RecyclingCalculation(recipe, ItemHandlerHelper.copyStackWithSize(stack, 1),
+				return new RecyclingCalculation(recipe.value(), ItemHandlerHelper.copyStackWithSize(stack, 1),
 						ImmutableMap.of(brokenDown.getFirst(), brokenDown.getSecond()));
 
 			// Else check recipe inputs
-			NonNullList<Ingredient> inputs = recipe.getIngredients();
+			NonNullList<Ingredient> inputs = recipe.value().getIngredients();
 			if(!inputs.isEmpty())
 			{
 				int resultCount = stack.getCount();
@@ -208,7 +209,7 @@ public class ArcRecyclingCalculator
 							inputStack = IEApi.getPreferredStackbyMod(in.getItems());
 						if(inputStack.isEmpty())
 						{
-							IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getId()+")");
+							IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.id()+")");
 							return null;
 						}
 						brokenDown = ApiUtils.breakStackIntoPreciseIngots(tags, inputStack);
@@ -251,8 +252,7 @@ public class ArcRecyclingCalculator
 				if(!outputs.isEmpty()||!missingSub.isEmpty())
 				{
 					ItemStack in = ItemHandlerHelper.copyStackWithSize(stack, 1);
-					RecyclingCalculation calc = new RecyclingCalculation(recipe, in
-							, outputScaled);
+					RecyclingCalculation calc = new RecyclingCalculation(recipe.value(), in, outputScaled);
 					if(!missingSub.isEmpty())
 						for(ItemStack s : missingSub.keySet())
 							calc.queriedSubcomponents.put(s, (double)missingSub.get(s)/resultCount);

@@ -37,8 +37,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -186,7 +186,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 			return false;
 		boolean canFill = !state.isSolid();
 		if(!canFill&&state.getBlock() instanceof LiquidBlockContainer container)
-			canFill = container.canPlaceLiquid(level, targetPos, state, tank.getFluid().getFluid());
+			canFill = container.canPlaceLiquid(null, level, targetPos, state, tank.getFluid().getFluid());
 		return canFill;
 	}
 

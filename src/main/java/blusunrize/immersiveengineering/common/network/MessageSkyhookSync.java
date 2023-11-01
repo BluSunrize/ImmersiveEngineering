@@ -16,9 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class MessageSkyhookSync implements IMessage
 {
@@ -58,9 +56,9 @@ public class MessageSkyhookSync implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null)
 			{

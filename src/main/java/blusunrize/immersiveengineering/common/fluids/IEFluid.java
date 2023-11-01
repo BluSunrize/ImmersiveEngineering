@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.fluids;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEFluids.FluidEntry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.network.FriendlyByteBuf;
@@ -223,8 +223,8 @@ public class IEFluid extends FlowingFluid
 		public ItemStack execute(BlockSource source, ItemStack stack)
 		{
 			BucketItem bucketitem = (BucketItem)stack.getItem();
-			BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-			Level world = source.getLevel();
+			BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+			Level world = source.level();
 			if(bucketitem.emptyContents(null, world, blockpos, null))
 			{
 				bucketitem.checkExtraContent(null, world, stack, blockpos);

@@ -60,7 +60,7 @@ import net.minecraft.world.level.block.AbstractBannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.ForgeHooksClient;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector4f;
@@ -154,7 +154,7 @@ public class ModelPowerpack
 				// set up to render the large-texture banner
 				PowerpackCallbacks.THIRD_PERSON_PASS = 3;
 				BakedModel bakedModel = renderer.getModel(powerpack, toRender.level(), toRender, 0);
-				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
+				bakedModel = ClientHooks.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
 				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 				VertexConsumer consumer = buffers.getBuffer(RenderType.entitySolid(shaderTexture));
 				Minecraft.getInstance().getItemRenderer().renderModelLists(
@@ -166,7 +166,7 @@ public class ModelPowerpack
 				// set up to render the small-texture banner
 				PowerpackCallbacks.THIRD_PERSON_PASS = 2;
 				BakedModel bakedModel = renderer.getModel(powerpack, toRender.level(), toRender, 0);
-				bakedModel = ForgeHooksClient.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
+				bakedModel = ClientHooks.handleCameraTransforms(matrixStackIn, bakedModel, ItemDisplayContext.FIXED, false);
 				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 				for(BannerLayer layer : getBannerLayers(banner, bakedModel))
 				{

@@ -16,10 +16,9 @@ import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.Da
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class MessageContainerData implements IMessage
 {
@@ -45,9 +44,9 @@ public class MessageContainerData implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			AbstractContainerMenu currentContainer = ImmersiveEngineering.proxy.getClientPlayer().containerMenu;
 			if(currentContainer instanceof IEContainerMenu ieContainer)
 				ieContainer.receiveSync(synced);

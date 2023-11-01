@@ -21,12 +21,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 import net.neoforged.neoforge.registries.GameData;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class MessageMultiblockSync implements IMessage
 {
@@ -49,9 +48,9 @@ public class MessageMultiblockSync implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			for(SyncedTemplate synced : templates)
 			{
 				StructureTemplate template = new StructureTemplate();

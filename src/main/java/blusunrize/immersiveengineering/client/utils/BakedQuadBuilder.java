@@ -28,7 +28,8 @@ public class BakedQuadBuilder
 			Vec3 pos, Vec3 faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha
 	)
 	{
-		putVertexData(pos, faceNormal, sprite.getU(u), sprite.getV(v), colour, alpha);
+		// TODO pass un-16-nification further up in the logic
+		putVertexData(pos, faceNormal, sprite.getU((float)(u/16)), sprite.getV((float)(v/16)), colour, alpha);
 	}
 
 	public void putVertexData(Vec3 pos, Vec3 faceNormal, double u, double v, float[] colour, float alpha)

@@ -12,6 +12,8 @@ package blusunrize.immersiveengineering.common.util.loot;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -22,10 +24,15 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class WindmillLootFunction extends LootItemConditionalFunction
 {
-	protected WindmillLootFunction(LootItemCondition[] conditionsIn)
+	public static final Codec<WindmillLootFunction> CODEC = RecordCodecBuilder.create(
+			inst -> commonFields(inst).apply(inst, WindmillLootFunction::new)
+	);
+
+	protected WindmillLootFunction(List<LootItemCondition> conditionsIn)
 	{
 		super(conditionsIn);
 	}

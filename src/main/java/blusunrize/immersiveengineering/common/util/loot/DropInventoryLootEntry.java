@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -27,11 +27,16 @@ import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class DropInventoryLootEntry extends LootPoolSingletonContainer
 {
-	protected DropInventoryLootEntry(int weightIn, int qualityIn, LootItemCondition[] conditionsIn, LootItemFunction[] functionsIn)
+	public static final Codec<DropInventoryLootEntry> CODEC = RecordCodecBuilder.create(
+			inst -> singletonFields(inst).apply(inst, DropInventoryLootEntry::new)
+	);
+
+	protected DropInventoryLootEntry(int weightIn, int qualityIn, List<LootItemCondition> conditionsIn, List<LootItemFunction> functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
 	}
@@ -73,22 +78,4 @@ public class DropInventoryLootEntry extends LootPoolSingletonContainer
 	{
 		return IELootFunctions.DROP_INVENTORY.get();
 	}
-
-	public static class Serializer extends LootPoolSingletonContainer.Serializer<DropInventoryLootEntry>
-	{
-		@Nonnull
-		@Override
-		protected DropInventoryLootEntry deserialize(
-				@Nonnull JsonObject json,
-				@Nonnull JsonDeserializationContext context,
-				int weight,
-				int quality,
-				@Nonnull LootItemCondition[] conditions,
-				@Nonnull LootItemFunction[] functions
-		)
-		{
-			return new DropInventoryLootEntry(weight, quality, conditions, functions);
-		}
-	}
-
 }

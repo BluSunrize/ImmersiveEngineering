@@ -32,7 +32,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ForgeMod;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.ToolAction;
 
@@ -176,7 +176,7 @@ public class WirecutterItem extends IEBaseItem
 		ItemStack stack = player.getItemInHand(hand);
 		if(!world.isClientSide)
 		{
-			double reachDistance = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
+			double reachDistance = player.getAttribute(NeoForgeMod.BLOCK_REACH.get()).getValue();
 			Connection target = WireUtils.getTargetConnection(world, player, null, reachDistance);
 			if(target!=null)
 			{

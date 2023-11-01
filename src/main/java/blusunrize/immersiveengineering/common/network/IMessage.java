@@ -10,13 +10,11 @@
 package blusunrize.immersiveengineering.common.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public interface IMessage
 {
 	void toBytes(FriendlyByteBuf buf);
 
-	void process(Supplier<Context> context);
+	void process(Context context);
 }

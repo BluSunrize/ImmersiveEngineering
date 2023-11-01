@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -114,12 +115,12 @@ public class CraftingTableMenu extends IEContainerMenu
 		access.execute((world, $) -> {
 			ServerPlayer serverplayerentity = (ServerPlayer)this.player;
 			ItemStack itemstack = ItemStack.EMPTY;
-			Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
+			Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
 			if(optional.isPresent())
 			{
-				CraftingRecipe icraftingrecipe = optional.get();
+				RecipeHolder<CraftingRecipe> icraftingrecipe = optional.get();
 				if(craftResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe))
-					itemstack = icraftingrecipe.assemble(craftingInventory, world.registryAccess());
+					itemstack = icraftingrecipe.value().assemble(craftingInventory, world.registryAccess());
 			}
 
 			craftResultInventory.setItem(0, itemstack);

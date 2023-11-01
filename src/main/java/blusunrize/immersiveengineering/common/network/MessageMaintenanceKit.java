@@ -14,9 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class MessageMaintenanceKit implements IMessage
 {
@@ -43,12 +41,11 @@ public class MessageMaintenanceKit implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		Context ctx = context.get();
-		ServerPlayer player = ctx.getSender();
+		ServerPlayer player = context.getSender();
 		assert player!=null;
-		ctx.enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			if(player.containerMenu instanceof MaintenanceKitContainer)
 				ModWorkbenchBlockEntity.applyConfigTo(player.containerMenu.slots.get(0).getItem(), nbt);
 		});

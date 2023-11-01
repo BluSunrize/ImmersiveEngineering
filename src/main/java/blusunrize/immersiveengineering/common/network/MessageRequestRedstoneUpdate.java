@@ -18,11 +18,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.network.NetworkEvent.Context;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 {
@@ -38,16 +37,15 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		Context ctx = context.get();
-		ctx.enqueueWork(() -> {
-			ServerLevel level = Objects.requireNonNull(ctx.getSender()).serverLevel();
+		context.enqueueWork(() -> {
+			ServerLevel level = Objects.requireNonNull(context.getSender()).serverLevel();
 			ICapabilityProvider provider;
 			BlockState blockState = level.getBlockState(pos);
 			RemoteRedstoneData data = new RemoteRedstoneData(pos, level.getGameTime(), blockState.isSignalSource(), redstoneLevel(level, pos));
 			ImmersiveEngineering.packetHandler.send(
-					PacketDistributor.PLAYER.with(ctx::getSender), new MessageRedstoneLevel(data)
+					PacketDistributor.PLAYER.with(context::getSender), new MessageRedstoneLevel(data)
 			);
 		});
 	}

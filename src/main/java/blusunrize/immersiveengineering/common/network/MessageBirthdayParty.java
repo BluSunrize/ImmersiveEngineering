@@ -15,9 +15,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class MessageBirthdayParty implements IMessage
 {
@@ -40,9 +38,9 @@ public class MessageBirthdayParty implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{

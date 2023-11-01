@@ -157,7 +157,7 @@ public class GuiReactiveList extends Button
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double delta)
+	public boolean mouseScrolled(double mouseX, double mouseY, double delta, double unknown)
 	{
 		if(delta!=0&&maxOffset > 0)
 		{

@@ -10,6 +10,8 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -18,10 +20,15 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class BluprintzLootFunction extends LootItemConditionalFunction
 {
-	protected BluprintzLootFunction(LootItemCondition[] conditionsIn)
+	public static final Codec<BluprintzLootFunction> CODEC = RecordCodecBuilder.create(
+			inst -> commonFields(inst).apply(inst, BluprintzLootFunction::new)
+	);
+
+	protected BluprintzLootFunction(List<LootItemCondition> conditionsIn)
 	{
 		super(conditionsIn);
 	}

@@ -19,8 +19,6 @@ import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Optional;
-
 import static net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity.*;
 
 public class VanillaFurnaceHeater implements IExternalHeatable
@@ -40,13 +38,13 @@ public class VanillaFurnaceHeater implements IExternalHeatable
 		if(input.isEmpty())
 			return false;
 		RecipeType<? extends AbstractCookingRecipe> type = ((FurnaceTEAccess)furnace).getRecipeType();
-		Optional<? extends AbstractCookingRecipe> output = furnace.getLevel().getRecipeManager().getRecipeFor(type, furnace, furnace.getLevel());
+		var output = furnace.getLevel().getRecipeManager().getRecipeFor(type, furnace, furnace.getLevel());
 		if(output.isEmpty())
 			return false;
 		ItemStack existingOutput = furnace.getItem(2);
 		if(existingOutput.isEmpty())
 			return true;
-		ItemStack outStack = output.get().getResultItem(furnace.getLevel().registryAccess());
+		ItemStack outStack = output.get().value().getResultItem(furnace.getLevel().registryAccess());
 		if(!ItemStack.isSameItem(existingOutput, outStack))
 			return false;
 		int stackSize = existingOutput.getCount()+outStack.getCount();

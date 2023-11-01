@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteEnergyData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public record MessageStoredEnergy(VoltmeterItem.RemoteEnergyData data) implements IMessage
 {
@@ -29,8 +27,8 @@ public record MessageStoredEnergy(VoltmeterItem.RemoteEnergyData data) implement
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> VoltmeterItem.lastEnergyUpdate = data);
+		context.enqueueWork(() -> VoltmeterItem.lastEnergyUpdate = data);
 	}
 }

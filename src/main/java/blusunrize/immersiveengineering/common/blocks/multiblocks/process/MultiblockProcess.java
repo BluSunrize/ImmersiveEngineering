@@ -40,12 +40,14 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 
 	public MultiblockProcess(R recipe)
 	{
-		this.recipeId = recipe.getId();
+		//TODO
+		// this.recipeId = recipe.getId();
 		this.getRecipe = ($, $1) -> {
 			throw new RuntimeException("A process initialized with a recipe should never query recipes");
 		};
 		this.processTick = 0;
 		populateLevelData(recipe);
+		throw new UnsupportedOperationException();
 	}
 
 	public MultiblockProcess(

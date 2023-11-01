@@ -14,6 +14,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
@@ -33,14 +35,10 @@ import java.util.Set;
 public class MultiblockAdvancementTrigger implements CriterionTrigger<MultiblockAdvancementTrigger.Instance>
 {
 	private static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "multiblock_formed");
+	public static MultiblockAdvancementTrigger INSTANCE = CriteriaTriggers.register(
+			ID.toString(), new MultiblockAdvancementTrigger()
+	);
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
-
-	//TODO
-	//@Override
-	//public ResourceLocation getId()
-	//{
-	//	return ID;
-	//}
 
 	@Override
 	public void addPlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener)
@@ -92,11 +90,9 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 			listeners.trigger(multiblock, hammer);
 	}
 
-	public static Instance create(ResourceLocation multiblock, ItemPredicate hammer)
+	public static Criterion<?> create(ResourceLocation multiblock, ItemPredicate hammer)
 	{
-		//TODO
-		throw new UnsupportedOperationException();
-		//return new Instance(multiblock, hammer, ContextAwarePredicate.ANY);
+		return INSTANCE.createCriterion(new Instance(multiblock, hammer, Optional.empty()));
 	}
 
 	public static class Instance extends AbstractCriterionTriggerInstance

@@ -17,6 +17,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -35,7 +36,7 @@ public class CrafterPatternInventory
 		if(level==null)
 			return;
 		CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-		this.recipe = Utils.findCraftingRecipe(invC, level).orElse(null);
+		this.recipe = Utils.findCraftingRecipe(invC, level).map(RecipeHolder::value).orElse(null);
 		this.inv.set(9, recipe!=null?recipe.assemble(invC, level.registryAccess()): ItemStack.EMPTY);
 	}
 

@@ -15,15 +15,15 @@ import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
-import net.neoforged.neoforge.common.ForgeConfigSpec.BooleanValue;
-import net.neoforged.neoforge.common.ForgeConfigSpec.ConfigValue;
-import net.neoforged.neoforge.common.ForgeConfigSpec.DoubleValue;
-import net.neoforged.neoforge.common.ForgeConfigSpec.IntValue;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
+import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -48,9 +48,9 @@ public class IEClientConfig
 	public final static DoubleValue increasedTileRenderdistance;
 	public final static Map<IEWireType, IntValue> wireColors = new EnumMap<>(IEWireType.class);
 
-	public static final ForgeConfigSpec CONFIG_SPEC;
+	public static final ModConfigSpec CONFIG_SPEC;
 
-	private static void addColor(ForgeConfigSpec.Builder builder, IEWireType type, int defaultColor)
+	private static void addColor(ModConfigSpec.Builder builder, IEWireType type, int defaultColor)
 	{
 		wireColors.put(type, builder.defineInRange(type.name().toLowerCase(Locale.ENGLISH), defaultColor,
 				Integer.MIN_VALUE, Integer.MAX_VALUE));
@@ -58,7 +58,7 @@ public class IEClientConfig
 
 	static
 	{
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		disableFancyTESR = builder
 				.comment("Disables most lighting code for certain models that are rendered dynamically (TESR). May improve FPS.",
 						"Affects turrets and garden cloches")

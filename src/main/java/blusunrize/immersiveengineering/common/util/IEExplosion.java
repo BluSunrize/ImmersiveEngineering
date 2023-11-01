@@ -184,7 +184,7 @@ public class IEExplosion extends Explosion
 		int j2 = Mth.floor(getPosition().z-(double)f3-1.0D);
 		int j1 = Mth.floor(getPosition().z+(double)f3+1.0D);
 		List<Entity> list = this.world.getEntities(this.getDirectSourceEntity(), new AABB(k1, i2, j2, l1, i1, j1));
-		net.neoforged.neoforge.event.ForgeEventFactory.onExplosionDetonate(this.world, this, list, f3);
+		net.neoforged.neoforge.event.EventHooks.onExplosionDetonate(this.world, this, list, f3);
 		Vec3 vec3 = new Vec3(getPosition().x, getPosition().y, getPosition().z);
 
 		for(int k2 = 0; k2 < list.size(); ++k2)

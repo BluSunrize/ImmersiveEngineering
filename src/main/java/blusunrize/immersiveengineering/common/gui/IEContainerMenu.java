@@ -31,12 +31,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.minecraftforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.PlayNetworkDirection;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 		if(!toSync.isEmpty())
 			for(ServerPlayer player : usingPlayers)
 				ImmersiveEngineering.packetHandler.sendTo(
-						new MessageContainerData(toSync), player.connection.connection, NetworkDirection.PLAY_TO_CLIENT
+						new MessageContainerData(toSync), player.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT
 				);
 	}
 
@@ -218,7 +218,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 			for(int i = 0; i < ieContainer.genericData.size(); i++)
 				list.add(Pair.of(i, ieContainer.genericData.get(i).dataPair()));
 			ImmersiveEngineering.packetHandler.sendTo(
-					new MessageContainerData(list), serverPlayer.connection.connection, NetworkDirection.PLAY_TO_CLIENT
+					new MessageContainerData(list), serverPlayer.connection.connection, PlayNetworkDirection.PLAY_TO_CLIENT
 			);
 		}
 	}

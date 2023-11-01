@@ -14,8 +14,6 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.math.Transformation;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import malte0811.modelsplitter.math.Vec3d;
 import malte0811.modelsplitter.model.Polygon;
 import malte0811.modelsplitter.model.UVCoords;
@@ -25,6 +23,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +105,8 @@ public class PolygonUtils
 			quadBuilder.putVertexData(
 					new Vec3(pos.x(), pos.y(), pos.z()),
 					new Vec3(normal),
-					absoluteUV?v.uv().u(): data.sprite().getU(16*v.uv().u()),
-					absoluteUV?v.uv().v(): data.sprite().getV(16*(1-v.uv().v())),
+					absoluteUV?v.uv().u(): data.sprite().getU((float)v.uv().u()),
+					absoluteUV?v.uv().v(): data.sprite().getV((float)(1-v.uv().v())),
 					new float[]{data.color.x(), data.color.y(), data.color.z(), data.color.w()},
 					1
 			);

@@ -17,9 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class MessageSpeedloaderSync implements IMessage
 {
@@ -46,9 +44,9 @@ public class MessageSpeedloaderSync implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			Player player = ImmersiveEngineering.proxy.getClientPlayer();
 			if(player!=null)
 			{

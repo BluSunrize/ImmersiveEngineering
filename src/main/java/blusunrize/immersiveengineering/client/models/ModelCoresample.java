@@ -51,7 +51,6 @@ import net.neoforged.neoforge.client.model.lighting.QuadLighter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -294,10 +293,12 @@ public class ModelCoresample extends BakedIEModel
 			{
 				try
 				{
-					List<ResourceLocation> cacheKey = Arrays.stream(minerals)
-							.map(MineralMix::getId)
-							.toList();
-					return modelCache.get(cacheKey, () -> new ModelCoresample(minerals));
+					//TODO
+					throw new ExecutionException(new UnsupportedOperationException());
+					//List<ResourceLocation> cacheKey = Arrays.stream(minerals)
+					//		.map(MineralMix::getId)
+					//		.toList();
+					//return modelCache.get(cacheKey, () -> new ModelCoresample(minerals));
 				} catch(ExecutionException e)
 				{
 					throw new RuntimeException(e);

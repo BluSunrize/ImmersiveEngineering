@@ -22,9 +22,12 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.client.manual.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
-import blusunrize.lib.manual.*;
+import blusunrize.lib.manual.ManualElementTable;
+import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualEntry.SpecialElementData;
+import blusunrize.lib.manual.ManualInstance;
+import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.InnerNode;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import com.google.common.base.Preconditions;
@@ -227,15 +230,17 @@ public class IEManual
 				sortedOres.add(sorted.stack().get());
 			}
 
-			specials.add(new SpecialElementData(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
+			// TODO
+			// specials.add(new SpecialElementData(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
 			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString(), spoilString.toString());
 
 			if(text.length() > 0)
 				text.append("<np>");
-			text.append("<&")
-					.append(mineral.getId())
-					.append(">")
-					.append(desc);
+			//TODO
+			//text.append("<&")
+			//		.append(mineral.getId())
+			//		.append(">")
+			//		.append(desc);
 		}
 		return Pair.of(text.toString(), specials);
 	}

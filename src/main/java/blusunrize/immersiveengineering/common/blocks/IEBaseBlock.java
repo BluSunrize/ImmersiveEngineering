@@ -231,9 +231,13 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	}
 
 	@Override
-	public boolean canPlaceLiquid(BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn)
+	public boolean canPlaceLiquid(
+			@Nullable Player player, BlockGetter worldIn, BlockPos pos, BlockState state, Fluid fluidIn
+	)
 	{
-		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&SimpleWaterloggedBlock.super.canPlaceLiquid(worldIn, pos, state, fluidIn);
+		if(!state.hasProperty(BlockStateProperties.WATERLOGGED))
+			return false;
+		return SimpleWaterloggedBlock.super.canPlaceLiquid(player, worldIn, pos, state, fluidIn);
 	}
 
 	@Override
@@ -243,10 +247,10 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	}
 
 	@Override
-	public ItemStack pickupBlock(LevelAccessor level, BlockPos pos, BlockState state)
+	public ItemStack pickupBlock(@Nullable Player player, LevelAccessor level, BlockPos pos, BlockState state)
 	{
 		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
-			return SimpleWaterloggedBlock.super.pickupBlock(level, pos, state);
+			return SimpleWaterloggedBlock.super.pickupBlock(player, level, pos, state);
 		else
 			return ItemStack.EMPTY;
 	}

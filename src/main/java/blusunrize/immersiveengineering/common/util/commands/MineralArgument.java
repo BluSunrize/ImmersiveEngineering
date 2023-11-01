@@ -18,11 +18,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,16 +38,19 @@ public class MineralArgument implements ArgumentType<MineralMix>
 	public MineralMix parse(StringReader reader) throws CommandSyntaxException
 	{
 		String name = reader.readQuotedString();//TODO does this work properly?
-		for(MineralMix mm : getStaticMinerals())
-			if(mm.getId().toString().equalsIgnoreCase(name))
-				return mm;
+		//TODO
+		//for(MineralMix mm : getStaticMinerals())
+		//	if(mm.getId().toString().equalsIgnoreCase(name))
+		//		return mm;
 		throw invalidVein.create(name);
 	}
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 	{
-		return SharedSuggestionProvider.suggest(getStaticMinerals().stream().map(mix -> "\""+mix.getId()+"\""), builder);
+		//TODO
+		//return SharedSuggestionProvider.suggest(getStaticMinerals().stream().map(mix -> "\""+mix.getId()+"\""), builder);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -57,9 +59,10 @@ public class MineralArgument implements ArgumentType<MineralMix>
 		List<String> ret = new ArrayList<>();
 		for(MineralMix mix : getStaticMinerals())
 		{
-			ret.add("\""+mix.getId()+"\"");
-			if(ret.size() > 5)
-				break;
+			//TODO
+			//ret.add("\""+mix.getId()+"\"");
+			//if(ret.size() > 5)
+			//	break;
 		}
 		return ret;
 	}

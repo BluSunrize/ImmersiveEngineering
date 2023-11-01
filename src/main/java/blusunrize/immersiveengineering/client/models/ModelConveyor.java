@@ -59,17 +59,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.ForgeRenderTypes;
+import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -395,7 +395,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 	@Override
 	public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous)
 	{
-		return List.of(ForgeRenderTypes.ITEM_LAYERED_CUTOUT.get());
+		return List.of(NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get());
 	}
 
 	@Override

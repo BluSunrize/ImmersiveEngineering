@@ -15,13 +15,13 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModules;
 import com.google.common.collect.ImmutableList;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
-import net.neoforged.neoforge.common.ForgeConfigSpec.BooleanValue;
-import net.neoforged.neoforge.common.ForgeConfigSpec.ConfigValue;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +35,11 @@ public class IECommonConfig
 	public static final Map<String, BooleanValue> compat = new HashMap<>();
 	public static final ConfigValue<List<? extends String>> preferredOres;
 
-	public static final ForgeConfigSpec CONFIG_SPEC;
+	public static final ModConfigSpec CONFIG_SPEC;
 
 	static
 	{
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		builder.comment(
 				"IMPORTANT NOTICE:",
 				"THIS IS ONLY THE COMMON CONFIG. It does not contain all the values adjustable for IE.",

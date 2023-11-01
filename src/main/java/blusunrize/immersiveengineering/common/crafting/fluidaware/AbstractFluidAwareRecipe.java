@@ -45,13 +45,6 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 
 	@Nonnull
 	@Override
-	public ResourceLocation getId()
-	{
-		return this.id;
-	}
-
-	@Nonnull
-	@Override
 	public String getGroup()
 	{
 		return this.group;

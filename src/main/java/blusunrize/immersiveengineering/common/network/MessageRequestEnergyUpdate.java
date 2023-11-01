@@ -19,11 +19,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.minecraftforge.network.NetworkEvent.Context;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) implements IMessage
 {
@@ -39,11 +38,10 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		Context ctx = context.get();
-		ctx.enqueueWork(() -> {
-			ServerLevel level = Objects.requireNonNull(ctx.getSender()).serverLevel();
+		context.enqueueWork(() -> {
+			ServerLevel level = Objects.requireNonNull(context.getSender()).serverLevel();
 			ICapabilityProvider provider;
 			if(pos.isLeft())
 				provider = SafeChunkUtils.getSafeBE(level, pos.leftNonnull());
@@ -61,7 +59,7 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 			if(data==null)
 				data = new RemoteEnergyData(pos, level.getGameTime(), false, 0, 0);
 			ImmersiveEngineering.packetHandler.send(
-					PacketDistributor.PLAYER.with(ctx::getSender), new MessageStoredEnergy(data)
+					PacketDistributor.PLAYER.with(context::getSender), new MessageStoredEnergy(data)
 			);
 		});
 	}

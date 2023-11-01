@@ -17,26 +17,28 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.Compo
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperCommon;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 {
-	protected MultiblockDropsLootContainer(int weightIn, int qualityIn, LootItemCondition[] conditionsIn, LootItemFunction[] functionsIn)
+	public static final Codec<MultiblockDropsLootContainer> CODEC = RecordCodecBuilder.create(
+			inst -> singletonFields(inst).apply(inst, MultiblockDropsLootContainer::new)
+	);
+
+	protected MultiblockDropsLootContainer(int weightIn, int qualityIn, List<LootItemCondition> conditionsIn, List<LootItemFunction> functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
 	}
@@ -81,22 +83,4 @@ public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 	{
 		return IELootFunctions.MULTIBLOCK_DROPS.get();
 	}
-
-	public static class Serializer extends LootPoolSingletonContainer.Serializer<MultiblockDropsLootContainer>
-	{
-		@Nonnull
-		@Override
-		protected MultiblockDropsLootContainer deserialize(
-				@Nonnull JsonObject json,
-				@Nonnull JsonDeserializationContext context,
-				int weight,
-				int quality,
-				@Nonnull LootItemCondition[] conditions,
-				@Nonnull LootItemFunction[] functions
-		)
-		{
-			return new MultiblockDropsLootContainer(weight, quality, conditions, functions);
-		}
-	}
-
 }

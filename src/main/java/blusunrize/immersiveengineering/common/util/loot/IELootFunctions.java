@@ -10,10 +10,9 @@ package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import net.minecraft.core.Registry;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
@@ -25,8 +24,6 @@ import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegistryObject;
 
-import java.util.function.Supplier;
-
 /**
  * @author BluSunrize - 16.08.2018
  */
@@ -36,19 +33,19 @@ public class IELootFunctions
 	private static final DeferredRegister<LootItemFunctionType> FUNCTION_REGISTER = DeferredRegister.create(
 			Registries.LOOT_FUNCTION_TYPE, ImmersiveEngineering.MODID
 	);
-	public static final RegistryObject<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", () -> new SimpleSerializer<>(BluprintzLootFunction::new));
-	public static final RegistryObject<LootItemFunctionType> REVOLVERPERK = registerFunction("revolverperk", () -> new SimpleSerializer<>(RevolverperkLootFunction::new));
-	public static final RegistryObject<LootItemFunctionType> WINDMILL = registerFunction("windmill", () -> new SimpleSerializer<>(WindmillLootFunction::new));
-	public static final RegistryObject<LootItemFunctionType> CONVEYOR_COVER = registerFunction("conveyor_cover", () -> new SimpleSerializer<>(ConveyorCoverLootFunction::new));
-	public static final RegistryObject<LootItemFunctionType> PROPERTY_COUNT = registerFunction("property_count", PropertyCountLootFunction.Serializer::new);
+	public static final RegistryObject<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", BluprintzLootFunction.CODEC);
+	public static final RegistryObject<LootItemFunctionType> REVOLVERPERK = registerFunction("revolverperk", RevolverperkLootFunction.CODEC);
+	public static final RegistryObject<LootItemFunctionType> WINDMILL = registerFunction("windmill", WindmillLootFunction.CODEC);
+	public static final RegistryObject<LootItemFunctionType> CONVEYOR_COVER = registerFunction("conveyor_cover", ConveyorCoverLootFunction.CODEC);
+	public static final RegistryObject<LootItemFunctionType> PROPERTY_COUNT = registerFunction("property_count", PropertyCountLootFunction.CODEC);
 
 	private static final DeferredRegister<LootPoolEntryType> ENTRY_REGISTER = DeferredRegister.create(
 			// TODO why isn't there a REGISTRY field for this one?
 			BuiltInRegistries.LOOT_POOL_ENTRY_TYPE.key(), ImmersiveEngineering.MODID
 	);
-	public static final RegistryObject<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.Serializer::new);
-	public static final RegistryObject<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.Serializer::new);
-	public static final RegistryObject<LootPoolEntryType> MULTIBLOCK_DROPS = registerEntry("multiblock", MultiblockDropsLootContainer.Serializer::new);
+	public static final RegistryObject<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.CODEC);
+	public static final RegistryObject<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.CODEC);
+	public static final RegistryObject<LootPoolEntryType> MULTIBLOCK_DROPS = registerEntry("multiblock", MultiblockDropsLootContainer.CODEC);
 
 	public static void init()
 	{
@@ -58,16 +55,16 @@ public class IELootFunctions
 	}
 
 	private static RegistryObject<LootPoolEntryType> registerEntry(
-			String id, Supplier<Serializer<? extends LootPoolEntryContainer>> serializer
+			String id, Codec<? extends LootPoolEntryContainer> serializer
 	)
 	{
-		return ENTRY_REGISTER.register(id, () -> new LootPoolEntryType(serializer.get()));
+		return ENTRY_REGISTER.register(id, () -> new LootPoolEntryType(serializer));
 	}
 
 	private static RegistryObject<LootItemFunctionType> registerFunction(
-			String id, Supplier<Serializer<? extends LootItemFunction>> serializer
+			String id, Codec<? extends LootItemFunction> serializer
 	)
 	{
-		return FUNCTION_REGISTER.register(id, () -> new LootItemFunctionType(serializer.get()));
+		return FUNCTION_REGISTER.register(id, () -> new LootItemFunctionType(serializer));
 	}
 }

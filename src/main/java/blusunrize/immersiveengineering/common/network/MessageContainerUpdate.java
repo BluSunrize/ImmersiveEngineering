@@ -12,9 +12,7 @@ import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class MessageContainerUpdate implements IMessage
 {
@@ -42,12 +40,11 @@ public class MessageContainerUpdate implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		Context ctx = context.get();
-		ServerPlayer player = ctx.getSender();
+		ServerPlayer player = context.getSender();
 		assert player!=null;
-		ctx.enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			player.resetLastActionTime();
 			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IEContainerMenu ieMenu)
 				ieMenu.receiveMessageFromScreen(nbt);

@@ -21,12 +21,12 @@ import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.common.ForgeConfigSpec;
-import net.neoforged.neoforge.common.ForgeConfigSpec.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.*;
 
 import java.util.EnumMap;
 import java.util.Locale;
@@ -40,7 +40,7 @@ public class IEServerConfig
 {
 	public static class Wires
 	{
-		Wires(ForgeConfigSpec.Builder builder)
+		Wires(ModConfigSpec.Builder builder)
 		{
 			builder.comment("Configuration related to Immersive Engineering wires").push("wires");
 			// Server
@@ -102,7 +102,7 @@ public class IEServerConfig
 		{
 			public final IntValue maxLength;
 
-			protected WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength, boolean doPop)
+			protected WireConfig(ModConfigSpec.Builder builder, String name, int defLength, boolean doPop)
 			{
 				builder.push(name);
 				maxLength = builder.comment("The maximum length of "+name+" wires")
@@ -111,7 +111,7 @@ public class IEServerConfig
 					builder.pop();
 			}
 
-			public WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength)
+			public WireConfig(ModConfigSpec.Builder builder, String name, int defLength)
 			{
 				this(builder, name, defLength, true);
 			}
@@ -140,7 +140,7 @@ public class IEServerConfig
 
 	public static class Machines
 	{
-		Machines(ForgeConfigSpec.Builder builder)
+		Machines(ModConfigSpec.Builder builder)
 		{
 			builder.push("machines");
 			{
@@ -609,7 +609,7 @@ public class IEServerConfig
 				.defineInRange(name, defaultVal, 1, Integer.MAX_VALUE);
 	}
 
-	public static final ForgeConfigSpec CONFIG_SPEC;
+	public static final ModConfigSpec CONFIG_SPEC;
 	public static final Wires WIRES;
 	public static final Machines MACHINES;
 	public static final Ores ORES;
@@ -617,7 +617,7 @@ public class IEServerConfig
 
 	static
 	{
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 		WIRES = new Wires(builder);
 		MACHINES = new Machines(builder);
 		ORES = new Ores(builder);

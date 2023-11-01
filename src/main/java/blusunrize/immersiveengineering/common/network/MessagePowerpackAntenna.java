@@ -16,11 +16,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class MessagePowerpackAntenna implements IMessage
 {
@@ -65,9 +64,9 @@ public class MessagePowerpackAntenna implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{

@@ -42,15 +42,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.common.ForgeHooks;
-import net.neoforged.neoforge.common.ForgeMod;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
@@ -203,7 +203,7 @@ public class DrillItem extends DieselToolItem
 		ItemStack drill = ev.getEntity().getInventory().getSelected();
 		if(!(drill.getItem() instanceof DrillItem drillItem))
 			return;
-		if(ev.getEntity().isEyeInFluidType(ForgeMod.WATER_TYPE.get())&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
+		if(ev.getEntity().isEyeInFluidType(NeoForgeMod.WATER_TYPE.get())&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
 			ev.setCanHarvest(false);
 	}
 
@@ -310,7 +310,7 @@ public class DrillItem extends DieselToolItem
 			{
 				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
 					continue;
-				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayer)player).gameMode.getGameModeForPlayer(), (ServerPlayer)player, pos);
+				int xpDropEvent = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer)player).gameMode.getGameModeForPlayer(), (ServerPlayer)player, pos);
 				if(xpDropEvent < 0)
 					continue;
 

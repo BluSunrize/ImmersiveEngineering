@@ -78,18 +78,18 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.ForgeMod;
-import net.neoforged.neoforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.ParallelDispatchEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 
 import java.util.concurrent.CompletableFuture;
@@ -214,7 +214,8 @@ public class IEContent
 		AssemblerHandler.registerSpecialIngredientConverter((o, remain) ->
 		{
 			final ItemStack[] matching = o.getItems();
-			if(!o.isVanilla()||matching.length!=1)
+			//TODO
+			if(/*!o.isVanilla()||*/matching.length!=1)
 				return null;
 			final Item potentialBucket = matching[0].getItem();
 			if(!(potentialBucket instanceof BucketItem))
@@ -232,14 +233,15 @@ public class IEContent
 		// Milk is a weird special case
 		AssemblerHandler.registerSpecialIngredientConverter((o, remain) -> {
 			final ItemStack[] matching = o.getItems();
-			if(!o.isVanilla()||matching.length!=1)
+			//TODO
+			if(/*!o.isVanilla()||*/matching.length!=1)
 				return null;
-			if(matching[0].getItem()!=Items.MILK_BUCKET||!ForgeMod.MILK.isPresent())
+			if(matching[0].getItem()!=Items.MILK_BUCKET||!NeoForgeMod.MILK.isPresent())
 				return null;
 			// bucket was consumed in recipe
 			if(remain.getItem()!=Items.BUCKET)
 				return null;
-			return new FluidStackRecipeQuery(new FluidStack(ForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
+			return new FluidStackRecipeQuery(new FluidStack(NeoForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
 		});
 
 		// TODO move to IEFluids/constructors?

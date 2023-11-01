@@ -31,6 +31,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.CommonHooks;
 
 import java.util.function.Supplier;
 
@@ -133,19 +134,19 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 			if(notMaxAge||canGrowTop)
 			{
 				float f = getGrowthSpeed(this, world, pos);
-				if(net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPre(world, pos, state, rand.nextInt((int)(25.0F/f)+1)==0))
+				if(CommonHooks.onCropsGrowPre(world, pos, state, rand.nextInt((int)(25.0F/f)+1)==0))
 				{
 					if(notMaxAge)
 					{
 						world.setBlock(pos, this.getStateForAge(i+1), 2);
-						net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPost(world, pos, state);
+						CommonHooks.onCropsGrowPost(world, pos, state);
 					}
 					else if(canGrowTop)
 					{
 						BlockPos above = pos.above();
 						BlockState aboveState = this.getStateForAge(getMaxAge()).setValue(TOP, true);
 						world.setBlock(above, aboveState, 2);
-						net.neoforged.neoforge.common.ForgeHooks.onCropsGrowPost(world, above, aboveState);
+						CommonHooks.onCropsGrowPost(world, above, aboveState);
 					}
 				}
 			}
@@ -154,7 +155,7 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, boolean isClient)
+	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state)
 	{
 		return (!this.isMaxAge(state)&&!state.getValue(TOP))||canGrowTop(world, pos, state);
 	}

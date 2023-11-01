@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -19,7 +20,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -56,6 +57,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -79,6 +81,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.TierSortingRegistry;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
@@ -87,7 +90,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.joml.Vector4f;
@@ -425,7 +427,7 @@ public class Utils
 		{
 			PlayerAdvancements advancements = ((ServerPlayer)player).getAdvancements();
 			ServerAdvancementManager manager = ((ServerLevel)player.getCommandSenderWorld()).getServer().getAdvancements();
-			Advancement advancement = manager.getAdvancement(new ResourceLocation(ImmersiveEngineering.MODID, name));
+			AdvancementHolder advancement = manager.get(IEApi.ieLoc(name));
 			if(advancement!=null)
 				advancements.award(advancement, "code_trigger");
 		}
@@ -507,7 +509,7 @@ public class Utils
 		if(f.isSource()&&b.getBlock() instanceof BucketPickup bucketPickup)
 		{
 			if(action.execute())
-				bucketPickup.pickupBlock(world, pos, b);
+				bucketPickup.pickupBlock(null, world, pos, b);
 			return new FluidStack(f.getType(), FluidType.BUCKET_VOLUME);
 		}
 		return FluidStack.EMPTY;
@@ -529,7 +531,7 @@ public class Utils
 			BlockState blockstate = worldIn.getBlockState(posIn);
 			boolean flag = !blockstate.isSolid();
 			boolean flag1 = blockstate.canBeReplaced();
-			if(worldIn.isEmptyBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof LiquidBlockContainer&&((LiquidBlockContainer)blockstate.getBlock()).canPlaceLiquid(worldIn, posIn, blockstate, fluid))
+			if(worldIn.isEmptyBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof LiquidBlockContainer&&((LiquidBlockContainer)blockstate.getBlock()).canPlaceLiquid(null, worldIn, posIn, blockstate, fluid))
 			{
 				if(worldIn.dimensionType().ultraWarm()&&fluid.is(FluidTags.WATER))
 				{
@@ -636,7 +638,7 @@ public class Utils
 		return stack.getCapability(Capabilities.FLUID_HANDLER_ITEM).isPresent();
 	}
 
-	public static Optional<CraftingRecipe> findCraftingRecipe(CraftingContainer crafting, Level world)
+	public static Optional<RecipeHolder<CraftingRecipe>> findCraftingRecipe(CraftingContainer crafting, Level world)
 	{
 		return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, crafting, world);
 	}
@@ -646,32 +648,6 @@ public class Utils
 		NonNullList<ItemStack> list = NonNullList.withSize(1, ItemStack.EMPTY);
 		list.set(0, stack);
 		return list;
-	}
-
-	public static float[] rotateToFacing(float[] in, Direction facing)
-	{
-		for(int i = 0; i < in.length; i++)
-			in[i] -= .5F;
-		float[] ret = new float[in.length];
-		for(int i = 0; i < in.length; i += 3)
-			for(int j = 0; j < 3; j++)
-			{
-				if(j==0)
-					ret[i+j] = in[i+0]*facing.getStepZ()+
-							in[i+1]*facing.getStepX()+
-							in[i+2]*facing.getStepY();
-				else if(j==1)
-					ret[i+j] = in[i+0]*facing.getStepX()+
-							in[i+1]*facing.getStepY()+
-							in[i+2]*facing.getStepZ();
-				else
-					ret[i+j] = in[i+0]*facing.getStepY()+
-							in[i+1]*facing.getStepZ()+
-							in[i+2]*facing.getStepX();
-			}
-		for(int i = 0; i < in.length; i++)
-			ret[i] += .5;
-		return ret;
 	}
 
 	public static boolean isVecInBlock(Vec3 vec3d, BlockPos pos, BlockPos offset, double eps)

@@ -31,6 +31,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -41,8 +42,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.NetworkHooks;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -343,8 +345,8 @@ public class SkylineHookEntity extends Entity
 		final double tolerance = connection.getCatenaryData().isVertical()?5: 10;//TODO are these values good?
 		double radius = player.getBbWidth()/2;
 		double height = player.getBbHeight();
-		double yOffset = getPassengersRidingOffset()+player.getMyRidingOffset();
-		AABB playerBB = new AABB(x-radius, y+yOffset, z-radius, x+radius, y+yOffset+height, z+radius);
+		var offset = getPassengerRidingPosition(player);
+		AABB playerBB = new AABB(x-radius, y, z-radius, x+radius, y+height, z+radius).move(offset);
 		double playerHeight = playerBB.maxY-playerBB.minY;
 		AABB feet = new AABB(playerBB.minX, playerBB.minY, playerBB.minZ,
 				playerBB.maxX, playerBB.minY+.05*playerHeight, playerBB.maxZ);
@@ -417,9 +419,9 @@ public class SkylineHookEntity extends Entity
 	}
 
 	@Override
-	public double getPassengersRidingOffset()
+	protected Vector3f getPassengerAttachmentPoint(Entity rider, EntityDimensions size, float p_296362_)
 	{
-		return -2;
+		return new Vector3f(0.0F, size.height-2, 0.0F);
 	}
 
 	@Override
@@ -467,7 +469,8 @@ public class SkylineHookEntity extends Entity
 
 	private void handleDismount(Entity passenger)
 	{
-		passenger.teleportTo(getX(), getY()+getPassengersRidingOffset()+passenger.getMyRidingOffset(), getZ());
+		final var passengerPosition = getPassengerRidingPosition(passenger);
+		passenger.teleportTo(passengerPosition.x, passengerPosition.y, passengerPosition.z);
 		passenger.setDeltaMovement(getDeltaMovement());
 		if(getDeltaMovement().y < 0)
 		{

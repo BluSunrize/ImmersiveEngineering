@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -22,11 +22,16 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class BEDropLootEntry extends LootPoolSingletonContainer
 {
-	protected BEDropLootEntry(int weightIn, int qualityIn, LootItemCondition[] conditionsIn, LootItemFunction[] functionsIn)
+	public static final Codec<BEDropLootEntry> CODEC = RecordCodecBuilder.create(
+			inst -> singletonFields(inst).apply(inst, BEDropLootEntry::new)
+	);
+
+	protected BEDropLootEntry(int weightIn, int qualityIn, List<LootItemCondition> conditionsIn, List<LootItemFunction> functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
 	}
@@ -52,22 +57,5 @@ public class BEDropLootEntry extends LootPoolSingletonContainer
 	public LootPoolEntryType getType()
 	{
 		return IELootFunctions.TILE_DROP.get();
-	}
-
-	public static class Serializer extends LootPoolSingletonContainer.Serializer<BEDropLootEntry>
-	{
-		@Nonnull
-		@Override
-		protected BEDropLootEntry deserialize(
-				@Nonnull JsonObject json,
-				@Nonnull JsonDeserializationContext context,
-				int weight,
-				int quality,
-				@Nonnull LootItemCondition[] conditions,
-				@Nonnull LootItemFunction[] functions
-		)
-		{
-			return new BEDropLootEntry(weight, quality, conditions, functions);
-		}
 	}
 }

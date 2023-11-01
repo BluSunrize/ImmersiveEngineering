@@ -13,11 +13,9 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
-import li.cil.oc2.api.API;
 import mcjty.theoneprobe.TheOneProbe;
-import net.neoforged.neoforge.common.ForgeConfigSpec.BooleanValue;
 import net.neoforged.fml.ModList;
-import top.theillusivec4.curios.api.CuriosApi;
+import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
@@ -34,7 +32,6 @@ public final class IECompatModules
 	static
 	{
 		STANDARD_MODULE_CLASSES.put(ComputerCraftAPI.MOD_ID, ComputerCraftCompatModule.class);
-		STANDARD_MODULE_CLASSES.put(CuriosApi.MODID, CuriosCompatModule.class);
 		STANDARD_MODULE_CLASSES.put(TheOneProbe.MODID, OneProbeCompatModule.class);
 	}
 

@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.ConnectionSegments;
-import blusunrize.immersiveengineering.mixin.accessors.client.RenderChunkAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.RenderSectionAccess;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -23,10 +23,10 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import malte0811.modelsplitter.model.UVCoords;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
+import net.minecraft.client.renderer.SectionBufferBuilderPack;
+import net.minecraft.client.renderer.chunk.SectionRenderDispatcher.RenderSection;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -69,8 +69,8 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 	}
 
 	public static void renderConnectionsInSection(
-			Set<RenderType> layers, ChunkBufferBuilderPack buffers,
-			@Nullable BlockAndTintGetter region, RenderChunk renderChunk
+			Set<RenderType> layers, SectionBufferBuilderPack buffers,
+			@Nullable BlockAndTintGetter region, RenderSection renderChunk
 	)
 	{
 		if(region==null)
@@ -84,7 +84,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		RenderType renderType = RenderType.solid();
 		BufferBuilder builder = buffers.builder(renderType);
 		if(layers.add(renderType))
-			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
+			((RenderSectionAccess)renderChunk).invokeBeginLayer(builder);
 		for(ConnectionSegments connection : connectionParts)
 		{
 			ConnectionPoint connectionOrigin = connection.connection().getEndA();

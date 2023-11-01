@@ -18,10 +18,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 import java.util.Set;
-import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.network.MessageWireSync.Operation.ADD;
 import static blusunrize.immersiveengineering.common.network.MessageWireSync.Operation.REMOVE;
@@ -78,9 +77,9 @@ public class MessageWireSync implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			WireLogger.logger.debug(
 					"Processing sync for connection from {} to {}, type {}, op {}",
 					start, end, type, operation.name()
@@ -103,7 +102,7 @@ public class MessageWireSync implements IMessage
 			for(SectionPos section : sectionsToRerender)
 				Minecraft.getInstance().levelRenderer.setSectionDirty(section.x(), section.y(), section.z());
 		});
-		context.get().setPacketHandled(true);
+		context.setPacketHandled(true);
 	}
 
 	private void removeProxyIfNoWires(ConnectionPoint point, GlobalWireNetwork globalNet)

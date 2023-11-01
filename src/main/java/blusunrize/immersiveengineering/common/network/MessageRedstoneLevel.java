@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteRedstoneData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public record MessageRedstoneLevel(VoltmeterItem.RemoteRedstoneData data) implements IMessage
 {
@@ -30,8 +28,8 @@ public record MessageRedstoneLevel(VoltmeterItem.RemoteRedstoneData data) implem
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> VoltmeterItem.lastRedstoneUpdate = data);
+		context.enqueueWork(() -> VoltmeterItem.lastRedstoneUpdate = data);
 	}
 }

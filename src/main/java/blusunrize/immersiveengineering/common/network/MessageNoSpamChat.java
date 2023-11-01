@@ -15,11 +15,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public record MessageNoSpamChat(Component message) implements IMessage
 {
@@ -35,9 +34,9 @@ public record MessageNoSpamChat(Component message) implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			final ChatComponent chat = Minecraft.getInstance().gui.getChat();
 			final ChatComponentAccess chatAccess = ((ChatComponentAccess)chat);
 			final List<GuiMessage> allMessages = chatAccess.getAllMessages();

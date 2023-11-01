@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.ForgeHooks;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 
 import java.util.ArrayList;
@@ -41,9 +41,9 @@ public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingCo
 				ingredientsForMatching.add(i);
 		while(ingredientsForMatching.size() < inputList.size())
 			ingredientsForMatching.add(Ingredient.EMPTY);
-		ForgeHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
+		CommonHooks.setCraftingPlayer(FakePlayerUtil.getFakePlayer(world));
 		int[] ingredientAssignment = RecipeMatcher.findMatches(inputList, ingredientsForMatching);
-		ForgeHooks.setCraftingPlayer(null);
+		CommonHooks.setCraftingPlayer(null);
 
 		// Collect remaining items
 		NonNullList<ItemStack> remains = recipe.getRemainingItems(

@@ -41,16 +41,13 @@ import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData.Factory;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModLoadingContext;
@@ -60,9 +57,13 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLLoader;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.network.NetworkRegistry;
+import net.neoforged.neoforge.network.PlayNetworkDirection;
+import net.neoforged.neoforge.network.simple.MessageFunctions.MessageDecoder;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.InputStreamReader;
@@ -74,8 +75,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
-import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
+import static net.neoforged.neoforge.network.PlayNetworkDirection.PLAY_TO_CLIENT;
+import static net.neoforged.neoforge.network.PlayNetworkDirection.PLAY_TO_SERVER;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -83,6 +84,7 @@ public class ImmersiveEngineering
 	public static final String MODID = Lib.MODID;
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = IEApi.getCurrentVersion();
+	// TODO
 	public static final CommonProxy proxy = DistExecutor.safeRunForDist(bootstrapErrorToXCPInDev(() -> ClientProxy::new), bootstrapErrorToXCPInDev(() -> CommonProxy::new));
 
 	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
@@ -249,13 +251,13 @@ public class ImmersiveEngineering
 
 	private int messageId = 0;
 
-	private <T extends IMessage> void registerMessage(Class<T> packetType, Function<FriendlyByteBuf, T> decoder)
+	private <T extends IMessage> void registerMessage(Class<T> packetType, MessageDecoder<T> decoder)
 	{
 		registerMessage(packetType, decoder, Optional.empty());
 	}
 
 	private <T extends IMessage> void registerMessage(
-			Class<T> packetType, Function<FriendlyByteBuf, T> decoder, NetworkDirection direction
+			Class<T> packetType, MessageDecoder<T> decoder, PlayNetworkDirection direction
 	)
 	{
 		registerMessage(packetType, decoder, Optional.of(direction));
@@ -264,15 +266,15 @@ public class ImmersiveEngineering
 	private final Set<Class<?>> knownPacketTypes = new HashSet<>();
 
 	private <T extends IMessage> void registerMessage(
-			Class<T> packetType, Function<FriendlyByteBuf, T> decoder, Optional<NetworkDirection> direction
+			Class<T> packetType, MessageDecoder<T> decoder, Optional<PlayNetworkDirection> direction
 	)
 	{
 		if(!knownPacketTypes.add(packetType))
 			throw new IllegalStateException("Duplicate packet type: "+packetType.getName());
-		packetHandler.registerMessage(messageId++, packetType, IMessage::toBytes, decoder, (t, ctx) -> {
+		packetHandler.<T>registerMessage(messageId++, packetType, IMessage::toBytes, decoder, (t, ctx) -> {
 			t.process(ctx);
-			ctx.get().setPacketHandled(true);
-		}, direction);
+			ctx.setPacketHandled(true);
+		}, direction.map(Function.identity()));
 	}
 
 	public void enqueueIMCs(InterModEnqueueEvent event)
@@ -295,7 +297,9 @@ public class ImmersiveEngineering
 			ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
 			if(!world.isClientSide)
 			{
-				IESaveData worldData = world.getDataStorage().computeIfAbsent(IESaveData::new, IESaveData::new, IESaveData.dataName);
+				IESaveData worldData = world.getDataStorage().computeIfAbsent(
+						new Factory<>(IESaveData::new, IESaveData::new), IESaveData.dataName
+				);
 				IESaveData.setInstance(worldData);
 			}
 		}

@@ -33,8 +33,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.ForgeEventFactory;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 
@@ -181,7 +181,7 @@ public class IEExplosiveEntity extends PrimedTnt
 
 			Explosion explosion = new IEExplosion(level(), this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming, mode)
 					.setDropChance(explosionDropChance);
-			if(!ForgeEventFactory.onExplosionStart(level(), explosion))
+			if(!EventHooks.onExplosionStart(level(), explosion))
 			{
 				explosion.explode();
 				explosion.finalizeExplosion(true);

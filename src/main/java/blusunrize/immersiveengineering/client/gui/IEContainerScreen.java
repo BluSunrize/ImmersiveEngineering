@@ -71,7 +71,6 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
-		this.renderBackground(graphics);
 		super.render(graphics, mouseX, mouseY, partialTicks);
 		List<Component> tooltip = new ArrayList<>();
 		for(InfoArea area : infoAreas.get())

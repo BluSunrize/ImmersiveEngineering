@@ -16,12 +16,11 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.function.Supplier;
 
 public class MessageObstructedConnection implements IMessage
 {
@@ -67,9 +66,9 @@ public class MessageObstructedConnection implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(() -> {
+		context.enqueueWork(() -> {
 			Connection conn = new Connection(
 					wireType, new ConnectionPoint(startB, 0), new ConnectionPoint(endB, 0), start, end
 			);

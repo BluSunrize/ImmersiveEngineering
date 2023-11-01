@@ -66,6 +66,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -84,16 +85,16 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.TextureStitchEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -220,7 +221,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	@SubscribeEvent
-	public static void textureStichPost(TextureStitchEvent.Post event)
+	public static void textureStichPost(TextureAtlasStitchedEvent event)
 	{
 		if(!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
@@ -273,9 +274,10 @@ public class ClientProxy extends CommonProxy
 			else if(render instanceof ArmorStandRenderer asr)
 				addIELayer(asr, ev.getEntityModels());
 		}
-		for(String skin : ev.getSkins())
+		for(Model skin : ev.getSkins())
 		{
-			LivingEntityRenderer<?, ?> render = ev.getSkin(skin);
+			// TODO probably Forge bug: This should take the Model instead of the name
+			LivingEntityRenderer<?, ?> render = ev.getSkin(skin.name());
 			if(render!=null)
 				addIELayer(render, ev.getEntityModels());
 		}

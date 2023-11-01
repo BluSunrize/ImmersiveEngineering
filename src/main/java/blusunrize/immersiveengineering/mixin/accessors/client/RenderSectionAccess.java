@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.mixin.accessors.client;
 
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
+import net.minecraft.client.renderer.chunk.SectionRenderDispatcher.RenderSection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(RenderChunk.class)
-public interface RenderChunkAccess
+@Mixin(RenderSection.class)
+public interface RenderSectionAccess
 {
 	@Invoker
 	void invokeBeginLayer(BufferBuilder pBuilder);

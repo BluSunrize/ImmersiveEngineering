@@ -27,8 +27,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.ForgeSpawnEggItem;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -336,17 +336,17 @@ public final class IEItems
 
 	public static final class SpawnEggs
 	{
-		public static final ItemRegObject<ForgeSpawnEggItem> EGG_FUSILIER = registerEgg(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766);
-		public static final ItemRegObject<ForgeSpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x293a1e, 0x959b9b);
-		public static final ItemRegObject<ForgeSpawnEggItem> EGG_BULWARK = registerEgg(IEEntityTypes.BULWARK, 0x959b9b, 0xc75538);
+		public static final ItemRegObject<SpawnEggItem> EGG_FUSILIER = registerEgg(IEEntityTypes.FUSILIER, 0x959b9b, 0xaf6766);
+		public static final ItemRegObject<SpawnEggItem> EGG_COMMANDO = registerEgg(IEEntityTypes.COMMANDO, 0x293a1e, 0x959b9b);
+		public static final ItemRegObject<SpawnEggItem> EGG_BULWARK = registerEgg(IEEntityTypes.BULWARK, 0x959b9b, 0xc75538);
 
 		private static void init()
 		{
 		}
 
-		private static ItemRegObject<ForgeSpawnEggItem> registerEgg(RegistryObject<? extends EntityType<? extends Mob>> type, int col1, int col2)
+		private static ItemRegObject<SpawnEggItem> registerEgg(RegistryObject<? extends EntityType<? extends Mob>> type, int col1, int col2)
 		{
-			return register(type.getId().getPath()+"_spawn_egg", () -> new ForgeSpawnEggItem(type, col1, col2, new Item.Properties()));
+			return register(type.getId().getPath()+"_spawn_egg", () -> new DeferredSpawnEggItem(type, col1, col2, new Item.Properties()));
 		}
 	}
 

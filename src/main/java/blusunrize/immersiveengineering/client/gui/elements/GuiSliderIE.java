@@ -14,11 +14,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.client.gui.widget.ForgeSlider;
+import net.neoforged.neoforge.client.gui.widget.ExtendedSlider;
 
 import javax.annotation.Nonnull;
 
-public class GuiSliderIE extends ForgeSlider
+public class GuiSliderIE extends ExtendedSlider
 {
 	private final FloatConsumer handler;
 

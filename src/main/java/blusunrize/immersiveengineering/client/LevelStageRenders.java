@@ -35,12 +35,12 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -135,7 +135,8 @@ public class LevelStageRenders
 				long distToPlayerSq = xDiff*xDiff+zDiff*zDiff;
 				if(distToPlayerSq > maxDistanceSq)
 					continue;
-				int iC = keyList.indexOf(mineral.getId());
+				if(true) throw new UnsupportedOperationException();
+				int iC = 0;//TODO keyList.indexOf(mineral.getId());
 				DyeColor color = DyeColor.values()[iC%16];
 				float[] rgb = color.getTextureDiffuseColors();
 				float r = rgb[0];

@@ -10,9 +10,7 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent.Context;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 public class MessageOpenManual implements IMessage
 {
@@ -30,8 +28,8 @@ public class MessageOpenManual implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		context.get().enqueueWork(ImmersiveEngineering.proxy::openManual);
+		context.enqueueWork(ImmersiveEngineering.proxy::openManual);
 	}
 }

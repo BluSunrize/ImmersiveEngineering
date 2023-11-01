@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
@@ -24,11 +23,9 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -182,12 +179,13 @@ public class CoresampleItem extends IEBaseItem
 	public static ListTag getSimplifiedMineralList(Level level, ItemStack coresample)
 	{
 		ListTag outList = new ListTag();
-		getVeins(level, coresample).stream()
-				.map(VeinSampleData::getType)
-				.map(MineralMix::getId)
-				.map(ResourceLocation::toString)
-				.map(StringTag::valueOf)
-				.forEach(outList::add);
+		//TODO
+		//getVeins(level, coresample).stream()
+		//		.map(VeinSampleData::getType)
+		//		.map(MineralMix::getId)
+		//		.map(ResourceLocation::toString)
+		//		.map(StringTag::valueOf)
+		//		.forEach(outList::add);
 		return outList;
 	}
 
@@ -286,7 +284,8 @@ public class CoresampleItem extends IEBaseItem
 		{
 			CompoundTag tag = new CompoundTag();
 			tag.putDouble("percentage", percentageInTotalSample);
-			tag.putString("mineral", type.getId().toString());
+			//TODO
+			//tag.putString("mineral", type.getId().toString());
 			tag.putInt("depletion", depletion);
 			tag.putDouble("saturation", saturation);
 			return tag;

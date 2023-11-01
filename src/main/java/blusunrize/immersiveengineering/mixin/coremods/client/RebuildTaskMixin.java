@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.mixin.coremods.client;
 
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
 import blusunrize.immersiveengineering.common.mixin.CaptureOwner;
-import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
+import net.minecraft.client.renderer.SectionBufferBuilderPack;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
+import net.minecraft.client.renderer.chunk.SectionRenderDispatcher.RenderSection;
 import net.minecraft.world.level.BlockAndTintGetter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +37,7 @@ public class RebuildTaskMixin
 	// Second alias is required with Optifine in production
 	@Shadow(aliases = {"f_112859_", "this$1"})
 	@Final
-	private RenderChunk this$1;
+	private RenderSection this$1;
 
 	// Extraction is called for every block, so we just extract the region here and render later
 	@CaptureOwner(
@@ -73,7 +73,7 @@ public class RebuildTaskMixin
 			at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;", remap = false)
 	)
 	public void addConnectionQuads(
-			float pX, float pY, float pZ, ChunkBufferBuilderPack pBuffers, CallbackInfoReturnable<?> cir
+			float pX, float pY, float pZ, SectionBufferBuilderPack pBuffers, CallbackInfoReturnable<?> cir
 	)
 	{
 		ConnectionRenderer.renderConnectionsInSection(

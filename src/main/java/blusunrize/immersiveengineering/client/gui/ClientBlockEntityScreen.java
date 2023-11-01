@@ -42,8 +42,6 @@ public abstract class ClientBlockEntityScreen<T extends BlockEntity> extends Scr
 	@Override
 	public void render(GuiGraphics graphics, int mx, int my, float partial)
 	{
-		// Render dark background
-		this.renderBackground(graphics);
 		// Background texture
 		drawGuiContainerBackgroundLayer(graphics, mx, my, partial);
 

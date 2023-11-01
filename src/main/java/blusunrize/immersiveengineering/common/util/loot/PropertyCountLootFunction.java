@@ -9,10 +9,8 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import net.minecraft.util.GsonHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -25,12 +23,19 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class PropertyCountLootFunction extends LootItemConditionalFunction
 {
+	public static final Codec<PropertyCountLootFunction> CODEC = RecordCodecBuilder.create(
+			inst -> commonFields(inst)
+					.and(Codec.STRING.fieldOf("countProperty").forGetter(f -> f.propertyName))
+					.apply(inst, PropertyCountLootFunction::new)
+	);
+
 	private final String propertyName;
 
-	protected PropertyCountLootFunction(LootItemCondition[] conditionsIn, String propertyName)
+	protected PropertyCountLootFunction(List<LootItemCondition> conditionsIn, String propertyName)
 	{
 		super(conditionsIn);
 		this.propertyName = propertyName;
@@ -60,28 +65,7 @@ public class PropertyCountLootFunction extends LootItemConditionalFunction
 		return IELootFunctions.PROPERTY_COUNT.get();
 	}
 
-	public static class Serializer extends LootItemConditionalFunction.Serializer<PropertyCountLootFunction>
-	{
-		private final static String JSON_KEY = "propery_name";
-
-		@Override
-		public void serialize(JsonObject object, PropertyCountLootFunction function, JsonSerializationContext context)
-		{
-			super.serialize(object, function, context);
-			object.addProperty(JSON_KEY, function.propertyName);
-		}
-
-		@Nonnull
-		@Override
-		public PropertyCountLootFunction deserialize(@Nonnull JsonObject object,
-													 @Nonnull JsonDeserializationContext deserializationContext,
-													 @Nonnull LootItemCondition[] conditionsIn)
-		{
-			return new PropertyCountLootFunction(conditionsIn, GsonHelper.getAsString(object, JSON_KEY));
-		}
-	}
-
-	public static class Builder extends LootItemConditionalFunction.Builder<blusunrize.immersiveengineering.common.util.loot.PropertyCountLootFunction.Builder>
+	public static class Builder extends LootItemConditionalFunction.Builder<PropertyCountLootFunction.Builder>
 	{
 		private final String propertyName;
 
@@ -92,7 +76,7 @@ public class PropertyCountLootFunction extends LootItemConditionalFunction
 
 		@Nonnull
 		@Override
-		protected blusunrize.immersiveengineering.common.util.loot.PropertyCountLootFunction.Builder getThis()
+		protected PropertyCountLootFunction.Builder getThis()
 		{
 			return this;
 		}

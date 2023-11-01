@@ -15,7 +15,7 @@ import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.ModLoadingStage;
 import net.neoforged.fml.ModLoadingWarning;
-import net.minecraftforge.forgespi.language.IModInfo;
+import net.neoforged.neoforgespi.language.IModInfo;
 
 /**
  * Optifine replaces the PoseStack class, and its replacement doesn't inherit from IForgePoseStack. So the

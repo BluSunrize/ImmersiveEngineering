@@ -19,12 +19,11 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent.Context;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class MessageShaderManual implements IMessage
 {
@@ -68,15 +67,14 @@ public class MessageShaderManual implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		Context ctx = context.get();
-		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
+		if(context.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerPlayer player = ctx.getSender();
+			ServerPlayer player = context.getSender();
 			assert player!=null;
 			UUID playerId = player.getUUID();
-			ctx.enqueueWork(() -> {
+			context.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
 					Collection<ResourceLocation> received = ShaderRegistry.receivedShaders.get(playerId);
@@ -104,7 +102,7 @@ public class MessageShaderManual implements IMessage
 			});
 		}
 		else
-			ctx.enqueueWork(() -> {
+			context.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
 					Player player = ImmersiveEngineering.proxy.getClientPlayer();

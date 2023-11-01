@@ -26,8 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.ForgeEventFactory;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -171,7 +171,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 			Vec3 vec32 = this.position();
 			Vec3 vec33 = vec32.add(delta);
 			BlockHitResult blockHitResult = this.level().clip(new ClipContext(vec32, vec33, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
-			if(blockHitResult.getType()!=HitResult.Type.MISS&&!ForgeEventFactory.onProjectileImpact(this, blockHitResult))
+			if(blockHitResult.getType()!=HitResult.Type.MISS&&!EventHooks.onProjectileImpact(this, blockHitResult))
 			{
 				this.onHit(blockHitResult);
 				this.hasImpulse = true;

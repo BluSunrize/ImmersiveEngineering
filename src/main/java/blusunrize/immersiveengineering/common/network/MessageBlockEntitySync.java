@@ -17,10 +17,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.LogicalSide;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class MessageBlockEntitySync implements IMessage
 {
@@ -48,12 +47,11 @@ public class MessageBlockEntitySync implements IMessage
 	}
 
 	@Override
-	public void process(Supplier<Context> context)
+	public void process(Context context)
 	{
-		Context ctx = context.get();
-		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
-			ctx.enqueueWork(() -> {
-				ServerLevel world = Objects.requireNonNull(ctx.getSender()).serverLevel();
+		if(context.getDirection().getReceptionSide()==LogicalSide.SERVER)
+			context.enqueueWork(() -> {
+				ServerLevel world = Objects.requireNonNull(context.getSender()).serverLevel();
 				if(world.isAreaLoaded(pos, 1))
 				{
 					BlockEntity tile = world.getBlockEntity(pos);
@@ -62,7 +60,7 @@ public class MessageBlockEntitySync implements IMessage
 				}
 			});
 		else
-			ctx.enqueueWork(() -> {
+			context.enqueueWork(() -> {
 				Level world = ImmersiveEngineering.proxy.getClientWorld();
 				if(world!=null) // This can happen if the task is scheduled right before leaving the world
 				{

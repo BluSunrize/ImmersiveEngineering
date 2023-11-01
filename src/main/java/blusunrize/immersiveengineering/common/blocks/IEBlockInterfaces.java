@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -46,6 +45,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class IEBlockInterfaces
@@ -197,7 +197,7 @@ public class IEBlockInterfaces
 						.withOptionalParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(tile.getBlockPos()))
 						.create(LootContextParamSets.BLOCK);
 				getBlockEntityDrop(
-						new LootContext.Builder(parms).create(IEApi.ieLoc("pick_block")),
+						new LootContext.Builder(parms).create(Optional.of(IEApi.ieLoc("pick_block"))),
 						drop::setValue
 				);
 			}

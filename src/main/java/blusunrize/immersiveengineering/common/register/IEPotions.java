@@ -115,7 +115,8 @@ public class IEPotions
 			});
 		}
 
-		@Override
+		//TODO
+		//@Override
 		public boolean isDurationEffectTick(int duration, int amplifier)
 		{
 			if(tickrate < 0)

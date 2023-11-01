@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.common.entities.IEMinecartEntity.Minecart
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.network.chat.Component;
@@ -112,12 +112,12 @@ public class IEMinecartItem extends IEBaseItem
 		 */
 		public ItemStack execute(BlockSource source, ItemStack stack)
 		{
-			Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-			Level world = source.getLevel();
-			double d0 = source.x()+(double)direction.getStepX()*1.125D;
-			double d1 = Math.floor(source.y())+(double)direction.getStepY();
-			double d2 = source.z()+(double)direction.getStepZ()*1.125D;
-			BlockPos blockpos = source.getPos().relative(direction);
+			Direction direction = source.state().getValue(DispenserBlock.FACING);
+			Level world = source.level();
+			double d0 = source.pos().getX()+(double)direction.getStepX()*1.125D;
+			double d1 = Math.floor(source.pos().getY())+(double)direction.getStepY();
+			double d2 = source.pos().getZ()+(double)direction.getStepZ()*1.125D;
+			BlockPos blockpos = source.pos().relative(direction);
 			BlockState blockstate = world.getBlockState(blockpos);
 			RailShape railshape = blockstate.getBlock() instanceof BaseRailBlock?((BaseRailBlock)blockstate.getBlock()).getRailDirection(blockstate, world, blockpos, null): RailShape.NORTH_SOUTH;
 			double d3;
@@ -154,7 +154,7 @@ public class IEMinecartItem extends IEBaseItem
 		@Override
 		protected void playSound(BlockSource source)
 		{
-			source.getLevel().levelEvent(1000, source.getPos(), 0);
+			source.level().levelEvent(1000, source.pos(), 0);
 		}
 	};
 }
