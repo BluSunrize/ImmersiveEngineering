@@ -26,13 +26,7 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 {
 	public RevolverAssemblyRecipe(ShapedRecipe vanilla, List<Integer> copyNBT)
 	{
-		super(
-				vanilla.getGroup(),
-				vanilla.getWidth(), vanilla.getHeight(),
-				vanilla.getIngredients(), vanilla.getResultItem(null),
-				CraftingBookCategory.EQUIPMENT
-		);
-		setNBTCopyTargetRecipe(copyNBT);
+		super(vanilla, copyNBT, CraftingBookCategory.EQUIPMENT);
 	}
 
 	@Nonnull

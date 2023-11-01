@@ -12,7 +12,9 @@ package blusunrize.immersiveengineering.data.recipebuilder;
 import blusunrize.immersiveengineering.common.crafting.serializers.NoContainerSerializer;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -21,14 +23,13 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-public record NoContainerRecipeBuilder(BiConsumer<Consumer<FinishedRecipe>, ResourceLocation> baseRecipe)
+public record NoContainerRecipeBuilder(BiConsumer<RecipeOutput, ResourceLocation> baseRecipe)
 {
-	public void save(Consumer<FinishedRecipe> out, ResourceLocation id)
+	public void save(RecipeOutput out, ResourceLocation id)
 	{
 		Mutable<FinishedRecipe> finishedBaseRecipe = new MutableObject<>();
-		baseRecipe().accept(finishedBaseRecipe::setValue, id);
+		baseRecipe().accept(new WrappingRecipeOutput(out, finishedBaseRecipe::setValue), id);
 		out.accept(new FinishedRecipe()
 		{
 			@Override
@@ -39,30 +40,30 @@ public record NoContainerRecipeBuilder(BiConsumer<Consumer<FinishedRecipe>, Reso
 
 			@Nonnull
 			@Override
-			public ResourceLocation getId()
+			public ResourceLocation id()
 			{
 				return id;
 			}
 
 			@Nonnull
 			@Override
-			public RecipeSerializer<?> getType()
+			public RecipeSerializer<?> type()
 			{
 				return RecipeSerializers.NO_CONTAINER_SERIALIZER.get();
 			}
 
 			@Nullable
 			@Override
-			public JsonObject serializeAdvancement()
+			public JsonObject serializedAdvancement()
 			{
-				return finishedBaseRecipe.getValue().serializeAdvancement();
+				return finishedBaseRecipe.getValue().serializedAdvancement();
 			}
 
 			@Nullable
 			@Override
-			public ResourceLocation getAdvancementId()
+			public AdvancementHolder advancement()
 			{
-				return finishedBaseRecipe.getValue().getAdvancementId();
+				return finishedBaseRecipe.getValue().advancement();
 			}
 		});
 	}

@@ -10,14 +10,13 @@
 package blusunrize.immersiveengineering.data.recipebuilder;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 
 public class FluidAwareShapedRecipeBuilder extends ShapedRecipeBuilder
 {
@@ -37,12 +36,12 @@ public class FluidAwareShapedRecipeBuilder extends ShapedRecipeBuilder
 	}
 
 	@Override
-	public void save(@Nonnull Consumer<FinishedRecipe> consumerIn, @Nonnull ResourceLocation id)
+	public void save(@Nonnull RecipeOutput consumerIn, @Nonnull ResourceLocation id)
 	{
-		Consumer<FinishedRecipe> dummyConsumer = iFinishedRecipe -> {
+		RecipeOutput dummyConsumer = new WrappingRecipeOutput(consumerIn, iFinishedRecipe -> {
 			WrappedFinishedRecipe result = new WrappedFinishedRecipe(iFinishedRecipe, RecipeSerializers.IE_SHAPED_SERIALIZER);
 			consumerIn.accept(result);
-		};
+		});
 		super.save(dummyConsumer, id);
 	}
 }

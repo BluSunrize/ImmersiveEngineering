@@ -18,12 +18,12 @@ import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import blusunrize.immersiveengineering.data.tags.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class IEDataGenerator
@@ -45,7 +45,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new BannerTags(output, lookup, exHelper));
 			gen.addProvider(true, new PoiTags(output, lookup, exHelper));
 			gen.addProvider(true, new EntityTypeTags(output, lookup, exHelper));
-			gen.addProvider(true, new Recipes(output));
+			gen.addProvider(true, new Recipes(output, lookup));
 			gen.addProvider(true, new AllLoot(output));
 			gen.addProvider(true, new BlockStates(output, exHelper));
 			MultiblockStates multiblocks = new MultiblockStates(output, exHelper);

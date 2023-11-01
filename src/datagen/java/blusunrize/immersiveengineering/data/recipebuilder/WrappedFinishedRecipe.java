@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.data.recipebuilder;
 
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -39,29 +40,29 @@ public class WrappedFinishedRecipe implements FinishedRecipe
 
 	@Nonnull
 	@Override
-	public ResourceLocation getId()
+	public ResourceLocation id()
 	{
-		return base.getId();
+		return base.id();
 	}
 
 	@Nonnull
 	@Override
-	public RecipeSerializer<?> getType()
+	public RecipeSerializer<?> type()
 	{
 		return serializer;
 	}
 
 	@Nullable
 	@Override
-	public JsonObject serializeAdvancement()
+	public JsonObject serializedAdvancement()
 	{
-		return base.serializeAdvancement();
+		return base.serializedAdvancement();
 	}
 
 	@Nullable
 	@Override
-	public ResourceLocation getAdvancementId()
+	public AdvancementHolder advancement()
 	{
-		return base.getAdvancementId();
+		return base.advancement();
 	}
 }

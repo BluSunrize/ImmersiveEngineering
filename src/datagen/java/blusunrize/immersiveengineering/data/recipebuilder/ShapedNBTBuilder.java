@@ -12,8 +12,10 @@ package blusunrize.immersiveengineering.data.recipebuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -23,7 +25,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class ShapedNBTBuilder extends ShapedRecipeBuilder
 {
@@ -36,9 +37,9 @@ public class ShapedNBTBuilder extends ShapedRecipeBuilder
 	}
 
 	@Override
-	public void save(@Nonnull Consumer<FinishedRecipe> out, @Nonnull ResourceLocation name)
+	public void save(@Nonnull RecipeOutput out, @Nonnull ResourceLocation name)
 	{
-		super.save(base -> out.accept(new FinishedRecipe()
+		super.save(new WrappingRecipeOutput(out, base -> out.accept(new FinishedRecipe()
 		{
 			@Override
 			public void serializeRecipeData(@Nonnull JsonObject jsonOut)
@@ -54,31 +55,31 @@ public class ShapedNBTBuilder extends ShapedRecipeBuilder
 
 			@Nonnull
 			@Override
-			public ResourceLocation getId()
+			public ResourceLocation id()
 			{
-				return base.getId();
+				return base.id();
 			}
 
 			@Nonnull
 			@Override
-			public RecipeSerializer<?> getType()
+			public RecipeSerializer<?> type()
 			{
-				return base.getType();
+				return base.type();
 			}
 
 			@Nullable
 			@Override
-			public JsonObject serializeAdvancement()
+			public JsonObject serializedAdvancement()
 			{
-				return base.serializeAdvancement();
+				return base.serializedAdvancement();
 			}
 
 			@Nullable
 			@Override
-			public ResourceLocation getAdvancementId()
+			public AdvancementHolder advancement()
 			{
-				return base.getAdvancementId();
+				return base.advancement();
 			}
-		}), name);
+		})), name);
 	}
 }

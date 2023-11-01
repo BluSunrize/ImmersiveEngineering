@@ -12,13 +12,14 @@ package blusunrize.immersiveengineering.data.recipebuilder;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class GeneratedListRecipeBuilder
 {
@@ -26,7 +27,7 @@ public class GeneratedListRecipeBuilder
 	{
 	}
 
-	public static void build(Consumer<FinishedRecipe> consumerIn, final ResourceLocation id)
+	public static void build(RecipeOutput consumerIn, final ResourceLocation id)
 	{
 		Preconditions.checkArgument(GeneratedListRecipe.LIST_GENERATORS.containsKey(id));
 		consumerIn.accept(new FinishedRecipe()
@@ -36,26 +37,26 @@ public class GeneratedListRecipeBuilder
 			}
 
 			@Nonnull
-			public RecipeSerializer<?> getType()
+			public RecipeSerializer<?> type()
 			{
 				return GeneratedListRecipe.SERIALIZER.get();
 			}
 
 			@Nonnull
-			public ResourceLocation getId()
+			public ResourceLocation id()
 			{
 				return id;
 			}
 
 			@Nullable
-			public JsonObject serializeAdvancement()
+			public JsonObject serializedAdvancement()
 			{
 				return null;
 			}
 
-			public ResourceLocation getAdvancementId()
+			public AdvancementHolder advancement()
 			{
-				return new ResourceLocation("");
+				return null;
 			}
 		});
 	}

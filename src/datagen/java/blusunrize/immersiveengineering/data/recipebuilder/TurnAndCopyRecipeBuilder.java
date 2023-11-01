@@ -14,11 +14,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
@@ -68,12 +68,12 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 	}
 
 	@Override
-	public void save(Consumer<FinishedRecipe> consumerIn, ResourceLocation id)
+	public void save(RecipeOutput consumerIn, ResourceLocation id)
 	{
-		Consumer<FinishedRecipe> dummyConsumer = iFinishedRecipe -> {
+		RecipeOutput dummyConsumer = new WrappingRecipeOutput(consumerIn, iFinishedRecipe -> {
 			TurnAndCopyResult result = new TurnAndCopyResult(iFinishedRecipe, allowQuarterTurn, allowEighthTurn, nbtCopyTargetSlot, nbtCopyPredicate);
 			consumerIn.accept(result);
-		};
+		});
 		super.save(dummyConsumer, id);
 	}
 

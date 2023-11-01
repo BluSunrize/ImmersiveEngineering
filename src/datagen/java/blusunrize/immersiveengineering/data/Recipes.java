@@ -44,15 +44,19 @@ import blusunrize.immersiveengineering.data.resources.RecipeMetals.AlloyProperti
 import blusunrize.immersiveengineering.data.resources.RecipeOres;
 import blusunrize.immersiveengineering.data.resources.RecipeWoods;
 import blusunrize.immersiveengineering.data.resources.SecondaryOutput;
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.*;
 import net.minecraft.world.item.*;
@@ -66,21 +70,22 @@ import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.common.crafting.conditions.NotCondition;
-import net.neoforged.neoforge.common.crafting.conditions.TagEmptyCondition;
+import net.neoforged.neoforge.common.conditions.NotCondition;
+import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
@@ -93,13 +98,13 @@ public class Recipes extends RecipeProvider
 	private static final int standardSmeltingTime = 200;
 	private static final int blastDivider = 2;
 
-	public Recipes(PackOutput output)
+	public Recipes(PackOutput output, CompletableFuture<Provider> lookupProvider)
 	{
-		super(output);
+		super(output, lookupProvider);
 	}
 
 	@Override
-	protected void buildRecipes(Consumer<FinishedRecipe> out)
+	protected void buildRecipes(RecipeOutput out)
 	{
 		for(EnumMetals metal : EnumMetals.values())
 		{
@@ -209,7 +214,7 @@ public class Recipes extends RecipeProvider
 		WindmillBiomeBuilder.builder(BiomeTags.IS_OCEAN).modifier(1.15f).build(out, toRL("windmill/ocean"));
 	}
 
-	private void recipesBlast(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesBlast(@Nonnull RecipeOutput out)
 	{
 		BlastFurnaceFuelBuilder.builder(IETags.coalCoke)
 				.setTime(1200)
@@ -240,7 +245,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("blastfurnace/steel_block"));
 	}
 
-	private void recipesCoke(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesCoke(@Nonnull RecipeOutput out)
 	{
 		CokeOvenRecipeBuilder.builder(IETags.coalCoke, 1)
 				.addInput(Items.COAL)
@@ -259,7 +264,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("cokeoven/charcoal"));
 	}
 
-	private void recipesCloche(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesCloche(@Nonnull RecipeOutput out)
 	{
 		ClocheFertilizerBuilder.builder(1.25f)
 				.addInput(Items.BONE_MEAL)
@@ -386,7 +391,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("cloche/moss"));
 	}
 
-	private void recipesBlueprint(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesBlueprint(@Nonnull RecipeOutput out)
 	{
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.COMPONENT_IRON))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.IRON).plate, 2))
@@ -542,7 +547,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("blueprint/banner_wolf"));
 	}
 
-	private void recipesMultiblockMachines(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesMultiblockMachines(@Nonnull RecipeOutput out)
 	{
 		ArcFurnaceRecipeBuilder arcBuilder;
 		MetalPressRecipeBuilder pressBuilder;
@@ -1141,7 +1146,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mixer/redstone_acid"));
 	}
 
-	private void mineralMixes(@Nonnull Consumer<FinishedRecipe> out)
+	private void mineralMixes(@Nonnull RecipeOutput out)
 	{
 		// Metals
 		TagKey<Item> iron = Tags.Items.ORES_IRON;
@@ -1331,7 +1336,7 @@ public class Recipes extends RecipeProvider
 		//	Cinnabar
 	}
 
-	private void thermoelectricFuels(@Nonnull Consumer<FinishedRecipe> out)
+	private void thermoelectricFuels(@Nonnull RecipeOutput out)
 	{
 		ThermoelectricSourceBuilder.builder(Blocks.MAGMA_BLOCK)
 				.kelvin(1300)
@@ -1354,7 +1359,7 @@ public class Recipes extends RecipeProvider
 	}
 
 
-	private void recipesStoneDecorations(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesStoneDecorations(@Nonnull RecipeOutput out)
 	{
 		addCornerStraightMiddle(StoneDecoration.COKEBRICK, 3,
 				makeIngredient(IETags.clay),
@@ -1481,7 +1486,7 @@ public class Recipes extends RecipeProvider
 
 	}
 
-	private void recipesWoodenDecorations(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesWoodenDecorations(@Nonnull RecipeOutput out)
 	{
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			addStairs(WoodenDecoration.TREATED_WOOD.get(style), out);
@@ -1550,7 +1555,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(WoodenDecoration.FIBERBOARD)));
 	}
 
-	private void recipesWoodenDevices(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesWoodenDevices(@Nonnull RecipeOutput out)
 	{
 		shapedMisc(WoodenDevices.CRAFTING_TABLE)
 				.pattern("sss")
@@ -1697,7 +1702,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(WoodenDevices.WOODEN_BARREL)));
 	}
 
-	private void recipesMetalDecorations(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesMetalDecorations(@Nonnull RecipeOutput out)
 	{
 		for(DyeColor dye : DyeColor.values())
 		{
@@ -1925,7 +1930,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(MetalDecoration.METAL_LADDER.get(CoverType.STEEL))));
 	}
 
-	private void recipesMetalDevices(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesMetalDevices(@Nonnull RecipeOutput out)
 	{
 		shapedMisc(MetalDevices.RAZOR_WIRE, 3)
 				.pattern("sps")
@@ -2139,7 +2144,7 @@ public class Recipes extends RecipeProvider
 					.save(out, toRL(toPath(chute.getValue())));
 	}
 
-	private void recipesConnectors(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesConnectors(@Nonnull RecipeOutput out)
 	{
 		shapedMisc(IEBlocks.Connectors.BREAKER_SWITCH)
 				.pattern(" l ")
@@ -2275,7 +2280,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL("connector_hv_relay"));
 	}
 
-	private void recipesConveyors(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesConveyors(@Nonnull RecipeOutput out)
 	{
 		ItemLike basic = ConveyorHandler.getBlock(BasicConveyor.TYPE);
 		ItemLike redstone = ConveyorHandler.getBlock(RedstoneConveyor.TYPE);
@@ -2345,7 +2350,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(vertical)));
 	}
 
-	private void addCoveyorCoveringRecipe(ItemLike basic, Consumer<FinishedRecipe> out)
+	private void addCoveyorCoveringRecipe(ItemLike basic, RecipeOutput out)
 	{
 		new ShapedNBTBuilder(ConveyorBlock.makeCovered(basic, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD).get()))
 				.pattern("s")
@@ -2356,7 +2361,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(basic)+"_covered"));
 	}
 
-	private void recipesCloth(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesCloth(@Nonnull RecipeOutput out)
 	{
 		shapedMisc(Cloth.BALLOON, 2)
 				.pattern(" f ")
@@ -2385,7 +2390,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Cloth.STRIP_CURTAIN)));
 	}
 
-	private void recipesTools(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesTools(@Nonnull RecipeOutput out)
 	{
 		shapedMisc(Tools.HAMMER)
 				.pattern(" if")
@@ -2553,7 +2558,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Tools.GLIDER)));
 	}
 
-	private void recipesIngredients(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesIngredients(@Nonnull RecipeOutput out)
 	{
 		shapedMisc(Ingredients.STICK_TREATED, 4)
 				.pattern("w")
@@ -2936,7 +2941,7 @@ public class Recipes extends RecipeProvider
 				.save(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
 	}
 
-	private void recipesVanilla(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesVanilla(@Nonnull RecipeOutput out)
 	{
 		FluidAwareShapedRecipeBuilder.builder(Items.TORCH, 12)
 				.pattern("wc ")
@@ -2965,22 +2970,20 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL("paper_from_sawdust"));
 	}
 
-	private Consumer<FinishedRecipe> buildBlueprint(Consumer<FinishedRecipe> out, String blueprint, ICondition... conditions)
+	private RecipeOutput buildBlueprint(RecipeOutput out, String blueprint, ICondition... conditions)
 	{
-		return recipe -> out.accept(new FinishedRecipe()
+		return new WrappingRecipeOutput(out, recipe -> out.accept(new FinishedRecipe()
 		{
 			@Override
 			public void serializeRecipeData(@Nonnull JsonObject json)
 			{
+				recipe.serializeRecipeData(json);
 				if(conditions.length > 0)
 				{
-					JsonArray conditionArray = new JsonArray();
-					for(ICondition condition : conditions)
-						conditionArray.add(CraftingHelper.serialize(condition));
-					json.add("conditions", conditionArray);
+					DynamicOps<JsonElement> dynamicOps = ConditionalOps.create(RegistryOps.create(JsonOps.INSTANCE, out.provider()), ICondition.IContext.EMPTY);
+					JsonElement conditionJSON = ICondition.LIST_CODEC.encodeStart(dynamicOps, Arrays.asList(conditions)).result().orElseThrow();
+					json.add("conditions", conditionJSON);
 				}
-
-				recipe.serializeRecipeData(json);
 				JsonObject output = json.getAsJsonObject("result");
 				JsonObject nbt = new JsonObject();
 				nbt.addProperty("blueprint", blueprint);
@@ -2989,35 +2992,35 @@ public class Recipes extends RecipeProvider
 
 			@Nonnull
 			@Override
-			public ResourceLocation getId()
+			public ResourceLocation id()
 			{
-				return recipe.getId();
+				return recipe.id();
 			}
 
 			@Nonnull
 			@Override
-			public RecipeSerializer<?> getType()
+			public RecipeSerializer<?> type()
 			{
-				return recipe.getType();
+				return recipe.type();
 			}
 
 			@Nullable
 			@Override
-			public JsonObject serializeAdvancement()
+			public JsonObject serializedAdvancement()
 			{
-				return recipe.serializeAdvancement();
+				return recipe.serializedAdvancement();
 			}
 
 			@Nullable
 			@Override
-			public ResourceLocation getAdvancementId()
+			public AdvancementHolder advancement()
 			{
-				return recipe.getAdvancementId();
+				return recipe.advancement();
 			}
-		});
+		}));
 	}
 
-	private void recipesWeapons(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesWeapons(@Nonnull RecipeOutput out)
 	{
 		shapedMisc(Weapons.CHEMTHROWER)
 				.pattern(" tg")
@@ -3099,7 +3102,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(BulletHandler.getBulletItem(BulletItem.FIREWORK))));
 	}
 
-	private void recipesMisc(@Nonnull Consumer<FinishedRecipe> out)
+	private void recipesMisc(@Nonnull RecipeOutput out)
 	{
 		ItemLike wireCoilCopper = Misc.WIRE_COILS.get(WireType.COPPER);
 		shapedMisc(wireCoilCopper, 4)
@@ -3286,7 +3289,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
 	}
 
-	private void addArmor(TagKey<Item> input, Map<ArmorItem.Type, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
+	private void addArmor(TagKey<Item> input, Map<ArmorItem.Type, ? extends ItemLike> items, String name, RecipeOutput out)
 	{
 		ItemLike head = items.get(ArmorItem.Type.HELMET);
 		ItemLike chest = items.get(ArmorItem.Type.CHESTPLATE);
@@ -3320,7 +3323,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(feet)));
 	}
 
-	private void add3x3Conversion(ItemLike bigItem, ItemLike smallItem, TagKey<Item> smallTag, Consumer<FinishedRecipe> out)
+	private void add3x3Conversion(ItemLike bigItem, ItemLike smallItem, TagKey<Item> smallTag, RecipeOutput out)
 	{
 		shapedMisc(bigItem)
 				.define('s', smallTag)
@@ -3336,7 +3339,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(bigItem)+"_to_"+toPath(smallItem)));
 	}
 
-	private void addSlab(ItemLike block, ItemLike slab, Consumer<FinishedRecipe> out)
+	private void addSlab(ItemLike block, ItemLike slab, RecipeOutput out)
 	{
 		shapedMisc(slab, 6)
 				.define('s', block)
@@ -3351,7 +3354,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(block)+"_from_slab"));
 	}
 
-	private void addStairs(ItemLike block, Consumer<FinishedRecipe> out)
+	private void addStairs(ItemLike block, RecipeOutput out)
 	{
 		ItemLike stairs = IEBlocks.TO_STAIRS.get(BuiltInRegistries.ITEM.getKey(block.asItem()));
 		shapedMisc(stairs, 4)
@@ -3363,12 +3366,12 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(stairs)));
 	}
 
-	private void addStonecuttingRecipe(ItemLike input, ItemLike output, Consumer<FinishedRecipe> out)
+	private void addStonecuttingRecipe(ItemLike input, ItemLike output, RecipeOutput out)
 	{
 		addStonecuttingRecipe(input, output, 1, out);
 	}
 
-	private void addStonecuttingRecipe(ItemLike input, ItemLike output, int amount, Consumer<FinishedRecipe> out)
+	private void addStonecuttingRecipe(ItemLike input, ItemLike output, int amount, RecipeOutput out)
 	{
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(input), RecipeCategory.MISC, output, amount)
 				.unlockedBy("has_"+toPath(input), has(input))
@@ -3386,7 +3389,7 @@ public class Recipes extends RecipeProvider
 	 */
 	@ParametersAreNonnullByDefault
 	private void addCornerStraightMiddle(ItemLike output, int count, Ingredient corner, Ingredient side, Ingredient middle,
-										 CriterionTriggerInstance condition, Consumer<FinishedRecipe> out)
+										 Criterion<?> condition, RecipeOutput out)
 	{
 		shapedMisc(output, count)
 				.define('c', corner)
@@ -3409,7 +3412,7 @@ public class Recipes extends RecipeProvider
 	 */
 	@ParametersAreNonnullByDefault
 	private void addSandwich(ItemLike output, int count, Ingredient top, Ingredient middle, Ingredient bottom,
-							 CriterionTriggerInstance condition, Consumer<FinishedRecipe> out)
+							 Criterion<?> condition, RecipeOutput out)
 	{
 		shapedMisc(output, count)
 				.define('t', top)
@@ -3482,7 +3485,7 @@ public class Recipes extends RecipeProvider
 	 * @param smeltingTime smelting time in ticks
 	 * @param extraPostfix adds an additional postfix before the smelting/blasting postfix when needed (for example used by dusts)
 	 */
-	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, int smeltingTime, Consumer<FinishedRecipe> out, String extraPostfix)
+	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, int smeltingTime, RecipeOutput out, String extraPostfix)
 	{
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, output, xp, smeltingTime)
 				.unlockedBy("has_"+toPath(input), has(input))
@@ -3492,17 +3495,17 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL("smelting/"+toPath(output)+extraPostfix+"_from_blasting"));
 	}
 
-	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, Consumer<FinishedRecipe> out)
+	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, RecipeOutput out)
 	{
 		addStandardSmeltingBlastingRecipe(input, output, xp, out, "");
 	}
 
-	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, Consumer<FinishedRecipe> out, String extraPostfix)
+	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, RecipeOutput out, String extraPostfix)
 	{
 		addStandardSmeltingBlastingRecipe(input, output, xp, standardSmeltingTime, out, extraPostfix);
 	}
 
-	private void addRGBRecipe(Consumer<FinishedRecipe> out, ResourceLocation recipeName, Ingredient target, String nbtKey)
+	private void addRGBRecipe(RecipeOutput out, ResourceLocation recipeName, Ingredient target, String nbtKey)
 	{
 		out.accept(new FinishedRecipe()
 		{
@@ -3510,32 +3513,32 @@ public class Recipes extends RecipeProvider
 			@Override
 			public void serializeRecipeData(JsonObject json)
 			{
-				json.add("target", target.toJson());
+				json.add("target", target.toJson(false));
 				json.addProperty("key", nbtKey);
 			}
 
 			@Override
-			public ResourceLocation getId()
+			public ResourceLocation id()
 			{
 				return recipeName;
 			}
 
 			@Override
-			public RecipeSerializer<?> getType()
+			public RecipeSerializer<?> type()
 			{
 				return RecipeSerializers.RGB_SERIALIZER.get();
 			}
 
 			@Nullable
 			@Override
-			public JsonObject serializeAdvancement()
+			public JsonObject serializedAdvancement()
 			{
 				return null;
 			}
 
 			@Nullable
 			@Override
-			public ResourceLocation getAdvancementId()
+			public AdvancementHolder advancement()
 			{
 				return null;
 			}

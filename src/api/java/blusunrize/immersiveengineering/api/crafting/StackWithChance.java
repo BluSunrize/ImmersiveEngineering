@@ -56,8 +56,8 @@ public record StackWithChance(Lazy<ItemStack> stack, float chance)
 		return new StackWithChance(buffer.readItem(), buffer.readFloat());
 	}
 
-	public StackWithChance recalculate(float totalChance)
+	public StackWithChance recalculate(double totalChance)
 	{
-		return new StackWithChance(this.stack, this.chance/totalChance);
+		return new StackWithChance(this.stack, (float)(this.chance/totalChance));
 	}
 }

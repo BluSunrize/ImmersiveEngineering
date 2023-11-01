@@ -18,10 +18,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -31,7 +30,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +64,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 		return true;
 	}
 
-	public void build(Consumer<FinishedRecipe> out, ResourceLocation id)
+	public void build(RecipeOutput out, ResourceLocation id)
 	{
 		Preconditions.checkArgument(isComplete(), "This recipe is incomplete");
 		this.id = id;

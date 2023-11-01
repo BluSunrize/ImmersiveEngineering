@@ -18,6 +18,7 @@
     "accessors.ItemEntityAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
+    "accessors.PotionMixAccessor",
     "accessors.ServerPlayNetHandlerAccess",
     "accessors.TemplateAccess",
     "accessors.TemplatePoolAccess",

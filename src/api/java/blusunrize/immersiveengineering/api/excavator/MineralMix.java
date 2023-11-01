@@ -32,14 +32,14 @@ public class MineralMix extends IESerializableRecipe
 
 	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(IERecipeTypes.MINERAL_MIX);
 
-	public final StackWithChance[] outputs;
-	public final StackWithChance[] spoils;
+	public final List<StackWithChance> outputs;
+	public final List<StackWithChance> spoils;
 	public final int weight;
 	public final float failChance;
 	public final ImmutableSet<ResourceKey<Level>> dimensions;
 	public final Block background;
 
-	public MineralMix(StackWithChance[] outputs, StackWithChance[] spoils, int weight,
+	public MineralMix(List<StackWithChance> outputs, List<StackWithChance> spoils, int weight,
 					  float failChance, List<ResourceKey<Level>> dimensions, Block background)
 	{
 		super(LAZY_EMPTY, IERecipeTypes.MINERAL_MIX);

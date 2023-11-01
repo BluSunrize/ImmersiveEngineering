@@ -196,8 +196,8 @@ public class IEManual
 			else
 				dimensionString = I18n.get("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
 
-			List<StackWithChance> formattedOutputs = Arrays.asList(mineral.outputs);
-			List<StackWithChance> formattedSpoils = Arrays.asList(mineral.spoils);
+			List<StackWithChance> formattedOutputs = new ArrayList<>(mineral.outputs);
+			List<StackWithChance> formattedSpoils = new ArrayList<>(mineral.spoils);
 			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.chance()));
 			formattedSpoils.sort(Comparator.comparingDouble(i -> -i.chance()));
 

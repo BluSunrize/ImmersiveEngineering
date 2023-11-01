@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -20,10 +19,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -32,15 +31,19 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 {
 	protected boolean allowQuarter;
 	protected boolean allowEighth;
-	protected List<Integer> nbtCopyTargetSlot = null;
+	protected final List<Integer> nbtCopyTargetSlot;
 	protected Pattern nbtCopyPredicate = null;
 
 	public TurnAndCopyRecipe(
-			String group, int width, int height, NonNullList<Ingredient> ingr, ItemStack output,
-			CraftingBookCategory category
+			ShapedRecipe vanilla, List<Integer> copySlots, CraftingBookCategory category
 	)
 	{
-		super(group, width, height, ingr, output, category);
+		super(
+				vanilla.getGroup(),
+				vanilla.getWidth(), vanilla.getHeight(),
+				vanilla.getIngredients(), vanilla.getResultItem(null), category
+		);
+		this.nbtCopyTargetSlot = copySlots;
 	}
 
 	public void allowQuarterTurn()
@@ -54,19 +57,6 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 			allowEighth = true;
 	}
 
-	public void setNBTCopyTargetRecipe(int... slot)
-	{
-		List<Integer> asList = new ArrayList<>();
-		for(int i : slot)
-			asList.add(i);
-		setNBTCopyTargetRecipe(asList);
-	}
-
-	public void setNBTCopyTargetRecipe(List<Integer> slots)
-	{
-		this.nbtCopyTargetSlot = slots;
-	}
-
 	public void setNBTCopyPredicate(String pattern)
 	{
 		this.nbtCopyPredicate = Pattern.compile(pattern);
@@ -76,9 +66,9 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 	@Override
 	public ItemStack assemble(@Nonnull CraftingContainer matrix, RegistryAccess access)
 	{
+		ItemStack out = super.assemble(matrix, access);
 		if(nbtCopyTargetSlot!=null)
 		{
-			ItemStack out = getResultItem(access).copy();
 			CompoundTag tag = out.getOrCreateTag();
 			for(int targetSlot : nbtCopyTargetSlot)
 			{
@@ -87,10 +77,8 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 					tag = ItemNBTHelper.combineTags(tag, s.getOrCreateTag(), nbtCopyPredicate);
 			}
 			out.setTag(tag);
-			return out;
 		}
-		else
-			return super.assemble(matrix, access);
+		return out;
 	}
 
 	@Nullable
@@ -158,7 +146,10 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	public String getBufferPredicate()
 	{
-		return nbtCopyPredicate.pattern();
+		if(nbtCopyPredicate!=null)
+			return nbtCopyPredicate.pattern();
+		else
+			return null;
 	}
 
 	public static class MatchLocation implements AbstractFluidAwareRecipe.IMatchLocation
