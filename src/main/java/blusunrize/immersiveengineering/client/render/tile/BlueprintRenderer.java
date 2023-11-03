@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.google.common.collect.HashMultimap;
@@ -56,7 +57,7 @@ public class BlueprintRenderer
 
 	public static BlueprintLines getBlueprintDrawable(ItemStack stack, Level world)
 	{
-		if(stack.isEmpty())
+		if(stack.isEmpty() || IEClientConfig.disableBlueprintEngiWorkbench.get())
 			return null;
 		Player player = ClientUtils.mc().player;
 		List<TextureAtlasSprite> images = new ArrayList<>();
