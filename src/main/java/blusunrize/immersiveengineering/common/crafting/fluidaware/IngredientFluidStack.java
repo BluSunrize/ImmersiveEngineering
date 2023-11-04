@@ -10,7 +10,9 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,6 +21,7 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -100,5 +103,14 @@ public class IngredientFluidStack extends Ingredient
 			return handler.getContainer();
 		}
 		return input.getCraftingRemainingItem();
+	}
+
+	@Override
+	@NotNull
+	public JsonElement toJson(boolean p_301239_)
+	{
+		// TODO why is this necessary?
+		// TODO do I need to add the type somewhere?
+		return CODEC.encodeStart(JsonOps.INSTANCE, this).result().orElseThrow();
 	}
 }

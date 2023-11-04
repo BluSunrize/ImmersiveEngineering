@@ -3,8 +3,8 @@ import groovy.json.JsonSlurper
 import org.gradle.work.Incremental
 
 plugins {
-    id 'net.neoforged.gradle.userdev' version '7.0.8'
-    id 'net.neoforged.gradle.mixin' version '7.0.8'
+    id 'net.neoforged.gradle.userdev' version '7.0.33'
+    id 'net.neoforged.gradle.mixin' version '7.0.33'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
@@ -69,11 +69,12 @@ processResources {
     }
     exclude ".cache"
     //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
-        }
-    }
+    //TODO
+    //doLast {
+    //    fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+    //        File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
+    //    }
+    //}
 }
 
 // TODO update for NG
@@ -106,8 +107,9 @@ runs {
         programArguments.add '-nogui'
     }
     data {
-        programArguments.addAll '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'),
-                '--validate', '--existing', sourceSets.main.resources.srcDirs[0]
+        programArguments.addAll '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/').toString(),
+                '--validate', '--existing', sourceSets.main.resources.srcDirs[0].toString()
+        modSource sourceSets.datagen
     }
 }
 

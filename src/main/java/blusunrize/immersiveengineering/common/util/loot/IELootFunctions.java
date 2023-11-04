@@ -27,7 +27,6 @@ import net.neoforged.neoforge.registries.RegistryObject;
 /**
  * @author BluSunrize - 16.08.2018
  */
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IELootFunctions
 {
 	private static final DeferredRegister<LootItemFunctionType> FUNCTION_REGISTER = DeferredRegister.create(

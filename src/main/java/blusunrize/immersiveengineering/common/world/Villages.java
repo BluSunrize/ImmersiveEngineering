@@ -133,7 +133,6 @@ public class Villages
 		poolAccess.getTemplates().add(addedElement);
 	}
 
-	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 	public static class Registers
 	{
 		public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);

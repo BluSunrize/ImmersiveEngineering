@@ -1,10 +1,6 @@
 {
     "homepage": "https://minecraft.curseforge.com/projects/immersive-engineering",
     "promos": {
-        "1.20.1-latest": "1.20.1-10.0.0-169",
-        "1.20.1-recommended": "1.20.1-10.0.0-169"
-    },
-    "1.20.1": {
-        "1.20.1-10.0.0-169": "- First release for 1.20.1, now supporting NeoForged!\n- Includes all features from 9.4.1\n- Add sawmill support for stripped wood (BluSunrize)\n- Add sawmill support for cherry wood (BluSunrize)\n- Add cloche support for torchflowers (BluSunrize)\n- Change hemp blocks to extend vanilla's CropBlock (BluSunrize)"
+        
     }
 }

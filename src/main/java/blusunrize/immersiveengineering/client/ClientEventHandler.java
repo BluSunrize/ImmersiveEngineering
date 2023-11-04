@@ -679,7 +679,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onMouseEvent(MouseScrollingEvent event)
 	{
 		Player player = ClientUtils.mc().player;
-		if(event.getScrollDelta()!=0&&ClientUtils.mc().screen==null&&player!=null)
+		if(event.getScrollDeltaY()!=0&&ClientUtils.mc().screen==null&&player!=null)
 		{
 			ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
 			// Handle zoom steps
@@ -689,7 +689,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				if(steps!=null&&steps.length > 0)
 				{
 					int curStep = ZoomHandler.getCurrentZoomStep(steps);
-					int newStep = curStep+(event.getScrollDelta() > 0?-1: 1);
+					int newStep = curStep+(event.getScrollDeltaY() > 0?-1: 1);
 					if(newStep >= 0&&newStep < steps.length)
 						ZoomHandler.fovZoom = steps[newStep];
 					event.setCanceled(true);
@@ -701,12 +701,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			{
 				if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDelta() < 0));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDeltaY() < 0));
 					event.setCanceled(true);
 				}
 				if(equipped.getItem() instanceof RevolverItem)
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageRevolverRotate(event.getScrollDelta() < 0));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageRevolverRotate(event.getScrollDeltaY() < 0));
 					event.setCanceled(true);
 				}
 			}

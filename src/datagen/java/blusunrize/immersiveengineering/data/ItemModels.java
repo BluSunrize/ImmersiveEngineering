@@ -62,7 +62,7 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private ResourceLocation forgeLoc(String s)
 	{
-		return new ResourceLocation("forge", s);
+		return new ResourceLocation("neoforge", s);
 	}
 
 	@Override

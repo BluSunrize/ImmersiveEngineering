@@ -13,12 +13,13 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFlui
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
 import net.neoforged.neoforge.registries.RegistryObject;
 
 public class IEIngredients
 {
 	public static final DeferredRegister<IngredientType<?>> REGISTER = DeferredRegister.create(
-			ForgeRegistries.INGREDIENT_TYPES.get(), ImmersiveEngineering.MODID
+			Keys.INGREDIENT_TYPES, ImmersiveEngineering.MODID
 	);
 
 	public static final RegistryObject<IngredientType<?>> FLUID_STACK = REGISTER.register(

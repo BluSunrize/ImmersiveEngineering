@@ -276,8 +276,7 @@ public class ClientProxy extends CommonProxy
 		}
 		for(Model skin : ev.getSkins())
 		{
-			// TODO probably Forge bug: This should take the Model instead of the name
-			LivingEntityRenderer<?, ?> render = ev.getSkin(skin.name());
+			LivingEntityRenderer<?, ?> render = ev.getSkin(skin);
 			if(render!=null)
 				addIELayer(render, ev.getEntityModels());
 		}
