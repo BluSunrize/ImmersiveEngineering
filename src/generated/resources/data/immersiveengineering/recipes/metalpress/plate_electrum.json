@@ -6,6 +6,9 @@
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/electrum"
+    "basePredicate": {
+      "tag": "forge:plates/electrum"
+    },
+    "count": 1
   }
 }

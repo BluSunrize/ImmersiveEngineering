@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_armor_faraday_chestplate",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_armor_faraday_chestplate"
     ]
   ],
   "rewards": {

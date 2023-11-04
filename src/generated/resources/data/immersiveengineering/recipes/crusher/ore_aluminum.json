@@ -5,7 +5,7 @@
     "tag": "forge:ores/aluminum"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/aluminum"
     },
     "count": 2

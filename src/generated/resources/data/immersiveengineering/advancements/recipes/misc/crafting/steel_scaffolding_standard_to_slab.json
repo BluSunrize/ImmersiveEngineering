@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_steel_scaffolding_standard",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_steel_scaffolding_standard"
     ]
   ],
   "rewards": {

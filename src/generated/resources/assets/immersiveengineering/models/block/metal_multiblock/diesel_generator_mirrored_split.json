@@ -6,7 +6,7 @@
       "parent": "minecraft:block/block",
       "automatic_culling": false,
       "flip_v": true,
-      "loader": "forge:obj",
+      "loader": "neoforge:obj",
       "model": "immersiveengineering:models/block/metal_multiblock/diesel_generator.obj",
       "render_type": "minecraft:cutout_mipped",
       "textures": {

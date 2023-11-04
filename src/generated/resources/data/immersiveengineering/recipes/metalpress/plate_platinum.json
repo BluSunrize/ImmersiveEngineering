@@ -1,27 +1,15 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/platinum"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:plates/platinum"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 2400,
   "input": {
     "tag": "forge:ingots/platinum"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/platinum"
+    "basePredicate": {
+      "tag": "forge:plates/platinum"
+    },
+    "count": 1
   }
 }

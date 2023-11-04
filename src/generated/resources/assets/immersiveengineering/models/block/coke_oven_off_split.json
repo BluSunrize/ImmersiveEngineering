@@ -5,7 +5,7 @@
     "parent": "minecraft:block/block",
     "automatic_culling": false,
     "flip_v": true,
-    "loader": "forge:obj",
+    "loader": "neoforge:obj",
     "model": "immersiveengineering:models/block/stone_multiblocks/cube_three.obj",
     "textures": {
       "front": "immersiveengineering:block/multiblocks/coke_oven_off",

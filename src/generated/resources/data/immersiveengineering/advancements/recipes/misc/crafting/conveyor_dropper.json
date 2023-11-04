@@ -34,9 +34,9 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_trapdoor",
-      "has_conveyor",
-      "has_the_recipe"
+      "has_conveyor"
     ]
   ],
   "rewards": {

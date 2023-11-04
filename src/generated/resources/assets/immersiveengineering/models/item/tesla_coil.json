@@ -175,6 +175,6 @@
     }
   },
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/metal_device/teslacoil.obj"
 }

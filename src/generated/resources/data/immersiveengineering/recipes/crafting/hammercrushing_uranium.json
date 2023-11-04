@@ -4,6 +4,9 @@
     "tag": "forge:ores/uranium"
   },
   "result": {
-    "tag": "forge:dusts/uranium"
+    "basePredicate": {
+      "tag": "forge:dusts/uranium"
+    },
+    "count": 1
   }
 }

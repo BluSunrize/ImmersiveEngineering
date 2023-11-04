@@ -1,27 +1,15 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/zinc"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:plates/zinc"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 2400,
   "input": {
     "tag": "forge:ingots/zinc"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/zinc"
+    "basePredicate": {
+      "tag": "forge:plates/zinc"
+    },
+    "count": 1
   }
 }

@@ -5,7 +5,7 @@
     "tag": "forge:storage_blocks/coal_coke"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/coal_coke"
     },
     "count": 9

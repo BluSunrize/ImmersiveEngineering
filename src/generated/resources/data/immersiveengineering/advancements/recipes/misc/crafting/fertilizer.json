@@ -20,8 +20,8 @@
   },
   "requirements": [
     [
-      "has_saltpeter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_saltpeter"
     ]
   ],
   "rewards": {

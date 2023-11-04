@@ -5,7 +5,7 @@
     "parent": "minecraft:block/block",
     "automatic_culling": false,
     "flip_v": true,
-    "loader": "forge:obj",
+    "loader": "neoforge:obj",
     "model": "immersiveengineering:models/block/metal_multiblock/silo.obj",
     "textures": {
       "particle": "immersiveengineering:block/multiblocks/silo"

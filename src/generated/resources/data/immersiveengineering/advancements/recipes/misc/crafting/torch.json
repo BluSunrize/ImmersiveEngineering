@@ -42,10 +42,10 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_wool",
       "has_stick",
-      "has_creosote",
-      "has_the_recipe"
+      "has_creosote"
     ]
   ],
   "rewards": {

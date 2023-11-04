@@ -6,7 +6,7 @@
       "parent": "minecraft:block/block",
       "automatic_culling": false,
       "flip_v": true,
-      "loader": "forge:obj",
+      "loader": "neoforge:obj",
       "model": "immersiveengineering:models/block/metal_multiblock/metal_press.obj",
       "textures": {
         "particle": "immersiveengineering:block/multiblocks/metal_press"

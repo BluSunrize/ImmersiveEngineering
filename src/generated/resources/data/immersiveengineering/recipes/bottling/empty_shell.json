@@ -9,7 +9,7 @@
       "item": "immersiveengineering:mold_bullet_casing"
     },
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:nuggets/copper"
       },
       "count": 3

@@ -1,29 +1,17 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/invar"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/invar"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 51200,
   "input": {
     "tag": "forge:dusts/invar"
   },
   "results": [
     {
-      "tag": "forge:ingots/invar"
+      "basePredicate": {
+        "tag": "forge:ingots/invar"
+      },
+      "count": 1
     }
   ],
   "time": 100

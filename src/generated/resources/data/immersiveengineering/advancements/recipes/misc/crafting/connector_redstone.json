@@ -20,8 +20,8 @@
   },
   "requirements": [
     [
-      "has_electrum_nugget",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_electrum_nugget"
     ]
   ],
   "rewards": {

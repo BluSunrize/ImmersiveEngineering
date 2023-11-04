@@ -56,11 +56,11 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_leather",
       "has_copper_ingot",
       "has_capacitor_lv",
-      "has_connector_lv",
-      "has_the_recipe"
+      "has_connector_lv"
     ]
   ],
   "rewards": {

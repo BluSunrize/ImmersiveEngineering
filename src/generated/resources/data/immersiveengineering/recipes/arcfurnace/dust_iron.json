@@ -7,7 +7,10 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/iron"
+      "basePredicate": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 1
     }
   ],
   "time": 100

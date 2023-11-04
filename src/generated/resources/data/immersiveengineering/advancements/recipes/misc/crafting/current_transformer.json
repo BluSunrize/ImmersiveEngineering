@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_voltmeter",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_voltmeter"
     ]
   ],
   "rewards": {

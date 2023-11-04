@@ -20,8 +20,8 @@
   },
   "requirements": [
     [
-      "has_treated_planks",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_treated_planks"
     ]
   ],
   "rewards": {

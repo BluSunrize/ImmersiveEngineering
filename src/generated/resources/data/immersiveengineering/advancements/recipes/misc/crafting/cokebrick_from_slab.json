@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_cokebrick",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_cokebrick"
     ]
   ],
   "rewards": {

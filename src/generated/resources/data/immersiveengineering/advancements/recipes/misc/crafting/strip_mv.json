@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_electrum_coil",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_electrum_coil"
     ]
   ],
   "rewards": {

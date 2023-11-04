@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_furnace_heater",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_furnace_heater"
     ]
   ],
   "rewards": {

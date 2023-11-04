@@ -2,7 +2,7 @@
   "parent": "minecraft:block/block",
   "automatic_culling": false,
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/coresample.obj",
   "textures": {
     "particle": "immersiveengineering:block/wooden_decoration/treated_wood_vertical"

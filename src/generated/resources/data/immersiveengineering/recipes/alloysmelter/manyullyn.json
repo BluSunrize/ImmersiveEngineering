@@ -1,32 +1,20 @@
 {
   "type": "immersiveengineering:alloy",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/manyullyn"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/cobalt"
-      }
-    }
-  ],
+  "conditions": [],
   "input0": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/cobalt"
     },
     "count": 3
   },
   "input1": {
-    "item": "minecraft:netherite_scrap"
+    "basePredicate": {
+      "item": "minecraft:netherite_scrap"
+    },
+    "count": 1
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/manyullyn"
     },
     "count": 4

@@ -1,14 +1,6 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ores/platinum"
-      }
-    }
-  ],
+  "conditions": [],
   "dimensions": [
     "minecraft:overworld"
   ],
@@ -17,28 +9,29 @@
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ores/platinum"
+        "basePredicate": {
+          "tag": "forge:ores/platinum"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.5,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:ores/paladium"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:ores/paladium"
+        "basePredicate": {
+          "tag": "forge:ores/paladium"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ores/nickel"
+        "basePredicate": {
+          "tag": "forge:ores/nickel"
+        },
+        "count": 1
       }
     }
   ],

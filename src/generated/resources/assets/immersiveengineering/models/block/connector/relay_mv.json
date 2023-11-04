@@ -2,7 +2,7 @@
   "parent": "minecraft:block/block",
   "automatic_culling": false,
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/connector/connector_mv.obj",
   "textures": {
     "particle": "immersiveengineering:block/connector/relay_mv",

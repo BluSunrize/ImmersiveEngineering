@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_iron_sheet_slab",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_iron_sheet_slab"
     ]
   ],
   "rewards": {

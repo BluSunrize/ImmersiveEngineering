@@ -4,7 +4,6 @@
   "group": "ie_concrete",
   "key": {
     "b": {
-      "type": "immersiveengineering:fluid",
       "amount": 1000,
       "tag": "minecraft:water"
     },

@@ -5,7 +5,7 @@
     "tag": "forge:ores/lead"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/lead"
     },
     "count": 2
@@ -13,17 +13,12 @@
   "secondaries": [
     {
       "chance": 0.1,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:dusts/silver"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:dusts/silver"
+        "basePredicate": {
+          "tag": "forge:dusts/silver"
+        },
+        "count": 1
       }
     }
   ]

@@ -6,6 +6,9 @@
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/constantan"
+    "basePredicate": {
+      "tag": "forge:plates/constantan"
+    },
+    "count": 1
   }
 }

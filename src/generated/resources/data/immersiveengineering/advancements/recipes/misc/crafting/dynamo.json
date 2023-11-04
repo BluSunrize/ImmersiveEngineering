@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_coil_lv",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_coil_lv"
     ]
   ],
   "rewards": {

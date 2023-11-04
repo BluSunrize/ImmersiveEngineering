@@ -5,7 +5,7 @@
     "item": "minecraft:nether_gold_ore"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/gold"
     },
     "count": 2

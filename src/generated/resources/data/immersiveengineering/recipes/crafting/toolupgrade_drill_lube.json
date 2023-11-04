@@ -6,7 +6,6 @@
       "tag": "forge:plates/iron"
     },
     "o": {
-      "type": "immersiveengineering:fluid",
       "amount": 1000,
       "tag": "forge:plantoil"
     },

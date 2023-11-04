@@ -7,7 +7,7 @@
   ],
   "energy": 51200,
   "input": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:glass"
     },
     "count": 2

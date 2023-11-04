@@ -1,25 +1,13 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/copper"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:raw_materials/copper"
-      }
-    }
-  ],
+  "conditions": [],
   "input": {
     "tag": "forge:raw_materials/copper"
   },
   "result": {
-    "tag": "forge:dusts/copper"
+    "basePredicate": {
+      "tag": "forge:dusts/copper"
+    },
+    "count": 1
   }
 }

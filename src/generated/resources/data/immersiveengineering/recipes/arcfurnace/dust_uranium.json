@@ -7,7 +7,10 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/uranium"
+      "basePredicate": {
+        "tag": "forge:ingots/uranium"
+      },
+      "count": 1
     }
   ],
   "time": 100

@@ -20,7 +20,10 @@
     {
       "chance": 0.2,
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "basePredicate": {
+          "tag": "forge:dusts/sulfur"
+        },
+        "count": 1
       }
     }
   ],

@@ -1,33 +1,24 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/platinum"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:raw_materials/platinum"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 6000,
   "input": {
     "tag": "forge:raw_materials/platinum"
   },
   "result": {
-    "tag": "forge:dusts/platinum"
+    "basePredicate": {
+      "tag": "forge:dusts/platinum"
+    },
+    "count": 1
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "tag": "forge:dusts/platinum"
+        "basePredicate": {
+          "tag": "forge:dusts/platinum"
+        },
+        "count": 1
       }
     }
   ]

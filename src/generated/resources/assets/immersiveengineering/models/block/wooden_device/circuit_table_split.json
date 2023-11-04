@@ -5,7 +5,7 @@
     "parent": "minecraft:block/block",
     "automatic_culling": false,
     "flip_v": true,
-    "loader": "forge:obj",
+    "loader": "neoforge:obj",
     "model": "immersiveengineering:models/block/wooden_device/circuit_table.obj",
     "textures": {
       "particle": "immersiveengineering:block/wooden_device/circuit_table"

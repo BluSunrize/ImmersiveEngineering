@@ -9,7 +9,7 @@
       "tag": "forge:gunpowder"
     },
     {
-      "base_ingredient": {
+      "basePredicate": {
         "item": "immersiveengineering:homing"
       },
       "count": 4

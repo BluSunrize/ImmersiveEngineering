@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_storage_nickel",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_storage_nickel"
     ]
   ],
   "rewards": {

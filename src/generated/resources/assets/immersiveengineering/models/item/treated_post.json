@@ -138,7 +138,7 @@
     }
   },
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/wooden_device/wooden_post_inv.obj",
   "textures": {
     "post": "immersiveengineering:block/wooden_decoration/post"

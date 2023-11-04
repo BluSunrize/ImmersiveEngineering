@@ -2,7 +2,7 @@
   "parent": "minecraft:block/block",
   "automatic_culling": false,
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/metal_device/e_lantern.obj",
   "textures": {
     "particle": "immersiveengineering:block/metal_device/electric_lantern",

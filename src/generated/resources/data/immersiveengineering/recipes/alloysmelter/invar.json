@@ -1,25 +1,20 @@
 {
   "type": "immersiveengineering:alloy",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/invar"
-      }
-    }
-  ],
+  "conditions": [],
   "input0": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/iron"
     },
     "count": 2
   },
   "input1": {
-    "tag": "forge:ingots/nickel"
+    "basePredicate": {
+      "tag": "forge:ingots/nickel"
+    },
+    "count": 1
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/invar"
     },
     "count": 3

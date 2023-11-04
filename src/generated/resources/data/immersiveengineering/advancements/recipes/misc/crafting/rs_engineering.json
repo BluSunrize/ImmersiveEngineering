@@ -42,10 +42,10 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_iron_sheetmetal",
       "has_copper_ingot",
-      "has_redstone",
-      "has_the_recipe"
+      "has_redstone"
     ]
   ],
   "rewards": {

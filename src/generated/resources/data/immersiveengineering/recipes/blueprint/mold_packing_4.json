@@ -3,7 +3,7 @@
   "category": "molds",
   "inputs": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:plates/steel"
       },
       "count": 3

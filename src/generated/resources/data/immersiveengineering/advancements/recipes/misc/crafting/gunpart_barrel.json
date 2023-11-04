@@ -20,8 +20,8 @@
   },
   "requirements": [
     [
-      "has_stick_steel",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_stick_steel"
     ]
   ],
   "rewards": {

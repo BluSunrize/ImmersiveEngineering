@@ -7,7 +7,10 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/constantan"
+      "basePredicate": {
+        "tag": "forge:ingots/constantan"
+      },
+      "count": 1
     }
   ],
   "time": 100

@@ -1,20 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ores/fluorite"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 6000,
   "input": {
     "tag": "forge:ores/fluorite"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:gems/fluorite"
     },
     "count": 6

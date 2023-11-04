@@ -7,14 +7,20 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/aluminum"
+      "basePredicate": {
+        "tag": "forge:ingots/aluminum"
+      },
+      "count": 1
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ingots/aluminum"
+        "basePredicate": {
+          "tag": "forge:ingots/aluminum"
+        },
+        "count": 1
       }
     }
   ],

@@ -9,13 +9,13 @@
       "item": "immersiveengineering:mold_gear"
     },
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:dusts/aluminum"
       },
       "count": 6
     },
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:fiber_hemp"
       },
       "count": 8

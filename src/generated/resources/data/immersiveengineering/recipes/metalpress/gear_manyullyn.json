@@ -1,30 +1,18 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/manyullyn"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:gears/manyullyn"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 2400,
   "input": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/manyullyn"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/manyullyn"
+    "basePredicate": {
+      "tag": "forge:gears/manyullyn"
+    },
+    "count": 1
   }
 }

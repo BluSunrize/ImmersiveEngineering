@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_alu_scaffolding_grate_top",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_alu_scaffolding_grate_top"
     ]
   ],
   "rewards": {

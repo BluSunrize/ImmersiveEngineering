@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_dust_hop_graphite",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_dust_hop_graphite"
     ]
   ],
   "rewards": {

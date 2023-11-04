@@ -1,29 +1,17 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/rose_gold"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/rose_gold"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 51200,
   "input": {
     "tag": "forge:dusts/rose_gold"
   },
   "results": [
     {
-      "tag": "forge:ingots/rose_gold"
+      "basePredicate": {
+        "tag": "forge:ingots/rose_gold"
+      },
+      "count": 1
     }
   ],
   "time": 100

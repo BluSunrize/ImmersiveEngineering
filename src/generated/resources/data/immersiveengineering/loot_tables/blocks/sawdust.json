@@ -2,8 +2,8 @@
   "type": "minecraft:block",
   "functions": [
     {
-      "function": "immersiveengineering:property_count",
-      "propery_name": "layers"
+      "countProperty": "layers",
+      "function": "immersiveengineering:property_count"
     }
   ],
   "pools": [

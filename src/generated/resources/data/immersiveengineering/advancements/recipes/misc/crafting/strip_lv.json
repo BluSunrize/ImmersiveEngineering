@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_copper_coil",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_copper_coil"
     ]
   ],
   "rewards": {

@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_alu_fence",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_alu_fence"
     ]
   ],
   "rewards": {

@@ -155,7 +155,7 @@
     }
   },
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/connector/connector_mv.obj",
   "textures": {
     "texture": "immersiveengineering:block/connector/connector_mv"

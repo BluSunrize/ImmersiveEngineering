@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_treated_wood_packaged",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_treated_wood_packaged"
     ]
   ],
   "rewards": {

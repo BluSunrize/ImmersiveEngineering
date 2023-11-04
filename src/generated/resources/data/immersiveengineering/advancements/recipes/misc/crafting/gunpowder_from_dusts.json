@@ -20,8 +20,8 @@
   },
   "requirements": [
     [
-      "has_sulfur",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_sulfur"
     ]
   ],
   "rewards": {

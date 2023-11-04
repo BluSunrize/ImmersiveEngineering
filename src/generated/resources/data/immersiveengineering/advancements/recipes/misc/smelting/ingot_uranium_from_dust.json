@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_dust_uranium",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_dust_uranium"
     ]
   ],
   "rewards": {

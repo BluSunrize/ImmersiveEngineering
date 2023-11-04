@@ -8,28 +8,29 @@
     {
       "chance": 0.7,
       "output": {
-        "tag": "forge:ores/aluminum"
+        "basePredicate": {
+          "tag": "forge:ores/aluminum"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "tag": "forge:ores/iron"
+        "basePredicate": {
+          "tag": "forge:ores/iron"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.1,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:ores/titanium"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:ores/titanium"
+        "basePredicate": {
+          "tag": "forge:ores/titanium"
+        },
+        "count": 1
       }
     }
   ],

@@ -185,7 +185,7 @@
     }
   },
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",
   "textures": {
     "texture": "immersiveengineering:block/metal_device/floodlight"

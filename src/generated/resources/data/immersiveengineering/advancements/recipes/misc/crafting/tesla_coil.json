@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_capacitor_hv",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_capacitor_hv"
     ]
   ],
   "rewards": {

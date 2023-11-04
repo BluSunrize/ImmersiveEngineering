@@ -3,7 +3,6 @@
   "category": "misc",
   "key": {
     "b": {
-      "type": "immersiveengineering:fluid",
       "amount": 1000,
       "tag": "forge:phenolic_resin"
     },

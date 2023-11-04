@@ -6,6 +6,9 @@
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/iron"
+    "basePredicate": {
+      "tag": "forge:plates/iron"
+    },
+    "count": 1
   }
 }

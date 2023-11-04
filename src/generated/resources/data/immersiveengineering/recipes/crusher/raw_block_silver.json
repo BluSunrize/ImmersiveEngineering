@@ -5,7 +5,7 @@
     "tag": "forge:storage_blocks/raw_silver"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/silver"
     },
     "count": 12

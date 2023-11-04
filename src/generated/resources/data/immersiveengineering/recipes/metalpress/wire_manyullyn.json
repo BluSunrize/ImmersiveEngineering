@@ -1,28 +1,13 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/manyullyn"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:wires/manyullyn"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 2400,
   "input": {
     "tag": "forge:ingots/manyullyn"
   },
   "mold": "immersiveengineering:mold_wire",
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:wires/manyullyn"
     },
     "count": 2

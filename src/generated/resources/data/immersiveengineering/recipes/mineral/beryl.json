@@ -8,7 +8,10 @@
     {
       "chance": 0.3,
       "output": {
-        "tag": "forge:ores/emerald"
+        "basePredicate": {
+          "tag": "forge:ores/emerald"
+        },
+        "count": 1
       }
     },
     {
@@ -19,17 +22,12 @@
     },
     {
       "chance": 0.3,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:gems/aquamarine"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:gems/aquamarine"
+        "basePredicate": {
+          "tag": "forge:gems/aquamarine"
+        },
+        "count": 1
       }
     }
   ],

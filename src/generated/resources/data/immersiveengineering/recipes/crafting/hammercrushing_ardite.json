@@ -1,25 +1,13 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/ardite"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ores/ardite"
-      }
-    }
-  ],
+  "conditions": [],
   "input": {
     "tag": "forge:ores/ardite"
   },
   "result": {
-    "tag": "forge:dusts/ardite"
+    "basePredicate": {
+      "tag": "forge:dusts/ardite"
+    },
+    "count": 1
   }
 }

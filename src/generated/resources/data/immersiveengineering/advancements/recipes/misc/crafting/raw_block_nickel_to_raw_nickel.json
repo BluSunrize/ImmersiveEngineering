@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_raw_block_nickel",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_raw_block_nickel"
     ]
   ],
   "rewards": {

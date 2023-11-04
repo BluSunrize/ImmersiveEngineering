@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_chemthrower",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_chemthrower"
     ]
   ],
   "rewards": {

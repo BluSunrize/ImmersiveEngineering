@@ -2,16 +2,22 @@
   "type": "immersiveengineering:arc_furnace",
   "additives": [
     {
-      "tag": "forge:ingots/silver"
+      "basePredicate": {
+        "tag": "forge:ingots/silver"
+      },
+      "count": 1
     }
   ],
   "energy": 51200,
   "input": {
-    "tag": "forge:ingots/gold"
+    "basePredicate": {
+      "tag": "forge:ingots/gold"
+    },
+    "count": 1
   },
   "results": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:ingots/electrum"
       },
       "count": 2

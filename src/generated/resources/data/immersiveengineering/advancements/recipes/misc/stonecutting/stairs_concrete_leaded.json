@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_concrete_leaded",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_concrete_leaded"
     ]
   ],
   "rewards": {

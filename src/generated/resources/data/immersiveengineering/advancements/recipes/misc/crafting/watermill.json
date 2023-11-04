@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_waterwheel_segment",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_waterwheel_segment"
     ]
   ],
   "rewards": {

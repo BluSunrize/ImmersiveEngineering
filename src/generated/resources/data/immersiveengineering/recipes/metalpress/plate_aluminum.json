@@ -6,6 +6,9 @@
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/aluminum"
+    "basePredicate": {
+      "tag": "forge:plates/aluminum"
+    },
+    "count": 1
   }
 }

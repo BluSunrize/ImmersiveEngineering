@@ -1,23 +1,18 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:gears/lead"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 2400,
   "input": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/lead"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/lead"
+    "basePredicate": {
+      "tag": "forge:gears/lead"
+    },
+    "count": 1
   }
 }

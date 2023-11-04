@@ -5,7 +5,7 @@
     "tag": "forge:ores/diamond"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "item": "minecraft:diamond"
     },
     "count": 2

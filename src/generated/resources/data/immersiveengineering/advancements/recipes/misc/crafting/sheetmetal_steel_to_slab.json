@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_sheetmetal_steel",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_sheetmetal_steel"
     ]
   ],
   "rewards": {

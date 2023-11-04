@@ -1,25 +1,20 @@
 {
   "type": "immersiveengineering:alloy",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/rose_gold"
-      }
-    }
-  ],
+  "conditions": [],
   "input0": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/copper"
     },
     "count": 3
   },
   "input1": {
-    "tag": "forge:ingots/gold"
+    "basePredicate": {
+      "tag": "forge:ingots/gold"
+    },
+    "count": 1
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/rose_gold"
     },
     "count": 4

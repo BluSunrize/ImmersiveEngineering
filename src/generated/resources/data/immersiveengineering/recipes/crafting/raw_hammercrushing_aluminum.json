@@ -1,25 +1,13 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/aluminum"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:raw_materials/aluminum"
-      }
-    }
-  ],
+  "conditions": [],
   "input": {
     "tag": "forge:raw_materials/aluminum"
   },
   "result": {
-    "tag": "forge:dusts/aluminum"
+    "basePredicate": {
+      "tag": "forge:dusts/aluminum"
+    },
+    "count": 1
   }
 }

@@ -2,7 +2,7 @@
   "type": "immersiveengineering:metal_press",
   "energy": 4800,
   "input": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/hop_graphite"
     },
     "count": 4

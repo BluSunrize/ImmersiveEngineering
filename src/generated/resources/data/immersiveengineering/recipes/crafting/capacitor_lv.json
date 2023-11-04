@@ -6,7 +6,6 @@
       "tag": "forge:plates/lead"
     },
     "e": {
-      "type": "immersiveengineering:fluid",
       "amount": 1000,
       "tag": "forge:redstone_acid"
     },

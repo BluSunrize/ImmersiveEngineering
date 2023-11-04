@@ -34,9 +34,9 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_railgun",
-      "has_revolver",
-      "has_the_recipe"
+      "has_revolver"
     ]
   ],
   "rewards": {

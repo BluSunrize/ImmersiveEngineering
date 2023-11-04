@@ -7,7 +7,7 @@
   },
   "results": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:ingots/uranium"
       },
       "count": 13
@@ -17,7 +17,10 @@
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ingots/uranium"
+        "basePredicate": {
+          "tag": "forge:ingots/uranium"
+        },
+        "count": 1
       }
     }
   ],

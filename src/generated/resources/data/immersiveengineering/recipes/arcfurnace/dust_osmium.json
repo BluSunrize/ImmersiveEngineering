@@ -1,29 +1,17 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/osmium"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/osmium"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 51200,
   "input": {
     "tag": "forge:dusts/osmium"
   },
   "results": [
     {
-      "tag": "forge:ingots/osmium"
+      "basePredicate": {
+        "tag": "forge:ingots/osmium"
+      },
+      "count": 1
     }
   ],
   "time": 100

@@ -5,7 +5,7 @@
     "parent": "minecraft:block/block",
     "automatic_culling": false,
     "flip_v": true,
-    "loader": "forge:obj",
+    "loader": "neoforge:obj",
     "model": "immersiveengineering:models/block/stone_multiblocks/cube_two.obj",
     "textures": {
       "bottom": "immersiveengineering:block/multiblocks/alloy_smelter_bottom",

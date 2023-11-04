@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_conveyor",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_conveyor"
     ]
   ],
   "rewards": {

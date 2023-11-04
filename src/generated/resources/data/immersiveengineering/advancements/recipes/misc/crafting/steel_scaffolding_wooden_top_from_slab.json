@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_steel_scaffolding_wooden_top",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_steel_scaffolding_wooden_top"
     ]
   ],
   "rewards": {

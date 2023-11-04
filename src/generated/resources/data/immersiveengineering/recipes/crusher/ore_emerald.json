@@ -5,7 +5,7 @@
     "tag": "forge:ores/emerald"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "item": "minecraft:emerald"
     },
     "count": 2

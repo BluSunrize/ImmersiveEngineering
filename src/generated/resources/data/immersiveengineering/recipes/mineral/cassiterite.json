@@ -1,14 +1,6 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ores/tin"
-      }
-    }
-  ],
+  "conditions": [],
   "dimensions": [
     "minecraft:overworld"
   ],
@@ -17,7 +9,10 @@
     {
       "chance": 1.0,
       "output": {
-        "tag": "forge:ores/tin"
+        "basePredicate": {
+          "tag": "forge:ores/tin"
+        },
+        "count": 1
       }
     }
   ],

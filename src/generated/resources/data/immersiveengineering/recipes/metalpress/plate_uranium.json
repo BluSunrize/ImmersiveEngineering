@@ -6,6 +6,9 @@
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/uranium"
+    "basePredicate": {
+      "tag": "forge:plates/uranium"
+    },
+    "count": 1
   }
 }

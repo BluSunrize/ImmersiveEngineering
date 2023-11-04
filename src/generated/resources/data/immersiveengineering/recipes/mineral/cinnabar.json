@@ -8,28 +8,29 @@
     {
       "chance": 0.6,
       "output": {
-        "tag": "forge:ores/redstone"
+        "basePredicate": {
+          "tag": "forge:ores/redstone"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.4,
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "basePredicate": {
+          "tag": "forge:dusts/sulfur"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.3,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:ores/mercury"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:ores/mercury"
+        "basePredicate": {
+          "tag": "forge:ores/mercury"
+        },
+        "count": 1
       }
     }
   ],

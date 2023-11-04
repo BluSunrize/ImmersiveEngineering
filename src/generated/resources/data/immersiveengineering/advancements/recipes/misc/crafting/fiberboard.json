@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_resin",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_resin"
     ]
   ],
   "rewards": {

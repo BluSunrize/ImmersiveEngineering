@@ -32,9 +32,9 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_steel_ingot",
-      "has_wirecoil_steel",
-      "has_the_recipe"
+      "has_wirecoil_steel"
     ]
   ],
   "rewards": {

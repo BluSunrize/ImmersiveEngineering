@@ -2,7 +2,7 @@
   "parent": "minecraft:block/block",
   "automatic_culling": false,
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/wooden_device/wallmount_sideways.obj",
   "textures": {
     "particle": "immersiveengineering:block/metal_decoration/steel_wallmount",

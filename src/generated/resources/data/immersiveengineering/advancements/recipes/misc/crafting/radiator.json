@@ -42,10 +42,10 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_steel_sheetmetal",
       "has_water_bucket",
-      "has_copper_ingot",
-      "has_the_recipe"
+      "has_copper_ingot"
     ]
   ],
   "rewards": {

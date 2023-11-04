@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_deepslate_ore_silver",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_deepslate_ore_silver"
     ]
   ],
   "rewards": {

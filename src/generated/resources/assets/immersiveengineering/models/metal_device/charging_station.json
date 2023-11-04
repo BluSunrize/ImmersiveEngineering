@@ -4,7 +4,7 @@
     "solid": {
       "automatic_culling": false,
       "flip_v": true,
-      "loader": "forge:obj",
+      "loader": "neoforge:obj",
       "model": "immersiveengineering:models/block/metal_device/charging_station.obj",
       "render_type": "minecraft:solid",
       "textures": {
@@ -14,7 +14,7 @@
     "translucent": {
       "automatic_culling": false,
       "flip_v": true,
-      "loader": "forge:obj",
+      "loader": "neoforge:obj",
       "model": "immersiveengineering:models/block/metal_device/charging_station_glass.obj",
       "render_type": "minecraft:translucent",
       "textures": {
@@ -26,7 +26,7 @@
     "solid",
     "translucent"
   ],
-  "loader": "forge:composite",
+  "loader": "neoforge:composite",
   "textures": {
     "particle": "immersiveengineering:block/metal_device/charging_station"
   }

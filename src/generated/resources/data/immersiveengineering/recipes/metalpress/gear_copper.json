@@ -1,23 +1,18 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:gears/copper"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 2400,
   "input": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:ingots/copper"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/copper"
+    "basePredicate": {
+      "tag": "forge:gears/copper"
+    },
+    "count": 1
   }
 }

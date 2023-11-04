@@ -3,13 +3,16 @@
   "category": "components",
   "inputs": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:plates/iron"
       },
       "count": 2
     },
     {
-      "tag": "forge:ingots/copper"
+      "basePredicate": {
+        "tag": "forge:ingots/copper"
+      },
+      "count": 1
     }
   ],
   "result": {

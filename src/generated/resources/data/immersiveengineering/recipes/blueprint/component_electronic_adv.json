@@ -6,7 +6,7 @@
       "tag": "forge:plates/plastic"
     },
     {
-      "base_ingredient": {
+      "basePredicate": {
         "item": "immersiveengineering:electron_tube"
       },
       "count": 2

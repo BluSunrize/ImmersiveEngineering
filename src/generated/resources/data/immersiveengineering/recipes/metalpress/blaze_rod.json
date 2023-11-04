@@ -2,7 +2,7 @@
   "type": "immersiveengineering:metal_press",
   "energy": 3200,
   "input": {
-    "base_ingredient": {
+    "basePredicate": {
       "item": "minecraft:blaze_powder"
     },
     "count": 5

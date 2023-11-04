@@ -10,7 +10,10 @@
   "secondaries": [
     {
       "output": {
-        "tag": "forge:dusts/wood"
+        "basePredicate": {
+          "tag": "forge:dusts/wood"
+        },
+        "count": 1
       },
       "stripping": false
     }

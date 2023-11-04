@@ -5,7 +5,10 @@
     "tag": "forge:ingots/aluminum"
   },
   "result": {
-    "tag": "forge:dusts/aluminum"
+    "basePredicate": {
+      "tag": "forge:dusts/aluminum"
+    },
+    "count": 1
   },
   "secondaries": []
 }

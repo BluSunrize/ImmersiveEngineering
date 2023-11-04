@@ -1,29 +1,14 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/tin"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:storage_blocks/raw_tin"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 230400,
   "input": {
     "tag": "forge:storage_blocks/raw_tin"
   },
   "results": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:ingots/tin"
       },
       "count": 13
@@ -33,7 +18,10 @@
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ingots/tin"
+        "basePredicate": {
+          "tag": "forge:ingots/tin"
+        },
+        "count": 1
       }
     }
   ],

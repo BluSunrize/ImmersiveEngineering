@@ -5,13 +5,19 @@
     "tag": "forge:raw_materials/aluminum"
   },
   "result": {
-    "tag": "forge:dusts/aluminum"
+    "basePredicate": {
+      "tag": "forge:dusts/aluminum"
+    },
+    "count": 1
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "tag": "forge:dusts/aluminum"
+        "basePredicate": {
+          "tag": "forge:dusts/aluminum"
+        },
+        "count": 1
       }
     }
   ]

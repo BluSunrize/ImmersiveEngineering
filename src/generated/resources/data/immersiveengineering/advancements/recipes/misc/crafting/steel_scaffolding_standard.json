@@ -30,9 +30,9 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_steel_ingot",
-      "has_steel_sticks",
-      "has_the_recipe"
+      "has_steel_sticks"
     ]
   ],
   "rewards": {

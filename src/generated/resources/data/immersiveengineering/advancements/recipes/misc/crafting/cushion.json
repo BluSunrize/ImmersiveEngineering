@@ -20,8 +20,8 @@
   },
   "requirements": [
     [
-      "has_hemp_fabric",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_hemp_fabric"
     ]
   ],
   "rewards": {

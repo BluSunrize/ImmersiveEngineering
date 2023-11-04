@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_raw_lead",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_raw_lead"
     ]
   ],
   "rewards": {

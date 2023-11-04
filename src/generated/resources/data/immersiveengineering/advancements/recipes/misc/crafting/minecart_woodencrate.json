@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_minecart",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_minecart"
     ]
   ],
   "rewards": {

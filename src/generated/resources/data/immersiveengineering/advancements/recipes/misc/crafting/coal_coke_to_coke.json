@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_coal_coke",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_coal_coke"
     ]
   ],
   "rewards": {

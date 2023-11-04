@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_powerpack",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_powerpack"
     ]
   ],
   "rewards": {

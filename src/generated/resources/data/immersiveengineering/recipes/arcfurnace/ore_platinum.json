@@ -1,36 +1,24 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/platinum"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ores/platinum"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 102400,
   "input": {
     "tag": "forge:ores/platinum"
   },
   "results": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:ingots/platinum"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "basePredicate": {
+      "tag": "forge:slag"
+    },
+    "count": 1
   },
   "time": 200
 }

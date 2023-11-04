@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_wirecoil_copper",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_wirecoil_copper"
     ]
   ],
   "rewards": {

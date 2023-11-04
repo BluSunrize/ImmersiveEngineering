@@ -5,7 +5,7 @@
     "tag": "forge:ores/redstone"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "item": "minecraft:redstone"
     },
     "count": 6

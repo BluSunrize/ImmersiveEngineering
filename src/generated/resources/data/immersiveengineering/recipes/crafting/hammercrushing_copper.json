@@ -4,6 +4,9 @@
     "tag": "forge:ores/copper"
   },
   "result": {
-    "tag": "forge:dusts/copper"
+    "basePredicate": {
+      "tag": "forge:dusts/copper"
+    },
+    "count": 1
   }
 }

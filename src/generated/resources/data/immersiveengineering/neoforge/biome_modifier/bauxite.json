@@ -1,5 +1,5 @@
 {
-  "type": "forge:add_features",
+  "type": "neoforge:add_features",
   "biomes": "#minecraft:is_overworld",
   "features": "immersiveengineering:bauxite",
   "step": "underground_ores"

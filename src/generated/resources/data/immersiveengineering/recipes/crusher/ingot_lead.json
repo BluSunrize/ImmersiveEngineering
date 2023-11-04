@@ -5,7 +5,10 @@
     "tag": "forge:ingots/lead"
   },
   "result": {
-    "tag": "forge:dusts/lead"
+    "basePredicate": {
+      "tag": "forge:dusts/lead"
+    },
+    "count": 1
   },
   "secondaries": []
 }

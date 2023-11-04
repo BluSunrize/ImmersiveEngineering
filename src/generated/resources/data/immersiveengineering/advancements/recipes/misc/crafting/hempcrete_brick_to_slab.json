@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_hempcrete_brick",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_hempcrete_brick"
     ]
   ],
   "rewards": {

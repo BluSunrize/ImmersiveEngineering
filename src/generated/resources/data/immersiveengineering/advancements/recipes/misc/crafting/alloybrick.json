@@ -20,8 +20,8 @@
   },
   "requirements": [
     [
-      "has_brick",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_brick"
     ]
   ],
   "rewards": {

@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_wooden_grip",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_wooden_grip"
     ]
   ],
   "rewards": {

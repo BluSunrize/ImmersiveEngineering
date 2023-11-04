@@ -7,7 +7,10 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/gold"
+      "basePredicate": {
+        "tag": "forge:ingots/gold"
+      },
+      "count": 1
     }
   ],
   "time": 100

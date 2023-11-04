@@ -30,9 +30,9 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_alu_ingot",
-      "has_alu_sticks",
-      "has_the_recipe"
+      "has_alu_sticks"
     ]
   ],
   "rewards": {

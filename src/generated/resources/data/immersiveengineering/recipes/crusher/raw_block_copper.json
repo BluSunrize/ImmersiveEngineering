@@ -5,7 +5,7 @@
     "tag": "forge:storage_blocks/raw_copper"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/copper"
     },
     "count": 12

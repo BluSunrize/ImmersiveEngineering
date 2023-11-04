@@ -1,25 +1,13 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/tungsten"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:raw_materials/tungsten"
-      }
-    }
-  ],
+  "conditions": [],
   "input": {
     "tag": "forge:raw_materials/tungsten"
   },
   "result": {
-    "tag": "forge:dusts/tungsten"
+    "basePredicate": {
+      "tag": "forge:dusts/tungsten"
+    },
+    "count": 1
   }
 }

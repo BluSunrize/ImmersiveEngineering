@@ -1,33 +1,24 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/zinc"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:raw_materials/zinc"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 6000,
   "input": {
     "tag": "forge:raw_materials/zinc"
   },
   "result": {
-    "tag": "forge:dusts/zinc"
+    "basePredicate": {
+      "tag": "forge:dusts/zinc"
+    },
+    "count": 1
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "tag": "forge:dusts/zinc"
+        "basePredicate": {
+          "tag": "forge:dusts/zinc"
+        },
+        "count": 1
       }
     }
   ]

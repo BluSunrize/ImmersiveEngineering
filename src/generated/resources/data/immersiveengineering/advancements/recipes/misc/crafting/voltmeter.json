@@ -42,10 +42,10 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_copper_ingot",
       "has_compass",
-      "has_treated_sticks",
-      "has_the_recipe"
+      "has_treated_sticks"
     ]
   ],
   "rewards": {

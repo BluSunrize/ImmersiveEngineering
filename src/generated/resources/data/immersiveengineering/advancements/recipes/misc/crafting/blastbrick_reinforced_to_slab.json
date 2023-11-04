@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_blastbrick_reinforced",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_blastbrick_reinforced"
     ]
   ],
   "rewards": {

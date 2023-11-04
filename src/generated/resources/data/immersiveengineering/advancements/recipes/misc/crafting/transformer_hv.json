@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_hv_connector",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_hv_connector"
     ]
   ],
   "rewards": {

@@ -3,7 +3,7 @@
   "category": "electrode",
   "inputs": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:ingots/hop_graphite"
       },
       "count": 4

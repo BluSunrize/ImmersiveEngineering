@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_circuit_board",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_circuit_board"
     ]
   ],
   "rewards": {

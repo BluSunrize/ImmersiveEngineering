@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_sheetmetal_colored_white",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_sheetmetal_colored_white"
     ]
   ],
   "rewards": {

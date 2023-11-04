@@ -8,28 +8,29 @@
     {
       "chance": 0.7,
       "output": {
-        "tag": "forge:ores/uranium"
+        "basePredicate": {
+          "tag": "forge:ores/uranium"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "tag": "forge:ores/lead"
+        "basePredicate": {
+          "tag": "forge:ores/lead"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.1,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:ores/thorium"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:ores/thorium"
+        "basePredicate": {
+          "tag": "forge:ores/thorium"
+        },
+        "count": 1
       }
     }
   ],

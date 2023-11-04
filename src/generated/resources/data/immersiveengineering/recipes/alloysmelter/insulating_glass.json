@@ -1,7 +1,7 @@
 {
   "type": "immersiveengineering:alloy",
   "input0": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:glass"
     },
     "count": 2

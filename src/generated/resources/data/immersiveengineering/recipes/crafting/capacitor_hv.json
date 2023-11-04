@@ -9,7 +9,6 @@
       "tag": "forge:ingots/hop_graphite"
     },
     "e": {
-      "type": "immersiveengineering:fluid",
       "amount": 1000,
       "tag": "forge:redstone_acid"
     },

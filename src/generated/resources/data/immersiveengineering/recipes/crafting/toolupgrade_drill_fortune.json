@@ -3,7 +3,6 @@
   "category": "misc",
   "key": {
     "a": {
-      "type": "immersiveengineering:fluid",
       "amount": 1000,
       "tag": "forge:redstone_acid"
     },

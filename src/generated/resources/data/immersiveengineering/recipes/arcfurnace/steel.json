@@ -11,11 +11,17 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/steel"
+      "basePredicate": {
+        "tag": "forge:ingots/steel"
+      },
+      "count": 1
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "basePredicate": {
+      "tag": "forge:slag"
+    },
+    "count": 1
   },
   "time": 400
 }

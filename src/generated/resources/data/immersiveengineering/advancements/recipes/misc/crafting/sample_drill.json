@@ -46,10 +46,10 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_steel_scaffolding_standard",
       "has_steel_fence",
-      "has_light_engineering",
-      "has_the_recipe"
+      "has_light_engineering"
     ]
   ],
   "rewards": {

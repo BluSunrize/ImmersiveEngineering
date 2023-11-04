@@ -1,27 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/osmium"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:storage_blocks/raw_osmium"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 54000,
   "input": {
     "tag": "forge:storage_blocks/raw_osmium"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/osmium"
     },
     "count": 12

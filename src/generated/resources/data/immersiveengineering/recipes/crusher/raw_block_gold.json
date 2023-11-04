@@ -5,7 +5,7 @@
     "tag": "forge:storage_blocks/raw_gold"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/gold"
     },
     "count": 12

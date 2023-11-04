@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_armor_faraday_helmet",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_armor_faraday_helmet"
     ]
   ],
   "rewards": {

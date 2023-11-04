@@ -1,25 +1,13 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/gold"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:raw_materials/gold"
-      }
-    }
-  ],
+  "conditions": [],
   "input": {
     "tag": "forge:raw_materials/gold"
   },
   "result": {
-    "tag": "forge:dusts/gold"
+    "basePredicate": {
+      "tag": "forge:dusts/gold"
+    },
+    "count": 1
   }
 }

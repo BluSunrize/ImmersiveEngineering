@@ -7,14 +7,20 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/iron"
+      "basePredicate": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 1
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ingots/iron"
+        "basePredicate": {
+          "tag": "forge:ingots/iron"
+        },
+        "count": 1
       }
     }
   ],

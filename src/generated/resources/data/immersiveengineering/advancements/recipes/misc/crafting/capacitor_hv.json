@@ -40,10 +40,10 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_nickel_ingot",
       "has_steel_ingot",
-      "has_treated_planks",
-      "has_the_recipe"
+      "has_treated_planks"
     ]
   ],
   "rewards": {

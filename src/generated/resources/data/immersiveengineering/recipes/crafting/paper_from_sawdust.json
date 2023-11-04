@@ -15,7 +15,6 @@
       "tag": "forge:dusts/wood"
     },
     {
-      "type": "immersiveengineering:fluid",
       "amount": 1000,
       "tag": "minecraft:water"
     }

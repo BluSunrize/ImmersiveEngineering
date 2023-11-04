@@ -1,27 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/platinum"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ores/platinum"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 6000,
   "input": {
     "tag": "forge:ores/platinum"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "tag": "forge:dusts/platinum"
     },
     "count": 2
@@ -29,17 +14,12 @@
   "secondaries": [
     {
       "chance": 0.1,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:dusts/nickel"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:dusts/nickel"
+        "basePredicate": {
+          "tag": "forge:dusts/nickel"
+        },
+        "count": 1
       }
     }
   ]

@@ -5,7 +5,10 @@
     "tag": "forge:ingots/electrum"
   },
   "result": {
-    "tag": "forge:dusts/electrum"
+    "basePredicate": {
+      "tag": "forge:dusts/electrum"
+    },
+    "count": 1
   },
   "secondaries": []
 }

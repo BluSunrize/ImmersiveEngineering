@@ -1,5 +1,5 @@
 {
   "flip_v": true,
-  "loader": "forge:obj",
+  "loader": "neoforge:obj",
   "model": "immersiveengineering:models/block/wooden_device/watermill.obj"
 }

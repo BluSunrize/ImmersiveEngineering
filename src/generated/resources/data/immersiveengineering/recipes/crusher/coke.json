@@ -5,7 +5,10 @@
     "tag": "forge:coal_coke"
   },
   "result": {
-    "tag": "forge:dusts/coal_coke"
+    "basePredicate": {
+      "tag": "forge:dusts/coal_coke"
+    },
+    "count": 1
   },
   "secondaries": []
 }

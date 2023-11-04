@@ -1,29 +1,17 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/tungsten"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:dusts/tungsten"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 51200,
   "input": {
     "tag": "forge:dusts/tungsten"
   },
   "results": [
     {
-      "tag": "forge:ingots/tungsten"
+      "basePredicate": {
+        "tag": "forge:ingots/tungsten"
+      },
+      "count": 1
     }
   ],
   "time": 100

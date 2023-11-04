@@ -1,36 +1,27 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:ingots/tungsten"
-      }
-    },
-    {
-      "type": "forge:not",
-      "value": {
-        "type": "forge:tag_empty",
-        "tag": "forge:raw_materials/tungsten"
-      }
-    }
-  ],
+  "conditions": [],
   "energy": 25600,
   "input": {
     "tag": "forge:raw_materials/tungsten"
   },
   "results": [
     {
-      "tag": "forge:ingots/tungsten"
+      "basePredicate": {
+        "tag": "forge:ingots/tungsten"
+      },
+      "count": 1
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ingots/tungsten"
+        "basePredicate": {
+          "tag": "forge:ingots/tungsten"
+        },
+        "count": 1
       }
     }
   ],

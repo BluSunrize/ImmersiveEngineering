@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_concrete_brick",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_concrete_brick"
     ]
   ],
   "rewards": {

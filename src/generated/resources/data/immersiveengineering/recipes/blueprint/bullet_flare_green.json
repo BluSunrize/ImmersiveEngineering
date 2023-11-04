@@ -3,13 +3,13 @@
   "category": "specialBullet",
   "inputs": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "item": "immersiveengineering:empty_shell"
       },
       "count": 4
     },
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:gunpowder"
       },
       "count": 2

@@ -7,14 +7,17 @@
   },
   "results": [
     {
-      "base_ingredient": {
+      "basePredicate": {
         "tag": "forge:ingots/aluminum"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "basePredicate": {
+      "tag": "forge:slag"
+    },
+    "count": 1
   },
   "time": 200
 }

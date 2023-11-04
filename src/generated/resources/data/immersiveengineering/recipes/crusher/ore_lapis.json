@@ -5,7 +5,7 @@
     "tag": "forge:ores/lapis"
   },
   "result": {
-    "base_ingredient": {
+    "basePredicate": {
       "item": "minecraft:lapis_lazuli"
     },
     "count": 9
@@ -13,17 +13,12 @@
   "secondaries": [
     {
       "chance": 0.2,
-      "conditions": [
-        {
-          "type": "forge:not",
-          "value": {
-            "type": "forge:tag_empty",
-            "tag": "forge:dusts/sulfur"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "basePredicate": {
+          "tag": "forge:dusts/sulfur"
+        },
+        "count": 1
       }
     }
   ]

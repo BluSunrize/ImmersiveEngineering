@@ -7,14 +7,20 @@
   },
   "results": [
     {
-      "tag": "forge:ingots/copper"
+      "basePredicate": {
+        "tag": "forge:ingots/copper"
+      },
+      "count": 1
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
       "output": {
-        "tag": "forge:ingots/copper"
+        "basePredicate": {
+          "tag": "forge:ingots/copper"
+        },
+        "count": 1
       }
     }
   ],

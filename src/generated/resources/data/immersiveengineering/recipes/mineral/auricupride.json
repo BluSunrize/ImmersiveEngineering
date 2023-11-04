@@ -8,13 +8,19 @@
     {
       "chance": 0.75,
       "output": {
-        "tag": "forge:ores/copper"
+        "basePredicate": {
+          "tag": "forge:ores/copper"
+        },
+        "count": 1
       }
     },
     {
       "chance": 0.25,
       "output": {
-        "tag": "forge:ores/gold"
+        "basePredicate": {
+          "tag": "forge:ores/gold"
+        },
+        "count": 1
       }
     }
   ],
