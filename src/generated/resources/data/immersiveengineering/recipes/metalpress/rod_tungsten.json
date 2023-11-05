@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/tungsten"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:rods/tungsten"
+      }
+    }
+  ],
   "energy": 2400,
   "input": {
     "tag": "forge:ingots/tungsten"

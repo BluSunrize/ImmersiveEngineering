@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/ardite"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:gears/ardite"
+      }
+    }
+  ],
   "energy": 2400,
   "input": {
     "basePredicate": {

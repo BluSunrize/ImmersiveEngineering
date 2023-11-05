@@ -5,7 +5,15 @@
       "tag": "forge:ingots/nickel"
     }
   ],
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/invar"
+      }
+    }
+  ],
   "energy": 51200,
   "input": {
     "basePredicate": {

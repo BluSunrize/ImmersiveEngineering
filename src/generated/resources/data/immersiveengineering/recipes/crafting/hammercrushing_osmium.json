@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:dusts/osmium"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/osmium"
+      }
+    }
+  ],
   "input": {
     "tag": "forge:ores/osmium"
   },

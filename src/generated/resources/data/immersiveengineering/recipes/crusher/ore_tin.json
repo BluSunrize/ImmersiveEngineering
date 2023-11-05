@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:dusts/tin"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/tin"
+      }
+    }
+  ],
   "energy": 6000,
   "input": {
     "tag": "forge:ores/tin"

@@ -1,6 +1,14 @@
 {
   "type": "immersiveengineering:metal_press",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:wires/iron"
+      }
+    }
+  ],
   "energy": 2400,
   "input": {
     "tag": "forge:ingots/iron"

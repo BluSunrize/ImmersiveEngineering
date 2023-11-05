@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:dusts/cobalt"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/cobalt"
+      }
+    }
+  ],
   "input": {
     "tag": "forge:ores/cobalt"
   },

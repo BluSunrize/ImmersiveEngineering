@@ -1,7 +1,22 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/ardite"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/ardite"
+      }
+    }
+  ],
   "energy": 102400,
   "input": {
     "tag": "forge:ores/ardite"

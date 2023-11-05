@@ -13,7 +13,15 @@
   "secondaries": [
     {
       "chance": 0.1,
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:dusts/gold"
+          }
+        }
+      ],
       "output": {
         "tag": "forge:dusts/gold"
       }

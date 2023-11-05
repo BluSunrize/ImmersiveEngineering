@@ -1,7 +1,22 @@
 {
   "type": "immersiveengineering:arc_furnace",
   "additives": [],
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/cobalt"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:dusts/cobalt"
+      }
+    }
+  ],
   "energy": 51200,
   "input": {
     "tag": "forge:dusts/cobalt"

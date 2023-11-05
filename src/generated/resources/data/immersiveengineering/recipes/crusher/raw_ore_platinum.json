@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:dusts/platinum"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:raw_materials/platinum"
+      }
+    }
+  ],
   "energy": 6000,
   "input": {
     "tag": "forge:raw_materials/platinum"

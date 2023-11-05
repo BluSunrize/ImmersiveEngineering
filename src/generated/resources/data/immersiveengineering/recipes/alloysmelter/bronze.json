@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:alloy",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/bronze"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/tin"
+      }
+    }
+  ],
   "input0": {
     "basePredicate": {
       "tag": "forge:ingots/copper"

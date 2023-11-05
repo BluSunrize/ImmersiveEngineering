@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:dusts/platinum"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/platinum"
+      }
+    }
+  ],
   "energy": 3000,
   "input": {
     "tag": "forge:ingots/platinum"

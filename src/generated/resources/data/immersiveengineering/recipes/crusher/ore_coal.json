@@ -13,7 +13,15 @@
   "secondaries": [
     {
       "chance": 0.15,
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:dusts/sulfur"
+          }
+        }
+      ],
       "output": {
         "tag": "forge:dusts/sulfur"
       }

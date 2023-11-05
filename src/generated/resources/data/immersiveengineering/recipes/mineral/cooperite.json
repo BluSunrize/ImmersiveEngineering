@@ -1,6 +1,14 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/platinum"
+      }
+    }
+  ],
   "dimensions": [
     "minecraft:overworld"
   ],
@@ -14,7 +22,15 @@
     },
     {
       "chance": 0.5,
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:ores/paladium"
+          }
+        }
+      ],
       "output": {
         "tag": "forge:ores/paladium"
       }

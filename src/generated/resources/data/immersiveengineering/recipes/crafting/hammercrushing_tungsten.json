@@ -1,6 +1,21 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:dusts/tungsten"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/tungsten"
+      }
+    }
+  ],
   "input": {
     "tag": "forge:ores/tungsten"
   },

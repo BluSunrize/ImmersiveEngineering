@@ -5,7 +5,22 @@
       "item": "minecraft:netherite_scrap"
     }
   ],
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/manyullyn"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/cobalt"
+      }
+    }
+  ],
   "energy": 51200,
   "input": {
     "basePredicate": {

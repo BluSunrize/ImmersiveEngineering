@@ -1,6 +1,14 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/tin"
+      }
+    }
+  ],
   "dimensions": [
     "minecraft:overworld"
   ],

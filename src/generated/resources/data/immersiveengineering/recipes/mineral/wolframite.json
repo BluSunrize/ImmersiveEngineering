@@ -1,6 +1,14 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/tungsten"
+      }
+    }
+  ],
   "dimensions": [
     "minecraft:overworld"
   ],
@@ -20,7 +28,15 @@
     },
     {
       "chance": 0.5,
-      "conditions": [],
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:ores/manganese"
+          }
+        }
+      ],
       "output": {
         "tag": "forge:ores/manganese"
       }

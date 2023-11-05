@@ -5,7 +5,15 @@
       "tag": "forge:ingots/gold"
     }
   ],
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ingots/rose_gold"
+      }
+    }
+  ],
   "energy": 51200,
   "input": {
     "basePredicate": {

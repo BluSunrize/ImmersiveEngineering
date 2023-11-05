@@ -1,6 +1,14 @@
 {
   "type": "immersiveengineering:crusher",
-  "conditions": [],
+  "conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "forge:ores/fluorite"
+      }
+    }
+  ],
   "energy": 6000,
   "input": {
     "tag": "forge:ores/fluorite"
