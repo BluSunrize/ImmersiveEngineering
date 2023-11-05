@@ -6,10 +6,7 @@
     "item": "minecraft:coal"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/coal"
-    },
-    "count": 1
+    "tag": "forge:dusts/coal"
   },
   "secondaries": []
 }

@@ -15,10 +15,7 @@
       "chance": 0.2,
       "conditions": [],
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/sulfur"
-        },
-        "count": 1
+        "tag": "forge:dusts/sulfur"
       }
     }
   ]

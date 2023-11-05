@@ -8,10 +8,7 @@
     "count": 2
   },
   "input1": {
-    "basePredicate": {
-      "tag": "forge:ingots/nickel"
-    },
-    "count": 1
+    "tag": "forge:ingots/nickel"
   },
   "result": {
     "basePredicate": {

@@ -5,9 +5,6 @@
     "tag": "forge:ores/zinc"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/zinc"
-    },
-    "count": 1
+    "tag": "forge:dusts/zinc"
   }
 }

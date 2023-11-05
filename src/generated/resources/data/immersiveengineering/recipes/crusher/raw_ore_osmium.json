@@ -6,19 +6,13 @@
     "tag": "forge:raw_materials/osmium"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/osmium"
-    },
-    "count": 1
+    "tag": "forge:dusts/osmium"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/osmium"
-        },
-        "count": 1
+        "tag": "forge:dusts/osmium"
       }
     }
   ]

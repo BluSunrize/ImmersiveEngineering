@@ -5,9 +5,6 @@
     "tag": "forge:ores/tungsten"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/tungsten"
-    },
-    "count": 1
+    "tag": "forge:dusts/tungsten"
   }
 }

@@ -4,16 +4,10 @@
     "tag": "forge:ingots/iron"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:ingots/steel"
-    },
-    "count": 1
+    "tag": "forge:ingots/steel"
   },
   "slag": {
-    "basePredicate": {
-      "tag": "forge:slag"
-    },
-    "count": 1
+    "tag": "forge:slag"
   },
   "time": 1200
 }

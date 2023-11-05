@@ -17,10 +17,7 @@
     {
       "chance": 0.5,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ingots/nickel"
-        },
-        "count": 1
+        "tag": "forge:ingots/nickel"
       }
     }
   ],

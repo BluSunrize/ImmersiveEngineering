@@ -11,10 +11,7 @@
   "secondaries": [
     {
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/wood"
-        },
-        "count": 1
+        "tag": "forge:dusts/wood"
       },
       "stripping": false
     }

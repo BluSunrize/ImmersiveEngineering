@@ -6,10 +6,7 @@
     "tag": "forge:ingots/brass"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/brass"
-    },
-    "count": 1
+    "tag": "forge:dusts/brass"
   },
   "secondaries": []
 }

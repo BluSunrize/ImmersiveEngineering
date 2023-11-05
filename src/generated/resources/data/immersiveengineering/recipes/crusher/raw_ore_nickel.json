@@ -5,19 +5,13 @@
     "tag": "forge:raw_materials/nickel"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/nickel"
-    },
-    "count": 1
+    "tag": "forge:dusts/nickel"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/nickel"
-        },
-        "count": 1
+        "tag": "forge:dusts/nickel"
       }
     }
   ]

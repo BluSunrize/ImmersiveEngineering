@@ -5,19 +5,13 @@
     "tag": "forge:raw_materials/gold"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/gold"
-    },
-    "count": 1
+    "tag": "forge:dusts/gold"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/gold"
-        },
-        "count": 1
+        "tag": "forge:dusts/gold"
       }
     }
   ]

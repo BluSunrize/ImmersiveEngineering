@@ -2,8 +2,8 @@
   "type": "immersiveengineering:fermenter",
   "energy": 6400,
   "fluid": {
-    "amount": 100,
-    "fluid": "immersiveengineering:ethanol"
+    "Amount": 100,
+    "FluidName": "immersiveengineering:ethanol"
   },
   "input": {
     "item": "minecraft:glow_berries"

@@ -7,20 +7,14 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/uranium"
-      },
-      "count": 1
+      "tag": "forge:ingots/uranium"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ingots/uranium"
-        },
-        "count": 1
+        "tag": "forge:ingots/uranium"
       }
     }
   ],

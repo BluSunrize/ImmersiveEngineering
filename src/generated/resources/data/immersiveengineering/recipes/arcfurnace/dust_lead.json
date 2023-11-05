@@ -7,10 +7,7 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/lead"
-      },
-      "count": 1
+      "tag": "forge:ingots/lead"
     }
   ],
   "time": 100

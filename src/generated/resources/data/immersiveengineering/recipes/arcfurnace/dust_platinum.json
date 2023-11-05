@@ -8,10 +8,7 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/platinum"
-      },
-      "count": 1
+      "tag": "forge:ingots/platinum"
     }
   ],
   "time": 100

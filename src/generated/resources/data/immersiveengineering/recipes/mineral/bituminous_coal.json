@@ -8,29 +8,20 @@
     {
       "chance": 0.8,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/coal"
-        },
-        "count": 1
+        "tag": "forge:ores/coal"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/sulfur"
-        },
-        "count": 1
+        "tag": "forge:dusts/sulfur"
       }
     },
     {
       "chance": 0.2,
       "conditions": [],
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/phosphorus"
-        },
-        "count": 1
+        "tag": "forge:dusts/phosphorus"
       }
     }
   ],

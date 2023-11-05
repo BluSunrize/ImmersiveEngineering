@@ -6,10 +6,7 @@
     "tag": "forge:ingots/ardite"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/ardite"
-    },
-    "count": 1
+    "tag": "forge:dusts/ardite"
   },
   "secondaries": []
 }

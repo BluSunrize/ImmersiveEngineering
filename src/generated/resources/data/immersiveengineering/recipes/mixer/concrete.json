@@ -20,7 +20,7 @@
     }
   ],
   "result": {
-    "amount": 500,
-    "fluid": "immersiveengineering:concrete"
+    "Amount": 500,
+    "FluidName": "immersiveengineering:concrete"
   }
 }

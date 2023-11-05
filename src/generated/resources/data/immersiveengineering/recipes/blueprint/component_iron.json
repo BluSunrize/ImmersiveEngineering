@@ -9,10 +9,7 @@
       "count": 2
     },
     {
-      "basePredicate": {
-        "tag": "forge:ingots/copper"
-      },
-      "count": 1
+      "tag": "forge:ingots/copper"
     }
   ],
   "result": {

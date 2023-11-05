@@ -6,19 +6,13 @@
     "tag": "forge:raw_materials/tungsten"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/tungsten"
-    },
-    "count": 1
+    "tag": "forge:dusts/tungsten"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/tungsten"
-        },
-        "count": 1
+        "tag": "forge:dusts/tungsten"
       }
     }
   ]

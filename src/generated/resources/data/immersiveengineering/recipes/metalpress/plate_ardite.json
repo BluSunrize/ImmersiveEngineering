@@ -7,9 +7,6 @@
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "basePredicate": {
-      "tag": "forge:plates/ardite"
-    },
-    "count": 1
+    "tag": "forge:plates/ardite"
   }
 }

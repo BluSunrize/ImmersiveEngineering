@@ -5,10 +5,7 @@
     "tag": "forge:ingots/constantan"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/constantan"
-    },
-    "count": 1
+    "tag": "forge:dusts/constantan"
   },
   "secondaries": []
 }

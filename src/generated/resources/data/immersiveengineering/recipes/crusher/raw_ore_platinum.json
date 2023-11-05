@@ -6,19 +6,13 @@
     "tag": "forge:raw_materials/platinum"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/platinum"
-    },
-    "count": 1
+    "tag": "forge:dusts/platinum"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/platinum"
-        },
-        "count": 1
+        "tag": "forge:dusts/platinum"
       }
     }
   ]

@@ -7,9 +7,6 @@
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "basePredicate": {
-      "tag": "forge:plates/platinum"
-    },
-    "count": 1
+    "tag": "forge:plates/platinum"
   }
 }

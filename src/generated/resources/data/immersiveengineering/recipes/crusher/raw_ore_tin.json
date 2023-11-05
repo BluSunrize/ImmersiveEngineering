@@ -6,19 +6,13 @@
     "tag": "forge:raw_materials/tin"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/tin"
-    },
-    "count": 1
+    "tag": "forge:dusts/tin"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/tin"
-        },
-        "count": 1
+        "tag": "forge:dusts/tin"
       }
     }
   ]

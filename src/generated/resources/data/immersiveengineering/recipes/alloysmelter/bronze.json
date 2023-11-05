@@ -8,10 +8,7 @@
     "count": 3
   },
   "input1": {
-    "basePredicate": {
-      "tag": "forge:ingots/tin"
-    },
-    "count": 1
+    "tag": "forge:ingots/tin"
   },
   "result": {
     "basePredicate": {

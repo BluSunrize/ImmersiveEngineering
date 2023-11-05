@@ -8,10 +8,7 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/rose_gold"
-      },
-      "count": 1
+      "tag": "forge:ingots/rose_gold"
     }
   ],
   "time": 100

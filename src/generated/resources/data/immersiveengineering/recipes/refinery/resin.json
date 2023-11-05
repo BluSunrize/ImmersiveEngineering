@@ -10,7 +10,7 @@
     "tag": "forge:creosote"
   },
   "result": {
-    "amount": 8,
-    "fluid": "immersiveengineering:phenolic_resin"
+    "Amount": 8,
+    "FluidName": "immersiveengineering:phenolic_resin"
   }
 }

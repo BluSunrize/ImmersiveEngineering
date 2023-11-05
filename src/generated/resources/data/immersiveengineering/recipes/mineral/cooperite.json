@@ -9,29 +9,20 @@
     {
       "chance": 0.5,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/platinum"
-        },
-        "count": 1
+        "tag": "forge:ores/platinum"
       }
     },
     {
       "chance": 0.5,
       "conditions": [],
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/paladium"
-        },
-        "count": 1
+        "tag": "forge:ores/paladium"
       }
     },
     {
       "chance": 0.5,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/nickel"
-        },
-        "count": 1
+        "tag": "forge:ores/nickel"
       }
     }
   ],

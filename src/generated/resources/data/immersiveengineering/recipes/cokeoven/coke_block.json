@@ -5,10 +5,7 @@
     "item": "minecraft:coal_block"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:storage_blocks/coal_coke"
-    },
-    "count": 1
+    "tag": "forge:storage_blocks/coal_coke"
   },
   "time": 16200
 }

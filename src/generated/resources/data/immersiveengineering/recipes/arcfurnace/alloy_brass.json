@@ -2,19 +2,13 @@
   "type": "immersiveengineering:arc_furnace",
   "additives": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/zinc"
-      },
-      "count": 1
+      "tag": "forge:ingots/zinc"
     }
   ],
   "conditions": [],
   "energy": 51200,
   "input": {
-    "basePredicate": {
-      "tag": "forge:ingots/copper"
-    },
-    "count": 1
+    "tag": "forge:ingots/copper"
   },
   "results": [
     {

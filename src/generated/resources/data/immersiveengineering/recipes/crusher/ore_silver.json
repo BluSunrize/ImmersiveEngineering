@@ -15,10 +15,7 @@
       "chance": 0.1,
       "conditions": [],
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/lead"
-        },
-        "count": 1
+        "tag": "forge:dusts/lead"
       }
     }
   ]

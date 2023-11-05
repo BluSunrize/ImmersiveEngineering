@@ -10,9 +10,6 @@
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "basePredicate": {
-      "tag": "forge:gears/tungsten"
-    },
-    "count": 1
+    "tag": "forge:gears/tungsten"
   }
 }

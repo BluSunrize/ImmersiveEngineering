@@ -13,7 +13,7 @@
     "tag": "forge:ethanol"
   },
   "result": {
-    "amount": 16,
-    "fluid": "immersiveengineering:biodiesel"
+    "Amount": 16,
+    "FluidName": "immersiveengineering:biodiesel"
   }
 }

@@ -5,9 +5,6 @@
     "tag": "forge:raw_materials/gold"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/gold"
-    },
-    "count": 1
+    "tag": "forge:dusts/gold"
   }
 }

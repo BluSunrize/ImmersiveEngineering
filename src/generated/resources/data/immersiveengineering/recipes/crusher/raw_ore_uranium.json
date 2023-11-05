@@ -5,19 +5,13 @@
     "tag": "forge:raw_materials/uranium"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/uranium"
-    },
-    "count": 1
+    "tag": "forge:dusts/uranium"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/uranium"
-        },
-        "count": 1
+        "tag": "forge:dusts/uranium"
       }
     }
   ]

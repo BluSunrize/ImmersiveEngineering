@@ -5,9 +5,6 @@
     "tag": "forge:raw_materials/cobalt"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/cobalt"
-    },
-    "count": 1
+    "tag": "forge:dusts/cobalt"
   }
 }

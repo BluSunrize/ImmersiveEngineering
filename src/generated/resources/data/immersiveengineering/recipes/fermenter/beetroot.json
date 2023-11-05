@@ -2,8 +2,8 @@
   "type": "immersiveengineering:fermenter",
   "energy": 6400,
   "fluid": {
-    "amount": 40,
-    "fluid": "immersiveengineering:ethanol"
+    "Amount": 40,
+    "FluidName": "immersiveengineering:ethanol"
   },
   "input": {
     "tag": "forge:crops/beetroot"

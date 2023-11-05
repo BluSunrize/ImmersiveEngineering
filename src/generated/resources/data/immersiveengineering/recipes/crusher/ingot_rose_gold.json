@@ -6,10 +6,7 @@
     "tag": "forge:ingots/rose_gold"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/rose_gold"
-    },
-    "count": 1
+    "tag": "forge:dusts/rose_gold"
   },
   "secondaries": []
 }

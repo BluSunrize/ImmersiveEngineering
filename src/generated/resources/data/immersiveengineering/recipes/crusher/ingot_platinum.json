@@ -6,10 +6,7 @@
     "tag": "forge:ingots/platinum"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/platinum"
-    },
-    "count": 1
+    "tag": "forge:dusts/platinum"
   },
   "secondaries": []
 }

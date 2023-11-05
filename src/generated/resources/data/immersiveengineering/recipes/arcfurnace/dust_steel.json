@@ -7,10 +7,7 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/steel"
-      },
-      "count": 1
+      "tag": "forge:ingots/steel"
     }
   ],
   "time": 100

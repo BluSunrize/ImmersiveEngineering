@@ -9,10 +9,7 @@
     {
       "chance": 1.0,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/tin"
-        },
-        "count": 1
+        "tag": "forge:ores/tin"
       }
     }
   ],

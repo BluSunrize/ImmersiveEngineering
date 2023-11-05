@@ -9,7 +9,7 @@
     "tag": "forge:ethanol"
   },
   "result": {
-    "amount": 8,
-    "fluid": "immersiveengineering:acetaldehyde"
+    "Amount": 8,
+    "FluidName": "immersiveengineering:acetaldehyde"
   }
 }

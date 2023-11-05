@@ -14,7 +14,7 @@
     }
   ],
   "result": {
-    "amount": 500,
-    "fluid": "immersiveengineering:herbicide"
+    "Amount": 500,
+    "FluidName": "immersiveengineering:herbicide"
   }
 }

@@ -8,10 +8,7 @@
     "count": 3
   },
   "input1": {
-    "basePredicate": {
-      "item": "minecraft:netherite_scrap"
-    },
-    "count": 1
+    "item": "minecraft:netherite_scrap"
   },
   "result": {
     "basePredicate": {

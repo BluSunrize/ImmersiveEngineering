@@ -1,16 +1,10 @@
 {
   "type": "immersiveengineering:alloy",
   "input0": {
-    "basePredicate": {
-      "tag": "forge:ingots/gold"
-    },
-    "count": 1
+    "tag": "forge:ingots/gold"
   },
   "input1": {
-    "basePredicate": {
-      "tag": "forge:ingots/silver"
-    },
-    "count": 1
+    "tag": "forge:ingots/silver"
   },
   "result": {
     "basePredicate": {

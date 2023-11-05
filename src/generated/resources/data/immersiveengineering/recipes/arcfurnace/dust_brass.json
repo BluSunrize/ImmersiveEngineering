@@ -8,10 +8,7 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/brass"
-      },
-      "count": 1
+      "tag": "forge:ingots/brass"
     }
   ],
   "time": 100

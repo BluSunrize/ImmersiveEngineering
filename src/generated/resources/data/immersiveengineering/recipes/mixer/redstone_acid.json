@@ -11,7 +11,7 @@
     }
   ],
   "result": {
-    "amount": 250,
-    "fluid": "immersiveengineering:redstone_acid"
+    "Amount": 250,
+    "FluidName": "immersiveengineering:redstone_acid"
   }
 }

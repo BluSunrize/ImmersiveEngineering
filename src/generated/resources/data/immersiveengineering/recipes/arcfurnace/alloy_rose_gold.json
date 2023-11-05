@@ -2,10 +2,7 @@
   "type": "immersiveengineering:arc_furnace",
   "additives": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/gold"
-      },
-      "count": 1
+      "tag": "forge:ingots/gold"
     }
   ],
   "conditions": [],

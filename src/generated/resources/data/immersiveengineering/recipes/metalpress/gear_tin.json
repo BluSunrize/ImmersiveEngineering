@@ -10,9 +10,6 @@
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "basePredicate": {
-      "tag": "forge:gears/tin"
-    },
-    "count": 1
+    "tag": "forge:gears/tin"
   }
 }

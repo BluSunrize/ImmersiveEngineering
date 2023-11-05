@@ -8,20 +8,14 @@
   },
   "results": [
     {
-      "basePredicate": {
-        "tag": "forge:ingots/platinum"
-      },
-      "count": 1
+      "tag": "forge:ingots/platinum"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ingots/platinum"
-        },
-        "count": 1
+        "tag": "forge:ingots/platinum"
       }
     }
   ],

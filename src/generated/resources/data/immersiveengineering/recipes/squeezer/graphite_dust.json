@@ -8,9 +8,6 @@
     "count": 8
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/hop_graphite"
-    },
-    "count": 1
+    "tag": "forge:dusts/hop_graphite"
   }
 }

@@ -12,10 +12,7 @@
     }
   ],
   "slag": {
-    "basePredicate": {
-      "tag": "forge:slag"
-    },
-    "count": 1
+    "tag": "forge:slag"
   },
   "time": 100
 }

@@ -9,29 +9,20 @@
     {
       "chance": 0.5,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/tungsten"
-        },
-        "count": 1
+        "tag": "forge:ores/tungsten"
       }
     },
     {
       "chance": 0.5,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/iron"
-        },
-        "count": 1
+        "tag": "forge:ores/iron"
       }
     },
     {
       "chance": 0.5,
       "conditions": [],
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/manganese"
-        },
-        "count": 1
+        "tag": "forge:ores/manganese"
       }
     }
   ],

@@ -2,16 +2,10 @@
   "type": "immersiveengineering:alloy",
   "conditions": [],
   "input0": {
-    "basePredicate": {
-      "tag": "forge:ingots/copper"
-    },
-    "count": 1
+    "tag": "forge:ingots/copper"
   },
   "input1": {
-    "basePredicate": {
-      "tag": "forge:ingots/zinc"
-    },
-    "count": 1
+    "tag": "forge:ingots/zinc"
   },
   "result": {
     "basePredicate": {

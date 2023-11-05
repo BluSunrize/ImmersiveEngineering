@@ -5,19 +5,13 @@
     "tag": "forge:raw_materials/copper"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/copper"
-    },
-    "count": 1
+    "tag": "forge:dusts/copper"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/copper"
-        },
-        "count": 1
+        "tag": "forge:dusts/copper"
       }
     }
   ]

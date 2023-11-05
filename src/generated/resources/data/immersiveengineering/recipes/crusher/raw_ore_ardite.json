@@ -6,19 +6,13 @@
     "tag": "forge:raw_materials/ardite"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/ardite"
-    },
-    "count": 1
+    "tag": "forge:dusts/ardite"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/ardite"
-        },
-        "count": 1
+        "tag": "forge:dusts/ardite"
       }
     }
   ]

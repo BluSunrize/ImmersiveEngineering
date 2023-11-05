@@ -5,9 +5,6 @@
     "tag": "forge:raw_materials/tin"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/tin"
-    },
-    "count": 1
+    "tag": "forge:dusts/tin"
   }
 }

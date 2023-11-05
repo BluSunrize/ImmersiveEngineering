@@ -5,10 +5,7 @@
     "item": "minecraft:coal"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:coal_coke"
-    },
-    "count": 1
+    "tag": "forge:coal_coke"
   },
   "time": 1800
 }

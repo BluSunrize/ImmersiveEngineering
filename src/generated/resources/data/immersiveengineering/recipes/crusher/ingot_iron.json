@@ -5,10 +5,7 @@
     "tag": "forge:ingots/iron"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/iron"
-    },
-    "count": 1
+    "tag": "forge:dusts/iron"
   },
   "secondaries": []
 }

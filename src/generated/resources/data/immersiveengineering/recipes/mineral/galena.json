@@ -8,28 +8,19 @@
     {
       "chance": 0.4,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/lead"
-        },
-        "count": 1
+        "tag": "forge:ores/lead"
       }
     },
     {
       "chance": 0.4,
       "output": {
-        "basePredicate": {
-          "tag": "forge:dusts/sulfur"
-        },
-        "count": 1
+        "tag": "forge:dusts/sulfur"
       }
     },
     {
       "chance": 0.2,
       "output": {
-        "basePredicate": {
-          "tag": "forge:ores/silver"
-        },
-        "count": 1
+        "tag": "forge:ores/silver"
       }
     }
   ],

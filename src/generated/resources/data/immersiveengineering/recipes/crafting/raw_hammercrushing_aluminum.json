@@ -5,9 +5,6 @@
     "tag": "forge:raw_materials/aluminum"
   },
   "result": {
-    "basePredicate": {
-      "tag": "forge:dusts/aluminum"
-    },
-    "count": 1
+    "tag": "forge:dusts/aluminum"
   }
 }
