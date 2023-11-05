@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
+import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.*;
@@ -47,14 +48,13 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData.Factory;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.DistExecutor;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -83,8 +83,12 @@ public class ImmersiveEngineering
 	public static final String MODID = Lib.MODID;
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = IEApi.getCurrentVersion();
-	// TODO
-	public static final CommonProxy proxy = DistExecutor.safeRunForDist(bootstrapErrorToXCPInDev(() -> ClientProxy::new), bootstrapErrorToXCPInDev(() -> CommonProxy::new));
+	public static final CommonProxy proxy = Util.make(() -> {
+		if(FMLLoader.getDist().isClient())
+			return new ClientProxy();
+		else
+			return new CommonProxy();
+	});
 
 	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation(MODID, "main"))
@@ -112,22 +116,23 @@ public class ImmersiveEngineering
 		};
 	}
 
-	public ImmersiveEngineering()
+	public ImmersiveEngineering(Dist dist, IEventBus modBus)
 	{
 		IELogger.logger = LogManager.getLogger(MODID);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMCs);
+		modBus.addListener(this::setup);
+		modBus.addListener(this::enqueueIMCs);
 		NeoForge.EVENT_BUS.addListener(this::registerCommands);
 		NeoForge.EVENT_BUS.addListener(this::serverStarted);
 		NeoForge.EVENT_BUS.addListener(MissingMappingsHelper::handleRemapping);
-		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
-		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
-		Villages.Registers.PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
+		RecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
+		Villages.Registers.POINTS_OF_INTEREST.register(modBus);
+		Villages.Registers.PROFESSIONS.register(modBus);
 		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
 		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC);
 		IEContent.modConstruction();
-		DistExecutor.safeRunWhenOn(Dist.CLIENT, bootstrapErrorToXCPInDev(() -> ClientProxy::modConstruction));
+		if(dist.isClient())
+			ClientProxy.modConstruction();
 
 		IEWorldGen.init();
 		IECompatModules.onModConstruction();

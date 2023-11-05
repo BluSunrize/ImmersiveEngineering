@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
-import blusunrize.immersiveengineering.client.utils.DistField;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -26,7 +25,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import org.joml.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -42,11 +40,15 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +58,8 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 {
 	public AveragingEnergyStorage energyStorage = new AveragingEnergyStorage(32000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
-	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
+	// Using Mutable to "hide" the reference to a client-only type behind generics type erasure
+	public final Mutable<CustomParticleManager> particles;
 	private boolean charging = true;
 	public int comparatorOutput = 0;
 	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
@@ -64,12 +67,16 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	public ChargingStationBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.CHARGING_STATION.get(), pos, state);
+		if(FMLLoader.getDist().isClient())
+			this.particles = new MutableObject<>(new CustomParticleManager());
+		else
+			this.particles = new MutableObject<>();
 	}
 
 	@Override
 	public void tickClient()
 	{
-		particles.get().clientTick();
+		particles.getValue().clientTick();
 		if(EnergyHelper.isFluxReceiver(inventory.get(0))&&charging)
 		{
 			float charge = 0;
@@ -86,7 +93,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 					double x = .5+(getFacing()==Direction.WEST?-.46875: getFacing()==Direction.EAST?.46875: getFacing()==Direction.NORTH?(-.1875*shift): (.1875*shift));
 					double y = .25;
 					double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
-					particles.get().add(
+					particles.getValue().add(
 							new DustParticleOptions(new Vector3f(1-charge, charge, 0), .5f), x, y, z, .25, .25, .25, -1
 					);
 				}
