@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine;
 
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -23,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -36,9 +38,12 @@ import java.util.function.BooleanSupplier;
 
 public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRecipe>
 {
-	private static final BottlingMachineRecipe DUMMY_RECIPE = new BottlingMachineRecipe(
-			Lazy.of(NonNullList::create), IngredientWithSize.of(ItemStack.EMPTY),
-			new FluidTagInput(FluidTags.WATER, 0)
+	private static final RecipeHolder<BottlingMachineRecipe> DUMMY_RECIPE = new RecipeHolder<>(
+			IEApi.ieLoc("bottling_dummy"),
+			new BottlingMachineRecipe(
+					Lazy.of(NonNullList::create), IngredientWithSize.of(ItemStack.EMPTY),
+					new FluidTagInput(FluidTags.WATER, 0)
+			)
 	);
 	private static final float TRANSFORMATION_POINT = 0.45f;
 
@@ -58,7 +63,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 		this.filledContainer = List.of();
 	}
 
-	public BottlingProcess(BottlingMachineRecipe recipe, NonNullList<ItemStack> inputItem, State state)
+	public BottlingProcess(RecipeHolder<BottlingMachineRecipe> recipe, NonNullList<ItemStack> inputItem, State state)
 	{
 		super(recipe, TRANSFORMATION_POINT, inputItem);
 		this.tank = state.tank;

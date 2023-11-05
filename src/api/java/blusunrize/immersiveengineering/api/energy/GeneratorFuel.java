@@ -20,6 +20,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -104,9 +105,9 @@ public class GeneratorFuel extends IESerializableRecipe
 	{
 		if(hint!=null&&hint.matches(in))
 			return hint;
-		for(GeneratorFuel fuel : RECIPES.getRecipes(level))
-			if(fuel.matches(in))
-				return fuel;
+		for(RecipeHolder<GeneratorFuel> fuel : RECIPES.getRecipes(level))
+			if(fuel.value().matches(in))
+				return fuel.value();
 		return null;
 	}
 }

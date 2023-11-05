@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -65,12 +66,12 @@ public class FermenterRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static FermenterRecipe findRecipe(Level level, ItemStack input)
+	public static RecipeHolder<FermenterRecipe> findRecipe(Level level, ItemStack input)
 	{
 		if(input.isEmpty())
 			return null;
-		for(FermenterRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.input.test(input))
+		for(RecipeHolder<FermenterRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().input.test(input))
 				return recipe;
 		return null;
 	}
@@ -89,12 +90,15 @@ public class FermenterRecipe extends MultiblockRecipe
 						inverse?Comparator.reverseOrder(): Comparator.naturalOrder()
 				)
 		);
-		for(FermenterRecipe recipe : RECIPES.getRecipes(level))
+		for(RecipeHolder<FermenterRecipe> holder : RECIPES.getRecipes(level))
+		{
+			FermenterRecipe recipe = holder.value();
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&!recipe.input.hasNoMatchingItems())
 			{
 				ItemStack is = recipe.input.getMatchingStacks()[0];
 				map.put(is.getHoverName(), recipe.fluidOutput.getAmount());
 			}
+		}
 		return map;
 	}
 }

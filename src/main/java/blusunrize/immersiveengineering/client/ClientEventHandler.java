@@ -85,6 +85,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
@@ -292,11 +293,11 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 
 			if(playerDistanceSq < 1000)
 			{
-				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(event.getItemFrameEntity().level(), ItemNBTHelper.getString(event.getItemStack(), "blueprint"));
-				if(recipes.length > 0)
+				List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(event.getItemFrameEntity().level(), ItemNBTHelper.getString(event.getItemStack(), "blueprint"));
+				if(!recipes.isEmpty())
 				{
 					int i = event.getItemFrameEntity().getRotation();
-					BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
+					BlueprintCraftingRecipe recipe = recipes.get(i%recipes.size()).value();
 					BlueprintLines blueprint = recipe==null?null: BlueprintRenderer.getBlueprintDrawable(recipe, event.getItemFrameEntity().getCommandSenderWorld());
 					if(blueprint!=null)
 					{

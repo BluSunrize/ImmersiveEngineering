@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -53,12 +54,12 @@ public class MixerRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static MixerRecipe findRecipe(Level level, FluidStack fluid, NonNullList<ItemStack> components)
+	public static RecipeHolder<MixerRecipe> findRecipe(Level level, FluidStack fluid, NonNullList<ItemStack> components)
 	{
 		if(fluid.isEmpty())
 			return null;
-		for(MixerRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.matches(fluid, components))
+		for(RecipeHolder<MixerRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().matches(fluid, components))
 				return recipe;
 		return null;
 	}

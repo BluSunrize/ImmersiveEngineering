@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.RegistryObject;
 
@@ -51,9 +52,9 @@ public class ClocheFertilizer extends IESerializableRecipe
 
 	public static float getFertilizerGrowthModifier(Level level, ItemStack stack)
 	{
-		for(ClocheFertilizer e : RECIPES.getRecipes(level))
-			if(e.input.test(stack))
-				return e.getGrowthModifier();
+		for(RecipeHolder<ClocheFertilizer> e : RECIPES.getRecipes(level))
+			if(e.value().input.test(stack))
+				return e.value().getGrowthModifier();
 		return 0;
 	}
 

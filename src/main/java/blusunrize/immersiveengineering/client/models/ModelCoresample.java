@@ -38,6 +38,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -288,17 +289,17 @@ public class ModelCoresample extends BakedIEModel
 		@Override
 		public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int unused)
 		{
-			MineralMix[] minerals = CoresampleItem.getMineralMixes(Minecraft.getInstance().level, stack);
-			if(minerals.length > 0)
+			List<RecipeHolder<MineralMix>> minerals = CoresampleItem.getMineralMixes(Minecraft.getInstance().level, stack);
+			if(!minerals.isEmpty())
 			{
 				try
 				{
-					//TODO
-					throw new ExecutionException(new UnsupportedOperationException());
-					//List<ResourceLocation> cacheKey = Arrays.stream(minerals)
-					//		.map(MineralMix::getId)
-					//		.toList();
-					//return modelCache.get(cacheKey, () -> new ModelCoresample(minerals));
+					List<ResourceLocation> cacheKey = minerals.stream()
+							.map(RecipeHolder::id)
+							.toList();
+					return modelCache.get(cacheKey, () -> new ModelCoresample(
+							minerals.stream().map(RecipeHolder::value).toArray(MineralMix[]::new)
+					));
 				} catch(ExecutionException e)
 				{
 					throw new RuntimeException(e);

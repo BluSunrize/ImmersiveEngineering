@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -38,15 +39,14 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 		this.processTick = 0;
 	}
 
-	public MultiblockProcess(R recipe)
+	public MultiblockProcess(RecipeHolder<R> recipe)
 	{
-		//TODO
-		// this.recipeId = recipe.getId();
+		this.recipeId = recipe.id();
 		this.getRecipe = ($, $1) -> {
 			throw new RuntimeException("A process initialized with a recipe should never query recipes");
 		};
 		this.processTick = 0;
-		populateLevelData(recipe);
+		populateLevelData(recipe.value());
 		throw new UnsupportedOperationException();
 	}
 

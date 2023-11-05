@@ -39,12 +39,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -113,7 +114,7 @@ public class RefineryLogic
 		if(leftInput.isEmpty()&&rightInput.isEmpty())
 			return;
 		final ItemStack catalyst = state.inventory.getStackInSlot(SLOT_CATALYST);
-		RefineryRecipe recipe = RefineryRecipe.findRecipe(level, leftInput, rightInput, catalyst);
+		RecipeHolder<RefineryRecipe> recipe = RefineryRecipe.findRecipe(level, leftInput, rightInput, catalyst);
 		if(recipe==null)
 			return;
 		MultiblockProcessInMachine<RefineryRecipe> process = new MultiblockProcessInMachine<>(recipe);

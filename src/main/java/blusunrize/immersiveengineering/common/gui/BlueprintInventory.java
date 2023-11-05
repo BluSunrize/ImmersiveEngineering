@@ -14,14 +14,17 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
+import java.util.List;
 
 public class BlueprintInventory extends SimpleContainer
 {
-	private final BlueprintCraftingRecipe[] recipes;
+	private final List<RecipeHolder<BlueprintCraftingRecipe>> recipes;
 
-	public BlueprintInventory(AbstractContainerMenu container, BlueprintCraftingRecipe[] recipes)
+	public BlueprintInventory(AbstractContainerMenu container, List<RecipeHolder<BlueprintCraftingRecipe>> recipes)
 	{
-		super(recipes.length);
+		super(recipes.size());
 		this.recipes = recipes;
 	}
 
@@ -32,10 +35,10 @@ public class BlueprintInventory extends SimpleContainer
 		for(int i = 0; i < inputs.size(); i++)
 			inputs.set(i, inputInventory.getItem(i+1));
 		//Iterate Recipes and set output slots
-		for(int i = 0; i < this.recipes.length; i++)
+		for(int i = 0; i < this.recipes.size(); i++)
 		{
-			if(recipes[i].matchesRecipe(inputs))
-				this.setItem(i, recipes[i].output.get().copy());
+			if(recipes.get(i).value().matchesRecipe(inputs))
+				this.setItem(i, recipes.get(i).value().output.get().copy());
 			else
 				this.setItem(i, ItemStack.EMPTY);
 		}

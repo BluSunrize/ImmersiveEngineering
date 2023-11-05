@@ -43,11 +43,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -118,12 +119,12 @@ public class MixerLogic
 		boolean update = false;
 		for(FluidStack fs : state.tank.fluids)
 		{
-			MixerRecipe recipe = MixerRecipe.findRecipe(rawLevel, fs, components);
+			RecipeHolder<MixerRecipe> recipe = MixerRecipe.findRecipe(rawLevel, fs, components);
 			if(recipe==null)
 				continue;
 			foundRecipe = true;
 			MultiblockProcessInMachine<MixerRecipe> process = new MixingProcess(
-					recipe, state.tank, recipe.getUsedSlots(fs, components)
+					recipe, state.tank, recipe.value().getUsedSlots(fs, components)
 			).setInputTanks(0);
 			if(state.processor.addProcessToQueue(process, rawLevel, false))
 				update = true;

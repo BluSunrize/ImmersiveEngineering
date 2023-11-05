@@ -19,6 +19,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -31,7 +32,7 @@ public class MixingProcess extends MultiblockProcessInMachine<MixerRecipe>
 {
 	private final MultiFluidTank tank;
 
-	public MixingProcess(MixerRecipe recipe, MultiFluidTank tank, int... inputSlots)
+	public MixingProcess(RecipeHolder<MixerRecipe> recipe, MultiFluidTank tank, int... inputSlots)
 	{
 		super(recipe, inputSlots);
 		this.tank = tank;

@@ -24,6 +24,7 @@ import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -39,6 +40,7 @@ public class CachedRecipeList<R extends Recipe<?>>
 	private final Supplier<RecipeType<R>> type;
 	private final Class<R> recipeClass;
 	private Map<ResourceLocation, R> recipes;
+	private List<RecipeHolder<R>> recipeHolders;
 	private boolean cachedDataIsClient;
 	private int cachedAtReloadCount = INVALID_RELOAD_COUNT;
 
@@ -70,10 +72,10 @@ public class CachedRecipeList<R extends Recipe<?>>
 		return reloadCount;
 	}
 
-	public Collection<R> getRecipes(@Nonnull Level level)
+	public List<RecipeHolder<R>> getRecipes(@Nonnull Level level)
 	{
 		updateCache(level.getRecipeManager(), level.isClientSide());
-		return Objects.requireNonNull(recipes).values();
+		return Objects.requireNonNull(recipeHolders);
 	}
 
 	public Collection<ResourceLocation> getRecipeNames(@Nonnull Level level)
@@ -104,6 +106,9 @@ public class CachedRecipeList<R extends Recipe<?>>
 						return Stream.of(r);
 				})
 				.collect(Collectors.toMap(RecipeHolder::id, rh -> recipeClass.cast(rh.value())));
+		this.recipeHolders = this.recipes.entrySet().stream()
+				.map(e -> new RecipeHolder<>(e.getKey(), e.getValue()))
+				.toList();
 		this.cachedDataIsClient = isClient;
 		this.cachedAtReloadCount = reloadCount;
 	}

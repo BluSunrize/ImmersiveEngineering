@@ -101,7 +101,6 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	@Nonnull
 	public JsonElement serialize()
 	{
-		// TODO probably remove
 		return CODEC.encodeStart(JsonOps.INSTANCE, this).result().orElseThrow();
 	}
 

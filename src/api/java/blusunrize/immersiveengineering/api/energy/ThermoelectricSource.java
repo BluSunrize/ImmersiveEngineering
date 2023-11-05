@@ -22,6 +22,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -112,9 +113,9 @@ public class ThermoelectricSource extends IESerializableRecipe
 	{
 		if(hint!=null&&hint.matches(block))
 			return hint;
-		for(ThermoelectricSource entry : ALL_SOURCES.getRecipes(level))
-			if(entry.matches(block))
-				return entry;
+		for(RecipeHolder<ThermoelectricSource> entry : ALL_SOURCES.getRecipes(level))
+			if(entry.value().matches(block))
+				return entry.value();
 		return null;
 	}
 
@@ -126,11 +127,11 @@ public class ThermoelectricSource extends IESerializableRecipe
 						inverse?Comparator.reverseOrder(): Comparator.naturalOrder()
 				)
 		);
-		for(ThermoelectricSource ingr : ALL_SOURCES.getRecipes(level))
+		for(RecipeHolder<ThermoelectricSource> ingr : ALL_SOURCES.getRecipes(level))
 		{
-			Block example = ingr.getExample();
+			Block example = ingr.value().getExample();
 			if(example!=Blocks.AIR)
-				existingMap.put(new ItemStack(example).getHoverName(), ingr.temperature);
+				existingMap.put(new ItemStack(example).getHoverName(), ingr.value().temperature);
 		}
 		Fluid[] fluidsToShow = {Fluids.WATER, Fluids.LAVA};
 		for(Fluid f : fluidsToShow)

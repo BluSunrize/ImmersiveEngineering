@@ -37,10 +37,11 @@ import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -110,7 +111,7 @@ public class SqueezerLogic
 				continue;
 			stack = stack.copy();
 			stack.shrink(usedInvSlots[slot]);
-			SqueezerRecipe recipe = SqueezerRecipe.findRecipe(level, stack);
+			RecipeHolder<SqueezerRecipe> recipe = SqueezerRecipe.findRecipe(level, stack);
 			if(recipe!=null)
 				state.processor.addProcessToQueue(new MultiblockProcessInMachine<>(recipe, slot), level, false);
 		}

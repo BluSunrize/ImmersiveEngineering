@@ -44,13 +44,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -135,7 +136,7 @@ public class BottlingMachineLogic
 			return;
 
 		ItemStack[] stacks = itemsOnConveyor.stream().map(Pair::getSecond).toArray(ItemStack[]::new);
-		BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(level, state.tank.getFluid(), stacks);
+		RecipeHolder<BottlingMachineRecipe> recipe = BottlingMachineRecipe.findRecipe(level, state.tank.getFluid(), stacks);
 		if(recipe==null&&!Utils.isFluidRelatedItemStack(stacks[0]))
 			return;
 
@@ -149,7 +150,7 @@ public class BottlingMachineLogic
 		}
 		else
 		{
-			displayStacks = recipe.getDisplayStacks(stacks);
+			displayStacks = recipe.value().getDisplayStacks(stacks);
 			process = new BottlingProcess(recipe, displayStacks, state);
 		}
 

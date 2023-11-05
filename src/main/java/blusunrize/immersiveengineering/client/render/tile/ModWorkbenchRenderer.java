@@ -22,10 +22,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBlockEntity>
@@ -119,9 +121,9 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 	{
 		return IVertexBufferHolder.create((builder, transform, light, overlay) -> {
 			final ClientLevel level = ClientUtils.mc().level;
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(level, category);
+			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(level, category);
 			transform.pushPose();
-			int numRecipes = recipes.length;
+			int numRecipes = recipes.size();
 			int perRow;
 			if(numRecipes > 6) perRow = numRecipes-3;
 			else if(numRecipes > 4) perRow = numRecipes-2;
@@ -136,7 +138,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 			int rendered = 0;
 			for(int i = 0; i < numRecipes; i++)
 			{
-				BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
+				BlueprintCraftingRecipe recipe = recipes.get(i%recipes.size()).value();
 				BlueprintLines blueprint = recipe==null?null: BlueprintRenderer.getBlueprintDrawable(recipe, level);
 				if(blueprint!=null)
 				{

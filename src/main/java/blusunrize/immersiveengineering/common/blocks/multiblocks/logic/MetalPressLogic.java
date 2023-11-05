@@ -43,6 +43,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -120,13 +121,13 @@ public class MetalPressLogic
 			if(stack.isEmpty())
 				return;
 			final State state = ctx.getState();
-			MetalPressRecipe recipe = MetalPressRecipe.findRecipe(state.mold, stack, world);
+			RecipeHolder<MetalPressRecipe> recipe = MetalPressRecipe.findRecipe(state.mold, stack, world);
 			if(recipe==null)
 				return;
-			ItemStack displayStack = recipe.getDisplayStack(stack);
+			ItemStack displayStack = recipe.value().getDisplayStack(stack);
 			MultiblockProcessInWorld<MetalPressRecipe> process;
-			if(recipe instanceof RecipeDelegate delegate)
-				process = new SpecialMetalPressProcess(delegate, displayStack);
+			if(recipe.value() instanceof RecipeDelegate delegate)
+				process = new SpecialMetalPressProcess(recipe.id(), delegate, displayStack);
 			else
 				process = new MultiblockProcessInWorld<>(recipe, displayStack);
 
@@ -238,7 +239,9 @@ public class MetalPressLogic
 			);
 			this.output = new DroppingMultiblockOutput(OUTPUT_POS, ctx);
 			this.inputCap = new StoredCapability<>(new DirectProcessingItemHandler<>(
-					ctx.levelSupplier(), processor, (level, input) -> MetalPressRecipe.findRecipe(mold, input, level)
+					ctx.levelSupplier(),
+					processor,
+					(level, input) -> MetalPressRecipe.findRecipe(mold, input, level)
 			));
 		}
 
@@ -318,18 +321,19 @@ public class MetalPressLogic
 			super((level, name) -> {
 				CraftingRecipe baseRecipe = MetalPressPackingRecipes.CRAFTING_RECIPE_MAP.getById(level, baseRecipeLocation);
 				if(baseRecipe!=null)
-					return MetalPressPackingRecipes.getRecipeDelegate(baseRecipe, name, level.registryAccess());
+					return MetalPressPackingRecipes.getRecipeDelegate(
+							new RecipeHolder<>(baseRecipeLocation, baseRecipe), name, level.registryAccess()
+					).value();
 				else
 					return null;
 			}, data);
 			this.baseRecipeLocation = baseRecipeLocation;
 		}
 
-		public SpecialMetalPressProcess(RecipeDelegate recipe, ItemStack inputItem)
+		public SpecialMetalPressProcess(ResourceLocation id, RecipeDelegate recipe, ItemStack inputItem)
 		{
-			super(recipe, inputItem);
-			//TODO
-			// this.baseRecipeLocation = recipe.baseRecipe.getId();
+			super(new RecipeHolder<>(id, recipe), inputItem);
+			this.baseRecipeLocation = recipe.baseRecipe.id();
 			throw new UnsupportedOperationException();
 		}
 

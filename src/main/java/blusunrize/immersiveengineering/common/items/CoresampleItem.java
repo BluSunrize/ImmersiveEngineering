@@ -26,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -39,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,7 +78,7 @@ public class CoresampleItem extends IEBaseItem
 							Utils.formatDouble(data.getPercentageInTotalSample()*100, "0.00")+"% "
 					);
 					MineralMix mineral = data.getType();
-					component.append(Component.translatable(mineral.getTranslationKey()));
+					component.append(Component.translatable(MineralMix.getTranslationKey(data.type.id())));
 					list.add(component.withStyle(baseColor));
 					if(showYield)
 					{
@@ -168,24 +170,23 @@ public class CoresampleItem extends IEBaseItem
 		return super.useOn(ctx);
 	}
 
-	public static MineralMix[] getMineralMixes(Level level, ItemStack coresample)
+	public static List<RecipeHolder<MineralMix>> getMineralMixes(Level level, ItemStack coresample)
 	{
 		return getVeins(level, coresample)
 				.stream()
-				.map(VeinSampleData::getType)
-				.toArray(MineralMix[]::new);
+				.map(VeinSampleData::getTypeHolder)
+				.toList();
 	}
 
 	public static ListTag getSimplifiedMineralList(Level level, ItemStack coresample)
 	{
 		ListTag outList = new ListTag();
-		//TODO
-		//getVeins(level, coresample).stream()
-		//		.map(VeinSampleData::getType)
-		//		.map(MineralMix::getId)
-		//		.map(ResourceLocation::toString)
-		//		.map(StringTag::valueOf)
-		//		.forEach(outList::add);
+		getVeins(level, coresample).stream()
+				.map(VeinSampleData::getTypeHolder)
+				.map(RecipeHolder::id)
+				.map(ResourceLocation::toString)
+				.map(StringTag::valueOf)
+				.forEach(outList::add);
 		return outList;
 	}
 
@@ -197,7 +198,7 @@ public class CoresampleItem extends IEBaseItem
 		ListTag nbtList = new ListTag();
 		veins.forEach(pair -> {
 			VeinSampleData sampleData = new VeinSampleData(
-					pair.getFirst().getMineral(level),
+					pair.getFirst().getMineralHolder(level),
 					pair.getSecond()/(double)info.getTotalWeight(),
 					1-pair.getFirst().getFailChance(pos),
 					pair.getFirst().getDepletion()
@@ -256,12 +257,14 @@ public class CoresampleItem extends IEBaseItem
 
 	public static class VeinSampleData
 	{
-		private final MineralMix type;
+		private final RecipeHolder<MineralMix> type;
 		private final double percentageInTotalSample;
 		private final double saturation;
 		private final int depletion;
 
-		public VeinSampleData(MineralMix type, double percentageInTotalSample, double saturation, int depletion)
+		public VeinSampleData(
+				RecipeHolder<MineralMix> type, double percentageInTotalSample, double saturation, int depletion
+		)
 		{
 			this.type = type;
 			this.percentageInTotalSample = percentageInTotalSample;
@@ -272,11 +275,15 @@ public class CoresampleItem extends IEBaseItem
 		@Nullable
 		public static VeinSampleData fromNBT(Level level, CompoundTag nbt)
 		{
-			MineralMix mineral = MineralMix.RECIPES.getById(level, new ResourceLocation(nbt.getString("mineral")));
+			ResourceLocation id = new ResourceLocation(nbt.getString("mineral"));
+			MineralMix mineral = MineralMix.RECIPES.getById(level, id);
 			if(mineral==null)
 				return null;
 			return new VeinSampleData(
-					mineral, nbt.getDouble("percentage"), nbt.getDouble("saturation"), nbt.getInt("depletion")
+					new RecipeHolder<>(id, mineral),
+					nbt.getDouble("percentage"),
+					nbt.getDouble("saturation"),
+					nbt.getInt("depletion")
 			);
 		}
 
@@ -284,14 +291,18 @@ public class CoresampleItem extends IEBaseItem
 		{
 			CompoundTag tag = new CompoundTag();
 			tag.putDouble("percentage", percentageInTotalSample);
-			//TODO
-			//tag.putString("mineral", type.getId().toString());
+			tag.putString("mineral", type.id().toString());
 			tag.putInt("depletion", depletion);
 			tag.putDouble("saturation", saturation);
 			return tag;
 		}
 
 		public MineralMix getType()
+		{
+			return type.value();
+		}
+
+		public RecipeHolder<MineralMix> getTypeHolder()
 		{
 			return type;
 		}

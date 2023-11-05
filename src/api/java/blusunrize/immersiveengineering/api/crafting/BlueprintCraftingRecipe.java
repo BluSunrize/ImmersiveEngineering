@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -36,7 +37,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLUEPRINT);
 	private static int reloadCountForCategories = CachedRecipeList.INVALID_RELOAD_COUNT;
-	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
+	private static Map<String, List<RecipeHolder<BlueprintCraftingRecipe>>> recipesByCategory = Collections.emptyMap();
 	public static SetRestrictedField<ItemLike> blueprintItem = SetRestrictedField.common();
 
 	public final String blueprintCategory;
@@ -158,11 +159,12 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		return consumed;
 	}
 
-	public static BlueprintCraftingRecipe[] findRecipes(Level level, String blueprintCategory)
+	public static List<RecipeHolder<BlueprintCraftingRecipe>> findRecipes(Level level, String blueprintCategory)
 	{
 		updateRecipeCategories(level);
 		return recipesByCategory.getOrDefault(blueprintCategory, ImmutableList.of())
-				.toArray(new BlueprintCraftingRecipe[0]);
+				.stream()
+				.toList();
 	}
 
 	public static void updateRecipeCategories(Level level)
@@ -170,10 +172,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		if(reloadCountForCategories==CachedRecipeList.getReloadCount())
 			return;
 		recipesByCategory = RECIPES.getRecipes(level).stream()
-				.collect(Collectors.groupingBy(r -> r.blueprintCategory));
-		//TODO
-		//for(Entry<String, List<BlueprintCraftingRecipe>> e : recipesByCategory.entrySet())
-		//	e.getValue().sort(Comparator.comparing(BlueprintCraftingRecipe::getId));
+				.collect(Collectors.groupingBy(r -> r.value().blueprintCategory));
+		for(Entry<String, List<RecipeHolder<BlueprintCraftingRecipe>>> e : recipesByCategory.entrySet())
+			e.getValue().sort(Comparator.comparing(RecipeHolder::id));
 		reloadCountForCategories = CachedRecipeList.getReloadCount();
 	}
 

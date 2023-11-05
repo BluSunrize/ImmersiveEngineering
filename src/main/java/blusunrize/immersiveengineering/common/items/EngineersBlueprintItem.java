@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -52,14 +53,14 @@ public class EngineersBlueprintItem extends IEBaseItem
 			list.add(Component.translatable(formatKey));
 		if(world==null)
 			return;
-		BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);
-		if(recipes.length==0)
+		List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(world, key);
+		if(recipes.isEmpty())
 			return;
 		if(Screen.hasShiftDown())
 		{
 			list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates1"));
-			for(BlueprintCraftingRecipe recipe : recipes)
-				list.add(Component.literal(" ").append(recipe.output.get().getHoverName()));
+			for(RecipeHolder<BlueprintCraftingRecipe> recipe : recipes)
+				list.add(Component.literal(" ").append(recipe.value().output.get().getHoverName()));
 		}
 		else
 			list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates0"));
@@ -80,7 +81,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 	}
 
 	@Nonnull
-	public static BlueprintCraftingRecipe[] getRecipes(Level level, ItemStack stack)
+	public static List<RecipeHolder<BlueprintCraftingRecipe>> getRecipes(Level level, ItemStack stack)
 	{
 		return BlueprintCraftingRecipe.findRecipes(level, getCategory(stack));
 	}

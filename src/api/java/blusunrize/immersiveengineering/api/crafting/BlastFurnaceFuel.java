@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.RegistryObject;
 
@@ -34,9 +35,9 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 
 	public static int getBlastFuelTime(Level level, ItemStack stack)
 	{
-		for(BlastFurnaceFuel e : RECIPES.getRecipes(level))
-			if(e.input.test(stack))
-				return e.burnTime;
+		for(RecipeHolder<BlastFurnaceFuel> e : RECIPES.getRecipes(level))
+			if(e.value().input.test(stack))
+				return e.value().burnTime;
 		return 0;
 	}
 

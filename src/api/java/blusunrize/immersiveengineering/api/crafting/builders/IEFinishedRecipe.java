@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -87,8 +88,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 			this.conditions = new JsonArray();
 			addWriter(jsonObject -> jsonObject.add("conditions", conditions));
 		}
-		// TODO
-		//this.conditions.add(CraftingHelper.serialize(condition));
+		this.conditions.add(conditionToJson(condition));
 		return (R)this;
 	}
 
@@ -138,7 +138,6 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	public R addResult(Ingredient ingredient)
 	{
-		// TODO what is the bool in toJson
 		if(resultArray!=null)
 			return addMultiResult(ingredient.toJson(false));
 		else
@@ -179,7 +178,6 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	public R addMultiInput(Ingredient ingredient)
 	{
-		// TODO bool
 		return addMultiInput(ingredient.toJson(false));
 	}
 
@@ -284,7 +282,6 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	public R addIngredient(String key, Ingredient ingredient)
 	{
-		// TODO bool
 		return addWriter(jsonObject -> jsonObject.add(key, ingredient.toJson(false)));
 	}
 
@@ -357,7 +354,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 	@Override
 	public AdvancementHolder advancement()
 	{
-		// TODO
+		// TODO?
 		return null;
 	}
 
@@ -371,11 +368,16 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 		if(conditions.length > 0)
 		{
 			JsonArray conditionArray = new JsonArray();
-			//TODO
-			//for(ICondition condition : conditions)
-			//	conditionArray.add(CraftingHelper.serialize(condition));
+			for(ICondition condition : conditions)
+				conditionArray.add(conditionToJson(condition));
 			jsonObject.add("conditions", conditionArray);
 		}
 		return jsonObject;
+	}
+
+	protected static JsonElement conditionToJson(ICondition condition)
+	{
+		return ICondition.CODEC.encodeStart(JsonOps.INSTANCE, condition).getOrThrow(false, $ -> {
+		});
 	}
 }

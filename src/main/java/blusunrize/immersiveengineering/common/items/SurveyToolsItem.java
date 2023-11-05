@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -138,7 +139,7 @@ public class SurveyToolsItem extends IEBaseItem
 		Vec2 vecToCenter = new Vec2(vein.getPos().x()-pos.getX(), vein.getPos().z()-pos.getZ());
 		if(vecToCenter.x==0&&vecToCenter.y==0) // hit the vein center directly
 			response = Component.translatable(Lib.CHAT_INFO+"survey.hint.center",
-					Component.translatable(vein.getMineral(world).getTranslationKey()));
+					Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())));
 		else
 		{
 			double angle = Math.toDegrees(Math.atan2(vecToCenter.y, vecToCenter.x));
@@ -148,17 +149,17 @@ public class SurveyToolsItem extends IEBaseItem
 			{
 				case 0: // hint at the type of vein
 					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.1",
-							Component.translatable(vein.getMineral(world).getTranslationKey()));
+							Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())));
 					break;
 				case 1: // hint at the direction
 					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.2",
-							Component.translatable(vein.getMineral(world).getTranslationKey()),
+							Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())),
 							Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment));
 					break;
 				case 2: // hint at distance
 				default:
 					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.3",
-							Component.translatable(vein.getMineral(world).getTranslationKey()),
+							Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())),
 							Math.round(Math.sqrt(vecToCenter.x*vecToCenter.x+vecToCenter.y*vecToCenter.y)),
 							Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment));
 					break;
@@ -176,9 +177,7 @@ public class SurveyToolsItem extends IEBaseItem
 		data.add(tag);
 
 		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.NEUTRAL, 1.0F, 1.0F+(world.random.nextFloat()-world.random.nextFloat())*0.4F);
-		stack.hurtAndBreak(1, player, (user) -> {
-			user.broadcastBreakEvent(user.getUsedItemHand());
-		});
+		stack.hurtAndBreak(1, player, (user) -> user.broadcastBreakEvent(user.getUsedItemHand()));
 
 		return stack;
 	}

@@ -18,6 +18,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -83,9 +84,9 @@ public class WindmillBiome extends IESerializableRecipe
 	{
 		if(hint!=null&&hint.matches(biome))
 			return hint;
-		for(WindmillBiome entry : ALL_BIOMES.getRecipes(level))
-			if(entry.matches(biome))
-				return entry;
+		for(RecipeHolder<WindmillBiome> entry : ALL_BIOMES.getRecipes(level))
+			if(entry.value().matches(biome))
+				return entry.value();
 		return null;
 	}
 }

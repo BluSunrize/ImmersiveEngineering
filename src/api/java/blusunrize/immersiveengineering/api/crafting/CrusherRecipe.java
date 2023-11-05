@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -66,10 +67,10 @@ public class CrusherRecipe extends MultiblockRecipe
 		return list;
 	}
 
-	public static CrusherRecipe findRecipe(Level level, ItemStack input)
+	public static RecipeHolder<CrusherRecipe> findRecipe(Level level, ItemStack input)
 	{
-		for(CrusherRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.input.test(input))
+		for(RecipeHolder<CrusherRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().input.test(input))
 				return recipe;
 		return null;
 	}

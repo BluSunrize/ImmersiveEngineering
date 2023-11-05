@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTrigger;
@@ -75,10 +76,12 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 	public Instance createInstance(JsonObject json, DeserializationContext context)
 	{
 		Optional<ContextAwarePredicate> and = EntityPredicate.fromJson(json, "player", context);
+		Optional<ItemPredicate> itemPredicate = ItemPredicate.fromJson(json.get("item"));
+		if(!itemPredicate.isPresent())
+			throw new JsonSyntaxException("Failed to parse item predicate from "+json.get("item"));
 		return new MultiblockAdvancementTrigger.Instance(
 				new ResourceLocation(GsonHelper.getAsString(json, "multiblock")),
-				//TODO
-				ItemPredicate.fromJson(json.get("item")).get(),
+				itemPredicate.get(),
 				and
 		);
 	}

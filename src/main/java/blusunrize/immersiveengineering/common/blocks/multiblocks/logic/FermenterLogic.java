@@ -39,11 +39,12 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -137,7 +138,7 @@ public class FermenterLogic
 			}
 			if(!stack.isEmpty()&&stack.getCount() > 0)
 			{
-				FermenterRecipe recipe = FermenterRecipe.findRecipe(level, stack);
+				RecipeHolder<FermenterRecipe> recipe = FermenterRecipe.findRecipe(level, stack);
 				if(recipe!=null)
 				{
 					MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(recipe, slot);

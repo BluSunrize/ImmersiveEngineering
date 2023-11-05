@@ -40,11 +40,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -192,7 +193,7 @@ public class ArcFurnaceLogic
 			ItemStack stack = state.inventory.getStackInSlot(slot);
 			if(stack.isEmpty())
 				continue;
-			ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(level, stack, additives);
+			RecipeHolder<ArcFurnaceRecipe> recipe = ArcFurnaceRecipe.findRecipe(level, stack, additives);
 			if(recipe==null)
 				continue;
 			ArcFurnaceProcess process = new ArcFurnaceProcess(
@@ -200,10 +201,10 @@ public class ArcFurnaceLogic
 			);
 			if(state.processor.addProcessToQueue(process, level, false))
 			{
-				int[] consumedAdditives = recipe.getConsumedAdditives(additives, true);
+				int[] consumedAdditives = recipe.value().getConsumedAdditives(additives, true);
 				if(consumedAdditives!=null)
 					process.setInputAmounts(
-							recipe.input.getCount(),
+							recipe.value().input.getCount(),
 							consumedAdditives[0],
 							consumedAdditives[1],
 							consumedAdditives[2],

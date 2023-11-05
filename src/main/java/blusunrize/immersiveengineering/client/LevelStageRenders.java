@@ -135,8 +135,7 @@ public class LevelStageRenders
 				long distToPlayerSq = xDiff*xDiff+zDiff*zDiff;
 				if(distToPlayerSq > maxDistanceSq)
 					continue;
-				if(true) throw new UnsupportedOperationException();
-				int iC = 0;//TODO keyList.indexOf(mineral.getId());
+				int iC = keyList.indexOf(vein.getMineralName());
 				DyeColor color = DyeColor.values()[iC%16];
 				float[] rgb = color.getTextureDiffuseColors();
 				float r = rgb[0];

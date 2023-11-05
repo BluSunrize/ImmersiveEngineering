@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -56,18 +57,18 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchMenu>
 		Slot s = menu.getSlot(0);
 		if(s!=null&&s.hasItem()&&s.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(
+			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(
 					Minecraft.getInstance().level, ItemNBTHelper.getString(s.getItem(), "blueprint")
 			);
-			if(recipes!=null&&recipes.length > 0)
+			if(recipes!=null&&!recipes.isEmpty())
 			{
-				int l = recipes.length;
+				int l = recipes.size();
 				int xx = leftPos+121;
 				int yy = topPos+(l > 6?59-(l-3)/3*18: l > 3?59: 68);
 				for(int i = 0; i < l; i++)
-					if(recipes[i]!=null&&!recipes[i].output.get().isEmpty())
+					if(!recipes.get(i).value().output.get().isEmpty())
 					{
-						GuiButtonItem button = makeSelectionButton(xx, yy, i, recipes[i].output.get().copy());
+						GuiButtonItem button = makeSelectionButton(xx, yy, i, recipes.get(i).value().output.get().copy());
 						this.selectionButtons.add(button);
 						this.addRenderableWidget(button);
 					}

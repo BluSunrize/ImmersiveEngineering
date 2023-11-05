@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-// TODO codecs
 public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeSerializer<R>
 {
 	public static final Codec<Lazy<ItemStack>> LAZY_OUTPUT_CODEC = Codec.either(

@@ -29,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.phys.Vec3;
 
 public class CommandMineral
@@ -93,7 +94,7 @@ public class CommandMineral
 				MineralVein vein = pair.getFirst();
 				double percentage = pair.getSecond()/(double)info.getTotalWeight();
 				MutableComponent component = Component.literal("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
-				component.append(Component.translatable(vein.getMineral(context.getSource().getLevel()).getTranslationKey()));
+				component.append(Component.translatable(vein.getMineral(context.getSource().getLevel()).getTranslationKey(vein.getMineralName())));
 				ret.append(component.withStyle(ChatFormatting.GRAY));
 				component = Component.literal("\n  ");
 				component.append(Component.translatable(Lib.CHAT_COMMAND+"mineral.get.pos",
@@ -133,20 +134,19 @@ public class CommandMineral
 	private static void putMineral(CommandContext<CommandSourceStack> context, ColumnPos pos)
 	{
 		CommandSourceStack sender = context.getSource();
-		MineralMix mineral = context.getArgument("mineral", MineralMix.class);
+		RecipeHolder<MineralMix> mineral = context.getArgument("mineral", RecipeHolder.class);
 		int radius = IntegerArgumentType.getInteger(context, "radius");
-		//TODO
-		//if(mineral!=null)
-		//{
-		//	//MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
-		//	ExcavatorHandler.addVein(sender.getLevel().dimension(), vein);
-		//	IESaveData.markInstanceDirty();
-		//	sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
-		//			"mineral.put.success", mineral.getId(), radius, pos.x(), pos.z()), true);
-		//}
-		//else
-		//	sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
-		//			"mineral.put.invalid_mineral", mineral.getId()), true);
+		if(mineral!=null)
+		{
+			MineralVein vein = new MineralVein(pos, mineral.id(), radius);
+			ExcavatorHandler.addVein(sender.getLevel().dimension(), vein);
+			IESaveData.markInstanceDirty();
+			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
+					"mineral.put.success", mineral.id(), radius, pos.x(), pos.z()), true);
+		}
+		else
+			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
+					"mineral.put.invalid_mineral", mineral.id()), true);
 	}
 
 	private static LiteralArgumentBuilder<CommandSourceStack> setMineralDepletion()

@@ -60,13 +60,13 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool.Projection;
 import net.minecraft.world.level.saveddata.maps.MapDecoration.Type;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.neoforged.neoforge.event.TagsUpdatedEvent;
-import net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.ForgeRegistries;
@@ -422,7 +422,7 @@ public class Villages
 					soldMaps.add(l);
 			// get veins in 16 chunk radius, ordered by their rarity (lowest weight first)
 			List<MineralVein> veins = ExcavatorHandler.findVeinsForVillager(world, merchantPos, SEARCH_RADIUS, soldMaps);
-			if(veins.size() > 0)
+			if(!veins.isEmpty())
 			{
 				//select random vein from top 10
 				int select = random.nextInt(Math.min(10, veins.size()));
@@ -437,7 +437,7 @@ public class Villages
 				MapItem.lockMap(world, selling);
 				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
 				selling.setHoverName(Component.translatable("item.immersiveengineering.map_orevein"));
-				ItemNBTHelper.setLore(selling, Component.translatable(vein.getMineral(world).getTranslationKey()));
+				ItemNBTHelper.setLore(selling, Component.translatable(vein.getMineral(world).getTranslationKey(vein.getMineralName())));
 				// return offer
 				return new MerchantOffer(
 						new ItemStack(Items.EMERALD, 8+random.nextInt(8)), new ItemStack(Items.COMPASS),

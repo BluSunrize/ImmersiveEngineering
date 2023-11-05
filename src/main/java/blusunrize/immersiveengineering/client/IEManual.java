@@ -22,12 +22,9 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.client.manual.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
-import blusunrize.lib.manual.ManualElementTable;
-import blusunrize.lib.manual.ManualEntry;
+import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualEntry.SpecialElementData;
-import blusunrize.lib.manual.ManualInstance;
-import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.InnerNode;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import com.google.common.base.Preconditions;
@@ -44,6 +41,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModLoadingContext;
@@ -171,17 +169,18 @@ public class IEManual
 		StringBuilder text = new StringBuilder();
 		List<SpecialElementData> specials = new ArrayList<>();
 
-		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.RECIPES.getRecipes(Minecraft.getInstance().level));
-		Function<MineralMix, String> toName = mineral -> {
-			String translationKey = mineral.getTranslationKey();
+		List<RecipeHolder<MineralMix>> mineralsToAdd = MineralMix.RECIPES.getRecipes(Minecraft.getInstance().level);
+		Function<RecipeHolder<MineralMix>, String> toName = mineral -> {
+			String translationKey = mineral.value().getTranslationKey(mineral.id());
 			String localizedName = I18n.get(translationKey);
 			if(localizedName.equals(translationKey))
-				localizedName = mineral.getPlainName();
+				localizedName = mineral.value().getPlainName(mineral.id());
 			return localizedName;
 		};
 		mineralsToAdd.sort((i1, i2) -> toName.apply(i1).compareToIgnoreCase(toName.apply(i2)));
-		for(MineralMix mineral : mineralsToAdd)
+		for(RecipeHolder<MineralMix> holder : mineralsToAdd)
 		{
+			final MineralMix mineral = holder.value();
 			String dimensionString;
 			if(mineral.dimensions!=null&&mineral.dimensions.size() > 0)
 			{
@@ -191,10 +190,10 @@ public class IEManual
 							.append("<dim;")
 							.append(dim.location())
 							.append(">");
-				dimensionString = I18n.get("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
+				dimensionString = I18n.get("ie.manual.entry.mineralsDimValid", toName.apply(holder), validDims.toString());
 			}
 			else
-				dimensionString = I18n.get("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
+				dimensionString = I18n.get("ie.manual.entry.mineralsDimAny", toName.apply(holder));
 
 			List<StackWithChance> formattedOutputs = new ArrayList<>(mineral.outputs);
 			List<StackWithChance> formattedSpoils = new ArrayList<>(mineral.spoils);
@@ -230,17 +229,15 @@ public class IEManual
 				sortedOres.add(sorted.stack().get());
 			}
 
-			// TODO
-			// specials.add(new SpecialElementData(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
+			specials.add(new SpecialElementData(holder.id().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
 			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString(), spoilString.toString());
 
-			if(text.length() > 0)
+			if(!text.isEmpty())
 				text.append("<np>");
-			//TODO
-			//text.append("<&")
-			//		.append(mineral.getId())
-			//		.append(">")
-			//		.append(desc);
+			text.append("<&")
+					.append(holder.id())
+					.append(">")
+					.append(desc);
 		}
 		return Pair.of(text.toString(), specials);
 	}

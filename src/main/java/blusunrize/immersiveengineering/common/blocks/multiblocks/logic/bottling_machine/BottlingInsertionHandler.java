@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InWorldProcessor;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -54,7 +55,7 @@ public class BottlingInsertionHandler implements IItemHandler
 	public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 	{
 		stack = stack.copy();
-		BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(level.get(), state.tank.getFluid(), stack);
+		RecipeHolder<BottlingMachineRecipe> recipe = BottlingMachineRecipe.findRecipe(level.get(), state.tank.getFluid(), stack);
 		if(recipe==null&&!Utils.isFluidRelatedItemStack(stack))
 			return stack;
 
@@ -64,7 +65,7 @@ public class BottlingInsertionHandler implements IItemHandler
 			process = new BottlingProcess(stack.copy(), stack.copy(), state);
 		else
 		{
-			ItemStack displayStack = recipe.getDisplayStack(stack);
+			ItemStack displayStack = recipe.value().getDisplayStack(stack);
 			process = new BottlingProcess(recipe, Utils.createNonNullItemStackListFromItemStack(displayStack), state);
 			inputAmount = displayStack.getCount();
 		}

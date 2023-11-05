@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -191,26 +192,26 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArcFurnaceRecipe findRecipe(Level level, ItemStack input, NonNullList<ItemStack> additives)
+	public static RecipeHolder<ArcFurnaceRecipe> findRecipe(Level level, ItemStack input, NonNullList<ItemStack> additives)
 	{
-		for(ArcFurnaceRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe!=null&&recipe.matches(input, additives))
+		for(RecipeHolder<ArcFurnaceRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().matches(input, additives))
 				return recipe;
 		return null;
 	}
 
 	public static boolean isValidRecipeInput(Level level, ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe!=null&&recipe.isValidInput(stack))
+		for(RecipeHolder<ArcFurnaceRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().isValidInput(stack))
 				return true;
 		return false;
 	}
 
 	public static boolean isValidRecipeAdditive(Level level, ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe!=null&&recipe.isValidAdditive(stack))
+		for(RecipeHolder<ArcFurnaceRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe!=null&&recipe.value().isValidAdditive(stack))
 				return true;
 		return false;
 	}

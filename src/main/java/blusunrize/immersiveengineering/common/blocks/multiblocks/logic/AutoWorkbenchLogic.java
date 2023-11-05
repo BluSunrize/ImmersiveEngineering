@@ -39,10 +39,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -81,24 +82,25 @@ public class AutoWorkbenchLogic
 		if(!isRSEnabled||state.inventory.getStackInSlot(BLUEPRINT_SLOT).isEmpty())
 			return;
 
-		BlueprintCraftingRecipe[] recipes = getAvailableRecipes(context.getLevel().getRawLevel(), state);
-		if(state.selectedRecipe >= 0&&state.selectedRecipe < recipes.length)
+		List<RecipeHolder<BlueprintCraftingRecipe>> recipes = getAvailableRecipes(context.getLevel().getRawLevel(), state);
+		if(state.selectedRecipe >= 0&&state.selectedRecipe < recipes.size())
 		{
-			BlueprintCraftingRecipe recipe = recipes[state.selectedRecipe];
-			if(recipe!=null&&!recipe.output.get().isEmpty())
+			RecipeHolder<BlueprintCraftingRecipe> holder = recipes.get(state.selectedRecipe);
+			BlueprintCraftingRecipe recipe = holder.value();
+			if(!recipe.output.get().isEmpty())
 			{
 				NonNullList<ItemStack> query = NonNullList.withSize(NUM_INPUT_SLOTS, ItemStack.EMPTY);
 				for(int i = 0; i < query.size(); i++)
 					query.set(i, state.inventory.getStackInSlot(i+FIRST_INPUT_SLOT));
 				int crafted = recipe.getMaxCrafted(query);
 				if(crafted > 0&&state.processor.addProcessToQueue(
-						new MultiblockProcessInWorld<>(recipe, 0.78f, NonNullList.create()),
+						new MultiblockProcessInWorld<>(holder, 0.78f, NonNullList.create()),
 						context.getLevel().getRawLevel(),
 						true
 				))
 				{
 					state.processor.addProcessToQueue(
-							new MultiblockProcessInWorld<>(recipe, 0.78f, recipe.consumeInputs(query, 1)),
+							new MultiblockProcessInWorld<>(holder, 0.78f, recipe.consumeInputs(query, 1)),
 							context.getLevel().getRawLevel(),
 							false
 					);
@@ -117,7 +119,7 @@ public class AutoWorkbenchLogic
 				++process.processTick;
 	}
 
-	public static BlueprintCraftingRecipe[] getAvailableRecipes(Level level, State state)
+	public static List<RecipeHolder<BlueprintCraftingRecipe>> getAvailableRecipes(Level level, State state)
 	{
 		return EngineersBlueprintItem.getRecipes(level, state.inventory.getStackInSlot(BLUEPRINT_SLOT));
 	}

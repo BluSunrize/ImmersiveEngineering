@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -62,10 +63,11 @@ public class RefineryRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static RefineryRecipe findRecipe(Level level, FluidStack input0, @Nonnull FluidStack input1, @Nonnull ItemStack catalyst)
+	public static RecipeHolder<RefineryRecipe> findRecipe(Level level, FluidStack input0, @Nonnull FluidStack input1, @Nonnull ItemStack catalyst)
 	{
-		for(RefineryRecipe recipe : RECIPES.getRecipes(level))
+		for(RecipeHolder<RefineryRecipe> holder : RECIPES.getRecipes(level))
 		{
+			RefineryRecipe recipe = holder.value();
 			if(!recipe.catalyst.test(catalyst))
 				continue;
 			if(!input0.isEmpty())
@@ -73,21 +75,21 @@ public class RefineryRecipe extends MultiblockRecipe
 				if(recipe.input0!=null&&recipe.input0.test(input0))
 				{
 					if((recipe.input1==null&&input1.isEmpty())||(recipe.input1!=null&&recipe.input1.test(input1)))
-						return recipe;
+						return holder;
 				}
 
 				if(recipe.input1!=null&&recipe.input1.test(input0))
 				{
 					if((recipe.input0==null&&input1.isEmpty())||(recipe.input0!=null&&recipe.input0.test(input1)))
-						return recipe;
+						return holder;
 				}
 			}
 			else if(!input1.isEmpty())
 			{
 				if(recipe.input0!=null&&recipe.input0.test(input1)&&recipe.input1==null)
-					return recipe;
+					return holder;
 				if(recipe.input1!=null&&recipe.input1.test(input1)&&recipe.input0==null)
-					return recipe;
+					return holder;
 			}
 		}
 		return null;
@@ -97,8 +99,9 @@ public class RefineryRecipe extends MultiblockRecipe
 	{
 		if(input0.isEmpty()&&input1.isEmpty())
 			return Optional.empty();
-		for(RefineryRecipe recipe : RECIPES.getRecipes(level))
+		for(RecipeHolder<RefineryRecipe> holder : RECIPES.getRecipes(level))
 		{
+			RefineryRecipe recipe = holder.value();
 			if(!input0.isEmpty()&&input1.isEmpty())
 			{
 				if(recipe.input0.testIgnoringAmount(input0)||(recipe.input1!=null&&recipe.input1.testIgnoringAmount(input0)))

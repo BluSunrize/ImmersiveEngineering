@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ColumnPos;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -37,6 +38,13 @@ public class MineralVein
 	public ColumnPos getPos()
 	{
 		return pos;
+	}
+
+	@Nullable
+	public RecipeHolder<MineralMix> getMineralHolder(Level level)
+	{
+		MineralMix mineral = getMineral(level);
+		return mineral!=null?new RecipeHolder<>(getMineralName(), mineral): null;
 	}
 
 	@Nullable
@@ -111,5 +119,10 @@ public class MineralVein
 		{
 			return null;
 		}
+	}
+
+	public ResourceLocation getMineralName()
+	{
+		return mineralName;
 	}
 }

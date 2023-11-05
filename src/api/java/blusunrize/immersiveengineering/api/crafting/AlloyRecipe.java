@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -70,9 +71,9 @@ public class AlloyRecipe extends IESerializableRecipe
 			return null;
 		if (hint != null && hint.matches(input0, input1))
 			return hint;
-		for(AlloyRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.matches(input0, input1))
-				return recipe;
+		for(RecipeHolder<AlloyRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().matches(input0, input1))
+				return recipe.value();
 		return null;
 	}
 }

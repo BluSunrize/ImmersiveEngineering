@@ -23,12 +23,14 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockEntity>
 {
@@ -100,14 +102,16 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 			{
 				//Init the output inventory
 				blueprint = true;
-				BlueprintCraftingRecipe[] recipes = EngineersBlueprintItem.getRecipes(world, tool);
+				List<RecipeHolder<BlueprintCraftingRecipe>> recipes = EngineersBlueprintItem.getRecipes(world, tool);
 				inventoryBPoutput = new BlueprintInventory(this, recipes);
 
 				//Add output slots
-				for(int i = 0; i < recipes.length; i++)
+				for(int i = 0; i < recipes.size(); i++)
 				{
 					int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
-					this.addSlot(new IESlot.BlueprintOutput(this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes[i]));
+					this.addSlot(new IESlot.BlueprintOutput(
+							this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes.get(i).value()
+					));
 					ownSlotCount++;
 				}
 			}

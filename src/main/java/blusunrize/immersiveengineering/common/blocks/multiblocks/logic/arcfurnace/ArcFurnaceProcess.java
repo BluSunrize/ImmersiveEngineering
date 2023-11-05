@@ -16,6 +16,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class ArcFurnaceProcess extends MultiblockProcessInMachine<ArcFurnaceReci
 		this.seed = data.getLong("seed");
 	}
 
-	public ArcFurnaceProcess(ArcFurnaceRecipe recipe, long seed, int... inputSlots)
+	public ArcFurnaceProcess(RecipeHolder<ArcFurnaceRecipe> recipe, long seed, int... inputSlots)
 	{
 		super(recipe, inputSlots);
 		this.seed = seed;

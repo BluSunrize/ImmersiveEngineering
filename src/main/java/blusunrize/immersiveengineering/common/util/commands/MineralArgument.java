@@ -18,8 +18,10 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
@@ -29,45 +31,41 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 // TODO fix static level access hacks
-public class MineralArgument implements ArgumentType<MineralMix>
+public class MineralArgument implements ArgumentType<RecipeHolder<MineralMix>>
 {
 	public static final DynamicCommandExceptionType invalidVein = new DynamicCommandExceptionType(
 			(input) -> Component.translatable(Lib.CHAT_COMMAND+"mineral.invalid", input));
 
 	@Override
-	public MineralMix parse(StringReader reader) throws CommandSyntaxException
+	public RecipeHolder<MineralMix> parse(StringReader reader) throws CommandSyntaxException
 	{
 		String name = reader.readQuotedString();//TODO does this work properly?
-		//TODO
-		//for(MineralMix mm : getStaticMinerals())
-		//	if(mm.getId().toString().equalsIgnoreCase(name))
-		//		return mm;
+		for(RecipeHolder<MineralMix> mm : getStaticMinerals())
+			if(mm.id().toString().equalsIgnoreCase(name))
+				return mm;
 		throw invalidVein.create(name);
 	}
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 	{
-		//TODO
-		//return SharedSuggestionProvider.suggest(getStaticMinerals().stream().map(mix -> "\""+mix.getId()+"\""), builder);
-		throw new UnsupportedOperationException();
+		return SharedSuggestionProvider.suggest(getStaticMinerals().stream().map(mix -> "\""+mix.id()+"\""), builder);
 	}
 
 	@Override
 	public Collection<String> getExamples()
 	{
 		List<String> ret = new ArrayList<>();
-		for(MineralMix mix : getStaticMinerals())
+		for(RecipeHolder<MineralMix> mix : getStaticMinerals())
 		{
-			//TODO
-			//ret.add("\""+mix.getId()+"\"");
-			//if(ret.size() > 5)
-			//	break;
+			ret.add("\""+mix.id()+"\"");
+			if(ret.size() > 5)
+				break;
 		}
 		return ret;
 	}
 
-	private Collection<MineralMix> getStaticMinerals()
+	private Collection<RecipeHolder<MineralMix>> getStaticMinerals()
 	{
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		Level level = server==null?ImmersiveEngineering.proxy.getClientWorld(): server.overworld();

@@ -16,9 +16,9 @@ import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import java.util.Collection;
 import java.util.List;
 
 public class ManualElementBottling extends ManualElementIECrafting
@@ -35,7 +35,9 @@ public class ManualElementBottling extends ManualElementIECrafting
 		this.recipes.clear();
 		this.providedItems.clear();
 
-		final Collection<BottlingMachineRecipe> allRecipes = BottlingMachineRecipe.RECIPES.getRecipes(Minecraft.getInstance().level);
+		final List<BottlingMachineRecipe> allRecipes = BottlingMachineRecipe.RECIPES.getRecipes(
+				Minecraft.getInstance().level
+		).stream().map(RecipeHolder::value).toList();
 		for(final ManualRecipeRef ref : stacks)
 			ref.forEachMatchingRecipe(IERecipeTypes.BOTTLING_MACHINE.get(), allRecipes, recipe -> {
 				int h = (int)Math.ceil(recipe.output.get().size()/2f);

@@ -17,6 +17,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -85,9 +86,9 @@ public class ClocheRecipe extends IESerializableRecipe
 			return null;
 		if (hint != null && hint.matches(seed, soil))
 			return hint;
-		for(ClocheRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.matches(seed, soil))
-				return recipe;
+		for(RecipeHolder<ClocheRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().matches(seed, soil))
+				return recipe.value();
 		return null;
 	}
 
@@ -98,8 +99,8 @@ public class ClocheRecipe extends IESerializableRecipe
 
 	public static boolean isValidCombinationInMenu(ItemStack seed, ItemStack soil, Level level)
 	{
-		for(ClocheRecipe recipe : RECIPES.getRecipes(level))
-			if((seed.isEmpty()||recipe.seed.test(seed))&&(soil.isEmpty()||recipe.soil.test(soil)))
+		for(RecipeHolder<ClocheRecipe> recipe : RECIPES.getRecipes(level))
+			if((seed.isEmpty()||recipe.value().seed.test(seed))&&(soil.isEmpty()||recipe.value().soil.test(soil)))
 				return true;
 		return false;
 	}

@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
@@ -104,7 +105,9 @@ public class ExcavatorHandler
 		}
 	}
 
-	public static List<MineralVein> findVeinsForVillager(Level world, BlockPos villagerPos, long radius, List<Long> excludedPositions)
+	public static List<MineralVein> findVeinsForVillager(
+			Level world, BlockPos villagerPos, long radius, List<Long> excludedPositions
+	)
 	{
 		if(world.isClientSide)
 			return Collections.emptyList();
@@ -164,14 +167,14 @@ public class ExcavatorHandler
 				});
 				if(!crossover)
 				{
-					MineralMix mineralMix = null;
+					RecipeHolder<MineralMix> mineralMix = null;
 					MineralSelection selection = new MineralSelection(world);
 					if(selection.getTotalWeight() > 0)
 					{
 						int weight = selection.getRandomWeight(rand);
-						for(MineralMix e : selection.getMinerals())
+						for(RecipeHolder<MineralMix> e : selection.getMinerals())
 						{
-							weight -= e.weight;
+							weight -= e.value().weight;
 							if(weight < 0)
 							{
 								mineralMix = e;
@@ -181,9 +184,7 @@ public class ExcavatorHandler
 					}
 					if(mineralMix!=null)
 					{
-						MineralVein vein = null;//TODO new MineralVein(pos, mineralMix.getId(), radius);
-						Thread.dumpStack();
-						System.exit(0);
+						MineralVein vein = new MineralVein(pos, mineralMix.id(), radius);
 						// generate initial depletion
 						if(initialVeinDepletion > 0)
 							vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
@@ -219,17 +220,17 @@ public class ExcavatorHandler
 	public static class MineralSelection
 	{
 		private final int totalWeight;
-		private final Set<MineralMix> validMinerals;
+		private final Set<RecipeHolder<MineralMix>> validMinerals;
 
 		public MineralSelection(Level dimension)
 		{
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
-			for(MineralMix e : MineralMix.RECIPES.getRecipes(dimension))
-				if(e.validDimension(dimension.dimension()))
+			for(RecipeHolder<MineralMix> e : MineralMix.RECIPES.getRecipes(dimension))
+				if(e.value().validDimension(dimension.dimension()))
 				{
 					validMinerals.add(e);
-					weight += e.weight;
+					weight += e.value().weight;
 				}
 			this.totalWeight = weight;
 		}
@@ -244,7 +245,7 @@ public class ExcavatorHandler
 			return random.nextInt(this.totalWeight);
 		}
 
-		public Set<MineralMix> getMinerals()
+		public Set<RecipeHolder<MineralMix>> getMinerals()
 		{
 			return this.validMinerals;
 		}

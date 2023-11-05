@@ -19,6 +19,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
@@ -44,7 +45,7 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 		this.inputSlots = inputSlots;
 	}
 
-	public MultiblockProcessInMachine(R recipe, int... inputSlots)
+	public MultiblockProcessInMachine(RecipeHolder<R> recipe, int... inputSlots)
 	{
 		super(recipe);
 		this.inputSlots = inputSlots;

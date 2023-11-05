@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -98,12 +99,12 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		return list;
 	}
 
-	public static BottlingMachineRecipe findRecipe(Level level, FluidStack fluid, ItemStack... input)
+	public static RecipeHolder<BottlingMachineRecipe> findRecipe(Level level, FluidStack fluid, ItemStack... input)
 	{
 		if(fluid.isEmpty())
 			return null;
-		for(BottlingMachineRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.matches(input, fluid))
+		for(RecipeHolder<BottlingMachineRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().matches(input, fluid))
 				return recipe;
 		return null;
 	}

@@ -19,6 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -42,7 +43,7 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe>
 	}
 
 	public MultiblockProcessInWorld(
-			R recipe, float transformationPoint, NonNullList<ItemStack> inputItem
+			RecipeHolder<R> recipe, float transformationPoint, NonNullList<ItemStack> inputItem
 	)
 	{
 		super(recipe);
@@ -60,7 +61,7 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe>
 		this.transformationPoint = data.getFloat("process_transformationPoint");
 	}
 
-	public MultiblockProcessInWorld(R recipe, ItemStack input)
+	public MultiblockProcessInWorld(RecipeHolder<R> recipe, ItemStack input)
 	{
 		this(recipe, 0.5f, Utils.createNonNullItemStackListFromItemStack(input));
 	}

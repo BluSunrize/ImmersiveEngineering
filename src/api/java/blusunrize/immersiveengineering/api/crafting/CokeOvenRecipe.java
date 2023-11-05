@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -68,9 +69,9 @@ public class CokeOvenRecipe extends IESerializableRecipe
 			return null;
 		if (hint != null && hint.matches(input))
 			return hint;
-		for(CokeOvenRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.matches(input))
-				return recipe;
+		for(RecipeHolder<CokeOvenRecipe> recipe : RECIPES.getRecipes(level))
+			if(recipe.value().matches(input))
+				return recipe.value();
 		return null;
 	}
 

@@ -17,6 +17,9 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Comp
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.MBEnergyCallbacks;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+
+import java.util.List;
 
 public class AutoWorkbenchCallbacks extends Callback<State>
 {
@@ -34,9 +37,9 @@ public class AutoWorkbenchCallbacks extends Callback<State>
 	@ComputerCallable
 	public void selectRecipe(CallbackEnvironment<State> env, @IndexArgument int selected)
 	{
-		BlueprintCraftingRecipe[] availableRecipes = AutoWorkbenchLogic.getAvailableRecipes(env.level(), env.object());
-		if(selected < 0||selected >= availableRecipes.length)
-			throw new RuntimeException("Only "+availableRecipes.length+" recipes are available");
+		List<RecipeHolder<BlueprintCraftingRecipe>> availableRecipes = AutoWorkbenchLogic.getAvailableRecipes(env.level(), env.object());
+		if(selected < 0||selected >= availableRecipes.size())
+			throw new RuntimeException("Only "+availableRecipes.size()+" recipes are available");
 		env.object().selectedRecipe = selected;
 	}
 
@@ -49,10 +52,10 @@ public class AutoWorkbenchCallbacks extends Callback<State>
 	@ComputerCallable
 	public ItemStack[] getAvailableRecipes(CallbackEnvironment<State> env)
 	{
-		BlueprintCraftingRecipe[] availableRecipes = AutoWorkbenchLogic.getAvailableRecipes(env.level(), env.object());
-		ItemStack[] outputs = new ItemStack[availableRecipes.length];
-		for(int i = 0; i < availableRecipes.length; ++i)
-			outputs[i] = availableRecipes[i].output.get();
+		List<RecipeHolder<BlueprintCraftingRecipe>> availableRecipes = AutoWorkbenchLogic.getAvailableRecipes(env.level(), env.object());
+		ItemStack[] outputs = new ItemStack[availableRecipes.size()];
+		for(int i = 0; i < availableRecipes.size(); ++i)
+			outputs[i] = availableRecipes.get(i).value().output.get();
 		return outputs;
 	}
 

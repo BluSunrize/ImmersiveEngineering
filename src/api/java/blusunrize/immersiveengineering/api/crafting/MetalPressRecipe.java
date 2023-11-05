@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.RegistryObject;
@@ -22,7 +23,7 @@ import net.neoforged.neoforge.registries.RegistryObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -73,19 +74,21 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return this.input.test(input);
 	}
 
-	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, Level world)
+	public RecipeHolder<MetalPressRecipe> getActualRecipe(
+			ResourceLocation ownId, ItemStack mold, ItemStack input, Level world
+	)
 	{
-		return this;
+		return new RecipeHolder<>(ownId, this);
 	}
 
-	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, Level world)
+	public static RecipeHolder<MetalPressRecipe> findRecipe(ItemStack mold, ItemStack input, Level world)
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
-		List<MetalPressRecipe> list = getRecipesByMold(world).get(mold.getItem());
-		for(MetalPressRecipe recipe : list)
-			if(recipe.matches(mold, input, world))
-				return recipe.getActualRecipe(mold, input, world);
+		List<RecipeHolder<MetalPressRecipe>> list = getRecipesByMold(world).get(mold.getItem());
+		for(RecipeHolder<MetalPressRecipe> recipe : list)
+			if(recipe.value().matches(mold, input, world))
+				return recipe.value().getActualRecipe(recipe.id(), mold, input, world);
 		return null;
 	}
 
@@ -96,17 +99,17 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return getRecipesByMold(level).containsKey(itemStack.getItem());
 	}
 
-	private static ArrayListMultimap<Item, MetalPressRecipe> recipesByMold = ArrayListMultimap.create();
+	private static ArrayListMultimap<Item, RecipeHolder<MetalPressRecipe>> recipesByMold = ArrayListMultimap.create();
 	private static int reloadCountForByMold = CachedRecipeList.INVALID_RELOAD_COUNT;
 
-	private static ArrayListMultimap<Item, MetalPressRecipe> getRecipesByMold(Level level)
+	private static ArrayListMultimap<Item, RecipeHolder<MetalPressRecipe>> getRecipesByMold(Level level)
 	{
 		if(reloadCountForByMold!=CachedRecipeList.getReloadCount())
 		{
 			recipesByMold = ArrayListMultimap.create();
-			Consumer<MetalPressRecipe> addToMap = recipe -> recipesByMold.put(recipe.mold, recipe);
-			STANDARD_RECIPES.getRecipes(level).forEach(addToMap);
-			SPECIAL_RECIPES.values().forEach(addToMap);
+			BiConsumer<ResourceLocation, MetalPressRecipe> addToMap = (id, recipe) -> recipesByMold.put(recipe.mold, new RecipeHolder<>(id, recipe));
+			STANDARD_RECIPES.getRecipes(level).forEach(r -> addToMap.accept(r.id(), r.value()));
+			SPECIAL_RECIPES.forEach(addToMap);
 			reloadCountForByMold = CachedRecipeList.getReloadCount();
 		}
 		return recipesByMold;

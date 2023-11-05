@@ -14,6 +14,7 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.PositionedItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.List;
@@ -35,7 +36,9 @@ public class ManualElementMixer extends ManualElementIECrafting
 		this.recipes.clear();
 		this.providedItems.clear();
 
-		for(MixerRecipe recipe : MixerRecipe.RECIPES.getRecipes(Minecraft.getInstance().level))
+		for(RecipeHolder<MixerRecipe> holder : MixerRecipe.RECIPES.getRecipes(Minecraft.getInstance().level))
+		{
+			MixerRecipe recipe = holder.value();
 			for(int iFluid = 0; iFluid < fluids.length; iFluid++)
 				if(recipe.fluidOutput.getFluid()==fluids[iFluid])
 				{
@@ -70,5 +73,6 @@ public class ManualElementMixer extends ManualElementIECrafting
 					if(h*18 > yOff)
 						yOff = h*18;
 				}
+		}
 	}
 }
