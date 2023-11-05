@@ -29,8 +29,8 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 			optionalItemOutput("stripped").forGetter(r -> r.stripped),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
-			LAZY_OUTPUTS_CODEC.fieldOf("strippingSecondaries").forGetter(r -> r.secondaryStripping),
-			LAZY_OUTPUTS_CODEC.fieldOf("secondaryOutputs").forGetter(r -> r.secondaryOutputs)
+			LAZY_OUTPUTS_CODEC.optionalFieldOf("strippingSecondaries", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryStripping),
+			LAZY_OUTPUTS_CODEC.optionalFieldOf("secondaryOutputs", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryOutputs)
 	).apply(inst, SawmillRecipe::new));
 
 	@Override

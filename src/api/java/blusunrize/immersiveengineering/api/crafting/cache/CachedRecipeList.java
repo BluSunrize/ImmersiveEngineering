@@ -10,21 +10,22 @@ package blusunrize.immersiveengineering.api.crafting.cache;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
+import com.google.common.collect.Streams;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
-import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -91,17 +92,18 @@ public class CachedRecipeList<R extends Recipe<?>>
 	{
 		if(recipes!=null&&cachedAtReloadCount==reloadCount&&(!cachedDataIsClient||isClient))
 			return;
-		//TODO
-		//this.recipes = manager.getRecipes().stream()
-		//		.filter(iRecipe -> iRecipe.getType()==type.get())
-		//		.flatMap(r -> {
-		//			if(r instanceof IListRecipe listRecipe)
-		//				return listRecipe.getSubRecipes().stream();
-		//			else
-		//				return Stream.of(r);
-		//		})
-		//		.map(recipeClass::cast)
-		//		.collect(Collectors.toMap(R::getId, Function.identity()));
+		this.recipes = manager.getRecipes().stream()
+				.filter(iRecipe -> iRecipe.value().getType()==type.get())
+				.flatMap(r -> {
+					if(r.value() instanceof IListRecipe listRecipe)
+						return Streams.mapWithIndex(
+								listRecipe.getSubRecipes().stream(),
+								(subRecipe, i) -> new RecipeHolder<>(r.id().withSuffix(Long.toString(i)), subRecipe)
+						);
+					else
+						return Stream.of(r);
+				})
+				.collect(Collectors.toMap(RecipeHolder::id, rh -> recipeClass.cast(rh.value())));
 		this.cachedDataIsClient = isClient;
 		this.cachedAtReloadCount = reloadCount;
 	}

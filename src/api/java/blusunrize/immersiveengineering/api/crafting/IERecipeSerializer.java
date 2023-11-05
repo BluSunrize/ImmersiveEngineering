@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -24,6 +25,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 // TODO codecs
@@ -46,6 +48,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 			IERecipeSerializer::combineLazies,
 			nnl -> nnl.get().stream().map(i -> Lazy.of(() -> i)).toList()
 	);
+	public static final Lazy<NonNullList<ItemStack>> EMPTY_LAZY_OUTPUTS = () -> NonNullList.withSize(0, ItemStack.EMPTY);
 	public static final Codec<StackWithChance> CHANCE_STACK_CODEC = RecordCodecBuilder.create(
 			inst -> inst.group(
 					LAZY_OUTPUT_CODEC.fieldOf("stack").forGetter(StackWithChance::stack),
@@ -88,5 +91,28 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 	protected static void writeLazyStack(FriendlyByteBuf buf, Lazy<ItemStack> stack)
 	{
 		buf.writeItem(stack.get());
+	}
+
+	protected static <T> MapCodec<Optional<List<T>>> maybeListOrSingle(Codec<T> singleCodec, String key)
+	{
+		return Codec.mapEither(listOrSingle(singleCodec, key), Codec.EMPTY).xmap(
+				e -> e.map(Optional::of, $ -> Optional.empty()),
+				o -> o.isPresent()?Either.left(o.get()): Either.right(Unit.INSTANCE)
+		);
+	}
+
+	protected static <T> MapCodec<List<T>> listOrSingle(Codec<T> singleCodec, String key)
+	{
+		return listOrSingle(singleCodec, key, key);
+	}
+
+	protected static <T> MapCodec<List<T>> listOrSingle(Codec<T> singleCodec, String singleKey, String listKey)
+	{
+		return Codec.mapEither(
+				singleCodec.fieldOf(singleKey), singleCodec.listOf().fieldOf(listKey)
+		).xmap(
+				e -> e.map(List::of, Function.identity()),
+				l -> l.size()==1?Either.left(l.get(0)): Either.right(l)
+		);
 	}
 }

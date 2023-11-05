@@ -30,7 +30,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
-			CHANCE_LIST.fieldOf("secondaries").forGetter(r -> r.secondaryOutputs)
+			CHANCE_LIST.optionalFieldOf("secondaries", List.of()).forGetter(r -> r.secondaryOutputs)
 	).apply(inst, CrusherRecipe::new));
 
 	@Override

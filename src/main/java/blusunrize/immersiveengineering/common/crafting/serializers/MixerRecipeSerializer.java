@@ -25,7 +25,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	public static final Codec<MixerRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.fluidOutput),
 			FluidTagInput.CODEC.fieldOf("fluid").forGetter(r -> r.fluidInput),
-			IngredientWithSize.CODEC.listOf().fieldOf("input").forGetter(r -> r.itemInputs),
+			IngredientWithSize.CODEC.listOf().fieldOf("inputs").forGetter(r -> r.itemInputs),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
 	).apply(inst, MixerRecipe::new));
 

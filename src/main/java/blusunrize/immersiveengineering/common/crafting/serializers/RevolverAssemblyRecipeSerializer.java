@@ -10,10 +10,8 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipe;
-import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractShapedRecipe;
-import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -23,10 +21,13 @@ import java.util.List;
 
 public class RevolverAssemblyRecipeSerializer implements RecipeSerializer<RevolverAssemblyRecipe>
 {
-	public static final Codec<RevolverAssemblyRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			RecipeSerializer.SHAPED_RECIPE.codec().fieldOf("base").forGetter(AbstractShapedRecipe::toVanilla),
-			Codec.INT.listOf().optionalFieldOf("copyNBT", List.of()).forGetter(TurnAndCopyRecipe::getCopyTargets)
-	).apply(inst, RevolverAssemblyRecipe::new));
+	public static final Codec<RevolverAssemblyRecipe> CODEC = Codec.pair(
+			RecipeSerializer.SHAPED_RECIPE.codec(),
+			Codec.INT.listOf().optionalFieldOf("copyNBT", List.of()).codec()
+	).xmap(
+			p -> new RevolverAssemblyRecipe(p.getFirst(), p.getSecond()),
+			r -> Pair.of(r.toVanilla(), r.getCopyTargets())
+	);
 
 	@Override
 	public Codec<RevolverAssemblyRecipe> codec()

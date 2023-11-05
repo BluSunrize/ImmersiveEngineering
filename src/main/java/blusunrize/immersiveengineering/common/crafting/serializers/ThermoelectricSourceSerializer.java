@@ -33,7 +33,7 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 	public static final Codec<ThermoelectricSource> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.INT.fieldOf(TEMPERATURE_KEY).forGetter(r -> r.temperature),
 			TagKey.codec(Registries.BLOCK).optionalFieldOf(BLOCK_TAG_KEY).forGetter(r -> r.blocks.leftOptional()),
-			ForgeRegistries.BLOCKS.getCodec().listOf().optionalFieldOf(SINGLE_BLOCK_KEY).forGetter(r -> r.blocks.rightOptional())
+			maybeListOrSingle(ForgeRegistries.BLOCKS.getCodec(), SINGLE_BLOCK_KEY).forGetter(r -> r.blocks.rightOptional())
 	).apply(inst, (temperature, tag, fixedBlocks) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBlocks.isPresent());
 		if(tag.isPresent())

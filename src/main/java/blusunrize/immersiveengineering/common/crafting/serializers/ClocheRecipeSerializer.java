@@ -27,7 +27,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 {
 	public static final Codec<ClocheRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			OUTER_LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.outputs),
-			Ingredient.CODEC.fieldOf("seed").forGetter(r -> r.seed),
+			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.seed),
 			Ingredient.CODEC.fieldOf("soil").forGetter(r -> r.soil),
 			Codec.INT.fieldOf("time").forGetter(r -> r.time),
 			ClocheRenderReference.CODEC.fieldOf("render").forGetter(r -> r.renderReference)

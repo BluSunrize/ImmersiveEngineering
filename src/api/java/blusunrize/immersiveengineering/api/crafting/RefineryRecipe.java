@@ -36,6 +36,11 @@ public class RefineryRecipe extends MultiblockRecipe
 	public final FluidTagInput input1;
 	public final Ingredient catalyst;
 
+	public RefineryRecipe(FluidStack output, FluidTagInput input0, Optional<FluidTagInput> input1, Ingredient catalyst, int energy)
+	{
+		this(output, input0, input1.orElse(null), catalyst, energy);
+	}
+
 	public RefineryRecipe(FluidStack output, FluidTagInput input0, @Nullable FluidTagInput input1, Ingredient catalyst, int energy)
 	{
 		super(LAZY_EMPTY, IERecipeTypes.REFINERY);

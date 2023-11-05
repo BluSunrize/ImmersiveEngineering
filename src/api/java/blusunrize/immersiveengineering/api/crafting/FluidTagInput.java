@@ -46,9 +46,14 @@ import java.util.stream.Collectors;
 
 public class FluidTagInput implements Predicate<FluidStack>
 {
+	private static <S> JsonObject toJson(Dynamic<S> in)
+	{
+		return in.getOps().convertTo(JsonOps.INSTANCE, in.getValue()).getAsJsonObject();
+	}
+
 	//TODO convert into proper codec stuff
 	public static final Codec<FluidTagInput> CODEC = Codec.PASSTHROUGH.xmap(
-			dyn -> FluidTagInput.deserialize(dyn.cast(JsonOps.INSTANCE)),
+			dyn -> FluidTagInput.deserialize(toJson(dyn)),
 			fti -> new Dynamic<>(JsonOps.INSTANCE, fti.serialize())
 	);
 

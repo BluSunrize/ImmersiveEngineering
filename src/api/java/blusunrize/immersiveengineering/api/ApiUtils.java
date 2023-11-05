@@ -13,9 +13,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.Registry;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -27,10 +26,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.util.JsonUtils;
 import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.Random;
@@ -51,12 +50,8 @@ public class ApiUtils
 	{
 		if(fluidStack==null)
 			return JsonNull.INSTANCE;
-		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).toString());
-		jsonObject.addProperty("amount", fluidStack.getAmount());
-		if(fluidStack.hasTag())
-			jsonObject.addProperty("tag", fluidStack.getTag().toString());
-		return jsonObject;
+		return FluidStack.CODEC.encodeStart(JsonOps.INSTANCE, fluidStack).getOrThrow(false, s -> {
+		});
 	}
 
 	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject)

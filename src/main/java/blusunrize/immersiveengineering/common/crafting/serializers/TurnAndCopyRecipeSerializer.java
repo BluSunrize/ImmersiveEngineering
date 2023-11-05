@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,22 +25,47 @@ import java.util.Optional;
 
 public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopyRecipe>
 {
-	public static final Codec<TurnAndCopyRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			RecipeSerializer.SHAPED_RECIPE.codec().fieldOf("base").forGetter(AbstractShapedRecipe::toVanilla),
-			Codec.INT.listOf().optionalFieldOf("copyNBT").forGetter(r -> Optional.ofNullable(r.getCopyTargets())),
-			Codec.BOOL.optionalFieldOf("quarter_turn", false).forGetter(TurnAndCopyRecipe::isQuarterTurn),
-			Codec.BOOL.optionalFieldOf("eight_turn", false).forGetter(TurnAndCopyRecipe::isEightTurn),
-			Codec.STRING.optionalFieldOf("copy_nbt_predicate").forGetter(r -> Optional.ofNullable(r.getBufferPredicate()))
-	).apply(inst, (vanilla, copySlots, quarter, eights, predicate) -> {
-		TurnAndCopyRecipe result = new TurnAndCopyRecipe(vanilla, copySlots.orElse(null), CraftingBookCategory.MISC);
-		if(quarter)
-			result.allowQuarterTurn();
-		if(eights)
-			result.allowEighthTurn();
-		if(predicate.isPresent())
-			result.setNBTCopyPredicate(predicate.get());
-		return result;
-	}));
+	private record AdditionalData(
+			Optional<List<Integer>> copySlots,
+			boolean quarter,
+			boolean eights,
+			Optional<String> predicate
+	)
+	{
+		public AdditionalData(TurnAndCopyRecipe recipe)
+		{
+			this(
+					Optional.ofNullable(recipe.getCopyTargets()),
+					recipe.isQuarterTurn(),
+					recipe.isEightTurn(),
+					Optional.ofNullable(recipe.getBufferPredicate())
+			);
+		}
+	}
+
+	private static final Codec<AdditionalData> ADDITIONAL_CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Codec.INT.listOf().optionalFieldOf("copyNBT").forGetter(AdditionalData::copySlots),
+			Codec.BOOL.optionalFieldOf("quarter_turn", false).forGetter(AdditionalData::quarter),
+			Codec.BOOL.optionalFieldOf("eight_turn", false).forGetter(AdditionalData::eights),
+			Codec.STRING.optionalFieldOf("copy_nbt_predicate").forGetter(AdditionalData::predicate)
+	).apply(inst, AdditionalData::new));
+
+	public static final Codec<TurnAndCopyRecipe> CODEC = Codec.pair(
+			RecipeSerializer.SHAPED_RECIPE.codec(), ADDITIONAL_CODEC
+	).xmap(
+			p -> {
+				AdditionalData extra = p.getSecond();
+				TurnAndCopyRecipe result = new TurnAndCopyRecipe(p.getFirst(), extra.copySlots().orElse(null), CraftingBookCategory.MISC);
+				if(extra.quarter())
+					result.allowQuarterTurn();
+				if(extra.eights())
+					result.allowEighthTurn();
+				if(extra.predicate().isPresent())
+					result.setNBTCopyPredicate(extra.predicate().get());
+				return result;
+			},
+			r -> Pair.of(r.toVanilla(), new AdditionalData(r))
+	);
 
 	@Override
 	public Codec<TurnAndCopyRecipe> codec()

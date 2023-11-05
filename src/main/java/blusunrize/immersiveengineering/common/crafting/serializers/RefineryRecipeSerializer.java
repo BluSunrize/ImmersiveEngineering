@@ -21,14 +21,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 {
 	public static final Codec<RefineryRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.output),
 			FluidTagInput.CODEC.fieldOf("input0").forGetter(r -> r.input0),
-			FluidTagInput.CODEC.fieldOf("input1").forGetter(r -> r.input1),
-			Ingredient.CODEC.fieldOf("catalyst").forGetter(r -> r.catalyst),
+			FluidTagInput.CODEC.optionalFieldOf("input1").forGetter(r -> Optional.ofNullable(r.input1)),
+			Ingredient.CODEC.optionalFieldOf("catalyst", Ingredient.EMPTY).forGetter(r -> r.catalyst),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
 	).apply(inst, RefineryRecipe::new));
 

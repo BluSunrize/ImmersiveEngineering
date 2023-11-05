@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,15 +26,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class IngredientWithSize implements Predicate<ItemStack>
 {
-	public static final Codec<IngredientWithSize> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-					Ingredient.CODEC.fieldOf("basePredicate").forGetter(i -> i.basePredicate),
-					Codec.INT.fieldOf("count").forGetter(i -> i.count)
-			).apply(inst, IngredientWithSize::new)
+	private static final Codec<IngredientWithSize> COUNT_CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Ingredient.CODEC.fieldOf("basePredicate").forGetter(i -> i.basePredicate),
+			Codec.INT.fieldOf("count").forGetter(i -> i.count)
+	).apply(inst, IngredientWithSize::new));
+	private static final Codec<IngredientWithSize> SINGLE_CODEC = Ingredient.CODEC.xmap(
+			IngredientWithSize::new, IngredientWithSize::getBaseIngredient
 	);
+	public static final Codec<IngredientWithSize> CODEC = Codec.either(COUNT_CODEC, SINGLE_CODEC)
+			.xmap(
+					e -> e.map(Function.identity(), Function.identity()),
+					iws -> iws.count==1?Either.right(iws): Either.left(iws)
+			);
 
 	public static final SetRestrictedField<IIngredientWithSizeSerializer> SERIALIZER = SetRestrictedField.common();
 	protected final Ingredient basePredicate;
@@ -124,7 +133,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	public ItemStack getRandomizedExampleStack(int rand)
 	{
 		ItemStack[] all = getMatchingStacks();
-		if (all.length == 0)
+		if(all.length==0)
 			return ItemStack.EMPTY;
 		else
 			return all[(rand/20)%all.length];

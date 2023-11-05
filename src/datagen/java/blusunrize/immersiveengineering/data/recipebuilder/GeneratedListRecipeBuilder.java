@@ -34,6 +34,7 @@ public class GeneratedListRecipeBuilder
 		{
 			public void serializeRecipeData(@Nonnull JsonObject json)
 			{
+				json.addProperty("generatorID", id().toString());
 			}
 
 			@Nonnull

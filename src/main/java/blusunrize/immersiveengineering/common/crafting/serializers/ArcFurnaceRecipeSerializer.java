@@ -25,19 +25,19 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.LAZY_EMPTY;
+
 public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRecipe>
 {
-	public static final Codec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.create(
-			inst -> inst.group(
-					LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.output),
-					LAZY_OUTPUT_CODEC.fieldOf("slag").forGetter(r -> r.slag),
-					CHANCE_LIST.fieldOf("secondaries").forGetter(r -> r.secondaryOutputs),
-					Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getTotalProcessTime),
-					Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
-					IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
-					IngredientWithSize.CODEC.listOf().fieldOf("additives").forGetter(r -> r.additives)
-			).apply(inst, ArcFurnaceRecipe::new)
-	);
+	public static final Codec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.output),
+			LAZY_OUTPUT_CODEC.optionalFieldOf("slag", LAZY_EMPTY).forGetter(r -> r.slag),
+			CHANCE_LIST.optionalFieldOf("secondaries", List.of()).forGetter(r -> r.secondaryOutputs),
+			Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getTotalProcessTime),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
+			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
+			IngredientWithSize.CODEC.listOf().fieldOf("additives").forGetter(r -> r.additives)
+	).apply(inst, ArcFurnaceRecipe::new));
 
 	@Override
 	public Codec<ArcFurnaceRecipe> codec()

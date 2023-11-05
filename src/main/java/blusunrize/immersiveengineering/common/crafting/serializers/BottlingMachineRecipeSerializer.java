@@ -27,7 +27,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 {
 	public static final Codec<BottlingMachineRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 					LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.output),
-					IngredientWithSize.CODEC.listOf().fieldOf("inputs").forGetter(r -> r.inputs),
+			listOrSingle(IngredientWithSize.CODEC, "input", "inputs").forGetter(r -> r.inputs),
 					FluidTagInput.CODEC.fieldOf("fluid").forGetter(r -> r.fluidInput)
 			).apply(inst, BottlingMachineRecipe::new)
 	);

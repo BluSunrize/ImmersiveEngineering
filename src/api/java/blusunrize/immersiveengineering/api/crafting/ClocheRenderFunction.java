@@ -9,15 +9,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -73,11 +72,10 @@ public interface ClocheRenderFunction
 
 	class ClocheRenderReference
 	{
-		// TODO hack, but maybe ok here?
-		public static final Codec<ClocheRenderReference> CODEC = Codec.PASSTHROUGH.xmap(
-				dyn -> deserialize(dyn.cast(JsonOps.INSTANCE).getAsJsonObject()),
-				ref -> new Dynamic<>(JsonOps.INSTANCE, ref.serialize())
-		);
+		public static final Codec<ClocheRenderReference> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				Codec.STRING.fieldOf("type").forGetter(r -> r.type),
+				ForgeRegistries.BLOCKS.getCodec().fieldOf("block").forGetter(r -> r.block)
+		).apply(inst, ClocheRenderReference::new));
 
 		private final String type;
 		private final Block block;
@@ -111,19 +109,9 @@ public interface ClocheRenderFunction
 			return new ClocheRenderReference(key, ForgeRegistries.BLOCKS.getValue(rl));
 		}
 
-		public JsonObject serialize()
+		public JsonElement serialize()
 		{
-			JsonObject jsonObject = new JsonObject();
-			jsonObject.addProperty("type", getType());
-			jsonObject.addProperty("block", ForgeRegistries.BLOCKS.getKey(getBlock()).toString());
-			return jsonObject;
-		}
-
-		public static ClocheRenderReference deserialize(JsonObject jsonObject)
-		{
-			String key = GsonHelper.getAsString(jsonObject, "type");
-			ResourceLocation rl = new ResourceLocation(GsonHelper.getAsString(jsonObject, "block"));
-			return new ClocheRenderReference(key, ForgeRegistries.BLOCKS.getValue(rl));
+			return CODEC.encodeStart(JsonOps.INSTANCE, this).result().orElseThrow();
 		}
 	}
 }
