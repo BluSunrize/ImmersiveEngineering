@@ -208,5 +208,12 @@
 			"immersiveengineering:preheater"
 		],
 		"subtitle": "subtitle.immersiveengineering.preheater"
+	},
+	"arc_furnace": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:arc_furnace"
+		],
+		"subtitle": "subtitle.immersiveengineering.arc_furnace"
 	}
 }

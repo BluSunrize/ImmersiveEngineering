@@ -29,9 +29,11 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Process
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ArcFurnaceSelectionShapes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ArcFurnaceShapes;
 import blusunrize.immersiveengineering.common.register.IEParticles;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -53,6 +55,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -126,6 +129,13 @@ public class ArcFurnaceLogic
 		final State state = context.getState();
 		if(state.pouringMetal > 0)
 			state.pouringMetal--;
+		if(!state.isPlayingSound.getAsBoolean())
+		{
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 3, 2.5));
+			state.isPlayingSound = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.arcFurnace, 0.5f
+			);
+		}
 		if(!state.active)
 			return;
 		final IMultiblockLevel level = context.getLevel();
@@ -316,6 +326,7 @@ public class ArcFurnaceLogic
 		public byte electrodePresence;
 		private int queueSize;
 		public int pouringMetal = 0;
+		private BooleanSupplier isPlayingSound = () -> false;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
