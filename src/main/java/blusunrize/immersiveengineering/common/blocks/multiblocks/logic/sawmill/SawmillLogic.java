@@ -136,7 +136,7 @@ public class SawmillLogic
 						case SAWING -> IESounds.saw_full;
 					};
 			state.soundPlaying.put(state.active, MultiblockSound.startSound(
-					() -> state.active==active, ctx.isValid(), soundPos, sound, state.active!=ActiveState.DISABLED
+					() -> state.active==active, ctx.isValid(), soundPos, sound, state.active!=ActiveState.DISABLED, 0.4f
 			));
 		}
 		state.lastSoundState = state.active;

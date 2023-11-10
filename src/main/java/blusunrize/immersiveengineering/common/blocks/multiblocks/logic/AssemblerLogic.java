@@ -83,7 +83,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		if(!state.isPlayingSound.getAsBoolean())
 		{
 			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(1.5, 1.5, 1.5));
-			state.isPlayingSound = MultiblockSound.startSound(() -> state.shouldPlaySound, context.isValid(), soundPos, IESounds.assembler
+			state.isPlayingSound = MultiblockSound.startSound(() -> state.shouldPlaySound, context.isValid(), soundPos, IESounds.assembler, 0.5f
 			);
 		}
 	}
