@@ -100,10 +100,8 @@ public class BottlingMachineLogic
 		final Level rawLevel = level.getRawLevel();
 		for(final MultiblockProcess<BottlingMachineRecipe, ProcessContextInWorld<BottlingMachineRecipe>> process : state.processor.getQueue())
 		{
-			float fProcess = process.processTick;
 			Player localPlayer = ImmersiveEngineering.proxy.getClientPlayer();
-			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
-			if(fProcess >= (STANDARD_TRANSPORT_TIME-13)&&fProcess < (STANDARD_TRANSPORT_TIME-11))
+			if(process.processTick==STANDARD_TRANSPORT_TIME-12)
 			{
 				final BlockPos soundPos = level.toAbsolute(new BlockPos(1, 1, 1));
 				rawLevel.playSound(localPlayer, soundPos, IESounds.bottling.get(), SoundSource.BLOCKS, .125F, 0.8F);
