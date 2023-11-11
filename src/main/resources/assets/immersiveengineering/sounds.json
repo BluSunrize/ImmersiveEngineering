@@ -229,5 +229,33 @@
 			"immersiveengineering:ore_dump"
 		],
 		"subtitle": "subtitle.immersiveengineering.ore_dump"
+	},
+	"process_1": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_1"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_1"
+	},
+	"process_1_lift": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_1_lift"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_1_lift"
+	},
+	"process_2": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_2"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_2"
+	},
+	"process_2_lift": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_2_lift"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_2_lift"
 	}
 }
