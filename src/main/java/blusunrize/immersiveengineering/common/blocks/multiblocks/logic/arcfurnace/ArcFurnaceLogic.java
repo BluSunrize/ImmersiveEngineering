@@ -124,7 +124,7 @@ public class ArcFurnaceLogic
 		if(level.shouldTickModulo(8))
 			outputItems(state);
 
-		if(ApiUtils.RANDOM.nextInt(10)==0)
+		if(tickedAny&&ApiUtils.RANDOM.nextInt(10)==0)
 		{
 			final Level rawLevel = level.getRawLevel();
 			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
