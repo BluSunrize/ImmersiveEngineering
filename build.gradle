@@ -3,8 +3,8 @@ import groovy.json.JsonSlurper
 import org.gradle.work.Incremental
 
 plugins {
-    id 'net.neoforged.gradle.userdev' version '7.0.33'
-    id 'net.neoforged.gradle.mixin' version '7.0.33'
+    id 'net.neoforged.gradle.userdev' version "$version_neogradle"
+    id 'net.neoforged.gradle.mixin' version "$version_neogradle"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
@@ -55,7 +55,7 @@ sourceSets {
 def version_replaces = [
         'version'      : project.version,
         'mc_version'   : version_minecraft,
-        'forge_version': version_forge,
+        'forge_version': version_neoforge,
         'jei_version'  : version_jei,
 ]
 
@@ -134,7 +134,7 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${version_forge}"
+    implementation "net.neoforged:neoforge:${version_neoforge}"
 
     compileOnly "mezz.jei:jei-1.20.1-forge-api:${version_jei}"
     compileOnly "mezz.jei:jei-1.20.1-common-api:${version_jei}"
