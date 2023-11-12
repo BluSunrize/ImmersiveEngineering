@@ -25,7 +25,8 @@
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin",
-    "coremods.TemplateMixin"
+    "coremods.TemplateMixin",
+    "coremods.TempMixin"
   ],
   "client": [
     "accessors.client.ChatComponentAccess",
