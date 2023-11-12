@@ -113,14 +113,14 @@ public class ClickableList extends Button
 	}
 
 	@Override
-	public boolean mouseScrolled(double p_mouseScrolled_1_, double p_mouseScrolled_3_, double amount, double unknown)
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY)
 	{
-		if(amount < 0&&offset < maxOffset)
+		if(scrollY < 0&&offset < maxOffset)
 		{
 			offset++;
 			return true;
 		}
-		if(amount > 0&&offset > 0)
+		if(scrollY > 0&&offset > 0)
 		{
 			offset--;
 			return true;

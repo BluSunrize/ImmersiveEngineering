@@ -157,13 +157,13 @@ public class GuiReactiveList extends Button
 	}
 
 	@Override
-	public boolean mouseScrolled(double mouseX, double mouseY, double delta, double unknown)
+	public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY)
 	{
-		if(delta!=0&&maxOffset > 0)
+		if(deltaY!=0&&maxOffset > 0)
 		{
-			if(delta < 0&&offset < maxOffset)
+			if(deltaY < 0&&offset < maxOffset)
 				offset++;
-			if(delta > 0&&offset > 0)
+			if(deltaY > 0&&offset > 0)
 				offset--;
 			return true;
 		}

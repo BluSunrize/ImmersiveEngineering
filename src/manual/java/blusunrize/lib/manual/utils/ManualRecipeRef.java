@@ -15,10 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -84,24 +84,18 @@ public class ManualRecipeRef
 	void forEachMatchingRecipe(RecipeType<R> type, Consumer<R> out)
 	{
 		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-		forEachMatchingRecipe(type, PrivateAccess.getRecipes(recipeManager, type).values(), out);
-	}
-
-	public <C extends Container, R extends Recipe<C>>
-	void forEachMatchingRecipe(RecipeType<R> type, Collection<R> allRecipes, Consumer<R> out)
-	{
+		Map<ResourceLocation, RecipeHolder<R>> recipes = PrivateAccess.getRecipes(recipeManager, type);
 		if(isRecipeName())
 		{
-			RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-			R recipe = PrivateAccess.getRecipes(recipeManager, type).get(getRecipeName());
+			RecipeHolder<R> recipe = recipes.get(getRecipeName());
 			if(recipe!=null)
-				out.accept(recipe);
+				out.accept(recipe.value());
 		}
 		else
-			for(R recipe : allRecipes)
+			for(RecipeHolder<R> recipe : recipes.values())
 				if(ManualUtils.stackMatchesObject(
-						recipe.getResultItem(Minecraft.getInstance().level.registryAccess()), getResult()
+						recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess()), getResult()
 				))
-					out.accept(recipe);
+					out.accept(recipe.value());
 	}
 }

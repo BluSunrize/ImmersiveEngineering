@@ -8,15 +8,12 @@
 
 package blusunrize.immersiveengineering.client.manual;
 
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
@@ -35,11 +32,8 @@ public class ManualElementBottling extends ManualElementIECrafting
 		this.recipes.clear();
 		this.providedItems.clear();
 
-		final List<BottlingMachineRecipe> allRecipes = BottlingMachineRecipe.RECIPES.getRecipes(
-				Minecraft.getInstance().level
-		).stream().map(RecipeHolder::value).toList();
 		for(final ManualRecipeRef ref : stacks)
-			ref.forEachMatchingRecipe(IERecipeTypes.BOTTLING_MACHINE.get(), allRecipes, recipe -> {
+			ref.forEachMatchingRecipe(IERecipeTypes.BOTTLING_MACHINE.get(), recipe -> {
 				int h = (int)Math.ceil(recipe.output.get().size()/2f);
 				int middle = (int)(h/2f*18);
 

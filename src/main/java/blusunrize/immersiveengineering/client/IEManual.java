@@ -169,12 +169,14 @@ public class IEManual
 		StringBuilder text = new StringBuilder();
 		List<SpecialElementData> specials = new ArrayList<>();
 
-		List<RecipeHolder<MineralMix>> mineralsToAdd = MineralMix.RECIPES.getRecipes(Minecraft.getInstance().level);
+		List<RecipeHolder<MineralMix>> mineralsToAdd = new ArrayList<>(
+				MineralMix.RECIPES.getRecipes(Minecraft.getInstance().level)
+		);
 		Function<RecipeHolder<MineralMix>, String> toName = mineral -> {
-			String translationKey = mineral.value().getTranslationKey(mineral.id());
+			String translationKey = MineralMix.getTranslationKey(mineral.id());
 			String localizedName = I18n.get(translationKey);
 			if(localizedName.equals(translationKey))
-				localizedName = mineral.value().getPlainName(mineral.id());
+				localizedName = MineralMix.getPlainName(mineral.id());
 			return localizedName;
 		};
 		mineralsToAdd.sort((i1, i2) -> toName.apply(i1).compareToIgnoreCase(toName.apply(i2)));
@@ -182,11 +184,11 @@ public class IEManual
 		{
 			final MineralMix mineral = holder.value();
 			String dimensionString;
-			if(mineral.dimensions!=null&&mineral.dimensions.size() > 0)
+			if(mineral.dimensions!=null&&!mineral.dimensions.isEmpty())
 			{
 				StringBuilder validDims = new StringBuilder();
 				for(ResourceKey<Level> dim : mineral.dimensions)
-					validDims.append((validDims.length() > 0)?", ": "")
+					validDims.append((!validDims.isEmpty())?", ": "")
 							.append("<dim;")
 							.append(dim.location())
 							.append(">");
@@ -305,10 +307,10 @@ public class IEManual
 			{
 				Component item = entry.getKey();
 				if(item==null)
-					item = Component.nullToEmpty(entry.getKey().toString());
+					item = Component.empty();
 
 				int bt = entry.getValue();
-				Component am = Component.nullToEmpty(bt+" "+valueType);
+				Component am = Component.literal(bt+" "+valueType);
 				list.add(new Component[]{item, am});
 			}
 		} catch(Exception e)

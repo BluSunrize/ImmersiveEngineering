@@ -185,8 +185,9 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float f)
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float deltaTime)
 	{
+		super.render(graphics, mouseX, mouseY, deltaTime);
 		final PoseStack transform = graphics.pose();
 		transform.pushPose();
 		if(scaleFactor!=1)
@@ -197,37 +198,6 @@ public class ManualScreen extends Screen
 		}
 
 		manual.entryRenderPre();
-
-		graphics.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
-		if(this.searchField!=null)
-		{
-			int l = searchField.getValue().length()*6;
-			if(l > 20)
-				graphics.blit(texture, guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
-			if(suggestionList.visible)
-			{
-				graphics.blit(texture, guiLeft+174, guiTop+100, 214, 212, 16, 26);
-				int h = suggestionList.getHeight();
-				int w = 76;
-				graphics.blit(texture, guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
-				graphics.blit(texture, guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
-				graphics.blit(texture, guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
-				graphics.blit(texture, guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
-				for(int hh = 0; hh < h; hh++)
-				{
-					graphics.blit(texture, guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
-					for(int ww = 0; ww < w; ww++)
-						graphics.blit(texture, guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
-					graphics.blit(texture, guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
-				}
-				for(int ww = 0; ww < w; ww++)
-				{
-					graphics.blit(texture, guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
-					graphics.blit(texture, guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
-
-				}
-			}
-		}
 
 		if(currentNode.isLeaf())
 		{
@@ -266,17 +236,53 @@ public class ManualScreen extends Screen
 		}
 		if(this.searchField!=null)
 		{
-			this.searchField.render(graphics, mouseX, mouseY, f);
+			this.searchField.render(graphics, mouseX, mouseY, deltaTime);
 			if(suggestionList.visible)
 				//TODO translation
 				graphics.drawString(manual.fontRenderer(), "It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
 		}
 		for(Button btn : pageButtons)
-			btn.render(graphics, mouseX, mouseY, f);
-		super.render(graphics, mouseX, mouseY, f);
+			btn.render(graphics, mouseX, mouseY, deltaTime);
 		RenderSystem.enableBlend();
 		manual.entryRenderPost();
 		transform.popPose();
+	}
+
+	@Override
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float deltaTime)
+	{
+		super.renderBackground(graphics, mouseX, mouseY, deltaTime);
+		graphics.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
+		if(this.searchField!=null)
+		{
+			int l = searchField.getValue().length()*6;
+			if(l > 20)
+				graphics.blit(texture, guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
+			if(suggestionList.visible)
+			{
+				graphics.blit(texture, guiLeft+174, guiTop+100, 214, 212, 16, 26);
+				int h = suggestionList.getHeight();
+				int w = 76;
+				graphics.blit(texture, guiLeft+174, guiTop+116, 230, 212, 16, 16);//Top Left
+				graphics.blit(texture, guiLeft+174, guiTop+132+h, 230, 228, 16, 10);//Bottom Left
+				graphics.blit(texture, guiLeft+190+w, guiTop+116, 246, 212, 10, 16);//Top Right
+				graphics.blit(texture, guiLeft+190+w, guiTop+132+h, 246, 228, 10, 10);//Bottom Right
+				for(int hh = 0; hh < h; hh++)
+				{
+					graphics.blit(texture, guiLeft+174, guiTop+132+hh, 230, 228, 16, 1);
+					for(int ww = 0; ww < w; ww++)
+						graphics.blit(texture, guiLeft+190+ww, guiTop+132+hh, 246, 228, 1, 1);
+					graphics.blit(texture, guiLeft+190+w, guiTop+132+hh, 246, 228, 10, 1);
+				}
+				for(int ww = 0; ww < w; ww++)
+				{
+					graphics.blit(texture, guiLeft+190+ww, guiTop+116, 246, 212, 1, 16);
+					graphics.blit(texture, guiLeft+190+ww, guiTop+132+h, 246, 228, 1, 10);
+
+				}
+			}
+		}
+
 	}
 
 	@Override
@@ -310,18 +316,18 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public boolean mouseScrolled(double x, double y, double wheel, double unknown)
+	public boolean mouseScrolled(double x, double y, double wheelX, double wheelY)
 	{
-		super.mouseScrolled(x, y, wheel, unknown);
-		if(wheel!=0&&currentNode.isLeaf())
+		super.mouseScrolled(x, y, wheelX, wheelY);
+		if(wheelY!=0&&currentNode.isLeaf())
 		{
-			if(wheel > 0&&page > 0)
+			if(wheelY > 0&&page > 0)
 			{
 				page--;
 				this.fullInit();
 				return true;
 			}
-			else if(wheel < 0&&page < currentNode.getLeafData().getPageCount()-1)
+			else if(wheelY < 0&&page < currentNode.getLeafData().getPageCount()-1)
 			{
 				page++;
 				this.fullInit();
