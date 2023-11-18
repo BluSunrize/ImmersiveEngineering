@@ -16,19 +16,25 @@ import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 @WailaPlugin
 public class IEWailaPlugin implements IWailaPlugin
 {
 	@Override
-	public void registerClient(IWailaClientRegistration registrar)
+	public void registerClient(IWailaClientRegistration registration)
 	{
-		registrar.registerBlockIcon(new MultiblockIconProvider(), MultiblockPartBlock.class);
+		registration.registerBlockIcon(new MultiblockIconProvider(), MultiblockPartBlock.class);
+
+		registration.registerFluidStorageClient(new MultiblockTankDataProvider());
+		registration.registerItemStorageClient(new MultiblockInventoryDataProvider());
 	}
 
 	@Override
 	public void register(IWailaCommonRegistration registration)
 	{
-		registration.registerFluidStorage(new SheetmetalTankDataProvider(), MultiblockBlockEntityDummy.class);
-		registration.registerFluidStorage(new SheetmetalTankDataProvider(), MultiblockBlockEntityMaster.class);
+		registration.registerFluidStorage(new MultiblockTankDataProvider(), MultiblockBlockEntityDummy.class);
+		registration.registerFluidStorage(new MultiblockTankDataProvider(), MultiblockBlockEntityMaster.class);
+		registration.registerItemStorage(new MultiblockInventoryDataProvider(), MultiblockBlockEntityDummy.class);
+		registration.registerItemStorage(new MultiblockInventoryDataProvider(), MultiblockBlockEntityMaster.class);
 	}
 }
