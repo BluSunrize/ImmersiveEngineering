@@ -1193,6 +1193,14 @@ public class Recipes extends RecipeProvider
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/hardened_clay_pan"));
 		MineralMixBuilder.builder(overworld)
+				.addSeabedSpoils()
+				.addOre(Blocks.CALCITE, .65f)
+				.addOre(Blocks.DRIPSTONE_BLOCK, .3f)
+				.addOre(Blocks.BONE_BLOCK, .05f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/ancient_seabed"));
+		MineralMixBuilder.builder(overworld)
 				.addOverworldSpoils()
 				.addOre(Blocks.AMETHYST_BLOCK, .4f)
 				.addOre(Blocks.CALCITE, .3f)
@@ -1200,18 +1208,6 @@ public class Recipes extends RecipeProvider
 				.setWeight(10)
 				.setFailchance(.1f)
 				.build(out, toRL("mineral/amethyst_crevasse"));
-		MineralMixBuilder.builder(overworld)
-				.addSeabedSpoils()
-				.addOre(Blocks.CALCITE, .35f)
-				.addOre(Blocks.DRIPSTONE_BLOCK, .15f)
-				.addOre(Blocks.DEAD_BRAIN_CORAL_BLOCK, .1f)
-				.addOre(Blocks.DEAD_TUBE_CORAL_BLOCK, .1f)
-				.addOre(Blocks.DEAD_HORN_CORAL_BLOCK, .1f)
-				.addOre(Blocks.DEAD_FIRE_CORAL_BLOCK, .1f)
-				.addOre(Blocks.DEAD_BUBBLE_CORAL_BLOCK, .1f)
-				.setWeight(10)
-				.setFailchance(.15f)
-				.build(out, toRL("mineral/ancient_seabed"));
 		// Common things
 		MineralMixBuilder.builder(overworld)
 				.addOverworldSpoils()

@@ -1,4 +1,4 @@
-// 1.19.2	2023-12-01T12:51:35.710013385	Recipes
+// 1.19.2	2023-12-01T13:51:22.007785378	Recipes
 7ccf8b2f4f413f7667689450565e5430a943d23a data/immersiveengineering/advancements/recipes/decorations/crafting/torch.json
 b79e3d9e28de7d73e18625fac2456b738b168fc9 data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick.json
 d518ed26bb86cca14c1400daadb64610c935cafc data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick_from_slab.json
@@ -1374,7 +1374,7 @@ d6fb65af6c9e672962b1e4d9b60f60a29b4e1423 data/immersiveengineering/recipes/metal
 38368a3df786fc36ba6ab67552c279a4952c6b47 data/immersiveengineering/recipes/metalpress/wire_zinc.json
 ed8594b2191f5fed0e703b33be140b7960cda34a data/immersiveengineering/recipes/mineral/amethyst_crevasse.json
 f1a949f7d34b54dd554c92b9e3a9bdbd27c5ca80 data/immersiveengineering/recipes/mineral/ancient_debris.json
-a97cbd1c42e0e3bf962491f683f243a74bc8323f data/immersiveengineering/recipes/mineral/ancient_seabed.json
+d059fd73b43d7aee2c72c73cb02400e429a6cd4d data/immersiveengineering/recipes/mineral/ancient_seabed.json
 98b1175a55156afd2fcf5b98173f919dfbc947b4 data/immersiveengineering/recipes/mineral/auricupride.json
 da2d600b576a0886e349366c9aec0f0ac387da74 data/immersiveengineering/recipes/mineral/beryl.json
 a9feddf3a11ed3e46a2cc5f1045b8ab500d33bab data/immersiveengineering/recipes/mineral/bituminous_coal.json

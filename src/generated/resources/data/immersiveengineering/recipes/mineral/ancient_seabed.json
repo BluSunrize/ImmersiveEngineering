@@ -3,48 +3,24 @@
   "dimensions": [
     "minecraft:overworld"
   ],
-  "fail_chance": 0.15,
+  "fail_chance": 0.05,
   "ores": [
     {
-      "chance": 0.35,
+      "chance": 0.65,
       "output": {
         "item": "minecraft:calcite"
       }
     },
     {
-      "chance": 0.15,
+      "chance": 0.3,
       "output": {
         "item": "minecraft:dripstone_block"
       }
     },
     {
-      "chance": 0.1,
+      "chance": 0.05,
       "output": {
-        "item": "minecraft:dead_brain_coral_block"
-      }
-    },
-    {
-      "chance": 0.1,
-      "output": {
-        "item": "minecraft:dead_tube_coral_block"
-      }
-    },
-    {
-      "chance": 0.1,
-      "output": {
-        "item": "minecraft:dead_horn_coral_block"
-      }
-    },
-    {
-      "chance": 0.1,
-      "output": {
-        "item": "minecraft:dead_fire_coral_block"
-      }
-    },
-    {
-      "chance": 0.1,
-      "output": {
-        "item": "minecraft:dead_bubble_coral_block"
+        "item": "minecraft:bone_block"
       }
     }
   ],
@@ -68,5 +44,5 @@
       }
     }
   ],
-  "weight": 10
+  "weight": 15
 }
