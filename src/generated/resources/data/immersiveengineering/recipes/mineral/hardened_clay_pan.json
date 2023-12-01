@@ -6,21 +6,21 @@
   "fail_chance": 0.05,
   "ores": [
     {
-      "chance": 0.5,
+      "chance": 0.6,
       "output": {
-        "item": "minecraft:clay"
+        "item": "minecraft:terracotta"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "item": "minecraft:sand"
+        "item": "minecraft:red_sandstone"
       }
     },
     {
-      "chance": 0.2,
+      "chance": 0.1,
       "output": {
-        "item": "minecraft:gravel"
+        "item": "minecraft:red_sand"
       }
     }
   ],
@@ -44,5 +44,5 @@
       }
     }
   ],
-  "weight": 25
+  "weight": 15
 }

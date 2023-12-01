@@ -3,24 +3,24 @@
   "dimensions": [
     "minecraft:overworld"
   ],
-  "fail_chance": 0.05,
+  "fail_chance": 0.1,
   "ores": [
     {
-      "chance": 0.5,
+      "chance": 0.4,
       "output": {
-        "item": "minecraft:clay"
+        "item": "minecraft:amethyst_block"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "item": "minecraft:sand"
+        "item": "minecraft:calcite"
       }
     },
     {
-      "chance": 0.2,
+      "chance": 0.3,
       "output": {
-        "item": "minecraft:gravel"
+        "item": "minecraft:smooth_basalt"
       }
     }
   ],
@@ -28,7 +28,7 @@
     {
       "chance": 0.2,
       "output": {
-        "item": "minecraft:coarse_dirt"
+        "item": "minecraft:gravel"
       }
     },
     {
@@ -40,9 +40,9 @@
     {
       "chance": 0.3,
       "output": {
-        "item": "minecraft:gravel"
+        "item": "minecraft:cobbled_deepslate"
       }
     }
   ],
-  "weight": 25
+  "weight": 10
 }
