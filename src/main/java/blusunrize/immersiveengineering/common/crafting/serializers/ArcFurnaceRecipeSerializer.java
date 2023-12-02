@@ -18,6 +18,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
 
@@ -31,8 +32,8 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 {
 	public static final Codec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.output),
-			LAZY_OUTPUT_CODEC.optionalFieldOf("slag", LAZY_EMPTY).forGetter(r -> r.slag),
-			CHANCE_LIST.optionalFieldOf("secondaries", List.of()).forGetter(r -> r.secondaryOutputs),
+			ExtraCodecs.strictOptionalField(LAZY_OUTPUT_CODEC, "slag", LAZY_EMPTY).forGetter(r -> r.slag),
+			ExtraCodecs.strictOptionalField(CHANCE_LIST, "secondaries", List.of()).forGetter(r -> r.secondaryOutputs),
 			Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getTotalProcessTime),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),

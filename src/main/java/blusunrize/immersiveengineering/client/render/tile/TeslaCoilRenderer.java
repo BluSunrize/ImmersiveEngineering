@@ -17,6 +17,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntity>
@@ -66,4 +67,13 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntit
 				.normal((float)normal.x, (float)normal.y, (float)normal.z)
 				.endVertex();
 	}
+
+	@Override
+	public AABB getRenderBoundingBox(TeslaCoilBlockEntity blockEntity)
+	{
+		if(blockEntity.renderBB==null)
+			blockEntity.renderBB = new AABB(blockEntity.getBlockPos().offset(-8, -8, -8), blockEntity.getBlockPos().offset(8, 8, 8));
+		return blockEntity.renderBB;
+	}
+
 }

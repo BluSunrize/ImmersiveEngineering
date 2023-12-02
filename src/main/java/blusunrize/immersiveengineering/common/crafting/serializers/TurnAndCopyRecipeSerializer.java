@@ -14,6 +14,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -44,10 +45,10 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	}
 
 	private static final Codec<AdditionalData> ADDITIONAL_CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			Codec.INT.listOf().optionalFieldOf("copyNBT").forGetter(AdditionalData::copySlots),
-			Codec.BOOL.optionalFieldOf("quarter_turn", false).forGetter(AdditionalData::quarter),
-			Codec.BOOL.optionalFieldOf("eight_turn", false).forGetter(AdditionalData::eights),
-			Codec.STRING.optionalFieldOf("copy_nbt_predicate").forGetter(AdditionalData::predicate)
+			ExtraCodecs.strictOptionalField(Codec.INT.listOf(), "copyNBT").forGetter(AdditionalData::copySlots),
+			ExtraCodecs.strictOptionalField(Codec.BOOL, "quarter_turn", false).forGetter(AdditionalData::quarter),
+			ExtraCodecs.strictOptionalField(Codec.BOOL, "eight_turn", false).forGetter(AdditionalData::eights),
+			ExtraCodecs.strictOptionalField(Codec.STRING, "copy_nbt_predicate").forGetter(AdditionalData::predicate)
 	).apply(inst, AdditionalData::new));
 
 	public static final Codec<TurnAndCopyRecipe> CODEC = Codec.pair(

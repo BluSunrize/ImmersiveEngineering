@@ -66,15 +66,7 @@ public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInv
 		ContainerHelper.saveAllItems(nbt, inventory);
 	}
 
-	private AABB renderAABB;
-
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		if(renderAABB==null)
-			renderAABB = new AABB(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ()-1, getBlockPos().getX()+2, getBlockPos().getY()+2, getBlockPos().getZ()+2);
-		return renderAABB;
-	}
+	public AABB renderAABB;
 
 	@Override
 	public NonNullList<ItemStack> getInventory()

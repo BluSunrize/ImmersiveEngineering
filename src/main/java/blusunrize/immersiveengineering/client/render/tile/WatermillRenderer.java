@@ -17,10 +17,12 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Quaternionf;
 
@@ -54,5 +56,27 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntit
 	public static void reset()
 	{
 		MODEL_BUFFER.reset();
+	}
+
+	@Override
+	public AABB getRenderBoundingBox(WatermillBlockEntity watermill)
+	{
+		if(watermill.renderAABB==null)
+		{
+			BlockPos pos = watermill.getBlockPos();
+			Direction facing = watermill.getFacing();
+			if(watermill.offset[0]==0&&watermill.offset[1]==0)
+				watermill.renderAABB = new AABB(
+						pos.getX()-(facing.getAxis()==Axis.Z?2: 0),
+						pos.getY()-2,
+						pos.getZ()-(facing.getAxis()==Axis.Z?0: 2),
+						pos.getX()+(facing.getAxis()==Axis.Z?3: 1),
+						pos.getY()+3,
+						pos.getZ()+(facing.getAxis()==Axis.Z?1: 3)
+				);
+			else
+				watermill.renderAABB = new AABB(pos);
+		}
+		return watermill.renderAABB;
 	}
 }

@@ -18,6 +18,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,7 +33,7 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 {
 	public static final Codec<ThermoelectricSource> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.INT.fieldOf(TEMPERATURE_KEY).forGetter(r -> r.temperature),
-			TagKey.codec(Registries.BLOCK).optionalFieldOf(BLOCK_TAG_KEY).forGetter(r -> r.blocks.leftOptional()),
+			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.BLOCK), BLOCK_TAG_KEY).forGetter(r -> r.blocks.leftOptional()),
 			maybeListOrSingle(BuiltInRegistries.BLOCK.byNameCodec(), SINGLE_BLOCK_KEY).forGetter(r -> r.blocks.rightOptional())
 	).apply(inst, (temperature, tag, fixedBlocks) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBlocks.isPresent());

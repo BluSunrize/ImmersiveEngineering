@@ -18,6 +18,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -35,9 +36,9 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 					CHANCE_LIST.fieldOf("ores").forGetter(r -> r.outputs),
 					CHANCE_LIST.fieldOf("spoils").forGetter(r -> r.outputs),
 					Codec.INT.fieldOf("weight").forGetter(r -> r.weight),
-					Codec.FLOAT.optionalFieldOf("fail_chance", 0f).forGetter(r -> r.failChance),
+					ExtraCodecs.strictOptionalField(Codec.FLOAT, "fail_chance", 0f).forGetter(r -> r.failChance),
 					ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimensions").forGetter(r -> List.copyOf(r.dimensions)),
-					BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("sample_background", Blocks.STONE).forGetter(r -> r.background)
+					ExtraCodecs.strictOptionalField(BuiltInRegistries.BLOCK.byNameCodec(), "sample_background", Blocks.STONE).forGetter(r -> r.background)
 			).apply(inst, (ores, spoils, weight, failChance, dimensions, background) -> {
 				double finalTotalChance = ores.stream().mapToDouble(StackWithChance::chance).sum();
 				ores = ores.stream().map(stack -> stack.recalculate(finalTotalChance)).toList();

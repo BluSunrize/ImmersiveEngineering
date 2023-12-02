@@ -175,20 +175,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 			sample = ItemStack.EMPTY;
 	}
 
-	private AABB renderAABB;
-
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		if(renderAABB==null)
-		{
-			if(dummy==0)
-				renderAABB = new AABB(getBlockPos(), getBlockPos().offset(1, 3, 1));
-			else
-				renderAABB = new AABB(getBlockPos(), getBlockPos());
-		}
-		return renderAABB;
-	}
+	public AABB renderAABB;
 
 	@Nonnull
 	@Override

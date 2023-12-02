@@ -22,6 +22,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -67,8 +68,8 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 
 		float defaultYaw = 180-tile.getFacing().toYRot();
 		matrixStack.mulPose(new Quaternionf()
-				.rotateY((tile.rotationYaw+defaultYaw) *Mth.DEG_TO_RAD)
-				.rotateX(-tile.rotationPitch * Mth.DEG_TO_RAD)
+				.rotateY((tile.rotationYaw+defaultYaw)*Mth.DEG_TO_RAD)
+				.rotateX(-tile.rotationPitch*Mth.DEG_TO_RAD)
 		);
 
 		renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");
@@ -110,5 +111,13 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 	public static void fillModels()
 	{
 		MODEL_NAME_BY_BLOCK.forEach((key, value) -> MODELS_BY_BLOCK.put(key.getId(), new DynamicModel(value)));
+	}
+
+	@Override
+	public AABB getRenderBoundingBox(TurretBlockEntity<?> turret)
+	{
+		if(turret.renderBB==null)
+			turret.renderBB = new AABB(turret.getBlockPos().offset(-8, -8, -8), turret.getBlockPos().offset(8, 8, 8));
+		return turret.renderBB;
 	}
 }

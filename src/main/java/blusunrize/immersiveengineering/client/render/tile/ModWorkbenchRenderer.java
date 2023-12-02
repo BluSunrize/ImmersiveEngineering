@@ -23,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
@@ -158,4 +159,13 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 			transform.popPose();
 		});
 	}
+
+	@Override
+	public AABB getRenderBoundingBox(ModWorkbenchBlockEntity workbench)
+	{
+		if(workbench.renderAABB==null)
+			workbench.renderAABB = new AABB(-1, 0, -1, 2, 2, 2).move(workbench.getBlockPos());
+		return workbench.renderAABB;
+	}
+
 }

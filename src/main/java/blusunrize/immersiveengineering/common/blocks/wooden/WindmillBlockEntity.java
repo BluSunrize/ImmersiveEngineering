@@ -179,25 +179,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 		nbt.putFloat("turnSpeed", turnSpeed);
 	}
 
-	private AABB renderAABB;
-
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		if(renderAABB==null)
-		{
-			Direction facing = getFacing();
-			renderAABB = new AABB(
-					getBlockPos().getX()-(facing.getAxis()==Axis.Z?6: 0),
-					getBlockPos().getY()-6,
-					getBlockPos().getZ()-(facing.getAxis()==Axis.Z?0: 6),
-					getBlockPos().getX()+(facing.getAxis()==Axis.Z?7: 0),
-					getBlockPos().getY()+7,
-					getBlockPos().getZ()+(facing.getAxis()==Axis.Z?0: 7)
-			);
-		}
-		return renderAABB;
-	}
+	public AABB renderAABB;
 
 	@Override
 	public Property<Direction> getFacingProperty()

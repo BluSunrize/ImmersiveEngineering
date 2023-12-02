@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
 
@@ -25,7 +26,7 @@ public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 	public static final Codec<CokeOvenRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
-			Codec.INT.optionalFieldOf("time", 200).forGetter(r -> r.time),
+			ExtraCodecs.strictOptionalField(Codec.INT, "time", 200).forGetter(r -> r.time),
 			Codec.INT.fieldOf("creosote").forGetter(r -> r.creosoteOutput)
 	).apply(inst, CokeOvenRecipe::new));
 

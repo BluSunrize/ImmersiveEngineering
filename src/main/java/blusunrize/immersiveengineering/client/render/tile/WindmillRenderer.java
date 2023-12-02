@@ -15,7 +15,9 @@ import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -78,4 +80,24 @@ public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 			if(vbo!=null)
 				vbo.reset();
 	}
+
+	@Override
+	public AABB getRenderBoundingBox(WindmillBlockEntity windmill)
+	{
+		if(windmill.renderAABB==null)
+		{
+			Direction facing = windmill.getFacing();
+			BlockPos pos = windmill.getBlockPos();
+			windmill.renderAABB = new AABB(
+					pos.getX()-(facing.getAxis()==Axis.Z?6: 0),
+					pos.getY()-6,
+					pos.getZ()-(facing.getAxis()==Axis.Z?0: 6),
+					pos.getX()+(facing.getAxis()==Axis.Z?7: 0),
+					pos.getY()+7,
+					pos.getZ()+(facing.getAxis()==Axis.Z?0: 7)
+			);
+		}
+		return windmill.renderAABB;
+	}
+
 }

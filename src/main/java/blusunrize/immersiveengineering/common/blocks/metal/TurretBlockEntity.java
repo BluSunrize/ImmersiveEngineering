@@ -366,15 +366,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		return Shapes.block();
 	}
 
-	AABB renderBB;
-
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		if(renderBB==null)
-			renderBB = new AABB(getBlockPos().offset(-8, -8, -8), getBlockPos().offset(8, 8, 8));
-		return renderBB;
-	}
+	public AABB renderBB;
 
 	@Override
 	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)

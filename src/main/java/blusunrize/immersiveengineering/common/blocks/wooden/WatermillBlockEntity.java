@@ -248,25 +248,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		nbt.putDouble("perTick", perTick);
 	}
 
-	private AABB renderAABB;
-
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		if(renderAABB==null)
-			if(offset[0]==0&&offset[1]==0)
-				renderAABB = new AABB(
-						getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 0),
-						getBlockPos().getY()-2,
-						getBlockPos().getZ()-(getFacing().getAxis()==Axis.Z?0: 2),
-						getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 1),
-						getBlockPos().getY()+3,
-						getBlockPos().getZ()+(getFacing().getAxis()==Axis.Z?1: 3)
-				);
-			else
-				renderAABB = new AABB(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), getBlockPos().getX()+1, getBlockPos().getY()+1, getBlockPos().getZ()+1);
-		return renderAABB;
-	}
+	public AABB renderAABB;
 
 	@Override
 	public Property<Direction> getFacingProperty()

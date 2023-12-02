@@ -18,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,8 +33,8 @@ import static blusunrize.immersiveengineering.api.crafting.builders.GeneratorFue
 public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 {
 	public static final Codec<GeneratorFuel> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			TagKey.codec(Registries.FLUID).optionalFieldOf(FLUID_TAG_KEY).forGetter(f -> f.getFluidsRaw().leftOptional()),
-			BuiltInRegistries.FLUID.byNameCodec().listOf().optionalFieldOf("fluidList").forGetter(f -> f.getFluidsRaw().rightOptional()),
+			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.FLUID), FLUID_TAG_KEY).forGetter(f -> f.getFluidsRaw().leftOptional()),
+			ExtraCodecs.strictOptionalField(BuiltInRegistries.FLUID.byNameCodec().listOf(), "fluidList").forGetter(f -> f.getFluidsRaw().rightOptional()),
 			Codec.INT.fieldOf(BURN_TIME_KEY).forGetter(GeneratorFuel::getBurnTime)
 	).apply(inst, GeneratorFuel::new));
 

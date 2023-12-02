@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -28,8 +29,8 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	public static final Codec<RefineryRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.output),
 			FluidTagInput.CODEC.fieldOf("input0").forGetter(r -> r.input0),
-			FluidTagInput.CODEC.optionalFieldOf("input1").forGetter(r -> Optional.ofNullable(r.input1)),
-			Ingredient.CODEC.optionalFieldOf("catalyst", Ingredient.EMPTY).forGetter(r -> r.catalyst),
+			ExtraCodecs.strictOptionalField(FluidTagInput.CODEC, "input1").forGetter(r -> Optional.ofNullable(r.input1)),
+			ExtraCodecs.strictOptionalField(Ingredient.CODEC, "catalyst", Ingredient.EMPTY).forGetter(r -> r.catalyst),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
 	).apply(inst, RefineryRecipe::new));
 

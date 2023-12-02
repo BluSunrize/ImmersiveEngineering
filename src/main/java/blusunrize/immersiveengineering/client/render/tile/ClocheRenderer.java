@@ -30,7 +30,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -104,5 +106,14 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 	public static void reset()
 	{
 		plantQuads.clear();
+	}
+
+	@Override
+	@NotNull
+	public AABB getRenderBoundingBox(ClocheBlockEntity blockEntity)
+	{
+		if(blockEntity.renderBB==null)
+			blockEntity.renderBB = new AABB(0, 0, 0, 1, 2, 1).move(blockEntity.getBlockPos());
+		return blockEntity.renderBB;
 	}
 }

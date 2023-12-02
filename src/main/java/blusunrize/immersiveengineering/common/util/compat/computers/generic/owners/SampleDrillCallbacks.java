@@ -52,9 +52,7 @@ public class SampleDrillCallbacks extends CallbackOwner<SampleDrillBlockEntity>
 	@ComputerCallable
 	public List<String> getVeinNames(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		//TODO
-		// return getVeinProperties(env, vsd -> vsd.getType().getId().toString());
-		throw new UnsupportedOperationException();
+		return getVeinProperties(env, vsd -> vsd.getTypeHolder().id().toString());
 	}
 
 	@ComputerCallable

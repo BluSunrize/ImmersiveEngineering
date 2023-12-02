@@ -497,15 +497,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		return IEMenuTypes.CLOCHE;
 	}
 
-	private AABB renderBB;
-
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		if(renderBB==null)
-			renderBB = new AABB(0, 0, 0, 1, 2, 1).move(worldPosition);
-		return renderBB;
-	}
+	public AABB renderBB;
 
 	@Override
 	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)

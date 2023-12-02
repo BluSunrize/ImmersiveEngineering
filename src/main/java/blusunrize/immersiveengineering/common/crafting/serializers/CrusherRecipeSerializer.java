@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -30,7 +31,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
-			CHANCE_LIST.optionalFieldOf("secondaries", List.of()).forGetter(r -> r.secondaryOutputs)
+			ExtraCodecs.strictOptionalField(CHANCE_LIST, "secondaries", List.of()).forGetter(r -> r.secondaryOutputs)
 	).apply(inst, CrusherRecipe::new));
 
 	@Override

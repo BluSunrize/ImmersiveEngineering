@@ -4,7 +4,6 @@ import org.gradle.work.Incremental
 
 plugins {
     id 'net.neoforged.gradle.userdev' version "$version_neogradle"
-    id 'net.neoforged.gradle.mixin' version "$version_neogradle"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
@@ -448,6 +447,3 @@ task updateJson(type: GenerateUpdateJSON) {
 
 processResources.dependsOn updateJson
 
-mixin {
-    config "${modid}.mixins.json"
-}

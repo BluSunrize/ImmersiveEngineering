@@ -101,16 +101,6 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 				};
 	}
 
-	private AABB renderAABB;
-
-	@Override
-	public AABB getRenderBoundingBox()
-	{
-		if(renderAABB==null)
-			renderAABB = new AABB(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ()-1, getBlockPos().getX()+2, getBlockPos().getY()+2, getBlockPos().getZ()+2);
-		return renderAABB;
-	}
-
 	@Override
 	public boolean canUseGui(Player player)
 	{

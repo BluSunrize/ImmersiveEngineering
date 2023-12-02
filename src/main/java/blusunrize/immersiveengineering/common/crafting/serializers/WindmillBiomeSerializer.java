@@ -20,6 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 
@@ -33,8 +34,8 @@ public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 {
 	public static final Codec<WindmillBiome> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.FLOAT.fieldOf(MODIFIER_KEY).forGetter(r -> r.modifier),
-			TagKey.codec(Registries.BIOME).optionalFieldOf(BIOME_TAG_KEY).forGetter(r -> r.biomes.leftOptional()),
-			ResourceKey.codec(Registries.BIOME).listOf().optionalFieldOf(SINGLE_BIOME_KEY).forGetter(r -> r.biomes.rightOptional())
+			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.BIOME), BIOME_TAG_KEY).forGetter(r -> r.biomes.leftOptional()),
+			ExtraCodecs.strictOptionalField(ResourceKey.codec(Registries.BIOME).listOf(), SINGLE_BIOME_KEY).forGetter(r -> r.biomes.rightOptional())
 	).apply(inst, (temperature, tag, fixedBiomes) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBiomes.isPresent());
 		if(tag.isPresent())

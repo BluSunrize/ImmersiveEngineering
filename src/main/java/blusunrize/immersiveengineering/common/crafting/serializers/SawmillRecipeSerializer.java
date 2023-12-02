@@ -16,6 +16,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -29,8 +30,8 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 			optionalItemOutput("stripped").forGetter(r -> r.stripped),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
-			LAZY_OUTPUTS_CODEC.optionalFieldOf("strippingSecondaries", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryStripping),
-			LAZY_OUTPUTS_CODEC.optionalFieldOf("secondaryOutputs", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryOutputs)
+			ExtraCodecs.strictOptionalField(LAZY_OUTPUTS_CODEC, "strippingSecondaries", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryStripping),
+			ExtraCodecs.strictOptionalField(LAZY_OUTPUTS_CODEC, "secondaryOutputs", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryOutputs)
 	).apply(inst, SawmillRecipe::new));
 
 	@Override

@@ -50,7 +50,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 	public static final Lazy<NonNullList<ItemStack>> EMPTY_LAZY_OUTPUTS = () -> NonNullList.withSize(0, ItemStack.EMPTY);
 	public static final Codec<StackWithChance> CHANCE_STACK_CODEC = RecordCodecBuilder.create(
 			inst -> inst.group(
-					LAZY_OUTPUT_CODEC.fieldOf("stack").forGetter(StackWithChance::stack),
+					LAZY_OUTPUT_CODEC.fieldOf("output").forGetter(StackWithChance::stack),
 					Codec.FLOAT.fieldOf("chance").forGetter(StackWithChance::chance)
 			).apply(inst, StackWithChance::new)
 	);

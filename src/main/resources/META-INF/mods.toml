@@ -37,3 +37,6 @@ credits = "All the great other Git Contributors, and the nerds on IRC!"
   versionRange="[${jei_version},)"
   ordering="NONE"
   side="BOTH"
+
+[[mixins]]
+  config="immersiveengineering.mixins.json"

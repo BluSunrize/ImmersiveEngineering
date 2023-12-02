@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
 
@@ -27,7 +28,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 					LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
 					IngredientWithSize.CODEC.fieldOf("input0").forGetter(r -> r.input0),
 					IngredientWithSize.CODEC.fieldOf("input1").forGetter(r -> r.input1),
-					Codec.INT.optionalFieldOf("time", 200).forGetter(r -> r.time)
+					ExtraCodecs.strictOptionalField(Codec.INT, "time", 200).forGetter(r -> r.time)
 			).apply(inst, AlloyRecipe::new)
 	);
 

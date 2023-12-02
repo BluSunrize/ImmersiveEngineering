@@ -47,7 +47,6 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 		};
 		this.processTick = 0;
 		populateLevelData(recipe.value());
-		throw new UnsupportedOperationException();
 	}
 
 	public MultiblockProcess(

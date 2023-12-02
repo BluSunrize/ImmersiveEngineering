@@ -334,7 +334,6 @@ public class MetalPressLogic
 		{
 			super(new RecipeHolder<>(id, recipe), inputItem);
 			this.baseRecipeLocation = recipe.baseRecipe.id();
-			throw new UnsupportedOperationException();
 		}
 
 		@Override

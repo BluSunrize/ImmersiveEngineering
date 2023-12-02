@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipe;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -23,7 +24,7 @@ public class RevolverAssemblyRecipeSerializer implements RecipeSerializer<Revolv
 {
 	public static final Codec<RevolverAssemblyRecipe> CODEC = Codec.pair(
 			RecipeSerializer.SHAPED_RECIPE.codec(),
-			Codec.INT.listOf().optionalFieldOf("copyNBT", List.of()).codec()
+			ExtraCodecs.strictOptionalField(Codec.INT.listOf(), "copyNBT", List.of()).codec()
 	).xmap(
 			p -> new RevolverAssemblyRecipe(p.getFirst(), p.getSecond()),
 			r -> Pair.of(r.toVanilla(), r.getCopyTargets())
