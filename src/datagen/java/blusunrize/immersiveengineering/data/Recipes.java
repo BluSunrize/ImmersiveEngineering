@@ -1065,6 +1065,24 @@ public class Recipes extends RecipeProvider
 				.setEnergy(1600)
 				.build(out, toRL("crusher/nether_wart"));
 
+		CrusherRecipeBuilder.builder(new ItemStack(Items.BLACK_DYE, 1))
+				.addSecondary(Items.GRAY_DYE, .2f)
+				.addInput(Items.CHARCOAL)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/black_dye"));
+
+		CrusherRecipeBuilder.builder(new ItemStack(Items.BLUE_DYE, 2))
+				.addSecondary(Items.LIGHT_GRAY_DYE, .1f)
+				.addInput(Tags.Items.GEMS_LAPIS)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/blue_dye"));
+
+		CrusherRecipeBuilder.builder(new ItemStack(Items.WHITE_DYE, 2))
+				.addSecondary(Items.LIGHT_GRAY_DYE, .1f)
+				.addInput(Items.BONE_MEAL)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/white_dye"));
+
 		/* SAWMILL */
 		for(RecipeWoods wood : RecipeWoods.values())
 		{

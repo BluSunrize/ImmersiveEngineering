@@ -1,4 +1,4 @@
-// 1.19.2	2023-12-01T19:54:57.690569841	Recipes
+// 1.19.2	2023-12-01T20:07:48.638891221	Recipes
 7ccf8b2f4f413f7667689450565e5430a943d23a data/immersiveengineering/advancements/recipes/decorations/crafting/torch.json
 b79e3d9e28de7d73e18625fac2456b738b168fc9 data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick.json
 d518ed26bb86cca14c1400daadb64610c935cafc data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick_from_slab.json
@@ -1183,7 +1183,9 @@ a5a6d88e12c53bc1f3c23273b445db37316f9c22 data/immersiveengineering/recipes/craft
 755036a592dcaec99335002ecb53929c67a0b326 data/immersiveengineering/recipes/crafting/wooden_grip.json
 3c63b7ba85e6a5c4ef1c2a38e0daf9984fe04666 data/immersiveengineering/recipes/crafting/workbench.json
 00234f47ad747f806ebfdc829521f79c8ca55a74 data/immersiveengineering/recipes/crusher/amethyst.json
+8f1d5687231c38261deb9578006981d9977c1a79 data/immersiveengineering/recipes/crusher/black_dye.json
 5d28e9735620bdf1b061efa775dcda77aa3ae55e data/immersiveengineering/recipes/crusher/blaze_powder.json
+333bb3e5dcf7188512342c883aaffceca3c60cb2 data/immersiveengineering/recipes/crusher/blue_dye.json
 4a3a43193c5be9f7c9cf0497508c27faaeb14358 data/immersiveengineering/recipes/crusher/bone_meal.json
 85415cb90873b33063037841697177d1cb820682 data/immersiveengineering/recipes/crusher/clay.json
 b04b72f19b523291906066b9ad0a96a6c9474580 data/immersiveengineering/recipes/crusher/coal.json
@@ -1278,6 +1280,7 @@ e3b9ba50240eec1361188dd9a374773816b40469 data/immersiveengineering/recipes/crush
 3469bae278aa321222a5f2ccac013e6b3e11e4c4 data/immersiveengineering/recipes/crusher/red_sandstone.json
 575e73004764c5a5b9fa5e377a47aa2a07bef5be data/immersiveengineering/recipes/crusher/sandstone.json
 5ccf1a5d908cd0f0002ee8b5c0ad0bbd61d3d6a2 data/immersiveengineering/recipes/crusher/slag.json
+dd46743b291ed77bb9e7ac467f708c7ad6d81404 data/immersiveengineering/recipes/crusher/white_dye.json
 ab6bc4c9f5d5bc588831fea84a5ee25c8c9d2559 data/immersiveengineering/recipes/crusher/wool.json
 590eed936a26caf04d0a2fa056ab3b07d4ca55be data/immersiveengineering/recipes/earmuffs_attach.json
 54092d19862aaa503d6478cff5edb948b635c143 data/immersiveengineering/recipes/fermenter/apple.json
