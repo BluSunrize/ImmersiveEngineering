@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:rose_bush"
+  },
+  "render": {
+    "type": "generic",
+    "block": "minecraft:rose_bush"
+  },
+  "results": [
+    {
+      "item": "minecraft:rose_bush"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}
