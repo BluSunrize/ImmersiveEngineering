@@ -14,10 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -26,7 +28,7 @@ import javax.annotation.Nullable;
  */
 public class BlastFurnaceRecipe extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
 	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FURNACE);
 
 	public final IngredientWithSize input;

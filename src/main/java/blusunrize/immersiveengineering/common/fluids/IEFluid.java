@@ -132,7 +132,7 @@ public class IEFluid extends FlowingFluid
 	@Override
 	public FluidType getFluidType()
 	{
-		return entry.type().get();
+		return entry.type().value();
 	}
 
 	@Nonnull

@@ -21,7 +21,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 
@@ -33,7 +33,7 @@ public record FluidSplashOptions(Fluid fluid) implements ParticleOptions
 
 	public FluidSplashOptions(ResourceLocation name)
 	{
-		this(ForgeRegistries.FLUIDS.getValue(name));
+		this(BuiltInRegistries.FLUID.get(name));
 	}
 
 	@Nonnull

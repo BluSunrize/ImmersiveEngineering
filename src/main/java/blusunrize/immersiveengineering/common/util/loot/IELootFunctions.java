@@ -22,7 +22,7 @@ import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 /**
  * @author BluSunrize - 16.08.2018
@@ -32,19 +32,19 @@ public class IELootFunctions
 	private static final DeferredRegister<LootItemFunctionType> FUNCTION_REGISTER = DeferredRegister.create(
 			Registries.LOOT_FUNCTION_TYPE, ImmersiveEngineering.MODID
 	);
-	public static final RegistryObject<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", BluprintzLootFunction.CODEC);
-	public static final RegistryObject<LootItemFunctionType> REVOLVERPERK = registerFunction("revolverperk", RevolverperkLootFunction.CODEC);
-	public static final RegistryObject<LootItemFunctionType> WINDMILL = registerFunction("windmill", WindmillLootFunction.CODEC);
-	public static final RegistryObject<LootItemFunctionType> CONVEYOR_COVER = registerFunction("conveyor_cover", ConveyorCoverLootFunction.CODEC);
-	public static final RegistryObject<LootItemFunctionType> PROPERTY_COUNT = registerFunction("property_count", PropertyCountLootFunction.CODEC);
+	public static final Holder<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", BluprintzLootFunction.CODEC);
+	public static final Holder<LootItemFunctionType> REVOLVERPERK = registerFunction("revolverperk", RevolverperkLootFunction.CODEC);
+	public static final Holder<LootItemFunctionType> WINDMILL = registerFunction("windmill", WindmillLootFunction.CODEC);
+	public static final Holder<LootItemFunctionType> CONVEYOR_COVER = registerFunction("conveyor_cover", ConveyorCoverLootFunction.CODEC);
+	public static final Holder<LootItemFunctionType> PROPERTY_COUNT = registerFunction("property_count", PropertyCountLootFunction.CODEC);
 
 	private static final DeferredRegister<LootPoolEntryType> ENTRY_REGISTER = DeferredRegister.create(
 			// TODO why isn't there a REGISTRY field for this one?
 			BuiltInRegistries.LOOT_POOL_ENTRY_TYPE.key(), ImmersiveEngineering.MODID
 	);
-	public static final RegistryObject<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.CODEC);
-	public static final RegistryObject<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.CODEC);
-	public static final RegistryObject<LootPoolEntryType> MULTIBLOCK_DROPS = registerEntry("multiblock", MultiblockDropsLootContainer.CODEC);
+	public static final Holder<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.CODEC);
+	public static final Holder<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.CODEC);
+	public static final Holder<LootPoolEntryType> MULTIBLOCK_DROPS = registerEntry("multiblock", MultiblockDropsLootContainer.CODEC);
 
 	public static void init()
 	{
@@ -53,14 +53,14 @@ public class IELootFunctions
 		ENTRY_REGISTER.register(bus);
 	}
 
-	private static RegistryObject<LootPoolEntryType> registerEntry(
+	private static Holder<LootPoolEntryType> registerEntry(
 			String id, Codec<? extends LootPoolEntryContainer> serializer
 	)
 	{
 		return ENTRY_REGISTER.register(id, () -> new LootPoolEntryType(serializer));
 	}
 
-	private static RegistryObject<LootItemFunctionType> registerFunction(
+	private static Holder<LootItemFunctionType> registerFunction(
 			String id, Codec<? extends LootItemFunction> serializer
 	)
 	{

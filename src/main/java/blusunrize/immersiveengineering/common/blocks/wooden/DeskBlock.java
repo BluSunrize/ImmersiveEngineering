@@ -34,7 +34,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.function.Supplier;
 
@@ -60,7 +60,7 @@ public class DeskBlock<T extends BlockEntity> extends IEEntityBlock<T>
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
-	public DeskBlock(RegistryObject<BlockEntityType<T>> tileType, BlockBehaviour.Properties props)
+	public DeskBlock(Supplier<BlockEntityType<T>> tileType, BlockBehaviour.Properties props)
 	{
 		super(tileType, props);
 	}

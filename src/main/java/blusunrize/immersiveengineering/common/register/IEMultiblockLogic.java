@@ -28,18 +28,18 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class IEMultiblockLogic
 {
 	public static final DeferredRegister<Block> BLOCK_REGISTER = DeferredRegister.create(
-			ForgeRegistries.BLOCKS, Lib.MODID
+			BuiltInRegistries.BLOCK, Lib.MODID
 	);
 	private static final DeferredRegister<Item> ITEM_REGISTER = DeferredRegister.create(
-			ForgeRegistries.ITEMS, Lib.MODID
+			BuiltInRegistries.ITEM, Lib.MODID
 	);
 	private static final DeferredRegister<BlockEntityType<?>> BE_REGISTER = DeferredRegister.create(
-			ForgeRegistries.BLOCK_ENTITY_TYPES, Lib.MODID
+			BuiltInRegistries.BLOCK_ENTITY_TYPE, Lib.MODID
 	);
 
 	public static final MultiblockRegistration<CokeOvenLogic.State> COKE_OVEN = stone(new CokeOvenLogic(), "coke_oven", true)

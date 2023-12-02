@@ -45,12 +45,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements IColouredBlock, EntityBlock
 {
@@ -71,12 +72,12 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		this.makeEntity = makeEntity;
 	}
 
-	public IEEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
+	public IEEntityBlock(Supplier<BlockEntityType<T>> tileType, Properties blockProps)
 	{
 		this(tileType, blockProps, true);
 	}
 
-	public IEEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps, boolean fitsIntoContainer)
+	public IEEntityBlock(Supplier<BlockEntityType<T>> tileType, Properties blockProps, boolean fitsIntoContainer)
 	{
 		this((bp, state) -> tileType.get().create(bp, state), blockProps, fitsIntoContainer);
 	}

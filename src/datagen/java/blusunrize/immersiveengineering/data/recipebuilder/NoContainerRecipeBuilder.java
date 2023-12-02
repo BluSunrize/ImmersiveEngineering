@@ -54,13 +54,6 @@ public record NoContainerRecipeBuilder(BiConsumer<RecipeOutput, ResourceLocation
 
 			@Nullable
 			@Override
-			public JsonObject serializedAdvancement()
-			{
-				return finishedBaseRecipe.getValue().serializedAdvancement();
-			}
-
-			@Nullable
-			@Override
 			public AdvancementHolder advancement()
 			{
 				return finishedBaseRecipe.getValue().advancement();

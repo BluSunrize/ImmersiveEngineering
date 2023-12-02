@@ -18,26 +18,27 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
 
 public class IEParticles
 {
 	public static final DeferredRegister<ParticleType<?>> REGISTER = DeferredRegister.create(
-			ForgeRegistries.PARTICLE_TYPES, Lib.MODID
+			BuiltInRegistries.PARTICLE_TYPE, Lib.MODID
 	);
 
-	public static final RegistryObject<ParticleType<FluidSplashOptions>> FLUID_SPLASH = REGISTER.register(
+	public static final DeferredHolder<ParticleType<?>, ParticleType<FluidSplashOptions>> FLUID_SPLASH = REGISTER.register(
 			"fluid_splash", () -> new IEParticleType<>(false, new FluidSplashOptions.DataDeserializer(), FluidSplashOptions.CODEC)
 	);
-	public static final RegistryObject<ParticleType<FractalOptions>> FRACTAL = REGISTER.register(
+	public static final DeferredHolder<ParticleType<?>, ParticleType<FractalOptions>> FRACTAL = REGISTER.register(
 			"fractal", () -> new IEParticleType<>(false, new FractalOptions.DataDeserializer(), FractalOptions.CODEC)
 	);
-	public static final RegistryObject<SimpleParticleType> IE_BUBBLE = REGISTER.register(
+	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> IE_BUBBLE = REGISTER.register(
 			"ie_bubble", () -> new SimpleParticleType(false)
 	);
-	public static final RegistryObject<SimpleParticleType> SPARKS = REGISTER.register(
+	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SPARKS = REGISTER.register(
 			"sparks", () -> new SimpleParticleType(false)
 	);
 

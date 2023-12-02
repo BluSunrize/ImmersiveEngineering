@@ -17,7 +17,7 @@ import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +44,8 @@ public class IEBannerPatterns
 
 	private static BannerEntry addBanner(String name, String hashName)
 	{
-		RegistryObject<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
-		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, pattern.getId());
+		Holder<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
+		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, pattern.unwrapKey().get().location());
 		ItemRegObject<BannerPatternItem> item = IEItems.register("bannerpattern_"+name, () -> new BannerPatternItem(
 				tag, new Properties()
 		));
@@ -55,7 +55,7 @@ public class IEBannerPatterns
 	}
 
 	public record BannerEntry(
-			RegistryObject<BannerPattern> pattern,
+			Holder<BannerPattern> pattern,
 			TagKey<BannerPattern> tag,
 			IEItems.ItemRegObject<BannerPatternItem> item
 	)

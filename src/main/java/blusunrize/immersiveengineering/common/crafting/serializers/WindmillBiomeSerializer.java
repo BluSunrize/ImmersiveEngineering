@@ -17,11 +17,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 	public static final Codec<WindmillBiome> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.FLOAT.fieldOf(MODIFIER_KEY).forGetter(r -> r.modifier),
 			TagKey.codec(Registries.BIOME).optionalFieldOf(BIOME_TAG_KEY).forGetter(r -> r.biomes.leftOptional()),
-			ForgeRegistries.BIOMES.getCodec().listOf().optionalFieldOf(SINGLE_BIOME_KEY).forGetter(r -> r.biomes.rightOptional())
+			ResourceKey.codec(Registries.BIOME).listOf().optionalFieldOf(SINGLE_BIOME_KEY).forGetter(r -> r.biomes.rightOptional())
 	).apply(inst, (temperature, tag, fixedBiomes) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBiomes.isPresent());
 		if(tag.isPresent())
@@ -68,7 +68,9 @@ public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 		}
 		else
 		{
-			List<Biome> biomes = PacketUtils.readList(buffer, buf -> buf.readRegistryIdUnsafe(ForgeRegistries.BIOMES));
+			List<ResourceKey<Biome>> biomes = PacketUtils.readList(
+					buffer, buf -> buf.readResourceKey(Registries.BIOME)
+			);
 			return new WindmillBiome(biomes, buffer.readFloat());
 		}
 	}
@@ -84,7 +86,7 @@ public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 		else
 		{
 			buffer.writeBoolean(false);
-			PacketUtils.writeList(buffer, recipe.biomes.rightNonnull(), (b, buf) -> buf.writeRegistryIdUnsafe(ForgeRegistries.BIOMES, b));
+			PacketUtils.writeList(buffer, recipe.biomes.rightNonnull(), (b, buf) -> buf.writeResourceKey(b));
 		}
 		buffer.writeFloat(recipe.getModifier());
 	}

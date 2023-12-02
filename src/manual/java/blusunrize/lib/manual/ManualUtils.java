@@ -33,6 +33,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -41,7 +42,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.FontContext;
 import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -339,7 +339,7 @@ public class ManualUtils
 		if(jsonEle.isJsonPrimitive())
 		{
 			ResourceLocation itemName = getLocationForManual(jsonEle.getAsString(), m);
-			return new ItemStack(ForgeRegistries.ITEMS.getValue(itemName));
+			return new ItemStack(BuiltInRegistries.ITEM.get(itemName));
 		}
 		else
 			return readItemStack(jsonEle.getAsJsonObject());

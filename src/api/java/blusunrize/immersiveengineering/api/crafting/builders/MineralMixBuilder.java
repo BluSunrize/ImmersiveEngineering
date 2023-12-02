@@ -33,7 +33,7 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 
 	private MineralMixBuilder()
 	{
-		super(MineralMix.SERIALIZER.get());
+		super(MineralMix.SERIALIZER.value());
 		addWriter(jsonObject -> jsonObject.add("ores", oresArray));
 		addWriter(jsonObject -> jsonObject.add("spoils", spoilsArray));
 		addWriter(jsonObject -> jsonObject.add("dimensions", dimensionsArray));

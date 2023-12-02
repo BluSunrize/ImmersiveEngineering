@@ -20,7 +20,7 @@ public class BlastFurnaceRecipeBuilder extends IEFinishedRecipe<BlastFurnaceReci
 {
 	private BlastFurnaceRecipeBuilder()
 	{
-		super(BlastFurnaceRecipe.SERIALIZER.get());
+		super(BlastFurnaceRecipe.SERIALIZER.value());
 	}
 
 	public static BlastFurnaceRecipeBuilder builder(Item result)

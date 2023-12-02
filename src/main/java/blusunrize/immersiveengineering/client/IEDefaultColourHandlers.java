@@ -26,7 +26,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nullable;
 
@@ -41,9 +41,9 @@ public class IEDefaultColourHandlers implements ItemColor, BlockColor
 	@SubscribeEvent
 	public static void registerItemColors(RegisterColorHandlersEvent.Item ev)
 	{
-		for(RegistryObject<Item> itemRO : IEItems.REGISTER.getEntries())
+		for(Holder<Item> itemRO : IEItems.REGISTER.getEntries())
 		{
-			Item item = itemRO.get();
+			Item item = itemRO.value();
 			if(item instanceof IColouredItem)
 				ev.register(INSTANCE, item);
 		}

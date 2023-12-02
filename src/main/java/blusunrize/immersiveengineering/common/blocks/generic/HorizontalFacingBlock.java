@@ -15,11 +15,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+
+import java.util.function.Supplier;
 
 public class HorizontalFacingBlock<T extends BlockEntity> extends IEEntityBlock<T>
 {
-	public HorizontalFacingBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
+	public HorizontalFacingBlock(Supplier<BlockEntityType<T>> tileType, Properties blockProps)
 	{
 		super(tileType, blockProps);
 	}

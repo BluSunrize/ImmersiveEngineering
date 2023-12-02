@@ -15,11 +15,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class ClocheFertilizer extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<ClocheFertilizer>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<ClocheFertilizer>> SERIALIZER;
 
 	public static final CachedRecipeList<ClocheFertilizer> RECIPES = new CachedRecipeList<>(IERecipeTypes.FERTILIZER);
 

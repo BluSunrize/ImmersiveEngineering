@@ -15,11 +15,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 02.03.2016
@@ -28,7 +30,7 @@ import java.util.Optional;
  */
 public class RefineryRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<RefineryRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<RefineryRecipe>> SERIALIZER;
 	public static final CachedRecipeList<RefineryRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.REFINERY);
 
 	public final FluidStack output;

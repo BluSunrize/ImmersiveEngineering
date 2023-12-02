@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 					Codec.INT.fieldOf("weight").forGetter(r -> r.weight),
 					Codec.FLOAT.optionalFieldOf("fail_chance", 0f).forGetter(r -> r.failChance),
 					ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimensions").forGetter(r -> List.copyOf(r.dimensions)),
-					ForgeRegistries.BLOCKS.getCodec().optionalFieldOf("sample_background", Blocks.STONE).forGetter(r -> r.background)
+					BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("sample_background", Blocks.STONE).forGetter(r -> r.background)
 			).apply(inst, (ores, spoils, weight, failChance, dimensions, background) -> {
 				double finalTotalChance = ores.stream().mapToDouble(StackWithChance::chance).sum();
 				ores = ores.stream().map(stack -> stack.recalculate(finalTotalChance)).toList();
@@ -74,7 +74,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 					Registries.DIMENSION,
 					buffer.readResourceLocation()
 			));
-		Block bg = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
+		Block bg = PacketUtils.readRegistryElement(buffer, BuiltInRegistries.BLOCK);
 		return new MineralMix(outputs, spoils, weight, failChance, dimensions, bg);
 	}
 
@@ -88,6 +88,6 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		buffer.writeInt(recipe.dimensions.size());
 		for(ResourceKey<Level> dimension : recipe.dimensions)
 			buffer.writeResourceLocation(dimension.location());
-		buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(recipe.background));
+		PacketUtils.writeRegistryElement(buffer, BuiltInRegistries.BLOCK, recipe.background);
 	}
 }

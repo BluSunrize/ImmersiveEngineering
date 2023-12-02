@@ -19,9 +19,10 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 
 import javax.annotation.Nonnull;
 
@@ -30,7 +31,7 @@ public class GrassDropModifier extends LootModifier
 	private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> REGISTER = DeferredRegister.create(
 			Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, ImmersiveEngineering.MODID
 	);
-	private static final RegistryObject<Codec<GrassDropModifier>> GRASS_DROPS = REGISTER.register(
+	private static final DeferredHolder<Codec<? extends IGlobalLootModifier>, Codec<GrassDropModifier>> GRASS_DROPS = REGISTER.register(
 			"hemp_seed_drops", () -> RecordCodecBuilder.create(inst -> codecStart(inst).apply(inst, GrassDropModifier::new))
 	);
 
@@ -56,6 +57,6 @@ public class GrassDropModifier extends LootModifier
 	@Override
 	public Codec<? extends IGlobalLootModifier> codec()
 	{
-		return GRASS_DROPS.get();
+		return GRASS_DROPS.value();
 	}
 }

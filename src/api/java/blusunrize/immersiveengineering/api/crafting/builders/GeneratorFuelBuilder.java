@@ -20,7 +20,7 @@ public class GeneratorFuelBuilder extends IEFinishedRecipe<GeneratorFuelBuilder>
 
 	private GeneratorFuelBuilder(TagKey<Fluid> fluid, int burnTime)
 	{
-		super(GeneratorFuel.SERIALIZER.get());
+		super(GeneratorFuel.SERIALIZER.value());
 		addWriter(obj -> obj.addProperty(FLUID_TAG_KEY, fluid.location().toString()));
 		addWriter(obj -> obj.addProperty(BURN_TIME_KEY, burnTime));
 	}

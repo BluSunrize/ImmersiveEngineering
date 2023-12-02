@@ -93,7 +93,7 @@ public class RailgunProjectiles
 			{
 				if(target instanceof EnderMan enderMan)
 				{
-					enderMan.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 200));
+					enderMan.addEffect(new MobEffectInstance(IEPotions.STUNNED.value(), 200));
 					final DamageSourcesAccess sources = (DamageSourcesAccess)world.damageSources();
 					Player p;
 					if(shooter!=null&&(p = world.getPlayerByUUID(shooter))!=null)

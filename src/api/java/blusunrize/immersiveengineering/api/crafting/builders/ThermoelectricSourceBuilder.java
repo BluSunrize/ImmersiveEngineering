@@ -23,13 +23,13 @@ public class ThermoelectricSourceBuilder extends IEFinishedRecipe<Thermoelectric
 
 	private ThermoelectricSourceBuilder(Block matching)
 	{
-		super(ThermoelectricSource.SERIALIZER.get());
+		super(ThermoelectricSource.SERIALIZER.value());
 		addWriter(obj -> obj.addProperty(SINGLE_BLOCK_KEY, BuiltInRegistries.BLOCK.getKey(matching).toString()));
 	}
 
 	private ThermoelectricSourceBuilder(TagKey<Block> matching)
 	{
-		super(ThermoelectricSource.SERIALIZER.get());
+		super(ThermoelectricSource.SERIALIZER.value());
 		addWriter(obj -> obj.addProperty(BLOCK_TAG_KEY, matching.location().toString()));
 	}
 

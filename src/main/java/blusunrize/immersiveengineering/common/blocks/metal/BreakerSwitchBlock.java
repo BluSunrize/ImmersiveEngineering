@@ -15,11 +15,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+
+import java.util.function.Supplier;
 
 public class BreakerSwitchBlock<T extends BreakerSwitchBlockEntity> extends ConnectorBlock<T>
 {
-	public BreakerSwitchBlock(Properties props, RegistryObject<BlockEntityType<T>> tileType)
+	public BreakerSwitchBlock(Properties props, Supplier<BlockEntityType<T>> tileType)
 	{
 		super(props, tileType);
 	}

@@ -81,6 +81,6 @@ public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 	@Override
 	public LootPoolEntryType getType()
 	{
-		return IELootFunctions.MULTIBLOCK_DROPS.get();
+		return IELootFunctions.MULTIBLOCK_DROPS.value();
 	}
 }

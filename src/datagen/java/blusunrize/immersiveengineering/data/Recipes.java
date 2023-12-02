@@ -75,7 +75,7 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -86,6 +86,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
@@ -160,7 +161,7 @@ public class Recipes extends RecipeProvider
 		}
 
 		for(Entry<ResourceLocation, BlockEntry<SlabBlock>> blockSlab : IEBlocks.TO_SLAB.entrySet())
-			addSlab(ForgeRegistries.BLOCKS.getValue(blockSlab.getKey()), blockSlab.getValue(), out);
+			addSlab(BuiltInRegistries.BLOCK.get(blockSlab.getKey()), blockSlab.getValue(), out);
 
 		recipesStoneDecorations(out);
 		recipesWoodenDecorations(out);
@@ -172,7 +173,13 @@ public class Recipes extends RecipeProvider
 		recipesCloth(out);
 
 		recipesTools(out);
-		recipesIngredients(out);
+		try
+		{
+			recipesIngredients(out);
+		} catch(ExecutionException|InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
 		recipesVanilla(out);
 		recipesWeapons(out);
 		recipesMisc(out);
@@ -1274,7 +1281,7 @@ public class Recipes extends RecipeProvider
 				.addOre(sulfur, .2f)
 				.setWeight(20)
 				.setFailchance(.15f)
-				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.setBackground(BuiltInRegistries.BLOCK.getKey(Blocks.NETHERRACK))
 				.build(out, toRL("mineral/mephitic_quarzite"));
 		MineralMixBuilder.builder(nether)
 				.addNetherSpoils()
@@ -1284,7 +1291,7 @@ public class Recipes extends RecipeProvider
 				.addOre(Blocks.GILDED_BLACKSTONE, .1f)
 				.setWeight(8)
 				.setFailchance(.5f)
-				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.POLISHED_BLACKSTONE))
+				.setBackground(BuiltInRegistries.BLOCK.getKey(Blocks.POLISHED_BLACKSTONE))
 				.build(out, toRL("mineral/ancient_debris"));
 		MineralMixBuilder.builder(nether)
 				.addNetherSpoils()
@@ -1293,7 +1300,7 @@ public class Recipes extends RecipeProvider
 				.addOre(Items.GRAVEL, .2f)
 				.setWeight(15)
 				.setFailchance(.05f)
-				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.SOUL_SOIL))
+				.setBackground(BuiltInRegistries.BLOCK.getKey(Blocks.SOUL_SOIL))
 				.build(out, toRL("mineral/nether_silt"));
 		MineralMixBuilder.builder(nether)
 				.addNetherSpoils()
@@ -1302,7 +1309,7 @@ public class Recipes extends RecipeProvider
 				.addOre(Items.OBSIDIAN, .2f)
 				.setWeight(15)
 				.setFailchance(.05f)
-				.setBackground(ForgeRegistries.BLOCKS.getKey(Blocks.NETHERRACK))
+				.setBackground(BuiltInRegistries.BLOCK.getKey(Blocks.NETHERRACK))
 				.build(out, toRL("mineral/cooled_lava_tube"));
 
 		// Compat
@@ -2558,7 +2565,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Tools.GLIDER)));
 	}
 
-	private void recipesIngredients(@Nonnull RecipeOutput out)
+	private void recipesIngredients(@Nonnull RecipeOutput out) throws ExecutionException, InterruptedException
 	{
 		shapedMisc(Ingredients.STICK_TREATED, 4)
 				.pattern("w")
@@ -2970,8 +2977,9 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL("paper_from_sawdust"));
 	}
 
-	private RecipeOutput buildBlueprint(RecipeOutput out, String blueprint, ICondition... conditions)
+	private RecipeOutput buildBlueprint(RecipeOutput out, String blueprint, ICondition... conditions) throws ExecutionException, InterruptedException
 	{
+		final var provider = lookupProvider.get();
 		return new WrappingRecipeOutput(out, recipe -> out.accept(new FinishedRecipe()
 		{
 			@Override
@@ -2980,7 +2988,7 @@ public class Recipes extends RecipeProvider
 				recipe.serializeRecipeData(json);
 				if(conditions.length > 0)
 				{
-					DynamicOps<JsonElement> dynamicOps = ConditionalOps.create(RegistryOps.create(JsonOps.INSTANCE, out.provider()), ICondition.IContext.EMPTY);
+					DynamicOps<JsonElement> dynamicOps = ConditionalOps.create(RegistryOps.create(JsonOps.INSTANCE, provider), ICondition.IContext.EMPTY);
 					JsonElement conditionJSON = ICondition.LIST_CODEC.encodeStart(dynamicOps, Arrays.asList(conditions)).result().orElseThrow();
 					json.add("conditions", conditionJSON);
 				}
@@ -3002,13 +3010,6 @@ public class Recipes extends RecipeProvider
 			public RecipeSerializer<?> type()
 			{
 				return recipe.type();
-			}
-
-			@Nullable
-			@Override
-			public JsonObject serializedAdvancement()
-			{
-				return recipe.serializedAdvancement();
 			}
 
 			@Nullable
@@ -3527,13 +3528,6 @@ public class Recipes extends RecipeProvider
 			public RecipeSerializer<?> type()
 			{
 				return RecipeSerializers.RGB_SERIALIZER.get();
-			}
-
-			@Nullable
-			@Override
-			public JsonObject serializedAdvancement()
-			{
-				return null;
 			}
 
 			@Nullable

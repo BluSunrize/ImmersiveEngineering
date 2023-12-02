@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -30,7 +31,6 @@ import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.util.JsonUtils;
 import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.Random;
 
@@ -56,7 +56,7 @@ public class ApiUtils
 
 	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject)
 	{
-		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(jsonObject, "fluid")));
+		Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(GsonHelper.getAsString(jsonObject, "fluid")));
 		int amount = GsonHelper.getAsInt(jsonObject, "amount");
 		FluidStack fluidStack = new FluidStack(fluid, amount);
 		if(GsonHelper.isValidNode(jsonObject, "tag"))

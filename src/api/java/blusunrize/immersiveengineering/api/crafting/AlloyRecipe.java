@@ -12,9 +12,10 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
 
@@ -25,7 +26,8 @@ import javax.annotation.Nullable;
  */
 public class AlloyRecipe extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<AlloyRecipe>> SERIALIZER;
+	// TODO SetRestrictedField?
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<AlloyRecipe>> SERIALIZER;
 	public static final CachedRecipeList<AlloyRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ALLOY);
 
 	public final IngredientWithSize input0;

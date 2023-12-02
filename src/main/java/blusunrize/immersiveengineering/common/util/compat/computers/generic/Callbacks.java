@@ -24,7 +24,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class Callbacks
 	}
 
 	private static <T extends BlockEntity>
-	void register(RegistryObject<BlockEntityType<T>> type, CallbackOwner<T> owner)
+	void register(DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> type, CallbackOwner<T> owner)
 	{
 		CALLBACKS.put(type.getId(), owner);
 	}

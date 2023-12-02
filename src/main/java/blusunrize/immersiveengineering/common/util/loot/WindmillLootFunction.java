@@ -53,7 +53,7 @@ public class WindmillLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.WINDMILL.get();
+		return IELootFunctions.WINDMILL.value();
 	}
 
 	public static LootItemFunction.Builder builder()

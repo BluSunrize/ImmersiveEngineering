@@ -65,7 +65,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -227,7 +227,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			}
 		}
 		final Block oldCover = cover;
-		cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
+		cover = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString("cover")));
 		DyeColor oldColor = color;
 		if(nbt.contains("color", Tag.TAG_INT))
 			color = DyeColor.byId(nbt.getInt("color"));
@@ -251,7 +251,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				config[i] = 1;
 		nbt.putIntArray("sideConfig", config);
 		if(hasCover())
-			nbt.putString("cover", ForgeRegistries.BLOCKS.getKey(cover).toString());
+			nbt.putString("cover", BuiltInRegistries.BLOCK.getKey(cover).toString());
 		nbt.putByte("connections", connections);
 		if(color!=null)
 			nbt.putInt("color", color.getId());

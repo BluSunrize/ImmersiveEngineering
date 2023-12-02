@@ -15,12 +15,12 @@ import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,7 +74,7 @@ public interface ClocheRenderFunction
 	{
 		public static final Codec<ClocheRenderReference> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 				Codec.STRING.fieldOf("type").forGetter(r -> r.type),
-				ForgeRegistries.BLOCKS.getCodec().fieldOf("block").forGetter(r -> r.block)
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(r -> r.block)
 		).apply(inst, ClocheRenderReference::new));
 
 		private final String type;
@@ -99,14 +99,14 @@ public interface ClocheRenderFunction
 		public void write(FriendlyByteBuf buffer)
 		{
 			buffer.writeUtf(getType());
-			buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(getBlock()));
+			buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(getBlock()));
 		}
 
 		public static ClocheRenderReference read(FriendlyByteBuf buffer)
 		{
 			String key = buffer.readUtf();
 			ResourceLocation rl = buffer.readResourceLocation();
-			return new ClocheRenderReference(key, ForgeRegistries.BLOCKS.getValue(rl));
+			return new ClocheRenderReference(key, BuiltInRegistries.BLOCK.get(rl));
 		}
 
 		public JsonElement serialize()

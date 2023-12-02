@@ -185,7 +185,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{
-					t.addEffect(new MobEffectInstance(IEPotions.FLASHED.get(), 100, 1));
+					t.addEffect(new MobEffectInstance(IEPotions.FLASHED.value(), 100, 1));
 					if(t instanceof Mob)
 						((Mob)t).setTarget(null);
 				}
@@ -210,7 +210,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			if(b)
 			{
 				getUpgrades(stack).putInt("shock_cooldown", 40);
-				player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
+				player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.value(),
 						SoundSource.BLOCKS, 2.5F, 0.5F+ApiUtils.RANDOM.nextFloat());
 			}
 		}

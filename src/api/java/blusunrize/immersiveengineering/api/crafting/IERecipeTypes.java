@@ -18,8 +18,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import java.util.function.Supplier;
 
@@ -52,7 +56,7 @@ public class IERecipeTypes
 	private static <T extends Recipe<?>>
 	TypeWithClass<T> register(String name, Class<T> type)
 	{
-		RegistryObject<RecipeType<T>> regObj = REGISTER.register(name, () -> new RecipeType<>()
+		DeferredHolder<RecipeType<?>, RecipeType<T>> regObj = REGISTER.register(name, () -> new RecipeType<>()
 		{
 		});
 		return new TypeWithClass<>(regObj, type);
@@ -64,7 +68,7 @@ public class IERecipeTypes
 	}
 
 	public record TypeWithClass<T extends Recipe<?>>(
-			RegistryObject<RecipeType<T>> type, Class<T> recipeClass
+			DeferredHolder<RecipeType<?>, RecipeType<T>> type, Class<T> recipeClass
 	) implements Supplier<RecipeType<T>>
 	{
 		public RecipeType<T> get()

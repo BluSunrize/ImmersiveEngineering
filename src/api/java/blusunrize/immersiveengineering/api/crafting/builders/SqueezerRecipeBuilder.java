@@ -17,7 +17,7 @@ public class SqueezerRecipeBuilder extends IEFinishedRecipe<SqueezerRecipeBuilde
 {
 	private SqueezerRecipeBuilder()
 	{
-		super(SqueezerRecipe.SERIALIZER.get());
+		super(SqueezerRecipe.SERIALIZER.value());
 	}
 
 	public static SqueezerRecipeBuilder builder(Fluid fluid, int amount)

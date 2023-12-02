@@ -14,10 +14,11 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class WrappedFinishedRecipe implements FinishedRecipe
 {
@@ -25,7 +26,7 @@ public class WrappedFinishedRecipe implements FinishedRecipe
 	private final RecipeSerializer<?> serializer;
 
 	public WrappedFinishedRecipe(
-			FinishedRecipe base, RegistryObject<? extends RecipeSerializer<?>> serializer
+			FinishedRecipe base, Supplier<? extends RecipeSerializer<?>> serializer
 	)
 	{
 		this.base = base;
@@ -50,13 +51,6 @@ public class WrappedFinishedRecipe implements FinishedRecipe
 	public RecipeSerializer<?> type()
 	{
 		return serializer;
-	}
-
-	@Nullable
-	@Override
-	public JsonObject serializedAdvancement()
-	{
-		return base.serializedAdvancement();
 	}
 
 	@Nullable

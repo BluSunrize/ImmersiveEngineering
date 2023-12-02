@@ -52,7 +52,7 @@ public class MessageSpeedloaderSync implements IMessage
 			{
 				if(player.getItemInHand(hand).getItem() instanceof RevolverItem)
 				{
-					player.playSound(IESounds.revolverReload.get(), 1f, 1f);
+					player.playSound(IESounds.revolverReload.value(), 1f, 1f);
 					ItemNBTHelper.putInt(player.getItemInHand(hand), "reload", 60);
 				}
 				player.getInventory().setItem(slot, new ItemStack(Weapons.SPEEDLOADER));

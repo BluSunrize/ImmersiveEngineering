@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -136,7 +136,7 @@ public abstract class ConveyorBase implements IConveyorBelt
 		if(dyeColour!=null)
 			nbt.putInt("dyeColour", dyeColour.getId());
 		if(cover!=Blocks.AIR)
-			nbt.putString("cover", ForgeRegistries.BLOCKS.getKey(cover).toString());
+			nbt.putString("cover", BuiltInRegistries.BLOCK.getKey(cover).toString());
 		return nbt;
 	}
 
@@ -149,7 +149,7 @@ public abstract class ConveyorBase implements IConveyorBelt
 		else
 			dyeColour = null;
 		if(nbt.contains("cover", Tag.TAG_STRING))
-			cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
+			cover = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString("cover")));
 	}
 
 	/* ============ RENDERING ============ */

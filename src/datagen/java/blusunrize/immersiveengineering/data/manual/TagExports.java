@@ -22,7 +22,6 @@ import net.minecraft.tags.TagLoader;
 import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedWriter;
@@ -32,7 +31,6 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public record TagExports(PackOutput output, ExistingFileHelper helper, Path outPath) implements DataProvider
@@ -55,8 +53,7 @@ public record TagExports(PackOutput output, ExistingFileHelper helper, Path outP
 	private void actuallyRun() throws IOException
 	{
 		TagLoader<Item> loader = new TagLoader<>(
-				rl -> Optional.ofNullable(ForgeRegistries.ITEMS.getValue(rl)),
-				TagManager.getTagDir(Registries.ITEM)
+				rl -> BuiltInRegistries.ITEM.getOptional(rl), TagManager.getTagDir(Registries.ITEM)
 		);
 		try(ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(
 				PackType.SERVER_DATA, output, helper

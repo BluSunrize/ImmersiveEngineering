@@ -27,6 +27,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

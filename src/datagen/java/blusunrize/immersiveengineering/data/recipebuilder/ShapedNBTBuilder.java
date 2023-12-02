@@ -69,13 +69,6 @@ public class ShapedNBTBuilder extends ShapedRecipeBuilder
 
 			@Nullable
 			@Override
-			public JsonObject serializedAdvancement()
-			{
-				return base.serializedAdvancement();
-			}
-
-			@Nullable
-			@Override
 			public AdvancementHolder advancement()
 			{
 				return base.advancement();

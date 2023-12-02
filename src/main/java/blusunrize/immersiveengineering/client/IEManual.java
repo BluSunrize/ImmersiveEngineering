@@ -48,7 +48,7 @@ import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.VersionChecker;
 import net.neoforged.fml.VersionChecker.CheckResult;
 import net.neoforged.fml.VersionChecker.Status;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.io.IOException;
@@ -343,7 +343,7 @@ public class IEManual
 			JsonArray arr = json.get("recipes").getAsJsonArray();
 			stacks = new Fluid[arr.size()];
 			for(int i = 0; i < stacks.length; ++i)
-				stacks[i] = ForgeRegistries.FLUIDS.getValue(
+				stacks[i] = BuiltInRegistries.FLUID.get(
 						new ResourceLocation(GsonHelper.getAsString(arr.get(i).getAsJsonObject(), "fluid"))
 				);
 		}
@@ -351,7 +351,7 @@ public class IEManual
 		{
 			JsonElement recipe = json.get("recipe");
 			Preconditions.checkArgument(recipe.isJsonObject());
-			stacks = new Fluid[]{ForgeRegistries.FLUIDS.getValue(
+			stacks = new Fluid[]{BuiltInRegistries.FLUID.get(
 					new ResourceLocation(GsonHelper.getAsString(recipe.getAsJsonObject(), "fluid"))
 			)};
 		}

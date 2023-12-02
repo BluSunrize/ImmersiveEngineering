@@ -15,8 +15,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -27,8 +28,8 @@ import java.util.function.Supplier;
 
 public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock> implements BiFunction<BlockPos, BlockState, T>
 {
-	private final RegistryObject<BlockEntityType<T>> master;
-	private final RegistryObject<BlockEntityType<T>> dummy;
+	private final DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> master;
+	private final DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> dummy;
 	private final Predicate<BlockState> isMaster;
 
 	public MultiblockBEType(
@@ -73,12 +74,12 @@ public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock> implem
 		return dummy.get();
 	}
 
-	public RegistryObject<BlockEntityType<T>> dummyHolder()
+	public DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> dummyHolder()
 	{
 		return dummy;
 	}
 
-	public RegistryObject<BlockEntityType<T>> masterHolder()
+	public DeferredHolder<BlockEntityType<?>, BlockEntityType<T>> masterHolder()
 	{
 		return master;
 	}

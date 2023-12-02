@@ -18,13 +18,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -33,7 +35,7 @@ import java.util.function.Function;
  */
 public class SqueezerRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
 	public static final CachedRecipeList<SqueezerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SQUEEZER);
 
 	public IngredientWithSize input;

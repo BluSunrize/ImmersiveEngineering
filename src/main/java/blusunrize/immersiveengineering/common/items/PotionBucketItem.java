@@ -36,7 +36,7 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,8 +69,9 @@ public class PotionBucketItem extends IEBaseItem
 	@Override
 	public void fillCreativeTab(Output out)
 	{
-		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
-		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
+		List<Potion> sortedPotions = BuiltInRegistries.POTION.stream()
+				.sorted(Comparator.comparing(e -> getPotionName(e).getString()))
+				.toList();
 		for(Potion p : sortedPotions)
 			if(p!=Potions.WATER&&p!=Potions.EMPTY)
 				out.accept(forPotion(p));

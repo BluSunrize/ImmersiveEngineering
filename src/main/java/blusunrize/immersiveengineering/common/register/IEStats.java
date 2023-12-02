@@ -16,7 +16,7 @@ import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +28,8 @@ public class IEStats
 	);
 	private static final List<Runnable> RUN_IN_SETUP = new ArrayList<>();
 
-	public static final RegistryObject<ResourceLocation> WIRE_DEATHS = registerCustomStat("wire_deaths", StatFormatter.DEFAULT);
-	public static final RegistryObject<ResourceLocation> SKYHOOK_DISTANCE = registerCustomStat("skyhook_distance", StatFormatter.DISTANCE);
+	public static final Holder<ResourceLocation> WIRE_DEATHS = registerCustomStat("wire_deaths", StatFormatter.DEFAULT);
+	public static final Holder<ResourceLocation> SKYHOOK_DISTANCE = registerCustomStat("skyhook_distance", StatFormatter.DISTANCE);
 
 	public static void modConstruction()
 	{
@@ -41,7 +41,7 @@ public class IEStats
 		RUN_IN_SETUP.forEach(Runnable::run);
 	}
 
-	private static RegistryObject<ResourceLocation> registerCustomStat(String name, StatFormatter formatter)
+	private static Holder<ResourceLocation> registerCustomStat(String name, StatFormatter formatter)
 	{
 		return REGISTER.register(name, () -> {
 			ResourceLocation regName = ImmersiveEngineering.rl(name);

@@ -69,6 +69,7 @@ import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -206,7 +207,7 @@ public class ClientProxy extends CommonProxy
 
 		IEManual.addIEManualEntries();
 		IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
-			ResourceKey<BannerPattern> pattern = Objects.requireNonNull(entry.pattern().getKey());
+			ResourceKey<BannerPattern> pattern = entry.pattern().unwrapKey().orElseThrow();
 			Sheets.BANNER_MATERIALS.put(pattern, new Material(Sheets.BANNER_SHEET, BannerPattern.location(pattern, true)));
 			Sheets.SHIELD_MATERIALS.put(pattern, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(pattern, false)));
 		});
@@ -233,18 +234,18 @@ public class ClientProxy extends CommonProxy
 
 	@Override
 	public void handleTileSound(
-			Supplier<SoundEvent> soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch
+			Holder<SoundEvent> soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch
 	)
 	{
 		BlockPos pos = tile.getBlockPos();
 		IEBlockEntitySound sound = tileSoundMap.get(pos);
-		if((sound==null||!soundEvent.get().getLocation().equals(sound.getLocation()))&&tileActive)
+		if((sound==null||!soundEvent.value().getLocation().equals(sound.getLocation()))&&tileActive)
 		{
 			if(sound!=null)
 				stopTileSound(null, tile);
 			if(tile instanceof ISoundBE soundBE&&mc().player.distanceToSqr(Vec3.atCenterOf(pos)) > soundBE.getSoundRadiusSq())
 				return;
-			sound = ClientUtils.generatePositionedIESound(soundEvent.get(), volume, pitch, pos);
+			sound = ClientUtils.generatePositionedIESound(soundEvent.value(), volume, pitch, pos);
 			tileSoundMap.put(pos, sound);
 		}
 		else if(sound!=null&&(sound.donePlaying||!tileActive))

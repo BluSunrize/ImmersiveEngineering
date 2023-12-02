@@ -52,7 +52,7 @@ import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -225,7 +225,7 @@ public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBloc
 	{
 		for(IConveyorType<?> type : ConveyorHandler.getConveyorTypes())
 		{
-			RegistryObject<BlockEntityType<?>> beType = IEBlockEntities.REGISTER.register(
+			Supplier<BlockEntityType<?>> beType = IEBlockEntities.REGISTER.register(
 					type.getId().getPath(), () -> new BlockEntityType<>(
 							(pos, state) -> new ConveyorBeltBlockEntity<>(type, pos, state),
 							ImmutableSet.of(ConveyorHandler.getBlock(type)), null

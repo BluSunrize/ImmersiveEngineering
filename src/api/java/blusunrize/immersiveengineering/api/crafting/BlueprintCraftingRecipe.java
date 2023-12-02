@@ -19,10 +19,12 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.*;
 import java.util.Map.Entry;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
  */
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
 	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLUEPRINT);
 	private static int reloadCountForCategories = CachedRecipeList.INVALID_RELOAD_COUNT;

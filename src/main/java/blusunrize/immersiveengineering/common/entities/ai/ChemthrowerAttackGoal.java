@@ -69,7 +69,7 @@ public class ChemthrowerAttackGoal<T extends Bulwark> extends ShieldCombatGoal<T
 				this.mob.level().addFreshEntity(chem);
 		}
 		if(counter%4==0)
-			this.mob.level().playSound(null, this.mob.getX(), this.mob.getY(), this.mob.getZ(), IESounds.sprayFire.get(), SoundSource.PLAYERS, .5f, 1.5f);
+			this.mob.level().playSound(null, this.mob.getX(), this.mob.getY(), this.mob.getZ(), IESounds.sprayFire.value(), SoundSource.PLAYERS, .5f, 1.5f);
 
 		if(counter >= 40)
 		{

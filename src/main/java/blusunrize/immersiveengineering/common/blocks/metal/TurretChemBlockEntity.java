@@ -118,9 +118,9 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 				if(tick%4==0)
 				{
 					if(ignite)
-						level.playSound(null, getBlockPos(), IESounds.sprayFire.get(), SoundSource.BLOCKS, .5F, 1.5F);
+						level.playSound(null, getBlockPos(), IESounds.sprayFire.value(), SoundSource.BLOCKS, .5F, 1.5F);
 					else
-						level.playSound(null, getBlockPos(), IESounds.spray.get(), SoundSource.BLOCKS, .5F, .75F);
+						level.playSound(null, getBlockPos(), IESounds.spray.value(), SoundSource.BLOCKS, .5F, .75F);
 				}
 			}
 		}

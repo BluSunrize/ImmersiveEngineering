@@ -37,6 +37,6 @@ public class BannerTags extends IntrinsicHolderTagsProvider<BannerPattern>
 	protected void addTags(Provider p_256380_)
 	{
 		for(BannerEntry entry : IEBannerPatterns.ALL_BANNERS)
-			tag(entry.tag()).add(entry.pattern().get());
+			tag(entry.tag()).add(entry.pattern().value());
 	}
 }

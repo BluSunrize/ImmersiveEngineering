@@ -34,9 +34,11 @@ import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -47,15 +49,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.fluids.IEFluid.createBuilder;
 
 public class IEFluids
 {
-	public static final DeferredRegister<Fluid> REGISTER = DeferredRegister.create(ForgeRegistries.FLUIDS, Lib.MODID);
+	public static final DeferredRegister<Fluid> REGISTER = DeferredRegister.create(BuiltInRegistries.FLUID, Lib.MODID);
 	public static final DeferredRegister<FluidType> TYPE_REGISTER = DeferredRegister.create(
-			ForgeRegistries.Keys.FLUID_TYPES, Lib.MODID
+			NeoForgeRegistries.Keys.FLUID_TYPES, Lib.MODID
 	);
 	public static final List<FluidEntry> ALL_ENTRIES = new ArrayList<>();
 	public static final Set<BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
@@ -83,8 +86,8 @@ public class IEFluids
 	public static final FluidEntry REDSTONE_ACID = FluidEntry.make(
 			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
 	);
-	public static final RegistryObject<FluidType> POTION_TYPE = TYPE_REGISTER.register("potion", PotionFluid.PotionFluidType::new);
-	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
+	public static final Holder<FluidType> POTION_TYPE = TYPE_REGISTER.register("potion", PotionFluid.PotionFluidType::new);
+	public static final DeferredHolder<Fluid, PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
 	public static final FluidEntry ACETALDEHYDE = FluidEntry.make(
 			"acetaldehyde", rl("block/fluid/acetaldehyde_still"), rl("block/fluid/acetaldehyde_flow"),
 			createBuilder(788, 210)
@@ -95,11 +98,11 @@ public class IEFluids
 	);
 
 	public record FluidEntry(
-			RegistryObject<IEFluid> flowing,
-			RegistryObject<IEFluid> still,
+			DeferredHolder<Fluid, IEFluid> flowing,
+			DeferredHolder<Fluid, IEFluid> still,
 			BlockEntry<IEFluidBlock> block,
-			RegistryObject<BucketItem> bucket,
-			RegistryObject<FluidType> type,
+			DeferredHolder<Item, BucketItem> bucket,
+			Holder<FluidType> type,
 			List<Property<?>> properties
 	)
 	{
@@ -152,14 +155,14 @@ public class IEFluids
 					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY);
 			if(buildAttributes!=null)
 				buildAttributes.accept(builder);
-			RegistryObject<FluidType> type = TYPE_REGISTER.register(
+			Holder<FluidType> type = TYPE_REGISTER.register(
 					name, () -> makeTypeWithTextures(builder, stillTex, flowingTex)
 			);
 			Mutable<FluidEntry> thisMutable = new MutableObject<>();
-			RegistryObject<IEFluid> still = REGISTER.register(name, () -> IEFluid.makeFluid(
+			DeferredHolder<Fluid, IEFluid> still = REGISTER.register(name, () -> IEFluid.makeFluid(
 					makeStill, thisMutable.getValue()
 			));
-			RegistryObject<IEFluid> flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(
+			DeferredHolder<Fluid, IEFluid> flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(
 					makeFlowing, thisMutable.getValue()
 			));
 			BlockEntry<IEFluidBlock> block = new IEBlocks.BlockEntry<>(
@@ -167,7 +170,7 @@ public class IEFluids
 					() -> Properties.copy(Blocks.WATER),
 					p -> new IEFluidBlock(thisMutable.getValue(), p)
 			);
-			RegistryObject<BucketItem> bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
+			DeferredHolder<Item, BucketItem> bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
 			FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties);
 			thisMutable.setValue(entry);
 			ALL_FLUID_BLOCKS.add(block);
@@ -204,12 +207,12 @@ public class IEFluids
 
 		public IEFluid getFlowing()
 		{
-			return flowing.get();
+			return flowing.value();
 		}
 
 		public IEFluid getStill()
 		{
-			return still.get();
+			return still.value();
 		}
 
 		public IEFluidBlock getBlock()
@@ -219,10 +222,10 @@ public class IEFluids
 
 		public BucketItem getBucket()
 		{
-			return bucket.get();
+			return bucket.value();
 		}
 
-		private static BucketItem makeBucket(RegistryObject<IEFluid> still, int burnTime)
+		private static BucketItem makeBucket(Supplier<IEFluid> still, int burnTime)
 		{
 			return new BucketItem(
 					still, new Item.Properties()
@@ -243,7 +246,7 @@ public class IEFluids
 			};
 		}
 
-		public RegistryObject<IEFluid> getStillGetter()
+		public DeferredHolder<Fluid, IEFluid> getStillGetter()
 		{
 			return still;
 		}

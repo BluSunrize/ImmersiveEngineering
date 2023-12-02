@@ -32,7 +32,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -47,7 +47,7 @@ public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectab
 			.dynamicShape();
 	public static final EnumProperty<Direction> DEFAULT_FACING_PROP = IEProperties.FACING_ALL;
 
-	public ConnectorBlock(Properties props, RegistryObject<BlockEntityType<T>> entityType)
+	public ConnectorBlock(Properties props, Supplier<BlockEntityType<T>> entityType)
 	{
 		super(entityType, props.pushReaction(PushReaction.BLOCK));
 		lightOpacity = 0;

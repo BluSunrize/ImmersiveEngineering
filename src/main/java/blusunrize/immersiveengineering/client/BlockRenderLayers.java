@@ -19,7 +19,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, value = Dist.CLIENT, bus = Bus.MOD)
 public class BlockRenderLayers
@@ -28,8 +28,8 @@ public class BlockRenderLayers
 	public static void clientSetup(FMLClientSetupEvent ev)
 	{
 		ItemBlockRenderTypes.setRenderLayer(IEFluids.POTION.get(), RenderType.translucent());
-		for(RegistryObject<Fluid> f : IEFluids.REGISTER.getEntries())
-			if(f.get()!=IEFluids.CONCRETE.getFlowing()&&f.get()!=IEFluids.CONCRETE.getStill())
-				ItemBlockRenderTypes.setRenderLayer(f.get(), RenderType.translucent());
+		for(Holder<Fluid> f : IEFluids.REGISTER.getEntries())
+			if(f.value()!=IEFluids.CONCRETE.getFlowing()&&f.value()!=IEFluids.CONCRETE.getStill())
+				ItemBlockRenderTypes.setRenderLayer(f.value(), RenderType.translucent());
 	}
 }

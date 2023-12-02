@@ -37,18 +37,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.IContainerFactory;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class IEMenuTypes
 {
-	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Lib.MODID);
+	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(BuiltInRegistries.MENU, Lib.MODID);
 
 	public static final MultiblockContainer<CokeOvenLogic.State, CokeOvenMenu> COKE_OVEN = registerMultiblock(
 			Lib.GUIID_CokeOven, CokeOvenMenu::makeServer, CokeOvenMenu::makeClient
@@ -65,7 +67,7 @@ public class IEMenuTypes
 	public static final ArgContainer<CraftingTableBlockEntity, CraftingTableMenu> CRAFTING_TABLE = registerArg(
 			Lib.GUIID_CraftingTable, CraftingTableMenu::makeServer, CraftingTableMenu::makeClient
 	);
-	public static final RegistryObject<MenuType<CrateMenu>> WOODEN_CRATE = registerSimple(Lib.GUIID_WoodenCrate, CrateMenu::new);
+	public static final Supplier<MenuType<CrateMenu>> WOODEN_CRATE = registerSimple(Lib.GUIID_WoodenCrate, CrateMenu::new);
 	public static final ArgContainer<ModWorkbenchBlockEntity, ModWorkbenchContainer> MOD_WORKBENCH = register(Lib.GUIID_Workbench, ModWorkbenchContainer::new);
 	public static final ArgContainer<CircuitTableBlockEntity, CircuitTableMenu> CIRCUIT_TABLE = registerArg(
 			Lib.GUIID_CircuitTable, CircuitTableMenu::makeServer, CircuitTableMenu::makeClient
@@ -122,14 +124,14 @@ public class IEMenuTypes
 	public static final ItemContainerType<RevolverContainer> REVOLVER = register(Lib.GUIID_Revolver, RevolverContainer::new);
 	public static final ItemContainerType<MaintenanceKitContainer> MAINTENANCE_KIT = register(Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);
 
-	public static final RegistryObject<MenuType<CrateEntityContainer>> CRATE_MINECART = registerSimple(Lib.GUIID_CartCrate, CrateEntityContainer::new);
+	public static final Supplier<MenuType<CrateEntityContainer>> CRATE_MINECART = registerSimple(Lib.GUIID_CartCrate, CrateEntityContainer::new);
 
 	public static <T, C extends IEContainerMenu>
 	ArgContainer<T, C> registerArg(
 			String name, ArgContainerConstructor<T, C> container, ClientContainerConstructor<C> client
 	)
 	{
-		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
+		DeferredHolder<MenuType<?>, MenuType<C>> typeRef = registerType(name, client);
 		return new ArgContainer<>(typeRef, container);
 	}
 
@@ -140,7 +142,7 @@ public class IEMenuTypes
 			ClientContainerConstructor<C> client
 	)
 	{
-		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
+		DeferredHolder<MenuType<?>, MenuType<C>> typeRef = registerType(name, client);
 		return new MultiblockContainer<>(typeRef, container);
 	}
 
@@ -149,12 +151,12 @@ public class IEMenuTypes
 			String name, NewItemContainerConstructor<C> container, ClientContainerConstructor<C> client
 	)
 	{
-		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
+		DeferredHolder<MenuType<?>, MenuType<C>> typeRef = registerType(name, client);
 		return new ItemContainerTypeNew<>(typeRef, container);
 	}
 
 	private static <C extends IEContainerMenu>
-	RegistryObject<MenuType<C>> registerType(String name, ClientContainerConstructor<C> client)
+	DeferredHolder<MenuType<?>, MenuType<C>> registerType(String name, ClientContainerConstructor<C> client)
 	{
 		return REGISTER.register(
 				name, () -> {
@@ -169,7 +171,7 @@ public class IEMenuTypes
 	public static <T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
 	ArgContainer<T, C> register(String name, ArgContainerConstructor<T, C> container)
 	{
-		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
+		DeferredHolder<MenuType<?>, MenuType<C>> typeRef = REGISTER.register(
 				name, () -> {
 					Mutable<MenuType<C>> typeBox = new MutableObject<>();
 					MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
@@ -188,7 +190,7 @@ public class IEMenuTypes
 	public static <C extends AbstractContainerMenu>
 	ItemContainerType<C> register(String name, ItemContainerConstructor<C> container)
 	{
-		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
+		DeferredHolder<MenuType<?>, MenuType<C>> typeRef = REGISTER.register(
 				name, () -> {
 					Mutable<MenuType<C>> typeBox = new MutableObject<>();
 					MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
@@ -207,7 +209,7 @@ public class IEMenuTypes
 	}
 
 	public static <M extends AbstractContainerMenu>
-	RegistryObject<MenuType<M>> registerSimple(String name, SimpleContainerConstructor<M> factory)
+	DeferredHolder<MenuType<?>, MenuType<M>> registerSimple(String name, SimpleContainerConstructor<M> factory)
 	{
 		return REGISTER.register(
 				name, () -> {
@@ -221,10 +223,10 @@ public class IEMenuTypes
 
 	public static class ArgContainer<T, C extends IEContainerMenu>
 	{
-		private final RegistryObject<MenuType<C>> type;
+		private final DeferredHolder<MenuType<?>, MenuType<C>> type;
 		private final ArgContainerConstructor<T, C> factory;
 
-		private ArgContainer(RegistryObject<MenuType<C>> type, ArgContainerConstructor<T, C> factory)
+		private ArgContainer(DeferredHolder<MenuType<?>, MenuType<C>> type, ArgContainerConstructor<T, C> factory)
 		{
 			this.type = type;
 			this.factory = factory;
@@ -267,7 +269,7 @@ public class IEMenuTypes
 			ArgContainer<MultiblockMenuContext<S>, C>
 	{
 		private MultiblockContainer(
-				RegistryObject<MenuType<C>> type,
+				DeferredHolder<MenuType<?>, MenuType<C>> type,
 				ArgContainerConstructor<MultiblockMenuContext<S>, C> factory
 		)
 		{
@@ -281,7 +283,7 @@ public class IEMenuTypes
 	}
 
 	public record ItemContainerType<C extends AbstractContainerMenu>(
-			RegistryObject<MenuType<C>> type, ItemContainerConstructor<C> factory
+			DeferredHolder<MenuType<?>, MenuType<C>> type, ItemContainerConstructor<C> factory
 	)
 	{
 		public C create(int id, Inventory inv, Level w, EquipmentSlot slot, ItemStack stack)
@@ -296,7 +298,7 @@ public class IEMenuTypes
 	}
 
 	public record ItemContainerTypeNew<C extends AbstractContainerMenu>(
-			RegistryObject<MenuType<C>> type, NewItemContainerConstructor<C> factory
+			DeferredHolder<MenuType<?>, MenuType<C>> type, NewItemContainerConstructor<C> factory
 	)
 	{
 		public C create(int id, Inventory inv, EquipmentSlot slot, ItemStack stack)

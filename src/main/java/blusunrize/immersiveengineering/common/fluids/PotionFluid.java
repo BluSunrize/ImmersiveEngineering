@@ -45,7 +45,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -77,7 +77,7 @@ public class PotionFluid extends Fluid
 		ResourceLocation name = ResourceLocation.tryParse(tag.getString("Potion"));
 		if(name==null)
 			return Potions.WATER;
-		Potion result = ForgeRegistries.POTIONS.getValue(name);
+		Potion result = BuiltInRegistries.POTION.get(name);
 		return result==Potions.EMPTY?Potions.WATER: result;
 	}
 
@@ -156,7 +156,7 @@ public class PotionFluid extends Fluid
 	@Override
 	public FluidType getFluidType()
 	{
-		return IEFluids.POTION_TYPE.get();
+		return IEFluids.POTION_TYPE.value();
 	}
 
 	public void addInformation(FluidStack fluidStack, Consumer<Component> tooltip)

@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.fml.config.ConfigTracker;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,17 +66,17 @@ public class BlockEntityTags extends IntrinsicHolderTagsProvider<BlockEntityType
 		// Some tiles needs to config to be available in the constructor, so just load the default values
 		ConfigTracker.INSTANCE.loadDefaultServerConfigs();
 		IEServerConfig.refresh();
-		for(RegistryObject<BlockEntityType<?>> type : IEBlockEntities.REGISTER.getEntries())
+		for(Holder<BlockEntityType<?>> type : IEBlockEntities.REGISTER.getEntries())
 		{
-			BlockEntity instance = type.get().create(BlockPos.ZERO, ((BETypeAccess)type.get()).getValidBlocks().iterator().next().defaultBlockState());
+			BlockEntity instance = type.value().create(BlockPos.ZERO, ((BETypeAccess)type.value()).getValidBlocks().iterator().next().defaultBlockState());
 			if(instance instanceof IImmersiveConnectable||instance instanceof IGeneralMultiblock)
 				notMovable(type);
 		}
 	}
 
-	private void notMovable(RegistryObject<BlockEntityType<?>> type)
+	private void notMovable(Holder<BlockEntityType<?>> type)
 	{
-		notMovable(type.get());
+		notMovable(type.value());
 	}
 
 	private void notMovable(BlockEntityType<?> type)

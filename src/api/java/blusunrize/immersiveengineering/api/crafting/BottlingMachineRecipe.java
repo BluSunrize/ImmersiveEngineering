@@ -17,11 +17,13 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 14.01.2016
@@ -30,7 +32,7 @@ import java.util.Map;
  */
 public class BottlingMachineRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
 	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BOTTLING_MACHINE);
 
 	public final List<IngredientWithSize> inputs;

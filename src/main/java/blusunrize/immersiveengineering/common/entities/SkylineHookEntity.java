@@ -279,10 +279,10 @@ public class SkylineHookEntity extends Entity
 		double dz = this.getZ()-this.zo;
 		int distTrvl = Math.round(Mth.sqrt((float)(dx*dx+dy*dy+dz*dz))*100.0F);
 		if(distTrvl > 0)
-			player.awardStat(IEStats.SKYHOOK_DISTANCE.get(), distTrvl);
+			player.awardStat(IEStats.SKYHOOK_DISTANCE.value(), distTrvl);
 
 		if(player instanceof ServerPlayer serverPlayer)
-			if(serverPlayer.getStats().getValue(Stats.CUSTOM, IEStats.SKYHOOK_DISTANCE.get()) > 100000)
+			if(serverPlayer.getStats().getValue(Stats.CUSTOM, IEStats.SKYHOOK_DISTANCE.value()) > 100000)
 				Utils.unlockIEAdvancement(player, "tools/skyhook_distance");
 
 		this.setPos(this.getX(), this.getY(), this.getZ());

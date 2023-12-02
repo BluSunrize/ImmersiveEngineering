@@ -13,16 +13,18 @@ import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.function.Supplier;
 
 public class IEEntityDataSerializers
 {
 	public static final DeferredRegister<EntityDataSerializer<?>> REGISTER = DeferredRegister.create(
-			Keys.ENTITY_DATA_SERIALIZERS, Lib.MODID
+			NeoForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS, Lib.MODID
 	);
 
-	public static final RegistryObject<EntityDataSerializer<FluidStack>> FLUID_STACK = REGISTER.register(
+	public static final Supplier<EntityDataSerializer<FluidStack>> FLUID_STACK = REGISTER.register(
 			"fluid_stack", IEFluid.EntityFluidSerializer::new
 	);
 }

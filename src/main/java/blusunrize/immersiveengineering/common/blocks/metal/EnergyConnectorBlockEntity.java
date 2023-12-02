@@ -52,7 +52,7 @@ import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,6 +60,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
 import static blusunrize.immersiveengineering.common.config.IEServerConfig.getOrDefault;
@@ -67,7 +68,7 @@ import static blusunrize.immersiveengineering.common.config.IEServerConfig.getOr
 public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity implements IStateBasedDirectional,
 		IBlockBounds, EnergyConnector, IEServerTickableBE
 {
-	public static final Map<Pair<String, Boolean>, RegistryObject<BlockEntityType<EnergyConnectorBlockEntity>>>
+	public static final Map<Pair<String, Boolean>, Supplier<BlockEntityType<EnergyConnectorBlockEntity>>>
 			SPEC_TO_TYPE = new HashMap<>();
 	public static final Map<ResourceLocation, Pair<String, Boolean>> NAME_TO_SPEC = new HashMap<>();
 
@@ -79,7 +80,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 				boolean relay = b!=0;
 				Pair<String, Boolean> key = Pair.of(type, relay);
 				String name = type.toLowerCase(Locale.US)+"_"+(relay?"relay": "conn");
-				RegistryObject<BlockEntityType<EnergyConnectorBlockEntity>> teType = event.register(
+				Supplier<BlockEntityType<EnergyConnectorBlockEntity>> teType = event.register(
 						name, () -> new BlockEntityType<>(
 								(pos, state) -> new EnergyConnectorBlockEntity(type, relay, pos, state),
 								ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key).get()), null)

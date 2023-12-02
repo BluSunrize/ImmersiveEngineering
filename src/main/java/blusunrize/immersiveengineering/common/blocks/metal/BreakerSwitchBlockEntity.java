@@ -182,7 +182,7 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 		{
 			boolean active = !getIsActive();
 			setActive(active);
-			level.playSound(null, getBlockPos(), IESounds.direSwitch.get(), SoundSource.BLOCKS, 2.5F, 1);
+			level.playSound(null, getBlockPos(), IESounds.direSwitch.value(), SoundSource.BLOCKS, 2.5F, 1);
 			level.blockEvent(getBlockPos(), getBlockState().getBlock(), active?1: 0, 0);
 			notifyNeighbours();
 			updateConductivity();

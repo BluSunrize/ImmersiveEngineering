@@ -9,7 +9,10 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +40,15 @@ public class PacketUtils
 		buffer.writeVarInt(toWrite.size());
 		for(T element : toWrite)
 			writeElement.accept(element, buffer);
+	}
+
+	public static <T> T readRegistryElement(FriendlyByteBuf buffer, Registry<T> registry) {
+		ResourceKey<T> key = buffer.readResourceKey(registry.key());
+		return registry.get(key);
+	}
+
+	public static <T> void writeRegistryElement(FriendlyByteBuf buffer, Registry<T> registry, T entry) {
+		ResourceKey<T> key = registry.getResourceKey(entry).orElseThrow();
+		buffer.writeResourceKey(key);
 	}
 }

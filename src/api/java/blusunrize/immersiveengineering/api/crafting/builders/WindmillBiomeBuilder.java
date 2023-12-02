@@ -22,13 +22,13 @@ public class WindmillBiomeBuilder extends IEFinishedRecipe<WindmillBiomeBuilder>
 
 	private WindmillBiomeBuilder(ResourceKey<Biome> matching)
 	{
-		super(WindmillBiome.SERIALIZER.get());
+		super(WindmillBiome.SERIALIZER.value());
 		addWriter(obj -> obj.addProperty(SINGLE_BIOME_KEY, matching.toString()));
 	}
 
 	private WindmillBiomeBuilder(TagKey<Biome> matching)
 	{
-		super(WindmillBiome.SERIALIZER.get());
+		super(WindmillBiome.SERIALIZER.value());
 		addWriter(obj -> obj.addProperty(BIOME_TAG_KEY, matching.location().toString()));
 	}
 

@@ -15,7 +15,7 @@ public class ClocheFertilizerBuilder extends IEFinishedRecipe<ClocheFertilizerBu
 {
 	private ClocheFertilizerBuilder()
 	{
-		super(ClocheFertilizer.SERIALIZER.get());
+		super(ClocheFertilizer.SERIALIZER.value());
 	}
 
 	public static ClocheFertilizerBuilder builder(float growthModifier)

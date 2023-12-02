@@ -15,32 +15,33 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
 
 public class IEWorldGen
 {
 	// TODO make retrogen happen again
-	private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, ImmersiveEngineering.MODID);
-	public static final RegistryObject<FeatureMineralVein> MINERAL_VEIN_FEATURE = FEATURE_REGISTER.register(
+	private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(BuiltInRegistries.FEATURE, ImmersiveEngineering.MODID);
+	public static final DeferredHolder<Feature<?>, FeatureMineralVein> MINERAL_VEIN_FEATURE = FEATURE_REGISTER.register(
 			"mineral_vein", FeatureMineralVein::new
 	);
-	public static final RegistryObject<IEOreFeature> IE_CONFIG_ORE = FEATURE_REGISTER.register(
+	public static final DeferredHolder<Feature<?>, IEOreFeature> IE_CONFIG_ORE = FEATURE_REGISTER.register(
 			"ie_ore", IEOreFeature::new
 	);
 
 	private static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_REGISTER = DeferredRegister.create(
 			Registries.PLACEMENT_MODIFIER_TYPE, ImmersiveEngineering.MODID
 	);
-	public static RegistryObject<PlacementModifierType<IECountPlacement>> IE_COUNT_PLACEMENT = PLACEMENT_REGISTER.register(
+	public static DeferredHolder<PlacementModifierType<?>, PlacementModifierType<IECountPlacement>> IE_COUNT_PLACEMENT = PLACEMENT_REGISTER.register(
 			"ie_count", () -> () -> IECountPlacement.CODEC
 	);
 
 	private static final DeferredRegister<HeightProviderType<?>> HEIGHT_REGISTER = DeferredRegister.create(
 			Registries.HEIGHT_PROVIDER_TYPE, ImmersiveEngineering.MODID
 	);
-	public static RegistryObject<HeightProviderType<IEHeightProvider>> IE_HEIGHT_PROVIDER = HEIGHT_REGISTER.register(
+	public static DeferredHolder<HeightProviderType<?>, HeightProviderType<IEHeightProvider>> IE_HEIGHT_PROVIDER = HEIGHT_REGISTER.register(
 			"ie_range", () -> () -> IEHeightProvider.CODEC
 	);
 

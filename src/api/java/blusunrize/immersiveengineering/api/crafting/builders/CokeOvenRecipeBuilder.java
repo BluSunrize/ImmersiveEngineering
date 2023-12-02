@@ -19,7 +19,7 @@ public class CokeOvenRecipeBuilder extends IEFinishedRecipe<CokeOvenRecipeBuilde
 {
 	private CokeOvenRecipeBuilder()
 	{
-		super(CokeOvenRecipe.SERIALIZER.get());
+		super(CokeOvenRecipe.SERIALIZER.value());
 	}
 
 	public static CokeOvenRecipeBuilder builder(Item result)

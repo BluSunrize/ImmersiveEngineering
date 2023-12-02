@@ -136,7 +136,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			@Override
 			public SoundEvent getSound()
 			{
-				return IESounds.revolverFireThump.get();
+				return IESounds.revolverFireThump.value();
 			}
 		});
 
@@ -428,7 +428,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		@Override
 		public SoundEvent getSound()
 		{
-			return IESounds.revolverFireThump.get();
+			return IESounds.revolverFireThump.value();
 		}
 
 		@Override

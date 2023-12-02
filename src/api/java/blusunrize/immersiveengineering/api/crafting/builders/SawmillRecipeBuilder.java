@@ -25,7 +25,7 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 
 	private SawmillRecipeBuilder()
 	{
-		super(SawmillRecipe.SERIALIZER.get());
+		super(SawmillRecipe.SERIALIZER.value());
 		addWriter(jsonObject -> jsonObject.add("secondaries", secondaryArray));
 	}
 

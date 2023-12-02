@@ -41,7 +41,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -216,9 +216,9 @@ public class IEBlockTags extends BlockTagsProvider
 		tag.add(StoneDecoration.CONCRETE_SPRAYED.get())
 				.add(Cloth.STRIP_CURTAIN.get());
 		//TODO not really the nicest approach, but maintains 1.16 behavior
-		for(RegistryObject<Block> regObject : IEBlocks.REGISTER.getEntries())
+		for(Holder<Block> regObject : IEBlocks.REGISTER.getEntries())
 		{
-			Block block = regObject.get();
+			Block block = regObject.value();
 			if(block instanceof ConnectorBlock<?>||block instanceof ConveyorBlock)
 				tag.add(block);
 		}
@@ -490,7 +490,7 @@ public class IEBlockTags extends BlockTagsProvider
 				.map(BlockEntry::getId)
 				.collect(Collectors.toSet());
 		Set<ResourceLocation> registered = IEBlocks.REGISTER.getEntries().stream()
-				.map(RegistryObject::get)
+				.map(Holder::value)
 				.filter(b -> !(b instanceof IEFluidBlock))
 				.map(BuiltInRegistries.BLOCK::getKey)
 				.filter(name -> !knownNonHarvestable.contains(name))

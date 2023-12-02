@@ -25,7 +25,7 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 
 	private ClocheRecipeBuilder()
 	{
-		super(ClocheRecipe.SERIALIZER.get());
+		super(ClocheRecipe.SERIALIZER.value());
 		setMultipleResults(4);
 	}
 

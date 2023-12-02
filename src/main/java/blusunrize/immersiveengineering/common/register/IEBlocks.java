@@ -33,6 +33,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -44,9 +45,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -57,7 +57,7 @@ import java.util.function.Supplier;
 // TODO block items
 public final class IEBlocks
 {
-	public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, Lib.MODID);
+	public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(BuiltInRegistries.BLOCK, Lib.MODID);
 	private static final Supplier<Properties> STONE_DECO_PROPS = () -> Block.Properties.of()
 			.mapColor(MapColor.STONE)
 			.instrument(NoteBlockInstrument.BASEDRUM)
@@ -690,11 +690,12 @@ public final class IEBlocks
 		}
 	}
 
+	// TODO replace by NFs DeferredBlock?
 	public static final class BlockEntry<T extends Block> implements Supplier<T>, ItemLike
 	{
 		public static final Collection<BlockEntry<?>> ALL_ENTRIES = new ArrayList<>();
 
-		private final RegistryObject<T> regObject;
+		private final DeferredHolder<Block, T> regObject;
 		private final Supplier<Properties> properties;
 
 		public static BlockEntry<IEBaseBlock> simple(String name, Supplier<Properties> properties, Consumer<IEBaseBlock> extra)
@@ -743,14 +744,14 @@ public final class IEBlocks
 		public BlockEntry(T existing)
 		{
 			this.properties = () -> Properties.copy(existing);
-			this.regObject = RegistryObject.create(BuiltInRegistries.BLOCK.getKey(existing), ForgeRegistries.BLOCKS);
+			this.regObject = DeferredHolder.create(Registries.BLOCK, BuiltInRegistries.BLOCK.getKey(existing));
 		}
 
 		@SuppressWarnings("unchecked")
 		public BlockEntry(BlockEntry<? extends T> toCopy)
 		{
 			this.properties = toCopy.properties;
-			this.regObject = (RegistryObject<T>)toCopy.regObject;
+			this.regObject = (DeferredHolder<Block, T>)toCopy.regObject;
 		}
 
 		@Override
@@ -779,11 +780,6 @@ public final class IEBlocks
 		public Item asItem()
 		{
 			return get().asItem();
-		}
-
-		public RegistryObject<? extends Block> getRegObject()
-		{
-			return regObject;
 		}
 	}
 }

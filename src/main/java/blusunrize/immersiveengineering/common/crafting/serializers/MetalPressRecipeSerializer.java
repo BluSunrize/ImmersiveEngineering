@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,7 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +29,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	public static final Codec<MetalPressRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
-			ForgeRegistries.ITEMS.getCodec().fieldOf("mold").forGetter(r -> r.mold),
+			BuiltInRegistries.ITEM.byNameCodec().fieldOf("mold").forGetter(r -> r.mold),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
 	).apply(inst, MetalPressRecipe::new));
 
@@ -50,7 +51,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	{
 		Lazy<ItemStack> output = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		Item mold = buffer.readRegistryIdSafe(Item.class);
+		Item mold = PacketUtils.readRegistryElement(buffer, BuiltInRegistries.ITEM);
 		int energy = buffer.readInt();
 		return new MetalPressRecipe(output, input, mold, energy);
 	}
@@ -60,7 +61,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	{
 		writeLazyStack(buffer, recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeRegistryId(ForgeRegistries.ITEMS, recipe.mold);
+		PacketUtils.writeRegistryElement(buffer, BuiltInRegistries.ITEM, recipe.mold);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

@@ -31,6 +31,9 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 

@@ -20,15 +20,17 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class ClocheRecipe extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<ClocheRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<ClocheRecipe>> SERIALIZER;
 
 	public final List<Lazy<ItemStack>> outputs;
 	public final Ingredient seed;

@@ -76,6 +76,6 @@ public class DropInventoryLootEntry extends LootPoolSingletonContainer
 	@Override
 	public LootPoolEntryType getType()
 	{
-		return IELootFunctions.DROP_INVENTORY.get();
+		return IELootFunctions.DROP_INVENTORY.value();
 	}
 }

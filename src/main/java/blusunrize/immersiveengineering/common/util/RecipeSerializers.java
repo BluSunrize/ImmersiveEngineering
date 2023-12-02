@@ -22,70 +22,70 @@ import blusunrize.immersiveengineering.common.crafting.serializers.*;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
 
 import java.util.function.Supplier;
 
 public class RecipeSerializers
 {
 	public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
-			ForgeRegistries.RECIPE_SERIALIZERS, ImmersiveEngineering.MODID
+			BuiltInRegistries.RECIPE_SERIALIZER, ImmersiveEngineering.MODID
 	);
 
-	public static final RegistryObject<SimpleRecipeSerializer<SpeedloaderLoadRecipe>> SPEEDLOADER_LOAD = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<SpeedloaderLoadRecipe>> SPEEDLOADER_LOAD = RECIPE_SERIALIZERS.register(
 			"crafting_special_speedloader_load", special(SpeedloaderLoadRecipe::new)
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<FlareBulletColorRecipe>> FLARE_BULLET_COLOR = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<FlareBulletColorRecipe>> FLARE_BULLET_COLOR = RECIPE_SERIALIZERS.register(
 			"crafting_special_flare_bullet_color", special(FlareBulletColorRecipe::new)
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<PotionBulletFillRecipe>> POTION_BULLET_FILL = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<PotionBulletFillRecipe>> POTION_BULLET_FILL = RECIPE_SERIALIZERS.register(
 			"crafting_special_potion_bullet_fill", special(PotionBulletFillRecipe::new)
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<JerrycanRefillRecipe>> JERRYCAN_REFILL = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<JerrycanRefillRecipe>> JERRYCAN_REFILL = RECIPE_SERIALIZERS.register(
 			"crafting_special_jerrycan_refill", special(JerrycanRefillRecipe::new)
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<PowerpackRecipe>> POWERPACK_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<PowerpackRecipe>> POWERPACK_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"powerpack", special(PowerpackRecipe::new)
 	);
-	public static final RegistryObject<HammerCrushingRecipeSerializer> HAMMER_CRUSHING_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<HammerCrushingRecipeSerializer> HAMMER_CRUSHING_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"hammer_crushing", HammerCrushingRecipeSerializer::new
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<EarmuffsRecipe>> EARMUFF_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<EarmuffsRecipe>> EARMUFF_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"earmuffs", special(EarmuffsRecipe::new)
 	);
-	public static final RegistryObject<RGBRecipeSerializer> RGB_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<RGBRecipeSerializer> RGB_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"rgb", RGBRecipeSerializer::new
 	);
-	public static final RegistryObject<TurnAndCopyRecipeSerializer> TURN_AND_COPY_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<TurnAndCopyRecipeSerializer> TURN_AND_COPY_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"turn_and_copy", TurnAndCopyRecipeSerializer::new
 	);
-	public static final RegistryObject<RevolverAssemblyRecipeSerializer> REVOLVER_ASSEMBLY_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<RevolverAssemblyRecipeSerializer> REVOLVER_ASSEMBLY_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"revolver_assembly", RevolverAssemblyRecipeSerializer::new
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<RevolverCycleRecipe>> REVOLVER_CYCLE_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<RevolverCycleRecipe>> REVOLVER_CYCLE_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"revolver_cycle", special(RevolverCycleRecipe::new)
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<IERepairItemRecipe>> IE_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<IERepairItemRecipe>> IE_REPAIR_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"ie_item_repair", special(IERepairItemRecipe::new)
 	);
-	public static final RegistryObject<SimpleRecipeSerializer<ShaderBagRecipe>> SHADER_BAG_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<SimpleRecipeSerializer<ShaderBagRecipe>> SHADER_BAG_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"shader_bag", special(ShaderBagRecipe::new)
 	);
-	public static final RegistryObject<DamageToolRecipeSerializer> DAMAGE_TOOL_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<DamageToolRecipeSerializer> DAMAGE_TOOL_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"damage_tool", DamageToolRecipeSerializer::new
 	);
-	public static final RegistryObject<WrappingRecipeSerializer<BasicShapedRecipe, ?>> IE_SHAPED_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<WrappingRecipeSerializer<BasicShapedRecipe, ?>> IE_SHAPED_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"shaped_fluid", () -> new WrappingRecipeSerializer<>(
 					RecipeSerializer.SHAPED_RECIPE, BasicShapedRecipe::toVanilla, BasicShapedRecipe::new
 			)
 	);
-	public static final RegistryObject<WrappingRecipeSerializer<ShapelessFluidAwareRecipe, ?>> IE_SHAPELESS_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<WrappingRecipeSerializer<ShapelessFluidAwareRecipe, ?>> IE_SHAPELESS_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"shapeless_fluid", () -> new WrappingRecipeSerializer<>(
 					RecipeSerializer.SHAPELESS_RECIPE, ShapelessFluidAwareRecipe::toVanilla, ShapelessFluidAwareRecipe::new
 			)
 	);
-	public static final RegistryObject<NoContainerSerializer> NO_CONTAINER_SERIALIZER = RECIPE_SERIALIZERS.register(
+	public static final Supplier<NoContainerSerializer> NO_CONTAINER_SERIALIZER = RECIPE_SERIALIZERS.register(
 			"no_container_item", NoContainerSerializer::new
 	);
 

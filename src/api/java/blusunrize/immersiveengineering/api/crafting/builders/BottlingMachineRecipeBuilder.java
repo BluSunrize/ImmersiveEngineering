@@ -19,7 +19,7 @@ public class BottlingMachineRecipeBuilder extends IEFinishedRecipe<BottlingMachi
 {
 	private BottlingMachineRecipeBuilder()
 	{
-		super(BottlingMachineRecipe.SERIALIZER.get());
+		super(BottlingMachineRecipe.SERIALIZER.value());
 		this.setMultipleResults(3);
 	}
 

@@ -11,13 +11,12 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.client.fx.FractalOptions;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.function.Supplier;
 
 public class CommonProxy
 {
@@ -29,7 +28,7 @@ public class CommonProxy
 	{
 	}
 
-	public void handleTileSound(Supplier<SoundEvent> soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
+	public void handleTileSound(Holder<SoundEvent> soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
 	{
 	}
 

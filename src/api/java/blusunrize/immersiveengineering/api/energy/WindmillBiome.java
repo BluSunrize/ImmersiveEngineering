@@ -16,24 +16,28 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class WindmillBiome extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<WindmillBiome>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<WindmillBiome>> SERIALIZER;
 
 	public static final CachedRecipeList<WindmillBiome> ALL_BIOMES = new CachedRecipeList<>(IERecipeTypes.WINDMILL_BIOME);
 
-	public final FastEither<TagKey<Biome>, List<Biome>> biomes;
+	public final FastEither<TagKey<Biome>, List<ResourceKey<Biome>>> biomes;
 	public final float modifier;
 
 	public WindmillBiome(TagKey<Biome> biomes, float modifier)
@@ -41,12 +45,12 @@ public class WindmillBiome extends IESerializableRecipe
 		this(FastEither.left(biomes), modifier);
 	}
 
-	public WindmillBiome(List<Biome> biomes, float modifier)
+	public WindmillBiome(List<ResourceKey<Biome>> biomes, float modifier)
 	{
 		this(FastEither.right(biomes), modifier);
 	}
 
-	private WindmillBiome(FastEither<TagKey<Biome>, List<Biome>> biomes, float modifier)
+	private WindmillBiome(FastEither<TagKey<Biome>, List<ResourceKey<Biome>>> biomes, float modifier)
 	{
 		super(LAZY_EMPTY, IERecipeTypes.WINDMILL_BIOME);
 		this.biomes = biomes;
@@ -76,7 +80,7 @@ public class WindmillBiome extends IESerializableRecipe
 		if(biomes.isLeft())
 			return biome.is(biomes.leftNonnull());
 		else
-			return biomes.rightNonnull().contains(biome.value());
+			return biomes.rightNonnull().stream().anyMatch(biome::is);
 	}
 
 	@Nullable

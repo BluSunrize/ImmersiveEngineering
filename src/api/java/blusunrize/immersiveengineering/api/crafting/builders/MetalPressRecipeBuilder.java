@@ -20,7 +20,7 @@ public class MetalPressRecipeBuilder extends IEFinishedRecipe<MetalPressRecipeBu
 {
 	private MetalPressRecipeBuilder(ItemLike mold)
 	{
-		super(MetalPressRecipe.SERIALIZER.get());
+		super(MetalPressRecipe.SERIALIZER.value());
 		addSimpleItem("mold", mold);
 	}
 

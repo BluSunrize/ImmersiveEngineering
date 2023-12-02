@@ -14,9 +14,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nullable;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -25,7 +27,7 @@ import javax.annotation.Nullable;
  */
 public class CokeOvenRecipe extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
 	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.COKE_OVEN);
 
 	public final IngredientWithSize input;

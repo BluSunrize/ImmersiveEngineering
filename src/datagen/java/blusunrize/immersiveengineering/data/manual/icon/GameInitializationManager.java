@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -19,8 +20,8 @@ import net.neoforged.neoforge.client.model.geometry.GeometryLoaderManager;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.IForgeRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.lang.reflect.Field;
 import java.util.function.BiConsumer;
@@ -49,9 +50,9 @@ public class GameInitializationManager
 
 		initialized = true;
 
-		initClient(ForgeRegistries.FLUID_TYPES.get(), FluidType::initializeClient, FluidType.class);
-		initClient(ForgeRegistries.ITEMS, Item::initializeClient, Item.class);
-		initClient(ForgeRegistries.BLOCKS, Block::initializeClient, Block.class);
+		initClient(NeoForgeRegistries.FLUID_TYPES, FluidType::initializeClient, FluidType.class);
+		initClient(BuiltInRegistries.ITEM, Item::initializeClient, Item.class);
+		initClient(BuiltInRegistries.BLOCK, Block::initializeClient, Block.class);
 		GLFWInitializationManager.getInstance().initialize();
 		MinecraftInstanceManager.getInstance().initialize(existingFileHelper, output);
 		ClientProxy.initWithMC();
@@ -68,11 +69,10 @@ public class GameInitializationManager
 		}
 	}
 
-	private static <R, P> void initClient(IForgeRegistry<R> reg, BiConsumer<R, Consumer<P>> initialize, Class<R> type)
+	private static <R, P> void initClient(Registry<R> reg, BiConsumer<R, Consumer<P>> initialize, Class<R> type)
 	{
 		Field field = ObfuscationReflectionHelper.findField(type, "renderProperties");
-		for(R obj : reg.getValues())
-			initialize.accept(obj, setter(obj, field));
+		reg.stream().forEach(obj -> initialize.accept(obj, setter(obj, field)));
 	}
 
 	private static <T> Consumer<T> setter(Object owner, Field toSet)

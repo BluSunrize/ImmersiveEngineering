@@ -58,7 +58,7 @@ import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -129,7 +129,7 @@ public class SawmillLogic
 		{
 			final Vec3 soundPos = level.toAbsolute(new Vec3(2.5, 1, 1.5));
 			final ActiveState active = state.active;
-			RegistryObject<SoundEvent> sound = switch(active)
+			Holder<SoundEvent> sound = switch(active)
 					{
 						case DISABLED -> IESounds.saw_shutdown;
 						case IDLE -> IESounds.saw_empty;
@@ -172,7 +172,7 @@ public class SawmillLogic
 				rawLevel.playSound(
 						ImmersiveEngineering.proxy.getClientPlayer(),
 						level.toAbsolute(new BlockPos(2, 1, 1)),
-						IESounds.saw_full.get(),
+						IESounds.saw_full.value(),
 						SoundSource.BLOCKS, .4F, 1);
 		}
 		else if(state.count!=-1)

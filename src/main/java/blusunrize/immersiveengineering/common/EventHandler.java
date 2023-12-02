@@ -279,8 +279,8 @@ public class EventHandler
 						EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, false);
 						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(player.level(), 2+player.getRandom().nextInt(4), true);
 						if(dmgsrc.apply(attacker))
-							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 60));
-						player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
+							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.value(), 60));
+						player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.value(),
 								SoundSource.BLOCKS, 2.5F, 0.5F+rng.nextFloat());
 					}
 		}
@@ -290,16 +290,16 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)
 	{
-		if(event.getSource().is(DamageTypeTags.IS_FIRE)&&event.getEntity().getEffect(IEPotions.FLAMMABLE.get())!=null)
+		if(event.getSource().is(DamageTypeTags.IS_FIRE)&&event.getEntity().getEffect(IEPotions.FLAMMABLE.value())!=null)
 		{
-			int amp = event.getEntity().getEffect(IEPotions.FLAMMABLE.get()).getAmplifier();
+			int amp = event.getEntity().getEffect(IEPotions.FLAMMABLE.value()).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
 		if(("flux".equals(event.getSource().getMsgId())||event.getSource().is(DamageTypes.RAZOR_SHOCK)||
-				event.getSource() instanceof ElectricDamageSource)&&event.getEntity().getEffect(IEPotions.CONDUCTIVE.get())!=null)
+				event.getSource() instanceof ElectricDamageSource)&&event.getEntity().getEffect(IEPotions.CONDUCTIVE.value())!=null)
 		{
-			int amp = event.getEntity().getEffect(IEPotions.CONDUCTIVE.get()).getAmplifier();
+			int amp = event.getEntity().getEffect(IEPotions.CONDUCTIVE.value()).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
@@ -311,9 +311,9 @@ public class EventHandler
 	public void onLivingJump(LivingJumpEvent event)
 	{
 		Vec3 motion = event.getEntity().getDeltaMovement();
-		if(event.getEntity().getEffect(IEPotions.STICKY.get())!=null)
-			motion = motion.subtract(0, (event.getEntity().getEffect(IEPotions.STICKY.get()).getAmplifier()+1)*0.2F, 0);
-		else if(event.getEntity().getEffect(IEPotions.CONCRETE_FEET.get())!=null)
+		if(event.getEntity().getEffect(IEPotions.STICKY.value())!=null)
+			motion = motion.subtract(0, (event.getEntity().getEffect(IEPotions.STICKY.value()).getAmplifier()+1)*0.2F, 0);
+		else if(event.getEntity().getEffect(IEPotions.CONCRETE_FEET.value())!=null)
 			motion = Vec3.ZERO;
 		event.getEntity().setDeltaMovement(motion);
 	}
@@ -449,7 +449,7 @@ public class EventHandler
 			return;
 		if(!(event.getEntity() instanceof ServerPlayer serverPlayer))
 			return;
-		serverPlayer.awardStat(IEStats.WIRE_DEATHS.get());
+		serverPlayer.awardStat(IEStats.WIRE_DEATHS.value());
 		if(serverPlayer.getAbilities().flying||serverPlayer.isFallFlying())
 			Utils.unlockIEAdvancement(serverPlayer, "main/secret_friedbird");
 	}

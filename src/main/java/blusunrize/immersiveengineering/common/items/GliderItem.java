@@ -82,7 +82,7 @@ public class GliderItem extends IEBaseItem implements Equipable
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"glider.too_fast"), true);
 				// It also makes worrying noises!
 				if(itemDamage>1 && (nextFlightTick+40)%60==0)
-					entity.level().playSound(null, entity, IESounds.glider.get(), SoundSource.PLAYERS, 1, 1);
+					entity.level().playSound(null, entity, IESounds.glider.value(), SoundSource.PLAYERS, 1, 1);
 
 				if(nextFlightTick%20==0)
 				{

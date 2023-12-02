@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.MissingMappingsHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
@@ -123,7 +122,6 @@ public class ImmersiveEngineering
 		modBus.addListener(this::enqueueIMCs);
 		NeoForge.EVENT_BUS.addListener(this::registerCommands);
 		NeoForge.EVENT_BUS.addListener(this::serverStarted);
-		NeoForge.EVENT_BUS.addListener(MissingMappingsHelper::handleRemapping);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
 		Villages.Registers.POINTS_OF_INTEREST.register(modBus);
 		Villages.Registers.PROFESSIONS.register(modBus);

@@ -198,7 +198,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		living.level().playSound(null,
 				living.getX(), living.getY(), living.getZ(),
-				getChargeTime(railgun) <= 20?IESounds.chargeFast.get(): IESounds.chargeSlow.get(), SoundSource.PLAYERS,
+				getChargeTime(railgun) <= 20?IESounds.chargeFast.value(): IESounds.chargeSlow.value(), SoundSource.PLAYERS,
 				1.5f, 1f
 		);
 
@@ -210,7 +210,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		int inUse = this.getUseDuration(stack)-count;
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRandom().nextInt(20))
 		{
-			user.level().playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark.get(), SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
+			user.level().playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark.value(), SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
 			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
@@ -252,7 +252,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		float speed = 20;
 		Entity shot = new RailgunShotEntity(user.level(), user, speed, 0, ammo);
 		shot = projectileProperties.getProjectile(user instanceof Player player?player: null, ammo, shot);
-		user.level().playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
+		user.level().playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.value(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
 		if(!world.isClientSide)
 			user.level().addFreshEntity(shot);
 

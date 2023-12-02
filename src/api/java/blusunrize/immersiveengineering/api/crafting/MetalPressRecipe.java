@@ -18,12 +18,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -32,7 +34,7 @@ import java.util.function.BiConsumer;
  */
 public class MetalPressRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
 	public static final CachedRecipeList<MetalPressRecipe> STANDARD_RECIPES = new CachedRecipeList<>(IERecipeTypes.METAL_PRESS);
 	private static final Map<ResourceLocation, MetalPressRecipe> SPECIAL_RECIPES = new HashMap<>();
 

@@ -345,13 +345,6 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	@Nullable
 	@Override
-	public JsonObject serializedAdvancement()
-	{
-		return null;
-	}
-
-	@Nullable
-	@Override
 	public AdvancementHolder advancement()
 	{
 		// TODO?

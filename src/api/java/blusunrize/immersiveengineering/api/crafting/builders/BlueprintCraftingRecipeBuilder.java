@@ -20,7 +20,7 @@ public class BlueprintCraftingRecipeBuilder extends IEFinishedRecipe<BlueprintCr
 {
 	private BlueprintCraftingRecipeBuilder()
 	{
-		super(BlueprintCraftingRecipe.SERIALIZER.get());
+		super(BlueprintCraftingRecipe.SERIALIZER.value());
 		setUseInputArray(6);
 	}
 

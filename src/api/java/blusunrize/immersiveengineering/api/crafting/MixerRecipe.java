@@ -15,9 +15,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.*;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -26,7 +28,7 @@ import java.util.*;
  */
 public class MixerRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<MixerRecipe>> SERIALIZER;
 	public static final CachedRecipeList<MixerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.MIXER);
 
 	public final List<IngredientWithSize> itemInputs;

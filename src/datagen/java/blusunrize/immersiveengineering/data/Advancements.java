@@ -165,7 +165,7 @@ public class Advancements extends AdvancementProvider
 		AdvancementHolder mixer = AdvancementBuilder.child("mb_mixer", fermenter).multiblock(IEMultiblocks.MIXER).save(consumer);
 		AdvancementHolder concrete = AdvancementBuilder.child("liquid_concrete", mixer).icon(IEFluids.CONCRETE.getBucket())
 				.addCriterion("concrete_feet", EffectsChangedTrigger.TriggerInstance.hasEffects(
-						MobEffectsPredicate.Builder.effects().and(IEPotions.CONCRETE_FEET.get()))
+						MobEffectsPredicate.Builder.effects().and(IEPotions.CONCRETE_FEET.value()))
 				).save(consumer);
 		AdvancementHolder refinery = AdvancementBuilder.child("mb_refinery", fermenter).multiblock(IEMultiblocks.REFINERY).save(consumer);
 		AdvancementHolder plastic = AdvancementBuilder.child("craft_duroplast", refinery).goal().getItem(Ingredients.DUROPLAST_PLATE).save(consumer);

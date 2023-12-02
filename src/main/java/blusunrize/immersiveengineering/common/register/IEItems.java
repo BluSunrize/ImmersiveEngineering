@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -29,9 +30,9 @@ import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -41,7 +42,7 @@ import java.util.function.Supplier;
 public final class IEItems
 {
 	public static final int COKE_BURN_TIME = 3200;
-	public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Lib.MODID);
+	public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(BuiltInRegistries.ITEM, Lib.MODID);
 
 	private IEItems()
 	{
@@ -344,9 +345,12 @@ public final class IEItems
 		{
 		}
 
-		private static ItemRegObject<SpawnEggItem> registerEgg(RegistryObject<? extends EntityType<? extends Mob>> type, int col1, int col2)
+		private static ItemRegObject<SpawnEggItem> registerEgg(
+				DeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> type, int col1, int col2
+		)
 		{
-			return register(type.getId().getPath()+"_spawn_egg", () -> new DeferredSpawnEggItem(type, col1, col2, new Item.Properties()));
+			ResourceLocation id = type.unwrapKey().get().location();
+			return register(id.getPath()+"_spawn_egg", () -> new DeferredSpawnEggItem(type::value, col1, col2, new Item.Properties()));
 		}
 	}
 
@@ -399,10 +403,13 @@ public final class IEItems
 
 	private static <T extends Item> ItemRegObject<T> of(T existing)
 	{
-		return new ItemRegObject<>(RegistryObject.create(BuiltInRegistries.ITEM.getKey(existing), ForgeRegistries.ITEMS));
+		return new ItemRegObject<>(DeferredHolder.create(
+				Registries.ITEM, BuiltInRegistries.ITEM.getKey(existing)
+		));
 	}
 
-	public record ItemRegObject<T extends Item>(RegistryObject<T> regObject) implements Supplier<T>, ItemLike
+	// TODO replace by NFs DeferredItem?
+	public record ItemRegObject<T extends Item>(DeferredHolder<Item, T> regObject) implements Supplier<T>, ItemLike
 	{
 		@Override
 		@Nonnull

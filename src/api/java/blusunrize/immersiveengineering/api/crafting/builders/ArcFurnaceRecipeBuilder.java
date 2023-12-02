@@ -23,7 +23,7 @@ public class ArcFurnaceRecipeBuilder extends IEFinishedRecipe<ArcFurnaceRecipeBu
 
 	private ArcFurnaceRecipeBuilder()
 	{
-		super(ArcFurnaceRecipe.SERIALIZER.get());
+		super(ArcFurnaceRecipe.SERIALIZER.value());
 		setMultipleResults(6);
 		setUseInputArray(4, "additives");
 		addWriter(jsonObject -> {

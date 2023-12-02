@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
 import blusunrize.immersiveengineering.common.crafting.NoContainersShapedRecipe;
+import blusunrize.immersiveengineering.common.network.PacketUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,7 +20,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.crafting.IShapedRecipe;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,7 +48,7 @@ public class NoContainerSerializer implements RecipeSerializer<NoContainersRecip
 	@Override
 	public NoContainersRecipe<?> fromNetwork(@Nonnull FriendlyByteBuf pBuffer)
 	{
-		RecipeSerializer<?> baseSerializer = pBuffer.readRegistryIdUnsafe(ForgeRegistries.RECIPE_SERIALIZERS);
+		RecipeSerializer<?> baseSerializer = PacketUtils.readRegistryElement(pBuffer, BuiltInRegistries.RECIPE_SERIALIZER);
 		CraftingRecipe baseRecipe = (CraftingRecipe)baseSerializer.fromNetwork(pBuffer);
 		if(baseRecipe instanceof IShapedRecipe<?>)
 			return new NoContainersShapedRecipe(baseRecipe);
@@ -58,7 +59,7 @@ public class NoContainerSerializer implements RecipeSerializer<NoContainersRecip
 	@Override
 	public void toNetwork(@Nonnull FriendlyByteBuf pBuffer, @Nonnull NoContainersRecipe pRecipe)
 	{
-		pBuffer.writeRegistryIdUnsafe(ForgeRegistries.RECIPE_SERIALIZERS, pRecipe.baseRecipe.getSerializer());
+		PacketUtils.writeRegistryElement(pBuffer, BuiltInRegistries.RECIPE_SERIALIZER, pRecipe.baseRecipe.getSerializer());
 		send(pRecipe.baseRecipe, pBuffer);
 	}
 

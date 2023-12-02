@@ -47,7 +47,7 @@ public class RevolverperkLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.REVOLVERPERK.get();
+		return IELootFunctions.REVOLVERPERK.value();
 	}
 
 	public static Builder<?> builder()

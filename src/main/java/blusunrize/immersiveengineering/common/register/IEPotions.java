@@ -29,8 +29,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
 
 import java.util.Objects;
 import java.util.Set;
@@ -38,37 +38,32 @@ import java.util.function.Consumer;
 
 public class IEPotions
 {
-	public static final DeferredRegister<MobEffect> REGISTER = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Lib.MODID);
+	public static final DeferredRegister<MobEffect> REGISTER = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, Lib.MODID);
 
-	public static final RegistryObject<MobEffect> FLAMMABLE = REGISTER.register(
+	public static final Holder<MobEffect> FLAMMABLE = REGISTER.register(
 			"flammable", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x8f3f1f, 0, false, 0, true, true)
 	);
-	public static final RegistryObject<MobEffect> SLIPPERY = REGISTER.register(
+	public static final Holder<MobEffect> SLIPPERY = REGISTER.register(
 			"slippery", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x171003, 0, false, 1, true, true)
 	);
-	public static final RegistryObject<MobEffect> CONDUCTIVE = REGISTER.register(
+	public static final Holder<MobEffect> CONDUCTIVE = REGISTER.register(
 			"conductive", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x690000, 0, false, 2, true, true)
 	);
-	public static final RegistryObject<MobEffect> STICKY = REGISTER.register(
+	public static final Holder<MobEffect> STICKY = REGISTER.register(
 			"sticky", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x9c6800, 0, false, 3, true, true)
 					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.2, Operation.MULTIPLY_TOTAL)
 	);
-	public static final RegistryObject<MobEffect> STUNNED = REGISTER.register(
+	public static final Holder<MobEffect> STUNNED = REGISTER.register(
 			"stunned", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 4, true, true)
 	);
-	public static final RegistryObject<MobEffect> CONCRETE_FEET = REGISTER.register(
+	public static final Holder<MobEffect> CONCRETE_FEET = REGISTER.register(
 			"concrete_feet", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 5, true, true)
 					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL)
 	);
-	public static final RegistryObject<MobEffect> FLASHED = REGISTER.register(
+	public static final Holder<MobEffect> FLASHED = REGISTER.register(
 			"flashed", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 6, true, true)
 					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL)
 	);
-
-	static
-	{
-		IEApi.potions = ImmutableList.of(FLAMMABLE, SLIPPERY, CONDUCTIVE, STICKY, STUNNED, CONCRETE_FEET, FLASHED);
-	}
 
 	public static class IEPotion extends MobEffect
 	{
@@ -128,7 +123,7 @@ public class IEPotions
 		@Override
 		public void applyEffectTick(LivingEntity living, int amplifier)
 		{
-			if(this==IEPotions.SLIPPERY.get())
+			if(this==IEPotions.SLIPPERY.value())
 			{
 				if(living.onGround())
 					living.moveRelative(0, new Vec3(0, 1, 0.005));
@@ -140,7 +135,7 @@ public class IEPotions
 					living.setItemSlot(hand, ItemStack.EMPTY);
 				}
 			}
-			else if(this==IEPotions.CONCRETE_FEET.get()&&!living.level().isClientSide)
+			else if(this==IEPotions.CONCRETE_FEET.value()&&!living.level().isClientSide)
 			{
 				BlockState state = living.level().getBlockState(living.blockPosition());
 				if(!concrete.contains(state.getBlock())&&

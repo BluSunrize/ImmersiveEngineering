@@ -15,7 +15,7 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.function.BooleanSupplier;
 
@@ -40,17 +40,17 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 	}
 
 	public static BooleanSupplier startSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, Holder<SoundEvent> sound
 	)
 	{
 		return startSound(active, valid, pos, sound, true);
 	}
 
 	public static BooleanSupplier startSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound, boolean loop
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, Holder<SoundEvent> sound, boolean loop
 	)
 	{
-		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get(), loop);
+		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.value(), loop);
 		final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 		soundManager.play(instance);
 		return () -> soundManager.isActive(instance);

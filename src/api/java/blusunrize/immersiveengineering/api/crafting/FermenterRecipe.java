@@ -18,13 +18,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 01.03.2016
@@ -33,7 +35,7 @@ import java.util.function.Function;
  */
 public class FermenterRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<FermenterRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<FermenterRecipe>> SERIALIZER;
 	public static final CachedRecipeList<FermenterRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.FERMENTER);
 
 	public IngredientWithSize input;

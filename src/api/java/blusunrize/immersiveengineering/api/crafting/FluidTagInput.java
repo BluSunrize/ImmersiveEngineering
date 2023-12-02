@@ -34,7 +34,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -138,7 +137,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 		return fluidTag.map(
 				// TODO less global?
 				t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t),
-				l -> l.stream().map(ForgeRegistries.FLUIDS::getValue)
+				l -> l.stream().map(BuiltInRegistries.FLUID::get)
 		)
 				.map(fluid -> new FluidStack(fluid, FluidTagInput.this.amount, FluidTagInput.this.nbtTag))
 				.collect(Collectors.toList());

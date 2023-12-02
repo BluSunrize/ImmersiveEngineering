@@ -46,7 +46,7 @@ public class BluprintzLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.BLUPRINTZ.get();
+		return IELootFunctions.BLUPRINTZ.value();
 	}
 
 	public static Builder<?> builder()

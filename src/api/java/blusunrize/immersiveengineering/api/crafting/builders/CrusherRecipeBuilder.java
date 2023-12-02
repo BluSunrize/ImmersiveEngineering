@@ -25,7 +25,7 @@ public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 
 	private CrusherRecipeBuilder()
 	{
-		super(CrusherRecipe.SERIALIZER.get());
+		super(CrusherRecipe.SERIALIZER.value());
 		addWriter(jsonObject -> jsonObject.add("secondaries", secondaryArray));
 	}
 

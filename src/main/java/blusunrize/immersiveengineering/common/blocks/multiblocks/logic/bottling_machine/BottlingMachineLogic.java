@@ -107,7 +107,7 @@ public class BottlingMachineLogic
 			if(fProcess >= (STANDARD_TRANSPORT_TIME-13)&&fProcess < (STANDARD_TRANSPORT_TIME-11))
 			{
 				final BlockPos soundPos = level.toAbsolute(new BlockPos(1, 1, 1));
-				rawLevel.playSound(localPlayer, soundPos, IESounds.bottling.get(), SoundSource.BLOCKS, .125F, 0.8F);
+				rawLevel.playSound(localPlayer, soundPos, IESounds.bottling.value(), SoundSource.BLOCKS, .125F, 0.8F);
 				break;
 			}
 		}

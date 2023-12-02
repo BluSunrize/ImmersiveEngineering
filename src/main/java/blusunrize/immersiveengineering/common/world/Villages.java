@@ -69,8 +69,8 @@ import net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -113,11 +113,11 @@ public class Villages
 	public static void init()
 	{
 		// Register gifts
-		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
-		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_MACHINIST.get(), rl("gameplay/hero_of_the_village/machinist"));
-		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ELECTRICIAN.get(), rl("gameplay/hero_of_the_village/electrician"));
-		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_OUTFITTER.get(), rl("gameplay/hero_of_the_village/outfitter"));
-		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ENGINEER.value(), rl("gameplay/hero_of_the_village/engineer"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_MACHINIST.value(), rl("gameplay/hero_of_the_village/machinist"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ELECTRICIAN.value(), rl("gameplay/hero_of_the_village/electrician"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_OUTFITTER.value(), rl("gameplay/hero_of_the_village/outfitter"));
+		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_GUNSMITH.value(), rl("gameplay/hero_of_the_village/gunsmith"));
 	}
 
 	private static void addToPool(ResourceLocation poolId, ResourceLocation toAdd, RegistryAccess regAccess)
@@ -135,42 +135,42 @@ public class Villages
 
 	public static class Registers
 	{
-		public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, ImmersiveEngineering.MODID);
 		public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(
-				ForgeRegistries.VILLAGER_PROFESSIONS, ImmersiveEngineering.MODID
+				BuiltInRegistries.VILLAGER_PROFESSION, ImmersiveEngineering.MODID
 		);
 
 		// TODO: Add more workstations. We need a different one for each profession
-		public static final RegistryObject<PoiType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
+		public static final Holder<PoiType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
 				"craftingtable", () -> createPOI(assembleStates(WoodenDevices.CRAFTING_TABLE.get()))
 		);
-		public static final RegistryObject<PoiType> POI_TURNTABLE = POINTS_OF_INTEREST.register(
+		public static final Holder<PoiType> POI_TURNTABLE = POINTS_OF_INTEREST.register(
 				"turntable", () -> createPOI(assembleStates(WoodenDevices.TURNTABLE.get()))
 		);
-		public static final RegistryObject<PoiType> POI_CIRCUITTABLE = POINTS_OF_INTEREST.register(
+		public static final Holder<PoiType> POI_CIRCUITTABLE = POINTS_OF_INTEREST.register(
 				"circuit_table", () -> createPOI(assembleStates(WoodenDevices.CIRCUIT_TABLE.get()))
 		);
-		public static final RegistryObject<PoiType> POI_BANNER = POINTS_OF_INTEREST.register(
+		public static final Holder<PoiType> POI_BANNER = POINTS_OF_INTEREST.register(
 				"shaderbanner", () -> createPOI(assembleStates(Cloth.SHADER_BANNER.get()))
 		);
-		public static final RegistryObject<PoiType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
+		public static final Holder<PoiType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
 				"workbench", () -> createPOI(assembleStates(WoodenDevices.WORKBENCH.get()))
 		);
 
-		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
+		public static final Holder<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
 				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_TURNTABLE, SoundEvents.VILLAGER_WORK_MASON)
 		);
-		public static final RegistryObject<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
+		public static final Holder<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
 				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_CRAFTINGTABLE, SoundEvents.VILLAGER_WORK_TOOLSMITH)
 		);
-		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
-				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE, IESounds.spark.get())
+		public static final Holder<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
+				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE, IESounds.spark.value())
 		);
-		public static final RegistryObject<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
+		public static final Holder<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
 				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER, SoundEvents.VILLAGER_WORK_CARTOGRAPHER)
 		);
-		public static final RegistryObject<VillagerProfession> PROF_GUNSMITH = PROFESSIONS.register(
-				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH, IESounds.revolverReload.get())
+		public static final Holder<VillagerProfession> PROF_GUNSMITH = PROFESSIONS.register(
+				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH, IESounds.revolverReload.value())
 		);
 
 		private static PoiType createPOI(Collection<BlockState> block)
@@ -179,10 +179,10 @@ public class Villages
 		}
 
 		private static VillagerProfession createProf(
-				ResourceLocation name, RegistryObject<PoiType> poi, SoundEvent sound
+				ResourceLocation name, Holder<PoiType> poi, SoundEvent sound
 		)
 		{
-			ResourceKey<PoiType> poiName = Objects.requireNonNull(poi.getKey());
+			ResourceKey<PoiType> poiName = poi.unwrapKey().orElseThrow();
 			return new VillagerProfession(
 					name.toString(),
 					holder -> holder.is(poiName),

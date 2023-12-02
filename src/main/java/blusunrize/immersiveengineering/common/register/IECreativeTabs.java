@@ -27,7 +27,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IECreativeTabs
@@ -36,7 +36,7 @@ public class IECreativeTabs
 			Registries.CREATIVE_MODE_TAB, Lib.MODID
 	);
 
-	private static RegistryObject<CreativeModeTab> TAB = REGISTER.register(
+	private static Holder<CreativeModeTab> TAB = REGISTER.register(
 			"main",
 			// TODO what am I supposed to do with the row/col args
 			() -> new CreativeModeTab.Builder(Row.TOP, 0)
@@ -61,9 +61,9 @@ public class IECreativeTabs
 
 	private static void fillIETab(CreativeModeTab.ItemDisplayParameters parms, CreativeModeTab.Output out)
 	{
-		for(final RegistryObject<Item> itemRef : IEItems.REGISTER.getEntries())
+		for(final Holder<Item> itemRef : IEItems.REGISTER.getEntries())
 		{
-			final Item item = itemRef.get();
+			final Item item = itemRef.value();
 			if(item==Misc.POTION_BUCKET.get())
 				continue;
 			if(item instanceof IEBaseItem ieItem)
@@ -71,7 +71,7 @@ public class IECreativeTabs
 			else if(item instanceof BlockItem blockItem&&blockItem.getBlock() instanceof IEBaseBlock ieBlock)
 				ieBlock.fillCreativeTab(out);
 			else
-				out.accept(itemRef.get());
+				out.accept(itemRef.value());
 		}
 	}
 }

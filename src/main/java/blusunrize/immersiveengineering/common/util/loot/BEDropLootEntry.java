@@ -56,6 +56,6 @@ public class BEDropLootEntry extends LootPoolSingletonContainer
 	@Override
 	public LootPoolEntryType getType()
 	{
-		return IELootFunctions.TILE_DROP.get();
+		return IELootFunctions.TILE_DROP.value();
 	}
 }

@@ -59,7 +59,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -224,10 +224,10 @@ public class JEIHelper implements IModPlugin
 	private ArrayList<BottlingMachineRecipe> getFluidBucketRecipes()
 	{
 		// assume a source and flowing version of each fluid:
-		int fluidCount = ForgeRegistries.FLUIDS.getValues().size()/2;
+		int fluidCount = BuiltInRegistries.FLUIDS.getValues().size()/2;
 
 		ArrayList<BottlingMachineRecipe> recipes = new ArrayList<>(fluidCount);
-		for(Fluid f : ForgeRegistries.FLUIDS)
+		for(Fluid f : BuiltInRegistries.FLUIDS)
 			if(f.isSource(f.defaultFluidState()))
 			{
 				// Sort tags, prioritize vanilla/forge tags, and assume that more slashes means more specific tag

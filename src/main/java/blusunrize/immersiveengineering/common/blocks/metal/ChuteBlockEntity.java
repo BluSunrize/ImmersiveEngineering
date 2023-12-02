@@ -148,7 +148,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 
 			if(!contact&&!prevent&&!glitched)
 			{
-				world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), IESounds.chute.get(), SoundSource.BLOCKS, .6f+(.4f*world.random.nextFloat()), .5f+(.5f*world.random.nextFloat()));
+				world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), IESounds.chute.value(), SoundSource.BLOCKS, .6f+(.4f*world.random.nextFloat()), .5f+(.5f*world.random.nextFloat()));
 				CompoundTag entityData = entity.getPersistentData();
 				entityData.putLong(NBT_POS, nbt_pos);
 				entityData.putLong(NBT_TIME, time);

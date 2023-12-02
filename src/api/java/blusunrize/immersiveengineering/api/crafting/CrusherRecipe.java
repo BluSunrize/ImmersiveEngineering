@@ -17,9 +17,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.List;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -28,7 +30,7 @@ import java.util.List;
  */
 public class CrusherRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<CrusherRecipe>> SERIALIZER;
 	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CRUSHER);
 
 	public final Ingredient input;

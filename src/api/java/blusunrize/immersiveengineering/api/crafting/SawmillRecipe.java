@@ -16,11 +16,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class SawmillRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<SawmillRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<SawmillRecipe>> SERIALIZER;
 	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SAWMILL);
 
 	public final Ingredient input;

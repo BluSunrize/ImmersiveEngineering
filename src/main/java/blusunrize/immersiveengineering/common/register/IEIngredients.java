@@ -12,9 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 
 public class IEIngredients
 {
@@ -22,7 +21,7 @@ public class IEIngredients
 			Keys.INGREDIENT_TYPES, ImmersiveEngineering.MODID
 	);
 
-	public static final RegistryObject<IngredientType<?>> FLUID_STACK = REGISTER.register(
+	public static final Holder<IngredientType<?>> FLUID_STACK = REGISTER.register(
 			"fluid_stack",
 			() -> new IngredientType<>(IngredientFluidStack.CODEC, IngredientFluidStack.CODEC)
 	);

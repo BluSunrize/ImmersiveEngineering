@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,14 +49,6 @@ public class IEApi
 	 * Examples:<br>"plate"-{1,1},<br>"nugget"-{1,9},<br>"block"-{9,1},<br>"gear"-{4,1}
 	 */
 	public static Map<String, Integer[]> prefixToIngotMap = new HashMap<String, Integer[]>();
-
-	/**
-	 * An array of all potions added by IE. indices are as follows:<br>
-	 * 0: flammable, increases all fire damage done<br>
-	 * 1: slippery, makes the target slide around and randomly drop their held item<br>
-	 * 2: conductive, increases flux damage done to the target (CoFH/RedstoneArsenal compat112)<br>
-	 */
-	public static List<Supplier<MobEffect>> potions;
 
 	/**
 	 * Each element of this list will be called once when the command "/cie resetrender" is run.

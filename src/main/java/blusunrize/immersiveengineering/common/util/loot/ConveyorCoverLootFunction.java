@@ -60,7 +60,7 @@ public class ConveyorCoverLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.CONVEYOR_COVER.get();
+		return IELootFunctions.CONVEYOR_COVER.value();
 	}
 
 	public static LootItemFunction.Builder builder()

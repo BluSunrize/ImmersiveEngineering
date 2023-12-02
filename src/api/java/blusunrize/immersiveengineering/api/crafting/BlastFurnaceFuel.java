@@ -10,16 +10,19 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.registries.RegistryObject;
+
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class BlastFurnaceFuel extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<BlastFurnaceFuel>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<BlastFurnaceFuel>> SERIALIZER;
 
 	public static final CachedRecipeList<BlastFurnaceFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FUEL);
 

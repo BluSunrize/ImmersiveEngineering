@@ -371,10 +371,10 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								}
 							}
 							else
-								world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.get(), SoundSource.PLAYERS, 1f, 1f);
+								world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1f, 1f);
 						}
 						else
-							world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.get(), SoundSource.PLAYERS, 1f, 1f);
+							world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1f, 1f);
 
 						rotateCylinder(revolver, player, true, bullets);
 						ItemNBTHelper.putInt(revolver, "cooldown", getMaxShootCooldown(revolver));
@@ -429,7 +429,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			noise *= (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
 		SoundEvent sound = bullet.getSound();
 		if(sound==null)
-			sound = IESounds.revolverFire.get();
+			sound = IESounds.revolverFire.value();
 		world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
 		return noise;
 	}

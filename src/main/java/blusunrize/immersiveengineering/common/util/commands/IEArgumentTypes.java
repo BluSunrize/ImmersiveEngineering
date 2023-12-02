@@ -15,14 +15,16 @@ import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+
+import java.util.function.Supplier;
 
 public class IEArgumentTypes
 {
 	private static final DeferredRegister<ArgumentTypeInfo<?, ?>> REGISTER = DeferredRegister.create(
 			Registries.COMMAND_ARGUMENT_TYPE, Lib.MODID
 	);
-	public static final RegistryObject<SingletonArgumentInfo<MineralArgument>> MINERAL = REGISTER.register(
+	public static final Supplier<SingletonArgumentInfo<MineralArgument>> MINERAL = REGISTER.register(
 			"mineral", () -> ArgumentTypeInfos.registerByClass(
 					MineralArgument.class, SingletonArgumentInfo.contextFree(MineralArgument::new)
 			)

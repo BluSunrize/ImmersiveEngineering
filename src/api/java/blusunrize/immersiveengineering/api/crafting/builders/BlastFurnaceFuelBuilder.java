@@ -20,7 +20,7 @@ public class BlastFurnaceFuelBuilder extends IEFinishedRecipe<BlastFurnaceFuelBu
 {
 	private BlastFurnaceFuelBuilder()
 	{
-		super(BlastFurnaceFuel.SERIALIZER.get());
+		super(BlastFurnaceFuel.SERIALIZER.value());
 		this.maxResultCount = 0;
 	}
 

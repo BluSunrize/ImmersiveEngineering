@@ -21,19 +21,22 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class GeneratorFuel extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<GeneratorFuel>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<GeneratorFuel>> SERIALIZER;
 
 	public static final CachedRecipeList<GeneratorFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.GENERATOR_FUEL);
 

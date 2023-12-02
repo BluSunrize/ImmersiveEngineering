@@ -62,7 +62,7 @@ public class PropertyCountLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.PROPERTY_COUNT.get();
+		return IELootFunctions.PROPERTY_COUNT.value();
 	}
 
 	public static class Builder extends LootItemConditionalFunction.Builder<PropertyCountLootFunction.Builder>

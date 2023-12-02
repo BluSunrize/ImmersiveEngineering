@@ -17,7 +17,7 @@ public class MixerRecipeBuilder extends IEFinishedRecipe<MixerRecipeBuilder>
 {
 	private MixerRecipeBuilder()
 	{
-		super(MixerRecipe.SERIALIZER.get());
+		super(MixerRecipe.SERIALIZER.value());
 		this.setUseInputArray(6);
 	}
 

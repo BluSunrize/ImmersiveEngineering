@@ -203,7 +203,7 @@ public class DrillItem extends DieselToolItem
 		ItemStack drill = ev.getEntity().getInventory().getSelected();
 		if(!(drill.getItem() instanceof DrillItem drillItem))
 			return;
-		if(ev.getEntity().isEyeInFluidType(NeoForgeMod.WATER_TYPE.get())&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
+		if(ev.getEntity().isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
 			ev.setCanHarvest(false);
 	}
 

@@ -22,7 +22,7 @@ public class RefineryRecipeBuilder extends IEFinishedRecipe<RefineryRecipeBuilde
 {
 	private RefineryRecipeBuilder()
 	{
-		super(RefineryRecipe.SERIALIZER.get());
+		super(RefineryRecipe.SERIALIZER.value());
 		this.maxInputCount = 2;
 	}
 

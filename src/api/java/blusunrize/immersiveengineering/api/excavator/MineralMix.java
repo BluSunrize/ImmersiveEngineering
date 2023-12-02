@@ -20,16 +20,19 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class MineralMix extends IESerializableRecipe
 {
-	public static RegistryObject<IERecipeSerializer<MineralMix>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<MineralMix>> SERIALIZER;
 
 	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(IERecipeTypes.MINERAL_MIX);
 

@@ -12,6 +12,7 @@ import net.minecraft.advancements.Advancement.Builder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 import java.util.function.Consumer;
 
@@ -30,8 +31,8 @@ public record WrappingRecipeOutput(RecipeOutput base, Consumer<FinishedRecipe> h
 	}
 
 	@Override
-	public Provider provider()
+	public void accept(FinishedRecipe finishedRecipe, ICondition... conditions)
 	{
-		return base.provider();
+		handleRecipe.accept(finishedRecipe);
 	}
 }

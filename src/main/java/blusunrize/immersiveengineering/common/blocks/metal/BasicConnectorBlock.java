@@ -19,13 +19,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.minecraft.core.Holder;
 
 import java.util.Locale;
+import java.util.function.Supplier;
 
 public class BasicConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends ConnectorBlock<T>
 {
-	public BasicConnectorBlock(Properties props, RegistryObject<BlockEntityType<T>> type)
+	public BasicConnectorBlock(Properties props, Supplier<BlockEntityType<T>> type)
 	{
 		super(props, type);
 	}

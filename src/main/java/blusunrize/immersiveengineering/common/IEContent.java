@@ -237,7 +237,7 @@ public class IEContent
 			//TODO
 			if(/*!o.isVanilla()||*/matching.length!=1)
 				return null;
-			if(matching[0].getItem()!=Items.MILK_BUCKET||!NeoForgeMod.MILK.isPresent())
+			if(matching[0].getItem()!=Items.MILK_BUCKET||!NeoForgeMod.MILK.isBound())
 				return null;
 			// bucket was consumed in recipe
 			if(remain.getItem()!=Items.BUCKET)
@@ -246,13 +246,13 @@ public class IEContent
 		});
 
 		// TODO move to IEFluids/constructors?
-		IEFluids.CREOSOTE.getBlock().setEffect(IEPotions.FLAMMABLE.get(), 100, 0);
+		IEFluids.CREOSOTE.getBlock().setEffect(IEPotions.FLAMMABLE.value(), 100, 0);
 		IEFluids.ETHANOL.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
-		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.get(), 100, 1);
+		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.value(), 100, 1);
 		IEFluids.CONCRETE.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
-		IEFluids.REDSTONE_ACID.getBlock().setEffect(IEPotions.CONDUCTIVE.get(), 100, 1);
+		IEFluids.REDSTONE_ACID.getBlock().setEffect(IEPotions.CONDUCTIVE.value(), 100, 1);
 		IEFluids.ACETALDEHYDE.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
-		IEFluids.PHENOLIC_RESIN.getBlock().setEffect(IEPotions.STICKY.get(), 40, 1);
+		IEFluids.PHENOLIC_RESIN.getBlock().setEffect(IEPotions.STICKY.value(), 40, 1);
 
 		ChemthrowerEffects.register();
 

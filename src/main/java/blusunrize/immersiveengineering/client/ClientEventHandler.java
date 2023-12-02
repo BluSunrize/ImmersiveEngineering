@@ -627,9 +627,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onFogUpdate(ViewportEvent.RenderFog event)
 	{
-		if(event.getCamera().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED.get()))
+		if(event.getCamera().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED.value()))
 		{
-			MobEffectInstance effect = living.getEffect(IEPotions.FLASHED.get());
+			MobEffectInstance effect = living.getEffect(IEPotions.FLASHED.value());
 			int timeLeft = effect.getDuration();
 			float saturation = Math.max(0.25f, 1-timeLeft/(float)(80+40*effect.getAmplifier()));//Total Time =  4s + 2s per amplifier
 
@@ -646,7 +646,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onFogColourUpdate(ViewportEvent.ComputeFogColor event)
 	{
 		Entity e = event.getCamera().getEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.FLASHED.get()))
+		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.FLASHED.value()))
 		{
 			event.setRed(1);
 			event.setGreen(1);
@@ -672,7 +672,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
-		if(player.getEffect(IEPotions.CONCRETE_FEET.get())!=null)
+		if(player.getEffect(IEPotions.CONCRETE_FEET.value())!=null)
 			event.setNewFovModifier(1);
 	}
 

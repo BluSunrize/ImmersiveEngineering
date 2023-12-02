@@ -10,19 +10,21 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -31,7 +33,7 @@ import java.util.Random;
  */
 public class ArcFurnaceRecipe extends MultiblockRecipe
 {
-	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
+	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;
 	public final List<IngredientWithSize> additives;

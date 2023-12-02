@@ -88,11 +88,11 @@ public class MetalPressLogic
 			Player localPlayer = ImmersiveEngineering.proxy.getClientPlayer();
 			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
 			if(fProcess >= transportTime&&fProcess < transportTime+1f)
-				level.playSound(localPlayer, soundPos, IESounds.metalpress_piston.get(), SoundSource.BLOCKS, .3F, 1);
+				level.playSound(localPlayer, soundPos, IESounds.metalpress_piston.value(), SoundSource.BLOCKS, .3F, 1);
 			if(fProcess >= (transportTime+pressTime)&&fProcess < (transportTime+pressTime+1f))
-				level.playSound(localPlayer, soundPos, IESounds.metalpress_smash.get(), SoundSource.BLOCKS, .3F, 1);
+				level.playSound(localPlayer, soundPos, IESounds.metalpress_smash.value(), SoundSource.BLOCKS, .3F, 1);
 			if(fProcess >= (maxTicks-transportTime)&&fProcess < (maxTicks-transportTime+1f))
-				level.playSound(localPlayer, soundPos, IESounds.metalpress_piston.get(), SoundSource.BLOCKS, .3F, 1);
+				level.playSound(localPlayer, soundPos, IESounds.metalpress_piston.value(), SoundSource.BLOCKS, .3F, 1);
 			++process.processTick;
 		}
 	}

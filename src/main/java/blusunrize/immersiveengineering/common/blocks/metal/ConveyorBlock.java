@@ -41,7 +41,7 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -124,7 +124,7 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 	public static Block getCover(ItemStack conveyor)
 	{
 		ResourceLocation coverID = new ResourceLocation(ItemNBTHelper.getString(conveyor, ConveyorBlock.DEFAULT_COVER));
-		Block result = ForgeRegistries.BLOCKS.getValue(coverID);
+		Block result = BuiltInRegistries.BLOCK.get(coverID);
 		if(result!=null)
 			return result;
 		else

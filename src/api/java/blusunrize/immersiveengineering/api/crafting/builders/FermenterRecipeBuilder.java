@@ -17,7 +17,7 @@ public class FermenterRecipeBuilder extends IEFinishedRecipe<FermenterRecipeBuil
 {
 	private FermenterRecipeBuilder()
 	{
-		super(FermenterRecipe.SERIALIZER.get());
+		super(FermenterRecipe.SERIALIZER.value());
 	}
 
 	public static FermenterRecipeBuilder builder(Fluid fluid, int amount)

@@ -20,7 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,7 +53,9 @@ public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 	@Override
 	public GeneratorFuel fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
-		List<Fluid> fluids = PacketUtils.readList(buffer, buf -> buf.readRegistryIdUnsafe(ForgeRegistries.FLUIDS));
+		List<Fluid> fluids = PacketUtils.readList(
+				buffer, buf -> PacketUtils.readRegistryElement(buf, BuiltInRegistries.FLUID)
+		);
 		int burnTime = buffer.readInt();
 		return new GeneratorFuel(fluids, burnTime);
 	}
@@ -62,7 +64,9 @@ public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull GeneratorFuel recipe)
 	{
 		PacketUtils.writeList(
-				buffer, recipe.getFluids(), (f, buf) -> buf.writeRegistryIdUnsafe(ForgeRegistries.FLUIDS, f)
+				buffer,
+				recipe.getFluids(),
+				(f, buf) -> PacketUtils.writeRegistryElement(buf, BuiltInRegistries.FLUID, f)
 		);
 		buffer.writeInt(recipe.getBurnTime());
 	}

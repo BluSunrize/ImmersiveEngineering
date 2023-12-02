@@ -41,7 +41,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 			i -> Either.left(i.get())
 	);
 	public static final Codec<List<Lazy<ItemStack>>> OUTER_LAZY_OUTPUTS_CODEC = ConditionalOps.decodeListWithElementConditions(
-			LAZY_OUTPUT_CODEC, "conditions"
+			LAZY_OUTPUT_CODEC
 	);
 	public static final Codec<Lazy<NonNullList<ItemStack>>> LAZY_OUTPUTS_CODEC = OUTER_LAZY_OUTPUTS_CODEC.xmap(
 			IERecipeSerializer::combineLazies,
@@ -55,7 +55,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 			).apply(inst, StackWithChance::new)
 	);
 	public static final Codec<List<StackWithChance>> CHANCE_LIST = ConditionalOps.decodeListWithElementConditions(
-			CHANCE_STACK_CODEC, "conditions"
+			CHANCE_STACK_CODEC
 	);
 
 	public static MapCodec<Lazy<ItemStack>> optionalItemOutput(String name)

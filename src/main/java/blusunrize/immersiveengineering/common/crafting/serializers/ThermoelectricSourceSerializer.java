@@ -20,7 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,7 +33,7 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 	public static final Codec<ThermoelectricSource> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.INT.fieldOf(TEMPERATURE_KEY).forGetter(r -> r.temperature),
 			TagKey.codec(Registries.BLOCK).optionalFieldOf(BLOCK_TAG_KEY).forGetter(r -> r.blocks.leftOptional()),
-			maybeListOrSingle(ForgeRegistries.BLOCKS.getCodec(), SINGLE_BLOCK_KEY).forGetter(r -> r.blocks.rightOptional())
+			maybeListOrSingle(BuiltInRegistries.BLOCK.byNameCodec(), SINGLE_BLOCK_KEY).forGetter(r -> r.blocks.rightOptional())
 	).apply(inst, (temperature, tag, fixedBlocks) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBlocks.isPresent());
 		if(tag.isPresent())
@@ -58,7 +58,9 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 	@Override
 	public ThermoelectricSource fromNetwork(@Nonnull FriendlyByteBuf buffer)
 	{
-		List<Block> blocks = PacketUtils.readList(buffer, buf -> buf.readRegistryIdUnsafe(ForgeRegistries.BLOCKS));
+		List<Block> blocks = PacketUtils.readList(
+				buffer, buf -> PacketUtils.readRegistryElement(buffer, BuiltInRegistries.BLOCK)
+		);
 		int temperature = buffer.readInt();
 		return new ThermoelectricSource(blocks, temperature);
 	}
@@ -67,7 +69,9 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull ThermoelectricSource recipe)
 	{
 		PacketUtils.writeList(
-				buffer, recipe.getMatchingBlocks(), (b, buf) -> buf.writeRegistryIdUnsafe(ForgeRegistries.BLOCKS, b)
+				buffer,
+				recipe.getMatchingBlocks(),
+				(b, buf) -> PacketUtils.writeRegistryElement(buf, BuiltInRegistries.BLOCK, b)
 		);
 		buffer.writeInt(recipe.getTemperature());
 	}

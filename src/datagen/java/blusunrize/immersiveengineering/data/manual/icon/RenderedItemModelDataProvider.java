@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
@@ -40,11 +40,10 @@ public record RenderedItemModelDataProvider(
         try(ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile()))
         {
             Set<String> domainsToRender = Set.of("minecraft", Lib.MODID);
-            ForgeRegistries.ITEMS.getEntries().forEach(entry -> {
-                ResourceLocation name = entry.getKey().location();
+            BuiltInRegistries.ITEM.stream().forEach(item -> {
+                ResourceLocation name = BuiltInRegistries.ITEM.getKey(item);
                 if(!domainsToRender.contains(name.getNamespace()))
                     return;
-                Item item = entry.getValue();
                 ModelResourceLocation modelLocation = new ModelResourceLocation(name, "inventory");
                 ItemStack stackToRender = item.getDefaultInstance();
 

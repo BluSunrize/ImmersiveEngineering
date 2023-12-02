@@ -105,7 +105,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 					Player shooter = level().getPlayerByUUID(shooterUUID);
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "tools/secret_birthdayparty");
-					level().playSound(null, getX(), getY(), getZ(), IESounds.birthdayParty.get(), SoundSource.PLAYERS, 1.0F, 1.2F/(this.random.nextFloat()*0.2F+0.9F));
+					level().playSound(null, getX(), getY(), getZ(), IESounds.birthdayParty.value(), SoundSource.PLAYERS, 1.0F, 1.2F/(this.random.nextFloat()*0.2F+0.9F));
 					ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> hitEntity), new MessageBirthdayParty((LivingEntity)hitEntity));
 				}
 			}
