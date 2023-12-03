@@ -9,7 +9,6 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.6'
-    id 'org.moddingx.modgradle.mapping' version '3.0.2'
 }
 
 version = buildVersionString()
@@ -95,8 +94,7 @@ afterEvaluate {
 }
 
 minecraft {
-    mappings channel: 'sugarcane', version: '2022.11.04-1.19.2'
-    //mappings channel: 'parchment', version: "$version_parchment-$version_minecraft"
+    mappings channel: 'parchment', version: "$version_parchment-$version_minecraft"
     //mappings channel: 'official', version: version_minecraft
 
     runs {
