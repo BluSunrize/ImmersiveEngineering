@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.immersiveengineering.api.wires.SectionConnectionRenderer;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
@@ -560,6 +561,8 @@ public class ClientProxy extends CommonProxy
 		ItemCallback.DYNAMIC_IEOBJ_RENDERER.setValue(new IEOBJItemRenderer(
 				Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()
 		));
+		SectionConnectionRenderer.RENDER_CONNECTIONS.setValue(ConnectionRenderer::renderConnectionsInSection);
+		SectionConnectionRenderer.SHOULD_RENDER_CONNECTIONS.setValue(ConnectionRenderer::sectionNeedsRendering);
 		SetRestrictedField.lock(true);
 	}
 }
