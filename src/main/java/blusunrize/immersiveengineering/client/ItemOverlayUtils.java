@@ -28,9 +28,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -156,8 +155,9 @@ public class ItemOverlayUtils
 		GuiHelper.drawTexturedColoredRect(builder, transform, -24, -68, w, h, 1, 1, 1, 1, uMin, uMax, vMin, vMax);
 
 		transform.translate(-23, -37, 0);
-		LazyOptional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(equipped);
-		handlerOpt.ifPresent(handler -> {
+		IFluidHandlerItem handler = equipped.getCapability(FluidHandler.ITEM);
+		if(handler!=null)
+		{
 			int capacity = -1;
 			if(handler.getTanks() > 0)
 				capacity = handler.getTankCapacity(0);
@@ -173,14 +173,14 @@ public class ItemOverlayUtils
 				float cap = (float)capacity;
 				float angle = 83-(166*amount/cap);
 				transform.pushPose();
-				transform.mulPose(new Quaternionf().rotateZ(angle *Mth.DEG_TO_RAD));
+				transform.mulPose(new Quaternionf().rotateZ(angle*Mth.DEG_TO_RAD));
 				GuiHelper.drawTexturedColoredRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
 				transform.popPose();
 				transform.translate(23, 37, 0);
 
 				additionalRender.accept(builder, handler);
 			}
-		});
+		}
 		transform.popPose();
 	}
 

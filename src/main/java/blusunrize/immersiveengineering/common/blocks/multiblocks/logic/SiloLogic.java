@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
@@ -27,9 +26,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
@@ -78,12 +76,14 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ITEM_HANDLER&&IO_OFFSETS.contains(position.posInMultiblock()))
-			return ctx.getState().inputHandler.cast(ctx);
-		return LazyOptional.empty();
+		register.register(ItemHandler.BLOCK, (state, position) -> {
+			if(IO_OFFSETS.contains(position.posInMultiblock()))
+				return state.inputHandler;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		// TODO integrate into component system?
 		private final LayeredComparatorOutput<IMultiblockContext<?>> comparatorHelper;
 		private final List<BlockCapabilityCache<IItemHandler, ?>> outputs;
-		private final StoredCapability<IItemHandler> inputHandler;
+		private final IItemHandler inputHandler;
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
@@ -111,13 +111,13 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 				if(face!=RelativeBlockFace.DOWN)
 				{
 					final BlockPos neighbor = face.offsetRelative(OUTPUT_POS, -1);
-					outputBuilder.add(capabilitySource.getCapabilityAt(Capabilities.ITEM_HANDLER, neighbor, face));
+					outputBuilder.add(capabilitySource.getCapabilityAt(ItemHandler.BLOCK, neighbor, face));
 				}
 			this.outputs = outputBuilder.build();
-			this.inputHandler = new StoredCapability<>(new InventoryHandler(this, () -> {
+			this.inputHandler = new InventoryHandler(this, () -> {
 				capabilitySource.getMarkDirtyRunnable().run();
 				capabilitySource.getSyncRunnable().run();
-			}));
+			});
 		}
 
 		@Override

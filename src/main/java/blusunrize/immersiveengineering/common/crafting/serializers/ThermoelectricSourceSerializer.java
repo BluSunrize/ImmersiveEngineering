@@ -15,26 +15,24 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.api.crafting.builders.ThermoelectricSourceBuilder.*;
-
 public class ThermoelectricSourceSerializer extends IERecipeSerializer<ThermoelectricSource>
 {
 	public static final Codec<ThermoelectricSource> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			Codec.INT.fieldOf(TEMPERATURE_KEY).forGetter(r -> r.temperature),
-			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.BLOCK), BLOCK_TAG_KEY).forGetter(r -> r.blocks.leftOptional()),
-			maybeListOrSingle(BuiltInRegistries.BLOCK.byNameCodec(), SINGLE_BLOCK_KEY).forGetter(r -> r.blocks.rightOptional())
+			Codec.INT.fieldOf("tempKelvin").forGetter(r -> r.temperature),
+			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.BLOCK), "blockTag").forGetter(r -> r.blocks.leftOptional()),
+			maybeListOrSingle(BuiltInRegistries.BLOCK.byNameCodec(), "singleBlock").forGetter(r -> r.blocks.rightOptional())
 	).apply(inst, (temperature, tag, fixedBlocks) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBlocks.isPresent());
 		if(tag.isPresent())

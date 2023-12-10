@@ -28,14 +28,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.api.crafting.builders.WindmillBiomeBuilder.*;
-
 public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 {
 	public static final Codec<WindmillBiome> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			Codec.FLOAT.fieldOf(MODIFIER_KEY).forGetter(r -> r.modifier),
-			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.BIOME), BIOME_TAG_KEY).forGetter(r -> r.biomes.leftOptional()),
-			ExtraCodecs.strictOptionalField(ResourceKey.codec(Registries.BIOME).listOf(), SINGLE_BIOME_KEY).forGetter(r -> r.biomes.rightOptional())
+			Codec.FLOAT.fieldOf("modifier").forGetter(r -> r.modifier),
+			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.BIOME), "biomeTag").forGetter(r -> r.biomes.leftOptional()),
+			ExtraCodecs.strictOptionalField(ResourceKey.codec(Registries.BIOME).listOf(), "singleBiome").forGetter(r -> r.biomes.rightOptional())
 	).apply(inst, (temperature, tag, fixedBiomes) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBiomes.isPresent());
 		if(tag.isPresent())

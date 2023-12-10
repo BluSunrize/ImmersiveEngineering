@@ -42,10 +42,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
@@ -131,15 +129,10 @@ public class AutoWorkbenchLogic
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ITEM_HANDLER&&INPUT_POS.equals(position.posInMultiblock()))
-			return ctx.getState().input.cast(ctx);
-		else if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
-			return ctx.getState().energyCap.cast(ctx);
-		else
-			return LazyOptional.empty();
+		register.register(ItemHandler.BLOCK, (state, pos) -> INPUT_POS.equals(pos.posInMultiblock())?state.input: null);
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
 	}
 
 	@Override
@@ -173,8 +166,7 @@ public class AutoWorkbenchLogic
 		public boolean active;
 
 		private final DroppingMultiblockOutput output;
-		private final StoredCapability<IItemHandler> input;
-		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
+		private final IItemHandler input;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -191,9 +183,9 @@ public class AutoWorkbenchLogic
 					),
 					ctx.getMarkDirtyRunnable()
 			);
-			this.input = new StoredCapability<>(new WrappingItemHandler(
+			this.input = new WrappingItemHandler(
 					inventory, true, false, new IntRange(FIRST_INPUT_SLOT, NUM_SLOTS)
-			));
+			);
 		}
 
 		@Override

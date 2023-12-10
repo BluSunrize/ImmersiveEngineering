@@ -10,9 +10,11 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -84,4 +86,6 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 		else
 			return null;
 	}
+
+	CapabilityPosition getCapabilityPosition(@Nullable Direction side);
 }

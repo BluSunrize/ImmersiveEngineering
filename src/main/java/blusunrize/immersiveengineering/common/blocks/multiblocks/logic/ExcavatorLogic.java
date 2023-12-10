@@ -54,10 +54,8 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
@@ -311,11 +309,14 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ENERGY&&(position.side()==null||ENERGY_INPUTS.contains(position)))
-			return ctx.getState().energyCap.cast(ctx);
-		return LazyOptional.empty();
+		register.register(EnergyStorage.BLOCK, (state, position) -> {
+			if(position.side()==null||ENERGY_INPUTS.contains(position))
+				return state.energy;
+			else
+				return null;
+		});
 	}
 
 	public static int computeComparatorValue(State state, IMultiblockLevel level)
@@ -355,7 +356,6 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	{
 		private boolean active = false;
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(64000);
-		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 		private final DroppingMultiblockOutput output;
 		public final RSState rsState = RSState.enabledByDefault();
 

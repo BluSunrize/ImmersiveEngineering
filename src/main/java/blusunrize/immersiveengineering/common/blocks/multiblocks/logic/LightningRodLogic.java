@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.LightningRodLogic.State;
@@ -34,9 +33,8 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -57,7 +55,7 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 		if(state.energy.getEnergyStored() > 0)
 			for(final BlockCapabilityCache<IEnergyStorage, ?> outputRef : state.energyOutputs)
 			{
-				final IEnergyStorage output = outputRef.getNullable();
+				final IEnergyStorage output = outputRef.getCapability();
 				if(output!=null)
 				{
 					final int accepted = output.receiveEnergy(state.energy.getEnergyStored(), false);
@@ -137,16 +135,15 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(
-			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
-	)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		final State state = ctx.getState();
-		final BlockPos posInMultiblock = position.posInMultiblock();
-		if(cap==Capabilities.ENERGY&&(position.side()==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1)))
-			return Capabilities.ENERGY.orEmpty(cap, state.energyCap.get(ctx));
-		else
-			return LazyOptional.empty();
+		register.register(EnergyStorage.BLOCK, (state, position) -> {
+			final BlockPos posInMultiblock = position.posInMultiblock();
+			if(position.side()==null||(posInMultiblock.getY()==1&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1))
+				return state.energy;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -168,14 +165,13 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 		private final ImmutableList<BlockCapabilityCache<IEnergyStorage, ?>> energyOutputs;
 		@Nullable
 		private FenceNet fenceNet = null;
-		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
 			ImmutableList.Builder<BlockCapabilityCache<IEnergyStorage, ?>> builder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.HORIZONTAL)
 				builder.add(capabilitySource.getCapabilityAt(
-						Capabilities.ENERGY,
+						EnergyStorage.BLOCK,
 						face.offsetRelative(MASTER_OFFSET, 2),
 						face.getOpposite()
 				));

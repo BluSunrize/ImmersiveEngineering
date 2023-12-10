@@ -19,7 +19,10 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
@@ -46,10 +49,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
@@ -121,14 +122,15 @@ public class CrusherLogic implements
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		final State state = ctx.getState();
-		if(cap==Capabilities.ITEM_HANDLER&&isInInput(position.posInMultiblock(), false))
-			return state.insertionHandler.cast(ctx);
-		if(cap==Capabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
-			return state.energyHandler.cast(ctx);
-		return LazyOptional.empty();
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
+		register.register(ItemHandler.BLOCK, (state, position) -> {
+			if(isInInput(position.posInMultiblock(), false))
+				return state.insertionHandler;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -162,7 +164,7 @@ public class CrusherLogic implements
 			ItemStack stack = itemEntity.getItem();
 			if(stack.isEmpty())
 				return;
-			final ItemStack remaining = state.insertionHandler.getValue().insertItem(0, stack, false);
+			final ItemStack remaining = state.insertionHandler.insertItem(0, stack, false);
 			if(remaining.isEmpty())
 				itemEntity.discard();
 			else
@@ -196,8 +198,7 @@ public class CrusherLogic implements
 		public final RSState rsState = RSState.enabledByDefault();
 
 		private final DroppingMultiblockOutput output;
-		private final StoredCapability<IItemHandler> insertionHandler;
-		private final StoredCapability<IEnergyStorage> energyHandler = new StoredCapability<>(energy);
+		private final IItemHandler insertionHandler;
 		private BooleanSupplier isPlayingSound = () -> false;
 
 		public State(IInitialMultiblockContext<State> ctx)
@@ -206,10 +207,9 @@ public class CrusherLogic implements
 			this.processor = new MultiblockProcessor<>(
 					2048, 0, 1, ctx.getMarkDirtyRunnable(), CrusherRecipe.RECIPES::getById
 			);
-			final DirectProcessingItemHandler<CrusherRecipe> insertionHandler = new DirectProcessingItemHandler<>(
+			this.insertionHandler = new DirectProcessingItemHandler<>(
 					ctx.levelSupplier(), processor, CrusherRecipe::findRecipe
 			).setProcessStacking(true);
-			this.insertionHandler = new StoredCapability<>(insertionHandler);
 		}
 
 		@Override

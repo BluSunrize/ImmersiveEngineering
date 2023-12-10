@@ -19,7 +19,10 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.DirectProcessingItemHandler;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -47,10 +50,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
@@ -178,14 +179,10 @@ public class MetalPressLogic
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ITEM_HANDLER&&INPUT_POS.equals(position))
-			return ctx.getState().inputCap.cast(ctx);
-		else if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
-			return ctx.getState().energyCap.cast(ctx);
-		else
-			return LazyOptional.empty();
+		register.registerAt(ItemHandler.BLOCK, INPUT_POS, state -> state.inputCap);
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
 	}
 
 	@Override
@@ -226,8 +223,7 @@ public class MetalPressLogic
 		public final RSState rsState = RSState.enabledByDefault();
 
 		private final DroppingMultiblockOutput output;
-		private final StoredCapability<IItemHandler> inputCap;
-		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
+		private final IItemHandler inputCap;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -238,11 +234,11 @@ public class MetalPressLogic
 					MetalPressRecipe.STANDARD_RECIPES::getById
 			);
 			this.output = new DroppingMultiblockOutput(OUTPUT_POS, ctx);
-			this.inputCap = new StoredCapability<>(new DirectProcessingItemHandler<>(
+			this.inputCap = new DirectProcessingItemHandler<>(
 					ctx.levelSupplier(),
 					processor,
 					(level, input) -> MetalPressRecipe.findRecipe(mold, input, level)
-			));
+			);
 		}
 
 		@Override

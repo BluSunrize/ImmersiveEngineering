@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.component.Redstone
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
@@ -33,9 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -62,7 +60,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		{
 			int outSize = Math.min(FluidType.BUCKET_VOLUME, state.tank.getFluidAmount());
 			FluidStack out = Utils.copyFluidStackWithAmount(state.tank.getFluid(), outSize, false);
-			IFluidHandler output = outputRef.getNullable();
+			IFluidHandler output = outputRef.getCapability();
 			if(output==null)
 				continue;
 			int accepted = output.fill(out, FluidAction.SIMULATE);
@@ -85,16 +83,16 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.FLUID_HANDLER)
-		{
+		register.register(FluidHandler.BLOCK, (state, position) -> {
 			if(IO_POS.equals(position.posInMultiblock()))
-				return ctx.getState().ioHandler.cast(ctx);
+				return state.ioHandler;
 			else if(INPUT_POS.equals(position.posInMultiblock()))
-				return ctx.getState().inputHandler.cast(ctx);
-		}
-		return LazyOptional.empty();
+				return state.inputHandler;
+			else
+				return null;
+		});
 	}
 
 	@Nullable
@@ -138,8 +136,8 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		public final FluidTank tank = new FluidTank(512*FluidType.BUCKET_VOLUME);
 		private final LayeredComparatorOutput<IMultiblockContext<?>> comparatorHelper;
 		private final List<BlockCapabilityCache<IFluidHandler, ?>> outputs;
-		private final StoredCapability<IFluidHandler> inputHandler;
-		private final StoredCapability<IFluidHandler> ioHandler;
+		private final IFluidHandler inputHandler;
+		private final IFluidHandler ioHandler;
 		public final RSState rsState = RSState.disabledByDefault();
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
@@ -150,15 +148,15 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 				if(face!=RelativeBlockFace.DOWN)
 				{
 					final BlockPos neighbor = face.offsetRelative(IO_POS, -1);
-					outputBuilder.add(capabilitySource.getCapabilityAt(Capabilities.FLUID_HANDLER, neighbor, face));
+					outputBuilder.add(capabilitySource.getCapabilityAt(FluidHandler.BLOCK, neighbor, face));
 				}
 			this.outputs = outputBuilder.build();
 			Runnable changedAndSync = () -> {
 				capabilitySource.getSyncRunnable().run();
 				capabilitySource.getMarkDirtyRunnable().run();
 			};
-			this.inputHandler = new StoredCapability<>(new ArrayFluidHandler(tank, false, true, changedAndSync));
-			this.ioHandler = new StoredCapability<>(new ArrayFluidHandler(tank, true, true, changedAndSync));
+			this.inputHandler = new ArrayFluidHandler(tank, false, true, changedAndSync);
+			this.ioHandler = new ArrayFluidHandler(tank, true, true, changedAndSync);
 		}
 
 		@Override

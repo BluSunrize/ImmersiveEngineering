@@ -21,7 +21,10 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -50,10 +53,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -188,18 +190,16 @@ public class BottlingMachineLogic
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ITEM_HANDLER&&ITEM_INPUT_POS.equals(position))
-			return ctx.getState().itemInput.cast(ctx);
-		else if(cap==Capabilities.FLUID_HANDLER&&(
-				FLUID_INPUT_POS_BACK.equalsOrNullFace(position)||FLUID_INPUT_POS_SIDE.equals(position)
-		))
-			return ctx.getState().fluidInput.cast(ctx);
-		else if(cap==Capabilities.ENERGY&&ENERGY_INPUT_POS.equalsOrNullFace(position))
-			return ctx.getState().energyInput.cast(ctx);
-		else
-			return LazyOptional.empty();
+		register.registerAt(ItemHandler.BLOCK, ITEM_INPUT_POS, (state) -> state.itemInput);
+		register.register(FluidHandler.BLOCK, (state, pos) -> {
+			if(FLUID_INPUT_POS_BACK.equalsOrNullFace(pos)||FLUID_INPUT_POS_SIDE.equals(pos))
+				return state.fluidInput;
+			else
+				return null;
+		});
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_INPUT_POS, state -> state.energy);
 	}
 
 	@Override
@@ -243,9 +243,8 @@ public class BottlingMachineLogic
 
 		public final RSState rsState = RSState.enabledByDefault();
 		private final DroppingMultiblockOutput output;
-		private final StoredCapability<IItemHandler> itemInput;
-		private final StoredCapability<IFluidHandler> fluidInput;
-		private final StoredCapability<IEnergyStorage> energyInput;
+		private final IItemHandler itemInput;
+		private final IFluidHandler fluidInput;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -257,13 +256,12 @@ public class BottlingMachineLogic
 					BottlingMachineRecipe.RECIPES::getById
 			);
 			output = new DroppingMultiblockOutput(OUTPUT_POS, ctx);
-			itemInput = new StoredCapability<>(new BottlingInsertionHandler(ctx.levelSupplier(), processor, this));
-			fluidInput = new StoredCapability<>(new ArrayFluidHandler(tank, false, true, () -> {
+			itemInput = new BottlingInsertionHandler(ctx.levelSupplier(), processor, this);
+			fluidInput = new ArrayFluidHandler(tank, false, true, () -> {
 				markDirty.run();
 				// TODO hack, see TODO comment in tickServer
 				sync.run();
-			}));
-			energyInput = new StoredCapability<>(energy);
+			});
 		}
 
 		@Override

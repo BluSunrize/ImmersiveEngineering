@@ -39,10 +39,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -87,7 +87,7 @@ public class SqueezerLogic
 		enqueueProcesses(state, context.getLevel().getRawLevel());
 		if(context.getLevel().shouldTickModulo(8))
 			handleItemOutput(context);
-		FluidUtils.multiblockFluidOutput(state.fluidOutput, state.tank, 9, 10, state.inventory);
+		FluidUtils.multiblockFluidOutput(state.fluidOutput.getCapability(), state.tank, 9, 10, state.inventory);
 	}
 
 	private void enqueueProcesses(State state, Level level)
@@ -157,23 +157,18 @@ public class SqueezerLogic
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		final State state = ctx.getState();
-		if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
-			return state.energyCap.cast(ctx);
-
-		else if(cap==Capabilities.FLUID_HANDLER&&FLUID_OUTPUT_CAP.equalsOrNullFace(position))
-			return state.fluidOutputCap.cast(ctx);
-		else if(cap==Capabilities.ITEM_HANDLER)
-		{
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
+		register.registerAtOrNull(FluidHandler.BLOCK, FLUID_OUTPUT_CAP, state -> state.fluidOutputCap);
+		register.register(ItemHandler.BLOCK, (state, position) -> {
 			if(ITEM_INPUT.equals(position.posInMultiblock()))
-				return state.itemInputCap.cast(ctx);
+				return state.itemInputCap;
 			else if(ITEM_OUTPUT_CAP.equals(position))
-				return state.itemOutputCap.cast(ctx);
-		}
-		return LazyOptional.empty();
+				return state.itemOutputCap;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -211,10 +206,9 @@ public class SqueezerLogic
 		// Utils
 		private final BlockCapabilityCache<IItemHandler, ?> itemOutput;
 		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
-		private final StoredCapability<IEnergyStorage> energyCap;
-		private final StoredCapability<IFluidHandler> fluidOutputCap;
-		private final StoredCapability<IItemHandler> itemInputCap;
-		private final StoredCapability<IItemHandler> itemOutputCap;
+		private final IFluidHandler fluidOutputCap;
+		private final IItemHandler itemInputCap;
+		private final IItemHandler itemOutputCap;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -228,16 +222,15 @@ public class SqueezerLogic
 			this.processor = new InMachineProcessor<>(
 					NUM_INPUT_SLOTS, 0, NUM_INPUT_SLOTS, markDirty, SqueezerRecipe.RECIPES::getById
 			);
-			this.itemOutput = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, ITEM_OUTPUT);
-			this.fluidOutput = ctx.getCapabilityAt(Capabilities.FLUID_HANDLER, FLUID_OUTPUT);
-			this.energyCap = new StoredCapability<>(energy);
-			this.fluidOutputCap = new StoredCapability<>(ArrayFluidHandler.drainOnly(tank, markDirty));
-			this.itemInputCap = new StoredCapability<>(new WrappingItemHandler(
+			this.itemOutput = ctx.getCapabilityAt(ItemHandler.BLOCK, ITEM_OUTPUT);
+			this.fluidOutput = ctx.getCapabilityAt(FluidHandler.BLOCK, FLUID_OUTPUT);
+			this.fluidOutputCap = ArrayFluidHandler.drainOnly(tank, markDirty);
+			this.itemInputCap = new WrappingItemHandler(
 					inventory, true, false, new IntRange(0, NUM_INPUT_SLOTS)
-			));
-			this.itemOutputCap = new StoredCapability<>(new WrappingItemHandler(
+			);
+			this.itemOutputCap = new WrappingItemHandler(
 					inventory, false, true, new IntRange(OUTPUT_SLOT, OUTPUT_SLOT+1)
-			));
+			);
 		}
 
 		@Override

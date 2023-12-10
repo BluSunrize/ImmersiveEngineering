@@ -16,7 +16,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -27,7 +26,7 @@ public class DamageToolRecipeSerializer implements RecipeSerializer<DamageToolRe
 {
 	public static final Codec<DamageToolRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.STRING.fieldOf("group").forGetter(ShapelessRecipe::getGroup),
-			CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter(r -> r.getResultItem(null)),
+			ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.getResultItem(null)),
 			Ingredient.CODEC.fieldOf("tool").forGetter(DamageToolRecipe::getTool),
 			IECodecs.NONNULL_INGREDIENTS.fieldOf("ingredients").forGetter(ShapelessRecipe::getIngredients)
 	).apply(inst, DamageToolRecipe::new));

@@ -42,10 +42,10 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -93,7 +93,7 @@ public class FermenterLogic
 			changed = enqueueNewProcesses(context);
 
 		changed |= FluidUtils.multiblockFluidOutput(
-				state.fluidOutput, state.tank, EMPTY_FLUID_SLOT, FILLED_FLUID_SLOT, state.inventory
+				state.fluidOutput.getCapability(), state.tank, EMPTY_FLUID_SLOT, FILLED_FLUID_SLOT, state.inventory
 		);
 		changed |= outputItem(context);
 
@@ -155,7 +155,7 @@ public class FermenterLogic
 		final ItemStack outputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
 		if(outputStack.isEmpty()||!ctx.getLevel().shouldTickModulo(8))
 			return false;
-		IItemHandler outputHandler = state.itemOutput.getNullable();
+		IItemHandler outputHandler = state.itemOutput.getCapability();
 		if(outputHandler==null)
 			return false;
 		ItemStack stack = ItemHandlerHelper.copyStackWithSize(outputStack, 1);
@@ -175,22 +175,18 @@ public class FermenterLogic
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(
-			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
-	)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
-			return ctx.getState().energyHandler.cast(ctx);
-		if(cap==Capabilities.FLUID_HANDLER&&FLUID_OUTPUT_CAP.equalsOrNullFace(position))
-			return ctx.getState().fluidHandler.cast(ctx);
-		if(cap==Capabilities.ITEM_HANDLER)
-		{
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
+		register.registerAtOrNull(FluidHandler.BLOCK, FLUID_OUTPUT_CAP, state -> state.fluidHandler);
+		register.register(ItemHandler.BLOCK, (state, position) -> {
 			if(new BlockPos(0, 1, 0).equals(position.posInMultiblock()))
-				return ctx.getState().insertionHandler.cast(ctx);
+				return state.insertionHandler;
 			else if(new BlockPos(1, 1, 1).equals(position.posInMultiblock()))
-				return ctx.getState().extractionHandler.cast(ctx);
-		}
-		return LazyOptional.empty();
+				return state.extractionHandler;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -222,10 +218,9 @@ public class FermenterLogic
 
 		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
 		private final BlockCapabilityCache<IItemHandler, ?> itemOutput;
-		private final StoredCapability<IItemHandler> insertionHandler;
-		private final StoredCapability<IItemHandler> extractionHandler;
-		private final StoredCapability<IFluidHandler> fluidHandler;
-		private final StoredCapability<IEnergyStorage> energyHandler;
+		private final IItemHandler insertionHandler;
+		private final IItemHandler extractionHandler;
+		private final IFluidHandler fluidHandler;
 
 		// Client/sync field
 		public boolean active;
@@ -242,20 +237,19 @@ public class FermenterLogic
 					new IOConstraintGroup(IOConstraint.FLUID_INPUT, 1),
 					new IOConstraintGroup(IOConstraint.OUTPUT, 1)
 			), ctx.getMarkDirtyRunnable());
-			this.fluidOutput = ctx.getCapabilityAt(Capabilities.FLUID_HANDLER, FLUID_OUTPUT);
+			this.fluidOutput = ctx.getCapabilityAt(FluidHandler.BLOCK, FLUID_OUTPUT);
 			this.itemOutput = ctx.getCapabilityAt(
-					Capabilities.ITEM_HANDLER, new BlockPos(2, 1, 1), RelativeBlockFace.LEFT
+					ItemHandler.BLOCK, new BlockPos(2, 1, 1), RelativeBlockFace.LEFT
 			);
-			this.insertionHandler = new StoredCapability<>(new WrappingItemHandler(
+			this.insertionHandler = new WrappingItemHandler(
 					this.inventory, true, false, new IntRange(0, NUM_INPUT_SLOTS)
-			));
-			this.extractionHandler = new StoredCapability<>(new WrappingItemHandler(
+			);
+			this.extractionHandler = new WrappingItemHandler(
 					this.inventory, false, true, new IntRange(OUTPUT_SLOT, OUTPUT_SLOT+1)
-			));
-			this.fluidHandler = new StoredCapability<>(new ArrayFluidHandler(
+			);
+			this.fluidHandler = new ArrayFluidHandler(
 					tank, true, false, ctx.getMarkDirtyRunnable()
-			));
-			this.energyHandler = new StoredCapability<>(energy);
+			);
 		}
 
 		@Override

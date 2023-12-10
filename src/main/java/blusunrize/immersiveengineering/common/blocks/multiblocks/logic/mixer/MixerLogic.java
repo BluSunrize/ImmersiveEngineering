@@ -46,15 +46,14 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import java.util.Iterator;
@@ -136,7 +135,7 @@ public class MixerLogic
 		int fluidTypes = state.tank.getFluidTypes();
 		if(fluidTypes <= 0||(fluidTypes <= 1&&foundRecipe&&!state.outputAll))
 			return false;
-		final IFluidHandler output = state.outputRef.getNullable();
+		final IFluidHandler output = state.outputRef.getCapability();
 		if(output==null)
 			return false;
 		if(!state.outputAll)
@@ -208,21 +207,21 @@ public class MixerLogic
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		final State state = ctx.getState();
-		if(cap==Capabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
-			return state.energyCap.cast(ctx);
-		else if(cap==Capabilities.FLUID_HANDLER)
-		{
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
+		register.register(FluidHandler.BLOCK, (state, position) -> {
 			if(FLUID_INPUT.equalsOrNullFace(position))
-				return state.fluidInput.cast(ctx);
+				return state.fluidInput;
 			else if(FLUID_OUTPUT.equals(position))
-				return state.fluidOutput.cast(ctx);
-		}
-		else if(cap==Capabilities.ITEM_HANDLER&&ITEM_INPUT.equals(position.posInMultiblock()))
-			return state.itemInput.cast(ctx);
-		return LazyOptional.empty();
+				return state.fluidOutput;
+			else
+				return null;
+		});
+		register.register(
+				ItemHandler.BLOCK,
+				(state, position) -> ITEM_INPUT.equals(position.posInMultiblock())?state.inventory: null
+		);
 	}
 
 	@Override
@@ -253,10 +252,8 @@ public class MixerLogic
 
 		// Util
 		private final BlockCapabilityCache<IFluidHandler, ?> outputRef;
-		private final StoredCapability<IFluidHandler> fluidInput;
-		private final StoredCapability<IFluidHandler> fluidOutput;
-		private final StoredCapability<IItemHandler> itemInput;
-		private final StoredCapability<IEnergyStorage> energyCap;
+		private final IFluidHandler fluidInput;
+		private final IFluidHandler fluidOutput;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -266,11 +263,9 @@ public class MixerLogic
 			this.processor = new InMachineProcessor<>(
 					8, 0, 8, ctx.getMarkDirtyRunnable(), MixerRecipe.RECIPES::getById
 			);
-			this.outputRef = ctx.getCapabilityAt(Capabilities.FLUID_HANDLER, OUTPUT_POS);
-			this.fluidInput = new StoredCapability<>(ArrayFluidHandler.fillOnly(tank, ctx.getMarkDirtyRunnable()));
-			this.fluidOutput = new StoredCapability<>(ArrayFluidHandler.drainOnly(tank, ctx.getMarkDirtyRunnable()));
-			this.itemInput = new StoredCapability<>(this.inventory);
-			this.energyCap = new StoredCapability<>(this.energy);
+			this.outputRef = ctx.getCapabilityAt(FluidHandler.BLOCK, OUTPUT_POS);
+			this.fluidInput = ArrayFluidHandler.fillOnly(tank, ctx.getMarkDirtyRunnable());
+			this.fluidOutput = ArrayFluidHandler.drainOnly(tank, ctx.getMarkDirtyRunnable());
 		}
 
 		@Override

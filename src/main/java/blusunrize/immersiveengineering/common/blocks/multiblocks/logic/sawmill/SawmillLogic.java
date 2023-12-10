@@ -21,7 +21,10 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SawmillShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -32,6 +35,7 @@ import blusunrize.immersiveengineering.common.util.inventory.InsertOnlyInventory
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -52,13 +56,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -180,14 +182,10 @@ public class SawmillLogic
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ENERGY&&ENERGY_INPUT.equalsOrNullFace(position))
-			return ctx.getState().energyCap.cast(ctx);
-		else if(cap==Capabilities.ITEM_HANDLER&&INPUT.equals(position))
-			return ctx.getState().insertionHandler.cast(ctx);
-		else
-			return LazyOptional.empty();
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
+		register.registerAt(ItemHandler.BLOCK, INPUT, state -> state.insertionHandler);
 	}
 
 	@Override
@@ -350,8 +348,7 @@ public class SawmillLogic
 
 		private final DroppingMultiblockOutput output;
 		private final DroppingMultiblockOutput secondaryOutput;
-		private final StoredCapability<IItemHandler> insertionHandler;
-		private final StoredCapability<IEnergyStorage> energyCap;
+		private final IItemHandler insertionHandler;
 
 		// Client fields
 		public ActiveState active = ActiveState.DISABLED;
@@ -368,7 +365,7 @@ public class SawmillLogic
 			final Supplier<@Nullable Level> levelGetter = ctx.levelSupplier();
 			final Runnable markDirty = ctx.getMarkDirtyRunnable();
 			final Runnable sync = ctx.getSyncRunnable();
-			this.insertionHandler = new StoredCapability<>(new InsertOnlyInventory()
+			this.insertionHandler = new InsertOnlyInventory()
 			{
 				@Override
 				protected ItemStack insert(ItemStack toInsert, boolean simulate)
@@ -381,8 +378,7 @@ public class SawmillLogic
 					}
 					return toInsert;
 				}
-			});
-			this.energyCap = new StoredCapability<>(energy);
+			};
 			for(final ActiveState state : ActiveState.values())
 				soundPlaying.put(state, () -> false);
 		}

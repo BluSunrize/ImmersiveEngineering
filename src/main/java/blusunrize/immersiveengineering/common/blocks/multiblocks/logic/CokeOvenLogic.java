@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -38,16 +37,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
@@ -173,17 +170,10 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(
-			IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap
-	)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		final State state = ctx.getState();
-		if(cap==Capabilities.ITEM_HANDLER)
-			return state.invCap.cast(ctx);
-		else if(cap==Capabilities.FLUID_HANDLER)
-			return state.fluidCap.cast(ctx);
-		else
-			return LazyOptional.empty();
+		register.registerEverywhere(ItemHandler.BLOCK, state -> state.inventory);
+		register.registerEverywhere(FluidHandler.BLOCK, state -> state.fluidCap);
 	}
 
 	@Override
@@ -211,8 +201,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 		private int process = 0;
 		private int processMax = 0;
 
-		private final StoredCapability<IItemHandler> invCap;
-		private final StoredCapability<IFluidHandler> fluidCap;
+		private final IFluidHandler fluidCap;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -229,10 +218,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 			cachedRecipe = CachedRecipe.cachedSkip1(
 					CokeOvenRecipe::findRecipe, () -> inventory.getStackInSlot(INPUT_SLOT)
 			);
-			this.invCap = new StoredCapability<>(this.inventory);
-			this.fluidCap = new StoredCapability<>(
-					new ArrayFluidHandler(new IFluidTank[]{tank}, true, false, ctx.getMarkDirtyRunnable())
-			);
+			this.fluidCap = new ArrayFluidHandler(new IFluidTank[]{tank}, true, false, ctx.getMarkDirtyRunnable());
 		}
 
 		@Override

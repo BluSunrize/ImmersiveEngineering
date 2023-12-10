@@ -36,8 +36,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -84,21 +82,10 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
+	public CapabilityPosition getCapabilityPosition(@Nullable Direction side)
 	{
-		final MultiblockBEHelperMaster<State> masterHelper = getMasterHelper();
-		if(masterHelper==null)
-			return LazyOptional.empty();
-		final MultiblockContext<State> ctx = masterHelper.getContext();
 		final RelativeBlockFace relativeSide = RelativeBlockFace.from(orientation, side);
-		final CapabilityPosition position = new CapabilityPosition(getPositionInMB(), relativeSide);
-		for(final ComponentInstance<?> component : masterHelper.getComponentInstances())
-		{
-			final LazyOptional<T> fromComponent = component.getCapability(position, cap);
-			if(fromComponent.isPresent())
-				return fromComponent;
-		}
-		return multiblock.logic().getCapability(ctx, position, cap);
+		return new CapabilityPosition(getPositionInMB(), relativeSide);
 	}
 
 	@Override

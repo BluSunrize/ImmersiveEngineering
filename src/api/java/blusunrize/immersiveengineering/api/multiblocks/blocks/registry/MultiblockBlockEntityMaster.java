@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
+// TODO invalidate caps on dummy blocks when loaded or unloaded
 public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 		extends BlockEntity
 		implements IModelOffsetProvider, IMultiblockBE<State>

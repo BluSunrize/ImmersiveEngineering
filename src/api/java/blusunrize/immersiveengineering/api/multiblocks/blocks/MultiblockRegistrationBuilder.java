@@ -12,8 +12,12 @@ import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.Disassembler;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityGetter;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.CapabilityRegistrar;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.StateWrapper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityDummy;
@@ -23,6 +27,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.Multibloc
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -35,9 +40,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -231,7 +241,32 @@ public abstract class MultiblockRegistrationBuilder<
 				mirrorable, hasComparatorOutput, redstoneInputAware, postProcessesShape,
 				getMasterPosInMB, getSize, disassemble, structure, name
 		);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(
+				RegisterCapabilitiesEvent.class, this::registerCapabilities
+		);
 		return this.result;
+	}
+
+	private void registerCapabilities(RegisterCapabilitiesEvent ev)
+	{
+		logic.registerCapabilities(new CapabilityRegistrar<>()
+		{
+			@Override
+			public <T>
+			void register(BlockCapability<T, @Nullable Direction> capability, CapabilityGetter<T, State> getter)
+			{
+				ICapabilityProvider<IMultiblockBE<State>, @Nullable Direction, T> provider = (be, side) -> {
+					IMultiblockBEHelper<State> helper = be.getHelper();
+					State state = helper.getState();
+					if(state!=null)
+						return getter.getCapability(state, helper.getCapabilityPosition(side));
+					else
+						return null;
+				};
+				ev.registerBlockEntity(capability, masterBE.get(), provider);
+				ev.registerBlockEntity(capability, dummyBE.get(), provider);
+			}
+		});
 	}
 
 	private <BE extends BlockEntity>

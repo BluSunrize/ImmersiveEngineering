@@ -18,7 +18,10 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -43,10 +46,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
@@ -87,7 +89,7 @@ public class RefineryLogic
 		state.active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		tryEnqueueProcess(state, context.getLevel().getRawLevel());
 		FluidUtils.multiblockFluidOutput(
-				state.fluidOutput, state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
+				state.fluidOutput.getCapability(), state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
 		);
 	}
 
@@ -133,20 +135,17 @@ public class RefineryLogic
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		final State state = ctx.getState();
-		if(cap==Capabilities.ENERGY&&ENERGY_POS.equalsOrNullFace(position))
-			return state.energyCap.cast(ctx);
-		else if(cap==Capabilities.FLUID_HANDLER)
-		{
+		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
+		register.register(FluidHandler.BLOCK, (state, position) -> {
 			if(FLUID_OUTPUT_CAP.equals(position))
-				return state.outputCap.cast(ctx);
+				return state.outputCap;
 			else if(FLUID_INPUT_CAPS.contains(position))
-				return state.inputCap.cast(ctx);
-		}
-		return LazyOptional.empty();
+				return state.inputCap;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -190,9 +189,8 @@ public class RefineryLogic
 		// Utils
 		private final IFluidTank[] tankArray = {tanks.leftInput, tanks.rightInput, tanks.output};
 		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
-		private final StoredCapability<IEnergyStorage> energyCap;
-		private final StoredCapability<IFluidHandler> inputCap;
-		private final StoredCapability<IFluidHandler> outputCap;
+		private final IFluidHandler inputCap;
+		private final IFluidHandler outputCap;
 
 		// Sync/client fields
 		public boolean active;
@@ -205,12 +203,11 @@ public class RefineryLogic
 			this.inventory = SlotwiseItemHandler.makeWithGroups(
 					List.of(new IOConstraintGroup(IOConstraint.NO_CONSTRAINT, NUM_SLOTS)), ctx.getMarkDirtyRunnable()
 			);
-			this.fluidOutput = ctx.getCapabilityAt(Capabilities.FLUID_HANDLER, FLUID_OUTPUT);
-			this.energyCap = new StoredCapability<>(this.energy);
-			this.inputCap = new StoredCapability<>(new ArrayFluidHandler(
+			this.fluidOutput = ctx.getCapabilityAt(FluidHandler.BLOCK, FLUID_OUTPUT);
+			this.inputCap = new ArrayFluidHandler(
 					false, true, markDirty, tanks.leftInput, tanks.rightInput
-			));
-			this.outputCap = new StoredCapability<>(ArrayFluidHandler.drainOnly(this.tanks.output, markDirty));
+			);
+			this.outputCap = ArrayFluidHandler.drainOnly(this.tanks.output, markDirty);
 		}
 
 		@Override

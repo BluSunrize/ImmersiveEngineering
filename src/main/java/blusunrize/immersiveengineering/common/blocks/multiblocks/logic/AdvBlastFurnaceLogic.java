@@ -36,9 +36,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
@@ -113,20 +112,18 @@ public class AdvBlastFurnaceLogic
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ITEM_HANDLER)
-		{
-			final State state = ctx.getState();
+		register.register(ItemHandler.BLOCK, (state, position) -> {
 			if(OUTPUT_CAP.equals(position))
-				return state.outputHandler.cast(ctx);
+				return state.outputHandler;
 			else if(SLAG_OUTPUT_CAP.equals(position))
-				return state.slagHandler.cast(ctx);
+				return state.slagHandler;
 			else if(INPUT_CAP.equals(position))
-				return state.inputHandler.cast(ctx);
-		}
-		return LazyOptional.empty();
+				return state.inputHandler;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -146,24 +143,24 @@ public class AdvBlastFurnaceLogic
 		private final BlastFurnaceLogic.State innerState;
 		private final BlockCapabilityCache<IItemHandler, ?> outputRef;
 		private final BlockCapabilityCache<IItemHandler, ?> slagRef;
-		private final StoredCapability<IItemHandler> inputHandler;
-		private final StoredCapability<IItemHandler> outputHandler;
-		private final StoredCapability<IItemHandler> slagHandler;
+		private final IItemHandler inputHandler;
+		private final IItemHandler outputHandler;
+		private final IItemHandler slagHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.innerState = new BlastFurnaceLogic.State(ctx);
-			this.outputRef = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, OUTPUT_OFFSET);
-			this.slagRef = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, SLAG_OUTPUT_OFFSET);
-			this.inputHandler = new StoredCapability<>(new WrappingItemHandler(
+			this.outputRef = ctx.getCapabilityAt(ItemHandler.BLOCK, OUTPUT_OFFSET);
+			this.slagRef = ctx.getCapabilityAt(ItemHandler.BLOCK, SLAG_OUTPUT_OFFSET);
+			this.inputHandler = new WrappingItemHandler(
 					getInventory(), true, false, new IntRange(0, 2)
-			));
-			this.outputHandler = new StoredCapability<>(new WrappingItemHandler(
+			);
+			this.outputHandler = new WrappingItemHandler(
 					getInventory(), false, true, new IntRange(2, 3)
-			));
-			this.slagHandler = new StoredCapability<>(new WrappingItemHandler(
+			);
+			this.slagHandler = new WrappingItemHandler(
 					getInventory(), false, true, new IntRange(3, 4)
-			));
+			);
 		}
 
 		@Override

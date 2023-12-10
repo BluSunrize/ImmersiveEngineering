@@ -15,7 +15,10 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MBInventoryUtils;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.common.blocks.metal.CrafterPatternInventory;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
@@ -36,10 +39,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -271,17 +274,11 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.ITEM_HANDLER&&ITEM_INPUT.equals(position))
-			return ctx.getState().itemInput.cast(ctx);
-		else if(cap==Capabilities.FLUID_HANDLER&&FLUID_INPUT.equals(position))
-			return ctx.getState().fluidInput.cast(ctx);
-		else if(cap==Capabilities.ENERGY&&ENERGY_INPUT.equals(position))
-			return ctx.getState().energyInput.cast(ctx);
-		else
-			return LazyOptional.empty();
+		register.registerAt(ItemHandler.BLOCK, ITEM_INPUT, state -> state.itemInput);
+		register.registerAt(FluidHandler.BLOCK, FLUID_INPUT, state -> state.fluidInput);
+		register.registerAt(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
 	}
 
 	@Override
@@ -310,19 +307,18 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		public final RSState rsState = RSState.enabledByDefault();
 
 		private final BlockCapabilityCache<IItemHandler, ?> output;
-		private final StoredCapability<IItemHandler> itemInput;
-		private final StoredCapability<IFluidHandler> fluidInput;
-		private final StoredCapability<IEnergyStorage> energyInput = new StoredCapability<>(energy);
+		private final IItemHandler itemInput;
+		private final IFluidHandler fluidInput;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			output = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, new BlockPos(1, 1, -1), RelativeBlockFace.FRONT);
+			output = ctx.getCapabilityAt(ItemHandler.BLOCK, new BlockPos(1, 1, -1), RelativeBlockFace.FRONT);
 			inventory = SlotwiseItemHandler.makeWithGroups(
 					List.of(new IOConstraintGroup(IOConstraint.NO_CONSTRAINT, INVENTORY_SIZE)),
 					ctx.getMarkDirtyRunnable()
 			);
-			itemInput = new StoredCapability<>(new WrappingItemHandler(inventory, true, false));
-			fluidInput = new StoredCapability<>(new ArrayFluidHandler(tanks, false, true, ctx.getMarkDirtyRunnable()));
+			itemInput = new WrappingItemHandler(inventory, true, false);
+			fluidInput = new ArrayFluidHandler(tanks, false, true, ctx.getMarkDirtyRunnable());
 		}
 
 		@Override

@@ -36,12 +36,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
@@ -73,7 +72,7 @@ public class DieselGeneratorLogic
 		{
 			int output = IEServerConfig.MACHINES.dieselGen_output.get();
 			List<IEnergyStorage> presentOutputs = state.energyOutputs.stream()
-					.map(CapabilityReference::getNullable)
+					.map(BlockCapabilityCache::getCapability)
 					.filter(Objects::nonNull)
 					.collect(Collectors.toList());
 			if(!presentOutputs.isEmpty()&&EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
@@ -162,18 +161,22 @@ public class DieselGeneratorLogic
 	}
 
 	@Override
-	public <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		if(cap==Capabilities.FLUID_HANDLER)
+		register.register(FluidHandler.BLOCK, (state, position) -> {
 			if(FLUID_INPUT_A.equalsOrNullFace(position)||FLUID_INPUT_B.equalsOrNullFace(position))
-				return ctx.getState().fluidCap.cast(ctx);
-		if(cap==Capabilities.ENERGY)
+				return state.tank;
+			else
+				return null;
+		});
+		register.register(EnergyStorage.BLOCK, (state, position) -> {
 			if(position.side()==null||(
 					position.side()==RelativeBlockFace.UP&&ENERGY_OUTPUTS.contains(position.posInMultiblock())
 			))
-				return ctx.getState().energyView.cast(ctx);
-		return LazyOptional.empty();
+				return NullEnergyStorage.INSTANCE;
+			else
+				return null;
+		});
 	}
 
 	@Override
@@ -203,16 +206,13 @@ public class DieselGeneratorLogic
 		// Utils
 		private final BiFunction<Level, Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
 		private final List<BlockCapabilityCache<IEnergyStorage, ?>> energyOutputs;
-		private final StoredCapability<IFluidHandler> fluidCap = new StoredCapability<>(tank);
-		private final StoredCapability<IEnergyStorage> energyView;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			ImmutableList.Builder<BlockCapabilityCache<IEnergyStorage, ?>> outputs = ImmutableList.builder();
 			for(BlockPos pos : ENERGY_OUTPUTS)
-				outputs.add(ctx.getCapabilityAt(Capabilities.ENERGY, pos, RelativeBlockFace.DOWN));
+				outputs.add(ctx.getCapabilityAt(EnergyStorage.BLOCK, pos, RelativeBlockFace.DOWN));
 			this.energyOutputs = outputs.build();
-			this.energyView = new StoredCapability<>(NullEnergyStorage.INSTANCE);
 		}
 
 		@Override

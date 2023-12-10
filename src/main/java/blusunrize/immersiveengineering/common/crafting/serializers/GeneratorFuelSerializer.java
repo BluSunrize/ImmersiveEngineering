@@ -21,21 +21,18 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.api.crafting.builders.GeneratorFuelBuilder.BURN_TIME_KEY;
-import static blusunrize.immersiveengineering.api.crafting.builders.GeneratorFuelBuilder.FLUID_TAG_KEY;
 
 public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 {
 	public static final Codec<GeneratorFuel> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.FLUID), FLUID_TAG_KEY).forGetter(f -> f.getFluidsRaw().leftOptional()),
+			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.FLUID), "fluidTag").forGetter(f -> f.getFluidsRaw().leftOptional()),
 			ExtraCodecs.strictOptionalField(BuiltInRegistries.FLUID.byNameCodec().listOf(), "fluidList").forGetter(f -> f.getFluidsRaw().rightOptional()),
-			Codec.INT.fieldOf(BURN_TIME_KEY).forGetter(GeneratorFuel::getBurnTime)
+			Codec.INT.fieldOf("burnTime").forGetter(GeneratorFuel::getBurnTime)
 	).apply(inst, GeneratorFuel::new));
 
 	@Override

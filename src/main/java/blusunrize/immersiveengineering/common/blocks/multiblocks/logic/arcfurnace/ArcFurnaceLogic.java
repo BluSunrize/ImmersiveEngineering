@@ -45,7 +45,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -240,28 +241,27 @@ public class ArcFurnaceLogic
 		}
 	}
 
-	/*TODO
 	@Override
-	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		final State state = ctx.getState();
-		if(cap==Capabilities.ENERGY&&(position.side()==null||ENERGY_INPUTS.contains(position)))
-			return state.energyCap.cast(ctx);
-		if(cap==Capabilities.ITEM_HANDLER)
-		{
-			if(MAIN_CAP_POS.equals(position))
-				return state.outputHandler.cast(ctx);
-			else if(SLAG_CAP_POS.equals(position))
-				return state.slagHandler.cast(ctx);
+		register.register(
+				EnergyStorage.BLOCK,
+				(state, pos) -> pos.side()==null||ENERGY_INPUTS.contains(pos)?state.energy: null
+		);
+		register.register(ItemHandler.BLOCK, (state, pos) -> {
+			if(MAIN_CAP_POS.equals(pos))
+				return state.outputHandler;
+			else if(SLAG_CAP_POS.equals(pos))
+				return state.slagHandler;
 				//TODO are these swapped?
-			else if(new BlockPos(1, 3, 2).equals(position.posInMultiblock()))
-				return state.insertionHandler.cast(ctx);
-			else if(new BlockPos(3, 3, 2).equals(position.posInMultiblock()))
-				return state.additiveHandler.cast(ctx);
-		}
-		return LazyOptional.empty();
+			else if(new BlockPos(1, 3, 2).equals(pos.posInMultiblock()))
+				return state.insertionHandler;
+			else if(new BlockPos(3, 3, 2).equals(pos.posInMultiblock()))
+				return state.additiveHandler;
+			else
+				return null;
+		});
 	}
-	 */
 
 	@Override
 	public void dropExtraItems(State state, Consumer<ItemStack> drop)
@@ -305,11 +305,10 @@ public class ArcFurnaceLogic
 		// Utilities
 		private final BlockCapabilityCache<IItemHandler, ?> output;
 		private final BlockCapabilityCache<IItemHandler, ?> slagOutput;
-		private final StoredCapability<IEnergyStorage> energyCap;
-		private final StoredCapability<IItemHandler> insertionHandler;
-		private final StoredCapability<IItemHandler> additiveHandler;
-		private final StoredCapability<IItemHandler> outputHandler;
-		private final StoredCapability<IItemHandler> slagHandler;
+		private final IItemHandler insertionHandler;
+		private final IItemHandler additiveHandler;
+		private final IItemHandler outputHandler;
+		private final IItemHandler slagHandler;
 		public final RSState rsControl = RSState.enabledByDefault();
 
 		// Client/sync fields
@@ -325,19 +324,18 @@ public class ArcFurnaceLogic
 			);
 			this.output = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, MAIN_OUT_POS);
 			this.slagOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, SLAG_OUT_POS);
-			this.energyCap = new StoredCapability<>(energy);
-			this.insertionHandler = new StoredCapability<>(new ArcFurnaceInputHandler(
+			this.insertionHandler = new ArcFurnaceInputHandler(
 					this.inventory, ctx.getMarkDirtyRunnable()
-			));
-			this.additiveHandler = new StoredCapability<>(new WrappingItemHandler(
+			);
+			this.additiveHandler = new WrappingItemHandler(
 					inventory, true, false, new IntRange(FIRST_ADDITIVE_SLOT, FIRST_ADDITIVE_SLOT+ADDITIVE_SLOT_COUNT)
-			));
-			this.outputHandler = new StoredCapability<>(new WrappingItemHandler(
+			);
+			this.outputHandler = new WrappingItemHandler(
 					inventory, false, true, new IntRange(FIRST_OUT_SLOT, FIRST_OUT_SLOT+OUT_SLOT_COUNT)
-			));
-			this.slagHandler = new StoredCapability<>(new WrappingItemHandler(
+			);
+			this.slagHandler = new WrappingItemHandler(
 					inventory, false, true, new IntRange(SLAG_SLOT, SLAG_SLOT+1)
-			));
+			);
 		}
 
 		@Override

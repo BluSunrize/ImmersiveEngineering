@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.component;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -20,16 +21,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface IMultiblockComponent<State>
 {
 	// TODO probably needs to be redone
-	default <T>
-	@Nullable
-			T getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, BlockCapability<T, ?> cap)
+	default void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		return null;
 	}
 
 	default void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)
@@ -53,5 +53,41 @@ public interface IMultiblockComponent<State>
 	interface StateWrapper<OuterState, OwnState>
 	{
 		OwnState wrapState(OuterState outer);
+	}
+
+	interface CapabilityRegistrar<State>
+	{
+		<T> void register(BlockCapability<T, @Nullable Direction> capability, CapabilityGetter<T, State> getter);
+
+		default <T> void registerAt(
+				BlockCapability<T, @Nullable Direction> capability,
+				CapabilityPosition atPosition,
+				Function<State, T> getter
+		)
+		{
+			register(capability, (state, position) -> Objects.equals(position, atPosition)?getter.apply(state): null);
+		}
+
+		default <T> void registerAtOrNull(
+				BlockCapability<T, @Nullable Direction> capability,
+				CapabilityPosition atPosition,
+				Function<State, T> getter
+		)
+		{
+			register(capability, (state, position) -> atPosition.equalsOrNullFace(position)?getter.apply(state): null);
+		}
+
+		default <T> void registerEverywhere(
+				BlockCapability<T, @Nullable Direction> capability, Function<State, T> getter
+		)
+		{
+			register(capability, (state, position) -> getter.apply(state));
+		}
+	}
+
+	interface CapabilityGetter<T, State>
+	{
+		@Nullable
+		T getCapability(State state, CapabilityPosition position);
 	}
 }
