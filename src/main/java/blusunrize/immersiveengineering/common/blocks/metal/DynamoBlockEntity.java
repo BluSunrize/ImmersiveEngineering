@@ -11,26 +11,24 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional
@@ -68,21 +66,24 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 	{
 	}
 
-	private final ResettableCapability<IEnergyStorage> energyCap = registerCapability(NullEnergyStorage.INSTANCE);
-	private final ResettableCapability<IRotationAcceptor> rotationCap = registerCapability(new RotationAcceptor());
-	private final Map<Direction, CapabilityReference<IEnergyStorage>> neighbors = CapabilityReference.forAllNeighbors(
-			this, Capabilities.ENERGY
-	);
+	private final IRotationAcceptor rotationCap = new RotationAcceptor();
+	private final Map<Direction, BlockCapabilityCache<IEnergyStorage, ?>> neighbors = new EnumMap<>(Direction.class);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<DynamoBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY)
-			return energyCap.cast();
-		if(cap==IRotationAcceptor.CAPABILITY&&side==getFacing())
-			return rotationCap.cast();
-		return super.getCapability(cap, side);
+		registrar.registerAllContexts(EnergyStorage.BLOCK, $ -> NullEnergyStorage.INSTANCE);
+		registrar.register(IRotationAcceptor.CAPABILITY, (be, side) -> side==be.getFacing()?be.rotationCap: null);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			for(Direction side : Direction.values())
+				neighbors.put(side, BlockCapabilityCache.create(
+						EnergyStorage.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
+				));
 	}
 
 	private class RotationAcceptor implements IRotationAcceptor
@@ -92,9 +93,9 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 		public void inputRotation(double rotation)
 		{
 			int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
-			for(CapabilityReference<IEnergyStorage> neighbor : neighbors.values())
+			for(BlockCapabilityCache<IEnergyStorage, ?> neighbor : neighbors.values())
 			{
-				IEnergyStorage capOnSide = neighbor.getNullable();
+				IEnergyStorage capOnSide = neighbor.getCapability();
 				if(capOnSide!=null)
 					output -= capOnSide.receiveEnergy(output, false);
 				if(output <= 0)

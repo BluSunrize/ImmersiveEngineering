@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
@@ -24,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -48,16 +49,28 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public boolean multiblock = false;
 	private boolean beingBroken = false;
 	public double perTick;
-	private final CapabilityReference<IRotationAcceptor> outputCap = CapabilityReference.forNeighbor(
-			this, IRotationAcceptor.CAPABILITY, () -> getFacing().getOpposite()
-	);
-	private final CapabilityReference<IRotationAcceptor> reverseOutputCap = CapabilityReference.forNeighbor(
-			this, IRotationAcceptor.CAPABILITY, this::getFacing
-	);
+	private BlockCapabilityCache<IRotationAcceptor, ?> outputCap;
+	private BlockCapabilityCache<IRotationAcceptor, ?> reverseOutputCap;
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+		{
+			Direction facing = getFacing();
+			outputCap = BlockCapabilityCache.create(
+					IRotationAcceptor.CAPABILITY, serverLevel, worldPosition.relative(facing.getOpposite()), facing
+			);
+			outputCap = BlockCapabilityCache.create(
+					IRotationAcceptor.CAPABILITY, serverLevel, worldPosition.relative(facing), facing.getOpposite()
+			);
+		}
 	}
 
 	@Override
@@ -83,11 +96,11 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			return;
 		}
 
-		IRotationAcceptor dynamo = outputCap.getNullable();
+		IRotationAcceptor dynamo = outputCap.getCapability();
 		Direction expandTo = getFacing();
 		if(dynamo==null)
 		{
-			dynamo = reverseOutputCap.getNullable();
+			dynamo = reverseOutputCap.getCapability();
 			expandTo = expandTo.getOpposite();
 		}
 		if(dynamo!=null)

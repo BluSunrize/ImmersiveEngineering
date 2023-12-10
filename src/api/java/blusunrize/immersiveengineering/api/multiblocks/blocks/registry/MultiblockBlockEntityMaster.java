@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEH
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -24,10 +23,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -90,22 +85,9 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 	}
 
 	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
-		helper.invalidateCaps();
-	}
-
-	@Override
 	public IMultiblockBEHelperMaster<State> getHelper()
 	{
 		return helper;
-	}
-
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
-	{
-		return helper.getCapability(cap, side);
 	}
 
 	@Override

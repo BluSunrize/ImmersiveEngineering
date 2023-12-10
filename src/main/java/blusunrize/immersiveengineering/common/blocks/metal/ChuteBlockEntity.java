@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -22,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import net.minecraft.core.BlockPos;
@@ -45,9 +45,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -371,15 +369,11 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		return diagonal;
 	}
 
-	private final ResettableCapability<IItemHandler> insertionCap = registerCapability(new ChuteBlockEntity.ChuteInventoryHandler(this));
+	private final IItemHandler insertionCap = new ChuteBlockEntity.ChuteInventoryHandler(this);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<ChuteBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ITEM_HANDLER&&side==Direction.UP)
-			return insertionCap.cast();
-		return super.getCapability(cap, side);
+		registrar.registerOnContext(ItemHandler.BLOCK, be -> be.insertionCap, Direction.UP);
 	}
 
 	public static class ChuteInventoryHandler implements IItemHandler

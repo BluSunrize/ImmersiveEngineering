@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
@@ -33,12 +34,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional,
@@ -50,7 +48,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	public float angle = 0;
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			this, be -> be.energyCap, BlastFurnacePreheaterBlockEntity::master, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, BlastFurnacePreheaterBlockEntity::master, makeEnergyInput(energyStorage)
 	);
 
 	public BlastFurnacePreheaterBlockEntity(BlockEntityType<BlastFurnacePreheaterBlockEntity> type, BlockPos pos, BlockState state)
@@ -149,13 +147,14 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 			EnergyHelper.serializeTo(energyStorage, nbt);
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<BlastFurnacePreheaterBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY&&(side==null||(dummy==2&&side==Direction.UP)))
-			return energyCap.get().cast();
-		return super.getCapability(cap, side);
+		registrar.register(EnergyStorage.BLOCK, (be, side) -> {
+			if(side==null||(be.dummy==2&&side==Direction.UP))
+				return be.energyCap.get();
+			else
+				return null;
+		});
 	}
 
 	@Override

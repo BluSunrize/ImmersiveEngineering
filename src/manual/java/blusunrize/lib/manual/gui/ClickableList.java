@@ -64,7 +64,7 @@ public class ClickableList extends Button
 	}
 
 	@Override
-	public void render(@NotNull GuiGraphics graphics, int mx, int my, float partialTicks)
+	public void renderWidget(@NotNull GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
 		PoseStack transform = graphics.pose();
 		if(!visible)

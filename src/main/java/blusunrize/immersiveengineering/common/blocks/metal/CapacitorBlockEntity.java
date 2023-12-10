@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -25,29 +26,23 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -58,8 +53,9 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 	private final CapacitorConfig configValues;
 	private final IEnergyStorage energyStorage;
-	private final Map<Direction, ResettableCapability<IEnergyStorage>> energyCaps = new EnumMap<>(Direction.class);
-	private final ResettableCapability<IEnergyStorage> nullEnergyCap;
+	private final Map<Direction, IEnergyStorage> energyCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, BlockCapabilityCache<IEnergyStorage, ?>> connectedCaps = new EnumMap<>(Direction.class);
+	private final IEnergyStorage nullEnergyCap;
 
 	public int comparatorOutput = 0;
 
@@ -77,9 +73,20 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 				sideConfig.put(f, IOSideConfig.INPUT);
 			else
 				sideConfig.put(f, IOSideConfig.NONE);
-			energyCaps.put(f, registerCapability(new CapacitorEnergyHandler(f, sideConfig, energyStorage)));
+			energyCaps.put(f, new CapacitorEnergyHandler(f, sideConfig, energyStorage));
 		}
-		nullEnergyCap = registerCapability(new WrappingEnergyStorage(energyStorage, false, false));
+		nullEnergyCap = new WrappingEnergyStorage(energyStorage, false, false);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			for(Direction f : DirectionUtils.VALUES)
+				connectedCaps.put(f, BlockCapabilityCache.create(
+						Capabilities.EnergyStorage.BLOCK, serverLevel, worldPosition.relative(f), f.getOpposite()
+				));
 	}
 
 	@Override
@@ -109,9 +116,13 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		if(this.sideConfig.get(side)!=IOSideConfig.OUTPUT)
 			return;
 		BlockPos outPos = getBlockPos().relative(side);
-		BlockEntity tileEntity = Utils.getExistingTileEntity(level, outPos);
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
-		this.energyStorage.extractEnergy(EnergyHelper.insertFlux(tileEntity, side.getOpposite(), out, false), false);
+		IEnergyStorage neighborCap = this.connectedCaps.get(side).getCapability();
+		if(neighborCap!=null)
+		{
+			int inserted = neighborCap.receiveEnergy(out, false);
+			this.energyStorage.extractEnergy(inserted, false);
+		}
 	}
 
 	@Override
@@ -174,13 +185,12 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 			EnergyHelper.deserializeFrom(forgeStorage, nbt);
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<CapacitorBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY)
-			return (side==null?nullEnergyCap: energyCaps.get(side)).cast();
-		return super.getCapability(cap, side);
+		registrar.register(
+				Capabilities.EnergyStorage.BLOCK,
+				(be, side) -> side==null?be.nullEnergyCap: be.energyCaps.get(side)
+		);
 	}
 
 	@Override

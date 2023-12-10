@@ -9,17 +9,15 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.minecraft.core.BlockPos;
@@ -27,24 +25,22 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
-import static net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER;
 
 //TODO Metadata and oredict are gone. Update manual entry as well.
 public class SorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<SorterBlockEntity>, IBlockEntityDrop
@@ -61,9 +57,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	 */
 	private static Set<BlockPos> routed = null;
 
-	private final Map<Direction, CapabilityReference<IItemHandler>> neighborCaps = CapabilityReference.forAllNeighbors(
-			this, ITEM_HANDLER
-	);
+	private final Map<Direction, BlockCapabilityCache<IItemHandler, ?>> neighborCaps = new EnumMap<>(Direction.class);
 
 	public SorterBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -71,6 +65,16 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		filter = new SorterInventory();
 	}
 
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			for(Direction side : Direction.values())
+				neighborCaps.put(side, BlockCapabilityCache.create(
+						ItemHandler.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
+				));
+	}
 
 	public ItemStack routeItem(Direction inputSide, ItemStack stack, boolean simulate)
 	{
@@ -184,8 +188,8 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			for(Direction side : Direction.values())
 				if(side!=outputSide)
 				{
-					CapabilityReference<IItemHandler> capRef = neighborCaps.get(side);
-					IItemHandler itemHandler = capRef.getNullable();
+					BlockCapabilityCache<IItemHandler, ?> capRef = neighborCaps.get(side);
+					IItemHandler itemHandler = capRef.getCapability();
 					if(itemHandler!=null)
 					{
 						Predicate<ItemStack> concatFilter = null;
@@ -360,23 +364,16 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			readCustomNBT(stack.getOrCreateTag(), false);
 	}
 
-	private final EnumMap<Direction, ResettableCapability<IItemHandler>> insertionHandlers = new EnumMap<>(Direction.class);
+	private final EnumMap<Direction, IItemHandler> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
-		{
-			ResettableCapability<IItemHandler> forSide = registerCapability(new SorterInventoryHandler(this, f));
-			insertionHandlers.put(f, forSide);
-		}
+			insertionHandlers.put(f, new SorterInventoryHandler(this, f));
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<SorterBlockEntity> registrar)
 	{
-		if(capability==ITEM_HANDLER&&facing!=null)
-			return insertionHandlers.get(facing).cast();
-		return super.getCapability(capability, facing);
+		registrar.register(ItemHandler.BLOCK, (be, facing) -> facing!=null?be.insertionHandlers.get(facing): null);
 	}
 
 	@Override

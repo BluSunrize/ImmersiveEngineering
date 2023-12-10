@@ -28,17 +28,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,16 +54,26 @@ import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.getSafeBE
 import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.isChunkSafe;
 
 @EventBusSubscriber(modid = Lib.MODID)
-public class GlobalWireNetwork implements IWorldTickable
+public class GlobalWireNetwork extends SavedData implements IWorldTickable
 {
+	public static final String SAVEDATA_KEY = Lib.MODID+":wire_network";
 	public static final SetRestrictedField<BooleanSupplier> SANITIZE_CONNECTIONS = SetRestrictedField.common();
 	public static final SetRestrictedField<BooleanSupplier> VALIDATE_CONNECTIONS = SetRestrictedField.common();
+	public static final SetRestrictedField<Function<Boolean, GlobalWireNetwork>> MAKE_NETWORK = SetRestrictedField.common();
+	private static final SavedData.Factory<GlobalWireNetwork> FACTORY = new Factory<>(
+			() -> MAKE_NETWORK.getValue().apply(false),
+			nbt -> {
+				GlobalWireNetwork net = MAKE_NETWORK.getValue().apply(false);
+				net.readFromNBT(nbt);
+				return net;
+			}
+	);
 
-	private static WeakReference<Level> lastServerWorld = new WeakReference<>(null);
+	private static WeakReference<ServerLevel> lastServerWorld = new WeakReference<>(null);
 	private static WeakReference<GlobalWireNetwork> lastServerNet = new WeakReference<>(null);
 
 	private static WeakReference<Level> lastClientWorld = new WeakReference<>(null);
-	private static WeakReference<GlobalWireNetwork> lastClientNet = new WeakReference<>(null);
+	private static GlobalWireNetwork lastClientNet = null;
 
 	private final Map<ConnectionPoint, LocalWireNetwork> localNetsByPos = new HashMap<>();
 	private final Set<LocalWireNetwork> localNetSet = new ReferenceOpenHashSet<>();
@@ -77,33 +88,28 @@ public class GlobalWireNetwork implements IWorldTickable
 	{
 		// This and onWorldUnload should only ever be called with non-remote worlds from the server thread, so this
 		// does not need any synchronization
-		if(!w.isClientSide&&w==lastServerWorld.get())
+		if(w instanceof ServerLevel serverLevel)
 		{
-			final GlobalWireNetwork lastNet = lastServerNet.get();
-			if(lastNet!=null)
-				return lastNet;
-		}
-		else if(w.isClientSide&&w==lastClientWorld.get())
-		{
-			final GlobalWireNetwork lastNet = lastClientNet.get();
-			if(lastNet!=null)
-				return lastNet;
-		}
-		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
-		if(!netOptional.isPresent())
-			throw new RuntimeException("No net handler found for dimension "+w.dimension().location()+", client: "+w.isClientSide);
-		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
-		if(!w.isClientSide)
-		{
-			lastServerWorld = new WeakReference<>(w);
-			lastServerNet = new WeakReference<>(ret);
+			if(serverLevel==lastServerWorld.get())
+			{
+				final GlobalWireNetwork lastNet = lastServerNet.get();
+				if(lastNet!=null)
+					return lastNet;
+			}
+			GlobalWireNetwork net = serverLevel.getDataStorage().computeIfAbsent(FACTORY, SAVEDATA_KEY);
+			lastServerNet = new WeakReference<>(net);
+			lastServerWorld = new WeakReference<>(serverLevel);
+			return net;
 		}
 		else
 		{
-			lastClientWorld = new WeakReference<>(w);
-			lastClientNet = new WeakReference<>(ret);
+			if(w!=lastClientWorld.get()||lastClientNet==null)
+			{
+				lastClientWorld = new WeakReference<>(w);
+				lastClientNet = MAKE_NETWORK.getValue().apply(true);
+			}
+			return lastClientNet;
 		}
-		return ret;
 	}
 
 	@SubscribeEvent
@@ -226,14 +232,14 @@ public class GlobalWireNetwork implements IWorldTickable
 		queuedLoads.clear();
 	}
 
-	public CompoundTag writeToNBT()
+	@Override
+	public CompoundTag save(CompoundTag savedNBT)
 	{
-		CompoundTag ret = new CompoundTag();
 		ListTag locals = new ListTag();
 		for(LocalWireNetwork local : localNetSet)
 			locals.add(local.writeToNBT());
-		ret.put("locals", locals);
-		return ret;
+		savedNBT.put("locals", locals);
+		return savedNBT;
 	}
 
 	public LocalWireNetwork getLocalNet(BlockPos pos)

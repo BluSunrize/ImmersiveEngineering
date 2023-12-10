@@ -10,7 +10,6 @@ package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -45,7 +44,7 @@ public class GuiButtonManual extends Button
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
+	public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
 		if(this.visible)
 		{

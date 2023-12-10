@@ -42,7 +42,7 @@ public class GuiButtonManualLink extends Button
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
+	public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
 		isHovered = mx >= this.getX()&&my >= this.getY()&&mx < this.getX()+this.width&&my < this.getY()+this.height;
 		if(isHovered)

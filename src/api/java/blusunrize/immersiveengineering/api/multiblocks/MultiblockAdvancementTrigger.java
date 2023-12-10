@@ -13,21 +13,21 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultib
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.critereon.CriterionValidator;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -73,17 +73,9 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 	}
 
 	@Override
-	public Instance createInstance(JsonObject json, DeserializationContext context)
+	public Codec<Instance> codec()
 	{
-		Optional<ContextAwarePredicate> and = EntityPredicate.fromJson(json, "player", context);
-		Optional<ItemPredicate> itemPredicate = ItemPredicate.fromJson(json.get("item"));
-		if(!itemPredicate.isPresent())
-			throw new JsonSyntaxException("Failed to parse item predicate from "+json.get("item"));
-		return new MultiblockAdvancementTrigger.Instance(
-				new ResourceLocation(GsonHelper.getAsString(json, "multiblock")),
-				itemPredicate.get(),
-				and
-		);
+		return Instance.CODEC;
 	}
 
 	public void trigger(ServerPlayer player, IMultiblock multiblock, ItemStack hammer)
@@ -95,20 +87,15 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 
 	public static Criterion<?> create(ResourceLocation multiblock, ItemPredicate hammer)
 	{
-		return INSTANCE.createCriterion(new Instance(multiblock, hammer, Optional.empty()));
+		return INSTANCE.createCriterion(new Instance(multiblock, hammer));
 	}
 
-	public static class Instance extends AbstractCriterionTriggerInstance
+	public record Instance(ResourceLocation multiblock, ItemPredicate hammer) implements CriterionTriggerInstance
 	{
-		private final ResourceLocation multiblock;
-		private final ItemPredicate hammer;
-
-		public Instance(ResourceLocation multiblock, ItemPredicate hammer, Optional<ContextAwarePredicate> and)
-		{
-			super(and);
-			this.multiblock = multiblock;
-			this.hammer = hammer;
-		}
+		public static final Codec<Instance> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				ResourceLocation.CODEC.fieldOf("multiblock").forGetter(Instance::multiblock),
+				ItemPredicate.CODEC.fieldOf("hammer").forGetter(Instance::hammer)
+		).apply(inst, Instance::new));
 
 		public boolean test(IMultiblock multiblock, ItemStack hammer)
 		{
@@ -116,12 +103,8 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 		}
 
 		@Override
-		public JsonObject serializeToJson()
+		public void validate(CriterionValidator validator)
 		{
-			JsonObject jsonobject = super.serializeToJson();
-			jsonobject.addProperty("multiblock", this.multiblock.toString());
-			jsonobject.add("item", this.hammer.serializeToJson());
-			return jsonobject;
 		}
 	}
 

@@ -17,17 +17,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
 public interface IMultiblockComponent<State>
 {
+	// TODO probably needs to be redone
 	default <T>
-	LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
+	@Nullable
+			T getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, BlockCapability<T, ?> cap)
 	{
-		return LazyOptional.empty();
+		return null;
 	}
 
 	default void onEntityCollision(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Entity collided)

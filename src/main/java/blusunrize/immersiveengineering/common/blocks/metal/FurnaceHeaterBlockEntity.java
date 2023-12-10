@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -22,37 +22,45 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IActiveState,
 		IStateBasedDirectional, IHammerInteraction
 {
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000, getEnergyIO());
-	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
-	private final Collection<CapabilityReference<IExternalHeatable>> heatables = CapabilityReference.forAllNeighbors(
-			this, ExternalHeaterHandler.CAPABILITY
-	).values();
+	private final IEnergyStorage energyCap = makeEnergyInput(energyStorage);
+	private final Collection<BlockCapabilityCache<IExternalHeatable, ?>> heatables = new ArrayList<>();
 
 	public FurnaceHeaterBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.FURNACE_HEATER.get(), pos, state);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		heatables.clear();
+		if(level instanceof ServerLevel serverLevel)
+			for(Direction side : Direction.values())
+				heatables.add(BlockCapabilityCache.create(
+						ExternalHeaterHandler.CAPABILITY, serverLevel, worldPosition.relative(side), side.getOpposite()
+				));
 	}
 
 	@Override
@@ -64,9 +72,9 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 		if(activeBeforeTick&&!redstonePower)
 			newActive = false;
 		if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
-			for(CapabilityReference<IExternalHeatable> capRef : heatables)
+			for(BlockCapabilityCache<IExternalHeatable, ?> capRef : heatables)
 			{
-				IExternalHeatable heatable = capRef.getNullable();
+				IExternalHeatable heatable = capRef.getCapability();
 				if(heatable!=null)
 				{
 					int consumed = heatable.doHeatTick(energyStorage.getEnergyStored(), redstonePower);
@@ -103,13 +111,9 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 		EnergyHelper.serializeTo(energyStorage, nbt);
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<FurnaceHeaterBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY&&(side==null||side==getFacing()))
-			return energyCap.cast();
-		return super.getCapability(cap, side);
+		registrar.register(EnergyStorage.BLOCK, (be, side) -> side==null||side==be.getFacing()?be.energyCap: null);
 	}
 
 	@Override

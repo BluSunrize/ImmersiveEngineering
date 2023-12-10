@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -210,8 +209,8 @@ public class SqueezerLogic
 		public boolean animation_down = true;
 
 		// Utils
-		private final CapabilityReference<IItemHandler> itemOutput;
-		private final CapabilityReference<IFluidHandler> fluidOutput;
+		private final BlockCapabilityCache<IItemHandler, ?> itemOutput;
+		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
 		private final StoredCapability<IEnergyStorage> energyCap;
 		private final StoredCapability<IFluidHandler> fluidOutputCap;
 		private final StoredCapability<IItemHandler> itemInputCap;

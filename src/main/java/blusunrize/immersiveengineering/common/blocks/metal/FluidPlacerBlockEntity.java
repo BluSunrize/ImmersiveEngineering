@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
@@ -19,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdri
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -37,17 +37,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IConfigurableSides,
@@ -257,16 +253,14 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 		return InteractionResult.SUCCESS;
 	}
 
-	private final ResettableCapability<IFluidHandler> tankCap = registerCapability(tank);
+	private final IFluidHandler tankCap = makeFluidInput(tank);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<FluidPlacerBlockEntity> registrar)
 	{
-		if(capability==Capabilities.FLUID_HANDLER&&
-				(facing==null||sideConfig.get(facing)==IOSideConfig.INPUT))
-			return tankCap.cast();
-		return super.getCapability(capability, facing);
+		registrar.register(
+				FluidHandler.BLOCK,
+				(be, facing) -> facing==null||be.sideConfig.get(facing)==IOSideConfig.INPUT?be.tankCap: null
+		);
 	}
 
 	@Override

@@ -8,31 +8,33 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import net.minecraft.core.Direction;
+import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityManager;
-import net.neoforged.neoforge.common.capabilities.CapabilityToken;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * @author BluSunrize - 09.11.2016
  */
 public class CapabilityShader
 {
-	public static final Capability<ShaderWrapper> SHADER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
-	{
-	});
+	// TODO probably rework
+	public static final ItemCapability<ShaderWrapper, Void> ITEM = ItemCapability.createVoid(
+			IEApi.ieLoc("shader_item"), ShaderWrapper.class
+	);
+	public static final BlockCapability<ShaderWrapper, Void> BLOCK = BlockCapability.createVoid(
+			IEApi.ieLoc("shader_block"), ShaderWrapper.class
+	);
+	public static final EntityCapability<ShaderWrapper, Void> ENTITY = EntityCapability.createVoid(
+			IEApi.ieLoc("shader_entity"), ShaderWrapper.class
+	);
 
 	public abstract static class ShaderWrapper
 	{
@@ -106,7 +108,7 @@ public class CapabilityShader
 		}
 	}
 
-	public static class ShaderWrapper_Direct extends ShaderWrapper implements ICapabilityProvider, INBTSerializable<CompoundTag>
+	public static class ShaderWrapper_Direct extends ShaderWrapper
 	{
 		@Nonnull
 		protected ItemStack shader = ItemStack.EMPTY;
@@ -127,38 +129,6 @@ public class CapabilityShader
 		public ItemStack getShaderItem()
 		{
 			return this.shader;
-		}
-
-		private LazyOptional<ShaderWrapper> opt = CapabilityUtils.constantOptional(this);
-
-		@Override
-		@Nonnull
-		public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
-		{
-			if(capability==SHADER_CAPABILITY)
-				return opt.cast();
-			return LazyOptional.empty();
-		}
-
-		@Override
-		public CompoundTag serializeNBT()
-		{
-			CompoundTag nbt = new CompoundTag();
-			ItemStack shader = getShaderItem();
-			if(!shader.isEmpty())
-				shader.save(nbt);
-			else
-				nbt.putString("IE:NoShader", "");
-			nbt.putString("IE:ShaderType", getShaderType().toString());
-			return nbt;
-		}
-
-		@Override
-		public void deserializeNBT(CompoundTag nbt)
-		{
-			setShaderType(new ResourceLocation(nbt.getString("IE:ShaderType")));
-			if(!nbt.contains("IE:NoShader"))
-				setShaderItem(ItemStack.of(nbt));
 		}
 	}
 

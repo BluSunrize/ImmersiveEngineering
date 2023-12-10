@@ -19,8 +19,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.LightningRodLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.LightningRodShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -36,8 +34,8 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
@@ -57,7 +55,7 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 		final State state = context.getState();
 		final IMultiblockLevel level = context.getLevel();
 		if(state.energy.getEnergyStored() > 0)
-			for(final CapabilityReference<IEnergyStorage> outputRef : state.energyOutputs)
+			for(final BlockCapabilityCache<IEnergyStorage, ?> outputRef : state.energyOutputs)
 			{
 				final IEnergyStorage output = outputRef.getNullable();
 				if(output!=null)
@@ -167,14 +165,14 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(
 				IEServerConfig.MACHINES.lightning_output.get()
 		);
-		private final ImmutableList<CapabilityReference<IEnergyStorage>> energyOutputs;
+		private final ImmutableList<BlockCapabilityCache<IEnergyStorage, ?>> energyOutputs;
 		@Nullable
 		private FenceNet fenceNet = null;
 		private final StoredCapability<IEnergyStorage> energyCap = new StoredCapability<>(energy);
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
-			ImmutableList.Builder<CapabilityReference<IEnergyStorage>> builder = ImmutableList.builder();
+			ImmutableList.Builder<BlockCapabilityCache<IEnergyStorage, ?>> builder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.HORIZONTAL)
 				builder.add(capabilitySource.getCapabilityAt(
 						Capabilities.ENERGY,

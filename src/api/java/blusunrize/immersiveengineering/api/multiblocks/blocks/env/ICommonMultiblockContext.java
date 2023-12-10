@@ -10,20 +10,32 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import net.minecraft.core.BlockPos;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 @NonExtendable
 public interface ICommonMultiblockContext
 {
-	default <T> CapabilityReference<T> getCapabilityAt(Capability<T> capability, MultiblockFace face)
+	default <T> BlockCapabilityCache<T, ?> getCapabilityAt(BlockCapability<T, Direction> capability, MultiblockFace face)
 	{
 		return getCapabilityAt(capability, face.posInMultiblock(), face.face());
 	}
 
-	<T> CapabilityReference<T> getCapabilityAt(
-			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
+	<T> BlockCapabilityCache<T, ?> getCapabilityAt(
+			BlockCapability<T, Direction> capability, BlockPos posRelativeToMB, RelativeBlockFace face
+	);
+
+	default <T> BlockCapabilityCache<T, ?> getVoidCapabilityAt(
+			BlockCapability<T, Void> capability, BlockPos posRelativeToMB
+	)
+	{
+		return getCapabilityAt(capability, posRelativeToMB, null);
+	}
+
+	<T, C> BlockCapabilityCache<T, ?> getCapabilityAt(
+			BlockCapability<T, C> capability, BlockPos posRelativeToMB, C context
 	);
 }

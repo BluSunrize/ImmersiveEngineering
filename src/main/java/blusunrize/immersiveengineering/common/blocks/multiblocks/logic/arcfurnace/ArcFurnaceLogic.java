@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -44,9 +43,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -216,7 +214,7 @@ public class ArcFurnaceLogic
 
 	private void outputItems(State state)
 	{
-		IItemHandler outputHandler = state.output.getNullable();
+		IItemHandler outputHandler = state.output.getCapability();
 		if(outputHandler!=null)
 			for(int j : OUTPUT_SLOTS)
 			{
@@ -231,7 +229,7 @@ public class ArcFurnaceLogic
 		final ItemStack slagStack = state.inventory.getStackInSlot(SLAG_SLOT);
 		if(slagStack.isEmpty())
 			return;
-		IItemHandler slagOutputHandler = state.slagOutput.getNullable();
+		IItemHandler slagOutputHandler = state.slagOutput.getCapability();
 		if(slagOutputHandler!=null)
 		{
 			int out = Math.min(slagStack.getCount(), 16);
@@ -242,6 +240,7 @@ public class ArcFurnaceLogic
 		}
 	}
 
+	/*TODO
 	@Override
 	public <T> LazyOptional<T> getCapability(IMultiblockContext<State> ctx, CapabilityPosition position, Capability<T> cap)
 	{
@@ -262,6 +261,7 @@ public class ArcFurnaceLogic
 		}
 		return LazyOptional.empty();
 	}
+	 */
 
 	@Override
 	public void dropExtraItems(State state, Consumer<ItemStack> drop)
@@ -303,8 +303,8 @@ public class ArcFurnaceLogic
 		private final InMachineProcessor<ArcFurnaceRecipe> processor;
 
 		// Utilities
-		private final CapabilityReference<IItemHandler> output;
-		private final CapabilityReference<IItemHandler> slagOutput;
+		private final BlockCapabilityCache<IItemHandler, ?> output;
+		private final BlockCapabilityCache<IItemHandler, ?> slagOutput;
 		private final StoredCapability<IEnergyStorage> energyCap;
 		private final StoredCapability<IItemHandler> insertionHandler;
 		private final StoredCapability<IItemHandler> additiveHandler;
@@ -323,8 +323,8 @@ public class ArcFurnaceLogic
 			this.processor = new InMachineProcessor<>(
 					12, $ -> 0, 12, ctx.getMarkDirtyRunnable(), ctx.getSyncRunnable(), ArcFurnaceRecipe.RECIPES::getById
 			);
-			this.output = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, MAIN_OUT_POS);
-			this.slagOutput = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, SLAG_OUT_POS);
+			this.output = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, MAIN_OUT_POS);
+			this.slagOutput = ctx.getCapabilityAt(Capabilities.ItemHandler.BLOCK, SLAG_OUT_POS);
 			this.energyCap = new StoredCapability<>(energy);
 			this.insertionHandler = new StoredCapability<>(new ArcFurnaceInputHandler(
 					this.inventory, ctx.getMarkDirtyRunnable()

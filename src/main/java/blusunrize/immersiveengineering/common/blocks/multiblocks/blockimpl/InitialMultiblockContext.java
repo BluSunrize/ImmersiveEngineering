@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +29,7 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 ) implements IInitialMultiblockContext<State>
 {
 	@Override
-	public <T> CapabilityReference<T> getCapabilityAt(
+	public <T> BlockCapabilityCache<T, ?> getCapabilityAt(
 			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
 	)
 	{
@@ -55,7 +54,7 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 		return () -> MultiblockContext.requestBESync(masterBE);
 	}
 
-	public static <T> CapabilityReference<T> getCapabilityAt(
+	public static <T> BlockCapabilityCache<T, ?> getCapabilityAt(
 			BlockEntity masterBE, MultiblockOrientation orientation, BlockPos masterOffset,
 			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
 	)

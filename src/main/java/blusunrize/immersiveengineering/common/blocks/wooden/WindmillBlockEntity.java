@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -31,6 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -44,6 +44,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,13 +57,24 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	public float rotation = 0;
 	public float turnSpeed = 0;
 	public int sails = 0;
-	private final CapabilityReference<IRotationAcceptor> outputCap = CapabilityReference.forNeighbor(
-			this, IRotationAcceptor.CAPABILITY, () -> getFacing().getOpposite()
-	);
+	private BlockCapabilityCache<IRotationAcceptor, ?> outputCap;
 
 	public WindmillBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.WINDMILL.get(), pos, state);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+		{
+			Direction facing = getFacing();
+			outputCap = BlockCapabilityCache.create(
+					IRotationAcceptor.CAPABILITY, serverLevel, worldPosition.relative(facing.getOpposite()), facing
+			);
+		}
 	}
 
 	@Override
@@ -106,7 +118,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 		if(turnSpeed==0)
 			return;
 
-		IRotationAcceptor dynamo = outputCap.getNullable();
+		IRotationAcceptor dynamo = outputCap.getCapability();
 		if(dynamo!=null)
 		{
 			double power = getActualTurnSpeed()*800;

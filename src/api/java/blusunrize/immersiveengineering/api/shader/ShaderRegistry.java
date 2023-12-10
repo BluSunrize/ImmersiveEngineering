@@ -606,7 +606,7 @@ public class ShaderRegistry
 
 	public static ShaderAndCase getStoredShaderAndCase(ItemStack itemStack)
 	{
-		ShaderWrapper shaderCap = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY).orElse(null);
+		ShaderWrapper shaderCap = itemStack.getCapability(CapabilityShader.ITEM);
 		return shaderCap!=null?getStoredShaderAndCase(shaderCap): null;
 	}
 

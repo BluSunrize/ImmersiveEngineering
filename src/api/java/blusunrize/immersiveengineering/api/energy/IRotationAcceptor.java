@@ -8,15 +8,16 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityManager;
-import net.neoforged.neoforge.common.capabilities.CapabilityToken;
+import blusunrize.immersiveengineering.api.IEApi;
+import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import org.jetbrains.annotations.Nullable;
 
 public interface IRotationAcceptor
 {
-	Capability<IRotationAcceptor> CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
-	{
-	});
+	BlockCapability<IRotationAcceptor, @Nullable Direction> CAPABILITY = BlockCapability.createSided(
+			IEApi.ieLoc("rotation_acceptor"), IRotationAcceptor.class
+	);
 
 	void inputRotation(double rotation);
 }

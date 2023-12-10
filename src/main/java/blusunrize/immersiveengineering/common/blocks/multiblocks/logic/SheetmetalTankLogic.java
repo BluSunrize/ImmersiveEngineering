@@ -17,8 +17,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SheetmetalTankLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
@@ -35,8 +33,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -60,7 +58,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		state.comparatorHelper.update(context, state.tank.getFluidAmount());
 		if(!state.rsState.isEnabled(context)||state.tank.isEmpty())
 			return;
-		for(CapabilityReference<IFluidHandler> outputRef : state.outputs)
+		for(BlockCapabilityCache<IFluidHandler, ?> outputRef : state.outputs)
 		{
 			int outSize = Math.min(FluidType.BUCKET_VOLUME, state.tank.getFluidAmount());
 			FluidStack out = Utils.copyFluidStackWithAmount(state.tank.getFluid(), outSize, false);
@@ -139,7 +137,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	{
 		public final FluidTank tank = new FluidTank(512*FluidType.BUCKET_VOLUME);
 		private final LayeredComparatorOutput<IMultiblockContext<?>> comparatorHelper;
-		private final List<CapabilityReference<IFluidHandler>> outputs;
+		private final List<BlockCapabilityCache<IFluidHandler, ?>> outputs;
 		private final StoredCapability<IFluidHandler> inputHandler;
 		private final StoredCapability<IFluidHandler> ioHandler;
 		public final RSState rsState = RSState.disabledByDefault();
@@ -147,7 +145,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
 			this.comparatorHelper = LayeredComparatorOutput.makeForSiloLike(tank.getCapacity(), 4);
-			ImmutableList.Builder<CapabilityReference<IFluidHandler>> outputBuilder = ImmutableList.builder();
+			ImmutableList.Builder<BlockCapabilityCache<IFluidHandler, ?>> outputBuilder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.values())
 				if(face!=RelativeBlockFace.DOWN)
 				{

@@ -15,9 +15,8 @@ import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
-import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -42,6 +41,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -54,10 +54,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -71,7 +72,6 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.joml.Vector3f;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
@@ -114,6 +114,9 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	private float growth = 0;
 	public float renderGrowth = 0;
 	public boolean renderActive = false;
+	@Nullable
+	private BlockCapabilityCache<IItemHandler, ?> output;
+
 
 	public ClocheBlockEntity(BlockEntityType<ClocheBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -124,9 +127,18 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			this.particles = new MutableObject<>();
 	}
 
-	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
-			() -> new DirectionalBlockPos(worldPosition.above().relative(getFacing().getOpposite()), getFacing()),
-			Capabilities.ITEM_HANDLER);
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			this.output = BlockCapabilityCache.create(
+					ItemHandler.BLOCK,
+					serverLevel,
+					worldPosition.above().relative(getFacing().getOpposite()),
+					getFacing()
+			);
+	}
 
 	@Override
 	public boolean canTickAny()
@@ -258,7 +270,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 
 		if(level.getGameTime()%8==0)
 		{
-			IItemHandler outputHandler = output.getNullable();
+			IItemHandler outputHandler = output.getCapability();
 			if(outputHandler!=null)
 				for(int j = 3; j < 7; j++)
 				{
@@ -438,40 +450,46 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 
 	private final MultiblockCapability<IItemHandler> inputHandler = MultiblockCapability.make(
 			this, be -> be.inputHandler, ClocheBlockEntity::master,
-			registerCapability(new IEInventoryHandler(1, this, 2, true, false))
+			new IEInventoryHandler(1, this, 2, true, false)
 	);
 
 	private final MultiblockCapability<IItemHandler> outputHandler = MultiblockCapability.make(
 			this, be -> be.outputHandler, ClocheBlockEntity::master,
-			registerCapability(new IEInventoryHandler(4, this, 3, false, true))
+			new IEInventoryHandler(4, this, 3, false, true)
 	);
 	private final MultiblockCapability<IFluidHandler> tankCap = MultiblockCapability.make(
-			this, be -> be.tankCap, ClocheBlockEntity::master, registerCapability(tank)
+			this, be -> be.tankCap, ClocheBlockEntity::master, tank
 	);
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			this, be -> be.energyCap, ClocheBlockEntity::master, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, ClocheBlockEntity::master, energyStorage
 	);
 
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<ClocheBlockEntity> registrar)
 	{
-		if(capability==Capabilities.ENERGY&&(facing==null||
-				(dummy==0&&facing.getAxis()==this.getFacing().getClockWise().getAxis())||
-				(dummy==2&&facing==Direction.UP)))
-			return energyCap.getAndCast();
-		if(capability==Capabilities.ITEM_HANDLER)
-		{
-			if(facing==null||(dummy==0&&facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
-				return inputHandler.getAndCast();
-			if(dummy==1&&facing==this.getFacing().getOpposite())
-				return outputHandler.getAndCast();
-		}
-		else if(capability==Capabilities.FLUID_HANDLER)
-			if(facing==null||(dummy==0&&facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
-				return tankCap.getAndCast();
-		return super.getCapability(capability, facing);
+		registrar.register(EnergyStorage.BLOCK, (be, facing) -> {
+			if(facing==null||
+					(be.dummy==0&&facing.getAxis()==be.getFacing().getClockWise().getAxis())||
+					(be.dummy==2&&facing==Direction.UP))
+				return be.energyCap.get();
+			else
+				return null;
+		});
+		registrar.register(ItemHandler.BLOCK, (be, facing) -> {
+			final var clocheFacing = be.getFacing();
+			if(facing==null||(be.dummy==0&&facing.getAxis()!=clocheFacing.getClockWise().getAxis()))
+				return be.inputHandler.get();
+			else if(be.dummy==1&&facing==clocheFacing.getOpposite())
+				return be.outputHandler.get();
+			else
+				return null;
+		});
+		registrar.register(FluidHandler.BLOCK, (be, facing) -> {
+			if(facing==null||(be.dummy==0&&facing.getAxis()!=be.getFacing().getClockWise().getAxis()))
+				return be.tankCap.get();
+			else
+				return null;
+		});
 	}
 
 	@Override

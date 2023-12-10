@@ -21,8 +21,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.DieselGeneratorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -38,8 +36,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -204,13 +202,13 @@ public class DieselGeneratorLogic
 
 		// Utils
 		private final BiFunction<Level, Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
-		private final List<CapabilityReference<IEnergyStorage>> energyOutputs;
+		private final List<BlockCapabilityCache<IEnergyStorage, ?>> energyOutputs;
 		private final StoredCapability<IFluidHandler> fluidCap = new StoredCapability<>(tank);
 		private final StoredCapability<IEnergyStorage> energyView;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			ImmutableList.Builder<CapabilityReference<IEnergyStorage>> outputs = ImmutableList.builder();
+			ImmutableList.Builder<BlockCapabilityCache<IEnergyStorage, ?>> outputs = ImmutableList.builder();
 			for(BlockPos pos : ENERGY_OUTPUTS)
 				outputs.add(ctx.getCapabilityAt(Capabilities.ENERGY, pos, RelativeBlockFace.DOWN));
 			this.energyOutputs = outputs.build();

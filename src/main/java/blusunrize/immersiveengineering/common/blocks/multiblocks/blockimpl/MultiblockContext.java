@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
@@ -88,7 +87,7 @@ public record MultiblockContext<State extends IMultiblockState>(
 	}
 
 	@Override
-	public <T> CapabilityReference<T> getCapabilityAt(
+	public <T> BlockCapabilityCache<T, ?> getCapabilityAt(
 			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
 	)
 	{

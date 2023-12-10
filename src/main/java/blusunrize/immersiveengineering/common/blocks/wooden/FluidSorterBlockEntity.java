@@ -11,27 +11,26 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -41,8 +40,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
-
-import static net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER;
 
 /**
  * @author BluSunrize - 02.03.2017
@@ -58,13 +55,22 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
 	 */
 	private static Set<BlockPos> usedRouters = null;
-	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborCaps = CapabilityReference.forAllNeighbors(
-			this, FLUID_HANDLER
-	);
+	private final Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighborCaps = new EnumMap<>(Direction.class);
 
 	public FluidSorterBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.FLUID_SORTER.get(), pos, state);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			for(Direction side : Direction.values())
+				neighborCaps.put(side, BlockCapabilityCache.create(
+						FluidHandler.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
+				));
 	}
 
 	public int routeFluid(Direction inputSide, FluidStack stack, FluidAction doFill)
@@ -107,8 +113,8 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		{
 			int rand = ApiUtils.RANDOM.nextInt(lengthFiltered);
 			Direction currentSide = sides[rand];
-			CapabilityReference<IFluidHandler> capRef = neighborCaps.get(currentSide);
-			IFluidHandler fluidOut = capRef.getNullable();
+			BlockCapabilityCache<IFluidHandler, ?> capRef = neighborCaps.get(currentSide);
+			IFluidHandler fluidOut = capRef.getCapability();
 			if(fluidOut!=null)
 			{
 				int filledHere = fluidOut.fill(available, doFill);
@@ -235,23 +241,16 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	}
 
 
-	private final EnumMap<Direction, ResettableCapability<IFluidHandler>> insertionHandlers = new EnumMap<>(Direction.class);
+	private final EnumMap<Direction, IFluidHandler> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
-		{
-			ResettableCapability<IFluidHandler> forSide = registerCapability(new SorterFluidHandler(this, f));
-			insertionHandlers.put(f, forSide);
-		}
+			insertionHandlers.put(f, new SorterFluidHandler(this, f));
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<FluidSorterBlockEntity> registrar)
 	{
-		if(capability==FLUID_HANDLER&&facing!=null)
-			return insertionHandlers.get(facing).cast();
-		return super.getCapability(capability, facing);
+		registrar.register(FluidHandler.BLOCK, (be, facing) -> facing!=null?be.insertionHandlers.get(facing): null);
 	}
 
 	public static FluidStack[][] makeFilterArray()

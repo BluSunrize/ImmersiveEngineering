@@ -80,7 +80,7 @@ public class ComparableItemStack
 		if(!ItemStack.isSameItem(stack, otherStack))
 			return false;
 		if(this.useNBT)
-			return Objects.equals(stack.getTag(), otherStack.getTag()) && stack.areCapsCompatible(otherStack);
+			return Objects.equals(stack.getTag(), otherStack.getTag())&&stack.areAttachmentsCompatible(otherStack);
 		return true;
 	}
 

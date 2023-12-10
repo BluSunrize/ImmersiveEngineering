@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -22,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
@@ -41,16 +41,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.joml.Vector3f;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEClientTickableBE, IEServerTickableBE,
@@ -62,7 +60,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	public final Mutable<CustomParticleManager> particles;
 	private boolean charging = true;
 	public int comparatorOutput = 0;
-	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
+	private final IEnergyStorage energyCap = makeEnergyInput(energyStorage);
 
 	public ChargingStationBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -77,12 +75,13 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	public void tickClient()
 	{
 		particles.getValue().clientTick();
-		if(EnergyHelper.isFluxReceiver(inventory.get(0))&&charging)
+		IEnergyStorage itemEnergy = inventory.get(0).getCapability(EnergyStorage.ITEM);
+		if(itemEnergy!=null&&charging)
 		{
 			float charge = 0;
-			float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
+			float max = itemEnergy.getMaxEnergyStored();
 			if(max > 0)
-				charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
+				charge = itemEnergy.getEnergyStored()/max;
 
 			for(int i = 0; i < 3; i++)
 			{
@@ -105,7 +104,8 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	public void tickServer()
 	{
 		this.energyStorage.updateAverage();
-		if(EnergyHelper.isFluxReceiver(inventory.get(0)))
+		IEnergyStorage itemEnergy = inventory.get(0).getCapability(EnergyStorage.ITEM);
+		if(itemEnergy!=null)
 		{
 			if(charging)
 			{
@@ -115,16 +115,16 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 					this.markContainingBlockForUpdate(null);
 					return;
 				}
-				int stored = EnergyHelper.getEnergyStored(inventory.get(0));
-				int max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
+				int stored = itemEnergy.getEnergyStored();
+				int max = itemEnergy.getMaxEnergyStored();
 				int space = max-stored;
 				if(space > 0)
 				{
 					int energyDec = (10*stored)/max;
 					int insert = Math.min(space, Math.max(energyStorage.getAverageInsertion(), IEServerConfig.MACHINES.charger_consumption.get()));
-					int accepted = Math.min(EnergyHelper.insertFlux(inventory.get(0), insert, true), this.energyStorage.extractEnergy(insert, true));
+					int accepted = Math.min(itemEnergy.receiveEnergy(insert, true), this.energyStorage.extractEnergy(insert, true));
 					if((accepted = this.energyStorage.extractEnergy(accepted, false)) > 0)
-						stored += EnergyHelper.insertFlux(inventory.get(0), accepted, false);
+						stored += itemEnergy.receiveEnergy(accepted, false);
 					int energyDecNew = (10*stored)/max;
 					if(energyDec!=energyDecNew)
 						this.markContainingBlockForUpdate(null);
@@ -141,11 +141,11 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 		if(level.getGameTime()%32==((getBlockPos().getX()^getBlockPos().getZ())&31))
 		{
 			float charge = 0;
-			if(EnergyHelper.isFluxReceiver(inventory.get(0)))
+			if(itemEnergy!=null)
 			{
-				float max = EnergyHelper.getMaxEnergyStored(inventory.get(0));
+				float max = itemEnergy.getMaxEnergyStored();
 				if(max > 0)
-					charge = EnergyHelper.getEnergyStored(inventory.get(0))/max;
+					charge = itemEnergy.getEnergyStored()/max;
 			}
 			int i = (int)(15*charge);
 			if(i!=this.comparatorOutput)
@@ -242,17 +242,17 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new IEInventoryHandler(1, this));
+	private final IItemHandler insertionHandler = new IEInventoryHandler(1, this);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<ChargingStationBlockEntity> registrar)
 	{
-		if(capability==Capabilities.ENERGY&&(facing==null||facing==Direction.DOWN||facing==getFacing().getOpposite()))
-			return energyCap.cast();
-		if(capability==Capabilities.ITEM_HANDLER)
-			return insertionHandler.cast();
-		return super.getCapability(capability, facing);
+		registrar.register(EnergyStorage.BLOCK, (be, facing) -> {
+			if(facing==null||facing==Direction.DOWN||facing==be.getFacing().getOpposite())
+				return be.energyCap;
+			else
+				return null;
+		});
+		registrar.register(ItemHandler.BLOCK, (be, facing) -> be.insertionHandler);
 	}
 
 	@Override

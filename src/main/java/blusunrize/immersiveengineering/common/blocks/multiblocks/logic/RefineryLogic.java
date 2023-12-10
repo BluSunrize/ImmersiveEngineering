@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -190,7 +189,7 @@ public class RefineryLogic
 
 		// Utils
 		private final IFluidTank[] tankArray = {tanks.leftInput, tanks.rightInput, tanks.output};
-		private final CapabilityReference<IFluidHandler> fluidOutput;
+		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
 		private final StoredCapability<IEnergyStorage> energyCap;
 		private final StoredCapability<IFluidHandler> inputCap;
 		private final StoredCapability<IFluidHandler> outputCap;

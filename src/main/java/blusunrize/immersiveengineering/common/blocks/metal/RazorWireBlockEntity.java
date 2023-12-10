@@ -253,7 +253,10 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 			else
 				connectN = false;
 		}
-		AABB aabb = new AABB(getBlockPos().offset(getFacing().getAxis()==Axis.Z?-widthN: 0, 0, getFacing().getAxis()==Axis.X?-widthN: 0), getBlockPos().offset(getFacing().getAxis()==Axis.Z?1+widthP: 1, 1, getFacing().getAxis()==Axis.X?1+widthP: 1));
+		AABB aabb = new AABB(
+				new Vec3(getFacing().getAxis()==Axis.Z?-widthN: 0, 0, getFacing().getAxis()==Axis.X?-widthN: 0),
+				new Vec3(getFacing().getAxis()==Axis.Z?1+widthP: 1, 1, getFacing().getAxis()==Axis.X?1+widthP: 1)
+		).move(getBlockPos());
 		List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, aabb);
 		for(LivingEntity ent : entities)
 			ent.hurt(IEDamageSources.razorShock(level), 2);

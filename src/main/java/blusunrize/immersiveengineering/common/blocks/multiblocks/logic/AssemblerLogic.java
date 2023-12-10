@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.metal.CrafterPatternInventory;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AssemblerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.AssemblerShapes;
@@ -37,8 +36,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -310,7 +309,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		public final MutableEnergyStorage energy = new MutableEnergyStorage(ENERGY_CAPACITY);
 		public final RSState rsState = RSState.enabledByDefault();
 
-		private final CapabilityReference<IItemHandler> output;
+		private final BlockCapabilityCache<IItemHandler, ?> output;
 		private final StoredCapability<IItemHandler> itemInput;
 		private final StoredCapability<IFluidHandler> fluidInput;
 		private final StoredCapability<IEnergyStorage> energyInput = new StoredCapability<>(energy);

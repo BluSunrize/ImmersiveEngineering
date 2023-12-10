@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -16,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
 import com.google.common.collect.Streams;
 import net.minecraft.core.BlockPos;
@@ -29,9 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -105,7 +103,7 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity
 		return IEMenuTypes.CRAFTING_TABLE;
 	}
 
-	private final ResettableCapability<IItemHandler> inventoryCap = registerCapability(new ItemStackHandler(inventory)
+	private final IItemHandler inventoryCap = new ItemStackHandler(inventory)
 	{
 		@Override
 		protected void onContentsChanged(int slot)
@@ -113,15 +111,11 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity
 			super.onContentsChanged(slot);
 			CraftingTableBlockEntity.this.setChanged();
 		}
-	});
+	};
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<CraftingTableBlockEntity> registrar)
 	{
-		if(capability==Capabilities.ITEM_HANDLER)
-			return inventoryCap.cast();
-		return super.getCapability(capability, facing);
+		registrar.registerAllContexts(ItemHandler.BLOCK, be -> be.inventoryCap);
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -37,14 +38,10 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInventory, IStateBasedDirectional,
@@ -90,15 +87,15 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	public static int getIngredientAmount(LogicCircuitInstruction instruction, int slot)
 	{
 		return switch(slot)
-				{
-					case 0 -> // backplane
-							1;
-					case 1 -> // logic
-							instruction.getOperator().getComplexity();
-					case 2 -> // solder
-							(int)Math.ceil((instruction.getOperator().getComplexity()+instruction.getInputs().length+1)/2f);
-					default -> -1;
-				};
+		{
+			case 0 -> // backplane
+					1;
+			case 1 -> // logic
+					instruction.getOperator().getComplexity();
+			case 2 -> // solder
+					(int)Math.ceil((instruction.getOperator().getComplexity()+instruction.getInputs().length+1)/2f);
+			default -> -1;
+		};
 	}
 
 	@Override
@@ -200,15 +197,16 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	}
 
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			this, be -> be.energyCap, CircuitTableBlockEntity::master, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, CircuitTableBlockEntity::master, makeEnergyInput(energyStorage)
 	);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<CircuitTableBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY&&(side==null||(side==getFacing()&&isDummy())))
-			return energyCap.getAndCast();
-		return super.getCapability(cap, side);
+		registrar.register(EnergyStorage.BLOCK, (be, side) -> {
+			if(side==null||side==be.getFacing()&&be.isDummy())
+				return be.energyCap.get();
+			else
+				return null;
+		});
 	}
 }

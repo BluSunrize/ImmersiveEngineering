@@ -37,11 +37,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions.FontContext;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -400,6 +398,6 @@ public class ManualUtils
 
 	private static ItemStack readItemStack(JsonObject json)
 	{
-		return CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
+		return ItemStack.ITEM_WITH_COUNT_CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
 	}
 }

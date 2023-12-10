@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
@@ -22,7 +23,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -48,20 +48,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -585,16 +580,18 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	}
 
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			this, be -> be.energyCap, TurretBlockEntity::master, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, TurretBlockEntity::master, makeEnergyInput(energyStorage)
 	);
 
-	@Nonnull
-	@Override
-	public <T2> LazyOptional<T2> getCapability(@Nonnull Capability<T2> cap, @Nullable Direction side)
+	protected static <T extends TurretBlockEntity<T>>
+	void registerCapabilitiesBase(BECapabilityRegistrar<T> registrar)
 	{
-		if(cap==Capabilities.ENERGY&&(side!=null||!isDummy()))
-			return energyCap.getAndCast();
-		return super.getCapability(cap, side);
+		registrar.register(EnergyStorage.BLOCK, (be, side) -> {
+			if(side!=null||!be.isDummy())
+				return ((TurretBlockEntity<?>)be).energyCap.get();
+			else
+				return null;
+		});
 	}
 
 	public void setDummy(boolean dummy)

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 import blusunrize.immersiveengineering.api.tool.conveyor.*;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
@@ -128,7 +127,7 @@ public class VerticalConveyor extends ConveyorBase
 		return new Vec3(vX, vY, vZ);
 	}
 
-	private CapabilityReference<IItemHandler> inserter;
+	private BlockCapabilityCache<IItemHandler, ?> inserter;
 
 	@Override
 	public void onEntityCollision(@Nonnull Entity entity)

@@ -22,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
@@ -69,19 +68,19 @@ public class ItemUtils
 
 	public static void tryInsertEntity(Level level, BlockPos pos, Direction side, ItemEntity toInsert)
 	{
-		LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(level, pos, side, true);
-		cap.ifPresent(itemHandler -> {
-			ItemStack stack = toInsert.getItem();
-			ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack, true);
-			if(temp.getCount() < stack.getCount())
-			{
-				temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
-				if(temp.isEmpty())
-					toInsert.discard();
-				else if(temp.getCount() < stack.getCount())
-					toInsert.setItem(temp);
-			}
-		});
+		IItemHandler itemHandler = CapabilityUtils.findItemHandlerAtPos(level, pos, side, true);
+		if(itemHandler==null)
+			return;
+		ItemStack stack = toInsert.getItem();
+		ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack, true);
+		if(temp.getCount() < stack.getCount())
+		{
+			temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+			if(temp.isEmpty())
+				toInsert.discard();
+			else if(temp.getCount() < stack.getCount())
+				toInsert.setItem(temp);
+		}
 	}
 
 	public static boolean isSameIgnoreDurability(ItemStack stackA, ItemStack stackB)

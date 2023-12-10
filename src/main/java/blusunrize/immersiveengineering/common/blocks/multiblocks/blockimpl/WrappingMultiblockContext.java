@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
@@ -23,7 +22,7 @@ public record WrappingMultiblockContext<State>(
 ) implements IMultiblockContext<State>
 {
 	@Override
-	public <T> CapabilityReference<T> getCapabilityAt(Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face)
+	public <T> BlockCapabilityCache<T, ?> getCapabilityAt(Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face)
 	{
 		return inner.getCapabilityAt(capability, posRelativeToMB, face);
 	}

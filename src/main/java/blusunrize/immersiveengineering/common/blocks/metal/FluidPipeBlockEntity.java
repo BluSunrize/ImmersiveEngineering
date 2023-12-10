@@ -12,18 +12,17 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.fluid.IPressurizedFluidOutput;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.EventHandler;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.WorldMap;
 import com.google.common.collect.ImmutableSet;
@@ -33,9 +32,11 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -55,17 +56,15 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -138,13 +137,9 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 								openList.add(nextPos);
 							else
 							{
-								LazyOptional<IFluidHandler> handlerOptional = adjacentTile.getCapability(
-										Capabilities.FLUID_HANDLER, fd.getOpposite());
-								handlerOptional.ifPresent(handler ->
-								{
-									if(handler.getTanks() > 0)
-										fluidHandlers.add(new DirectionalFluidOutput(handler, fd, adjacentTile));
-								});
+								IFluidHandler handler = world.getCapability(FluidHandler.BLOCK, nextPos, fd.getOpposite());
+								if(handler!=null&&handler.getTanks() > 0)
+									fluidHandlers.add(new DirectionalFluidOutput(handler, fd, adjacentTile));
 							}
 					}
 			}
@@ -158,7 +153,8 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	public void onLoad()
 	{
 		super.onLoad();
-		if(level!=null&&!level.isClientSide)
+		if(level instanceof ServerLevel serverLevel)
+		{
 			EventHandler.SERVER_TASKS.add(() -> {
 				boolean changed = false;
 				for(Direction f : DirectionUtils.VALUES)
@@ -169,6 +165,11 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					markContainingBlockForUpdate(null);
 				}
 			});
+			for(Direction side : Direction.values())
+				neighbors.put(side, BlockCapabilityCache.create(
+						FluidHandler.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
+				));
+		}
 	}
 
 	@Override
@@ -264,40 +265,42 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		return false;
 	}
 
-	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
-	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = CapabilityReference.forAllNeighbors(
-			this, Capabilities.FLUID_HANDLER
-	);
+	private final Map<Direction, IFluidHandler> sidedHandlers = new EnumMap<>(Direction.class);
+	private final Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighbors = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
-			sidedHandlers.put(f, registerCapability(new PipeFluidHandler(this, f)));
+			sidedHandlers.put(f, new PipeFluidHandler(this, f));
 	}
 
 	private void invalidateHandler(Direction side)
 	{
-		ResettableCapability<IFluidHandler> handler = sidedHandlers.get(side);
+		IFluidHandler handler = sidedHandlers.get(side);
 		if(handler!=null)
 		{
 			sidedHandlers.put(side, null);
-			handler.reset();
+			invalidateCapabilities();
 		}
 	}
 
 	private void setValidHandler(Direction side)
 	{
-		ResettableCapability<IFluidHandler> handler = sidedHandlers.get(side);
+		IFluidHandler handler = sidedHandlers.get(side);
 		if(handler==null)
-			sidedHandlers.put(side, registerCapability(new PipeFluidHandler(this, side)));
+		{
+			sidedHandlers.put(side, new PipeFluidHandler(this, side));
+			invalidateCapabilities();
+		}
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<FluidPipeBlockEntity> registrar)
 	{
-		if(capability==Capabilities.FLUID_HANDLER&&facing!=null&&sideConfig.getBoolean(facing))
-			return sidedHandlers.get(facing).cast();
-		return super.getCapability(capability, facing);
+		registrar.register(FluidHandler.BLOCK, (be, side) -> {
+			if(side!=null&&be.sideConfig.getBoolean(side))
+				return be.sidedHandlers.get(side);
+			else
+				return null;
+		});
 	}
 
 	protected boolean hasCover()
@@ -495,7 +498,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		connections &= ~mask;
 		if(sideConfig.getBoolean(dir))
 		{
-			IFluidHandler handler = neighbors.get(dir).getNullable();
+			IFluidHandler handler = neighbors.get(dir).getCapability();
 			if(handler!=null&&handler.getTanks() > 0)
 				connections |= mask;
 		}
@@ -514,7 +517,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					availableConnections |= mask;
 				else
 				{
-					IFluidHandler handler = neighbors.get(dir).getNullable();
+					IFluidHandler handler = neighbors.get(dir).getCapability();
 					if(handler!=null&&handler.getTanks() > 0)
 						availableConnections |= mask;
 				}

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -25,7 +24,6 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -34,11 +32,11 @@ import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,12 +45,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,11 +93,9 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public int currentTickToNet = 0;
 	private final MutableEnergyStorage storageToNet;
 	private final MutableEnergyStorage storageToMachine;
-	private final ResettableCapability<IEnergyStorage> energyCap;
+	private final IEnergyStorage energyCap;
 
-	private final CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(
-			this, Capabilities.ENERGY, this::getFacing
-	);
+	private BlockCapabilityCache<IEnergyStorage, ?> output;
 
 	public EnergyConnectorBlockEntity(BlockEntityType<? extends EnergyConnectorBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -110,7 +105,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 		this.relay = data.getSecond();
 		this.storageToMachine = new MutableEnergyStorage(getMaxInput(), getMaxInput(), getMaxInput());
 		this.storageToNet = new MutableEnergyStorage(getMaxInput(), getMaxInput(), getMaxInput());
-		this.energyCap = registerCapability(new ConnectorEnergyStorage());
+		this.energyCap = new ConnectorEnergyStorage();
 	}
 
 	public EnergyConnectorBlockEntity(String voltage, boolean relay, BlockPos pos, BlockState state)
@@ -119,12 +114,25 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+		{
+			Direction facing = getFacing();
+			output = BlockCapabilityCache.create(
+					EnergyStorage.BLOCK, serverLevel, worldPosition.relative(facing), facing.getOpposite()
+			);
+		}
+	}
+
+	@Override
 	public void tickServer()
 	{
 		int maxOut = Math.min(storageToMachine.getEnergyStored(), getMaxOutput()-currentTickToMachine);
 		if(maxOut > 0)
 		{
-			IEnergyStorage target = output.getNullable();
+			IEnergyStorage target = output.getCapability();
 			if(target!=null)
 			{
 				int inserted = target.receiveEnergy(maxOut, false);
@@ -203,13 +211,16 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 				.5+lengthFromHalf*side.getStepZ());
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(RegisterCapabilitiesEvent event)
 	{
-		if(cap==Capabilities.ENERGY&&!relay&&(side==null||side==getFacing()))
-			return energyCap.cast();
-		return super.getCapability(cap, side);
+		SPEC_TO_TYPE.forEach((spec, type) -> {
+			if(!spec.getSecond())
+				event.registerBlockEntity(
+						EnergyStorage.BLOCK,
+						type.get(),
+						(be, side) -> side==null||side==be.getFacing()?be.energyCap: null
+				);
+		});
 	}
 
 	private IEWireType getWireType()

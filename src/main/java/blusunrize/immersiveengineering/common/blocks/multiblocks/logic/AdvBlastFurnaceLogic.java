@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AdvBlastFurnaceLogic.State;
@@ -37,8 +36,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -145,8 +144,8 @@ public class AdvBlastFurnaceLogic
 	public static class State implements IMultiblockState, IFurnaceEnvironment<BlastFurnaceRecipe>
 	{
 		private final BlastFurnaceLogic.State innerState;
-		private final CapabilityReference<IItemHandler> outputRef;
-		private final CapabilityReference<IItemHandler> slagRef;
+		private final BlockCapabilityCache<IItemHandler, ?> outputRef;
+		private final BlockCapabilityCache<IItemHandler, ?> slagRef;
 		private final StoredCapability<IItemHandler> inputHandler;
 		private final StoredCapability<IItemHandler> outputHandler;
 		private final StoredCapability<IItemHandler> slagHandler;

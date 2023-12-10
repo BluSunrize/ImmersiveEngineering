@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -29,13 +29,13 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -50,9 +50,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -83,7 +83,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	private final MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	private boolean placeCobble = true;
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			this, be -> be.energyCap, FluidPumpBlockEntity::master, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, FluidPumpBlockEntity::master, makeEnergyInput(energyStorage)
 	);
 
 	private boolean checkingArea = false;
@@ -97,9 +97,18 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		super(type, pos, state);
 	}
 
-	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
-			this, Capabilities.FLUID_HANDLER
-	);
+	private final Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighborFluids = new EnumMap<>(Direction.class);
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			for(Direction side : Direction.values())
+				neighborFluids.put(side, BlockCapabilityCache.create(
+						FluidHandler.BLOCK, serverLevel, worldPosition.relative(side), side
+				));
+	}
 
 	@Override
 	public void tickServer()
@@ -125,7 +134,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			for(Direction f : Direction.values())
 				if(sideConfig.get(f)==IOSideConfig.INPUT)
 				{
-					IFluidHandler input = neighborFluids.get(f).getNullable();
+					IFluidHandler input = neighborFluids.get(f).getCapability();
 					if(input!=null)
 					{
 						int drainAmount = IFluidPipe.getTransferableAmount(this.canOutputPressurized(false));
@@ -264,7 +273,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		for(Direction f : Direction.values())
 			if(sideConfig.get(f)==IOSideConfig.OUTPUT)
 			{
-				IFluidHandler handler = neighborFluids.get(f).getNullable();
+				IFluidHandler handler = neighborFluids.get(f).getCapability();
 				if(handler!=null)
 				{
 					BlockEntity tile = getLevelNonnull().getBlockEntity(worldPosition.relative(f));
@@ -366,21 +375,24 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		return false;
 	}
 
-	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
+	private final Map<Direction, IFluidHandler> sidedFluidHandler = new EnumMap<>(Direction.class);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<FluidPumpBlockEntity> registrar)
 	{
-		if(capability==Capabilities.ENERGY&&(facing==null||(facing==Direction.UP&&isDummy())))
-			return energyCap.getAndCast();
-		if(capability==Capabilities.FLUID_HANDLER&&facing!=null&&!isDummy())
-		{
-			if(!sidedFluidHandler.containsKey(facing))
-				sidedFluidHandler.put(facing, registerCapability(new SidedFluidHandler(this, facing)));
-			return sidedFluidHandler.get(facing).cast();
-		}
-		return super.getCapability(capability, facing);
+		registrar.register(FluidHandler.BLOCK, (be, facing) -> {
+			if(facing!=null&&!be.isDummy())
+			{
+				if(!be.sidedFluidHandler.containsKey(facing))
+					be.sidedFluidHandler.put(facing, new SidedFluidHandler(be, facing));
+				return be.sidedFluidHandler.get(facing);
+			}
+			else
+				return null;
+		});
+		registrar.register(
+				EnergyStorage.BLOCK,
+				(be, facing) -> facing==null||(facing==Direction.UP&&be.isDummy())?be.energyCap.get(): null
+		);
 	}
 
 	@Override

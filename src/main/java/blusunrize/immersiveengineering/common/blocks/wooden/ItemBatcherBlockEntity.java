@@ -9,11 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
-import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -22,13 +21,13 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -36,13 +35,11 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
@@ -80,16 +77,24 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 		return placer.isShiftKeyDown();
 	}
 
-	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
-			() -> new DirectionalBlockPos(worldPosition.relative(getFacing()), getFacing().getOpposite()),
-			Capabilities.ITEM_HANDLER);
+	private BlockCapabilityCache<IItemHandler, ?> output;
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			output = BlockCapabilityCache.create(
+					ItemHandler.BLOCK, serverLevel, worldPosition.relative(getFacing()), getFacing().getOpposite()
+			);
+	}
 
 	@Override
 	public void tickServer()
 	{
 		if(level.getGameTime()%8!=0||!isActive())
 			return;
-		IItemHandler outputHandler = output.getNullable();
+		IItemHandler outputHandler = output.getCapability();
 		if(outputHandler!=null)
 		{
 			boolean matched = true;
@@ -122,7 +127,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 					}
 				}
 				if(anySent)
-					redstoneCap.get().markDirty();
+					redstoneCap.markDirty();
 			}
 		}
 	}
@@ -239,35 +244,29 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();
-		redstoneCap.get().markDirty();
+		redstoneCap.markDirty();
 	}
 
-	private final ResettableCapability<IItemHandler> insertionCap = registerCapability(
-			new IEInventoryHandler(NUM_SLOTS, this, 0, true, false)
-	);
+	private final IItemHandler insertionCap = new IEInventoryHandler(NUM_SLOTS, this, 0, true, false);
 
-	private final ResettableCapability<RedstoneBundleConnection> redstoneCap = registerCapability(
-			new RedstoneBundleConnection()
-			{
-				@Override
-				public void updateInput(byte[] signals, Direction side)
-				{
-					Set<DyeColor> outputMap = calculateRedstoneOutputs();
-					for(DyeColor dye : outputMap)
-						signals[dye.getId()] = (byte)Math.max(signals[dye.getId()], 15);
-				}
-			}
-	);
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
+	private final RedstoneBundleConnection redstoneCap = new RedstoneBundleConnection()
 	{
-		if(capability==Capabilities.ITEM_HANDLER&&facing==getFacing().getOpposite())
-			return insertionCap.cast();
-		if(capability==CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION)
-			return redstoneCap.cast();
-		return super.getCapability(capability, facing);
+		@Override
+		public void updateInput(byte[] signals, Direction side)
+		{
+			Set<DyeColor> outputMap = calculateRedstoneOutputs();
+			for(DyeColor dye : outputMap)
+				signals[dye.getId()] = (byte)Math.max(signals[dye.getId()], 15);
+		}
+	};
+
+	public static void registerCapabilities(BECapabilityRegistrar<ItemBatcherBlockEntity> registrar)
+	{
+		registrar.registerAllContexts(CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION, be -> be.redstoneCap);
+		registrar.register(
+				ItemHandler.BLOCK,
+				(be, facing) -> facing==be.getFacing().getOpposite()?be.insertionCap: null
+		);
 	}
 
 	public NonNullList<ItemStack> getFilters()

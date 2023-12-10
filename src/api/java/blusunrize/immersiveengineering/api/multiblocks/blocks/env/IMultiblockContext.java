@@ -11,13 +11,12 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.env;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import java.util.function.BooleanSupplier;
 
 @NonExtendable
-public interface IMultiblockContext<State> extends ICommonMultiblockContext
+public interface IMultiblockContext<State>
 {
 	default void markDirtyAndSync()
 	{
@@ -30,8 +29,6 @@ public interface IMultiblockContext<State> extends ICommonMultiblockContext
 	State getState();
 
 	IMultiblockLevel getLevel();
-
-	<T> LazyOptional<T> registerCapability(T value);
 
 	BooleanSupplier isValid();
 

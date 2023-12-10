@@ -8,16 +8,16 @@
 
 package blusunrize.immersiveengineering.api.wires.redstone;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityManager;
-import net.neoforged.neoforge.common.capabilities.CapabilityToken;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import org.jetbrains.annotations.Nullable;
 
 public class CapabilityRedstoneNetwork
 {
-	public static final Capability<RedstoneBundleConnection> REDSTONE_BUNDLE_CONNECTION = CapabilityManager.get(new CapabilityToken<>()
-	{
-	});
+	public static final BlockCapability<RedstoneBundleConnection, @Nullable Direction> REDSTONE_BUNDLE_CONNECTION = BlockCapability.createSided(
+			IEApi.ieLoc("redstone_bundle_connection"), RedstoneBundleConnection.class
+	);
 
 	public static class RedstoneBundleConnection
 	{

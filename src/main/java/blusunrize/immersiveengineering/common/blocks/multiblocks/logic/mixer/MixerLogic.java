@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -253,7 +252,7 @@ public class MixerLogic
 		private BooleanSupplier isSoundPlaying = () -> false;
 
 		// Util
-		private final CapabilityReference<IFluidHandler> outputRef;
+		private final BlockCapabilityCache<IFluidHandler, ?> outputRef;
 		private final StoredCapability<IFluidHandler> fluidInput;
 		private final StoredCapability<IFluidHandler> fluidOutput;
 		private final StoredCapability<IItemHandler> itemInput;

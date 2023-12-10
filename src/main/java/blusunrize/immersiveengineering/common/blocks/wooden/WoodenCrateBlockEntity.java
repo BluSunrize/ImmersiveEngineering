@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.gui.CrateMenu;
@@ -19,9 +19,7 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -36,13 +34,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
@@ -171,24 +166,11 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		}
 	}
 
-	private final LazyOptional<IItemHandler> inventoryCap = CapabilityUtils.constantOptional(
-			new IEInventoryHandler(CONTAINER_SIZE, this)
-	);
+	private final IItemHandler inventoryCap = new IEInventoryHandler(CONTAINER_SIZE, this);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<WoodenCrateBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ITEM_HANDLER)
-			return inventoryCap.cast();
-		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
-		inventoryCap.invalidate();
+		registrar.registerAllContexts(ItemHandler.BLOCK, be -> be.inventoryCap);
 	}
 
 	@Override

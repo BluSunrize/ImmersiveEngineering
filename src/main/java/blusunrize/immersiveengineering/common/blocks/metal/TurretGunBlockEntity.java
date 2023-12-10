@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
@@ -18,7 +19,6 @@ import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,14 +35,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity>
 {
@@ -220,17 +215,19 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 		}
 	}
 
-	private final ResettableCapability<IItemHandler> itemHandler = registerCapability(
-			new IEInventoryHandler(NUM_SLOTS, this, 0, new boolean[]{true, false}, new boolean[]{false, true})
+	private final IItemHandler itemHandler = new IEInventoryHandler(
+			NUM_SLOTS, this, 0, new boolean[]{true, false}, new boolean[]{false, true}
 	);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<TurretGunBlockEntity> registrar)
 	{
-		if(!isDummy()&&capability==Capabilities.ITEM_HANDLER&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
-			return itemHandler.cast();
-		return super.getCapability(capability, facing);
+		TurretBlockEntity.registerCapabilitiesBase(registrar);
+		registrar.register(ItemHandler.BLOCK, (be, facing) -> {
+			if(!be.isDummy()&&(facing==null||facing==Direction.DOWN||facing==be.getFacing().getOpposite()))
+				return be.itemHandler;
+			else
+				return null;
+		});
 	}
 
 	@Override

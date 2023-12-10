@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.Raytracer;
@@ -82,6 +81,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.TierSortingRegistry;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
@@ -570,9 +570,9 @@ public class Utils
 		return null;
 	}
 
-	public static ItemStack insertStackIntoInventory(CapabilityReference<IItemHandler> ref, ItemStack stack, boolean simulate)
+	public static ItemStack insertStackIntoInventory(BlockCapabilityCache<IItemHandler, ?> ref, ItemStack stack, boolean simulate)
 	{
-		IItemHandler handler = ref.getNullable();
+		IItemHandler handler = ref.getCapability();
 		if(handler!=null&&!stack.isEmpty())
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
 		else

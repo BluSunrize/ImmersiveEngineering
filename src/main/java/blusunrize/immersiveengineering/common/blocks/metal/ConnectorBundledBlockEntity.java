@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -29,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,9 +63,7 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 		super(type, pos, state);
 	}
 
-	private final CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forBlockEntityAt(
-			this, this::getAttachedFace, CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION
-	);
+	private BlockCapabilityCache<RedstoneBundleConnection, ?> attached;
 	private boolean dirtyExtraSource = false;
 
 	private DirectionalBlockPos getAttachedFace()
@@ -73,9 +72,22 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	}
 
 	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+		{
+			DirectionalBlockPos face = getAttachedFace();
+			attached = BlockCapabilityCache.create(
+					CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION, serverLevel, face.position(), face.side()
+			);
+		}
+	}
+
+	@Override
 	public void tickServer()
 	{
-		RedstoneBundleConnection connection = attached.getNullable();
+		RedstoneBundleConnection connection = attached.getCapability();
 		if((connection!=null&&connection.pollDirty())||dirtyExtraSource)
 		{
 			getHandler().updateValues();
@@ -100,7 +112,7 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	{
 		if(!level.isClientSide)
 		{
-			RedstoneBundleConnection connection = attached.getNullable();
+			RedstoneBundleConnection connection = attached.getCapability();
 			if(connection!=null)
 				connection.onChange(handler.getValuesExcluding(cp), getFacing().getOpposite());
 			BlockState stateHere = level.getBlockState(worldPosition);
@@ -112,7 +124,7 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	@Override
 	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
-		RedstoneBundleConnection connection = attached.getNullable();
+		RedstoneBundleConnection connection = attached.getCapability();
 		if(connection!=null)
 			connection.updateInput(signals, getFacing().getOpposite());
 		DirectionalBlockPos attachedTo = getAttachedFace();
@@ -194,7 +206,7 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	{
 		super.onNeighborBlockChange(otherPos);
 		DirectionalBlockPos attachedTo = getAttachedFace();
-		if(!otherPos.equals(attachedTo.position())||attached.isPresent())
+		if(!otherPos.equals(attachedTo.position())||attached.getCapability()!=null)
 			return;
 		byte[] overrideState = null;
 		for(IBundledProvider source : EXTRA_SOURCES)
@@ -218,7 +230,7 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	public void setRemovedIE()
 	{
 		super.setRemovedIE();
-		RedstoneBundleConnection connection = attached.getNullable();
+		RedstoneBundleConnection connection = attached.getCapability();
 		if(connection!=null)
 			connection.onChange(new byte[16], getFacing().getOpposite());
 	}

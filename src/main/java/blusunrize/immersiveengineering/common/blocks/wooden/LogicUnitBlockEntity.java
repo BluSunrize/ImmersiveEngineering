@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -24,9 +25,7 @@ import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -40,11 +39,11 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
-import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInventory, IBlockEntityDrop,
@@ -174,53 +173,50 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 
 	private void markConnectorsDirty()
 	{
-		redstoneCaps.values().forEach(cap -> cap.get().markDirty());
+		redstoneCaps.values().forEach(RedstoneBundleConnection::markDirty);
 	}
 
-	private final Map<Direction, ResettableCapability<RedstoneBundleConnection>> redstoneCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, RedstoneBundleConnection> redstoneCaps = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
 		{
-			ResettableCapability<RedstoneBundleConnection> forSide = registerCapability(
-					new RedstoneBundleConnection()
+			RedstoneBundleConnection forSide = new RedstoneBundleConnection()
+			{
+				@Override
+				public void onChange(byte[] externalInputs, Direction side)
+				{
+					boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SIZE_COLORS]);
+					boolean[] preInput = Arrays.copyOf(sideInputs, SIZE_COLORS);
+					for(int i = 0; i < SIZE_COLORS; i++)
+						sideInputs[i] = externalInputs[i] > 0;
+					// if the input changed, update and run circuits
+					if(!Arrays.equals(preInput, sideInputs))
 					{
-						@Override
-						public void onChange(byte[] externalInputs, Direction side)
-						{
-							boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SIZE_COLORS]);
-							boolean[] preInput = Arrays.copyOf(sideInputs, SIZE_COLORS);
-							for(int i = 0; i < SIZE_COLORS; i++)
-								sideInputs[i] = externalInputs[i] > 0;
-							// if the input changed, update and run circuits
-							if(!Arrays.equals(preInput, sideInputs))
-							{
-								inputs.put(side, sideInputs);
-								combinedInputs.reset();
-								updateOutputs();
-							}
-						}
-
-						@Override
-						public void updateInput(byte[] signals, Direction side)
-						{
-							for(DyeColor dye : DyeColor.values())
-								if(outputs[dye.getId()])
-									signals[dye.getId()] = (byte)15;
-						}
+						inputs.put(side, sideInputs);
+						combinedInputs.reset();
+						updateOutputs();
 					}
-			);
+				}
+
+				@Override
+				public void updateInput(byte[] signals, Direction side)
+				{
+					for(DyeColor dye : DyeColor.values())
+						if(outputs[dye.getId()])
+							signals[dye.getId()] = (byte)15;
+				}
+			};
 			redstoneCaps.put(f, forSide);
 		}
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<LogicUnitBlockEntity> registrar)
 	{
-		if(capability==CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION&&facing!=null)
-			return redstoneCaps.get(facing).cast();
-		return super.getCapability(capability, facing);
+		registrar.register(
+				CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION,
+				(be, side) -> side!=null?be.redstoneCaps.get(side): null
+		);
 	}
 
 	private final ResettableLazy<boolean[]> combinedInputs = new ResettableLazy<>(() -> {

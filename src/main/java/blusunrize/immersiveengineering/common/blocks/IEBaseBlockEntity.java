@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.Blockstat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,9 +36,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Objects;
 
 public abstract class IEBaseBlockEntity extends BlockEntity implements BlockstateProvider
@@ -152,58 +149,43 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		level.updateNeighborsAt(pos, newState.getBlock());
 	}
 
-	private final List<ResettableCapability<?>> caps = new ArrayList<>();
-	private final List<Runnable> onCapInvalidate = new ArrayList<>();
-
-	protected <T> ResettableCapability<T> registerCapability(T val)
+	protected IEnergyStorage makeEnergyInput(IEnergyStorage directStorage)
 	{
-		ResettableCapability<T> cap = new ResettableCapability<>(val);
-		caps.add(cap);
-		return cap;
+		return new WrappingEnergyStorage(directStorage, true, false, this::setChanged);
 	}
 
-	public void addCapInvalidateHook(Runnable hook)
+	protected IEnergyStorage makeEnergyOutput(IEnergyStorage directStorage)
 	{
-		onCapInvalidate.add(hook);
+		return new WrappingEnergyStorage(directStorage, false, true, this::setChanged);
 	}
 
-	protected ResettableCapability<IEnergyStorage> registerEnergyInput(IEnergyStorage directStorage)
+	private IFluidHandler makeFluidHandler(IFluidTank[] tanks, boolean allowDrain, boolean allowFill)
 	{
-		return registerCapability(new WrappingEnergyStorage(directStorage, true, false, this::setChanged));
-	}
-
-	protected ResettableCapability<IEnergyStorage> registerEnergyOutput(IEnergyStorage directStorage)
-	{
-		return registerCapability(new WrappingEnergyStorage(directStorage, false, true, this::setChanged));
-	}
-
-	private ResettableCapability<IFluidHandler> registerFluidHandler(IFluidTank[] tanks, boolean allowDrain, boolean allowFill)
-	{
-		return registerCapability(new ArrayFluidHandler(
+		return new ArrayFluidHandler(
 				// TODO the global forced update is a hack and should be replaced by updates on the machines that render
 				//  the fluid in world and screen sync for those that do not
 				tanks, allowDrain, allowFill, () -> markContainingBlockForUpdate(null)
-		));
+		);
 	}
 
-	protected final ResettableCapability<IFluidHandler> registerFluidHandler(IFluidTank... tanks)
+	protected final IFluidHandler makeFluidHandler(IFluidTank... tanks)
 	{
-		return registerFluidHandler(tanks, true, true);
+		return makeFluidHandler(tanks, true, true);
 	}
 
-	protected final ResettableCapability<IFluidHandler> registerFluidInput(IFluidTank... tanks)
+	protected final IFluidHandler makeFluidInput(IFluidTank... tanks)
 	{
-		return registerFluidHandler(tanks, false, true);
+		return makeFluidHandler(tanks, false, true);
 	}
 
-	protected final ResettableCapability<IFluidHandler> registerFluidOutput(IFluidTank... tanks)
+	protected final IFluidHandler registerFluidOutput(IFluidTank... tanks)
 	{
-		return registerFluidHandler(tanks, true, false);
+		return makeFluidHandler(tanks, true, false);
 	}
 
-	protected final ResettableCapability<IFluidHandler> registerFluidView(IFluidTank... tanks)
+	protected final IFluidHandler registerFluidView(IFluidTank... tanks)
 	{
-		return registerFluidHandler(tanks, false, false);
+		return makeFluidHandler(tanks, false, false);
 	}
 
 	@Override
@@ -212,21 +194,6 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		if(!isUnloaded)
 			setRemovedIE();
 		super.setRemoved();
-	}
-
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
-		resetAllCaps();
-		caps.clear();
-		onCapInvalidate.forEach(Runnable::run);
-		onCapInvalidate.clear();
-	}
-
-	protected void resetAllCaps()
-	{
-		caps.forEach(ResettableCapability::reset);
 	}
 
 	private boolean isUnloaded = false;
@@ -293,7 +260,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 			setOverrideState(null);
 		// Reset caps after e.g. rotating a block, so users get the cap for the logical side of the block now facing
 		// them
-		resetAllCaps();
+		invalidateCapabilities();
 	}
 
 	@Override

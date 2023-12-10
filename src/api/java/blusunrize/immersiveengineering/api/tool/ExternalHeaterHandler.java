@@ -8,9 +8,10 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityManager;
-import net.neoforged.neoforge.common.capabilities.CapabilityToken;
+import blusunrize.immersiveengineering.api.IEApi;
+import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import org.jetbrains.annotations.Nullable;
 
 public class ExternalHeaterHandler
 {
@@ -18,9 +19,9 @@ public class ExternalHeaterHandler
 	public static int defaultFurnaceEnergyCost;
 	public static int defaultFurnaceSpeedupCost;
 
-	public static final Capability<IExternalHeatable> CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
-	{
-	});
+	public static final BlockCapability<IExternalHeatable, @Nullable Direction> CAPABILITY = BlockCapability.createSided(
+			IEApi.ieLoc("external_heatable"), IExternalHeatable.class
+	);
 
 	/**
 	 * Expose this interface on the null side to allow the external heater to work with your block entity

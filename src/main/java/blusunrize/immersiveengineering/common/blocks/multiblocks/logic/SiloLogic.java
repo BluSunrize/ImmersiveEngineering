@@ -18,8 +18,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.StoredCapability;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SiloShapes;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
@@ -29,8 +27,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -56,7 +54,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		final IMultiblockLevel level = context.getLevel();
 		if(!level.shouldTickModulo(8)||!state.rsState.isEnabled(context))
 			return;
-		for(CapabilityReference<IItemHandler> output : state.outputs)
+		for(BlockCapabilityCache<IItemHandler, ?> output : state.outputs)
 		{
 			ItemStack stack = ItemHandlerHelper.copyStackWithSize(state.identStack, 1);
 			stack = Utils.insertStackIntoInventory(output, stack, false);
@@ -102,13 +100,13 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 
 		// TODO integrate into component system?
 		private final LayeredComparatorOutput<IMultiblockContext<?>> comparatorHelper;
-		private final List<CapabilityReference<IItemHandler>> outputs;
+		private final List<BlockCapabilityCache<IItemHandler, ?>> outputs;
 		private final StoredCapability<IItemHandler> inputHandler;
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
 			this.comparatorHelper = LayeredComparatorOutput.makeForSiloLike(MAX_STORAGE, 6);
-			ImmutableList.Builder<CapabilityReference<IItemHandler>> outputBuilder = ImmutableList.builder();
+			ImmutableList.Builder<BlockCapabilityCache<IItemHandler, ?>> outputBuilder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.values())
 				if(face!=RelativeBlockFace.DOWN)
 				{

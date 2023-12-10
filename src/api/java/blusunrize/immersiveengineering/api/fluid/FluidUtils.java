@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -76,20 +76,21 @@ public class FluidUtils
 	)
 	{
 		ItemStack containerCopy = ItemHandlerHelper.copyStackWithSize(container, 1);
-		return containerCopy.getCapability(Capabilities.FLUID_HANDLER_ITEM).map(handler -> {
-			final FluidStack simulatedMoved = FluidUtil.tryFluidTransfer(
-					fluidDestination, handler, maxAmount, false
-			);
-			if(simulatedMoved.isEmpty())
-				return FluidActionResult.FAILURE;
-			handler.drain(simulatedMoved, FluidAction.EXECUTE);
-			fluidDestination.fill(simulatedMoved, doDrain);
-			return new FluidActionResult(handler.getContainer());
-		}).orElse(FluidActionResult.FAILURE);
+		IFluidHandlerItem handler = containerCopy.getCapability(FluidHandler.ITEM);
+		if(handler==null)
+			return FluidActionResult.FAILURE;
+		final FluidStack simulatedMoved = FluidUtil.tryFluidTransfer(
+				fluidDestination, handler, maxAmount, false
+		);
+		if(simulatedMoved.isEmpty())
+			return FluidActionResult.FAILURE;
+		handler.drain(simulatedMoved, FluidAction.EXECUTE);
+		fluidDestination.fill(simulatedMoved, doDrain);
+		return new FluidActionResult(handler.getContainer());
 	}
 
 	public static boolean multiblockFluidOutput(
-			CapabilityReference<IFluidHandler> outputCap, FluidTank tank,
+			@Nullable IFluidHandler output, FluidTank tank,
 			int slotIn, int slotOut, @Nullable IItemHandlerModifiable inv
 	)
 	{
@@ -102,7 +103,6 @@ public class FluidUtils
 
 			// Then try to output into pipes or similar
 			FluidStack out = copyFluidStackWithAmount(tank.getFluid(), Math.min(tank.getFluidAmount(), FluidType.BUCKET_VOLUME), false);
-			final IFluidHandler output = outputCap.getNullable();
 			if(output!=null)
 			{
 				int accepted = output.fill(out, FluidAction.EXECUTE);

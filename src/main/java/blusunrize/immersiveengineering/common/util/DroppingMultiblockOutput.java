@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -19,7 +18,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 public class DroppingMultiblockOutput
 {
 	private final MultiblockFace relativeDropPos;
-	private final CapabilityReference<IItemHandler> output;
+	private final BlockCapabilityCache<IItemHandler, ?> output;
 
 	public DroppingMultiblockOutput(
 			MultiblockFace relativeDropPos, IInitialMultiblockContext<?> ctx

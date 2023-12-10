@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -57,13 +58,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +72,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 {
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(48000);
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			this, be -> be.energyCap, TeslaCoilBlockEntity::master, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, TeslaCoilBlockEntity::master, makeEnergyInput(energyStorage)
 	);
 	public boolean redstoneControlInverted = false;
 	public boolean lowPower = false;
@@ -484,13 +482,9 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				level.removeBlock(getBlockPos().relative(getFacing(), dummy?-1: 0).relative(getFacing(), i), false);
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<TeslaCoilBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY&&(side==null||!isDummy()))
-			return energyCap.getAndCast();
-		return super.getCapability(cap, side);
+		registrar.register(EnergyStorage.BLOCK, (be, side) -> side==null||!be.isDummy()?be.energyCap.get(): null);
 	}
 
 	public boolean canRun(int energyDrain)

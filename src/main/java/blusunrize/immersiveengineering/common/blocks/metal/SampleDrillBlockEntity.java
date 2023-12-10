@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -43,9 +44,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
@@ -62,7 +61,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			this, be -> be.energyCap, SampleDrillBlockEntity::master, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, SampleDrillBlockEntity::master, makeEnergyInput(energyStorage)
 	);
 
 	public SampleDrillBlockEntity(BlockEntityType<SampleDrillBlockEntity> type, BlockPos pos, BlockState state)
@@ -177,13 +176,12 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 
 	public AABB renderAABB;
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<SampleDrillBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY&&(side==null||(dummy==0&&side.getAxis().isHorizontal())))
-			return energyCap.getAndCast();
-		return super.getCapability(cap, side);
+		registrar.register(
+				EnergyStorage.BLOCK,
+				(be, side) -> side==null||be.dummy==0&&side.getAxis().isHorizontal()?be.energyCap.get(): null
+		);
 	}
 
 	@Override

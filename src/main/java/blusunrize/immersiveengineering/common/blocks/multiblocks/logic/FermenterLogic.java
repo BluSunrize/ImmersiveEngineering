@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FermenterLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -221,8 +220,8 @@ public class FermenterLogic
 		private final MultiblockProcessor<FermenterRecipe, ProcessContextInMachine<FermenterRecipe>> processor;
 		public final RSState rsState = RSState.enabledByDefault();
 
-		private final CapabilityReference<IFluidHandler> fluidOutput;
-		private final CapabilityReference<IItemHandler> itemOutput;
+		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
+		private final BlockCapabilityCache<IItemHandler, ?> itemOutput;
 		private final StoredCapability<IItemHandler> insertionHandler;
 		private final StoredCapability<IItemHandler> extractionHandler;
 		private final StoredCapability<IFluidHandler> fluidHandler;

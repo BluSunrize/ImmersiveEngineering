@@ -15,7 +15,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -108,9 +108,9 @@ public class EnergyHelper
 				.orElse(0);
 	}
 
-	public static boolean isFluxReceiver(ICapabilityProvider tile)
+	public static boolean isFluxReceiver(ItemStack stack)
 	{
-		return isFluxReceiver(tile, null);
+		return stack.getCapability(Capabilities.EnergyStorage.ITEM)!=null;
 	}
 
 	public static boolean isFluxReceiver(ICapabilityProvider tile, @Nullable Direction facing)

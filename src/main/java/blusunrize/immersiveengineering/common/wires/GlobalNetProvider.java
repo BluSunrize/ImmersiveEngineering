@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.wires;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

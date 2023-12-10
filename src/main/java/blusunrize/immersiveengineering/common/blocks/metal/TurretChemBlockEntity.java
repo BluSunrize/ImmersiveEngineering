@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,18 +23,13 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEntity>
 {
@@ -148,15 +143,17 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 		}
 	}
 
-	private final ResettableCapability<IFluidHandler> tankCap = registerCapability(tank);
+	private final IFluidHandler tankCap = makeFluidInput(tank);
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<TurretChemBlockEntity> registrar)
 	{
-		if(!isDummy()&&capability==Capabilities.FLUID_HANDLER&&(facing==null||facing==Direction.DOWN||facing==this.getFacing().getOpposite()))
-			return tankCap.cast();
-		return super.getCapability(capability, facing);
+		TurretBlockEntity.registerCapabilitiesBase(registrar);
+		registrar.register(FluidHandler.BLOCK, (be, facing) -> {
+			if(!be.isDummy()&&(facing==null||facing==Direction.DOWN||facing==be.getFacing().getOpposite()))
+				return be.tankCap;
+			else
+				return null;
+		});
 	}
 
 	@Override

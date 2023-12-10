@@ -17,7 +17,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
@@ -31,7 +30,7 @@ import java.util.function.Function;
 public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeSerializer<R>
 {
 	public static final Codec<Lazy<ItemStack>> LAZY_OUTPUT_CODEC = Codec.either(
-			CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC, IngredientWithSize.CODEC
+			ItemStack.ITEM_WITH_COUNT_CODEC, IngredientWithSize.CODEC
 	).xmap(
 			e -> Lazy.of(() -> e.map(
 					Function.identity(),

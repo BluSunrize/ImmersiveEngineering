@@ -11,23 +11,22 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,9 +37,9 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -50,12 +49,14 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
-import static net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER;
 
 public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IBlockOverlayText,
 		IConfigurableSides, IPlayerInteraction, IBlockEntityDrop, IComparatorOverride
@@ -77,10 +78,22 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		this(IEBlockEntities.WOODEN_BARREL.get(), pos, state);
 	}
 
-	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(
-			Direction.DOWN, CapabilityReference.forNeighbor(this, FLUID_HANDLER, Direction.DOWN),
-			Direction.UP, CapabilityReference.forNeighbor(this, FLUID_HANDLER, Direction.UP)
-	);
+	private Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighbors;
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			neighbors = ImmutableMap.of(
+					Direction.DOWN, BlockCapabilityCache.create(
+							FluidHandler.BLOCK, serverLevel, worldPosition.above(), Direction.DOWN
+					),
+					Direction.UP, BlockCapabilityCache.create(
+							FluidHandler.BLOCK, serverLevel, worldPosition.below(), Direction.UP
+					)
+			);
+	}
 
 	@Override
 	public void tickServer()
@@ -90,8 +103,8 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 			if(tank.getFluidAmount() > 0&&sideConfig.get(side)==OUTPUT)
 			{
 				int out = Math.min(FluidType.BUCKET_VOLUME, tank.getFluidAmount());
-				CapabilityReference<IFluidHandler> capRef = neighbors.get(side);
-				IFluidHandler handler = capRef.getNullable();
+				BlockCapabilityCache<IFluidHandler, ?> capRef = neighbors.get(side);
+				IFluidHandler handler = capRef.getCapability();
 				if(handler!=null)
 				{
 					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), FluidAction.SIMULATE);
@@ -172,21 +185,20 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 			nbt.put("tank", tankTag);
 	}
 
-	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedFluidHandler = new HashMap<>();
+	private final Map<Direction, IFluidHandler> sidedFluidHandler = new HashMap<>();
 
 	{
-		sidedFluidHandler.put(Direction.DOWN, registerCapability(new SidedFluidHandler(this, Direction.DOWN)));
-		sidedFluidHandler.put(Direction.UP, registerCapability(new SidedFluidHandler(this, Direction.UP)));
-		sidedFluidHandler.put(null, registerCapability(new SidedFluidHandler(this, null)));
+		sidedFluidHandler.put(Direction.DOWN, new SidedFluidHandler(this, Direction.DOWN));
+		sidedFluidHandler.put(Direction.UP, new SidedFluidHandler(this, Direction.UP));
+		sidedFluidHandler.put(null, new SidedFluidHandler(this, null));
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<? extends WoodenBarrelBlockEntity> registrar)
 	{
-		if(capability==FLUID_HANDLER&&sidedFluidHandler.containsKey(facing))
-			return sidedFluidHandler.get(facing).cast();
-		return super.getCapability(capability, facing);
+		registrar.register(
+				FluidHandler.BLOCK,
+				(be, side) -> ((WoodenBarrelBlockEntity)be).sidedFluidHandler.getOrDefault(side, null)
+		);
 	}
 
 	static class SidedFluidHandler implements IFluidHandler

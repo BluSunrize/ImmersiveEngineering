@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -44,7 +43,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -169,11 +169,12 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.getItem() instanceof InternalStorageItem)
 		{
-			stack.getCapability(Capabilities.ITEM_HANDLER, null).ifPresent(inv ->
+			IItemHandler inv = stack.getCapability(ItemHandler.ITEM, null);
+			if(inv!=null)
 			{
 				for(int i = 0; i < inv.getSlots(); i++)
 					inventory.set(i, inv.getStackInSlot(i));
-			});
+			}
 
 			if(stack.hasCustomHoverName())
 				this.name = stack.getHoverName();

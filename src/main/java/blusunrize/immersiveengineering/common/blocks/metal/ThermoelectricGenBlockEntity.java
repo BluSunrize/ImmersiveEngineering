@@ -10,28 +10,25 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -39,13 +36,22 @@ import java.util.function.BiFunction;
 public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE
 {
 	private int energyOutput = -1;
-	private final Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = CapabilityReference.forAllNeighbors(
-			this, Capabilities.ENERGY
-	);
+	private final Map<Direction, BlockCapabilityCache<IEnergyStorage, ?>> energyWrappers = new EnumMap<>(Direction.class);
 
 	public ThermoelectricGenBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.THERMOELECTRIC_GEN.get(), pos, state);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel serverLevel)
+			for(Direction side : Direction.values())
+				energyWrappers.put(side, BlockCapabilityCache.create(
+						EnergyStorage.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
+				));
 	}
 
 	@Override
@@ -62,7 +68,7 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 	{
 		for(Direction fd : DirectionUtils.VALUES)
 		{
-			IEnergyStorage forSide = energyWrappers.get(fd).getNullable();
+			IEnergyStorage forSide = energyWrappers.get(fd).getCapability();
 			if(forSide!=null)
 				amount -= forSide.receiveEnergy(amount, false);
 		}
@@ -123,14 +129,8 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		nbt.putInt("enegyOutput", this.energyOutput);
 	}
 
-	private final ResettableCapability<IEnergyStorage> energyCap = registerCapability(NullEnergyStorage.INSTANCE);
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<ThermoelectricGenBlockEntity> registrar)
 	{
-		if(cap==Capabilities.ENERGY)
-			return energyCap.cast();
-		return super.getCapability(cap, side);
+		registrar.registerAllContexts(EnergyStorage.BLOCK, $ -> NullEnergyStorage.INSTANCE);
 	}
 }

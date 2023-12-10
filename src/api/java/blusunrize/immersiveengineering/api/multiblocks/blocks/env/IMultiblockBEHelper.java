@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -27,8 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 import javax.annotation.Nullable;
@@ -53,8 +50,6 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	Packet<ClientGamePacketListener> getUpdatePacket();
 
 	void onDataPacket(CompoundTag tag);
-
-	<T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side);
 
 	MultiblockRegistration<State> getMultiblock();
 
