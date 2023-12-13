@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.cache.IListRecipe;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Unit;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nonnull;
@@ -82,7 +82,7 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 
 	private GeneratedListRecipe(ResourceLocation id, RecipeListGenerator<R, E> generator)
 	{
-		super(LAZY_EMPTY, generator.recipeType);
+		super(TagOutput.EMPTY, generator.recipeType);
 		this.generator = generator;
 		this.generatorID = id;
 	}

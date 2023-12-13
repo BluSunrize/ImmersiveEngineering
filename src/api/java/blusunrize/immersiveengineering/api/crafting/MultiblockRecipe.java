@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
 	protected <T extends Recipe<?>>
-	MultiblockRecipe(Lazy<ItemStack> outputDummy, IERecipeTypes.TypeWithClass<T> type)
+	MultiblockRecipe(TagOutput outputDummy, IERecipeTypes.TypeWithClass<T> type)
 	{
 		super(outputDummy, type);
 	}
@@ -58,7 +58,7 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 				.collect(Collectors.toList());
 	}
 
-	protected Lazy<NonNullList<ItemStack>> outputList = Lazy.of(NonNullList::create);
+	protected TagOutputList outputList = TagOutputList.EMPTY;
 
 	@Override
 	public NonNullList<ItemStack> getItemOutputs()

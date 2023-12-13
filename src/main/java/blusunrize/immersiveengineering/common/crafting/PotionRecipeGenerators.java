@@ -8,11 +8,8 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +17,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.*;
@@ -50,7 +46,7 @@ public class PotionRecipeGenerators
 	{
 		Map<Potion, BottlingMachineRecipe> recipes = new HashMap<>();
 		Function<Potion, BottlingMachineRecipe> toRecipe = potion -> new BottlingMachineRecipe(
-				Lazy.of(() -> NonNullList.of(PotionUtils.setPotion(new ItemStack(Items.POTION), potion))),
+				new TagOutputList(new TagOutput(PotionUtils.setPotion(new ItemStack(Items.POTION), potion))),
 				IngredientWithSize.of(new ItemStack(Items.GLASS_BOTTLE)),
 				getFluidTagForType(potion, 250)
 		);

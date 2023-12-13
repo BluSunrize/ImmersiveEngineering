@@ -16,23 +16,19 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.LAZY_EMPTY;
-
 public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRecipe>
 {
 	public static final Codec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			LAZY_OUTPUTS_CODEC.fieldOf("results").forGetter(r -> r.output),
-			ExtraCodecs.strictOptionalField(LAZY_OUTPUT_CODEC, "slag", LAZY_EMPTY).forGetter(r -> r.slag),
+			TagOutputList.CODEC.fieldOf("results").forGetter(r -> r.output),
+			ExtraCodecs.strictOptionalField(TagOutput.CODEC, "slag", TagOutput.EMPTY).forGetter(r -> r.slag),
 			ExtraCodecs.strictOptionalField(CHANCE_LIST, "secondaries", List.of()).forGetter(r -> r.secondaryOutputs),
 			Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getTotalProcessTime),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
@@ -56,11 +52,11 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 	@Override
 	public ArcFurnaceRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
-		Lazy<NonNullList<ItemStack>> outputs = combineLazies(PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack));
+		TagOutputList outputs = new TagOutputList(PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack));
 		List<StackWithChance> secondaries = PacketUtils.readList(buffer, StackWithChance::read);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		List<IngredientWithSize> additives = PacketUtils.readList(buffer, IngredientWithSize::read);
-		Lazy<ItemStack> slag = readLazyStack(buffer);
+		TagOutput slag = readLazyStack(buffer);
 		int time = buffer.readInt();
 		int energy = buffer.readInt();
 		if(!buffer.readBoolean())
@@ -68,7 +64,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		else
 		{
 			final int numOutputs = buffer.readVarInt();
-			List<Pair<Lazy<ItemStack>, Double>> recyclingOutputs = new ArrayList<>(numOutputs);
+			List<Pair<TagOutput, Double>> recyclingOutputs = new ArrayList<>(numOutputs);
 			for(int i = 0; i < numOutputs; ++i)
 				recyclingOutputs.add(Pair.of(readLazyStack(buffer), buffer.readDouble()));
 			return new ArcRecyclingRecipe(
@@ -90,9 +86,9 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		buffer.writeBoolean(recipe instanceof ArcRecyclingRecipe);
 		if(recipe instanceof ArcRecyclingRecipe recyclingRecipe)
 		{
-			List<Pair<Lazy<ItemStack>, Double>> outputs = recyclingRecipe.getOutputs();
+			List<Pair<TagOutput, Double>> outputs = recyclingRecipe.getOutputs();
 			buffer.writeVarInt(outputs.size());
-			for(Pair<Lazy<ItemStack>, Double> e : outputs)
+			for(Pair<TagOutput, Double> e : outputs)
 			{
 				buffer.writeItem(e.getFirst().get());
 				buffer.writeDouble(e.getSecond());

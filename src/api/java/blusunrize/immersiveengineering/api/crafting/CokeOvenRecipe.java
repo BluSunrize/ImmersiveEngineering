@@ -12,13 +12,11 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nullable;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -31,11 +29,11 @@ public class CokeOvenRecipe extends IESerializableRecipe
 	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.COKE_OVEN);
 
 	public final IngredientWithSize input;
-	public final Lazy<ItemStack> output;
+	public final TagOutput output;
 	public final int time;
 	public final int creosoteOutput;
 
-	public CokeOvenRecipe(Lazy<ItemStack> output, IngredientWithSize input, int time, int creosoteOutput)
+	public CokeOvenRecipe(TagOutput output, IngredientWithSize input, int time, int creosoteOutput)
 	{
 		super(output, IERecipeTypes.COKE_OVEN);
 		this.output = output;

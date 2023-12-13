@@ -8,26 +8,22 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nullable;
 
 public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRecipe>
 {
 	public static final Codec<MetalPressRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
 			BuiltInRegistries.ITEM.byNameCodec().fieldOf("mold").forGetter(r -> r.mold),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
@@ -49,7 +45,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	@Override
 	public MetalPressRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
-		Lazy<ItemStack> output = readLazyStack(buffer);
+		TagOutput output = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		Item mold = PacketUtils.readRegistryElement(buffer, BuiltInRegistries.ITEM);
 		int energy = buffer.readInt();

@@ -14,11 +14,9 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
-import net.minecraft.core.Holder;
-
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ClocheFertilizer extends IESerializableRecipe
 {
@@ -31,7 +29,7 @@ public class ClocheFertilizer extends IESerializableRecipe
 
 	public ClocheFertilizer(Ingredient input, float growthModifier)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.FERTILIZER);
+		super(TagOutput.EMPTY, IERecipeTypes.FERTILIZER);
 		this.input = input;
 		this.growthModifier = growthModifier;
 	}

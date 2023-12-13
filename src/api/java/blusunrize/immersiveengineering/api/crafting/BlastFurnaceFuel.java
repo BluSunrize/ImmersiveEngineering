@@ -10,15 +10,13 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
-import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
-
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class BlastFurnaceFuel extends IESerializableRecipe
 {
@@ -31,7 +29,7 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 
 	public BlastFurnaceFuel(Ingredient input, int burnTime)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.BLAST_FUEL);
+		super(TagOutput.EMPTY, IERecipeTypes.BLAST_FUEL);
 		this.input = input;
 		this.burnTime = burnTime;
 	}

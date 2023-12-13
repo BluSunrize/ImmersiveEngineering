@@ -15,13 +15,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -34,10 +32,10 @@ public class CrusherRecipe extends MultiblockRecipe
 	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CRUSHER);
 
 	public final Ingredient input;
-	public final Lazy<ItemStack> output;
+	public final TagOutput output;
 	public final List<StackWithChance> secondaryOutputs;
 
-	public CrusherRecipe(Lazy<ItemStack> output, Ingredient input, int energy, List<StackWithChance> secondaryOutputs)
+	public CrusherRecipe(TagOutput output, Ingredient input, int energy, List<StackWithChance> secondaryOutputs)
 	{
 		super(output, IERecipeTypes.CRUSHER);
 		this.output = output;
@@ -46,7 +44,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		setTimeAndEnergy(50, energy);
 
 		setInputList(Lists.newArrayList(this.input));
-		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
+		this.outputList = new TagOutputList(this.output);
 	}
 
 	@Override

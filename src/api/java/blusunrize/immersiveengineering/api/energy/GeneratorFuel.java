@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.api.energy;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
@@ -24,7 +25,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
@@ -32,7 +32,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class GeneratorFuel extends IESerializableRecipe
 {
@@ -45,7 +44,7 @@ public class GeneratorFuel extends IESerializableRecipe
 
 	public GeneratorFuel(Optional<TagKey<Fluid>> tag, Optional<List<Fluid>> fluids, int burnTime)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL);
+		super(TagOutput.EMPTY, IERecipeTypes.GENERATOR_FUEL);
 		Preconditions.checkState(tag.isPresent()!=fluids.isPresent());
 		if(tag.isPresent())
 			this.fluids = FastEither.left(tag.get());
@@ -56,14 +55,14 @@ public class GeneratorFuel extends IESerializableRecipe
 
 	public GeneratorFuel(TagKey<Fluid> fluids, int burnTime)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL);
+		super(TagOutput.EMPTY, IERecipeTypes.GENERATOR_FUEL);
 		this.fluids = FastEither.left(fluids);
 		this.burnTime = burnTime;
 	}
 
 	public GeneratorFuel(List<Fluid> fluids, int burnTime)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL);
+		super(TagOutput.EMPTY, IERecipeTypes.GENERATOR_FUEL);
 		this.fluids = FastEither.right(fluids);
 		this.burnTime = burnTime;
 	}

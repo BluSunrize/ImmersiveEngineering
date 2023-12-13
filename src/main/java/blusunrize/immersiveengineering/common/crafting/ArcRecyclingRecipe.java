@@ -12,37 +12,37 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import blusunrize.immersiveengineering.api.crafting.TagOutputList;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	private final Supplier<RegistryAccess> tags;
-	private List<Pair<Lazy<ItemStack>, Double>> outputs;
-	private final Lazy<NonNullList<ItemStack>> defaultOutputs = Lazy.of(() -> {
-		NonNullList<ItemStack> ret = NonNullList.create();
-		for(Pair<Lazy<ItemStack>, Double> e : outputs)
-		{
-			double scaledOut = e.getSecond();
-			addOutputToList(scaledOut, ret, e);
-		}
-		return ret;
+	private List<Pair<TagOutput, Double>> outputs;
+	private final TagOutputList defaultOutputs = Util.make(() -> {
+		List<TagOutput> ret = new ArrayList<>();
+		for(Pair<TagOutput, Double> e : outputs)
+			// TODO scaling?
+			ret.add(e.getFirst());
+		return new TagOutputList(ret);
 	});
 
-	public ArcRecyclingRecipe(Supplier<RegistryAccess> tags, List<Pair<Lazy<ItemStack>, Double>> outputs, IngredientWithSize input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(Supplier<RegistryAccess> tags, List<Pair<TagOutput, Double>> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
 		super(
-				Lazy.of(() -> outputs.stream().map(p -> p.getFirst().get()).collect(NonNullList::create, List::add, AbstractCollection::addAll)),
-				LAZY_EMPTY,
+				new TagOutputList(outputs.stream().map(Pair::getFirst).toList()),
+				TagOutput.EMPTY,
 				List.of(),
 				time,
 				energyPerTick,
@@ -65,7 +65,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		else
 			mod = (input.getMaxDamage()-input.getDamageValue())/(float)input.getMaxDamage();
 		NonNullList<ItemStack> outs = NonNullList.create();
-		for(Pair<Lazy<ItemStack>, Double> e : outputs)
+		for(Pair<TagOutput, Double> e : outputs)
 		{
 			double scaledOut = mod*e.getSecond();
 			addOutputToList(scaledOut, outs, e);
@@ -85,7 +85,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		return defaultOutputs.get();
 	}
 
-	private void addOutputToList(double scaledOut, NonNullList<ItemStack> outs, Pair<Lazy<ItemStack>, Double> e)
+	private void addOutputToList(double scaledOut, NonNullList<ItemStack> outs, Pair<TagOutput, Double> e)
 	{
 		//Noone likes nuggets anyway >_>
 		if(scaledOut >= 1)
@@ -109,7 +109,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		return !input.isEmpty()&&this.input.test(input);
 	}
 
-	public List<Pair<Lazy<ItemStack>, Double>> getOutputs()
+	public List<Pair<TagOutput, Double>> getOutputs()
 	{
 		return outputs;
 	}

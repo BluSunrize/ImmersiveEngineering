@@ -10,23 +10,20 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -41,9 +38,9 @@ public class SqueezerRecipe extends MultiblockRecipe
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
 	@Nonnull
-	public final Lazy<ItemStack> itemOutput;
+	public final TagOutput itemOutput;
 
-	public SqueezerRecipe(FluidStack fluidOutput, @Nonnull Lazy<ItemStack> itemOutput, IngredientWithSize input, int energy)
+	public SqueezerRecipe(FluidStack fluidOutput, @Nonnull TagOutput itemOutput, IngredientWithSize input, int energy)
 	{
 		super(itemOutput, IERecipeTypes.SQUEEZER);
 		this.fluidOutput = fluidOutput;
@@ -53,7 +50,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
-		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.itemOutput.get()));
+		this.outputList = new TagOutputList(this.itemOutput);
 	}
 
 	@Override

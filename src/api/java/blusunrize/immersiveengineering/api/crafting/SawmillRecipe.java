@@ -14,12 +14,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.Holder;
-
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.registries.DeferredHolder;
+
+import java.util.List;
 
 public class SawmillRecipe extends MultiblockRecipe
 {
@@ -27,14 +26,14 @@ public class SawmillRecipe extends MultiblockRecipe
 	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SAWMILL);
 
 	public final Ingredient input;
-	public final Lazy<ItemStack> stripped;
-	public final Lazy<NonNullList<ItemStack>> secondaryStripping;
-	public final Lazy<ItemStack> output;
-	public final Lazy<NonNullList<ItemStack>> secondaryOutputs;
+	public final TagOutput stripped;
+	public final TagOutputList secondaryStripping;
+	public final TagOutput output;
+	public final TagOutputList secondaryOutputs;
 
 	public SawmillRecipe(
-			Lazy<ItemStack> output, Lazy<ItemStack> stripped, Ingredient input, int energy,
-			Lazy<NonNullList<ItemStack>> secondaryStripping, Lazy<NonNullList<ItemStack>> secondaryOutputs
+			TagOutput output, TagOutput stripped, Ingredient input, int energy,
+			TagOutputList secondaryStripping, TagOutputList secondaryOutputs
 	)
 	{
 		super(output, IERecipeTypes.SAWMILL);
@@ -46,7 +45,7 @@ public class SawmillRecipe extends MultiblockRecipe
 		setTimeAndEnergy(80, energy);
 
 		setInputList(Lists.newArrayList(this.input));
-		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
+		this.outputList = new TagOutputList(List.of(output));
 	}
 
 	@Override

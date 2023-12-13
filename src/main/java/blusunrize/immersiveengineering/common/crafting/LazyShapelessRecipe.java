@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -16,17 +17,16 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 
 public class LazyShapelessRecipe extends ShapelessRecipe
 {
-	private final Lazy<ItemStack> result;
+	private final TagOutput result;
 	private final RecipeSerializer<LazyShapelessRecipe> serializer;
 
 	public LazyShapelessRecipe(
-			String groups, Lazy<ItemStack> result, NonNullList<Ingredient> ingredients, RecipeSerializer<LazyShapelessRecipe> serializer
+			String groups, TagOutput result, NonNullList<Ingredient> ingredients, RecipeSerializer<LazyShapelessRecipe> serializer
 	)
 	{
 		super(groups, CraftingBookCategory.MISC, ItemStack.EMPTY, ingredients);
@@ -55,7 +55,7 @@ public class LazyShapelessRecipe extends ShapelessRecipe
 		return serializer;
 	}
 
-	public Lazy<ItemStack> getResult()
+	public TagOutput getResult()
 	{
 		return result;
 	}

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
@@ -29,7 +30,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -141,7 +141,7 @@ public class ArcRecyclingCalculator
 		return new ArcRecyclingRecipe(
 				() -> tags,
 				calculation.outputs.entrySet().stream()
-						.map(e -> Pair.of(Lazy.of(e::getKey), e.getValue()))
+						.map(e -> Pair.of(new TagOutput(e.getKey()), e.getValue()))
 						.toList(),
 				IngredientWithSize.of(calculation.stack), 100, 51200);
 	}

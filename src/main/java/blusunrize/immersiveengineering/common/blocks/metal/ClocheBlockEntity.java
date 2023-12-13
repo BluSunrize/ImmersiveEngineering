@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
+import blusunrize.immersiveengineering.api.crafting.TagOutputList;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
@@ -58,7 +59,6 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -74,7 +74,6 @@ import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.config.IEServerConfig.getOrDefault;
@@ -182,15 +181,15 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 				boolean consume = false;
 				if(growth >= recipe.getTime(seed, soil))
 				{
-					List<Lazy<ItemStack>> outputs = recipe.getOutputs(seed, soil);
+					TagOutputList outputs = recipe.getOutputs(seed, soil);
 					int canFit = 0;
 					boolean[] emptySlotsUsed = new boolean[4];
-					for(Lazy<ItemStack> output : outputs)
-						if(!output.get().isEmpty())
+					for(ItemStack output : outputs.get())
+						if(!output.isEmpty())
 							for(int j = 3; j < 7; j++)
 							{
 								ItemStack existing = inventory.get(j);
-								if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(existing, output.get())&&existing.getCount()+output.get().getCount() <= existing.getMaxStackSize()))
+								if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize()))
 								{
 									canFit++;
 									if(existing.isEmpty())
@@ -198,20 +197,20 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 									break;
 								}
 							}
-					if(canFit >= outputs.size())
+					if(canFit >= outputs.get().size())
 					{
-						for(Lazy<ItemStack> output : outputs)
+						for(ItemStack output : outputs.get())
 							for(int j = 3; j < 7; j++)
 							{
 								ItemStack existing = inventory.get(j);
 								if(existing.isEmpty())
 								{
-									inventory.set(j, output.get().copy());
+									inventory.set(j, output.copy());
 									break;
 								}
-								else if(ItemHandlerHelper.canItemStacksStack(existing, output.get())&&existing.getCount()+output.get().getCount() <= existing.getMaxStackSize())
+								else if(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize())
 								{
-									existing.grow(output.get().getCount());
+									existing.grow(output.getCount());
 									break;
 								}
 							}

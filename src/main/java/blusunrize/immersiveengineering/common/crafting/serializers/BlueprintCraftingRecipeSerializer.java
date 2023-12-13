@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 {
 	public static final Codec<BlueprintCraftingRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.STRING.fieldOf("category").forGetter(r -> r.blueprintCategory),
-			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			IngredientWithSize.CODEC.listOf().fieldOf("inputs").forGetter(r -> r.inputs)
 	).apply(inst, BlueprintCraftingRecipe::new));
 
@@ -47,7 +47,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	public BlueprintCraftingRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		String category = buffer.readUtf();
-		Lazy<ItemStack> output = readLazyStack(buffer);
+		TagOutput output = readLazyStack(buffer);
 		int inputCount = buffer.readInt();
 		List<IngredientWithSize> ingredients = new ArrayList<>();
 		for(int i = 0; i < inputCount; i++)

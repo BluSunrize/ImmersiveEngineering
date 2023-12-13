@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutputList;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
@@ -26,7 +27,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -41,7 +41,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	private static final RecipeHolder<BottlingMachineRecipe> DUMMY_RECIPE = new RecipeHolder<>(
 			IEApi.ieLoc("bottling_dummy"),
 			new BottlingMachineRecipe(
-					Lazy.of(NonNullList::create), IngredientWithSize.of(ItemStack.EMPTY),
+					TagOutputList.EMPTY, IngredientWithSize.of(ItemStack.EMPTY),
 					new FluidTagInput(FluidTags.WATER, 0)
 			)
 	);

@@ -1,0 +1,65 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2023
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.api.crafting;
+
+import blusunrize.immersiveengineering.api.IEApi;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.function.Function;
+
+public class TagOutput
+{
+	public static final Codec<TagOutput> CODEC = Codec.either(
+			IngredientWithSize.CODEC, ItemStack.CODEC
+	).xmap(TagOutput::new, out -> out.rawData);
+	public static final TagOutput EMPTY = new TagOutput(new IngredientWithSize(Ingredient.EMPTY));
+
+	private final Either<IngredientWithSize, ItemStack> rawData;
+	private ItemStack cachedStack;
+
+	public TagOutput(Either<IngredientWithSize, ItemStack> type)
+	{
+		this.rawData = type;
+	}
+
+	public TagOutput(IngredientWithSize type)
+	{
+		this(Either.left(type));
+	}
+
+	public TagOutput(ItemStack stack)
+	{
+		this(Either.right(stack));
+	}
+
+	public TagOutput(TagKey<Item> type, int count)
+	{
+		this(new IngredientWithSize(type, count));
+	}
+
+	public TagOutput(TagKey<Item> type)
+	{
+		this(type, 1);
+	}
+
+	public ItemStack get()
+	{
+		if(cachedStack==null)
+			cachedStack = rawData.map(
+					iws -> IEApi.getPreferredStackbyMod(iws.getMatchingStacks()),
+					Function.identity()
+			);
+		return cachedStack;
+	}
+}

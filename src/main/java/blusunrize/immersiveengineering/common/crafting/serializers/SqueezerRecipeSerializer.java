@@ -8,16 +8,12 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -48,7 +44,7 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 	public SqueezerRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
-		Lazy<ItemStack> itemOutput = readLazyStack(buffer);
+		TagOutput itemOutput = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		int energy = buffer.readInt();
 		return new SqueezerRecipe(fluidOutput, itemOutput, input, energy);

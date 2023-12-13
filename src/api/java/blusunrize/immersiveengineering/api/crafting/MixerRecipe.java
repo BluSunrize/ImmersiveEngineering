@@ -13,13 +13,12 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -38,7 +37,7 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public MixerRecipe(FluidStack fluidOutput, FluidTagInput fluidInput, List<IngredientWithSize> itemInputs, int energy)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.MIXER);
+		super(TagOutput.EMPTY, IERecipeTypes.MIXER);
 		this.fluidOutput = fluidOutput;
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;

@@ -12,14 +12,12 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -32,12 +30,12 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FURNACE);
 
 	public final IngredientWithSize input;
-	public final Lazy<ItemStack> output;
+	public final TagOutput output;
 	@Nonnull
-	public final Lazy<ItemStack> slag;
+	public final TagOutput slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(Lazy<ItemStack> output, IngredientWithSize input, int time, @Nonnull Lazy<ItemStack> slag)
+	public BlastFurnaceRecipe(TagOutput output, IngredientWithSize input, int time, @Nonnull TagOutput slag)
 	{
 		super(output, IERecipeTypes.BLAST_FURNACE);
 		this.output = output;

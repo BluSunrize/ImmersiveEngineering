@@ -13,15 +13,14 @@ import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 02.03.2016
@@ -46,7 +45,7 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public RefineryRecipe(FluidStack output, FluidTagInput input0, @Nullable FluidTagInput input1, Ingredient catalyst, int energy)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.REFINERY);
+		super(TagOutput.EMPTY, IERecipeTypes.REFINERY);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;

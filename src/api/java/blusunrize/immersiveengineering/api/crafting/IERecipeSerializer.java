@@ -8,58 +8,31 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.NonNullList;
+import com.mojang.serialization.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.ICondition.IContext;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeSerializer<R>
 {
-	public static final Codec<Lazy<ItemStack>> LAZY_OUTPUT_CODEC = Codec.either(
-			ItemStack.ITEM_WITH_COUNT_CODEC, IngredientWithSize.CODEC
-	).xmap(
-			e -> Lazy.of(() -> e.map(
-					Function.identity(),
-					outgredient -> IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks())
-			)),
-			// TODO be a bit more careful about resolving the Lazy here?
-			i -> Either.left(i.get())
-	);
-	public static final Codec<List<Lazy<ItemStack>>> OUTER_LAZY_OUTPUTS_CODEC = ConditionalOps.decodeListWithElementConditions(
-			LAZY_OUTPUT_CODEC
-	);
-	public static final Codec<Lazy<NonNullList<ItemStack>>> LAZY_OUTPUTS_CODEC = OUTER_LAZY_OUTPUTS_CODEC.xmap(
-			IERecipeSerializer::combineLazies,
-			nnl -> nnl.get().stream().map(i -> Lazy.of(() -> i)).toList()
-	);
-	public static final Lazy<NonNullList<ItemStack>> EMPTY_LAZY_OUTPUTS = () -> NonNullList.withSize(0, ItemStack.EMPTY);
-	public static final Codec<StackWithChance> CHANCE_STACK_CODEC = RecordCodecBuilder.create(
-			inst -> inst.group(
-					LAZY_OUTPUT_CODEC.fieldOf("output").forGetter(StackWithChance::stack),
-					Codec.FLOAT.fieldOf("chance").forGetter(StackWithChance::chance)
-			).apply(inst, StackWithChance::new)
-	);
-	public static final Codec<List<StackWithChance>> CHANCE_LIST = ConditionalOps.decodeListWithElementConditions(
-			CHANCE_STACK_CODEC
-	);
+	public static final Codec<List<StackWithChance>> CHANCE_LIST = makeChanceOutputCodec();
 
-	public static MapCodec<Lazy<ItemStack>> optionalItemOutput(String name)
+	public static MapCodec<TagOutput> optionalItemOutput(String name)
 	{
-		return LAZY_OUTPUT_CODEC.optionalFieldOf(name, IESerializableRecipe.LAZY_EMPTY);
+		return TagOutput.CODEC.optionalFieldOf(name, TagOutput.EMPTY);
 	}
 
 	public static MapCodec<FluidStack> optionalFluidOutput(String name)
@@ -67,26 +40,14 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 		return FluidStack.CODEC.optionalFieldOf(name, FluidStack.EMPTY);
 	}
 
-	public static Lazy<NonNullList<ItemStack>> combineLazies(List<Lazy<ItemStack>> stacks)
-	{
-		return Lazy.of(() -> {
-			NonNullList<ItemStack> list = NonNullList.create();
-			for(Lazy<ItemStack> itemStackLazy : stacks)
-				if(!itemStackLazy.get().isEmpty())
-					list.add(itemStackLazy.get());
-			return list;
-		});
-	}
-
 	public abstract ItemStack getIcon();
 
-	protected static Lazy<ItemStack> readLazyStack(FriendlyByteBuf buf)
+	protected static TagOutput readLazyStack(FriendlyByteBuf buf)
 	{
-		ItemStack stack = buf.readItem();
-		return Lazy.of(() -> stack);
+		return new TagOutput(buf.readItem());
 	}
 
-	protected static void writeLazyStack(FriendlyByteBuf buf, Lazy<ItemStack> stack)
+	protected static void writeLazyStack(FriendlyByteBuf buf, TagOutput stack)
 	{
 		buf.writeItem(stack.get());
 	}
@@ -112,5 +73,32 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 				e -> e.map(List::of, Function.identity()),
 				l -> l.size()==1?Either.left(l.get(0)): Either.right(l)
 		);
+	}
+
+	private static Codec<List<StackWithChance>> makeChanceOutputCodec()
+	{
+		Codec<List<StackWithChance>> baseCodec = StackWithChance.CODEC.listOf();
+		Decoder<List<StackWithChance>> conditionalDecoder = new Decoder<>()
+		{
+			@Override
+			public <T> DataResult<Pair<List<StackWithChance>, T>> decode(DynamicOps<T> ops, T input)
+			{
+				Codec<IContext> contextCodec = ConditionalOps.retrieveContext().codec();
+				return baseCodec.decode(ops, input).flatMap(
+						listAndData -> contextCodec.decode(ops, input).map(ctxAndData -> {
+							List<StackWithChance> filtered = new ArrayList<>();
+							for(StackWithChance stack : listAndData.getFirst())
+							{
+								boolean matches = true;
+								for(ICondition condition : stack.conditions())
+									matches &= condition.test(ctxAndData.getFirst());
+								if(matches)
+									filtered.add(stack);
+							}
+							return Pair.of(filtered, ctxAndData.getSecond());
+						}));
+			}
+		};
+		return Codec.of(baseCodec, conditionalDecoder);
 	}
 }

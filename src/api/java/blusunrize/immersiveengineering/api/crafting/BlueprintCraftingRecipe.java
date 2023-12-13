@@ -15,16 +15,14 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
 import java.util.Map.Entry;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import java.util.stream.Collectors;
 
 /**
@@ -43,10 +41,10 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static SetRestrictedField<ItemLike> blueprintItem = SetRestrictedField.common();
 
 	public final String blueprintCategory;
-	public final Lazy<ItemStack> output;
+	public final TagOutput output;
 	public final List<IngredientWithSize> inputs;
 
-	public BlueprintCraftingRecipe(String blueprintCategory, Lazy<ItemStack> output, List<IngredientWithSize> inputs)
+	public BlueprintCraftingRecipe(String blueprintCategory, TagOutput output, List<IngredientWithSize> inputs)
 	{
 		super(output, IERecipeTypes.BLUEPRINT);
 		this.blueprintCategory = blueprintCategory;
@@ -54,7 +52,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.inputs = inputs;
 
 		setInputListWithSizes(Lists.newArrayList(this.inputs));
-		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
+		this.outputList = new TagOutputList(output);
 
 		//Time and energy values are for the automatic workbench
 		setTimeAndEnergy(180, 23040);

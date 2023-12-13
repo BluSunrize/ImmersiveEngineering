@@ -8,10 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
@@ -20,7 +17,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -28,7 +24,7 @@ import java.util.List;
 public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 {
 	public static final Codec<CrusherRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
 			ExtraCodecs.strictOptionalField(CHANCE_LIST, "secondaries", List.of()).forGetter(r -> r.secondaryOutputs)
@@ -54,7 +50,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		Ingredient input = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
 		List<StackWithChance> secondaries = PacketUtils.readList(buffer, StackWithChance::read);
-		return new CrusherRecipe(Lazy.of(() -> output), input, energy, secondaries);
+		return new CrusherRecipe(new TagOutput(output), input, energy, secondaries);
 	}
 
 	@Override

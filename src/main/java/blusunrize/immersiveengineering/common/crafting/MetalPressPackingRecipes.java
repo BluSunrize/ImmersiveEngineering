@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -29,7 +30,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
@@ -72,7 +72,7 @@ public class MetalPressPackingRecipes
 	{
 		public MetalPressContainerRecipe(Item mold)
 		{
-			super(LAZY_EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, 3200);
+			super(TagOutput.EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, 3200);
 		}
 
 		@Override
@@ -144,7 +144,7 @@ public class MetalPressPackingRecipes
 
 		private RecipeDelegate(ItemStack output, ItemStack input, Item mold, RecipeHolder<CraftingRecipe> baseRecipe)
 		{
-			super(Lazy.of(() -> output), IngredientWithSize.of(input), mold, 3200);
+			super(new TagOutput(output), IngredientWithSize.of(input), mold, 3200);
 			this.baseRecipe = baseRecipe;
 		}
 

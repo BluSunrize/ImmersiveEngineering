@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.api.energy;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import net.minecraft.core.Holder;
@@ -23,13 +24,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class WindmillBiome extends IESerializableRecipe
 {
@@ -52,7 +51,7 @@ public class WindmillBiome extends IESerializableRecipe
 
 	private WindmillBiome(FastEither<TagKey<Biome>, List<ResourceKey<Biome>>> biomes, float modifier)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.WINDMILL_BIOME);
+		super(TagOutput.EMPTY, IERecipeTypes.WINDMILL_BIOME);
 		this.biomes = biomes;
 		this.modifier = modifier;
 	}

@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 
@@ -25,7 +25,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 {
 	private static final Codec<AlloyRecipe> CODEC = RecordCodecBuilder.create(
 			inst -> inst.group(
-					LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+					TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 					IngredientWithSize.CODEC.fieldOf("input0").forGetter(r -> r.input0),
 					IngredientWithSize.CODEC.fieldOf("input1").forGetter(r -> r.input1),
 					ExtraCodecs.strictOptionalField(Codec.INT, "time", 200).forGetter(r -> r.time)
@@ -48,7 +48,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public AlloyRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
-		Lazy<ItemStack> output = readLazyStack(buffer);
+		TagOutput output = readLazyStack(buffer);
 		IngredientWithSize input0 = IngredientWithSize.read(buffer);
 		IngredientWithSize input1 = IngredientWithSize.read(buffer);
 		int time = buffer.readInt();

@@ -8,30 +8,28 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
-import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 {
 	public static final Codec<SawmillRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			LAZY_OUTPUT_CODEC.fieldOf("result").forGetter(r -> r.output),
+			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			optionalItemOutput("stripped").forGetter(r -> r.stripped),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
-			ExtraCodecs.strictOptionalField(LAZY_OUTPUTS_CODEC, "strippingSecondaries", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryStripping),
-			ExtraCodecs.strictOptionalField(LAZY_OUTPUTS_CODEC, "secondaryOutputs", EMPTY_LAZY_OUTPUTS).forGetter(r -> r.secondaryOutputs)
+			ExtraCodecs.strictOptionalField(TagOutputList.CODEC, "strippingSecondaries", TagOutputList.EMPTY).forGetter(r -> r.secondaryStripping),
+			ExtraCodecs.strictOptionalField(TagOutputList.CODEC, "secondaryOutputs", TagOutputList.EMPTY).forGetter(r -> r.secondaryOutputs)
 	).apply(inst, SawmillRecipe::new));
 
 	@Override
@@ -50,20 +48,20 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 	@Override
 	public SawmillRecipe fromNetwork(FriendlyByteBuf buffer)
 	{
-		Lazy<ItemStack> output = readLazyStack(buffer);
-		Lazy<ItemStack> stripped = readLazyStack(buffer);
+		TagOutput output = readLazyStack(buffer);
+		TagOutput stripped = readLazyStack(buffer);
 		Ingredient input = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
 		int secondaryCount = buffer.readInt();
-		NonNullList<ItemStack> strippingOutputs = NonNullList.create();
+		List<TagOutput> strippingOutputs = new ArrayList<>();
 		for(int i = 0; i < secondaryCount; i++)
-			strippingOutputs.add(buffer.readItem());
-		NonNullList<ItemStack> secondaryOutputs = NonNullList.create();
+			strippingOutputs.add(readLazyStack(buffer));
+		List<TagOutput> secondaryOutputs = new ArrayList<>();
 		secondaryCount = buffer.readInt();
 		for(int i = 0; i < secondaryCount; i++)
-			secondaryOutputs.add(buffer.readItem());
+			secondaryOutputs.add(readLazyStack(buffer));
 		return new SawmillRecipe(
-				output, stripped, input, energy, Lazy.of(() -> secondaryOutputs), Lazy.of(() -> strippingOutputs)
+				output, stripped, input, energy, new TagOutputList(secondaryOutputs), new TagOutputList(strippingOutputs)
 		);
 	}
 

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +18,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
@@ -328,10 +328,10 @@ public class FurnaceHandler<R extends IESerializableRecipe>
 
 	protected static class OutputSlot<R>
 	{
-		private final Function<R, Lazy<ItemStack>> getFromRecipe;
+		private final Function<R, TagOutput> getFromRecipe;
 		private final int slotIndex;
 
-		public OutputSlot(Function<R, Lazy<ItemStack>> getFromRecipe, int slotIndex)
+		public OutputSlot(Function<R, TagOutput> getFromRecipe, int slotIndex)
 		{
 			this.getFromRecipe = getFromRecipe;
 			this.slotIndex = slotIndex;

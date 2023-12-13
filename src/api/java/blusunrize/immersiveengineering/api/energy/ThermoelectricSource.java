@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
@@ -31,7 +32,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class ThermoelectricSource extends IESerializableRecipe
 {
@@ -64,7 +63,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 
 	private ThermoelectricSource(FastEither<TagKey<Block>, List<Block>> blocks, int temperature)
 	{
-		super(LAZY_EMPTY, IERecipeTypes.THERMOELECTRIC_SOURCE);
+		super(TagOutput.EMPTY, IERecipeTypes.THERMOELECTRIC_SOURCE);
 		this.blocks = blocks;
 		this.temperature = temperature;
 	}

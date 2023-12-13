@@ -10,21 +10,19 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
-import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -37,23 +35,23 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public final IngredientWithSize input;
 	public final List<IngredientWithSize> additives;
-	public final Lazy<NonNullList<ItemStack>> output;
+	public final TagOutputList output;
 	public final List<StackWithChance> secondaryOutputs;
 	@Nonnull
-	public final Lazy<ItemStack> slag;
+	public final TagOutput slag;
 
 	public String specialRecipeType;
 	public static List<String> specialRecipeTypes = new ArrayList<>();
 	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ARC_FURNACE);
 
 	public ArcFurnaceRecipe(
-			Lazy<NonNullList<ItemStack>> output, @Nonnull Lazy<ItemStack> slag, List<StackWithChance> secondaryOutputs,
+			TagOutputList output, @Nonnull TagOutput slag, List<StackWithChance> secondaryOutputs,
 			int time, int energy,
 			IngredientWithSize input,
 			List<IngredientWithSize> additives
 	)
 	{
-		super(Lazy.of(() -> output.get().get(0)), IERecipeTypes.ARC_FURNACE);
+		super(output.getLazyList().get(0), IERecipeTypes.ARC_FURNACE);
 		this.output = output;
 		this.secondaryOutputs = secondaryOutputs;
 		this.input = input;

@@ -13,17 +13,15 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 14.01.2016
@@ -37,11 +35,11 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public final List<IngredientWithSize> inputs;
 	public final FluidTagInput fluidInput;
-	public final Lazy<NonNullList<ItemStack>> output;
+	public final TagOutputList output;
 
-	public BottlingMachineRecipe(Lazy<NonNullList<ItemStack>> output, List<IngredientWithSize> inputs, FluidTagInput fluidInput)
+	public BottlingMachineRecipe(TagOutputList output, List<IngredientWithSize> inputs, FluidTagInput fluidInput)
 	{
-		super(Lazy.of(() -> output.get().get(0)), IERecipeTypes.BOTTLING_MACHINE);
+		super(output.getLazyList().get(0), IERecipeTypes.BOTTLING_MACHINE);
 		this.output = output;
 		this.inputs = inputs;
 		this.fluidInput = fluidInput;
@@ -52,7 +50,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		this.outputList = this.output;
 	}
 
-	public BottlingMachineRecipe(Lazy<NonNullList<ItemStack>> output, IngredientWithSize input, FluidTagInput fluidInput)
+	public BottlingMachineRecipe(TagOutputList output, IngredientWithSize input, FluidTagInput fluidInput)
 	{
 		this(output, List.of(input), fluidInput);
 	}

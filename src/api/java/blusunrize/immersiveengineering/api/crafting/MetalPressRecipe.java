@@ -11,21 +11,18 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.Holder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -40,14 +37,14 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public IngredientWithSize input;
 	public final Item mold;
-	public final Lazy<ItemStack> output;
+	public final TagOutput output;
 
 	public synchronized static void addSpecialRecipe(ResourceLocation rl, MetalPressRecipe recipe)
 	{
 		SPECIAL_RECIPES.put(rl, recipe);
 	}
 
-	public MetalPressRecipe(Lazy<ItemStack> output, IngredientWithSize input, Item mold, int energy)
+	public MetalPressRecipe(TagOutput output, IngredientWithSize input, Item mold, int energy)
 	{
 		super(output, IERecipeTypes.METAL_PRESS);
 		this.output = output;
@@ -56,7 +53,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		setTimeAndEnergy(60, energy);
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
-		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
+		this.outputList = new TagOutputList(this.output);
 	}
 
 	@Override

@@ -10,13 +10,25 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.common.base.Preconditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
-public record StackWithChance(Lazy<ItemStack> stack, float chance)
+import java.util.List;
+
+public record StackWithChance(TagOutput stack, float chance, List<ICondition> conditions)
 {
+	public static final Codec<StackWithChance> CODEC = RecordCodecBuilder.create(
+			inst -> inst.group(
+					TagOutput.CODEC.fieldOf("output").forGetter(StackWithChance::stack),
+					Codec.FLOAT.fieldOf("chance").forGetter(StackWithChance::chance),
+					ICondition.LIST_CODEC.fieldOf("conditions").forGetter(StackWithChance::conditions)
+			).apply(inst, StackWithChance::new)
+	);
+
 	public StackWithChance
 	{
 		Preconditions.checkNotNull(stack);
@@ -24,7 +36,7 @@ public record StackWithChance(Lazy<ItemStack> stack, float chance)
 
 	public StackWithChance(ItemStack stack, float chance)
 	{
-		this(Lazy.of(() -> stack), chance);
+		this(new TagOutput(stack), chance, List.of());
 	}
 
 	public CompoundTag writeToNBT()
@@ -58,6 +70,6 @@ public record StackWithChance(Lazy<ItemStack> stack, float chance)
 
 	public StackWithChance recalculate(double totalChance)
 	{
-		return new StackWithChance(this.stack, (float)(this.chance/totalChance));
+		return new StackWithChance(this.stack, (float)(this.chance/totalChance), this.conditions);
 	}
 }

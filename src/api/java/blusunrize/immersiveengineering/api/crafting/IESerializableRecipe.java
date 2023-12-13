@@ -15,17 +15,14 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.Lazy;
 
 public abstract class IESerializableRecipe implements Recipe<Container>
 {
-	public static final Lazy<ItemStack> LAZY_EMPTY = of(ItemStack.EMPTY);
-
-	protected final Lazy<ItemStack> outputDummy;
+	protected final TagOutput outputDummy;
 	protected final RecipeType<?> type;
 
 	protected <T extends Recipe<?>>
-	IESerializableRecipe(Lazy<ItemStack> outputDummy, IERecipeTypes.TypeWithClass<T> type)
+	IESerializableRecipe(TagOutput outputDummy, IERecipeTypes.TypeWithClass<T> type)
 	{
 		this.outputDummy = outputDummy;
 		this.type = type.get();
@@ -73,9 +70,5 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 	public RecipeType<?> getType()
 	{
 		return this.type;
-	}
-
-	public static Lazy<ItemStack> of(ItemStack value) {
-		return Lazy.of(() -> value);
 	}
 }
