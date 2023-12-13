@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/armor_faraday_chestplate"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

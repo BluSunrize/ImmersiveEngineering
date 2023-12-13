@@ -5,24 +5,22 @@
     "item": "minecraft:cherry_wood"
   },
   "result": {
-    "count": 6,
-    "item": "minecraft:cherry_planks"
-  },
-  "secondaries": [
-    {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": true
+    "basePredicate": {
+      "item": "minecraft:cherry_planks"
     },
+    "count": 6
+  },
+  "secondaryOutputs": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ],
   "stripped": {
     "item": "minecraft:stripped_cherry_wood"
-  }
+  },
+  "strippingSecondaries": [
+    {
+      "tag": "forge:dusts/wood"
+    }
+  ]
 }

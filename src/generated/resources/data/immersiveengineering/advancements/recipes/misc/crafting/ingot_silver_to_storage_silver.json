@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/ingot_silver_to_storage_silver"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

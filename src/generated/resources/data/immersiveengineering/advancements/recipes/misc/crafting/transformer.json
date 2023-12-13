@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/transformer"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

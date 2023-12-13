@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/reinforced_crate"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

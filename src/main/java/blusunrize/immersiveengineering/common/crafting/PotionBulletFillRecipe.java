@@ -26,9 +26,9 @@ import javax.annotation.Nonnull;
 
 public class PotionBulletFillRecipe extends CustomRecipe
 {
-	public PotionBulletFillRecipe()
+	public PotionBulletFillRecipe(CraftingBookCategory category)
 	{
-		super(CraftingBookCategory.MISC);
+		super(category);
 	}
 
 	@Override

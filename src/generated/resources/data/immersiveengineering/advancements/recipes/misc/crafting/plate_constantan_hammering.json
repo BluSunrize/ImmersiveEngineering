@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/plate_constantan_hammering"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

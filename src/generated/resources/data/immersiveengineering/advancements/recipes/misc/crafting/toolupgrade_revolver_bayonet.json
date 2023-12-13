@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_revolver_bayonet"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -34,9 +34,9 @@ public class JerrycanRefillRecipe extends CustomRecipe
 	private final int jerrycanIndex = 0;
 	private final int containerIndex = 1;
 
-	public JerrycanRefillRecipe()
+	public JerrycanRefillRecipe(CraftingBookCategory category)
 	{
-		super(CraftingBookCategory.MISC);
+		super(category);
 	}
 
 	@Override

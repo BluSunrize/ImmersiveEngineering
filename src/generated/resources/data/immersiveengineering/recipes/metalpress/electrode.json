@@ -9,7 +9,10 @@
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
-    "item": "immersiveengineering:graphite_electrode",
-    "nbt": "{graphDmg:48000}"
+    "Count": 1,
+    "id": "immersiveengineering:graphite_electrode",
+    "tag": {
+      "graphDmg": 48000
+    }
   }
 }

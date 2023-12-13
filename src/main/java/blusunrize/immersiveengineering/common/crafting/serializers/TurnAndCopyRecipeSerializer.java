@@ -56,7 +56,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	).xmap(
 			p -> {
 				AdditionalData extra = p.getSecond();
-				TurnAndCopyRecipe result = new TurnAndCopyRecipe(p.getFirst(), extra.copySlots().orElse(null), CraftingBookCategory.MISC);
+				TurnAndCopyRecipe result = new TurnAndCopyRecipe(p.getFirst(), extra.copySlots().orElse(null));
 				if(extra.quarter())
 					result.allowQuarterTurn();
 				if(extra.eights())
@@ -79,7 +79,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	{
 		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(buffer);
 		List<Integer> copySlots = buffer.readList(FriendlyByteBuf::readVarInt);
-		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(basic, copySlots, CraftingBookCategory.MISC);
+		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(basic, copySlots);
 		if(buffer.readBoolean())
 			recipe.setNBTCopyPredicate(buffer.readUtf(512));
 		if(buffer.readBoolean())

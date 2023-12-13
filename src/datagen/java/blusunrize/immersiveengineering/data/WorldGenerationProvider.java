@@ -25,10 +25,11 @@ import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.*;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.RegistrySetBuilder.PatchedRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -81,9 +82,10 @@ public class WorldGenerationProvider
 		registryBuilder.add(Registries.PLACED_FEATURE, ctx -> bootstrapPlacedFeatures(ctx, registrations));
 		registryBuilder.add(Keys.BIOME_MODIFIERS, ctx -> bootstrapBiomeModifiers(ctx, registrations));
 		registryBuilder.add(Registries.DAMAGE_TYPE, DamageTypeProvider::bootstrap);
+
 		return List.of(
 				new DatapackBuiltinEntriesProvider(output, vanillaRegistries, registryBuilder, Set.of(Lib.MODID)),
-				new DamageTypeTagProvider(output, vanillaRegistries.thenApply(r -> append(r, registryBuilder)), exFiles)
+				new DamageTypeTagProvider(output, append(vanillaRegistries, registryBuilder), exFiles)
 		);
 	}
 
@@ -142,9 +144,11 @@ public class WorldGenerationProvider
 		}
 	}
 
-	private static HolderLookup.Provider append(HolderLookup.Provider original, RegistrySetBuilder builder)
+	private static CompletableFuture<HolderLookup.Provider> append(
+			CompletableFuture<HolderLookup.Provider> original, RegistrySetBuilder builder
+	)
 	{
-		return builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), original);
+		return RegistryPatchGenerator.createLookup(original, builder).thenApply(PatchedRegistries::full);
 	}
 
 	private static class FeatureRegistration

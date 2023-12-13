@@ -7,47 +7,69 @@
   "ores": [
     {
       "chance": 0.4,
+      "conditions": [],
       "output": {
-        "item": "minecraft:polished_blackstone_bricks"
+        "Count": 1,
+        "id": "minecraft:polished_blackstone_bricks"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:polished_blackstone"
+        "Count": 1,
+        "id": "minecraft:polished_blackstone"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:ancient_debris"
+        "Count": 1,
+        "id": "minecraft:ancient_debris"
       }
     },
     {
       "chance": 0.1,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gilded_blackstone"
+        "Count": 1,
+        "id": "minecraft:gilded_blackstone"
       }
     }
   ],
   "sample_background": "minecraft:polished_blackstone",
   "spoils": [
     {
-      "chance": 0.5,
+      "chance": 0.4,
+      "conditions": [],
       "output": {
-        "item": "minecraft:netherrack"
+        "Count": 1,
+        "id": "minecraft:polished_blackstone_bricks"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:basalt"
+        "Count": 1,
+        "id": "minecraft:polished_blackstone"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:ancient_debris"
+      }
+    },
+    {
+      "chance": 0.1,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:gilded_blackstone"
       }
     }
   ],

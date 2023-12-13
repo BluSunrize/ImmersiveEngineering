@@ -5,15 +5,15 @@
     "item": "immersiveengineering:treated_wood_horizontal"
   },
   "result": {
-    "count": 2,
-    "item": "immersiveengineering:slab_treated_wood_horizontal"
+    "basePredicate": {
+      "item": "immersiveengineering:slab_treated_wood_horizontal"
+    },
+    "count": 2
   },
-  "secondaries": [
+  "secondaryOutputs": [],
+  "strippingSecondaries": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ]
 }

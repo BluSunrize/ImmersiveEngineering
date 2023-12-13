@@ -1,11 +1,5 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [
-    {
-      "item": "minecraft:netherite_scrap"
-    }
-  ],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -19,6 +13,12 @@
         "type": "neoforge:tag_empty",
         "tag": "forge:ingots/cobalt"
       }
+    }
+  ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [
+    {
+      "item": "minecraft:netherite_scrap"
     }
   ],
   "energy": 51200,

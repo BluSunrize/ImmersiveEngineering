@@ -1,31 +1,34 @@
 {
   "type": "immersiveengineering:turn_and_copy",
-  "category": "misc",
-  "group": "ie_concrete",
-  "key": {
-    "b": {
-      "amount": 1000,
-      "tag": "minecraft:water"
+  "value": {
+    "category": "misc",
+    "copyNBT": [],
+    "group": "ie_concrete",
+    "key": {
+      "b": {
+        "type": "immersiveengineering:fluid_stack",
+        "amount": 1000,
+        "tag": "minecraft:water"
+      },
+      "c": {
+        "tag": "forge:clay"
+      },
+      "g": {
+        "tag": "forge:gravel"
+      },
+      "s": {
+        "tag": "forge:sand"
+      }
     },
-    "c": {
-      "tag": "forge:clay"
-    },
-    "g": {
-      "tag": "forge:gravel"
-    },
-    "s": {
-      "tag": "forge:sand"
+    "pattern": [
+      "scs",
+      "gbg",
+      "scs"
+    ],
+    "quarter_turn": true,
+    "result": {
+      "count": 8,
+      "item": "immersiveengineering:concrete"
     }
-  },
-  "pattern": [
-    "scs",
-    "gbg",
-    "scs"
-  ],
-  "quarter_turn": true,
-  "result": {
-    "count": 8,
-    "item": "immersiveengineering:concrete"
-  },
-  "show_notification": true
+  }
 }

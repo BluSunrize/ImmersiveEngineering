@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:crusher",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,6 +15,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
     "tag": "forge:ores/platinum"

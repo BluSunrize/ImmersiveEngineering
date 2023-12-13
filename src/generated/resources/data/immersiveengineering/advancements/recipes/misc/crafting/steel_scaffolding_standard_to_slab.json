@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/steel_scaffolding_standard_to_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

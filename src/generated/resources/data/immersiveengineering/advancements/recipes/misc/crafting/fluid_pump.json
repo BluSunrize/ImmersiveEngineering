@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/fluid_pump"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:crusher",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -9,6 +8,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
     "tag": "forge:ores/fluorite"
@@ -18,6 +18,5 @@
       "tag": "forge:gems/fluorite"
     },
     "count": 6
-  },
-  "secondaries": []
+  }
 }

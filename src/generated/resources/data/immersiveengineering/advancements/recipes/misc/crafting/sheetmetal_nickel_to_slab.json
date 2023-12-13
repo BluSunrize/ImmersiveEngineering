@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_nickel_to_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

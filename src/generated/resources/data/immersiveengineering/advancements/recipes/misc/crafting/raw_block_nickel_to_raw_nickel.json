@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/raw_block_nickel_to_raw_nickel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

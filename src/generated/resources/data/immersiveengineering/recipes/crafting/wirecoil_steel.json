@@ -1,26 +1,28 @@
 {
   "type": "immersiveengineering:turn_and_copy",
-  "category": "misc",
-  "key": {
-    "a": {
-      "tag": "forge:wires/aluminum"
+  "value": {
+    "category": "misc",
+    "copyNBT": [],
+    "key": {
+      "a": {
+        "tag": "forge:wires/aluminum"
+      },
+      "s": {
+        "tag": "forge:rods/wooden"
+      },
+      "w": {
+        "tag": "forge:wires/steel"
+      }
     },
-    "s": {
-      "tag": "forge:rods/wooden"
-    },
-    "w": {
-      "tag": "forge:wires/steel"
+    "pattern": [
+      " w ",
+      "asa",
+      " w "
+    ],
+    "quarter_turn": true,
+    "result": {
+      "count": 4,
+      "item": "immersiveengineering:wirecoil_steel"
     }
-  },
-  "pattern": [
-    " w ",
-    "asa",
-    " w "
-  ],
-  "quarter_turn": true,
-  "result": {
-    "count": 4,
-    "item": "immersiveengineering:wirecoil_steel"
-  },
-  "show_notification": true
+  }
 }

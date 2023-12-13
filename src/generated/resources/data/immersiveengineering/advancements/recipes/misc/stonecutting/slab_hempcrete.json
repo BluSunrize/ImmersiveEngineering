@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:stonecutting/slab_hempcrete"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

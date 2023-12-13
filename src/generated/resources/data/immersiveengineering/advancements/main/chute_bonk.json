@@ -6,16 +6,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.chute_bonk.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:chute_iron"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.chute_bonk"
     }
@@ -24,6 +20,5 @@
     [
       "code_trigger"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

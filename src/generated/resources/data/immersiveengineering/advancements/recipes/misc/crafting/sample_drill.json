@@ -56,6 +56,5 @@
     "recipes": [
       "immersiveengineering:crafting/sample_drill"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

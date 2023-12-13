@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:stonecutting/concrete_quarter"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

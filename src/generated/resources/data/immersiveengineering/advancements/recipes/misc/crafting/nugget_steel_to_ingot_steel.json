@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/nugget_steel_to_ingot_steel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

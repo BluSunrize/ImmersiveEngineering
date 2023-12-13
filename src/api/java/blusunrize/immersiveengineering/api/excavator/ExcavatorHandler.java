@@ -227,7 +227,7 @@ public class ExcavatorHandler
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
 			for(RecipeHolder<MineralMix> e : MineralMix.RECIPES.getRecipes(dimension))
-				if(e.value().validDimension(dimension.dimension()))
+				if(e.value().validDimension(dimension.dimensionTypeId()))
 				{
 					validMinerals.add(e);
 					weight += e.value().weight;

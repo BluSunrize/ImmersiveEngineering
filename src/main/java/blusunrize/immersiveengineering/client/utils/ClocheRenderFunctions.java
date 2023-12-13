@@ -15,16 +15,14 @@ import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.mixin.accessors.CropBlockAccess;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.ChorusPlantBlock;
-import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -43,8 +41,7 @@ public class ClocheRenderFunctions
 		// register defaults
 		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("crop", RenderFunctionCrop::new);
 		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("stacking", RenderFunctionStacking::new);
-		//TODO
-		// ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("stem", RenderFunctionStem::new);
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("stem", RenderFunctionStem::new);
 		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("generic", RenderFunctionGeneric::new);
 
 		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("hemp", block -> new RenderFunctionHemp());
@@ -131,19 +128,18 @@ public class ClocheRenderFunctions
 		}
 	}
 
-	/*
 	public static class RenderFunctionStem implements ClocheRenderFunction
 	{
-		final StemGrownBlock cropBlock;
-		final StemBlock stemBlock;
-		final AttachedStemBlock attachedStemBlock;
+		final Block cropBlock;
+		final Block stemBlock;
+		final Block attachedStemBlock;
 
 		public RenderFunctionStem(Block cropBlock)
 		{
-			Preconditions.checkArgument(cropBlock instanceof StemGrownBlock);
-			this.cropBlock = (StemGrownBlock)cropBlock;
-			this.stemBlock = this.cropBlock.getStem();
-			this.attachedStemBlock = this.cropBlock.getAttachedStem();
+			this.cropBlock = cropBlock;
+			// TODO fix!
+			this.stemBlock = Blocks.MELON_STEM;//this.cropBlock.getStem();
+			this.attachedStemBlock = Blocks.ATTACHED_MELON_STEM;
 		}
 
 		@Override
@@ -179,7 +175,7 @@ public class ClocheRenderFunctions
 				);
 			}
 		}
-	}*/
+	}
 
 	public static class RenderFunctionGeneric implements ClocheRenderFunction
 	{

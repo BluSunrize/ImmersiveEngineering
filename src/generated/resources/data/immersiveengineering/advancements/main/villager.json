@@ -83,16 +83,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.villager.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "minecraft:emerald"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.villager"
     }
@@ -105,6 +101,5 @@
       "meet_machinist",
       "meet_outfitter"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

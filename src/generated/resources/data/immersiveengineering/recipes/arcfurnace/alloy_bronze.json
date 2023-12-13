@@ -1,11 +1,5 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [
-    {
-      "tag": "forge:ingots/tin"
-    }
-  ],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -19,6 +13,12 @@
         "type": "neoforge:tag_empty",
         "tag": "forge:ingots/tin"
       }
+    }
+  ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [
+    {
+      "tag": "forge:ingots/tin"
     }
   ],
   "energy": 51200,

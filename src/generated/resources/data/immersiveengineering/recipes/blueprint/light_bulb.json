@@ -21,7 +21,7 @@
     }
   ],
   "result": {
-    "count": 3,
-    "item": "immersiveengineering:light_bulb"
+    "Count": 3,
+    "id": "immersiveengineering:light_bulb"
   }
 }

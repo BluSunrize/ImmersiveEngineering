@@ -5,8 +5,9 @@
     "item": "minecraft:nether_wart_block"
   },
   "result": {
-    "count": 9,
-    "item": "minecraft:nether_wart"
-  },
-  "secondaries": []
+    "basePredicate": {
+      "item": "minecraft:nether_wart"
+    },
+    "count": 9
+  }
 }

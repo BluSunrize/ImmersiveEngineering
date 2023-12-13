@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.dimension.DimensionType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,13 +38,13 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 					CHANCE_LIST.fieldOf("spoils").forGetter(r -> r.outputs),
 					Codec.INT.fieldOf("weight").forGetter(r -> r.weight),
 					ExtraCodecs.strictOptionalField(Codec.FLOAT, "fail_chance", 0f).forGetter(r -> r.failChance),
-					ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimensions").forGetter(r -> List.copyOf(r.dimensions)),
+					ResourceKey.codec(Registries.DIMENSION_TYPE).listOf().fieldOf("dimensions").forGetter(r -> List.copyOf(r.dimensions)),
 					ExtraCodecs.strictOptionalField(BuiltInRegistries.BLOCK.byNameCodec(), "sample_background", Blocks.STONE).forGetter(r -> r.background)
 			).apply(inst, (ores, spoils, weight, failChance, dimensions, background) -> {
 				double finalTotalChance = ores.stream().mapToDouble(StackWithChance::chance).sum();
 				ores = ores.stream().map(stack -> stack.recalculate(finalTotalChance)).toList();
 				double finalSpoilChance = spoils.stream().mapToDouble(StackWithChance::chance).sum();
-				spoils = spoils.stream().map(stack -> stack.recalculate(finalTotalChance)).toList();
+				spoils = spoils.stream().map(stack -> stack.recalculate(finalSpoilChance)).toList();
 				return new MineralMix(ores, spoils, weight, failChance, dimensions, background);
 			})
 	);
@@ -69,12 +70,9 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		int weight = buffer.readInt();
 		float failChance = buffer.readFloat();
 		int count = buffer.readInt();
-		List<ResourceKey<Level>> dimensions = new ArrayList<>();
+		List<ResourceKey<DimensionType>> dimensions = new ArrayList<>();
 		for(int i = 0; i < count; i++)
-			dimensions.add(ResourceKey.create(
-					Registries.DIMENSION,
-					buffer.readResourceLocation()
-			));
+			dimensions.add(ResourceKey.create(Registries.DIMENSION_TYPE, buffer.readResourceLocation()));
 		Block bg = PacketUtils.readRegistryElement(buffer, BuiltInRegistries.BLOCK);
 		return new MineralMix(outputs, spoils, weight, failChance, dimensions, bg);
 	}
@@ -87,7 +85,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		buffer.writeInt(recipe.weight);
 		buffer.writeFloat(recipe.failChance);
 		buffer.writeInt(recipe.dimensions.size());
-		for(ResourceKey<Level> dimension : recipe.dimensions)
+		for(ResourceKey<DimensionType> dimension : recipe.dimensions)
 			buffer.writeResourceLocation(dimension.location());
 		PacketUtils.writeRegistryElement(buffer, BuiltInRegistries.BLOCK, recipe.background);
 	}

@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/windmill"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

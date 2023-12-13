@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:smelting/ingot_constantan_from_dust"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

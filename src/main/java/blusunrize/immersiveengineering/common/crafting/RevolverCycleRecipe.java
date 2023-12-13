@@ -22,9 +22,9 @@ import javax.annotation.Nonnull;
 
 public class RevolverCycleRecipe extends CustomRecipe
 {
-	public RevolverCycleRecipe()
+	public RevolverCycleRecipe(CraftingBookCategory category)
 	{
-		super(CraftingBookCategory.MISC);
+		super(category);
 	}
 
 	@Override

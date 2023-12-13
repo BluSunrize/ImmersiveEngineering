@@ -15,9 +15,7 @@
   ],
   "result": {
     "item": "immersiveengineering:conveyor_splitter",
-    "nbt": {
-      "defaultCover": "immersiveengineering:steel_scaffolding_standard"
-    }
+    "nbt": "{defaultCover:\"immersiveengineering:steel_scaffolding_standard\"}"
   },
-  "show_notification": true
+  "show_notification": false
 }

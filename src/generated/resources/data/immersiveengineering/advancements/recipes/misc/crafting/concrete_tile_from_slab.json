@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/concrete_tile_from_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

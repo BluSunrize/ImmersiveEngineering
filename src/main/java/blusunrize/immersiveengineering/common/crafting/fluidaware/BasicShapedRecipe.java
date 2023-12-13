@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe.MatchLocation;
+import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -21,15 +22,11 @@ import javax.annotation.Nullable;
 
 public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 {
-	public BasicShapedRecipe(String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn, CraftingBookCategory category)
-	{
-		super(groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn, category);
-	}
-
 	public BasicShapedRecipe(ShapedRecipe vanillaBase)
 	{
-		this(vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
-				vanillaBase.getIngredients(), vanillaBase.getResultItem(null), vanillaBase.category());
+		super(vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
+				vanillaBase.getIngredients(), vanillaBase.getResultItem(null), vanillaBase.category(),
+				((ShapedRecipeAccess)vanillaBase).getPattern().data());
 	}
 
 	protected boolean checkMatch(CraftingContainer craftingInventory, MatchLocation loc)

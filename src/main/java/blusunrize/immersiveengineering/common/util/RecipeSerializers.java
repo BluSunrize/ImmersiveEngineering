@@ -19,12 +19,16 @@ import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.ShapelessFluidAwareRecipe;
 import blusunrize.immersiveengineering.common.crafting.serializers.*;
+import net.minecraft.client.RecipeBookCategories;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Holder;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RecipeSerializers
@@ -159,5 +163,10 @@ public class RecipeSerializers
 	private static <T extends Recipe<?>> Supplier<SimpleRecipeSerializer<T>> special(Supplier<T> create)
 	{
 		return () -> new SimpleRecipeSerializer<>(create);
+	}
+
+	private static <T extends Recipe<?>> Supplier<SimpleRecipeSerializer<T>> special(Function<CraftingBookCategory, T> create)
+	{
+		return special(() -> create.apply(CraftingBookCategory.MISC));
 	}
 }

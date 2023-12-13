@@ -6,17 +6,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.upgrade_buzzsaw.desc"
     },
     "frame": "challenge",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:buzzsaw",
       "nbt": "{sawblade:{Count:1b,id:\"immersiveengineering:sawblade\",tag:{Damage:0}},sawblade_spare1:{Count:1b,id:\"immersiveengineering:sawblade\",tag:{Damage:0}},sawblade_spare2:{Count:1b,id:\"immersiveengineering:sawblade\",tag:{Damage:0}},upgrades:{oiled:1b,spareblades:1b}}"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.upgrade_buzzsaw"
     }
@@ -30,6 +27,5 @@
     "loot": [
       "immersiveengineering:advancements/shader_rare"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

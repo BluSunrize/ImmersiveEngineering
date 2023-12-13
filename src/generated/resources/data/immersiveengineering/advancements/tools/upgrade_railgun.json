@@ -6,17 +6,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.upgrade_railgun.desc"
     },
     "frame": "challenge",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:railgun",
       "nbt": "{upgrades:{scope:1b,speed:1.0f}}"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.upgrade_railgun"
     }
@@ -30,6 +27,5 @@
     "loot": [
       "immersiveengineering:advancements/shader_rare"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

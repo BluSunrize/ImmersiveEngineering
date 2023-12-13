@@ -20,6 +20,7 @@
     "accessors.PotionBrewingAccess",
     "accessors.PotionMixAccessor",
     "accessors.ServerPlayNetHandlerAccess",
+    "accessors.ShapedRecipeAccess",
     "accessors.TemplateAccess",
     "accessors.TemplatePoolAccess",
     "accessors.TNTEntityAccess",

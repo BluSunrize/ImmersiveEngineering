@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:crusher",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,6 +15,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
     "tag": "forge:raw_materials/ardite"
@@ -26,6 +26,7 @@
   "secondaries": [
     {
       "chance": 0.33333334,
+      "conditions": [],
       "output": {
         "tag": "forge:dusts/ardite"
       }

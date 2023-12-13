@@ -1,21 +1,5 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/lead"
-      }
-    },
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/lead"
-      }
-    }
-  ],
   "input": {
     "tag": "forge:raw_materials/lead"
   },

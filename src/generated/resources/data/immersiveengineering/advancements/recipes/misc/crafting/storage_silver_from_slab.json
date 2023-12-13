@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/storage_silver_from_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

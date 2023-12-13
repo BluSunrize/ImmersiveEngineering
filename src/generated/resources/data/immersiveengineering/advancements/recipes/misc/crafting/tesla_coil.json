@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/tesla_coil"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

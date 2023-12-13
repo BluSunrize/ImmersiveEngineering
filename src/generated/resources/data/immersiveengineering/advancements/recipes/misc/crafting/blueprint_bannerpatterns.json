@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/blueprint_bannerpatterns"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

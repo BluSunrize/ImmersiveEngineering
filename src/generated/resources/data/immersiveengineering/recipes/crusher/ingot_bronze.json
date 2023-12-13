@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:crusher",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,12 +15,12 @@
       }
     }
   ],
+  "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
     "tag": "forge:ingots/bronze"
   },
   "result": {
     "tag": "forge:dusts/bronze"
-  },
-  "secondaries": []
+  }
 }

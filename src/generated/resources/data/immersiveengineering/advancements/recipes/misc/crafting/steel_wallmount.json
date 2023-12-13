@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/steel_wallmount"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

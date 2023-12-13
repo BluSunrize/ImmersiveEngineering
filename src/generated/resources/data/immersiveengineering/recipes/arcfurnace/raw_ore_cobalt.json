@@ -1,7 +1,5 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -17,6 +15,8 @@
       }
     }
   ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [],
   "energy": 25600,
   "input": {
     "tag": "forge:raw_materials/cobalt"
@@ -29,6 +29,7 @@
   "secondaries": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:ingots/cobalt"
       }

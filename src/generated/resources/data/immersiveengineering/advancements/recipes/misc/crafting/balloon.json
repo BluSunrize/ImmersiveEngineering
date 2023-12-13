@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/balloon"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

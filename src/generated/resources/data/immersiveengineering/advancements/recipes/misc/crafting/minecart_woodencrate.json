@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/minecart_woodencrate"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

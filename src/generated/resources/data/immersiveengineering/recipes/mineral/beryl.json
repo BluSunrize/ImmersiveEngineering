@@ -7,14 +7,17 @@
   "ores": [
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/emerald"
       }
     },
     {
       "chance": 0.7,
+      "conditions": [],
       "output": {
-        "item": "minecraft:prismarine"
+        "Count": 1,
+        "id": "minecraft:prismarine"
       }
     },
     {
@@ -35,21 +38,33 @@
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "tag": "forge:ores/emerald"
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.7,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobblestone"
+        "Count": 1,
+        "id": "minecraft:prismarine"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:gems/aquamarine"
+          }
+        }
+      ],
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:gems/aquamarine"
       }
     }
   ],

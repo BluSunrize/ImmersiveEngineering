@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/thermoelectric_generator"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

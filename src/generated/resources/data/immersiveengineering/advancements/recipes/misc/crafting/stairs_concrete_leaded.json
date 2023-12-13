@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/stairs_concrete_leaded"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

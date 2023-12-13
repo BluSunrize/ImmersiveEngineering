@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/stairs_hempcrete_brick"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

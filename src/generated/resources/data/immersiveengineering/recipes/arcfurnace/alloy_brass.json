@@ -1,11 +1,5 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [
-    {
-      "tag": "forge:ingots/zinc"
-    }
-  ],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -19,6 +13,12 @@
         "type": "neoforge:tag_empty",
         "tag": "forge:ingots/zinc"
       }
+    }
+  ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [
+    {
+      "tag": "forge:ingots/zinc"
     }
   ],
   "energy": 51200,

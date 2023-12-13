@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:mineral_mix",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -9,6 +8,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:mineral_mix",
   "dimensions": [
     "minecraft:overworld"
   ],
@@ -16,6 +16,7 @@
   "ores": [
     {
       "chance": 1.0,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/tin"
       }
@@ -23,21 +24,10 @@
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 1.0,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
-      }
-    },
-    {
-      "chance": 0.5,
-      "output": {
-        "item": "minecraft:cobblestone"
-      }
-    },
-    {
-      "chance": 0.3,
-      "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:ores/tin"
       }
     }
   ],

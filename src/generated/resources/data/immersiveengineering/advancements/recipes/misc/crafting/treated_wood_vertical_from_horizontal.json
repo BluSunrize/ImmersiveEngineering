@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/treated_wood_vertical_from_horizontal"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

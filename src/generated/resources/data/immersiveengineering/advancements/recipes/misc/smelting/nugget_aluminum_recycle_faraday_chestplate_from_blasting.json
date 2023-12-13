@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:smelting/nugget_aluminum_recycle_faraday_chestplate_from_blasting"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

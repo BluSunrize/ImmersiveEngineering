@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/turret_gun"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

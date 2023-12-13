@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.craft_treatedwood.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:treated_wood_horizontal"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.craft_treatedwood"
     }
@@ -33,6 +29,5 @@
     [
       "has_item"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/dynamo"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

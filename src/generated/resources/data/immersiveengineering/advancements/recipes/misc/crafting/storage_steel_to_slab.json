@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/storage_steel_to_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

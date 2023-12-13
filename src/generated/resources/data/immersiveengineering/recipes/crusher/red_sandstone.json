@@ -5,12 +5,15 @@
     "tag": "forge:sandstone/red"
   },
   "result": {
-    "count": 2,
-    "item": "minecraft:red_sand"
+    "basePredicate": {
+      "item": "minecraft:red_sand"
+    },
+    "count": 2
   },
   "secondaries": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:dusts/saltpeter"
       }

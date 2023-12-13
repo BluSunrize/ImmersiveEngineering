@@ -9,11 +9,12 @@
   },
   "results": [
     {
-      "count": 2,
-      "item": "minecraft:beetroot"
+      "Count": 2,
+      "id": "minecraft:beetroot"
     },
     {
-      "item": "minecraft:beetroot_seeds"
+      "Count": 1,
+      "id": "minecraft:beetroot_seeds"
     }
   ],
   "soil": {

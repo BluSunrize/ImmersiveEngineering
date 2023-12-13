@@ -5,12 +5,15 @@
     "tag": "forge:rods/blaze"
   },
   "result": {
-    "count": 4,
-    "item": "minecraft:blaze_powder"
+    "basePredicate": {
+      "item": "minecraft:blaze_powder"
+    },
+    "count": 4
   },
   "secondaries": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:dusts/sulfur"
       }

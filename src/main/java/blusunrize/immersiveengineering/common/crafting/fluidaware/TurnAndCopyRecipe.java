@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -34,27 +35,33 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 	protected final List<Integer> nbtCopyTargetSlot;
 	protected Pattern nbtCopyPredicate = null;
 
-	public TurnAndCopyRecipe(
-			ShapedRecipe vanilla, List<Integer> copySlots, CraftingBookCategory category
-	)
+	public TurnAndCopyRecipe(ShapedRecipe vanilla)
+	{
+		this(vanilla, List.of());
+	}
+
+	public TurnAndCopyRecipe(ShapedRecipe vanilla, List<Integer> copySlots)
 	{
 		super(
 				vanilla.getGroup(),
 				vanilla.getWidth(), vanilla.getHeight(),
-				vanilla.getIngredients(), vanilla.getResultItem(null), category
+				vanilla.getIngredients(), vanilla.getResultItem(null), vanilla.category(),
+				((ShapedRecipeAccess)vanilla).getPattern().data()
 		);
 		this.nbtCopyTargetSlot = copySlots;
 	}
 
-	public void allowQuarterTurn()
+	public TurnAndCopyRecipe allowQuarterTurn()
 	{
 		allowQuarter = true;
+		return this;
 	}
 
-	public void allowEighthTurn()
+	public TurnAndCopyRecipe allowEighthTurn()
 	{
 		if(getWidth()==3&&getHeight()==3)//Recipe won't allow 8th turn when not a 3x3 square
 			allowEighth = true;
+		return this;
 	}
 
 	public void setNBTCopyPredicate(String pattern)

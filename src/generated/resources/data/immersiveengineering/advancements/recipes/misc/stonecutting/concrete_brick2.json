@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:stonecutting/concrete_brick2"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

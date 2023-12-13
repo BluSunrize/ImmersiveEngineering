@@ -7,20 +7,26 @@
   "ores": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:soul_soil"
+        "Count": 1,
+        "id": "minecraft:soul_soil"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:soul_sand"
+        "Count": 1,
+        "id": "minecraft:soul_sand"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     }
   ],
@@ -28,20 +34,26 @@
   "spoils": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:netherrack"
+        "Count": 1,
+        "id": "minecraft:soul_soil"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:basalt"
+        "Count": 1,
+        "id": "minecraft:soul_sand"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     }
   ],

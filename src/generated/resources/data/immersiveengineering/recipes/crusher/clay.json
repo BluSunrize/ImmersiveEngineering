@@ -5,8 +5,9 @@
     "tag": "forge:storage_blocks/clay"
   },
   "result": {
-    "count": 4,
-    "item": "minecraft:clay_ball"
-  },
-  "secondaries": []
+    "basePredicate": {
+      "item": "minecraft:clay_ball"
+    },
+    "count": 4
+  }
 }

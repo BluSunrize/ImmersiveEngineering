@@ -50,6 +50,5 @@
     "recipes": [
       "immersiveengineering:crafting/capacitor_mv"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -39,6 +39,5 @@
     "recipes": [
       "immersiveengineering:crafting/steel_scaffolding_standard"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

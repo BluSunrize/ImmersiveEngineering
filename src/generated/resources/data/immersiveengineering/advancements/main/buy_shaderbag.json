@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.buy_shaderbag.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:shader_bag_common"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.buy_shaderbag"
     }
@@ -33,6 +29,5 @@
     [
       "buy_shaderbag"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

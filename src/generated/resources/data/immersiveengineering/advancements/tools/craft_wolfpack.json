@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.craft_wolfpack.desc"
     },
-    "frame": "task",
     "hidden": true,
     "icon": {
       "item": "immersiveengineering:wolfpack"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.craft_wolfpack"
     }
@@ -33,6 +30,5 @@
     [
       "has_item"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

@@ -1,17 +1,17 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [
-    {
-      "tag": "forge:ingots/nickel"
-    }
-  ],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
         "tag": "forge:ingots/invar"
       }
+    }
+  ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [
+    {
+      "tag": "forge:ingots/nickel"
     }
   ],
   "energy": 51200,

@@ -6,7 +6,7 @@
   },
   "mold": "immersiveengineering:mold_bullet_casing",
   "result": {
-    "count": 2,
-    "item": "immersiveengineering:empty_casing"
+    "Count": 2,
+    "id": "immersiveengineering:empty_casing"
   }
 }

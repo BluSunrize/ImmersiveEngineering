@@ -11,16 +11,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.liquid_concrete.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:concrete_bucket"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.liquid_concrete"
     }
@@ -29,6 +25,5 @@
     [
       "concrete_feet"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

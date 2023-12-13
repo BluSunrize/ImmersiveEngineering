@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/conveyor_vertical_covered"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

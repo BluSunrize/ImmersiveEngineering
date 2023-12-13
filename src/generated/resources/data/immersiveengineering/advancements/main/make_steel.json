@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.make_steel.desc"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:ingot_steel"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.make_steel"
     }
@@ -33,6 +30,5 @@
     [
       "has_item"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

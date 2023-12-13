@@ -14,8 +14,10 @@
   },
   "results": [
     {
-      "count": 2,
-      "item": "immersiveengineering:insulating_glass"
+      "basePredicate": {
+        "item": "immersiveengineering:insulating_glass"
+      },
+      "count": 2
     }
   ],
   "time": 100

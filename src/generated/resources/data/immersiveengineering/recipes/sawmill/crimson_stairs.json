@@ -7,12 +7,10 @@
   "result": {
     "item": "minecraft:crimson_planks"
   },
-  "secondaries": [
+  "secondaryOutputs": [],
+  "strippingSecondaries": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ]
 }

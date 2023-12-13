@@ -10,12 +10,15 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
+import blusunrize.immersiveengineering.common.register.IEIngredients;
 import com.mojang.serialization.Codec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -39,7 +42,7 @@ public class IngredientFluidStack extends Ingredient
 
 	public IngredientFluidStack(FluidTagInput fluidTagInput)
 	{
-		super(Stream.empty());
+		super(Stream.empty(), IEIngredients.FLUID_STACK::value);
 		this.fluidTagInput = fluidTagInput;
 	}
 

@@ -15,6 +15,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Function;
 
@@ -31,6 +32,16 @@ public class TagOutput
 	public TagOutput(Either<IngredientWithSize, ItemStack> type)
 	{
 		this.rawData = type;
+	}
+
+	public TagOutput(ItemLike type)
+	{
+		this(type, 1);
+	}
+
+	public TagOutput(ItemLike type, int count)
+	{
+		this(new IngredientWithSize(Ingredient.of(type), count));
 	}
 
 	public TagOutput(IngredientWithSize type)

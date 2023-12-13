@@ -17,8 +17,10 @@
   ],
   "results": [
     {
-      "count": 2,
-      "item": "immersiveengineering:empty_shell"
+      "basePredicate": {
+        "item": "immersiveengineering:empty_shell"
+      },
+      "count": 2
     },
     {
       "item": "immersiveengineering:mold_bullet_casing"

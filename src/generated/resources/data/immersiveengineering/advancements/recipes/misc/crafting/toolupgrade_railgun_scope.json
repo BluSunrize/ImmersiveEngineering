@@ -43,6 +43,5 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_railgun_scope"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

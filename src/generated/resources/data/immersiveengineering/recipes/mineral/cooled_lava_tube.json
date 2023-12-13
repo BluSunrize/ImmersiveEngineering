@@ -7,20 +7,26 @@
   "ores": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:magma_block"
+        "Count": 1,
+        "id": "minecraft:magma_block"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:smooth_basalt"
+        "Count": 1,
+        "id": "minecraft:smooth_basalt"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:obsidian"
+        "Count": 1,
+        "id": "minecraft:obsidian"
       }
     }
   ],
@@ -28,20 +34,26 @@
   "spoils": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:netherrack"
+        "Count": 1,
+        "id": "minecraft:magma_block"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:basalt"
+        "Count": 1,
+        "id": "minecraft:smooth_basalt"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:obsidian"
       }
     }
   ],

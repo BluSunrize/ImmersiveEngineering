@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/storage_lead_to_ingot_lead"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

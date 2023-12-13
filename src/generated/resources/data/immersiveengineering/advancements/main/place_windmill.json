@@ -14,16 +14,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.place_windmill.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:windmill"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.place_windmill"
     }
@@ -32,6 +28,5 @@
     [
       "place_block"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

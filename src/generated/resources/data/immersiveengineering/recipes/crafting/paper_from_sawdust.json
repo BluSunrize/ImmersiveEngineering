@@ -1,26 +1,29 @@
 {
   "type": "immersiveengineering:shapeless_fluid",
-  "category": "misc",
-  "ingredients": [
-    {
-      "tag": "forge:dusts/wood"
-    },
-    {
-      "tag": "forge:dusts/wood"
-    },
-    {
-      "tag": "forge:dusts/wood"
-    },
-    {
-      "tag": "forge:dusts/wood"
-    },
-    {
-      "amount": 1000,
-      "tag": "minecraft:water"
+  "value": {
+    "category": "misc",
+    "ingredients": [
+      {
+        "tag": "forge:dusts/wood"
+      },
+      {
+        "tag": "forge:dusts/wood"
+      },
+      {
+        "tag": "forge:dusts/wood"
+      },
+      {
+        "tag": "forge:dusts/wood"
+      },
+      {
+        "type": "immersiveengineering:fluid_stack",
+        "amount": 1000,
+        "tag": "minecraft:water"
+      }
+    ],
+    "result": {
+      "count": 2,
+      "item": "minecraft:paper"
     }
-  ],
-  "result": {
-    "count": 2,
-    "item": "minecraft:paper"
   }
 }

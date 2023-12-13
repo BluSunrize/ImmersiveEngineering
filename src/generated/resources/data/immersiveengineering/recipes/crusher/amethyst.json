@@ -5,8 +5,9 @@
     "tag": "forge:storage_blocks/amethyst"
   },
   "result": {
-    "count": 4,
-    "item": "minecraft:amethyst_shard"
-  },
-  "secondaries": []
+    "basePredicate": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "count": 4
+  }
 }

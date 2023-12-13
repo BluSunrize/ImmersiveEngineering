@@ -28,9 +28,9 @@ import java.util.Optional;
 // (see BluSunrize/ImmersiveEngineering#3994)
 public class IERepairItemRecipe extends CustomRecipe
 {
-	public IERepairItemRecipe()
+	public IERepairItemRecipe(CraftingBookCategory category)
 	{
-		super(CraftingBookCategory.MISC);
+		super(category);
 	}
 
 	@Override

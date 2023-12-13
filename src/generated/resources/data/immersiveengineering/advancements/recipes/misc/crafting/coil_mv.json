@@ -41,6 +41,5 @@
     "recipes": [
       "immersiveengineering:crafting/coil_mv"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

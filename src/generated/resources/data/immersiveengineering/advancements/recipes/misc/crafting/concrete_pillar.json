@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/concrete_pillar"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

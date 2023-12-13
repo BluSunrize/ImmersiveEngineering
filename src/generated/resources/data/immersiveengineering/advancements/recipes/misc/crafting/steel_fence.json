@@ -39,6 +39,5 @@
     "recipes": [
       "immersiveengineering:crafting/steel_fence"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

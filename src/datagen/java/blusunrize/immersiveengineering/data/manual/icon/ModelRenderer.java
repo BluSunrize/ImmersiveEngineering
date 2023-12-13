@@ -45,7 +45,7 @@ public class ModelRenderer implements AutoCloseable
     private final int depthBuffer;
     private final File outputDirectory;
     private final ItemRenderer itemRenderer;
-    private final RenderBuffers renderBuffers = new RenderBuffers();
+	private final RenderBuffers renderBuffers = new RenderBuffers(1);
 
     public ModelRenderer(int width, int height, final File outputDirectory)
     {

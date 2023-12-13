@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:stonecutting/hempcrete_chiseled"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

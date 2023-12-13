@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:alloy",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,6 +15,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:alloy",
   "input0": {
     "tag": "forge:ingots/copper"
   },
@@ -28,5 +28,5 @@
     },
     "count": 2
   },
-  "time": 200
+  "time": 0
 }

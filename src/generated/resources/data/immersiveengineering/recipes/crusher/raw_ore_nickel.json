@@ -10,6 +10,7 @@
   "secondaries": [
     {
       "chance": 0.33333334,
+      "conditions": [],
       "output": {
         "tag": "forge:dusts/nickel"
       }

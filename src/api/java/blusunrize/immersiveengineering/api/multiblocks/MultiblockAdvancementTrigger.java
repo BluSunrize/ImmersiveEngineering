@@ -21,23 +21,28 @@ import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.CriterionValidator;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * @author BluSunrize - 04.07.2017
  */
 public class MultiblockAdvancementTrigger implements CriterionTrigger<MultiblockAdvancementTrigger.Instance>
 {
-	private static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "multiblock_formed");
-	public static MultiblockAdvancementTrigger INSTANCE = CriteriaTriggers.register(
-			ID.toString(), new MultiblockAdvancementTrigger()
+	public static final DeferredRegister<CriterionTrigger<?>> REGISTER = DeferredRegister.create(
+			BuiltInRegistries.TRIGGER_TYPES, Lib.MODID
+	);
+	public static Supplier<MultiblockAdvancementTrigger> INSTANCE = REGISTER.register(
+			"multiblock_formed", MultiblockAdvancementTrigger::new
 	);
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 
@@ -87,7 +92,7 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 
 	public static Criterion<?> create(ResourceLocation multiblock, ItemPredicate hammer)
 	{
-		return INSTANCE.createCriterion(new Instance(multiblock, hammer));
+		return INSTANCE.get().createCriterion(new Instance(multiblock, hammer));
 	}
 
 	public record Instance(ResourceLocation multiblock, ItemPredicate hammer) implements CriterionTriggerInstance

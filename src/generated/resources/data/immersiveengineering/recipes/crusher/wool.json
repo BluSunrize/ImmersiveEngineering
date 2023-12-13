@@ -5,8 +5,9 @@
     "tag": "minecraft:wool"
   },
   "result": {
-    "count": 4,
-    "item": "minecraft:string"
-  },
-  "secondaries": []
+    "basePredicate": {
+      "item": "minecraft:string"
+    },
+    "count": 4
+  }
 }

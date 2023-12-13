@@ -5,24 +5,22 @@
     "item": "minecraft:crimson_stem"
   },
   "result": {
-    "count": 6,
-    "item": "minecraft:crimson_planks"
-  },
-  "secondaries": [
-    {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": true
+    "basePredicate": {
+      "item": "minecraft:crimson_planks"
     },
+    "count": 6
+  },
+  "secondaryOutputs": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ],
   "stripped": {
     "item": "minecraft:stripped_crimson_stem"
-  }
+  },
+  "strippingSecondaries": [
+    {
+      "tag": "forge:dusts/wood"
+    }
+  ]
 }

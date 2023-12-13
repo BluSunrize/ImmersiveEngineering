@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/storage_nickel_to_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

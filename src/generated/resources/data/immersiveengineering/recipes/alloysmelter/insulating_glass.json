@@ -10,8 +10,8 @@
     "tag": "forge:dusts/iron"
   },
   "result": {
-    "count": 2,
-    "item": "immersiveengineering:insulating_glass"
+    "Count": 2,
+    "id": "immersiveengineering:insulating_glass"
   },
-  "time": 200
+  "time": 0
 }

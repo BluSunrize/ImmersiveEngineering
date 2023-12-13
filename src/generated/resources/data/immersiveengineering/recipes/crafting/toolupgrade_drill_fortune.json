@@ -3,6 +3,7 @@
   "category": "misc",
   "key": {
     "a": {
+      "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
       "tag": "forge:redstone_acid"
     },
@@ -23,6 +24,5 @@
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_drill_fortune"
-  },
-  "show_notification": true
+  }
 }

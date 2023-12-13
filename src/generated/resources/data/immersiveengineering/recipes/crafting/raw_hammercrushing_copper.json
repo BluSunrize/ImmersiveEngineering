@@ -1,21 +1,5 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/copper"
-      }
-    },
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/copper"
-      }
-    }
-  ],
   "input": {
     "tag": "forge:raw_materials/copper"
   },

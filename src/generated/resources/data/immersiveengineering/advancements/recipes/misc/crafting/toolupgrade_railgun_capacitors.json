@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_railgun_capacitors"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

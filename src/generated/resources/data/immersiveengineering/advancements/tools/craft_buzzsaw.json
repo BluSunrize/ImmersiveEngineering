@@ -15,16 +15,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.craft_buzzsaw.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:buzzsaw"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.craft_buzzsaw"
     }
@@ -33,6 +29,5 @@
     [
       "has_item"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

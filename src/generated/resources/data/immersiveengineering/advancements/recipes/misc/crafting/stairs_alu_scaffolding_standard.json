@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/stairs_alu_scaffolding_standard"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -7,12 +7,14 @@
   "ores": [
     {
       "chance": 0.75,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/copper"
       }
     },
     {
       "chance": 0.25,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/gold"
       }
@@ -20,21 +22,17 @@
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.75,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "tag": "forge:ores/copper"
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.25,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobblestone"
-      }
-    },
-    {
-      "chance": 0.3,
-      "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:ores/gold"
       }
     }
   ],

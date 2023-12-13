@@ -26,16 +26,26 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 	private final int recipeWidth;
 	private final int recipeHeight;
 	private final CraftingBookCategory category;
+	private final Optional<ShapedRecipePattern.Data> data;
 
 	public AbstractShapedRecipe(
 			String groupIn, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn,
 			CraftingBookCategory category
 	)
 	{
+		this(groupIn, recipeWidth, recipeHeight, recipeItemsIn, recipeOutputIn, category, Optional.empty());
+	}
+
+	public AbstractShapedRecipe(
+			String groupIn, int recipeWidth, int recipeHeight, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn,
+			CraftingBookCategory category, Optional<ShapedRecipePattern.Data> data
+	)
+	{
 		super(groupIn, recipeItemsIn, recipeOutputIn);
 		this.recipeWidth = recipeWidth;
 		this.recipeHeight = recipeHeight;
 		this.category = category;
+		this.data = data;
 	}
 
 	public int getWidth()
@@ -65,7 +75,7 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 	{
 		return new ShapedRecipe(
 				getGroup(), category,
-				new ShapedRecipePattern(getWidth(), getHeight(), getIngredients(), Optional.empty()),
+				new ShapedRecipePattern(getWidth(), getHeight(), getIngredients(), data),
 				getResultItem(null)
 		);
 	}

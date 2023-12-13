@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/fluorescent_tube"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

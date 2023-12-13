@@ -5,24 +5,22 @@
     "item": "minecraft:jungle_wood"
   },
   "result": {
-    "count": 6,
-    "item": "minecraft:jungle_planks"
-  },
-  "secondaries": [
-    {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": true
+    "basePredicate": {
+      "item": "minecraft:jungle_planks"
     },
+    "count": 6
+  },
+  "secondaryOutputs": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ],
   "stripped": {
     "item": "minecraft:stripped_jungle_wood"
-  }
+  },
+  "strippingSecondaries": [
+    {
+      "tag": "forge:dusts/wood"
+    }
+  ]
 }

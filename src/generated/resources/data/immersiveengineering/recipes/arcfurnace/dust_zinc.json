@@ -1,7 +1,5 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -17,6 +15,8 @@
       }
     }
   ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [],
   "energy": 51200,
   "input": {
     "tag": "forge:dusts/zinc"

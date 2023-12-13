@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:metal_press",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,6 +15,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
     "tag": "forge:ingots/tin"

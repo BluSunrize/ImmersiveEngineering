@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/alu_slope"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

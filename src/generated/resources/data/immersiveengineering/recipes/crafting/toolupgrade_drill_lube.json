@@ -1,25 +1,27 @@
 {
   "type": "immersiveengineering:shaped_fluid",
-  "category": "misc",
-  "key": {
-    "i": {
-      "tag": "forge:plates/iron"
+  "value": {
+    "category": "misc",
+    "key": {
+      "i": {
+        "tag": "forge:plates/iron"
+      },
+      "o": {
+        "type": "immersiveengineering:fluid_stack",
+        "amount": 1000,
+        "tag": "forge:plantoil"
+      },
+      "p": {
+        "item": "immersiveengineering:fluid_pipe"
+      }
     },
-    "o": {
-      "amount": 1000,
-      "tag": "forge:plantoil"
-    },
-    "p": {
-      "item": "immersiveengineering:fluid_pipe"
+    "pattern": [
+      " i ",
+      "ioi",
+      " ip"
+    ],
+    "result": {
+      "item": "immersiveengineering:toolupgrade_drill_lube"
     }
-  },
-  "pattern": [
-    " i ",
-    "ioi",
-    " ip"
-  ],
-  "result": {
-    "item": "immersiveengineering:toolupgrade_drill_lube"
-  },
-  "show_notification": true
+  }
 }

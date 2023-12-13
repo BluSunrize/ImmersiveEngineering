@@ -7,46 +7,68 @@
   "ores": [
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:granite"
+        "Count": 1,
+        "id": "minecraft:granite"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:diorite"
+        "Count": 1,
+        "id": "minecraft:diorite"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:andesite"
+        "Count": 1,
+        "id": "minecraft:andesite"
       }
     },
     {
       "chance": 0.1,
+      "conditions": [],
       "output": {
-        "item": "minecraft:obsidian"
+        "Count": 1,
+        "id": "minecraft:obsidian"
       }
     }
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
-      }
-    },
-    {
-      "chance": 0.5,
-      "output": {
-        "item": "minecraft:cobblestone"
+        "Count": 1,
+        "id": "minecraft:granite"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "Count": 1,
+        "id": "minecraft:diorite"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:andesite"
+      }
+    },
+    {
+      "chance": 0.1,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:obsidian"
       }
     }
   ],

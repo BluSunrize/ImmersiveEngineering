@@ -69,16 +69,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.place_conveyor.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:conveyor_basic"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.place_conveyor"
     }
@@ -92,6 +88,5 @@
       "conveyor_splitter",
       "conveyor_vertical"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

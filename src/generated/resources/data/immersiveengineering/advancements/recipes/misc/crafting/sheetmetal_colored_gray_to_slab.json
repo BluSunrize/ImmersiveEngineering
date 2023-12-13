@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_colored_gray_to_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/survey_tools"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

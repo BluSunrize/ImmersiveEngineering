@@ -1,17 +1,17 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [
-    {
-      "tag": "forge:ingots/gold"
-    }
-  ],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
         "tag": "forge:ingots/rose_gold"
       }
+    }
+  ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [
+    {
+      "tag": "forge:ingots/gold"
     }
   ],
   "energy": 51200,

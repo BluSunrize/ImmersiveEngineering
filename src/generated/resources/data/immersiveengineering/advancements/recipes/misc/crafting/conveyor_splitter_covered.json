@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/conveyor_splitter_covered"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

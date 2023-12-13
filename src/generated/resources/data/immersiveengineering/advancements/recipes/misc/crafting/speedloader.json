@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/speedloader"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

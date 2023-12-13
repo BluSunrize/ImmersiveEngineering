@@ -7,12 +7,14 @@
   "ores": [
     {
       "chance": 0.6,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/redstone"
       }
     },
     {
       "chance": 0.4,
+      "conditions": [],
       "output": {
         "tag": "forge:dusts/sulfur"
       }
@@ -35,21 +37,32 @@
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.6,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "tag": "forge:ores/redstone"
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.4,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobblestone"
+        "tag": "forge:dusts/sulfur"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:ores/mercury"
+          }
+        }
+      ],
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:ores/mercury"
       }
     }
   ],

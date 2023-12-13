@@ -26,7 +26,7 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 {
 	public RevolverAssemblyRecipe(ShapedRecipe vanilla, List<Integer> copyNBT)
 	{
-		super(vanilla, copyNBT, CraftingBookCategory.EQUIPMENT);
+		super(vanilla, copyNBT);
 	}
 
 	@Nonnull

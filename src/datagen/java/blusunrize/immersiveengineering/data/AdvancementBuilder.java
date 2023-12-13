@@ -17,7 +17,6 @@ import net.minecraft.advancements.*;
 import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.advancements.critereon.ItemUsedOnLocationTrigger.TriggerInstance;
-import net.minecraft.commands.CommandFunction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,10 +24,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class AdvancementBuilder
@@ -42,7 +38,7 @@ public class AdvancementBuilder
 	private final String name;
 	private ItemStack icon;
 	private ResourceLocation background = null;
-	private FrameType frame = FrameType.TASK;
+	private AdvancementType frame = AdvancementType.TASK;
 	private boolean hidden = false;
 
 	private boolean quiet = false;
@@ -116,13 +112,13 @@ public class AdvancementBuilder
 
 	public AdvancementBuilder goal()
 	{
-		this.frame = FrameType.GOAL;
+		this.frame = AdvancementType.GOAL;
 		return this;
 	}
 
 	public AdvancementBuilder challenge()
 	{
-		this.frame = FrameType.CHALLENGE;
+		this.frame = AdvancementType.CHALLENGE;
 		return this;
 	}
 
@@ -142,9 +138,9 @@ public class AdvancementBuilder
 	{
 		this.builder.rewards(new AdvancementRewards(
 				0,
-				new ResourceLocation[]{new ResourceLocation(Lib.MODID, "advancements/"+lootPath)},
-				new ResourceLocation[0],
-				CommandFunction.CacheableFunction.NONE)
+				List.of(new ResourceLocation(Lib.MODID, "advancements/"+lootPath)),
+				List.of(),
+				Optional.empty())
 		);
 		return this;
 	}
@@ -208,7 +204,7 @@ public class AdvancementBuilder
 				this.icon,
 				Component.translatable("advancement.immersiveengineering."+this.name),
 				Component.translatable("advancement.immersiveengineering."+this.name+".desc"),
-				this.background,
+				Optional.ofNullable(this.background),
 				this.frame,
 				!this.quiet,
 				!this.quiet,

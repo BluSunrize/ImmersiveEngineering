@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:hammer_crushing",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,6 +15,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:hammer_crushing",
   "input": {
     "tag": "forge:raw_materials/ardite"
   },

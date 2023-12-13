@@ -6,6 +6,7 @@
       "tag": "forge:plates/lead"
     },
     "e": {
+      "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
       "tag": "forge:redstone_acid"
     },
@@ -23,6 +24,5 @@
   ],
   "result": {
     "item": "immersiveengineering:capacitor_lv"
-  },
-  "show_notification": true
+  }
 }

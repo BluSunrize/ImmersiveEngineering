@@ -10,15 +10,15 @@
     }
   ],
   "result": {
-    "count": 6,
-    "item": "minecraft:dark_oak_planks"
+    "basePredicate": {
+      "item": "minecraft:dark_oak_planks"
+    },
+    "count": 6
   },
-  "secondaries": [
+  "secondaryOutputs": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
-  ]
+  ],
+  "strippingSecondaries": []
 }

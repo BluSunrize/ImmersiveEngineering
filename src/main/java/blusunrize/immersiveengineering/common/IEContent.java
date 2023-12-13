@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrigger;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
@@ -143,6 +144,7 @@ public class IEContent
 		IEEntityDataSerializers.REGISTER.register(modBus);
 		IEIngredients.REGISTER.register(modBus);
 		IEDataAttachments.REGISTER.register(modBus);
+		MultiblockAdvancementTrigger.REGISTER.register(modBus);
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();
@@ -298,7 +300,7 @@ public class IEContent
 				(world, pos) -> {
 					Block b = world.getBlockState(pos).getBlock();
 					if(b instanceof ConcretePowderBlock)
-						world.setBlock(pos, ((ConcretePowderBlockAccess)b).getConcrete(), 3);
+						world.setBlock(pos, ((ConcretePowderBlockAccess)b).getConcrete().defaultBlockState(), 3);
 				}
 		);
 		WireDamageHandler.GET_WIRE_DAMAGE.setValue(IEDamageSources::causeWireDamage);

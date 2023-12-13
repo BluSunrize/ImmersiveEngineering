@@ -52,6 +52,5 @@
     "recipes": [
       "immersiveengineering:crafting/voltmeter"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

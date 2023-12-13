@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
+import blusunrize.immersiveengineering.data.recipes.RootRecipeProvider;
 import blusunrize.immersiveengineering.data.tags.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -45,7 +46,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new BannerTags(output, lookup, exHelper));
 			gen.addProvider(true, new PoiTags(output, lookup, exHelper));
 			gen.addProvider(true, new EntityTypeTags(output, lookup, exHelper));
-			gen.addProvider(true, new Recipes(output, lookup));
+			gen.addProvider(true, new RootRecipeProvider(output, lookup));
 			gen.addProvider(true, new AllLoot(output));
 			gen.addProvider(true, new BlockStates(output, exHelper));
 			MultiblockStates multiblocks = new MultiblockStates(output, exHelper);

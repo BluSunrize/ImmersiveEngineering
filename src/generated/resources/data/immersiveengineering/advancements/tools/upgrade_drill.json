@@ -6,17 +6,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.upgrade_drill.desc"
     },
     "frame": "challenge",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:drill",
       "nbt": "{head:{Count:1b,id:\"immersiveengineering:drillhead_steel\"},upgrades:{damage:3,oiled:1b,speed:6.0f,waterproof:1b}}"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.upgrade_drill"
     }
@@ -30,6 +27,5 @@
     "loot": [
       "immersiveengineering:advancements/shader_rare"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

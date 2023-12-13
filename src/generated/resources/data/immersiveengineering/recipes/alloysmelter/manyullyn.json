@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:alloy",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,6 +15,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:alloy",
   "input0": {
     "basePredicate": {
       "tag": "forge:ingots/cobalt"
@@ -31,5 +31,5 @@
     },
     "count": 4
   },
-  "time": 200
+  "time": 0
 }

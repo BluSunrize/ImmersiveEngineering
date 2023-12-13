@@ -27,9 +27,9 @@ public class SpeedloaderLoadRecipe extends CustomRecipe
 {
 	private final byte[] offsetPattern = {0, 1, 1, 1, 0, -1, -1, -1};
 
-	public SpeedloaderLoadRecipe()
+	public SpeedloaderLoadRecipe(CraftingBookCategory category)
 	{
-		super(CraftingBookCategory.MISC);
+		super(category);
 	}
 
 	@Override

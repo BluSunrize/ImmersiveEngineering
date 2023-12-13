@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/hammer"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

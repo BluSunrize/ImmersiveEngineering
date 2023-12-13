@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/wirecoil_copper_ins"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

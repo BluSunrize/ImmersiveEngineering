@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/gunpowder_barrel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/jerrycan"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

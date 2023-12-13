@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
-import static blusunrize.immersiveengineering.data.Recipes.getTagCondition;
+import static blusunrize.immersiveengineering.data.recipes.IERecipeProvider.getTagCondition;
 
 /**
  * An Enum of vanilla, IE and other common metals, along with alloys. Used for generating ArcFurnace & Crusher recipes

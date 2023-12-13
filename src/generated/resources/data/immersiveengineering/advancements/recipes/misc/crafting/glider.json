@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/glider"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -12,8 +12,8 @@
       "item": "immersiveengineering:hemp_fiber"
     },
     {
-      "count": 2,
-      "item": "immersiveengineering:seed"
+      "Count": 2,
+      "id": "immersiveengineering:seed"
     }
   ],
   "soil": {

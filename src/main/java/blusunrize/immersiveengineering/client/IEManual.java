@@ -43,6 +43,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.VersionChecker;
@@ -187,7 +188,7 @@ public class IEManual
 			if(mineral.dimensions!=null&&!mineral.dimensions.isEmpty())
 			{
 				StringBuilder validDims = new StringBuilder();
-				for(ResourceKey<Level> dim : mineral.dimensions)
+				for(ResourceKey<DimensionType> dim : mineral.dimensions)
 					validDims.append((!validDims.isEmpty())?", ": "")
 							.append("<dim;")
 							.append(dim.location())

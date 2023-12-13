@@ -25,9 +25,7 @@
   ],
   "result": {
     "item": "immersiveengineering:blueprint",
-    "nbt": {
-      "blueprint": "components"
-    }
+    "nbt": "{blueprint:\"components\"}"
   },
-  "show_notification": true
+  "show_notification": false
 }

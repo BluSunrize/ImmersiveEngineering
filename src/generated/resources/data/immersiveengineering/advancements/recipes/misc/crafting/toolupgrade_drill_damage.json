@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_drill_damage"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

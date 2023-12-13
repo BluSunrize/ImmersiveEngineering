@@ -52,6 +52,5 @@
     "recipes": [
       "immersiveengineering:crafting/radiator"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -1,7 +1,5 @@
 {
-  "type": "immersiveengineering:arc_furnace",
-  "additives": [],
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -17,6 +15,8 @@
       }
     }
   ],
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [],
   "energy": 230400,
   "input": {
     "tag": "forge:storage_blocks/raw_osmium"
@@ -32,6 +32,7 @@
   "secondaries": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:ingots/osmium"
       }

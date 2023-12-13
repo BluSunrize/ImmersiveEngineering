@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:smelting/hempcrete_brick_cracked"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -7,12 +7,10 @@
   "result": {
     "item": "immersiveengineering:treated_wood_packaged"
   },
-  "secondaries": [
+  "secondaryOutputs": [],
+  "strippingSecondaries": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ]
 }

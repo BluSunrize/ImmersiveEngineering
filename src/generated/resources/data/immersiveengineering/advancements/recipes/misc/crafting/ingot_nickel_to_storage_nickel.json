@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/ingot_nickel_to_storage_nickel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

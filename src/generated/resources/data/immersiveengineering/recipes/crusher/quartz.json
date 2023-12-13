@@ -5,8 +5,9 @@
     "tag": "forge:storage_blocks/quartz"
   },
   "result": {
-    "count": 4,
-    "item": "minecraft:quartz"
-  },
-  "secondaries": []
+    "basePredicate": {
+      "item": "minecraft:quartz"
+    },
+    "count": 4
+  }
 }

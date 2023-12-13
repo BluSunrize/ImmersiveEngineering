@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/sword_steel"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -7,18 +7,21 @@
   "ores": [
     {
       "chance": 0.4,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/lead"
       }
     },
     {
       "chance": 0.4,
+      "conditions": [],
       "output": {
         "tag": "forge:dusts/sulfur"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/silver"
       }
@@ -26,21 +29,24 @@
   ],
   "spoils": [
     {
+      "chance": 0.4,
+      "conditions": [],
+      "output": {
+        "tag": "forge:ores/lead"
+      }
+    },
+    {
+      "chance": 0.4,
+      "conditions": [],
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      }
+    },
+    {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
-      }
-    },
-    {
-      "chance": 0.5,
-      "output": {
-        "item": "minecraft:cobblestone"
-      }
-    },
-    {
-      "chance": 0.3,
-      "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:ores/silver"
       }
     }
   ],

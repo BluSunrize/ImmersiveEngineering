@@ -6,7 +6,7 @@
   },
   "mold": "immersiveengineering:mold_unpacking",
   "result": {
-    "count": 9,
-    "item": "minecraft:melon_slice"
+    "Count": 9,
+    "id": "minecraft:melon_slice"
   }
 }

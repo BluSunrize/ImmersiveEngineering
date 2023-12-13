@@ -17,6 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
+import java.util.Arrays;
 import java.util.List;
 
 public record StackWithChance(TagOutput stack, float chance, List<ICondition> conditions)
@@ -37,6 +38,11 @@ public record StackWithChance(TagOutput stack, float chance, List<ICondition> co
 	public StackWithChance(ItemStack stack, float chance)
 	{
 		this(new TagOutput(stack), chance, List.of());
+	}
+
+	public StackWithChance(TagOutput stack, float chance, ICondition... conditions)
+	{
+		this(stack, chance, Arrays.asList(conditions));
 	}
 
 	public CompoundTag writeToNBT()

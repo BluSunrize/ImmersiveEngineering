@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/storage_uranium_to_ingot_uranium"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

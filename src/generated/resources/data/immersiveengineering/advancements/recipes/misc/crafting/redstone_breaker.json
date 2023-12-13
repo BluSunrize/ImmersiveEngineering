@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/redstone_breaker"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

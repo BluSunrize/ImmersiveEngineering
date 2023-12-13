@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:smelting/ingot_nickel3"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

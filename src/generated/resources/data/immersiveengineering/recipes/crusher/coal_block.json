@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:crusher",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -9,6 +8,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:crusher",
   "energy": 4800,
   "input": {
     "item": "minecraft:coal_block"
@@ -18,6 +18,5 @@
       "tag": "forge:dusts/coal"
     },
     "count": 9
-  },
-  "secondaries": []
+  }
 }

@@ -27,9 +27,9 @@ import javax.annotation.Nonnull;
 
 public class ShaderBagRecipe extends CustomRecipe
 {
-	public ShaderBagRecipe()
+	public ShaderBagRecipe(CraftingBookCategory category)
 	{
-		super(CraftingBookCategory.MISC);
+		super(category);
 	}
 
 	@Override

@@ -5,8 +5,9 @@
     "item": "minecraft:prismarine_bricks"
   },
   "result": {
-    "count": 9,
-    "item": "minecraft:prismarine_shard"
-  },
-  "secondaries": []
+    "basePredicate": {
+      "item": "minecraft:prismarine_shard"
+    },
+    "count": 9
+  }
 }

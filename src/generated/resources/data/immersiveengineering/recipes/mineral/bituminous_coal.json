@@ -7,12 +7,14 @@
   "ores": [
     {
       "chance": 0.8,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/coal"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
         "tag": "forge:dusts/sulfur"
       }
@@ -35,21 +37,32 @@
   ],
   "spoils": [
     {
+      "chance": 0.8,
+      "conditions": [],
+      "output": {
+        "tag": "forge:ores/coal"
+      }
+    },
+    {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "tag": "forge:dusts/sulfur"
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.2,
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:dusts/phosphorus"
+          }
+        }
+      ],
       "output": {
-        "item": "minecraft:cobblestone"
-      }
-    },
-    {
-      "chance": 0.3,
-      "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:dusts/phosphorus"
       }
     }
   ],

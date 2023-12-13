@@ -22,7 +22,7 @@
     }
   ],
   "result": {
-    "count": 4,
-    "item": "immersiveengineering:buckshot"
+    "Count": 4,
+    "id": "immersiveengineering:buckshot"
   }
 }

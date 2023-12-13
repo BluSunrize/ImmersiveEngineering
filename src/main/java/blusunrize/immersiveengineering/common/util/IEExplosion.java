@@ -110,7 +110,7 @@ public class IEExplosion extends Explosion
 					if(damagesTerrain==Explosion.BlockInteraction.DESTROY)
 						lootCtx.withParameter(LootContextParams.EXPLOSION_RADIUS, this.size);
 					state.getDrops(lootCtx).forEach((stack) -> {
-						ExplosionAccess.callAddBlockDrops(objectarraylist, stack, pos);
+						ExplosionAccess.callAddOrAppendStack(objectarraylist, stack, pos);
 					});
 					state.onBlockExploded(world, pos, this);
 				}

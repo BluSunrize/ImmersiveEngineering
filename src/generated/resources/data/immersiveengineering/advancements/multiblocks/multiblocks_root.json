@@ -19,8 +19,6 @@
     "description": {
       "translate": "advancement.immersiveengineering.multiblocks_root.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:steel_scaffolding_standard"
     },
@@ -33,6 +31,5 @@
     [
       "has_item"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

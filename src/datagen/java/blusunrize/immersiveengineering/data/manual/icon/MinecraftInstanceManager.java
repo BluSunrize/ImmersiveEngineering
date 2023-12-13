@@ -105,7 +105,7 @@ public class MinecraftInstanceManager
 
 	private void initializeTimer()
 	{
-		setMCField("timer", new Timer(20, 0));
+		setMCField("timer", new Timer(20, 0, i -> i));
 	}
 
 	private void initializeRenderSystem()
@@ -187,7 +187,7 @@ public class MinecraftInstanceManager
 				// Again null isn't ideal, but seems to work for the time being
 				new ItemInHandRenderer(Minecraft.getInstance(), null, Minecraft.getInstance().getItemRenderer()),
 				resourceManager,
-				new RenderBuffers()
+				new RenderBuffers(1)
 		);
 		setMCField("gameRenderer", gameRenderer);
 	}

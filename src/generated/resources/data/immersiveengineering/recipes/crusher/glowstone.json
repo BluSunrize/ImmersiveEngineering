@@ -5,8 +5,9 @@
     "item": "minecraft:glowstone"
   },
   "result": {
-    "count": 4,
-    "item": "minecraft:glowstone_dust"
-  },
-  "secondaries": []
+    "basePredicate": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "count": 4
+  }
 }

@@ -5,15 +5,15 @@
     "item": "minecraft:jungle_planks"
   },
   "result": {
-    "count": 2,
-    "item": "minecraft:jungle_slab"
+    "basePredicate": {
+      "item": "minecraft:jungle_slab"
+    },
+    "count": 2
   },
-  "secondaries": [
+  "secondaryOutputs": [],
+  "strippingSecondaries": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ]
 }

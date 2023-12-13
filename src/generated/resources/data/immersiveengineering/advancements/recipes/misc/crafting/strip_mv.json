@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/strip_mv"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

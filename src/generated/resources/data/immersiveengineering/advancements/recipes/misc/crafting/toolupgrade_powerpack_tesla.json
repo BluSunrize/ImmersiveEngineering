@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/toolupgrade_powerpack_tesla"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

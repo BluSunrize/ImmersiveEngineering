@@ -1,35 +1,36 @@
 {
-  "type": "immersiveengineering:revolver_assembly",
-  "category": "misc",
-  "copy_nbt": [
-    1,
-    4,
-    6
-  ],
-  "key": {
-    "b": {
-      "item": "immersiveengineering:gunpart_barrel"
+  "type": "immersiveengineering:turn_and_copy",
+  "value": {
+    "category": "misc",
+    "copyNBT": [
+      1,
+      4,
+      6
+    ],
+    "key": {
+      "b": {
+        "item": "immersiveengineering:gunpart_barrel"
+      },
+      "c": {
+        "item": "immersiveengineering:component_steel"
+      },
+      "d": {
+        "item": "immersiveengineering:gunpart_drum"
+      },
+      "g": {
+        "item": "immersiveengineering:wooden_grip"
+      },
+      "h": {
+        "item": "immersiveengineering:gunpart_hammer"
+      }
     },
-    "c": {
-      "item": "immersiveengineering:component_steel"
-    },
-    "d": {
-      "item": "immersiveengineering:gunpart_drum"
-    },
-    "g": {
-      "item": "immersiveengineering:wooden_grip"
-    },
-    "h": {
-      "item": "immersiveengineering:gunpart_hammer"
+    "pattern": [
+      " hg",
+      " dc",
+      "b  "
+    ],
+    "result": {
+      "item": "immersiveengineering:revolver"
     }
-  },
-  "pattern": [
-    " hg",
-    " dc",
-    "b  "
-  ],
-  "result": {
-    "item": "immersiveengineering:revolver"
-  },
-  "show_notification": true
+  }
 }

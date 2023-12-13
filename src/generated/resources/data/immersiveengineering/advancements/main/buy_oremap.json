@@ -14,16 +14,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.buy_oremap.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "minecraft:filled_map"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.buy_oremap"
     }
@@ -32,6 +28,5 @@
     [
       "buy_oremap"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

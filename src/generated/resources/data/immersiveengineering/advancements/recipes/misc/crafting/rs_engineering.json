@@ -52,6 +52,5 @@
     "recipes": [
       "immersiveengineering:crafting/rs_engineering"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

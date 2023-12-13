@@ -67,6 +67,5 @@
     "recipes": [
       "immersiveengineering:crafting/powerpack"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

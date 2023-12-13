@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:smelting/nugget_steel_recycle_sword"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

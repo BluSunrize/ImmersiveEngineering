@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
@@ -35,11 +36,11 @@ public class MineralMix extends IESerializableRecipe
 	public final List<StackWithChance> spoils;
 	public final int weight;
 	public final float failChance;
-	public final ImmutableSet<ResourceKey<Level>> dimensions;
+	public final ImmutableSet<ResourceKey<DimensionType>> dimensions;
 	public final Block background;
 
 	public MineralMix(List<StackWithChance> outputs, List<StackWithChance> spoils, int weight,
-					  float failChance, List<ResourceKey<Level>> dimensions, Block background)
+					  float failChance, List<ResourceKey<DimensionType>> dimensions, Block background)
 	{
 		super(TagOutput.EMPTY, IERecipeTypes.MINERAL_MIX);
 		this.weight = weight;
@@ -99,7 +100,7 @@ public class MineralMix extends IESerializableRecipe
 		return ItemStack.EMPTY;
 	}
 
-	public boolean validDimension(ResourceKey<Level> dim)
+	public boolean validDimension(ResourceKey<DimensionType> dim)
 	{
 		if(dimensions!=null&&!dimensions.isEmpty())
 			return dimensions.contains(dim);

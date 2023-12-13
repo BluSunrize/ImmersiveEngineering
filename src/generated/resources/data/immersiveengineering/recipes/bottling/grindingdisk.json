@@ -23,8 +23,7 @@
   ],
   "results": [
     {
-      "item": "immersiveengineering:grindingdisk",
-      "nbt": "{Damage:0}"
+      "item": "immersiveengineering:grindingdisk"
     },
     {
       "item": "immersiveengineering:mold_gear"

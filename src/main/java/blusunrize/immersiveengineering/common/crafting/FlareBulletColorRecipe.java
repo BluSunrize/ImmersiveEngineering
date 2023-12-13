@@ -27,9 +27,9 @@ import javax.annotation.Nonnull;
 
 public class FlareBulletColorRecipe extends CustomRecipe
 {
-	public FlareBulletColorRecipe()
+	public FlareBulletColorRecipe(CraftingBookCategory category)
 	{
-		super(CraftingBookCategory.MISC);
+		super(category);
 	}
 
 	@Override

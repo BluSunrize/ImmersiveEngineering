@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/skyhook"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

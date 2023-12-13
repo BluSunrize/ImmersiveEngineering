@@ -22,8 +22,10 @@
     }
   ],
   "result": {
-    "count": 4,
-    "item": "immersiveengineering:flare",
-    "nbt": "{flareColour:2925323}"
+    "Count": 4,
+    "id": "immersiveengineering:flare",
+    "tag": {
+      "flareColour": 2925323
+    }
   }
 }

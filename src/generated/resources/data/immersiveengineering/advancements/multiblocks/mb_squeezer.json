@@ -3,7 +3,7 @@
   "criteria": {
     "form_multiblock": {
       "conditions": {
-        "item": {
+        "hammer": {
           "items": [
             "immersiveengineering:hammer"
           ]
@@ -14,16 +14,12 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.mb_squeezer.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:squeezer"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.mb_squeezer"
     }
@@ -32,6 +28,5 @@
     [
       "form_multiblock"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

@@ -15,16 +15,13 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.craft_batcher.desc"
     },
     "frame": "goal",
-    "hidden": false,
     "icon": {
       "item": "immersiveengineering:item_batcher"
     },
-    "show_toast": true,
     "title": {
       "translate": "advancement.immersiveengineering.craft_batcher"
     }
@@ -33,6 +30,5 @@
     [
       "has_item"
     ]
-  ],
-  "sends_telemetry_event": false
+  ]
 }

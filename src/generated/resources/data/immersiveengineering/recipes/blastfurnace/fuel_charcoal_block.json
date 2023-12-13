@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:blast_furnace_fuel",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -9,6 +8,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:blast_furnace_fuel",
   "input": {
     "tag": "forge:storage_blocks/charcoal"
   },

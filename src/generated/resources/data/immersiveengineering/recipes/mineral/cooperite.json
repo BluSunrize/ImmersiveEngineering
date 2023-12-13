@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:mineral_mix",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -9,6 +8,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:mineral_mix",
   "dimensions": [
     "minecraft:overworld"
   ],
@@ -16,6 +16,7 @@
   "ores": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/platinum"
       }
@@ -37,6 +38,7 @@
     },
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/nickel"
       }
@@ -44,21 +46,32 @@
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "tag": "forge:ores/platinum"
       }
     },
     {
       "chance": 0.5,
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:ores/paladium"
+          }
+        }
+      ],
       "output": {
-        "item": "minecraft:cobblestone"
+        "tag": "forge:ores/paladium"
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:ores/nickel"
       }
     }
   ],

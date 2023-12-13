@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:smelting/nugget_steel_recycle_steel_boots_from_blasting"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

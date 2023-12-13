@@ -10,13 +10,13 @@
 package blusunrize.immersiveengineering.data.resources;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.data.Recipes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
+import static blusunrize.immersiveengineering.data.recipes.IERecipeProvider.getTagCondition;
 
 public class SecondaryOutput
 {
@@ -34,7 +34,7 @@ public class SecondaryOutput
 	public SecondaryOutput(TagKey<Item> tag, float chance)
 	{
 		this(new IngredientWithSize(tag), chance);
-		this.conditions = new ICondition[]{Recipes.getTagCondition(tag)};
+		this.conditions = new ICondition[]{getTagCondition(tag)};
 	}
 
 	public SecondaryOutput(ResourceLocation tag, float chance)

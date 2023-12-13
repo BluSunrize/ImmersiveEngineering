@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:crusher",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -16,6 +15,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
     "tag": "forge:storage_blocks/raw_tungsten"
@@ -25,6 +25,5 @@
       "tag": "forge:dusts/tungsten"
     },
     "count": 12
-  },
-  "secondaries": []
+  }
 }

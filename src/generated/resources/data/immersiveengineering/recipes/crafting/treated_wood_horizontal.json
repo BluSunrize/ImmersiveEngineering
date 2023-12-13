@@ -1,23 +1,25 @@
 {
   "type": "immersiveengineering:shaped_fluid",
-  "category": "misc",
-  "key": {
-    "b": {
-      "amount": 1000,
-      "tag": "forge:creosote"
+  "value": {
+    "category": "misc",
+    "key": {
+      "b": {
+        "type": "immersiveengineering:fluid_stack",
+        "amount": 1000,
+        "tag": "forge:creosote"
+      },
+      "w": {
+        "tag": "minecraft:planks"
+      }
     },
-    "w": {
-      "tag": "minecraft:planks"
+    "pattern": [
+      "www",
+      "wbw",
+      "www"
+    ],
+    "result": {
+      "count": 8,
+      "item": "immersiveengineering:treated_wood_horizontal"
     }
-  },
-  "pattern": [
-    "www",
-    "wbw",
-    "www"
-  ],
-  "result": {
-    "count": 8,
-    "item": "immersiveengineering:treated_wood_horizontal"
-  },
-  "show_notification": true
+  }
 }

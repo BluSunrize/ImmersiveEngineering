@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_constantan_from_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

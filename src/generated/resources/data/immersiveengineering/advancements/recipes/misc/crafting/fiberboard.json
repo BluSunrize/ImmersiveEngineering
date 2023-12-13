@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:crafting/fiberboard"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

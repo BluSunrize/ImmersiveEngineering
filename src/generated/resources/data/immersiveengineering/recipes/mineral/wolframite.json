@@ -1,6 +1,5 @@
 {
-  "type": "immersiveengineering:mineral_mix",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:not",
       "value": {
@@ -9,6 +8,7 @@
       }
     }
   ],
+  "type": "immersiveengineering:mineral_mix",
   "dimensions": [
     "minecraft:overworld"
   ],
@@ -16,12 +16,14 @@
   "ores": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/tungsten"
       }
     },
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
         "tag": "forge:ores/iron"
       }
@@ -44,21 +46,32 @@
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "tag": "forge:ores/tungsten"
       }
     },
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobblestone"
+        "tag": "forge:ores/iron"
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.5,
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:ores/manganese"
+          }
+        }
+      ],
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "tag": "forge:ores/manganese"
       }
     }
   ],

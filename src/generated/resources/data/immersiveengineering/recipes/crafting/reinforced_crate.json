@@ -1,29 +1,32 @@
 {
   "type": "immersiveengineering:turn_and_copy",
-  "category": "misc",
-  "copy_nbt": 4,
-  "key": {
-    "c": {
-      "item": "immersiveengineering:crate"
+  "value": {
+    "category": "misc",
+    "copyNBT": [
+      4
+    ],
+    "key": {
+      "c": {
+        "item": "immersiveengineering:crate"
+      },
+      "p": {
+        "tag": "forge:plates/iron"
+      },
+      "r": {
+        "tag": "forge:rods/iron"
+      },
+      "w": {
+        "tag": "forge:treated_wood"
+      }
     },
-    "p": {
-      "tag": "forge:plates/iron"
-    },
-    "r": {
-      "tag": "forge:rods/iron"
-    },
-    "w": {
-      "tag": "forge:treated_wood"
+    "pattern": [
+      "wpw",
+      "rcr",
+      "wpw"
+    ],
+    "quarter_turn": true,
+    "result": {
+      "item": "immersiveengineering:reinforced_crate"
     }
-  },
-  "pattern": [
-    "wpw",
-    "rcr",
-    "wpw"
-  ],
-  "quarter_turn": true,
-  "result": {
-    "item": "immersiveengineering:reinforced_crate"
-  },
-  "show_notification": true
+  }
 }

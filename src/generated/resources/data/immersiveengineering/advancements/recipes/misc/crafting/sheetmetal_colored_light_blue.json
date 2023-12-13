@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/sheetmetal_colored_light_blue"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

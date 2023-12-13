@@ -28,6 +28,5 @@
     "recipes": [
       "immersiveengineering:crafting/armor_steel_helmet"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

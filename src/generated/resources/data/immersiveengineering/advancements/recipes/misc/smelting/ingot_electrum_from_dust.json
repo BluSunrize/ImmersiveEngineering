@@ -30,6 +30,5 @@
     "recipes": [
       "immersiveengineering:smelting/ingot_electrum_from_dust"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
