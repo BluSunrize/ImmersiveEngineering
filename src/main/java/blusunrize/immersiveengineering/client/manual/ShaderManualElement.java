@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual;
@@ -87,11 +88,12 @@ public class ShaderManualElement extends SpecialManualElements
 			for(ItemStack is : ShaderRegistry.itemExamples)
 			{
 				ItemStack s = is.copy();
-				s.getCapability(CapabilityShader.SHADER_CAPABILITY)
-						.ifPresent(wrapper -> {
-							wrapper.setShaderItem(shaderItem);
-							list.add(s);
-						});
+				ShaderWrapper wrapper = s.getCapability(CapabilityShader.ITEM);
+				if(wrapper!=null)
+				{
+					wrapper.setShaderItem(shaderItem);
+					list.add(s);
+				}
 			}
 			exampleItems = list.toArray(new ItemStack[0]);
 			example = 0;

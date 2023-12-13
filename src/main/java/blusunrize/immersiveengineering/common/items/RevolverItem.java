@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -18,7 +19,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
@@ -32,24 +32,20 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -103,8 +99,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
-		// TODO shaders
-		// new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "revolver"), stack));
+		registrar.register(CapabilityShader.ITEM, stack -> new ShaderWrapper_Item(IEApi.ieLoc("revolver"), stack));
 		InternalStorageItem.registerCapabilitiesISI(registrar);
 	}
 
@@ -571,14 +566,14 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		if(slotChanged)
 			return true;
 
-		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
-			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
-					.orElse(true);
-		});
-		if(!sameShader.orElse(true))
+		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
+		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
+		if(wrapperOld==null&&wrapperNew!=null)
 			return true;
+		else if(wrapperOld!=null&&wrapperNew==null)
+			return true;
+		else if(wrapperOld!=null)
+			return ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
 		if(ItemNBTHelper.hasKey(oldStack, "elite")||ItemNBTHelper.hasKey(newStack, "elite"))
 			return !ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite"));
 

@@ -10,21 +10,15 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class ShaderBannerBlockEntity extends IEBaseBlockEntity
 {
@@ -40,15 +34,14 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity
 	{
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
 		{
-			shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
-			shader.deserializeNBT(nbt.getCompound("shader"));
+			shader = ShaderWrapper_Direct.SERIALIZER.read(nbt.getCompound("shader"));
 		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		nbt.put("shader", shader.serializeNBT());
+		nbt.put("shader", ShaderWrapper_Direct.SERIALIZER.write(shader));
 	}
 
 	@Override
@@ -62,14 +55,8 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity
 		return super.triggerEvent(id, arg);
 	}
 
-	private final ResettableCapability<ShaderWrapper> shaderCap = registerCapability(shader);
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<ShaderBannerBlockEntity> registrar)
 	{
-		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return shaderCap.cast();
-		return super.getCapability(capability, facing);
+		registrar.registerAllContexts(CapabilityShader.BLOCK, be -> be.shader);
 	}
 }

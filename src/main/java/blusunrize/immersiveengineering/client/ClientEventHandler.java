@@ -45,7 +45,6 @@ import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
@@ -205,7 +204,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	{
 		if(event.getItemStack().isEmpty())
 			return;
-		event.getItemStack().getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
+		var wrapper = event.getItemStack().getCapability(CapabilityShader.ITEM);
+		if(wrapper!=null)
 		{
 			ItemStack shader = wrapper.getShaderItem();
 			if(!shader.isEmpty())
@@ -213,7 +213,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						shader.getHoverName(),
 						ChatFormatting.DARK_GRAY
 				));
-		});
+		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Earmuffs))
 		{
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
@@ -840,7 +840,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
 		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart&&
-				event.getEntity().getCapability(CapabilityShader.SHADER_CAPABILITY).isPresent())
+				event.getEntity().getCapability(CapabilityShader.ENTITY)!=null)
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity()));
 	}
 }

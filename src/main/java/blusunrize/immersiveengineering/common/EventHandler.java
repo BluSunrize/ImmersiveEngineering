@@ -15,12 +15,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.Lib.DamageTypes;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
@@ -53,7 +50,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -67,13 +63,13 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags.EntityTypes;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
@@ -111,11 +107,13 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttachEntity(AttachCapabilitiesEvent<Entity> event)
+	public void onCapabilitiesAttachEntity(RegisterCapabilitiesEvent event)
 	{
-		if(event.getObject() instanceof AbstractMinecart)
-			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
-					new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
+		// TODO how to do this with only entity types available? Creating entities from those is not easy without a
+		//  level
+		//if(event.getObject() instanceof AbstractMinecart)
+		//	event.addCapability(new ResourceLocation("immersiveengineering:shader"),
+		//			new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
 	}
 
 	@SubscribeEvent
@@ -126,7 +124,7 @@ public class EventHandler
 			return;
 		if(stack.getItem() instanceof IShaderItem)
 		{
-			final ShaderWrapper wrapper = CapabilityUtils.getCapability(cart, CapabilityShader.SHADER_CAPABILITY);
+			final ShaderWrapper wrapper = cart.getCapability(CapabilityShader.ENTITY);
 			if(wrapper!=null&&!event.getLevel().isClientSide)
 			{
 				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));

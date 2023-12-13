@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
@@ -65,7 +64,7 @@ public class MessageMinecartShaderSync implements IMessage
 				Entity entity = world.getEntity(entityID);
 				if(entity==null)
 					return;
-				ShaderWrapper cap = CapabilityUtils.getCapability(entity, CapabilityShader.SHADER_CAPABILITY);
+				ShaderWrapper cap = entity.getCapability(CapabilityShader.ENTITY);
 				if(cap!=null)
 					ImmersiveEngineering.packetHandler.send(
 							PacketDistributor.DIMENSION.with(world::dimension),

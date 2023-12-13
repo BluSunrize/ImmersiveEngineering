@@ -96,7 +96,7 @@ public class MessageShaderManual implements IMessage
 					if(entityitem!=null)
 					{
 						entityitem.setNoPickUpDelay();
-						entityitem.setThrower(player.getUUID());
+						entityitem.setThrower(player);
 					}
 				}
 			});

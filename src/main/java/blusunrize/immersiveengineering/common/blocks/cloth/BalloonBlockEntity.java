@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
@@ -49,7 +50,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 	public int style = 0;
 	public DyeColor colour0 = null;
 	public DyeColor colour1 = null;
-	private final ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
+	private ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
 
 	public BalloonBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -71,7 +72,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		if(oldStyle!=style||oldC0!=colour0||oldC1!=colour1)
 			requestModelDataUpdate();
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
-			shader.deserializeNBT(nbt.getCompound("shader"));
+			shader = ShaderWrapper_Direct.SERIALIZER.read(nbt.getCompound("shader"));
 		markContainingBlockForUpdate(null);
 	}
 
@@ -82,7 +83,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		nbt.putInt("style", style);
 		nbt.putInt("colour0", colour0!=null?colour0.getId(): -1);
 		nbt.putInt("colour1", colour1!=null?colour1.getId(): -1);
-		nbt.put("shader", shader.serializeNBT());
+		nbt.put("shader", ShaderWrapper_Direct.SERIALIZER.write(shader));
 	}
 
 	@Nonnull
@@ -103,15 +104,9 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		return super.triggerEvent(id, arg);
 	}
 
-	private final ResettableCapability<ShaderWrapper> shaderCap = registerCapability(shader);
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
+	public static void registerCapabilities(BECapabilityRegistrar<BalloonBlockEntity> registrar)
 	{
-		if(capability==CapabilityShader.SHADER_CAPABILITY)
-			return shaderCap.cast();
-		return super.getCapability(capability, facing);
+		registrar.registerAllContexts(CapabilityShader.BLOCK, be -> be.shader);
 	}
 
 	@Override

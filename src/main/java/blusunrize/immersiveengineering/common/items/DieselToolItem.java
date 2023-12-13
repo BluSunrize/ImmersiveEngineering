@@ -15,19 +15,15 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -54,7 +50,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem
@@ -75,8 +70,10 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	public static void registerCapabilities(ItemCapabilityRegistration.ItemCapabilityRegistrar registrar)
 	{
 		registrar.register(FluidHandler.ITEM, (stack, $) -> new IEItemFluidHandler(stack, CAPACITY));
-		// TODO shader
-		// new ShaderWrapper_Item(BuiltInRegistries.ITEM.getKey(DieselToolItem.this), stack)
+		registrar.register(
+				CapabilityShader.ITEM,
+				stack -> new ShaderWrapper_Item(BuiltInRegistries.ITEM.getKey(stack.getItem()), stack)
+		);
 	}
 
 	@Override
@@ -171,15 +168,16 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	{
 		if(slotChanged)
 			return true;
-		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
-			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
-					.orElse(true);
-		});
-		if(!sameShader.orElse(true))
+		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
+		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
+		if(wrapperOld==null&&wrapperNew!=null)
 			return true;
-		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+		else if(wrapperOld!=null&&wrapperNew==null)
+			return true;
+		else if(wrapperOld!=null)
+			return ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
+		else
+			return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
 	private final Map<UUID, Integer> animationTimer = new HashMap<>();

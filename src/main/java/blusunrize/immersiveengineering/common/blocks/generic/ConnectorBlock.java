@@ -20,8 +20,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,7 +32,6 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.core.Holder;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -76,7 +75,7 @@ public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectab
 	}
 
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult targetIn, BlockGetter world, BlockPos pos, Player player)
+	public ItemStack getCloneItemStack(BlockState state, HitResult targetIn, LevelReader world, BlockPos pos, Player player)
 	{
 		//Select the wire if the player is sneaking
 		//TODO alternative to world instaceof World

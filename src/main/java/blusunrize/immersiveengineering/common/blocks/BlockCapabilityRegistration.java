@@ -11,8 +11,9 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.blocks.cloth.BalloonBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.VanillaFurnaceHeater;
@@ -35,6 +36,10 @@ public class BlockCapabilityRegistration
 	@SubscribeEvent
 	public static void registerBlockCapabilities(RegisterCapabilitiesEvent event)
 	{
+		// Cloth
+		BalloonBlockEntity.registerCapabilities(forType(event, IEBlockEntities.BALLOON));
+		ShaderBannerBlockEntity.registerCapabilities(forType(event, IEBlockEntities.SHADER_BANNER));
+
 		// Metal
 		BlastFurnacePreheaterBlockEntity.registerCapabilities(forType(event, IEBlockEntities.BLASTFURNACE_PREHEATER));
 		CapacitorBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CAPACITOR_LV));

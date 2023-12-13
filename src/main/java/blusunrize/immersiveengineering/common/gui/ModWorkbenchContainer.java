@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
@@ -88,13 +89,14 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 					ownSlotCount++;
 				}
 
-			tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null).ifPresent(wrapper ->
+			ShaderWrapper wrapper = tool.getCapability(CapabilityShader.ITEM);
+			if(wrapper!=null)
 			{
 				this.shaderInv = new ShaderInventory(this, wrapper);
 				this.addSlot(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
 				ownSlotCount++;
 				this.shaderInv.shader = wrapper.getShaderItem();
-			});
+			}
 		}
 		else if(!(tool.getItem() instanceof IConfigurableTool))
 		{

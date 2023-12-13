@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
@@ -30,10 +29,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -61,7 +57,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -123,15 +118,16 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		if(slotChanged)
 			return true;
-		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
-			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
-					.orElse(true);
-		});
-		if(!sameShader.orElse(true))
+		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
+		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
+		if(wrapperOld==null&&wrapperNew!=null)
 			return true;
-		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+		else if(wrapperOld!=null&&wrapperNew==null)
+			return true;
+		else if(wrapperOld!=null)
+			return ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
+		else
+			return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
 	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
@@ -140,8 +136,10 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 				EnergyStorage.ITEM,
 				stack -> new EnergyHelper.ItemEnergyStorage(stack, RailgunItem::getMaxEnergyStored)
 		);
-		// TODO shader
-		//new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "railgun"), stack)
+		registrar.register(
+				CapabilityShader.ITEM,
+				stack -> new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "railgun"), stack)
+		);
 	}
 
 	@Override

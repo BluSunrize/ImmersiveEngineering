@@ -8,16 +8,11 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -25,12 +20,8 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
@@ -59,7 +50,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -81,10 +71,12 @@ public class IEShieldItem extends UpgradeableToolItem
 	{
 		registrar.register(
 				EnergyStorage.ITEM,
-				(stack, $) -> new EnergyHelper.ItemEnergyStorage(stack, IEShieldItem::getMaxEnergyStored)
+				stack -> new EnergyHelper.ItemEnergyStorage(stack, IEShieldItem::getMaxEnergyStored)
 		);
-		// TODO shader
-		// new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "shield"), stack)
+		registrar.register(
+				CapabilityShader.ITEM,
+				stack -> new ShaderWrapper_Item(IEApi.ieLoc("shield"), stack)
+		);
 	}
 
 	@Override
@@ -92,15 +84,16 @@ public class IEShieldItem extends UpgradeableToolItem
 	{
 		if(slotChanged)
 			return true;
-		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
-			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
-					.orElse(true);
-		});
-		if(!sameShader.orElse(true))
+		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
+		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
+		if(wrapperOld==null&&wrapperNew!=null)
 			return true;
-		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+		else if(wrapperOld!=null&&wrapperNew==null)
+			return true;
+		else if(wrapperOld!=null)
+			return ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
+		else
+			return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
 	@Override

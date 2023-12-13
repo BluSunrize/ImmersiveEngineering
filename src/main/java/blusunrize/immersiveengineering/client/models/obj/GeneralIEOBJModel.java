@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.ModelKey;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
 import com.google.common.cache.Cache;
@@ -160,9 +159,11 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 		T key = blockCB.extractKey(level, pos, state, blockEntity);
 		ModelData.Builder modelData = tileData.derive();
 		modelData.with(keyProperty, key);
-		if(blockEntity!=null)
+		if(blockEntity!=null&&blockEntity.getLevel()!=null)
 		{
-			ShaderWrapper shaderCap = CapabilityUtils.getCapability(blockEntity, CapabilityShader.SHADER_CAPABILITY);
+			ShaderWrapper shaderCap = blockEntity.getLevel().getCapability(
+					CapabilityShader.BLOCK, blockEntity.getBlockPos(), null
+			);
 			if(shaderCap!=null)
 				modelData.with(CapabilityShader.MODEL_PROPERTY, shaderCap.getCase());
 		}
@@ -282,9 +283,8 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 		{
 			GlobalTempData.setActiveHolder(holder);
 			T key = callback.extractKey(stack, holder);
-			ShaderCase shader = stack.getCapability(CapabilityShader.SHADER_CAPABILITY).resolve()
-					.map(ShaderWrapper::getCase)
-					.orElse(null);
+			ShaderWrapper wrapper = stack.getCapability(CapabilityShader.ITEM);
+			ShaderCase shader = wrapper==null?null: wrapper.getCase();
 			return modelCache.getUnchecked(new ModelKey<>(key, shader, null));
 		}
 	}

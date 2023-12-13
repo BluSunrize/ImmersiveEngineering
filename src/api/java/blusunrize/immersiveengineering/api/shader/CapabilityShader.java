@@ -13,10 +13,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
@@ -36,31 +38,16 @@ public class CapabilityShader
 			IEApi.ieLoc("shader_entity"), ShaderWrapper.class
 	);
 
-	public abstract static class ShaderWrapper
+	public interface ShaderWrapper
 	{
-		protected ResourceLocation shaderType;
+		ResourceLocation getShaderType();
 
-		public ShaderWrapper(ResourceLocation type)
-		{
-			this.shaderType = type;
-		}
-
-		public void setShaderType(ResourceLocation shaderType)
-		{
-			this.shaderType = shaderType;
-		}
-
-		public ResourceLocation getShaderType()
-		{
-			return shaderType;
-		}
-
-		public abstract void setShaderItem(@Nonnull ItemStack shader);
+		void setShaderItem(@Nonnull ItemStack shader);
 
 		@Nonnull
-		public abstract ItemStack getShaderItem();
+		ItemStack getShaderItem();
 
-		public ShaderCase getCase()
+		default ShaderCase getCase()
 		{
 			ItemStack shaderStack = getShaderItem();
 			if(shaderStack.getItem() instanceof IShaderItem shaderItem)
@@ -70,19 +57,26 @@ public class CapabilityShader
 		}
 	}
 
-	public static class ShaderWrapper_Item extends ShaderWrapper
+	public static class ShaderWrapper_Item implements ShaderWrapper
 	{
 		public static final String SHADER_NBT_KEY = "IE:Shader";
-		protected final ItemStack container;
+		private final ItemStack container;
+		private final ResourceLocation shaderType;
 
 		public ShaderWrapper_Item(ResourceLocation type, ItemStack container)
 		{
-			super(type);
+			this.shaderType = type;
 			this.container = container;
 		}
 
 		@Override
-		public void setShaderItem(ItemStack shader)
+		public ResourceLocation getShaderType()
+		{
+			return shaderType;
+		}
+
+		@Override
+		public void setShaderItem(@NotNull ItemStack shader)
 		{
 			if(!container.hasTag())
 				container.setTag(new CompoundTag());
@@ -108,14 +102,22 @@ public class CapabilityShader
 		}
 	}
 
-	public static class ShaderWrapper_Direct extends ShaderWrapper
+	public static class ShaderWrapper_Direct implements ShaderWrapper
 	{
+		public static final IAttachmentSerializer<CompoundTag, ShaderWrapper_Direct> SERIALIZER = new WrapperSerializer();
+
 		@Nonnull
-		protected ItemStack shader = ItemStack.EMPTY;
+		private ItemStack shader = ItemStack.EMPTY;
+		private final ResourceLocation type;
 
 		public ShaderWrapper_Direct(ResourceLocation type)
 		{
-			super(type);
+			this.type = type;
+		}
+
+		public ResourceLocation getShaderType()
+		{
+			return type;
 		}
 
 		@Override
@@ -129,6 +131,31 @@ public class CapabilityShader
 		public ItemStack getShaderItem()
 		{
 			return this.shader;
+		}
+	}
+
+	public static final class WrapperSerializer implements IAttachmentSerializer<CompoundTag, ShaderWrapper_Direct>
+	{
+		@Override
+		public CompoundTag write(ShaderWrapper_Direct attachment)
+		{
+			CompoundTag nbt = new CompoundTag();
+			ItemStack shader = attachment.getShaderItem();
+			if(!shader.isEmpty())
+				shader.save(nbt);
+			else
+				nbt.putString("IE:NoShader", "");
+			nbt.putString("IE:ShaderType", attachment.getShaderType().toString());
+			return nbt;
+		}
+
+		@Override
+		public ShaderWrapper_Direct read(CompoundTag tag)
+		{
+			ShaderWrapper_Direct wrapper = new ShaderWrapper_Direct(new ResourceLocation(tag.getString("IE:ShaderType")));
+			if(!tag.contains("IE:NoShader"))
+				wrapper.setShaderItem(ItemStack.of(tag));
+			return wrapper;
 		}
 	}
 

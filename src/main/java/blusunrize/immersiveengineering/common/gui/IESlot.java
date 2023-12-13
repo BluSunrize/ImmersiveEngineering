@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
@@ -33,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -337,11 +337,12 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			if(itemStack.isEmpty()||!(itemStack.getItem() instanceof IShaderItem)||tool.isEmpty())
+			if(itemStack.isEmpty()||!(itemStack.getItem() instanceof IShaderItem shaderItem)||tool.isEmpty())
 				return false;
-			return tool.getCapability(CapabilityShader.SHADER_CAPABILITY).map(
-					wrapper -> ((IShaderItem)itemStack.getItem()).getShaderCase(itemStack, wrapper.getShaderType())!=null
-			).orElse(false);
+			ShaderWrapper shaderCap = tool.getCapability(CapabilityShader.ITEM);
+			if(shaderCap==null)
+				return false;
+			return shaderItem.getShaderCase(itemStack, shaderCap.getShaderType())!=null;
 		}
 
 		@Override
