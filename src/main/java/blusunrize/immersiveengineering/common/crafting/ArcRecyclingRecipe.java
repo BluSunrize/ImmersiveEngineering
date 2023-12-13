@@ -29,14 +29,8 @@ import java.util.function.Supplier;
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	private final Supplier<RegistryAccess> tags;
-	private List<Pair<TagOutput, Double>> outputs;
-	private final TagOutputList defaultOutputs = Util.make(() -> {
-		List<TagOutput> ret = new ArrayList<>();
-		for(Pair<TagOutput, Double> e : outputs)
-			// TODO scaling?
-			ret.add(e.getFirst());
-		return new TagOutputList(ret);
-	});
+	private final List<Pair<TagOutput, Double>> outputs;
+	private final TagOutputList defaultOutputs;
 
 	public ArcRecyclingRecipe(Supplier<RegistryAccess> tags, List<Pair<TagOutput, Double>> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
@@ -52,6 +46,13 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		this.tags = tags;
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
+		this.defaultOutputs = Util.make(() -> {
+			List<TagOutput> ret = new ArrayList<>();
+			for(Pair<TagOutput, Double> e : outputs)
+				// TODO scaling?
+				ret.add(e.getFirst());
+			return new TagOutputList(ret);
+		});
 	}
 
 	@Override

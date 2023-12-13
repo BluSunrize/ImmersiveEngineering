@@ -331,6 +331,7 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
+		registerCapabilitiesISI(registrar);
 		registrar.register(EnergyStorage.ITEM, stack -> getCapacitorStatic(stack).getCapability(EnergyStorage.ITEM));
 	}
 

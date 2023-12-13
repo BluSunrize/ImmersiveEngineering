@@ -31,7 +31,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModules;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
@@ -138,8 +137,6 @@ public class ImmersiveEngineering
 
 	public void setup(FMLCommonSetupEvent event)
 	{
-		IEAdvancements.preInit();
-
 		IEApi.prefixToIngotMap.put("ingots", new Integer[]{1, 1});
 		IEApi.prefixToIngotMap.put("nuggets", new Integer[]{1, 9});
 		IEApi.prefixToIngotMap.put("storage_blocks", new Integer[]{9, 1});

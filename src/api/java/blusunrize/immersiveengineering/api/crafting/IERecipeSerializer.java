@@ -85,7 +85,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 			{
 				Codec<IContext> contextCodec = ConditionalOps.retrieveContext().codec();
 				return baseCodec.decode(ops, input).flatMap(
-						listAndData -> contextCodec.decode(ops, input).map(ctxAndData -> {
+						listAndData -> contextCodec.decode(ops, ops.emptyMap()).map(ctxAndData -> {
 							List<StackWithChance> filtered = new ArrayList<>();
 							for(StackWithChance stack : listAndData.getFirst())
 							{

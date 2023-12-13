@@ -132,6 +132,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 
 	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
+		registerCapabilitiesISI(registrar);
 		registrar.register(
 				EnergyStorage.ITEM,
 				stack -> new EnergyHelper.ItemEnergyStorage(stack, RailgunItem::getMaxEnergyStored)

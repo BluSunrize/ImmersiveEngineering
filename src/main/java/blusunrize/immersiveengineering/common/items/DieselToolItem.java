@@ -69,6 +69,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 
 	public static void registerCapabilities(ItemCapabilityRegistration.ItemCapabilityRegistrar registrar)
 	{
+		registerCapabilitiesISI(registrar);
 		registrar.register(FluidHandler.ITEM, (stack, $) -> new IEItemFluidHandler(stack, CAPACITY));
 		registrar.register(
 				CapabilityShader.ITEM,

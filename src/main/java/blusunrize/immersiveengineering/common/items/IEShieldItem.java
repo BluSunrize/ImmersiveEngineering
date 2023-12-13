@@ -69,6 +69,7 @@ public class IEShieldItem extends UpgradeableToolItem
 
 	public static void registerCapabilities(ItemCapabilityRegistration.ItemCapabilityRegistrar registrar)
 	{
+		registerCapabilitiesISI(registrar);
 		registrar.register(
 				EnergyStorage.ITEM,
 				stack -> new EnergyHelper.ItemEnergyStorage(stack, IEShieldItem::getMaxEnergyStored)
