@@ -23,6 +23,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -117,7 +118,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 	public AABB getRenderBoundingBox(TurretBlockEntity<?> turret)
 	{
 		if(turret.renderBB==null)
-			turret.renderBB = new AABB(turret.getBlockPos().offset(-8, -8, -8), turret.getBlockPos().offset(8, 8, 8));
+			turret.renderBB = new AABB(new Vec3(-8, -8, -8), new Vec3(8, 8, 8)).move(turret.getBlockPos());
 		return turret.renderBB;
 	}
 }

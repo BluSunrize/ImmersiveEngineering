@@ -45,11 +45,10 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -98,11 +97,12 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
-		invCap.ifPresent(inv -> {
+		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
+		if(inv!=null)
+		{
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
 				Utils.unlockIEAdvancement(player, "tools/upgrade_drill");
-		});
+		}
 	}
 
 
@@ -122,12 +122,10 @@ public class DrillItem extends DieselToolItem
 
 	public static ItemStack getHeadStatic(ItemStack drill)
 	{
-		if(Capabilities.ITEM_HANDLER==null)
-			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = drill.getCapability(Capabilities.ITEM_HANDLER);
-		if(cap.isPresent())
+		IItemHandler cap = drill.getCapability(ItemHandler.ITEM);
+		if(cap!=null)
 		{
-			ItemStack head = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
+			ItemStack head = cap.getStackInSlot(0);
 			return !head.isEmpty()&&head.getItem() instanceof IDrillHead?head: ItemStack.EMPTY;
 		}
 		return ItemStack.EMPTY;
@@ -136,7 +134,7 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public void setHead(ItemStack drill, ItemStack head)
 	{
-		IItemHandler inv = drill.getCapability(Capabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
+		IItemHandler inv = drill.getCapability(ItemHandler.ITEM);
 		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
 	}
 

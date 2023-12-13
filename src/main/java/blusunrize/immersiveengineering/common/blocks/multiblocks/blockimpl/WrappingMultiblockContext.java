@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import java.util.function.BooleanSupplier;
 
@@ -21,12 +19,6 @@ public record WrappingMultiblockContext<State>(
 		IMultiblockContext<?> inner, State ownState
 ) implements IMultiblockContext<State>
 {
-	@Override
-	public <T> BlockCapabilityCache<T, ?> getCapabilityAt(Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face)
-	{
-		return inner.getCapabilityAt(capability, posRelativeToMB, face);
-	}
-
 	@Override
 	public void markMasterDirty()
 	{
@@ -43,12 +35,6 @@ public record WrappingMultiblockContext<State>(
 	public IMultiblockLevel getLevel()
 	{
 		return inner.getLevel();
-	}
-
-	@Override
-	public <T> LazyOptional<T> registerCapability(T value)
-	{
-		return inner.registerCapability(value);
 	}
 
 	@Override

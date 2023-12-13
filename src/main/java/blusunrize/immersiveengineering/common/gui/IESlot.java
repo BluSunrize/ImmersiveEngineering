@@ -31,8 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -130,17 +130,17 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			LazyOptional<IFluidHandlerItem> handlerCap = FluidUtil.getFluidHandler(itemStack);
-			return handlerCap.map(handler -> {
-				if(handler.getTanks() <= 0)
-					return false;
-				return switch(filter)
-						{
-							case ANY -> true;
-							case EMPTY -> handler.getFluidInTank(0).isEmpty();
-							case FULL -> !handler.getFluidInTank(0).isEmpty();
-						};
-			}).orElse(false);
+			IFluidHandlerItem handler = itemStack.getCapability(FluidHandler.ITEM);
+			if(handler==null)
+				return false;
+			if(handler.getTanks() <= 0)
+				return false;
+			return switch(filter)
+			{
+				case ANY -> true;
+				case EMPTY -> handler.getFluidInTank(0).isEmpty();
+				case FULL -> !handler.getFluidInTank(0).isEmpty();
+			};
 		}
 
 		public enum Filter
@@ -162,17 +162,17 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			LazyOptional<IFluidHandlerItem> handlerCap = FluidUtil.getFluidHandler(itemStack);
-			return handlerCap.map(handler -> {
-				if(handler.getTanks() <= 0)
-					return false;
+			IFluidHandlerItem handler = itemStack.getCapability(FluidHandler.ITEM);
+			if(handler==null)
+				return false;
+			if(handler.getTanks() <= 0)
+				return false;
 
-				if(filter==1)
-					return handler.getFluidInTank(0).isEmpty();
-				else if(filter==2)
-					return !handler.getFluidInTank(0).isEmpty();
-				return true;
-			}).orElse(false);
+			if(filter==1)
+				return handler.getFluidInTank(0).isEmpty();
+			else if(filter==2)
+				return !handler.getFluidInTank(0).isEmpty();
+			return true;
 		}
 	}
 
@@ -401,10 +401,12 @@ public abstract class IESlot extends Slot
 			super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool upgradeableTool)
 				upgradeableTool.removeFromWorkbench(player, stack);
-			stack.getCapability(Capabilities.ITEM_HANDLER).ifPresent(handler -> {
+			IItemHandler handler = stack.getCapability(ItemHandler.ITEM);
+			if(handler!=null)
+			{
 				if(handler instanceof IEItemStackHandler ieHandler)
 					ieHandler.setTile(null);
-			});
+			}
 		}
 	}
 

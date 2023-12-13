@@ -85,7 +85,7 @@ public class GuiReactiveList extends Button
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
+	public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
 		recalculateEntries();
 		final List<String> entries = this.entries.get();

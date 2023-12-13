@@ -49,13 +49,12 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -141,19 +140,17 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
-		invCap.ifPresent(inv -> {
-			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty())
-				Utils.unlockIEAdvancement(player, "tools/upgrade_buzzsaw");
-		});
+		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
+		if(inv!=null&&!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty())
+			Utils.unlockIEAdvancement(player, "tools/upgrade_buzzsaw");
 	}
 
 	@Override
 	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
 		super.recalculateUpgrades(stack, w, player);
-		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
-		invCap.ifPresent(inv -> {
+		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
+		if(inv!=null)
 			for(int iUpgrade = 1; iUpgrade <= 2; iUpgrade++)
 			{
 				ItemStack upgrade = inv.getStackInSlot(iUpgrade);
@@ -166,7 +163,6 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 							ItemNBTHelper.remove(upgrade, "sawblade"+i);
 						}
 			}
-		});
 	}
 
 	@Override
@@ -177,12 +173,10 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public static ItemStack getSawblade(ItemStack itemStack, int spare)
 	{
-		if(Capabilities.ITEM_HANDLER==null)
-			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = itemStack.getCapability(Capabilities.ITEM_HANDLER, null);
+		IItemHandler cap = itemStack.getCapability(ItemHandler.ITEM);
 		// handle spares
 		int slot = spare==0?0: 2+spare;
-		ItemStack sawblade = cap.orElseThrow(RuntimeException::new).getStackInSlot(slot);
+		ItemStack sawblade = cap.getStackInSlot(slot);
 		return !sawblade.isEmpty()&&isSawblade(sawblade)?sawblade: ItemStack.EMPTY;
 	}
 
@@ -195,7 +189,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade, int spare)
 	{
 		int slot = spare==0?0: 2+spare;
-		IItemHandler inv = CapabilityUtils.getPresentCapability(buzzsaw, Capabilities.ITEM_HANDLER);
+		IItemHandler inv = buzzsaw.getCapability(ItemHandler.ITEM);
 		((IItemHandlerModifiable)inv).setStackInSlot(slot, sawblade);
 	}
 
@@ -215,33 +209,6 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		if(sawblade.getItem() instanceof SawbladeItem blade)
 			blade.modifyEnchants(superEnchants);
 		return superEnchants;
-	}
-
-	@Nullable
-	@Override
-	public CompoundTag getShareTag(ItemStack stack)
-	{
-		CompoundTag ret = super.getShareTag(stack);
-		for(int i = 1; i <= 2; i++)
-		{
-			ItemStack spare = getSawblade(stack, i);
-			if(!spare.isEmpty())
-				ret.put("spare"+i, spare.save(new CompoundTag()));
-		}
-		return ret;
-	}
-
-	@Override
-	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
-	{
-		if(nbt!=null)
-			for(int i = 1; i <= 2; i++)
-				if(nbt.contains("spare"+i))
-				{
-					setSawblade(stack, ItemStack.of(nbt.getCompound("spare"+i)), i);
-					nbt.remove("spare"+i);
-				}
-		super.readShareTag(stack, nbt);
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class GuiButtonIE extends Button
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{

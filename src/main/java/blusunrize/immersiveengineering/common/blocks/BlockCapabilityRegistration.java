@@ -9,10 +9,13 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.FurnaceHandler;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.VanillaFurnaceHeater;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -63,6 +66,11 @@ public class BlockCapabilityRegistration
 		LogicUnitBlockEntity.registerCapabilities(forType(event, IEBlockEntities.LOGIC_UNIT));
 		SorterBlockEntity.registerCapabilities(forType(event, IEBlockEntities.SORTER));
 		WoodenBarrelBlockEntity.registerCapabilities(forType(event, IEBlockEntities.WOODEN_BARREL));
+
+		// Vanilla
+		event.registerBlockEntity(
+				ExternalHeaterHandler.CAPABILITY, BlockEntityType.FURNACE, (be, side) -> new VanillaFurnaceHeater(be)
+		);
 	}
 
 	private static <BE extends BlockEntity> BECapabilityRegistrar<BE> forType(

@@ -12,15 +12,14 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.PlayerUtils;
 import blusunrize.immersiveengineering.api.wires.*;
-import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
+import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEStats;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -49,8 +48,6 @@ import org.joml.Vector3f;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-
-import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class SkylineHookEntity extends Entity
 {
@@ -477,7 +474,7 @@ public class SkylineHookEntity extends Entity
 			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(getDeltaMovement().y);
 			passenger.setOnGround(false);
 		}
-		passenger.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
+		passenger.getData(IEDataAttachments.SKYHOOK_USER.get()).release();
 		if(hand!=null&&passenger instanceof Player)
 		{
 			ItemStack held = ((Player)passenger).getItemInHand(hand);

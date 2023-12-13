@@ -30,7 +30,7 @@ public class NoContainerSerializer implements RecipeSerializer<NoContainersRecip
 	public static final String BASE_RECIPE = "baseRecipe";
 
 	public static final Codec<NoContainersRecipe<?>> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			RecipeManager.DISPATCH_CODEC.fieldOf(BASE_RECIPE).forGetter(r -> r.baseRecipe)
+			Recipe.CODEC.fieldOf(BASE_RECIPE).forGetter(r -> r.baseRecipe)
 	).apply(inst, inner -> {
 		if(inner instanceof IShapedRecipe<?>)
 			return new NoContainersShapedRecipe((CraftingRecipe)inner);

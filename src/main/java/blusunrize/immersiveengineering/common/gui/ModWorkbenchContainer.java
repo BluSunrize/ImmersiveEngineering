@@ -25,12 +25,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 
 public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockEntity>
 {
@@ -70,7 +71,7 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 		ItemStack tool = this.getSlot(0).getItem();
 		if(tool.getItem() instanceof IUpgradeableTool upgradeableTool)
 		{
-			IItemHandler toolInv = tool.getCapability(Capabilities.ITEM_HANDLER, null).orElseThrow(RuntimeException::new);
+			IItemHandler toolInv = Objects.requireNonNull(tool.getCapability(ItemHandler.ITEM));
 			if(toolInv instanceof IEItemStackHandler ieInv)
 				ieInv.setTile(tile);
 

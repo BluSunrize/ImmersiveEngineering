@@ -29,8 +29,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-import static net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER;
-
 public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEntity>
 {
 	public BarrelMinecartEntity(Level world, double x, double y, double z)
@@ -88,14 +86,6 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	protected Supplier<WoodenBarrelBlockEntity> getTileProvider()
 	{
 		return () -> new WoodenBarrelBlockEntity(BlockPos.ZERO, WoodenDevices.WOODEN_BARREL.defaultBlockState());
-	}
-
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
-		if(this.containedBlockEntity!=null)
-			this.containedBlockEntity.getCapability(FLUID_HANDLER).invalidate();
 	}
 
 	@Override

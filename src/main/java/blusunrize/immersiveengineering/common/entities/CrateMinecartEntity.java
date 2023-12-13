@@ -27,7 +27,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -75,14 +74,6 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	protected Supplier<WoodenCrateBlockEntity> getTileProvider()
 	{
 		return () -> new WoodenCrateBlockEntity(BlockPos.ZERO, WoodenDevices.CRATE.defaultBlockState());
-	}
-
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
-		if(this.containedBlockEntity!=null)
-			this.containedBlockEntity.getCapability(Capabilities.ITEM_HANDLER).invalidate();
 	}
 
 	@Nonnull

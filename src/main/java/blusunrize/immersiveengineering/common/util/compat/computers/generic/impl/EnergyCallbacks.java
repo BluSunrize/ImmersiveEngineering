@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Call
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class EnergyCallbacks extends Callback<BlockEntity>
@@ -22,16 +22,24 @@ public class EnergyCallbacks extends Callback<BlockEntity>
 	@ComputerCallable
 	public int getMaxEnergyStored(CallbackEnvironment<BlockEntity> env)
 	{
-		return env.object().getCapability(Capabilities.ENERGY)
-				.map(IEnergyStorage::getMaxEnergyStored)
-				.orElse(0);
+		IEnergyStorage storage = env.object().getLevel().getCapability(
+				EnergyStorage.BLOCK, env.object().getBlockPos(), null
+		);
+		if(storage!=null)
+			return storage.getMaxEnergyStored();
+		else
+			return 0;
 	}
 
 	@ComputerCallable
 	public int getEnergyStored(CallbackEnvironment<BlockEntity> env)
 	{
-		return env.object().getCapability(Capabilities.ENERGY)
-				.map(IEnergyStorage::getEnergyStored)
-				.orElse(0);
+		IEnergyStorage storage = env.object().getLevel().getCapability(
+				EnergyStorage.BLOCK, env.object().getBlockPos(), null
+		);
+		if(storage!=null)
+			return storage.getEnergyStored();
+		else
+			return 0;
 	}
 }

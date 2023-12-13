@@ -179,7 +179,7 @@ public class ChemthrowerEffects
 					return;
 				BlockState hit = world.getBlockState(blockHit.getBlockPos());
 				if(hit.getBlock() instanceof WeatheringCopper copperBlock)
-					copperBlock.applyChangeOverTime(hit, serverLevel, blockHit.getBlockPos(), world.random);
+					copperBlock.changeOverTime(hit, serverLevel, blockHit.getBlockPos(), world.random);
 			}
 		});
 		/*TODO

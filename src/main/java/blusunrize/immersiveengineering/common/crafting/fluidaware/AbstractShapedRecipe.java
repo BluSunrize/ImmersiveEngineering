@@ -14,13 +14,11 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 		extends AbstractFluidAwareRecipe<MatchLocation> implements IShapedRecipe<CraftingContainer>
@@ -65,7 +63,11 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 
 	public ShapedRecipe toVanilla()
 	{
-		return new ShapedRecipe(getGroup(), category, getWidth(), getHeight(), getIngredients(), getResultItem(null));
+		return new ShapedRecipe(
+				getGroup(), category,
+				new ShapedRecipePattern(getWidth(), getHeight(), getIngredients(), Optional.empty()),
+				getResultItem(null)
+		);
 	}
 
 	@Override

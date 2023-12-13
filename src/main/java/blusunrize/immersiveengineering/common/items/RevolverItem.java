@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerToolt
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
+import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
@@ -69,11 +70,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -103,72 +101,11 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	/* ------------- CORE ITEM METHODS ------------- */
 
-	@Nullable
-	@Override
-	public CompoundTag getShareTag(ItemStack stack)
+	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
-		return copyBulletsToShareTag(stack, super.getShareTag(stack));
-	}
-
-	public static CompoundTag copyBulletsToShareTag(ItemStack stack, CompoundTag ret)
-	{
-		if(ret==null)
-			ret = new CompoundTag();
-		else
-			ret = ret.copy();
-		final CompoundTag retFinal = ret;
-		stack.getCapability(Capabilities.ITEM_HANDLER, null).ifPresent(handler ->
-		{
-			IBulletContainer container = (IBulletContainer)stack.getItem();
-			NonNullList<ItemStack> bullets = NonNullList.withSize(container.getBulletCount(stack), ItemStack.EMPTY);
-			for(int i = 0; i < bullets.size(); i++)
-				bullets.set(i, handler.getStackInSlot(i));
-			retFinal.put("bullets", ContainerHelper.saveAllItems(new CompoundTag(), bullets));
-		});
-		return retFinal;
-	}
-
-	@Override
-	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
-	{
-		super.readShareTag(stack, nbt);
-		readBulletsFromShareTag(stack, nbt);
-	}
-
-	public static void readBulletsFromShareTag(ItemStack stack, @Nullable CompoundTag nbt)
-	{
-		if(nbt!=null)
-			stack.getCapability(Capabilities.ITEM_HANDLER, null).ifPresent(handler ->
-			{
-				if(!(handler instanceof IItemHandlerModifiable modifiable))
-					return;
-				IBulletContainer container = (IBulletContainer)stack.getItem();
-				NonNullList<ItemStack> bullets = NonNullList.withSize(container.getBulletCount(stack), ItemStack.EMPTY);
-				ContainerHelper.loadAllItems(nbt.getCompound("bullets"), bullets);
-				for(int i = 0; i < bullets.size(); ++i)
-					modifiable.setStackInSlot(i, bullets.get(i));
-			});
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
-	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
-						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "revolver"), stack));
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return shaders.cast();
-					return super.getCapability(capability, facing);
-				}
-			};
-		return null;
+		// TODO shaders
+		// new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "revolver"), stack));
+		InternalStorageItem.registerCapabilitiesISI(registrar);
 	}
 
 	/* ------------- INTERNAL INVENTORY ------------- */
@@ -198,11 +135,9 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		stack.getCapability(Capabilities.ITEM_HANDLER, null)
-				.ifPresent(inv -> {
-					if(!inv.getStackInSlot(18).isEmpty()&&!inv.getStackInSlot(19).isEmpty())
-						Utils.unlockIEAdvancement(player, "tools/upgrade_revolver");
-				});
+		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
+		if(inv!=null&&!inv.getStackInSlot(18).isEmpty()&&!inv.getStackInSlot(19).isEmpty())
+			Utils.unlockIEAdvancement(player, "tools/upgrade_revolver");
 	}
 
 	/* ------------- NAME, TOOLTIP, SUB-ITEMS ------------- */
@@ -472,8 +407,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public void setBullets(ItemStack revolver, NonNullList<ItemStack> bullets, boolean ignoreExtendedMag)
 	{
-		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(Capabilities.ITEM_HANDLER, null)
-				.orElseThrow(RuntimeException::new);
+		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(ItemHandler.ITEM);
 		for(int i = 0; i < 18; i++)
 			inv.setStackInSlot(i, ItemStack.EMPTY);
 		if(ignoreExtendedMag&&getUpgrades(revolver).getInt("bullets") > 0)
@@ -502,19 +436,19 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public boolean isEmpty(ItemStack stack, boolean allowCasing)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
-		return invCap.map(inv -> {
-			for(int i = 0; i < inv.getSlots(); i++)
-			{
-				ItemStack b = inv.getStackInSlot(i);
-				boolean isValid = true;
-				if(!allowCasing)
-					isValid = b.getItem() instanceof BulletItem;
-				if(!b.isEmpty()&&isValid)
-					return false;
-			}
+		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
+		if(inv==null)
 			return true;
-		}).orElse(true);
+		for(int i = 0; i < inv.getSlots(); i++)
+		{
+			ItemStack b = inv.getStackInSlot(i);
+			boolean isValid = true;
+			if(!allowCasing)
+				isValid = b.getItem() instanceof BulletItem;
+			if(!b.isEmpty()&&isValid)
+				return false;
+		}
+		return true;
 	}
 
 	/* ------------- UPGRADES & PERKS ------------- */

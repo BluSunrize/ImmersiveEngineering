@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
+import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
@@ -47,7 +48,6 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.entities.illager.Bulwark;
 import blusunrize.immersiveengineering.common.entities.illager.Commando;
 import blusunrize.immersiveengineering.common.entities.illager.EngineerIllager;
@@ -67,6 +67,7 @@ import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.GrassDropModifier;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
+import blusunrize.immersiveengineering.common.wires.WireSyncManager;
 import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
@@ -86,7 +87,6 @@ import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.ParallelDispatchEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -142,6 +142,7 @@ public class IEContent
 		IECreativeTabs.REGISTER.register(modBus);
 		IEEntityDataSerializers.REGISTER.register(modBus);
 		IEIngredients.REGISTER.register(modBus);
+		IEDataAttachments.REGISTER.register(modBus);
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();
@@ -169,16 +170,6 @@ public class IEContent
 		ev.put(IEEntityTypes.FUSILIER.get(), Fusilier.createAttributes().build());
 		ev.put(IEEntityTypes.COMMANDO.get(), Commando.createAttributes().build());
 		ev.put(IEEntityTypes.BULWARK.get(), Bulwark.createAttributes().build());
-	}
-
-	@SubscribeEvent
-	public static void registerCaps(RegisterCapabilitiesEvent ev)
-	{
-		ev.register(ShaderWrapper.class);
-		ev.register(GlobalWireNetwork.class);
-		ev.register(SkyhookUserData.class);
-		ev.register(RedstoneBundleConnection.class);
-		ev.register(IExternalHeatable.class);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -319,7 +310,11 @@ public class IEContent
 		ConveyorHandler.BLOCK_ENTITY_TYPES.setValue(rl -> ConveyorBeltBlockEntity.BE_TYPES.get(rl).get());
 		IMultiblockBEHelperMaster.MAKE_HELPER.setValue(MultiblockBEHelperMaster::new);
 		IMultiblockBEHelperDummy.MAKE_HELPER.setValue(MultiblockBEHelperDummy::new);
+		GlobalWireNetwork.MAKE_NETWORK.setValue((client, level) -> new GlobalWireNetwork(
+				client, new DefaultProxyProvider(level), new WireSyncManager(level)
+		));
 		SetRestrictedField.lock(false);
+
 		ShieldDisablingHandler.registerDisablingFunction(Player.class, player -> player.disableShield(true));
 		ShieldDisablingHandler.registerDisablingFunction(EngineerIllager.class, EngineerIllager::disableShield);
 	}

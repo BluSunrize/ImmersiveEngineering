@@ -29,10 +29,13 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -96,6 +99,16 @@ public class IEFluids
 			"phenolic_resin", rl("block/fluid/resin_still"), rl("block/fluid/resin_flow"),
 			createBuilder(1100, 2800)
 	);
+
+	public static void registerBucketCapabilities(RegisterCapabilitiesEvent event)
+	{
+		for(FluidEntry entry : ALL_ENTRIES)
+			event.registerItem(
+					FluidHandler.ITEM,
+					(stack, $) -> new FluidBucketWrapper(stack),
+					entry.bucket.get()
+			);
+	}
 
 	public record FluidEntry(
 			DeferredHolder<Fluid, IEFluid> flowing,
@@ -167,7 +180,7 @@ public class IEFluids
 			));
 			BlockEntry<IEFluidBlock> block = new IEBlocks.BlockEntry<>(
 					name+"_fluid_block",
-					() -> Properties.copy(Blocks.WATER),
+					() -> Properties.ofFullCopy(Blocks.WATER),
 					p -> new IEFluidBlock(thisMutable.getValue(), p)
 			);
 			DeferredHolder<Item, BucketItem> bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
@@ -232,12 +245,6 @@ public class IEFluids
 					.stacksTo(1)
 					.craftRemainder(Items.BUCKET))
 			{
-				@Override
-				public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
-				{
-					return new FluidBucketWrapper(stack);
-				}
-
 				@Override
 				public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
 				{

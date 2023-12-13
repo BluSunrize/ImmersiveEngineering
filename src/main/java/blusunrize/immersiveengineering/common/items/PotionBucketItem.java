@@ -8,12 +8,10 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -28,19 +26,14 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -77,11 +70,9 @@ public class PotionBucketItem extends IEBaseItem
 				out.accept(forPotion(p));
 	}
 
-	@Nullable
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
+	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
-		return new FluidHandler(stack);
+		registrar.register(Capabilities.FluidHandler.ITEM, (stack, $) -> new FluidHandler(stack));
 	}
 
 	@Nonnull
@@ -119,10 +110,12 @@ public class PotionBucketItem extends IEBaseItem
 			@Nonnull ItemStack stack, @Nullable Level worldIn, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flagIn
 	)
 	{
-		PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);
+		PotionUtils.addPotionTooltip(
+				stack, tooltip, 1.0F, worldIn==null?20.0F: worldIn.tickRateManager().tickrate()
+		);
 	}
 
-	private static class FluidHandler implements IFluidHandlerItem, ICapabilityProvider
+	private static class FluidHandler implements IFluidHandlerItem
 	{
 		private final ItemStack stack;
 		private boolean empty = false;
@@ -202,18 +195,6 @@ public class PotionBucketItem extends IEBaseItem
 			if(action.execute())
 				empty = true;
 			return potion;
-		}
-
-		private final LazyOptional<IFluidHandlerItem> lazyOpt = CapabilityUtils.constantOptional(this);
-
-		@Nonnull
-		@Override
-		public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
-		{
-			if(cap==Capabilities.FLUID_HANDLER_ITEM)
-				return lazyOpt.cast();
-			else
-				return LazyOptional.empty();
 		}
 	}
 }

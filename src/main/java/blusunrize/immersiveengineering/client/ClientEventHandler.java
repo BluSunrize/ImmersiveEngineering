@@ -95,11 +95,13 @@ import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.LogicalSide;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -224,7 +226,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Powerpack))
 		{
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
-			if(!powerpack.isEmpty())
+			IEnergyStorage packStorage = powerpack.getCapability(EnergyStorage.ITEM);
+			if(!powerpack.isEmpty()&&packStorage!=null)
 			{
 				List<Component> tooltip = event.getToolTip();
 				// find gap
@@ -233,7 +236,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				tooltip.add(idx++, CommonComponents.EMPTY);
 				tooltip.add(idx++, TextUtils.applyFormat(powerpack.getHoverName(), ChatFormatting.GRAY));
 				tooltip.add(idx++, TextUtils.applyFormat(
-						Component.literal(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
+						Component.literal(packStorage.getEnergyStored()+"/"+packStorage.getMaxEnergyStored()+" IF"),
 						ChatFormatting.GRAY
 				));
 				tooltip.add(idx, TextUtils.applyFormat(Component.translatable("desc.immersiveengineering.info.noChargeOnArmor"), ChatFormatting.DARK_GRAY));

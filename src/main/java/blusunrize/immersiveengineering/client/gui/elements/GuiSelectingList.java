@@ -26,7 +26,7 @@ public class GuiSelectingList extends GuiReactiveList
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
+	public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
 		super.render(graphics, mx, my, partialTicks);
 		if(selectedOption >= offset&&selectedOption-offset < perPage)

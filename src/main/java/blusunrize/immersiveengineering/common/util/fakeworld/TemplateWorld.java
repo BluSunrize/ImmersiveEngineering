@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.profiling.InactiveProfiler;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -66,6 +67,7 @@ public class TemplateWorld extends Level
 	private final Scoreboard scoreboard = new Scoreboard();
 	private final RecipeManager recipeManager = new RecipeManager();
 	private final TemplateChunkProvider chunkProvider;
+	private final TickRateManager tickRateManager = new TickRateManager();
 
 	public TemplateWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow, RegistryAccess regAccess)
 	{
@@ -103,6 +105,12 @@ public class TemplateWorld extends Level
 	public Entity getEntity(int id)
 	{
 		return null;
+	}
+
+	@Override
+	public TickRateManager tickRateManager()
+	{
+		return tickRateManager;
 	}
 
 	@Nullable

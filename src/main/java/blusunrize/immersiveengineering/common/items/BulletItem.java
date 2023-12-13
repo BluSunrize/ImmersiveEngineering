@@ -323,7 +323,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
 			if(!pot.isEmpty()&&pot.getItem() instanceof PotionItem)
-				PotionUtils.addPotionTooltip(pot, list, 1f);
+				PotionUtils.addPotionTooltip(pot, list, 1f, world==null?20.0F: world.tickRateManager().tickrate());
 		}
 
 		@Override

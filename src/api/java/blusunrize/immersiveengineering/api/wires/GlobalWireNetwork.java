@@ -46,6 +46,7 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -59,15 +60,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 	public static final String SAVEDATA_KEY = Lib.MODID+":wire_network";
 	public static final SetRestrictedField<BooleanSupplier> SANITIZE_CONNECTIONS = SetRestrictedField.common();
 	public static final SetRestrictedField<BooleanSupplier> VALIDATE_CONNECTIONS = SetRestrictedField.common();
-	public static final SetRestrictedField<Function<Boolean, GlobalWireNetwork>> MAKE_NETWORK = SetRestrictedField.common();
-	private static final SavedData.Factory<GlobalWireNetwork> FACTORY = new Factory<>(
-			() -> MAKE_NETWORK.getValue().apply(false),
-			nbt -> {
-				GlobalWireNetwork net = MAKE_NETWORK.getValue().apply(false);
-				net.readFromNBT(nbt);
-				return net;
-			}
-	);
+	public static final SetRestrictedField<BiFunction<Boolean, Level, GlobalWireNetwork>> MAKE_NETWORK = SetRestrictedField.common();
 
 	private static WeakReference<ServerLevel> lastServerWorld = new WeakReference<>(null);
 	private static WeakReference<GlobalWireNetwork> lastServerNet = new WeakReference<>(null);
@@ -96,7 +89,15 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 				if(lastNet!=null)
 					return lastNet;
 			}
-			GlobalWireNetwork net = serverLevel.getDataStorage().computeIfAbsent(FACTORY, SAVEDATA_KEY);
+			Factory<GlobalWireNetwork> factory = new Factory<>(
+					() -> MAKE_NETWORK.getValue().apply(false, w),
+					nbt -> {
+						GlobalWireNetwork net = MAKE_NETWORK.getValue().apply(false, w);
+						net.readFromNBT(nbt);
+						return net;
+					}
+			);
+			GlobalWireNetwork net = serverLevel.getDataStorage().computeIfAbsent(factory, SAVEDATA_KEY);
 			lastServerNet = new WeakReference<>(net);
 			lastServerWorld = new WeakReference<>(serverLevel);
 			return net;
@@ -106,7 +107,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 			if(w!=lastClientWorld.get()||lastClientNet==null)
 			{
 				lastClientWorld = new WeakReference<>(w);
-				lastClientNet = MAKE_NETWORK.getValue().apply(true);
+				lastClientNet = MAKE_NETWORK.getValue().apply(true, w);
 			}
 			return lastClientNet;
 		}

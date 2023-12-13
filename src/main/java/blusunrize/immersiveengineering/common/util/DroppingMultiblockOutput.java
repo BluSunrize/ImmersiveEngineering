@@ -12,7 +12,8 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 public class DroppingMultiblockOutput
@@ -25,7 +26,7 @@ public class DroppingMultiblockOutput
 	)
 	{
 		this.relativeDropPos = relativeDropPos;
-		this.output = ctx.getCapabilityAt(Capabilities.ITEM_HANDLER, relativeDropPos);
+		this.output = ctx.getCapabilityAt(ItemHandler.BLOCK, relativeDropPos);
 	}
 
 	public void insertOrDrop(ItemStack toDrop, IMultiblockLevel level)

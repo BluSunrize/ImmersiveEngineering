@@ -150,25 +150,4 @@ public class BlockItemIE extends BlockItem
 	{
 		return !(getBlock() instanceof IEBaseBlock ieBlock)||ieBlock.fitsIntoContainer();
 	}
-
-	public static class BlockItemIENoInventory extends BlockItemIE
-	{
-		public BlockItemIENoInventory(Block b)
-		{
-			super(b);
-		}
-
-		@Nullable
-		@Override
-		public CompoundTag getShareTag(ItemStack stack)
-		{
-			CompoundTag ret = super.getShareTag(stack);
-			if(ret!=null)
-			{
-				ret = ret.copy();
-				ret.remove("Items");
-			}
-			return ret;
-		}
-	}
 }

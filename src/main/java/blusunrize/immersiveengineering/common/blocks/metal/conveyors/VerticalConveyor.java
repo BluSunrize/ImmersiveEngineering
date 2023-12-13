@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -126,8 +127,6 @@ public class VerticalConveyor extends ConveyorBase
 			vY *= 2.25;
 		return new Vec3(vX, vY, vZ);
 	}
-
-	private BlockCapabilityCache<IItemHandler, ?> inserter;
 
 	@Override
 	public void onEntityCollision(@Nonnull Entity entity)

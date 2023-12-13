@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -60,19 +58,6 @@ public record MultiblockLevel(
 	public BlockEntity forciblyGetBlockEntity(BlockPos relativePosition)
 	{
 		return level().getBlockEntity(toAbsolute(relativePosition));
-	}
-
-	@Override
-	@Nullable
-	public <T> T getCapabilityValue(
-			Capability<T> capability, BlockPos relativePosition, @Nullable RelativeBlockFace face
-	)
-	{
-		final BlockEntity blockEntity = getBlockEntity(relativePosition);
-		if(blockEntity==null)
-			return null;
-		final Direction absoluteFace = toAbsolute(face);
-		return CapabilityUtils.getCapability(blockEntity, capability, absoluteFace);
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class IEExplosion extends Explosion
 
 	public IEExplosion(Level world, Entity igniter, double x, double y, double z, float size, boolean isFlaming, BlockInteraction damageTerrain)
 	{
-		super(world, igniter, null, null, x, y, z, size, isFlaming, damageTerrain);
+		super(world, igniter, x, y, z, size, isFlaming, damageTerrain);
 		this.dropChance = 1/size;
 		this.world = world;
 		damagesTerrain = damageTerrain;
@@ -78,12 +78,13 @@ public class IEExplosion extends Explosion
 
 //			if(spawnParticles)
 			{
+				var center = center();
 				double d0 = (float)pos.getX()+ApiUtils.RANDOM.nextFloat();
 				double d1 = (float)pos.getY()+ApiUtils.RANDOM.nextFloat();
 				double d2 = (float)pos.getZ()+ApiUtils.RANDOM.nextFloat();
-				double d3 = d0-getPosition().x;
-				double d4 = d1-getPosition().y;
-				double d5 = d2-getPosition().z;
+				double d3 = d0-center.x;
+				double d4 = d1-center.y;
+				double d5 = d2-center.z;
 				double d6 = Mth.sqrt((float)(d3*d3+d4*d4+d5*d5));
 				d3 = d3/d6;
 				d4 = d4/d6;
@@ -93,7 +94,7 @@ public class IEExplosion extends Explosion
 				d3 = d3*d7;
 				d4 = d4*d7;
 				d5 = d5*d7;
-				this.world.addParticle(ParticleTypes.EXPLOSION, (d0+getPosition().x*1.0D)/2.0D, (d1+getPosition().y*1.0D)/2.0D, (d2+getPosition().z*1.0D)/2.0D, d3, d4, d5);
+				this.world.addParticle(ParticleTypes.EXPLOSION, (d0+center.x*1.0D)/2.0D, (d1+center.y*1.0D)/2.0D, (d2+center.z*1.0D)/2.0D, d3, d4, d5);
 				this.world.addParticle(ParticleTypes.SMOKE, d0, d1, d2, d3, d4, d5);
 			}
 
@@ -142,9 +143,9 @@ public class IEExplosion extends Explosion
 						d1 = d1/d3;
 						d2 = d2/d3;
 						float f = this.size*(0.7F+ApiUtils.RANDOM.nextFloat()*0.6F);
-						double d4 = getPosition().x;
-						double d6 = getPosition().y;
-						double d8 = getPosition().z;
+						double d4 = center().x;
+						double d6 = center().y;
+						double d8 = center().z;
 
 						for(float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
 						{
@@ -174,31 +175,32 @@ public class IEExplosion extends Explosion
 					}
 
 		this.getToBlow().addAll(set);
-		this.getToBlow().sort(Comparator.comparingDouble(pos -> pos.distToCenterSqr(getPosition())));
+		Vec3 center = center();
+		this.getToBlow().sort(Comparator.comparingDouble(pos -> pos.distToCenterSqr(center)));
 
 		float f3 = this.size*2.0F;
-		int k1 = Mth.floor(getPosition().x-(double)f3-1.0D);
-		int l1 = Mth.floor(getPosition().x+(double)f3+1.0D);
-		int i2 = Mth.floor(getPosition().y-(double)f3-1.0D);
-		int i1 = Mth.floor(getPosition().y+(double)f3+1.0D);
-		int j2 = Mth.floor(getPosition().z-(double)f3-1.0D);
-		int j1 = Mth.floor(getPosition().z+(double)f3+1.0D);
+		int k1 = Mth.floor(center.x-(double)f3-1.0D);
+		int l1 = Mth.floor(center.x+(double)f3+1.0D);
+		int i2 = Mth.floor(center.y-(double)f3-1.0D);
+		int i1 = Mth.floor(center.y+(double)f3+1.0D);
+		int j2 = Mth.floor(center.z-(double)f3-1.0D);
+		int j1 = Mth.floor(center.z+(double)f3+1.0D);
 		List<Entity> list = this.world.getEntities(this.getDirectSourceEntity(), new AABB(k1, i2, j2, l1, i1, j1));
 		net.neoforged.neoforge.event.EventHooks.onExplosionDetonate(this.world, this, list, f3);
-		Vec3 vec3 = new Vec3(getPosition().x, getPosition().y, getPosition().z);
+		Vec3 vec3 = new Vec3(center.x, center.y, center.z);
 
 		for(int k2 = 0; k2 < list.size(); ++k2)
 		{
 			Entity entity = list.get(k2);
-			if(!entity.ignoreExplosion())
+			if(!entity.ignoreExplosion(this))
 			{
 				double d12 = entity.position()
-						.distanceToSqr(getPosition().x, getPosition().y, getPosition().z)/(double)f3;
+						.distanceToSqr(center.x, center.y, center.z)/(double)f3;
 				if(d12 <= 1.0D)
 				{
-					double d5 = entity.getX()-getPosition().x;
-					double d7 = entity.getY()+(double)entity.getEyeHeight()-getPosition().y;
-					double d9 = entity.getZ()-getPosition().z;
+					double d5 = entity.getX()-center.x;
+					double d7 = entity.getY()+(double)entity.getEyeHeight()-center.y;
+					double d9 = entity.getZ()-center.z;
 					double d13 = Mth.sqrt((float)(d5*d5+d7*d7+d9*d9));
 					if(d13!=0.0D)
 					{
@@ -223,7 +225,7 @@ public class IEExplosion extends Explosion
 	@Override
 	public void finalizeExplosion(boolean spawnParticles)
 	{
-		Vec3 pos = getPosition();
+		Vec3 pos = center();
 		if(this.world.isClientSide)
 			this.world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL, 4.0F, (1.0F+(ApiUtils.RANDOM.nextFloat()-ApiUtils.RANDOM.nextFloat())*0.2F)*0.7F, true);
 

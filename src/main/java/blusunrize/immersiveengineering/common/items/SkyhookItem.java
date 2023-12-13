@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookStatus;
-import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
+import blusunrize.immersiveengineering.common.entities.SkyhookUserData;
+import blusunrize.immersiveengineering.common.entities.SkyhookUserData.SkyhookStatus;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -37,8 +37,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class SkyhookItem extends UpgradeableToolItem
 {
@@ -118,7 +116,7 @@ public class SkyhookItem extends UpgradeableToolItem
 		}
 		else
 		{
-			SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, Direction.UP).orElseThrow(RuntimeException::new);
+			SkyhookUserData data = player.getData(IEDataAttachments.SKYHOOK_USER.get());
 			if(data.hook!=null&&!world.isClientSide)
 			{
 				data.dismount();
@@ -137,7 +135,7 @@ public class SkyhookItem extends UpgradeableToolItem
 	public void onUseTick(Level level, LivingEntity player, ItemStack stack, int count)
 	{
 		super.onUseTick(level, player, stack, count);
-		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, Direction.UP).orElseThrow(RuntimeException::new);
+		SkyhookUserData data = player.getData(IEDataAttachments.SKYHOOK_USER.get());
 		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
 			return;
 		Connection con = WireUtils.getConnectionMovedThrough(level, player);
@@ -150,7 +148,7 @@ public class SkyhookItem extends UpgradeableToolItem
 	{
 		super.releaseUsing(stack, worldIn, player, timeLeft);
 		if(!worldIn.isClientSide)
-			player.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
+			player.getData(IEDataAttachments.SKYHOOK_USER.get()).release();
 	}
 
 	public float getSkylineSpeed(ItemStack stack)

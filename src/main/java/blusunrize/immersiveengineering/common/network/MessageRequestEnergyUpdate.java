@@ -9,15 +9,13 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.FastEither;
-import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteEnergyData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.network.NetworkEvent.Context;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -42,20 +40,22 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 	{
 		context.enqueueWork(() -> {
 			ServerLevel level = Objects.requireNonNull(context.getSender()).serverLevel();
-			ICapabilityProvider provider;
+			IEnergyStorage storage;
 			if(pos.isLeft())
-				provider = SafeChunkUtils.getSafeBE(level, pos.leftNonnull());
+				storage = level.getCapability(EnergyStorage.BLOCK, pos.leftNonnull(), null);
 			else
-				provider = level.getEntity(pos.rightNonnull());
-			RemoteEnergyData data = null;
-			if(provider!=null)
 			{
-				IEnergyStorage energyCap = CapabilityUtils.getCapability(provider, Capabilities.ENERGY);
-				if(energyCap!=null&&energyCap.getMaxEnergyStored() > 0)
-					data = new RemoteEnergyData(
-							pos, level.getGameTime(), true, energyCap.getEnergyStored(), energyCap.getMaxEnergyStored()
-					);
+				Entity entity = level.getEntity(pos.rightNonnull());
+				if(entity!=null)
+					storage = entity.getCapability(EnergyStorage.ENTITY, null);
+				else
+					storage = null;
 			}
+			RemoteEnergyData data = null;
+			if(storage!=null&&storage.getMaxEnergyStored() > 0)
+				data = new RemoteEnergyData(
+						pos, level.getGameTime(), true, storage.getEnergyStored(), storage.getMaxEnergyStored()
+				);
 			if(data==null)
 				data = new RemoteEnergyData(pos, level.getGameTime(), false, 0, 0);
 			ImmersiveEngineering.packetHandler.send(

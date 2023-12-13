@@ -82,9 +82,9 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.TierSortingRegistry;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -118,7 +118,7 @@ public class Utils
 			return false;
 		if(hasTag1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
 			return false;
-		return stack1.areCapsCompatible(stack2);
+		return stack1.areAttachmentsCompatible(stack2);
 	}
 
 	public static final BiMap<TagKey<Item>, DyeColor> DYES_BY_TAG =
@@ -635,7 +635,7 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		return stack.getCapability(Capabilities.FLUID_HANDLER_ITEM).isPresent();
+		return stack.getCapability(FluidHandler.ITEM)!=null;
 	}
 
 	public static Optional<RecipeHolder<CraftingRecipe>> findCraftingRecipe(CraftingContainer crafting, Level world)
@@ -821,8 +821,10 @@ public class Utils
 
 	public static ItemStack getPickBlock(BlockState state, HitResult rtr, Player player)
 	{
-		BlockGetter w = getSingleBlockWorldAccess(state);
-		return state.getBlock().getCloneItemStack(state, rtr, w, BlockPos.ZERO, player);
+		//TODO
+		// BlockGetter w = getSingleBlockWorldAccess(state);
+		// return state.getBlock().getCloneItemStack(state, rtr, w, BlockPos.ZERO, player);
+		return ItemStack.EMPTY;
 	}
 
 	public static ItemStack getPickBlock(BlockState state)

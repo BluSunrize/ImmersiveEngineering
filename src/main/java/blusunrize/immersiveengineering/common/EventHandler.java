@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
-import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SimpleSkyhookProvider;
 import blusunrize.immersiveengineering.common.entities.illager.EngineerIllager;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
@@ -39,7 +38,6 @@ import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.register.IEStats;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.common.wires.GlobalNetProvider;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -75,9 +73,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.common.Tags.EntityTypes;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.AttachCapabilitiesEvent;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -117,24 +116,6 @@ public class EventHandler
 		if(event.getObject() instanceof AbstractMinecart)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
 					new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
-		if(event.getObject() instanceof Player)
-			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
-					new SimpleSkyhookProvider());
-	}
-
-	@SubscribeEvent
-	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<Level> event)
-	{
-		event.addCapability(ImmersiveEngineering.rl("wire_network"), new GlobalNetProvider(event.getObject()));
-	}
-
-	@SubscribeEvent
-	public void onCapabilitiesAttachBlockEntity(AttachCapabilitiesEvent<BlockEntity> event)
-	{
-		if(event.getObject() instanceof FurnaceBlockEntity furnace)
-			event.addCapability(ImmersiveEngineering.rl("vanilla_furnace_heater"), new SimpleCapProvider<>(
-					() -> ExternalHeaterHandler.CAPABILITY, new VanillaFurnaceHeater(furnace)
-			));
 	}
 
 	@SubscribeEvent
@@ -274,15 +255,18 @@ public class EventHandler
 			// 33% chance of zapping the attacker, provided they are living and within ~2 blocks
 			if(!powerpack.isEmpty()&&PowerpackItem.getUpgradesStatic(powerpack).getBoolean("tesla"))
 				if(event.getSource().getEntity() instanceof LivingEntity attacker&&attacker.distanceToSqr(player) < 4)
-					if(EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, true)==PowerpackItem.TESLA_CONSUMPTION)
+				{
+					IEnergyStorage packStorage = powerpack.getCapability(EnergyStorage.ITEM);
+					if(packStorage!=null&&packStorage.extractEnergy(PowerpackItem.TESLA_CONSUMPTION, true)==PowerpackItem.TESLA_CONSUMPTION)
 					{
-						EnergyHelper.extractFlux(powerpack, PowerpackItem.TESLA_CONSUMPTION, false);
+						packStorage.extractEnergy(PowerpackItem.TESLA_CONSUMPTION, false);
 						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(player.level(), 2+player.getRandom().nextInt(4), true);
 						if(dmgsrc.apply(attacker))
 							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.value(), 60));
 						player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.value(),
 								SoundSource.BLOCKS, 2.5F, 0.5F+rng.nextFloat());
 					}
+				}
 		}
 	}
 

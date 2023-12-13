@@ -22,8 +22,6 @@ public interface IMultiblockBEHelperMaster<State extends IMultiblockState> exten
 {
 	SetRestrictedField<Factory> MAKE_HELPER = SetRestrictedField.common();
 
-	void invalidateCaps();
-
 	@Nonnull
 	@Override
 	State getState();

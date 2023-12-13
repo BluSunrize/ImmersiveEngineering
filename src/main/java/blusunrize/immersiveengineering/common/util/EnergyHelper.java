@@ -16,7 +16,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
@@ -56,23 +55,24 @@ public class EnergyHelper
 
 	public static int forceExtractFlux(ItemStack stack, int energy, boolean simulate)
 	{
-		if(stack.isEmpty())
+		IEnergyStorage stackEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		if(stackEnergy==null)
 			return 0;
 		Boolean b = reverseInsertion.get(stack.getItem());
 		if(b==Boolean.TRUE)
 		{
-			int stored = getEnergyStored(stack);
+			int stored = stackEnergy.getEnergyStored();
 			insertFlux(stack, -energy, simulate);
-			return stored-getEnergyStored(stack);
+			return stored-stackEnergy.getEnergyStored();
 		}
 		else
 		{
-			int drawn = extractFlux(stack, energy, simulate);
+			int drawn = stackEnergy.extractEnergy(energy, simulate);
 			if(b==null)
 			{
-				int stored = getEnergyStored(stack);
+				int stored = stackEnergy.getEnergyStored();
 				insertFlux(stack, -energy, simulate);
-				drawn = stored-getEnergyStored(stack);
+				drawn = stored-stackEnergy.getEnergyStored();
 				//if reverse insertion was succesful, it'll be the default approach in future
 				reverseInsertion.put(stack.getItem(), drawn > 0?Boolean.TRUE: Boolean.FALSE);
 			}
@@ -80,32 +80,16 @@ public class EnergyHelper
 		}
 	}
 
-	public static int getEnergyStored(ICapabilityProvider stack)
+	public static int getEnergyStored(ItemStack stack)
 	{
-		return getEnergyStored(stack, null);
+		IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		return storage!=null?storage.getEnergyStored(): 0;
 	}
 
-	public static int getEnergyStored(ICapabilityProvider stack, @Nullable Direction side)
+	public static int getMaxEnergyStored(ItemStack stack)
 	{
-		if(stack==null)
-			return 0;
-		return stack.getCapability(Capabilities.ENERGY, side)
-				.map(IEnergyStorage::getEnergyStored)
-				.orElse(0);
-	}
-
-	public static int getMaxEnergyStored(ICapabilityProvider stack)
-	{
-		return getMaxEnergyStored(stack, null);
-	}
-
-	public static int getMaxEnergyStored(ICapabilityProvider stack, @Nullable Direction side)
-	{
-		if(stack==null)
-			return 0;
-		return stack.getCapability(Capabilities.ENERGY, side)
-				.map(IEnergyStorage::getMaxEnergyStored)
-				.orElse(0);
+		IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		return storage!=null?storage.getMaxEnergyStored(): 0;
 	}
 
 	public static boolean isFluxReceiver(ItemStack stack)
@@ -113,53 +97,18 @@ public class EnergyHelper
 		return stack.getCapability(Capabilities.EnergyStorage.ITEM)!=null;
 	}
 
-	public static boolean isFluxReceiver(ICapabilityProvider tile, @Nullable Direction facing)
+	public static boolean isFluxRelated(ItemStack stack)
 	{
-		if(tile==null)
-			return false;
-		return tile.getCapability(Capabilities.ENERGY, facing)
-				.map(IEnergyStorage::canReceive)
-				.orElse(false);
+		return stack.getCapability(Capabilities.EnergyStorage.ITEM)!=null;
 	}
 
-	public static boolean isFluxRelated(ICapabilityProvider tile)
+	public static int insertFlux(ItemStack stack, int energy, boolean simulate)
 	{
-		return isFluxRelated(tile, null);
-	}
-
-	public static boolean isFluxRelated(ICapabilityProvider tile, @Nullable Direction facing)
-	{
-		if(tile==null)
-			return false;
-		return tile.getCapability(Capabilities.ENERGY, facing).isPresent();
-	}
-
-	public static int insertFlux(ICapabilityProvider tile, int energy, boolean simulate)
-	{
-		return insertFlux(tile, null, energy, simulate);
-	}
-
-	public static int insertFlux(ICapabilityProvider tile, @Nullable Direction facing, int energy, boolean simulate)
-	{
-		if(tile==null)
+		IEnergyStorage storage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		if(storage!=null)
+			return storage.receiveEnergy(energy, simulate);
+		else
 			return 0;
-		return tile.getCapability(Capabilities.ENERGY, facing)
-				.map(storage -> storage.receiveEnergy(energy, simulate))
-				.orElse(0);
-	}
-
-	public static int extractFlux(ICapabilityProvider tile, int energy, boolean simulate)
-	{
-		return extractFlux(tile, null, energy, simulate);
-	}
-
-	public static int extractFlux(ICapabilityProvider tile, @Nullable Direction facing, int energy, boolean simulate)
-	{
-		if(tile==null)
-			return 0;
-		return tile.getCapability(Capabilities.ENERGY, facing)
-				.map(storage -> storage.extractEnergy(energy, simulate))
-				.orElse(0);
 	}
 
 	/**

@@ -9,11 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,8 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import java.util.function.Consumer;
 
@@ -39,11 +36,6 @@ public record ComponentInstance<S>(IMultiblockComponent<S> component, IMultibloc
 		else
 			wrapped = new WrappingMultiblockContext<>(ctx, c.makeWrapper().wrapState(state));
 		return new ComponentInstance<>(c.component(), wrapped);
-	}
-
-	public <T> LazyOptional<T> getCapability(CapabilityPosition position, Capability<T> cap)
-	{
-		return component.getCapability(wrappedContext, position, cap);
 	}
 
 	public void onEntityCollision(BlockPos positionInMB, Entity collided)

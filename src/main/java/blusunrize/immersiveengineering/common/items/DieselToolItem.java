@@ -42,11 +42,8 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.TierSortingRegistry;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -75,55 +72,11 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 		return 0;
 	}
 
-	@Nullable
-	@Override
-	public CompoundTag getShareTag(ItemStack stack)
+	public static void registerCapabilities(ItemCapabilityRegistration.ItemCapabilityRegistrar registrar)
 	{
-		CompoundTag ret = super.getShareTag(stack);
-		if(ret==null)
-			ret = new CompoundTag();
-		else
-			ret = ret.copy();
-		ItemStack head = getHead(stack);
-		if(!head.isEmpty())
-			ret.put("head", head.save(new CompoundTag()));
-		return ret;
-	}
-
-	@Override
-	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
-	{
-		if(nbt!=null)
-		{
-			setHead(stack, ItemStack.of(nbt.getCompound("head")));
-			nbt.remove("head");
-		}
-		super.readShareTag(stack, nbt);
-	}
-
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
-	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				private final LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, CAPACITY));
-				private final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
-						new ShaderWrapper_Item(BuiltInRegistries.ITEM.getKey(DieselToolItem.this), stack)
-				);
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==Capabilities.FLUID_HANDLER_ITEM)
-						return fluids.cast();
-					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return shaders.cast();
-					return super.getCapability(capability, facing);
-				}
-			};
-		return null;
+		registrar.register(FluidHandler.ITEM, (stack, $) -> new IEItemFluidHandler(stack, CAPACITY));
+		// TODO shader
+		// new ShaderWrapper_Item(BuiltInRegistries.ITEM.getKey(DieselToolItem.this), stack)
 	}
 
 	@Override

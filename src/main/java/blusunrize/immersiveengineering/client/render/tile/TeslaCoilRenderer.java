@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity.LightningAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import malte0811.modelsplitter.math.Vec3d;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.AABB;
@@ -72,7 +73,7 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntit
 	public AABB getRenderBoundingBox(TeslaCoilBlockEntity blockEntity)
 	{
 		if(blockEntity.renderBB==null)
-			blockEntity.renderBB = new AABB(blockEntity.getBlockPos().offset(-8, -8, -8), blockEntity.getBlockPos().offset(8, 8, 8));
+			blockEntity.renderBB = new AABB(new Vec3(-8, -8, -8), new Vec3(8, 8, 8)).move(blockEntity.getBlockPos());
 		return blockEntity.renderBB;
 	}
 

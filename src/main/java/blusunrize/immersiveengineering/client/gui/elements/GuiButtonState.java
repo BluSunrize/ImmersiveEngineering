@@ -72,7 +72,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		if(this.visible)

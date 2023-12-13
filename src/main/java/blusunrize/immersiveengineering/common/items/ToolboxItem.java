@@ -32,8 +32,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -88,17 +87,17 @@ public class ToolboxItem extends InternalStorageItem
 		if(slots.length < 1)
 			return 0;
 
-		LazyOptional<IItemHandler> lazyHandler = toolbox.getCapability(Capabilities.ITEM_HANDLER, null);
-		return lazyHandler.map(handler -> {
-			ItemStack remain = other.copy();
-			for(int iSlot : slots)
-			{
-				remain = handler.insertItem(iSlot, remain, false);
-				if(remain.isEmpty())
-					break;
-			}
-			return other.getCount()-remain.getCount();
-		}).orElse(0);
+		IItemHandler handler = toolbox.getCapability(ItemHandler.ITEM);
+		if(handler==null)
+			return 0;
+		ItemStack remain = other.copy();
+		for(int iSlot : slots)
+		{
+			remain = handler.insertItem(iSlot, remain, false);
+			if(remain.isEmpty())
+				break;
+		}
+		return other.getCount()-remain.getCount();
 	}
 
 	@Nullable

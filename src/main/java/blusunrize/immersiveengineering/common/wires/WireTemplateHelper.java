@@ -34,7 +34,7 @@ public class WireTemplateHelper
 	)
 	{
 		template.getStoredConnections().clear();
-		GlobalWireNetwork net = getNetwork(worldIn);
+		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(worldIn);
 		if (net == null)
 			return;
 		BlockPos endPos = startPos.offset(size).offset(-1, -1, -1);
@@ -70,7 +70,7 @@ public class WireTemplateHelper
 		if(template.getStoredConnections().isEmpty())
 			return;
 		Level world = iworld.getLevel();
-		GlobalWireNetwork net = getNetwork(world);
+		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
 		if (net == null)
 			return;
 		for(TemplateConnection relative : template.getStoredConnections())
@@ -114,12 +114,5 @@ public class WireTemplateHelper
 		if(!((IImmersiveConnectable)connector).getConnectionPoints().contains(point))
 			return null;
 		return point;
-	}
-
-	@Nullable
-	private static GlobalWireNetwork getNetwork(Level world) {
-		return world.getCapability(NetHandlerCapability.NET_CAPABILITY)
-				.resolve()
-				.orElse(null);
 	}
 }

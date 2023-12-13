@@ -175,7 +175,7 @@ public class PotionFluid extends Fluid
 					if(instance.getAmplifier() > 0)
 						itextcomponent.append(" ").append(Component.translatable("potion.potency."+instance.getAmplifier()));
 					if(instance.getDuration() > 20)
-						itextcomponent.append(" (").append(MobEffectUtil.formatDuration(instance, 1)).append(")");
+						itextcomponent.append(" (").append(MobEffectUtil.formatDuration(instance, 1, 20)).append(")");
 
 					tooltip.accept(itextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));
 				}

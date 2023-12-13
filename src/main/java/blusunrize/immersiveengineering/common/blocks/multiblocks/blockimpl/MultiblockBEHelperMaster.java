@@ -29,7 +29,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +44,6 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	private final State state;
 	private final MultiblockContext<State> context;
 	private final List<ComponentInstance<?>> componentInstances;
-	private final List<LazyOptional<?>> capabilities = new ArrayList<>();
 	private final Object2IntMap<BlockPos> currentComparatorOutputs = new Object2IntOpenHashMap<>();
 	private final CachedValue<BlockPos, MultiblockOrientation, AABB> renderBox;
 
@@ -65,7 +64,7 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 		this.renderBox = new CachedValue<>((origin, orientation) -> {
 			final BlockPos max = new BlockPos(multiblock.size(level.getRawLevel()));
 			final BlockPos absoluteOffset = orientation.getAbsoluteOffset(max);
-			return new AABB(origin, origin.offset(absoluteOffset));
+			return new AABB(Vec3.ZERO, Vec3.atLowerCornerOf(absoluteOffset)).move(origin);
 		});
 	}
 
@@ -178,12 +177,6 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	}
 
 	@Override
-	public void invalidateCaps()
-	{
-		this.capabilities.forEach(LazyOptional::invalidate);
-	}
-
-	@Override
 	public AABB getRenderBoundingBox()
 	{
 		return renderBox.get(context.getLevel().getAbsoluteOrigin(), orientation);
@@ -221,11 +214,6 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	public MultiblockOrientation getOrientation()
 	{
 		return orientation;
-	}
-
-	public void addCapability(LazyOptional<?> cap)
-	{
-		this.capabilities.add(cap);
 	}
 
 	public Object2IntMap<BlockPos> getCurrentComparatorOutputs()

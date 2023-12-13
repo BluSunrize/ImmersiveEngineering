@@ -15,11 +15,12 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import blusunrize.immersiveengineering.common.entities.SkyhookUserData;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
+import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Cursor3D;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -43,8 +44,6 @@ import java.util.Spliterator;
 import java.util.Spliterators.AbstractSpliterator;
 import java.util.function.Consumer;
 import java.util.stream.StreamSupport;
-
-import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
 public class SkylineHelper
 {
@@ -99,10 +98,9 @@ public class SkylineHelper
 				}
 
 				player.level().addFreshEntity(hook);
-				player.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(data -> {
-					data.startRiding();
-					data.hook = hook;
-				});
+				SkyhookUserData data = player.getData(IEDataAttachments.SKYHOOK_USER.get());
+				data.startRiding();
+				data.hook = hook;
 				player.startRiding(hook);
 				IELogger.logger.debug("Started riding");
 			}

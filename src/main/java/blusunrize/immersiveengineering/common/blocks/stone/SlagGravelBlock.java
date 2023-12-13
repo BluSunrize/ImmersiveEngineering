@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.stone;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -23,6 +24,12 @@ public class SlagGravelBlock extends FallingBlock
 	public SlagGravelBlock(Properties properties)
 	{
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<? extends FallingBlock> codec()
+	{
+		return MapCodec.unit(this);
 	}
 
 	@Override

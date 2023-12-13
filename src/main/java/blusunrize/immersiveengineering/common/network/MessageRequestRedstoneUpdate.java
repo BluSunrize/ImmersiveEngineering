@@ -17,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.network.NetworkEvent.Context;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -41,7 +40,6 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 	{
 		context.enqueueWork(() -> {
 			ServerLevel level = Objects.requireNonNull(context.getSender()).serverLevel();
-			ICapabilityProvider provider;
 			BlockState blockState = level.getBlockState(pos);
 			RemoteRedstoneData data = new RemoteRedstoneData(pos, level.getGameTime(), blockState.isSignalSource(), redstoneLevel(level, pos));
 			ImmersiveEngineering.packetHandler.send(

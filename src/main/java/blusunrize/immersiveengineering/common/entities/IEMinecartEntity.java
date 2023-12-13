@@ -32,8 +32,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -74,6 +72,8 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 		return Type.CHEST;
 	}
 
+	/*
+	TODO this needs to become a little less general for the new cap system...
 	@Override
 	@Nonnull
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
@@ -85,7 +85,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 				return beCap;
 		}
 		return super.getCapability(capability, facing);
-	}
+	}*/
 
 	@Override
 	public void destroy(@Nonnull DamageSource source)
@@ -161,7 +161,8 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 
 	// This is only used by the super impl of destroy, which does not allow attaching NBT to the drop. So it's actually
 	// unused for our minecarts
-	@Override
+	// TODO missing AT in Forge?
+	//@Override
 	protected Item getDropItem()
 	{
 		return Items.MINECART;

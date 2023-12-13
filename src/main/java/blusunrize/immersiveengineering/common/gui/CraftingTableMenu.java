@@ -23,13 +23,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Optional;
 
 import static blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity.GRID_SIZE;
@@ -50,7 +51,7 @@ public class CraftingTableMenu extends IEContainerMenu
 		return new CraftingTableMenu(
 				blockCtx(type, id, be), invPlayer,
 				be.getCraftingInventory(),
-				CapabilityUtils.getPresentCapability(be, Capabilities.ITEM_HANDLER),
+				Objects.requireNonNull(be.getLevel().getCapability(ItemHandler.BLOCK, be.getBlockPos(), null)),
 				ContainerLevelAccess.create(be.getLevel(), be.getBlockPos())
 		);
 	}

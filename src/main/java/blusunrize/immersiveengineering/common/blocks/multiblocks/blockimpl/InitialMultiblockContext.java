@@ -15,9 +15,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -29,11 +31,18 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 ) implements IInitialMultiblockContext<State>
 {
 	@Override
+	public <T, C>
+	BlockCapabilityCache<T, ?> getCapabilityAt(BlockCapability<T, C> capability, BlockPos posRelativeToMB, C context)
+	{
+		return getCapabilityAt(masterBE, orientation, masterOffset, capability, posRelativeToMB, context);
+	}
+
+	@Override
 	public <T> BlockCapabilityCache<T, ?> getCapabilityAt(
-			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
+			BlockCapability<T, Direction> capability, BlockPos posRelativeToMB, RelativeBlockFace face
 	)
 	{
-		return getCapabilityAt(masterBE, orientation, masterOffset, capability, posRelativeToMB, face);
+		return getCapabilityAt(capability, posRelativeToMB, face.forFront(orientation));
 	}
 
 	@Override
@@ -54,16 +63,19 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 		return () -> MultiblockContext.requestBESync(masterBE);
 	}
 
-	public static <T> BlockCapabilityCache<T, ?> getCapabilityAt(
+	public static <T, C> BlockCapabilityCache<T, ?> getCapabilityAt(
 			BlockEntity masterBE, MultiblockOrientation orientation, BlockPos masterOffset,
-			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
+			BlockCapability<T, C> capability, BlockPos posRelativeToMB, C context
 	)
 	{
-		return CapabilityReference.forBlockEntityAt(masterBE, () -> {
+		if(masterBE.getLevel() instanceof ServerLevel serverLevel)
+		{
 			final BlockPos offset = orientation.getAbsoluteOffset(posRelativeToMB.subtract(masterOffset));
 			final BlockPos pos = masterBE.getBlockPos().offset(offset);
-			final Direction absoluteFace = face.forFront(orientation);
-			return new DirectionalBlockPos(pos, absoluteFace);
-		}, capability);
+			return BlockCapabilityCache.create(capability, serverLevel, pos, context);
+		}
+		else
+			// TODO uncached version for this?
+			return null;
 	}
 }

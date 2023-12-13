@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
@@ -23,6 +22,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.network.MessagePowerpackAntenna;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
@@ -30,14 +30,11 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.base.Suppliers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
@@ -52,21 +49,19 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.util.EnergyHelper.*;
+import static blusunrize.immersiveengineering.common.util.EnergyHelper.insertFlux;
 
 /**
  * @author BluSunrize
@@ -108,7 +103,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		IEnergyStorage energy = CapabilityUtils.getCapability(stack, Capabilities.ENERGY);
+		IEnergyStorage energy = stack.getCapability(EnergyStorage.ITEM);
 		if(energy!=null)
 		{
 			String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
@@ -140,16 +135,13 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void onArmorTick(ItemStack itemStack, Level world, Player player)
 	{
-		int energy = getEnergyStored(itemStack);
+		IEnergyStorage packEnergy = Objects.requireNonNull(itemStack.getCapability(EnergyStorage.ITEM));
+		int energy = packEnergy.getEnergyStored();
 		if(energy > 0)
 		{
-			int pre = energy;
+			final int pre = energy;
 			for(EquipmentSlot slot : EquipmentSlot.values())
-			{
-				ItemStack equipped = player.getItemBySlot(slot);
-				if(isFluxReceiver(equipped)&&!(equipped.getItem() instanceof PowerpackItem)&&!(equipped.getItem() instanceof BlockItem))
-					energy -= insertFlux(equipped, Math.min(energy, ITEM_CHARGE_RATE), false);
-			}
+				energy -= insertInto(player.getItemBySlot(slot), energy);
 			// induction charging only happens every 4 ticks
 			if(getUpgrades(itemStack).getBoolean("induction")&&player.tickCount%4==0)
 			{
@@ -159,18 +151,26 @@ public class PowerpackItem extends UpgradeableToolItem
 				{
 					if(i!=selected) // ignore equipped item
 						continue;
-					ItemStack inventoryItem = allItems.get(i);
-					if(isFluxReceiver(inventoryItem)&&!(inventoryItem.getItem() instanceof PowerpackItem)&&!(inventoryItem.getItem() instanceof BlockItem))
-						energy -= insertFlux(inventoryItem, Math.min(energy, INDUCTION_CHARGE_RATE), false);
+					energy -= insertInto(allItems.get(i), energy);
 					if(energy <= 0) // this is a long loop, so breaking early is good
 						break;
 				}
 			}
 			if(pre!=energy)
-				extractFlux(itemStack, pre-energy, false);
+				packEnergy.extractEnergy(pre-energy, false);
 		}
 		if(getUpgrades(itemStack).getBoolean("antenna"))
 			handleAntennaTick(itemStack, world, player);
+	}
+
+	private int insertInto(ItemStack insertInto, int maxAmount)
+	{
+		IEnergyStorage equippedEnergy = insertInto.getCapability(Capabilities.EnergyStorage.ITEM);
+		Item insertItem = insertInto.getItem();
+		if(equippedEnergy!=null&&!(insertItem instanceof PowerpackItem)&&!(insertItem instanceof BlockItem))
+			return equippedEnergy.receiveEnergy(Math.min(maxAmount, ITEM_CHARGE_RATE), false);
+		else
+			return 0;
 	}
 
 	private void handleAntennaTick(ItemStack itemStack, Level world, Player player)
@@ -274,7 +274,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		if(ItemNBTHelper.hasKey(stack, "energy"))
 		{
 			int previousEnergy = ItemNBTHelper.getInt(stack, "energy");
-			IItemHandler inv = stack.getCapability(Capabilities.ITEM_HANDLER).orElseThrow(RuntimeException::new);
+			IItemHandler inv = Objects.requireNonNull(stack.getCapability(ItemHandler.ITEM));
 			ItemStack newCapacitor = new ItemStack(IEBlocks.MetalDevices.CAPACITOR_LV);
 			ItemNBTHelper.putInt(newCapacitor, EnergyHelper.ENERGY_KEY, previousEnergy);
 			((IItemHandlerModifiable)inv).setStackInSlot(0, newCapacitor);
@@ -288,12 +288,10 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public static ItemStack getCapacitorStatic(ItemStack container)
 	{
-		if(Capabilities.ITEM_HANDLER==null)
-			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = container.getCapability(Capabilities.ITEM_HANDLER);
-		if(cap.isPresent())
+		IItemHandler cap = container.getCapability(ItemHandler.ITEM);
+		if(cap!=null)
 		{
-			ItemStack capacitor = cap.map(handler -> handler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
+			ItemStack capacitor = cap.getStackInSlot(0);
 			return capacitorConfigMap.get().containsKey(capacitor.getItem())?capacitor: ItemStack.EMPTY;
 		}
 		return ItemStack.EMPTY;
@@ -301,12 +299,10 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public static ItemStack getBannerStatic(ItemStack container)
 	{
-		if(Capabilities.ITEM_HANDLER==null)
-			return ItemStack.EMPTY;
-		LazyOptional<IItemHandler> cap = container.getCapability(Capabilities.ITEM_HANDLER);
-		if(cap.isPresent())
+		IItemHandler cap = container.getCapability(ItemHandler.ITEM);
+		if(cap!=null)
 		{
-			ItemStack banner = cap.map(handler -> handler.getStackInSlot(1)).orElse(ItemStack.EMPTY);
+			ItemStack banner = cap.getStackInSlot(1);
 			if(banner.getItem() instanceof BannerItem)
 				return banner;
 			if(banner.getItem() instanceof IShaderItem)
@@ -333,22 +329,9 @@ public class PowerpackItem extends UpgradeableToolItem
 		return 4;
 	}
 
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
+	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==Capabilities.ENERGY)
-						return getCapacitorStatic(stack).getCapability(capability, facing);
-					return super.getCapability(capability, facing);
-				}
-			};
-		return super.initCapabilities(stack, nbt);
+		registrar.register(EnergyStorage.ITEM, stack -> getCapacitorStatic(stack).getCapability(EnergyStorage.ITEM));
 	}
 
 	@Override
@@ -373,10 +356,8 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
-		LazyOptional<IItemHandler> invCap = stack.getCapability(Capabilities.ITEM_HANDLER, null);
-		invCap.ifPresent(inv -> {
-			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
-				Utils.unlockIEAdvancement(player, "tools/upgrade_powerpack");
-		});
+		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
+		if(inv!=null&&!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
+			Utils.unlockIEAdvancement(player, "tools/upgrade_powerpack");
 	}
 }

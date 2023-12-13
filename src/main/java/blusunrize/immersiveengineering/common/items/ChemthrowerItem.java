@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
+import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
@@ -43,12 +44,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -251,28 +249,11 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}
 
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
+	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				LazyOptional<IEItemFluidHandler> fluids = CapabilityUtils.constantOptional(new IEItemFluidHandler(stack, CAPACITY));
-				LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower"), stack));
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==Capabilities.FLUID_HANDLER_ITEM)
-						return fluids.cast();
-					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return shaders.cast();
-					return super.getCapability(capability, facing);
-				}
-
-			};
-		return null;
+		registrar.register(FluidHandler.ITEM, stack -> new IEItemFluidHandler(stack, CAPACITY));
+		// TODO shader
+		// new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower"), stack)
 	}
 
 	@Override

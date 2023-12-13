@@ -51,7 +51,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world)
 	{
-		super(type, world);
+		super(type, world, ItemStack.EMPTY);
 		this.pickup = Pickup.DISALLOWED;
 	}
 

@@ -23,8 +23,9 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -51,9 +52,9 @@ public class DropInventoryLootEntry extends LootPoolSingletonContainer
 				te = (BlockEntity)dummyBE.master();
 			if(te instanceof IDropInventory ieInvBE&&ieInvBE.getDroppedItems()!=null)
 				ieInvBE.getDroppedItems().forEach(output);
-			else if(te!=null)
+			else if(te!=null&&te.getLevel()!=null)
 			{
-				IItemHandler itemHandler = CapabilityUtils.getCapability(te, Capabilities.ITEM_HANDLER);
+				IItemHandler itemHandler = te.getLevel().getCapability(ItemHandler.BLOCK, te.getBlockPos(), null);
 				if(itemHandler instanceof IEInventoryHandler ieHandler)
 				{
 					for(int i = 0; i < ieHandler.getSlots(); i++)

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -69,9 +70,10 @@ public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillBlockE
 		if(blockEntity.renderAABB==null)
 		{
 			if(blockEntity.dummy==0)
-				blockEntity.renderAABB = new AABB(blockEntity.getBlockPos(), blockEntity.getBlockPos().offset(1, 3, 1));
+				blockEntity.renderAABB = new AABB(Vec3.ZERO, new Vec3(1, 3, 1));
 			else
-				blockEntity.renderAABB = new AABB(blockEntity.getBlockPos(), blockEntity.getBlockPos());
+				blockEntity.renderAABB = new AABB(Vec3.ZERO, Vec3.ZERO);
+			blockEntity.renderAABB = blockEntity.renderAABB.move(blockEntity.getBlockPos());
 		}
 		return blockEntity.renderAABB;
 	}

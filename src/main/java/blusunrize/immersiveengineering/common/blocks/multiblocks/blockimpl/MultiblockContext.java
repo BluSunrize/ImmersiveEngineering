@@ -14,14 +14,11 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 
 import java.util.function.BooleanSupplier;
 
@@ -47,14 +44,6 @@ public record MultiblockContext<State extends IMultiblockState>(
 	public IMultiblockLevel getLevel()
 	{
 		return level;
-	}
-
-	@Override
-	public <T> LazyOptional<T> registerCapability(T value)
-	{
-		LazyOptional<T> result = CapabilityUtils.constantOptional(value);
-		masterHelper.addCapability(result);
-		return result;
 	}
 
 	@Override
@@ -84,17 +73,6 @@ public record MultiblockContext<State extends IMultiblockState>(
 		final int oldValue = masterHelper.getCurrentComparatorOutputs().put(posInMultiblock, newValue);
 		if(oldValue!=newValue)
 			level.updateNeighbourForOutputSignal(posInMultiblock);
-	}
-
-	@Override
-	public <T> BlockCapabilityCache<T, ?> getCapabilityAt(
-			Capability<T> capability, BlockPos posRelativeToMB, RelativeBlockFace face
-	)
-	{
-		return InitialMultiblockContext.getCapabilityAt(
-				masterHelper.getMasterBE(), masterHelper.getOrientation(), multiblock.masterPosInMB(),
-				capability, posRelativeToMB, face
-		);
 	}
 
 	@Override

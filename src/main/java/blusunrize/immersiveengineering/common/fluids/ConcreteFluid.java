@@ -31,6 +31,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 
@@ -79,7 +80,7 @@ public class ConcreteFluid extends IEFluid
 			else
 				solidBlock = StoneDecoration.CONCRETE;
 			world.setBlockAndUpdate(pos, solidBlock.get().defaultBlockState());
-			for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos, pos.offset(1, 1, 1))))
+			for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, new AABB(Vec3.ZERO, new Vec3(1, 1, 1)).move(pos)))
 				living.addEffect(new MobEffectInstance(IEPotions.CONCRETE_FEET.value(), Integer.MAX_VALUE));
 		}
 		else if(world.getBlockState(pos).getBlock()==entry.getBlock())

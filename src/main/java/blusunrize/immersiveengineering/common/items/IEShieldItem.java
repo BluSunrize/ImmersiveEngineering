@@ -48,13 +48,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -80,31 +77,14 @@ public class IEShieldItem extends UpgradeableToolItem
 		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
+	public static void registerCapabilities(ItemCapabilityRegistration.ItemCapabilityRegistrar registrar)
 	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack)
-			{
-				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
-						new EnergyHelper.ItemEnergyStorage(stack, IEShieldItem::getMaxEnergyStored)
-				);
-				final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
-						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "shield"), stack)
-				);
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
-				{
-					if(capability==Capabilities.ENERGY)
-						return energyStorage.cast();
-					if(capability==CapabilityShader.SHADER_CAPABILITY)
-						return shaders.cast();
-					return super.getCapability(capability, facing);
-				}
-			};
-		return null;
+		registrar.register(
+				EnergyStorage.ITEM,
+				(stack, $) -> new EnergyHelper.ItemEnergyStorage(stack, IEShieldItem::getMaxEnergyStored)
+		);
+		// TODO shader
+		// new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "shield"), stack)
 	}
 
 	@Override
@@ -128,7 +108,7 @@ public class IEShieldItem extends UpgradeableToolItem
 	{
 		if(getMaxEnergyStored(stack) > 0)
 		{
-			IEnergyStorage energyStorage = CapabilityUtils.getPresentCapability(stack, Capabilities.ENERGY);
+			IEnergyStorage energyStorage = stack.getCapability(EnergyStorage.ITEM);
 			String stored = energyStorage.getEnergyStored()+"/"+getMaxEnergyStored(stack);
 			list.add(Component.translatable(Lib.DESC+"info.energyStored", stored));
 		}
@@ -145,7 +125,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			inHand |= ((LivingEntity)ent).getItemInHand(InteractionHand.OFF_HAND)==stack;
 
 		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isBlocking();
-		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, Capabilities.ENERGY);
+		IEnergyStorage energy = stack.getCapability(EnergyStorage.ITEM);
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
 			if(getUpgrades(stack).contains("flash_cooldown", Tag.TAG_INT)&&energy.extractEnergy(10, true)==10)

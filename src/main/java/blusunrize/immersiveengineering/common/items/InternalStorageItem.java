@@ -8,19 +8,14 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 public abstract class InternalStorageItem extends IEBaseItem
 {
@@ -32,37 +27,33 @@ public abstract class InternalStorageItem extends IEBaseItem
 
 	public abstract int getSlotCount();
 
-	@Nullable
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
+	// TODO call from all implementations
+	public static void registerCapabilitiesISI(ItemCapabilityRegistrar registrar)
 	{
-		if(!stack.isEmpty())
-			return new IEItemStackHandler(stack);
-		return null;
+		registrar.register(ItemHandler.ITEM, IEItemStackHandler::new);
 	}
 
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)
 	{
-		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(Capabilities.ITEM_HANDLER, null);
-		lazyHandler.ifPresent(handler-> {
-			if(handler instanceof IItemHandlerModifiable)
-			{
-				if(inventory.size()!=handler.getSlots())
-					throw new IllegalArgumentException("Parameter inventory has "+inventory.size()+" slots, capability inventory has "+handler.getSlots());
-				for(int i = 0; i < handler.getSlots(); i++)
-					((IItemHandlerModifiable)handler).setStackInSlot(i, inventory.get(i));
-			}
-			else
-				IELogger.warn("No valid inventory handler found for "+stack);
-		});
+		IItemHandler handler = stack.getCapability(ItemHandler.ITEM);
+		if(handler instanceof IItemHandlerModifiable modifiable)
+		{
+			if(inventory.size()!=modifiable.getSlots())
+				throw new IllegalArgumentException("Parameter inventory has "+inventory.size()+" slots, capability inventory has "+modifiable.getSlots());
+			for(int i = 0; i < modifiable.getSlots(); i++)
+				modifiable.setStackInSlot(i, inventory.get(i));
+		}
+		else
+			IELogger.warn("No valid inventory handler found for "+stack);
 	}
 
 	public NonNullList<ItemStack> getContainedItems(ItemStack stack)
 	{
-		LazyOptional<IItemHandler> lazyHandler = stack.getCapability(Capabilities.ITEM_HANDLER, null);
-		Optional<NonNullList<ItemStack>> ret = lazyHandler.map(handler -> {
-			if(handler instanceof IEItemStackHandler)
-				return ((IEItemStackHandler)handler).getContainedItems();
+		IItemHandler handler = stack.getCapability(ItemHandler.ITEM);
+		if(handler!=null)
+		{
+			if(handler instanceof IEItemStackHandler ieHandler)
+				return ieHandler.getContainedItems();
 			else
 			{
 				IELogger.warn("Inefficiently getting contained items. Why does "+stack+" have a non-IE IItemHandler?");
@@ -71,7 +62,8 @@ public abstract class InternalStorageItem extends IEBaseItem
 					inv.set(i, handler.getStackInSlot(i));
 				return inv;
 			}
-		});
-		return ret.orElse(NonNullList.create());
+		}
+		else
+			return NonNullList.create();
 	}
 }

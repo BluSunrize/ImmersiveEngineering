@@ -33,8 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.OptionalDouble;
@@ -98,31 +97,27 @@ public class ExtractConveyor extends ConveyorBase
 
 		Level world = tile.getLevel();
 		BlockPos neighbour = tile.getBlockPos().relative(this.getExtractDirection());
-		if(!world.isEmptyBlock(neighbour))
+		if(!world.isEmptyBlock(neighbour)&&world.getCapability(ItemHandler.BLOCK, neighbour, this.getExtractDirection().getOpposite())!=null)
 		{
 			BlockState connected = world.getBlockState(neighbour);
-			BlockEntity connectedTile = world.getBlockEntity(neighbour);
-			if(connectedTile!=null&&connectedTile.getCapability(Capabilities.ITEM_HANDLER, this.getExtractDirection().getOpposite()).isPresent())
+			VoxelShape connectedShape = connected.getShape(world, neighbour);
+			VoxelShape projected = connectedShape.getFaceShape(this.getExtractDirection().getOpposite());
+			if(Shapes.joinIsNotEmpty(projected, ALLOWED_MISSING_SHAPE, BooleanOp.OR))
 			{
-				VoxelShape connectedShape = connected.getShape(world, neighbour);
-				VoxelShape projected = connectedShape.getFaceShape(this.getExtractDirection().getOpposite());
-				if(Shapes.joinIsNotEmpty(projected, ALLOWED_MISSING_SHAPE, BooleanOp.OR))
+				AABB aabb = connectedShape.bounds();
+				extend = switch(getExtractDirection())
 				{
-					AABB aabb = connectedShape.bounds();
-					extend = switch(getExtractDirection())
-							{
-								case NORTH -> 1-aabb.maxZ;
-								case SOUTH -> aabb.minZ;
-								case WEST -> 1-aabb.maxX;
-								case EAST -> aabb.minX;
-								default -> throw new IllegalStateException("Unexpected value: "+getExtractDirection());
-							};
-					if(extend > .25)
-						extend = 0.25;
-					double round = extend%.0625;
-					if(round < extend)
-						extend = round+.0625;
-				}
+					case NORTH -> 1-aabb.maxZ;
+					case SOUTH -> aabb.minZ;
+					case WEST -> 1-aabb.maxX;
+					case EAST -> aabb.minX;
+					default -> throw new IllegalStateException("Unexpected value: "+getExtractDirection());
+				};
+				if(extend > .25)
+					extend = 0.25;
+				double round = extend%.0625;
+				if(round < extend)
+					extend = round+.0625;
 			}
 		}
 		extensionRecursionLock = false;
@@ -148,8 +143,8 @@ public class ExtractConveyor extends ConveyorBase
 			BlockPos neighbour = getBlockEntity().getBlockPos().relative(this.getExtractDirection());
 			if(!world.isEmptyBlock(neighbour))
 			{
-				LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, neighbour, this.getExtractDirection().getOpposite(), true);
-				cap.ifPresent(itemHandler ->
+				IItemHandler itemHandler = CapabilityUtils.findItemHandlerAtPos(world, neighbour, this.getExtractDirection().getOpposite(), true);
+				if(itemHandler!=null)
 				{
 					for(int i = 0; i < itemHandler.getSlots(); i++)
 					{
@@ -168,7 +163,7 @@ public class ExtractConveyor extends ConveyorBase
 							return;
 						}
 					}
-				});
+				}
 			}
 		}
 	}

@@ -95,7 +95,7 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 		}
 
 		@Override
-		public void render(GuiGraphics graphics, int mx, int my, float partialTicks)
+		public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTicks)
 		{
 			if(this.visible)
 			{

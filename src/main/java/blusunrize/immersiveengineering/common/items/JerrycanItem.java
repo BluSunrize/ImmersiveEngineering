@@ -9,19 +9,17 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
+import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -36,7 +34,7 @@ import java.util.Optional;
 
 public class JerrycanItem extends IEBaseItem
 {
-	private final int jerrycanMaxMB = 10*FluidType.BUCKET_VOLUME;
+	private static final int jerrycanMaxMB = 10*FluidType.BUCKET_VOLUME;
 
 	public JerrycanItem()
 	{
@@ -46,11 +44,8 @@ public class JerrycanItem extends IEBaseItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		if(Capabilities.FLUID_HANDLER_ITEM!=null) //cap is null until after ForgeMod.preInit, and Minecraft.init calls this method before that
-		{
-			Optional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
-			fsCap.ifPresent(fs -> list.add(IEItemFluidHandler.fluidItemInfoFlavor(fs, jerrycanMaxMB)));
-		}
+		Optional<FluidStack> fsCap = FluidUtil.getFluidContained(stack);
+		fsCap.ifPresent(fs -> list.add(IEItemFluidHandler.fluidItemInfoFlavor(fs, jerrycanMaxMB)));
 	}
 
 	@Nonnull
@@ -60,8 +55,7 @@ public class JerrycanItem extends IEBaseItem
 		Level world = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
 		ItemStack stack = ctx.getItemInHand();
-		BlockEntity tileEntity = world.getBlockEntity(pos);
-		if(tileEntity==null||!tileEntity.getCapability(Capabilities.FLUID_HANDLER).isPresent())
+		if(world.getCapability(FluidHandler.BLOCK, pos, null)==null)
 		{
 			Optional<FluidStack> fs = FluidUtil.getFluidContained(stack);
 			if(fs.isPresent()&&Utils.placeFluidBlock(world, pos.relative(ctx.getClickedFace()), fs.get()))
@@ -100,11 +94,10 @@ public class JerrycanItem extends IEBaseItem
 		return stack;
 	}
 
-	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
+	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
-		if(!stack.isEmpty())
-			return new FluidHandlerItemStack(stack, jerrycanMaxMB);
-		return null;
+		registrar.register(
+				FluidHandler.ITEM, (stack, $) -> new FluidHandlerItemStack(stack, jerrycanMaxMB)
+		);
 	}
 }

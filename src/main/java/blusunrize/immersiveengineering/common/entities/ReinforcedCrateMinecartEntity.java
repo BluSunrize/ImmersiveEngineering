@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -30,7 +31,7 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	}
 
 	@Override
-	public boolean ignoreExplosion()
+	public boolean ignoreExplosion(Explosion p_312868_)
 	{
 		return true;
 	}

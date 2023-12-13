@@ -26,7 +26,7 @@ public class GuiButtonCheckbox extends GuiButtonBoolean
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		super.render(graphics, mouseX, mouseY, partialTicks);
 		if(this.visible&&getState())

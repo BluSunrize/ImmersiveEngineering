@@ -18,17 +18,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class IEItemStackHandler extends ItemStackHandler implements ICapabilityProvider
+public class IEItemStackHandler extends ItemStackHandler
 {
 	public IEItemStackHandler(ItemStack stack)
 	{
@@ -76,17 +72,6 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 		super.onContentsChanged(slot);
 		onChange.run();
 	}
-
-	//TODO invalidate the LazyOptional objects after use?
-	private final LazyOptional<IItemHandler> thisOpt = CapabilityUtils.constantOptional(this);
-
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
-	{
-		return Capabilities.ITEM_HANDLER.orEmpty(capability, thisOpt);
-	}
-
 
 	@Override
 	public void deserializeNBT(CompoundTag nbt)
