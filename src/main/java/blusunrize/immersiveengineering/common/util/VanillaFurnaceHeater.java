@@ -26,23 +26,25 @@ public class VanillaFurnaceHeater implements IExternalHeatable
 		this.furnace = furnace;
 	}
 
-	boolean canCook()
+	int getCookTime()
 	{
 		ItemStack input = furnace.getItem(DATA_LIT_TIME);
 		if(input.isEmpty())
-			return false;
+			return -1;
 		RecipeType<? extends AbstractCookingRecipe> type = ((FurnaceTEAccess)furnace).getRecipeType();
 		Optional<? extends AbstractCookingRecipe> output = furnace.getLevel().getRecipeManager().getRecipeFor(type, furnace, furnace.getLevel());
 		if(output.isEmpty())
-			return false;
+			return -1;
 		ItemStack existingOutput = furnace.getItem(2);
 		if(existingOutput.isEmpty())
-			return true;
+			return output.get().getCookingTime();
 		ItemStack outStack = output.get().getResultItem();
 		if(!existingOutput.sameItem(outStack))
-			return false;
+			return -1;
 		int stackSize = existingOutput.getCount()+outStack.getCount();
-		return stackSize <= furnace.getMaxStackSize()&&stackSize <= outStack.getMaxStackSize();
+		if (stackSize <= furnace.getMaxStackSize()&&stackSize <= outStack.getMaxStackSize())
+			return output.get().getCookingTime();
+		return -1;
 	}
 
 	@Override
@@ -52,8 +54,8 @@ public class VanillaFurnaceHeater implements IExternalHeatable
 		if(now < blockedUntilGameTime)
 			return 0;
 		int energyConsumed = 0;
-		boolean canCook = canCook();
-		if(canCook||redstone)
+		int cookingTime = getCookTime();
+		if(cookingTime>=0||redstone)
 		{
 			ContainerData furnaceData = ((FurnaceTEAccess)furnace).getDataAccess();
 			int burnTime = furnaceData.get(DATA_LIT_TIME);
@@ -78,7 +80,7 @@ public class VanillaFurnaceHeater implements IExternalHeatable
 				}
 			}
 			// Speed up once fully charged
-			if(canCook&&furnaceData.get(DATA_LIT_TIME) >= FULLY_HEATED_LIT_TIME&&furnaceData.get(DATA_COOKING_PROGRESS) < BURN_TIME_STANDARD-1)
+			if(cookingTime>=0&&furnaceData.get(DATA_LIT_TIME) >= FULLY_HEATED_LIT_TIME&&furnaceData.get(DATA_COOKING_PROGRESS) < cookingTime-1)
 			{
 				int energyToUse = ExternalHeaterHandler.defaultFurnaceSpeedupCost;
 				if(energyAvailable-energyConsumed > energyToUse)
