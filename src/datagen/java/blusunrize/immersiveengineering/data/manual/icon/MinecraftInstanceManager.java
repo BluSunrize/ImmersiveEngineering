@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.Timer;
@@ -30,8 +31,8 @@ import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.util.datafix.DataFixers;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import sun.misc.Unsafe;
 
 import java.io.File;
@@ -182,6 +183,7 @@ public class MinecraftInstanceManager
 
 	private void initializeGameRenderer(final ResourceManager resourceManager)
 	{
+		Tesselator.init();
 		final GameRenderer gameRenderer = new GameRenderer(
 				Minecraft.getInstance(),
 				// Again null isn't ideal, but seems to work for the time being

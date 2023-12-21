@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
@@ -25,7 +24,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
@@ -174,6 +172,8 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public static ItemStack getSawblade(ItemStack itemStack, int spare)
 	{
 		IItemHandler cap = itemStack.getCapability(ItemHandler.ITEM);
+		if(cap==null)
+			return ItemStack.EMPTY;
 		// handle spares
 		int slot = spare==0?0: 2+spare;
 		ItemStack sawblade = cap.getStackInSlot(slot);
