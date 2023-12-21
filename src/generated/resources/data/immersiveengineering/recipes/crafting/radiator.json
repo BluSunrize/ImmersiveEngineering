@@ -6,8 +6,10 @@
     "key": {
       "b": {
         "type": "immersiveengineering:fluid_stack",
-        "amount": 1000,
-        "tag": "minecraft:water"
+        "value": {
+          "amount": 1000,
+          "tag": "minecraft:water"
+        }
       },
       "c": {
         "tag": "forge:plates/copper"

@@ -150,6 +150,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 		syncManager.onConnectionAdded(conn);
 		collisionData.addConnection(conn);
 		validateNextTick = true;
+		setDirty();
 	}
 
 	public void removeAllConnectionsAt(IImmersiveConnectable iic, Consumer<Connection> handler)
@@ -196,6 +197,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 		oldNet.removeConnection(c);
 		splitNet(oldNet);
 		syncManager.onConnectionRemoved(c);
+		setDirty();
 	}
 
 	public void removeAndDropConnection(Connection c, BlockPos dropAt, Level world)
@@ -577,6 +579,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 		conn.resetCatenaryData(newOffsetA, newOffsetB);
 		collisionData.addConnection(conn);
 		syncManager.onConnectionEndpointsChanged(conn);
+		setDirty();
 	}
 
 	private void putLocalNet(ConnectionPoint cp, @Nullable LocalWireNetwork net)

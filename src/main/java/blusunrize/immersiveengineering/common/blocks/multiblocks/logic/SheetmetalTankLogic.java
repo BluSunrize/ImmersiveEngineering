@@ -32,17 +32,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBOverlayText<State>
 {
@@ -56,11 +56,11 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		state.comparatorHelper.update(context, state.tank.getFluidAmount());
 		if(!state.rsState.isEnabled(context)||state.tank.isEmpty())
 			return;
-		for(BlockCapabilityCache<IFluidHandler, ?> outputRef : state.outputs)
+		for(Supplier<@Nullable IFluidHandler> outputRef : state.outputs)
 		{
 			int outSize = Math.min(FluidType.BUCKET_VOLUME, state.tank.getFluidAmount());
 			FluidStack out = Utils.copyFluidStackWithAmount(state.tank.getFluid(), outSize, false);
-			IFluidHandler output = outputRef.getCapability();
+			IFluidHandler output = outputRef.get();
 			if(output==null)
 				continue;
 			int accepted = output.fill(out, FluidAction.SIMULATE);
@@ -135,7 +135,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	{
 		public final FluidTank tank = new FluidTank(512*FluidType.BUCKET_VOLUME);
 		private final LayeredComparatorOutput<IMultiblockContext<?>> comparatorHelper;
-		private final List<BlockCapabilityCache<IFluidHandler, ?>> outputs;
+		private final List<Supplier<@Nullable IFluidHandler>> outputs;
 		private final IFluidHandler inputHandler;
 		private final IFluidHandler ioHandler;
 		public final RSState rsState = RSState.disabledByDefault();
@@ -143,7 +143,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
 			this.comparatorHelper = LayeredComparatorOutput.makeForSiloLike(tank.getCapacity(), 4);
-			ImmutableList.Builder<BlockCapabilityCache<IFluidHandler, ?>> outputBuilder = ImmutableList.builder();
+			ImmutableList.Builder<Supplier<@Nullable IFluidHandler>> outputBuilder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.values())
 				if(face!=RelativeBlockFace.DOWN)
 				{

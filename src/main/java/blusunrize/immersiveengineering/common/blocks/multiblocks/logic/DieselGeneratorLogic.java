@@ -36,19 +36,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -72,7 +73,7 @@ public class DieselGeneratorLogic
 		{
 			int output = IEServerConfig.MACHINES.dieselGen_output.get();
 			List<IEnergyStorage> presentOutputs = state.energyOutputs.stream()
-					.map(BlockCapabilityCache::getCapability)
+					.map(Supplier::get)
 					.filter(Objects::nonNull)
 					.collect(Collectors.toList());
 			if(!presentOutputs.isEmpty()&&EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
@@ -205,11 +206,11 @@ public class DieselGeneratorLogic
 
 		// Utils
 		private final BiFunction<Level, Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
-		private final List<BlockCapabilityCache<IEnergyStorage, ?>> energyOutputs;
+		private final List<Supplier<@Nullable IEnergyStorage>> energyOutputs;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-			ImmutableList.Builder<BlockCapabilityCache<IEnergyStorage, ?>> outputs = ImmutableList.builder();
+			ImmutableList.Builder<Supplier<@Nullable IEnergyStorage>> outputs = ImmutableList.builder();
 			for(BlockPos pos : ENERGY_OUTPUTS)
 				outputs.add(ctx.getCapabilityAt(EnergyStorage.BLOCK, pos, RelativeBlockFace.DOWN));
 			this.energyOutputs = outputs.build();

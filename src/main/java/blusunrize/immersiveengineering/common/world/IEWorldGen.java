@@ -9,16 +9,14 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 
 public class IEWorldGen
 {
@@ -45,11 +43,10 @@ public class IEWorldGen
 			"ie_range", () -> () -> IEHeightProvider.CODEC
 	);
 
-	public static void init()
+	public static void init(IEventBus modBus)
 	{
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		FEATURE_REGISTER.register(bus);
-		PLACEMENT_REGISTER.register(bus);
-		HEIGHT_REGISTER.register(bus);
+		FEATURE_REGISTER.register(modBus);
+		PLACEMENT_REGISTER.register(modBus);
+		HEIGHT_REGISTER.register(modBus);
 	}
 }

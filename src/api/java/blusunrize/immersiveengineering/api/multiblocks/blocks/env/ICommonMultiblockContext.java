@@ -13,29 +13,30 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
+
+import java.util.function.Supplier;
 
 @NonExtendable
 public interface ICommonMultiblockContext
 {
-	default <T> BlockCapabilityCache<T, ?> getCapabilityAt(BlockCapability<T, Direction> capability, MultiblockFace face)
+	default <T> Supplier<T> getCapabilityAt(BlockCapability<T, Direction> capability, MultiblockFace face)
 	{
 		return getCapabilityAt(capability, face.posInMultiblock(), face.face());
 	}
 
-	<T> BlockCapabilityCache<T, ?> getCapabilityAt(
+	<T> Supplier<T> getCapabilityAt(
 			BlockCapability<T, Direction> capability, BlockPos posRelativeToMB, RelativeBlockFace face
 	);
 
-	default <T> BlockCapabilityCache<T, ?> getVoidCapabilityAt(
+	default <T> Supplier<T> getVoidCapabilityAt(
 			BlockCapability<T, Void> capability, BlockPos posRelativeToMB
 	)
 	{
 		return getCapabilityAt(capability, posRelativeToMB, null);
 	}
 
-	<T, C> BlockCapabilityCache<T, ?> getCapabilityAt(
+	<T, C> Supplier<T> getCapabilityAt(
 			BlockCapability<T, C> capability, BlockPos posRelativeToMB, C context
 	);
 }

@@ -16,12 +16,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 
 import javax.annotation.Nonnull;
@@ -41,9 +40,9 @@ public class GrassDropModifier extends LootModifier
 		super(conditionsIn);
 	}
 
-	public static void init()
+	public static void init(IEventBus modBus)
 	{
-		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		REGISTER.register(modBus);
 	}
 
 	@Nonnull

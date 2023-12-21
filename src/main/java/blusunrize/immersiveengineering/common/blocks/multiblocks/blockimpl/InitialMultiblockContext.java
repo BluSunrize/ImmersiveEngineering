@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
-import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -32,13 +31,13 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 {
 	@Override
 	public <T, C>
-	BlockCapabilityCache<T, ?> getCapabilityAt(BlockCapability<T, C> capability, BlockPos posRelativeToMB, C context)
+	Supplier<T> getCapabilityAt(BlockCapability<T, C> capability, BlockPos posRelativeToMB, C context)
 	{
 		return getCapabilityAt(masterBE, orientation, masterOffset, capability, posRelativeToMB, context);
 	}
 
 	@Override
-	public <T> BlockCapabilityCache<T, ?> getCapabilityAt(
+	public <T> Supplier<T> getCapabilityAt(
 			BlockCapability<T, Direction> capability, BlockPos posRelativeToMB, RelativeBlockFace face
 	)
 	{
@@ -63,19 +62,37 @@ public record InitialMultiblockContext<State extends IMultiblockState>(
 		return () -> MultiblockContext.requestBESync(masterBE);
 	}
 
-	public static <T, C> BlockCapabilityCache<T, ?> getCapabilityAt(
+	public static <T, C> Supplier<@Nullable T> getCapabilityAt(
 			BlockEntity masterBE, MultiblockOrientation orientation, BlockPos masterOffset,
 			BlockCapability<T, C> capability, BlockPos posRelativeToMB, C context
 	)
 	{
-		if(masterBE.getLevel() instanceof ServerLevel serverLevel)
+		return new Supplier<>()
 		{
-			final BlockPos offset = orientation.getAbsoluteOffset(posRelativeToMB.subtract(masterOffset));
-			final BlockPos pos = masterBE.getBlockPos().offset(offset);
-			return BlockCapabilityCache.create(capability, serverLevel, pos, context);
-		}
-		else
-			// TODO uncached version for this?
-			return null;
+			private BlockCapabilityCache<T, C> cache;
+
+			@Override
+			@Nullable
+			public T get()
+			{
+				Level level = masterBE.getLevel();
+				if(level==null)
+					return null;
+				if(level instanceof ServerLevel serverLevel)
+				{
+					if(cache==null)
+						cache = BlockCapabilityCache.create(capability, serverLevel, getCapabilityPos(), context);
+					return cache.getCapability();
+				}
+				else
+					return level.getCapability(capability, getCapabilityPos(), context);
+			}
+
+			private BlockPos getCapabilityPos()
+			{
+				final BlockPos offset = orientation.getAbsoluteOffset(posRelativeToMB.subtract(masterOffset));
+				return masterBE.getBlockPos().offset(offset);
+			}
+		};
 	}
 }

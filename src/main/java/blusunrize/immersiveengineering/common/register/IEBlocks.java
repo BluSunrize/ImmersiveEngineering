@@ -43,7 +43,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -630,9 +630,9 @@ public final class IEBlocks
 		return () -> baseProps.get().dynamicShape();
 	}
 
-	public static void init()
+	public static void init(IEventBus modBus)
 	{
-		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		REGISTER.register(modBus);
 		StoneDecoration.init();
 		Metals.init();
 		WoodenDecoration.init();

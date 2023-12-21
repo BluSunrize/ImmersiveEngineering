@@ -69,7 +69,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static net.neoforged.neoforge.network.PlayNetworkDirection.PLAY_TO_CLIENT;
@@ -95,25 +94,6 @@ public class ImmersiveEngineering
 			.clientAcceptedVersions(VERSION::equals)
 			.simpleChannel();
 
-	// Complete hack: DistExecutor::safeRunForDist intentionally tries to access the "wrong" supplier in dev, which
-	// throws an error (rather than an exception) on J16 due to trying to load a client-only class. So we need to
-	// replace the error with an exception in dev.
-	public static <T>
-	Supplier<T> bootstrapErrorToXCPInDev(Supplier<T> in)
-	{
-		if(FMLLoader.isProduction())
-			return in;
-		return () -> {
-			try
-			{
-				return in.get();
-			} catch(BootstrapMethodError e)
-			{
-				throw new RuntimeException(e);
-			}
-		};
-	}
-
 	public ImmersiveEngineering(Dist dist, IEventBus modBus)
 	{
 		IELogger.logger = LogManager.getLogger(MODID);
@@ -127,11 +107,11 @@ public class ImmersiveEngineering
 		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
 		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC);
-		IEContent.modConstruction();
+		IEContent.modConstruction(modBus);
 		if(dist.isClient())
 			ClientProxy.modConstruction();
 
-		IEWorldGen.init();
+		IEWorldGen.init(modBus);
 		IECompatModules.onModConstruction();
 	}
 

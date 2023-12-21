@@ -92,17 +92,14 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public class Utils
 {
@@ -572,7 +569,16 @@ public class Utils
 
 	public static ItemStack insertStackIntoInventory(BlockCapabilityCache<IItemHandler, ?> ref, ItemStack stack, boolean simulate)
 	{
-		IItemHandler handler = ref.getCapability();
+		return insertStackIntoInventory(ref.getCapability(), stack, simulate);
+	}
+
+	public static ItemStack insertStackIntoInventory(Supplier<@Nullable IItemHandler> ref, ItemStack stack, boolean simulate)
+	{
+		return insertStackIntoInventory(ref.get(), stack, simulate);
+	}
+
+	private static ItemStack insertStackIntoInventory(IItemHandler handler, ItemStack stack, boolean simulate)
+	{
 		if(handler!=null&&!stack.isEmpty())
 			return ItemHandlerHelper.insertItem(handler, stack.copy(), simulate);
 		else

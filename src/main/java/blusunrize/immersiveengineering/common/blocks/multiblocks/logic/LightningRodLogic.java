@@ -33,15 +33,15 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
@@ -53,9 +53,9 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 		final State state = context.getState();
 		final IMultiblockLevel level = context.getLevel();
 		if(state.energy.getEnergyStored() > 0)
-			for(final BlockCapabilityCache<IEnergyStorage, ?> outputRef : state.energyOutputs)
+			for(final Supplier<@Nullable IEnergyStorage> outputRef : state.energyOutputs)
 			{
-				final IEnergyStorage output = outputRef.getCapability();
+				final IEnergyStorage output = outputRef.get();
 				if(output!=null)
 				{
 					final int accepted = output.receiveEnergy(state.energy.getEnergyStored(), false);
@@ -162,13 +162,13 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(
 				IEServerConfig.MACHINES.lightning_output.get()
 		);
-		private final ImmutableList<BlockCapabilityCache<IEnergyStorage, ?>> energyOutputs;
+		private final ImmutableList<Supplier<@Nullable IEnergyStorage>> energyOutputs;
 		@Nullable
 		private FenceNet fenceNet = null;
 
 		public State(IInitialMultiblockContext<State> capabilitySource)
 		{
-			ImmutableList.Builder<BlockCapabilityCache<IEnergyStorage, ?>> builder = ImmutableList.builder();
+			ImmutableList.Builder<Supplier<@Nullable IEnergyStorage>> builder = ImmutableList.builder();
 			for(RelativeBlockFace face : RelativeBlockFace.HORIZONTAL)
 				builder.add(capabilitySource.getCapabilityAt(
 						EnergyStorage.BLOCK,

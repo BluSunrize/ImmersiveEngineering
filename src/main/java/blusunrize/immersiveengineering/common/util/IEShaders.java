@@ -21,8 +21,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.DistExecutor;
 import org.joml.Vector4f;
 
 import java.util.function.BiFunction;
@@ -54,14 +52,12 @@ public class IEShaders
 		addShader("vaulttec", 0, Rarity.COMMON, 0xff56382c, 0xff1a4785, 0xffc0aa50, 0xffaaaaaa).setInfo(null, "Fallout", "vaulttec");
 
 		final ShaderRegistryEntry sponsor = addShader("sponsor", 0, Rarity.EPIC, 0xff191919, 0xfff71b24, 0xffffffff, 0xffaaaaaa, "sponsor", false, 0xffffffff).setInfo(null, "Fallout", "sponsor");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			((ShaderCaseMinecart)sponsor.getCase(ieLoc("minecart"))).mirrorSideForPass[2] = false;
-			sponsor.getCase(ieLoc("revolver")).getLayers()[4].setTextureBounds(0, .75, .25, 1);
-			sponsor.getCase(ieLoc("drill")).getLayers()[3].setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d);
-			sponsor.getCase(ieLoc("buzzsaw")).getLayers()[3].setTextureBounds(2/64d, 33/64d, 23/64d, 54/64d);
-			sponsor.getCase(ieLoc("chemthrower")).getLayers()[3].setTextureBounds(6/64d, 32/64d, 22/64d, 48/64d);
-			sponsor.getCase(ieLoc("shield")).getLayers()[2].setTextureBounds(0/32d, 7/32d, 14/32d, 23/32d).setCutoutBounds(.0625, 0, .9375, 1);
-		});
+		((ShaderCaseMinecart)sponsor.getCase(ieLoc("minecart"))).mirrorSideForPass[2] = false;
+		sponsor.getCase(ieLoc("revolver")).getLayers()[4].setTextureBounds(0, .75, .25, 1);
+		sponsor.getCase(ieLoc("drill")).getLayers()[3].setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d);
+		sponsor.getCase(ieLoc("buzzsaw")).getLayers()[3].setTextureBounds(2/64d, 33/64d, 23/64d, 54/64d);
+		sponsor.getCase(ieLoc("chemthrower")).getLayers()[3].setTextureBounds(6/64d, 32/64d, 22/64d, 48/64d);
+		sponsor.getCase(ieLoc("shield")).getLayers()[2].setTextureBounds(0/32d, 7/32d, 14/32d, 23/32d).setCutoutBounds(.0625, 0, .9375, 1);
 
 		addShader("massfusion", 3, Rarity.RARE, 0xff6e5a37, 0xff394730, 0xff545454, 0xffaaaaaa, "fusion", true, 0xffffffff).setInfo(null, "Fallout", "massfusion");
 
@@ -72,29 +68,25 @@ public class IEShaders
 		addShader("crescentrose", 2, Rarity.COMMON, 0xff141414, 0xff910008, 0xff080808, 0xffa4a4a4).setInfo(null, "RWBY", "crescentrose");
 		addShader("qrow", 2, Rarity.UNCOMMON, 0xff6d1c11, 0xffd8d7d0, 0xff313640, 0xff730008).setInfo(null, "RWBY", "qrow");
 		final ShaderRegistryEntry lususnaturae = addShader("lususnaturae", 0, Rarity.EPIC, 0xff141919, 0xff141919, 0xffadb4bf, 0xffadb4bf).setInfo(null, "RWBY", "lususnaturae");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			addBlockScaledLayer(lususnaturae, "minecraft:block/destroy_stage_8", 0xbb940c0c);
-			addLayer(lususnaturae, "1_4", 0xffadb4bf);
-		});
+		addBlockScaledLayer(lususnaturae, "minecraft:block/destroy_stage_8", 0xbb940c0c);
+		addLayer(lususnaturae, "1_4", 0xffadb4bf);
 
 		addShader("vanguard", 3, Rarity.UNCOMMON, 0xff373737, 0xff131b42, 0xffb86c14, 0xffdcdcdc).setInfo(null, "Destiny", "vanguard");
 		addShader("regal", 4, Rarity.UNCOMMON, 0xffd8d4d1, 0xff431c1d, 0xffd8d4d1, 0xffd8d4d1).setInfo(null, "Destiny", "regal");
 		addShader("harrowed", 4, Rarity.RARE, 0xff161321, 0xff431c1d, 0xff161321, 0xff161321).setInfo(null, "Destiny", "harrowed");
 		addShader("taken", 5, Rarity.EPIC, 0xff111c26, 0xff111c26, 0xffbad7dd, 0xff111c26, null, false, 0xffffffff).setInfo(null, "Destiny", "taken");
 		final ShaderRegistryEntry ikelos = addShader("ikelos", 2, Lib.RARITY_MASTERWORK, 0xff74665d, 0xff424348, 0xff424348, 0xff313131).setInfo(null, "Destiny", "ikelos");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			addDynamicLayer(ikelos, "circuit", 0xffefa117,
-					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
-					pre -> {
-					},
-					true
-			);
-			addLayer(ikelos, "1_4", 0xff5f646a);
-			ikelos.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 1, 0), scale, 2, null);
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 0, 1), scale, 2, null);
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(1, 0, 0), scale, 2, null);
-			});
+		addDynamicLayer(ikelos, "circuit", 0xffefa117,
+				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
+				pre -> {
+				},
+				true
+		);
+		addLayer(ikelos, "1_4", 0xff5f646a);
+		ikelos.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 1, 0), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 0, 1), scale, 2, null);
+			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(1, 0, 0), scale, 2, null);
 		});
 
 		addShader("angelsthesis", 2, Rarity.EPIC, 0xff1e1e1e, 0xff754697, 0xff77b93d, 0xff505050, null, false, 0xffffffff).setInfo("Mecha", "Neon Genesis Evangelion", "angelsthesis");
@@ -108,16 +100,14 @@ public class IEShaders
 		addShader("twili", 5, Rarity.EPIC, 0xff555d70, 0xff1a1e2b, 0xff222739, 0xff1db58e, "circuit", false, 0xff1db58e).setInfo(null, "The Legend of Zelda: Twilight Princess", "twili");
 		addShader("usurper", 3, Rarity.EPIC, 0xff3e1e1e, 0xff5c6156, 0xff111010, 0xff737a6c, "circuit", false, 0xffca2f38).setInfo(null, "The Legend of Zelda: Twilight Princess", "usurper");
 		final ShaderRegistryEntry ancient = addShader("ancient", 6, Lib.RARITY_MASTERWORK, 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			addDynamicLayer(ancient, "1_6", 0xff80fcf2,//0xaafaf307,
-					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
-					pre -> {
-					},
-					true
-			);
-			addLayer(ancient, "circuit", 0x99bc9377);
-			((ShaderCaseDrill)ancient.getCase(ieLoc("drill"))).addHeadLayers(new ShaderLayer(ieLoc("item/drill_iron"), 0xff80fcf2));
-		});
+		addDynamicLayer(ancient, "1_6", 0xff80fcf2,//0xaafaf307,
+				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
+				pre -> {
+				},
+				true
+		);
+		addLayer(ancient, "circuit", 0x99bc9377);
+		((ShaderCaseDrill)ancient.getCase(ieLoc("drill"))).addHeadLayers(new ShaderLayer(ieLoc("item/drill_iron"), 0xff80fcf2));
 
 		addShader("glacis", 6, Rarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd).setInfo(null, null, "glacis");
 		addShader("phoenix", 5, Rarity.RARE, 0xff750000, 0xffd00000, 0xffff7f00, 0xffff7f00).setInfo(null, null, "phoenix");
@@ -132,38 +122,38 @@ public class IEShaders
 		addShader("omnitool", 2, Rarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null, "Mass Effect", "omnitool");
 
 		final ShaderRegistryEntry kindled = addShader("kindled", 5, Rarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff4f4f4f).setInfo(null, "Dark Souls", "kindled");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addBlockScaledLayer(kindled, "minecraft:block/fire_0", 0x80ffffff));
+		addBlockScaledLayer(kindled, "minecraft:block/fire_0", 0x80ffffff);
 
 		final ShaderRegistryEntry darkfire = addShader("darkfire", 5, Rarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null, "Kingdom Hearts", "darkfire");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addBlockScaledLayer(darkfire, "immersiveengineering:block/shaders/greyscale_fire", 0xff9e83eb));
+		addBlockScaledLayer(darkfire, "immersiveengineering:block/shaders/greyscale_fire", 0xff9e83eb);
 
 		final ShaderRegistryEntry erruption = addShader("erruption", 5, Rarity.RARE, 0xff2b160b, 0xff58432f, 0x80bf301f, 0xff58432f).setInfo(null, null, "erruption");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addBlockScaledLayer(erruption, "minecraft:block/destroy_stage_8", 0xffff6314));
+		addBlockScaledLayer(erruption, "minecraft:block/destroy_stage_8", 0xffff6314);
 
 		addShader("waaagh", 5, Rarity.RARE, 0xff0f0f0f, 0xffdea712, 0xffc15b09, 0xff2f2f2f, "1_7", true, 0xff2f2f2f).setInfo(null, "Warhammer 40k", "waaagh");
 
 		final ShaderRegistryEntry astartes = addShader("astartes", 3, Rarity.RARE, 0xff212429, 0xff8e3334, 0xff7b7e87, 0xff7b7e87).setInfo(null, "Warhammer 40k", "astartes");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(astartes, "1_8", 0xff8e3334));
+		addLayer(astartes, "1_8", 0xff8e3334);
 
 		final ShaderRegistryEntry netherforged = addShader("netherforged", 0, Rarity.EPIC, 0xff575046, 0xff323c2c, 0x80bf541f, 0xff4f4f4f).setInfo(null, null, "netherforged");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+		{
 			addBlockScaledLayer(netherforged, "minecraft:block/magma", 0xffffffff);
 			netherforged.getCase(ieLoc("revolver")).getLayers()[4].setTextureBounds(0, .6875, .3125, 1);
 			addLayer(netherforged, "1_8", 0xff323c2c);
 			netherforged.getCase(ieLoc("revolver")).getLayers()[5].setTextureBounds(0, .8125, 1, 1).setCutoutBounds(0, 0, 1, .1875);
 			addLayer(netherforged, "1_0", 0xff323c2c);
-		});
+		}
 
 		addShader("transpride", 2, Rarity.EPIC, 0xfff5abb9, 0xff5bcffa, 0xfff5abb9, 0xffffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "transpride");
 		final ShaderRegistryEntry enbypride = addShader("enbypride", 8, Rarity.EPIC, 0xff282828, 0xff282828, 0xff9d59d2, 0xffffffff, "1_2", true, 0xfffcf431).setInfo("Pride", "Pride Flags", "enbypride");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(enbypride, "whitestripe", 0xffffffff));
+		addLayer(enbypride, "whitestripe", 0xffffffff);
 		final ShaderRegistryEntry gaypride = addShader("gaypride", 8, Rarity.EPIC, 0xff5049cc, 0xff26ceaa, 0xff7bade2, 0xffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "gaypride");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(gaypride, "1_3", 0xff98e8e6));
+		addLayer(gaypride, "1_3", 0xff98e8e6);
 		final ShaderRegistryEntry lesbianpride = addShader("lesbianpride", 8, Rarity.EPIC, 0xffa50062, 0xffd462a5, 0xffff9b55, 0xffa50062, "1_2", true, 0xffd62900).setInfo("Pride", "Pride Flags", "lesbianpride");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(lesbianpride, "whitestripe", 0xffffffff));
+		addLayer(lesbianpride, "whitestripe", 0xffffffff);
 		addShader("bipride", 8, Rarity.EPIC, 0xff0035a9, 0xff9c4e97, 0xffd70071, 0xff0035a9).setInfo("Pride", "Pride Flags", "bipride");
 		final ShaderRegistryEntry acepride = addShader("acepride", 8, Rarity.EPIC, 0xff510053, 0xffffffff, 0xff6c6c6c, 0xff6c6c6c, "1_2", true, 0xff000000).setInfo("Pride", "Pride Flags", "acepride");
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> addLayer(acepride, "whitestripe", 0xff510053));
+		addLayer(acepride, "whitestripe", 0xff510053);
 	}
 
 	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)

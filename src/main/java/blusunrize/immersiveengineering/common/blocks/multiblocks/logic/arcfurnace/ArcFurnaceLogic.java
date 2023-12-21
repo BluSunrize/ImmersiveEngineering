@@ -43,18 +43,19 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ArcFurnaceLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
@@ -215,7 +216,7 @@ public class ArcFurnaceLogic
 
 	private void outputItems(State state)
 	{
-		IItemHandler outputHandler = state.output.getCapability();
+		IItemHandler outputHandler = state.output.get();
 		if(outputHandler!=null)
 			for(int j : OUTPUT_SLOTS)
 			{
@@ -230,7 +231,7 @@ public class ArcFurnaceLogic
 		final ItemStack slagStack = state.inventory.getStackInSlot(SLAG_SLOT);
 		if(slagStack.isEmpty())
 			return;
-		IItemHandler slagOutputHandler = state.slagOutput.getCapability();
+		IItemHandler slagOutputHandler = state.slagOutput.get();
 		if(slagOutputHandler!=null)
 		{
 			int out = Math.min(slagStack.getCount(), 16);
@@ -303,8 +304,8 @@ public class ArcFurnaceLogic
 		private final InMachineProcessor<ArcFurnaceRecipe> processor;
 
 		// Utilities
-		private final BlockCapabilityCache<IItemHandler, ?> output;
-		private final BlockCapabilityCache<IItemHandler, ?> slagOutput;
+		private final Supplier<@Nullable IItemHandler> output;
+		private final Supplier<@Nullable IItemHandler> slagOutput;
 		private final IItemHandler insertionHandler;
 		private final IItemHandler additiveHandler;
 		private final IItemHandler outputHandler;

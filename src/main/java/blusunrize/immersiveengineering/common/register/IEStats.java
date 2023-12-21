@@ -9,14 +9,13 @@
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +30,9 @@ public class IEStats
 	public static final Holder<ResourceLocation> WIRE_DEATHS = registerCustomStat("wire_deaths", StatFormatter.DEFAULT);
 	public static final Holder<ResourceLocation> SKYHOOK_DISTANCE = registerCustomStat("skyhook_distance", StatFormatter.DISTANCE);
 
-	public static void modConstruction()
+	public static void modConstruction(IEventBus modBus)
 	{
-		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		REGISTER.register(modBus);
 	}
 
 	public static void setup()

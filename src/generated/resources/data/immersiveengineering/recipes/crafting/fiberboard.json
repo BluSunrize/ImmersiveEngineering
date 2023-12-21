@@ -5,8 +5,10 @@
     "key": {
       "b": {
         "type": "immersiveengineering:fluid_stack",
-        "amount": 1000,
-        "tag": "forge:phenolic_resin"
+        "value": {
+          "amount": 1000,
+          "tag": "forge:phenolic_resin"
+        }
       },
       "w": {
         "tag": "forge:dusts/wood"

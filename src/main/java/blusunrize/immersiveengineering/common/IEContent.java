@@ -17,11 +17,9 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrig
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperDummy;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
 import blusunrize.immersiveengineering.api.tool.ShieldDisablingHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidStackRecipeQuery;
@@ -34,7 +32,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
-import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
@@ -86,7 +83,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.ParallelDispatchEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -105,7 +101,7 @@ public class IEContent
 {
 	private static CompletableFuture<?> lastOnThreadFuture;
 
-	public static void modConstruction()
+	public static void modConstruction(IEventBus modBus)
 	{
 		/*BULLETS*/
 		BulletItem.initBullets();
@@ -132,7 +128,6 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
 		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
-		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		IEFluids.REGISTER.register(modBus);
 		IEFluids.TYPE_REGISTER.register(modBus);
 		IEPotions.REGISTER.register(modBus);
@@ -145,15 +140,15 @@ public class IEContent
 		IEIngredients.REGISTER.register(modBus);
 		IEDataAttachments.REGISTER.register(modBus);
 		MultiblockAdvancementTrigger.REGISTER.register(modBus);
-		IEStats.modConstruction();
-		IEItems.init();
-		IESounds.init();
-		IEBlocks.init();
-		GrassDropModifier.init();
-		IERecipeTypes.init();
-		IELootFunctions.init();
-		IEArgumentTypes.init();
-		IEBannerPatterns.init();
+		IEStats.modConstruction(modBus);
+		IEItems.init(modBus);
+		IESounds.init(modBus);
+		IEBlocks.init(modBus);
+		GrassDropModifier.init(modBus);
+		IERecipeTypes.init(modBus);
+		IELootFunctions.init(modBus);
+		IEArgumentTypes.init(modBus);
+		IEBannerPatterns.init(modBus);
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;

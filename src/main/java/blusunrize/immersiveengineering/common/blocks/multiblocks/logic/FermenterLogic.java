@@ -42,7 +42,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
@@ -53,6 +52,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class FermenterLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
@@ -93,7 +94,7 @@ public class FermenterLogic
 			changed = enqueueNewProcesses(context);
 
 		changed |= FluidUtils.multiblockFluidOutput(
-				state.fluidOutput.getCapability(), state.tank, EMPTY_FLUID_SLOT, FILLED_FLUID_SLOT, state.inventory
+				state.fluidOutput.get(), state.tank, EMPTY_FLUID_SLOT, FILLED_FLUID_SLOT, state.inventory
 		);
 		changed |= outputItem(context);
 
@@ -155,7 +156,7 @@ public class FermenterLogic
 		final ItemStack outputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
 		if(outputStack.isEmpty()||!ctx.getLevel().shouldTickModulo(8))
 			return false;
-		IItemHandler outputHandler = state.itemOutput.getCapability();
+		IItemHandler outputHandler = state.itemOutput.get();
 		if(outputHandler==null)
 			return false;
 		ItemStack stack = ItemHandlerHelper.copyStackWithSize(outputStack, 1);
@@ -216,8 +217,8 @@ public class FermenterLogic
 		private final MultiblockProcessor<FermenterRecipe, ProcessContextInMachine<FermenterRecipe>> processor;
 		public final RSState rsState = RSState.enabledByDefault();
 
-		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
-		private final BlockCapabilityCache<IItemHandler, ?> itemOutput;
+		private final Supplier<@Nullable IFluidHandler> fluidOutput;
+		private final Supplier<@Nullable IItemHandler> itemOutput;
 		private final IItemHandler insertionHandler;
 		private final IItemHandler extractionHandler;
 		private final IFluidHandler fluidHandler;

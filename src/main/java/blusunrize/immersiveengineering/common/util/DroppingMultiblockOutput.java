@@ -12,14 +12,16 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultib
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 public class DroppingMultiblockOutput
 {
 	private final MultiblockFace relativeDropPos;
-	private final BlockCapabilityCache<IItemHandler, ?> output;
+	private final Supplier<@Nullable IItemHandler> output;
 
 	public DroppingMultiblockOutput(
 			MultiblockFace relativeDropPos, IInitialMultiblockContext<?> ctx

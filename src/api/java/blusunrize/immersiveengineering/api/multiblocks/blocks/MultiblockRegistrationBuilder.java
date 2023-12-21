@@ -40,7 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -205,7 +206,7 @@ public abstract class MultiblockRegistrationBuilder<
 		return component(extraComponent, extraComponent);
 	}
 
-	public MultiblockRegistration<State> build()
+	public MultiblockRegistration<State> build(Consumer<Consumer<IEventBus>> registerToModBus)
 	{
 		Objects.requireNonNull(logic);
 		Objects.requireNonNull(masterBE);
@@ -241,9 +242,9 @@ public abstract class MultiblockRegistrationBuilder<
 				mirrorable, hasComparatorOutput, redstoneInputAware, postProcessesShape,
 				getMasterPosInMB, getSize, disassemble, structure, name
 		);
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(
+		registerToModBus.accept(bus -> bus.addListener(
 				RegisterCapabilitiesEvent.class, this::registerCapabilities
-		);
+		));
 		return this.result;
 	}
 

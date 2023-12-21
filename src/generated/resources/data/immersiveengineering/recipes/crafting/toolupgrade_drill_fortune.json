@@ -4,8 +4,10 @@
   "key": {
     "a": {
       "type": "immersiveengineering:fluid_stack",
-      "amount": 1000,
-      "tag": "forge:redstone_acid"
+      "value": {
+        "amount": 1000,
+        "tag": "forge:redstone_acid"
+      }
     },
     "c": {
       "item": "immersiveengineering:component_steel"

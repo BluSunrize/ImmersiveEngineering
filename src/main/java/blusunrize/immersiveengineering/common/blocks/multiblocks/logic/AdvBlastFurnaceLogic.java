@@ -36,7 +36,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -44,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class AdvBlastFurnaceLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
@@ -141,8 +141,8 @@ public class AdvBlastFurnaceLogic
 	public static class State implements IMultiblockState, IFurnaceEnvironment<BlastFurnaceRecipe>
 	{
 		private final BlastFurnaceLogic.State innerState;
-		private final BlockCapabilityCache<IItemHandler, ?> outputRef;
-		private final BlockCapabilityCache<IItemHandler, ?> slagRef;
+		private final Supplier<@Nullable IItemHandler> outputRef;
+		private final Supplier<@Nullable IItemHandler> slagRef;
 		private final IItemHandler inputHandler;
 		private final IItemHandler outputHandler;
 		private final IItemHandler slagHandler;

@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnac
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 public class IEMultiblockLogic
 {
@@ -42,8 +42,7 @@ public class IEMultiblockLogic
 			BuiltInRegistries.BLOCK_ENTITY_TYPE, Lib.MODID
 	);
 
-	public static final MultiblockRegistration<CokeOvenLogic.State> COKE_OVEN = stone(new CokeOvenLogic(), "coke_oven", true)
-			.structure(() -> IEMultiblocks.COKE_OVEN)
+	public static final MultiblockRegistration<CokeOvenLogic.State> COKE_OVEN = stone(new CokeOvenLogic(), "coke_oven", true).structure(() -> IEMultiblocks.COKE_OVEN)
 			.gui(IEMenuTypes.COKE_OVEN)
 			.build();
 
@@ -198,5 +197,6 @@ public class IEMultiblockLogic
 		BLOCK_REGISTER.register(bus);
 		ITEM_REGISTER.register(bus);
 		BE_REGISTER.register(bus);
+		IEMultiblockBuilder.handleModBusRegistrations(bus);
 	}
 }

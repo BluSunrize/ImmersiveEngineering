@@ -5,8 +5,10 @@
     "key": {
       "c": {
         "type": "immersiveengineering:fluid_stack",
-        "amount": 1000,
-        "tag": "forge:creosote"
+        "value": {
+          "amount": 1000,
+          "tag": "forge:creosote"
+        }
       },
       "s": {
         "tag": "forge:rods/wooden"

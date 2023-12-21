@@ -46,7 +46,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -54,11 +53,13 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class RefineryLogic
@@ -89,7 +90,7 @@ public class RefineryLogic
 		state.active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
 		tryEnqueueProcess(state, context.getLevel().getRawLevel());
 		FluidUtils.multiblockFluidOutput(
-				state.fluidOutput.getCapability(), state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
+				state.fluidOutput.get(), state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
 		);
 	}
 
@@ -188,7 +189,7 @@ public class RefineryLogic
 
 		// Utils
 		private final IFluidTank[] tankArray = {tanks.leftInput, tanks.rightInput, tanks.output};
-		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
+		private final Supplier<@Nullable IFluidHandler> fluidOutput;
 		private final IFluidHandler inputCap;
 		private final IFluidHandler outputCap;
 

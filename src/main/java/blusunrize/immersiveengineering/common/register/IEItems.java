@@ -28,11 +28,10 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -354,9 +353,9 @@ public final class IEItems
 		}
 	}
 
-	public static void init()
+	public static void init(IEventBus modBus)
 	{
-		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		REGISTER.register(modBus);
 		// Load all classes to make sure the static variables are initialized
 		Molds.init();
 		Ingredients.init();

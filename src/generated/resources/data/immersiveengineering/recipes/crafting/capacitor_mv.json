@@ -10,8 +10,10 @@
     },
     "e": {
       "type": "immersiveengineering:fluid_stack",
-      "amount": 1000,
-      "tag": "forge:redstone_acid"
+      "value": {
+        "amount": 1000,
+        "tag": "forge:redstone_acid"
+      }
     },
     "f": {
       "tag": "forge:ingots/steel"

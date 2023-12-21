@@ -1,5 +1,6 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
+import net.neoforged.gradle.common.tasks.PotentiallySignJar
 import org.gradle.work.Incremental
 
 plugins {
@@ -68,28 +69,12 @@ processResources {
     }
     exclude ".cache"
     //Minify json resources
-    //TODO
-    //doLast {
-    //    fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-    //        File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
-    //    }
-    //}
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
+        }
+    }
 }
-
-// TODO update for NG
-// When using "Run using IntelliJ" (the only option with well-working hotswapping) the used "resources" directory is
-// different from the one used by gradle/the processResources task
-task copyModsTomlForIntelliJ(type: Copy) {
-    from processResources.destinationDir
-    into "$projectDir/out/production/resources"
-    include "META-INF/mods.toml"
-}
-
-//copyModsTomlForIntelliJ.dependsOn processResources
-//afterEvaluate {
-//    // prepareRuns doesn't exist before afterEvaluate
-//    prepareRuns.dependsOn copyModsTomlForIntelliJ
-//}
 
 runs {
     configureEach {
@@ -155,11 +140,21 @@ if (customGradle.exists()) {
     apply from: customGradle;
 }
 
-// TODO check what needs to be done with this
-task signJar(type: Jar) {
+task signJar(type: PotentiallySignJar) {
+    if (project.hasProperty('keyStore')) {
+        keyStore = project.keyStore
+        alias = project.storeAlias
+        storePass = project.storePass
+        keyPass = project.storePass
+        input = shadowJar.archiveFile
+        output = jar.archiveFile
+    } else {
+        logger.warn("No key store found, not signing the output jar\n")
+    }
 }
 
 build.dependsOn signJar
+signJar.dependsOn shadowJar
 
 String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
@@ -229,7 +224,7 @@ artifacts {
 }
 
 shadowJar {
-    archiveClassifier = ''
+    archiveClassifier = 'unsigned'
     dependencies {
         include(dependency('malte0811:BlockModelSplitter:.*'))
     }

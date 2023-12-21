@@ -39,7 +39,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
@@ -50,12 +49,14 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class SqueezerLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
@@ -87,7 +88,7 @@ public class SqueezerLogic
 		enqueueProcesses(state, context.getLevel().getRawLevel());
 		if(context.getLevel().shouldTickModulo(8))
 			handleItemOutput(context);
-		FluidUtils.multiblockFluidOutput(state.fluidOutput.getCapability(), state.tank, 9, 10, state.inventory);
+		FluidUtils.multiblockFluidOutput(state.fluidOutput.get(), state.tank, 9, 10, state.inventory);
 	}
 
 	private void enqueueProcesses(State state, Level level)
@@ -204,8 +205,8 @@ public class SqueezerLogic
 		public boolean animation_down = true;
 
 		// Utils
-		private final BlockCapabilityCache<IItemHandler, ?> itemOutput;
-		private final BlockCapabilityCache<IFluidHandler, ?> fluidOutput;
+		private final Supplier<@Nullable IItemHandler> itemOutput;
+		private final Supplier<@Nullable IFluidHandler> fluidOutput;
 		private final IFluidHandler fluidOutputCap;
 		private final IItemHandler itemInputCap;
 		private final IItemHandler itemOutputCap;

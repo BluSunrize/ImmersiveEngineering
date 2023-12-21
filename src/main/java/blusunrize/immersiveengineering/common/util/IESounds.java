@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -52,9 +52,9 @@ public class IESounds
 	public static final Holder<SoundEvent> preheater = registerSound("preheater");
 
 
-	public static void init()
+	public static void init(IEventBus modBus)
 	{
-		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		REGISTER.register(modBus);
 	}
 
 	private static Holder<SoundEvent> registerSound(String name)

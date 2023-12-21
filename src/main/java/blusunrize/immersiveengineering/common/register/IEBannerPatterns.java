@@ -10,14 +10,14 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BannerPatternItem;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +37,9 @@ public class IEBannerPatterns
 	public static final BannerEntry WOLF_L = addBanner("wolf_l", "wlfl");
 	public static final BannerEntry WOLF = addBanner("wolf", "wlf");
 
-	public static void init()
+	public static void init(IEventBus modBus)
 	{
-		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		REGISTER.register(modBus);
 	}
 
 	private static BannerEntry addBanner(String name, String hashName)

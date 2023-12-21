@@ -34,22 +34,20 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.*;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.resource.DelegatingPackResources;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -440,67 +438,25 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 	{
 		ResourceLocation autoLoc = ManualUtils.getLocationForManual("manual/autoload.json", this);
 		ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-		List<Resource> autoload = new ArrayList<>();
-		resourceManager.listPacks().forEach(packResources -> getActuallyAllResources(autoLoc, packResources, autoload));
-		NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getFirst));
-		for(Resource r : autoload)
-		{
-			try(InputStream stream = r.open())
-			{
-				JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(stream));
-				double priority = 0;
-				JsonElement priorityElement = autoloadJson.remove("autoload_priority");
-				if(priorityElement!=null)
-					priority = priorityElement.getAsDouble();
-				autoloadSources.add(Pair.of(priority, autoloadJson));
-			} catch(IOException x)
-			{
-				throw new RuntimeException(x);
-			}
-		}
-		for(Pair<Double, JsonObject> p : autoloadSources.descendingSet())
-			autoloadEntriesFromJson(p.getSecond(), new ArrayList<>());
-	}
-
-	private static final Lazy<Field> CLIENT_RESOURCES = Lazy.of(() -> {
-		try
-		{
-			Field clientResources = DelegatingPackResources.class.getDeclaredField("namespacesAssets");
-			clientResources.setAccessible(true);
-			return clientResources;
-		} catch(Exception x)
-		{
-			throw new RuntimeException(x);
-		}
-	});
-
-	/**
-	 * ResourceManager#getResources fails to get all resources when multiple mods contain the same file since (at least
-	 * in dev?) all mods are bunched up into a single DelegatingPackResources, which can only return one resource. This
-	 * "breaks open" DelegatingResourcePacks and actually gets *all* resources.
-	 */
-	private void getActuallyAllResources(ResourceLocation path, PackResources resources, List<Resource> out)
-	{
-		final PackType type = PackType.CLIENT_RESOURCES;
-		try
-		{
-			if(resources instanceof DelegatingPackResources)
-			{
-				Object rawValue = CLIENT_RESOURCES.get().get(resources);
-				Map<String, List<PackResources>> subResources = (Map<String, List<PackResources>>)rawValue;
-				for(PackResources subResource : subResources.getOrDefault(path.getNamespace(), List.of()))
-					getActuallyAllResources(path, subResource, out);
-			}
-			else
-			{
-				final IoSupplier<InputStream> resource = resources.getResource(type, path);
-				if(resource!=null)
-					out.add(new Resource(resources, resource));
-			}
-		} catch(Exception e)
-		{
-			throw new RuntimeException(e);
-		}
+		resourceManager.listPacks()
+				.map(p -> p.getResource(PackType.CLIENT_RESOURCES, autoLoc))
+				.filter(Objects::nonNull)
+				.map(r -> {
+					try(InputStream stream = r.get())
+					{
+						JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(stream));
+						double priority = 0;
+						JsonElement priorityElement = autoloadJson.remove("autoload_priority");
+						if(priorityElement!=null)
+							priority = priorityElement.getAsDouble();
+						return Pair.of(priority, autoloadJson);
+					} catch(IOException x)
+					{
+						throw new RuntimeException(x);
+					}
+				})
+				.sorted(Comparator.<Pair<Double, JsonObject>>comparingDouble(Pair::getFirst).reversed())
+				.forEach(p -> autoloadEntriesFromJson(p.getSecond(), new ArrayList<>()));
 	}
 
 	private void autoloadEntriesFromJson(JsonObject obj, List<ResourceLocation> backtrace)

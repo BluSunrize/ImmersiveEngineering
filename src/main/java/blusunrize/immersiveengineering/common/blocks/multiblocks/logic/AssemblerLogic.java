@@ -39,7 +39,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
@@ -56,6 +55,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
@@ -306,7 +306,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		public final MutableEnergyStorage energy = new MutableEnergyStorage(ENERGY_CAPACITY);
 		public final RSState rsState = RSState.enabledByDefault();
 
-		private final BlockCapabilityCache<IItemHandler, ?> output;
+		private final Supplier<@Nullable IItemHandler> output;
 		private final IItemHandler itemInput;
 		private final IFluidHandler fluidInput;
 

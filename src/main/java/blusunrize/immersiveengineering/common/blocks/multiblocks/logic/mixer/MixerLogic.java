@@ -46,7 +46,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
@@ -55,12 +54,14 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MixerLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
@@ -135,7 +136,7 @@ public class MixerLogic
 		int fluidTypes = state.tank.getFluidTypes();
 		if(fluidTypes <= 0||(fluidTypes <= 1&&foundRecipe&&!state.outputAll))
 			return false;
-		final IFluidHandler output = state.outputRef.getCapability();
+		final IFluidHandler output = state.outputRef.get();
 		if(output==null)
 			return false;
 		if(!state.outputAll)
@@ -251,7 +252,7 @@ public class MixerLogic
 		private BooleanSupplier isSoundPlaying = () -> false;
 
 		// Util
-		private final BlockCapabilityCache<IFluidHandler, ?> outputRef;
+		private final Supplier<@Nullable IFluidHandler> outputRef;
 		private final IFluidHandler fluidInput;
 		private final IFluidHandler fluidOutput;
 

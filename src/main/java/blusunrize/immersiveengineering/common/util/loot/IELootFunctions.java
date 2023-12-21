@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
@@ -18,11 +18,7 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 
 /**
  * @author BluSunrize - 16.08.2018
@@ -46,11 +42,10 @@ public class IELootFunctions
 	public static final Holder<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.CODEC);
 	public static final Holder<LootPoolEntryType> MULTIBLOCK_DROPS = registerEntry("multiblock", MultiblockDropsLootContainer.CODEC);
 
-	public static void init()
+	public static void init(IEventBus modBus)
 	{
-		final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		FUNCTION_REGISTER.register(bus);
-		ENTRY_REGISTER.register(bus);
+		FUNCTION_REGISTER.register(modBus);
+		ENTRY_REGISTER.register(modBus);
 	}
 
 	private static Holder<LootPoolEntryType> registerEntry(
