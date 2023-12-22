@@ -10,11 +10,10 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
-import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BucketWheelLogic.State;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -31,7 +30,7 @@ import org.joml.Quaternionf;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class BucketWheelRenderer extends IEMultiblockRenderer<State>
 {
 	public static final String NAME = "bucket_wheel";
 	public static DynamicModel WHEEL;
@@ -42,11 +41,10 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEn
 			.build();
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final IMultiblockBEHelperMaster<State> helper = tile.getHelper();
-		final Direction facing = helper.getContext().getLevel().getOrientation().front();
-		final State state = helper.getState();
+		final Direction facing = ctx.getLevel().getOrientation().front();
+		final State state = ctx.getState();
 		final boolean mirrored = state.reverseRotation;
 		matrixStack.pushPose();
 
@@ -61,7 +59,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<MultiblockBlockEn
 		matrixStack.translate(-.5, -.5, -.5);
 		try
 		{
-			BucketWheelCallbacks.Key key = BucketWheelCallbacks.INSTANCE.extractKey(null, null, null, tile);
+			BucketWheelCallbacks.Key key = BucketWheelCallbacks.INSTANCE.extractKey(state);
 			ModelData extraData = ModelDataUtils.single(IEOBJCallbacks.getModelProperty(BucketWheelCallbacks.INSTANCE), key);
 
 			CACHED_BUFFERS.get(key, () -> IVertexBufferHolder.create(

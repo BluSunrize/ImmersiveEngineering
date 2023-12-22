@@ -97,10 +97,17 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 		return BlockPos.ZERO;
 	}
 
-	// TODO fix
-	//@Override
-	//public AABB getRenderBoundingBox()
-	//{
-	//	return helper.getRenderBoundingBox();
-	//}
+	@Override
+	public void setRemoved()
+	{
+		super.setRemoved();
+		helper.invalidateAllCaps();
+	}
+
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		helper.invalidateAllCaps();
+	}
 }

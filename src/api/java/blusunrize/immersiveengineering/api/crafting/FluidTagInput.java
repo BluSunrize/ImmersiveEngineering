@@ -21,6 +21,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -29,6 +30,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -50,14 +52,15 @@ public class FluidTagInput implements Predicate<FluidStack>
 		return in.getOps().convertTo(JsonOps.INSTANCE, in.getValue()).getAsJsonObject();
 	}
 
-	//TODO convert into proper codec stuff
-	public static final Codec<FluidTagInput> CODEC = Codec.PASSTHROUGH.xmap(
-			dyn -> FluidTagInput.deserialize(toJson(dyn)),
-			fti -> new Dynamic<>(JsonOps.INSTANCE, fti.serialize())
-	);
+	public static final Codec<FluidTagInput> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+			Codec.mapEither(
+					TagKey.codec(Registries.FLUID).fieldOf("tag"),
+					ResourceLocation.CODEC.listOf().fieldOf("fluids")
+			).forGetter(t -> t.fluidTag),
+			Codec.INT.fieldOf("amount").forGetter(t -> t.amount),
+			ExtraCodecs.strictOptionalField(CompoundTag.CODEC, "nbt").forGetter(t -> Optional.ofNullable(t.nbtTag))
+	).apply(inst, (tag, amount, nbt) -> new FluidTagInput(tag, amount, nbt.orElse(null))));
 
-	// Generally left on the server, right on the client
-	// TODO FastEither
 	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;
 	protected final CompoundTag nbtTag;

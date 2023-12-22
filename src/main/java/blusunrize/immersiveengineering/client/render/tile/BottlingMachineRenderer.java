@@ -9,8 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -40,17 +39,16 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class BottlingMachineRenderer extends IEMultiblockRenderer<State>
 {
 	public static final String NAME = "bottling_machine_dynamic";
 	public static DynamicModel DYNAMIC;
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
-		final MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
-		final State state = helper.getState();
+		final MultiblockOrientation orientation = ctx.getLevel().getOrientation();
+		final State state = ctx.getState();
 		Direction facing = orientation.front();
 
 		final float pixelHeight = 1f/16f;
@@ -69,13 +67,14 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		//Animations
 		float lift = 0;
 
+		Level level = ctx.getLevel().getRawLevel();
 		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());
 		for(int i = 0; i < state.processor.getQueueSize(); i++)
 		{
 			BottlingProcess process = (BottlingProcess)state.processor.getQueue().get(i);
 			if(process==null)
 				continue;
-			float processMaxTicks = process.getMaxTicks(te.getLevel());
+			float processMaxTicks = process.getMaxTicks(level);
 			float transportTime = BottlingMachineLogic.getTransportTime(processMaxTicks);
 			float liftTime = BottlingMachineLogic.getLiftTime(processMaxTicks);
 			float fProcess = process.processTick;
@@ -133,11 +132,11 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		{
 			final float tankWidth = 7;
 			matrixStack.pushPose();
-			float level = fs.getAmount()/(float)state.tank.getCapacity();
+			float fluidLevel = fs.getAmount()/(float)state.tank.getCapacity();
 			matrixStack.translate(-.21875, .376, 1.21875);
 			matrixStack.scale(pixelHeight, pixelHeight, pixelHeight);
 			matrixStack.translate(tankWidth/2, 0, -tankWidth/2);
-			float h = level*9;
+			float h = fluidLevel*9;
 			// TODO does not work on fabulous
 			VertexConsumer builder = originalBuffer.getBuffer(RenderType.translucent());
 			for(int i = 0; i < 4; ++i)
@@ -162,7 +161,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 		//DRAW ITEMS HERE
 		for(ItemDisplay item : itemDisplays)
 		{
-			List<ItemStack> display = item.process.getDisplayItem(te.getLevel());
+			List<ItemStack> display = item.process.getDisplayItem(level);
 
 			matrixStack.pushPose();
 			matrixStack.translate(item.translation.x(), item.translation.y(), item.translation.z());
@@ -174,7 +173,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 					ClientUtils.mc().getItemRenderer().renderStatic(
 							displayS, ItemDisplayContext.FIXED,
 							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
-							te.getLevel(), 0
+							level, 0
 					);
 			}
 			else
@@ -183,9 +182,9 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<MultiblockBlo
 				float h1 = h0+item.itemFill;
 
 				for(ItemStack inputS : item.process.inputItems)
-					renderItemPart(bufferIn, matrixStack, inputS, h0, h1, combinedLightIn, combinedOverlayIn, 0, te.getLevel());
+					renderItemPart(bufferIn, matrixStack, inputS, h0, h1, combinedLightIn, combinedOverlayIn, 0, level);
 				for(ItemStack displayS : display)
-					renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1, te.getLevel());
+					renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1, level);
 			}
 
 			matrixStack.popPose();

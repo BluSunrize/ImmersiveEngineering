@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CrusherLogic;
@@ -27,7 +26,7 @@ import org.joml.Vector3f;
 
 import java.util.List;
 
-public class CrusherRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<CrusherLogic.State>>
+public class CrusherRenderer extends IEMultiblockRenderer<CrusherLogic.State>
 {
 	public static String NAME_LEFT = "crusher_barrel_left";
 	public static String NAME_RIGHT = "crusher_barrel_right";
@@ -36,12 +35,11 @@ public class CrusherRenderer extends IEBlockEntityRenderer<MultiblockBlockEntity
 
 	@Override
 	public void render(
-			MultiblockBlockEntityMaster<CrusherLogic.State> te,
+			IMultiblockContext<CrusherLogic.State> ctx,
 			float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
 			int combinedLightIn, int combinedOverlayIn
 	)
 	{
-		final IMultiblockContext<State> ctx = te.getHelper().getContext();
 		final State state = ctx.getState();
 		final MultiblockOrientation orientation = ctx.getLevel().getOrientation();
 		Direction dir = orientation.front();

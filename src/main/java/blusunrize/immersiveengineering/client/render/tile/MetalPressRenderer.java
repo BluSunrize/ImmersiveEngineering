@@ -9,8 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -25,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Quaternionf;
 
@@ -32,23 +32,23 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.common.blocks.multiblocks.logic.MetalPressLogic.*;
 
-public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class MetalPressRenderer extends IEMultiblockRenderer<State>
 {
 	public static final String NAME = "metal_press_piston";
 	public static DynamicModel PISTON;
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
-		final State state = helper.getState();
+		final State state = ctx.getState();
 		float piston = 0;
 		float[] shift = new float[state.processor.getQueueSize()];
 
+		Level level = ctx.getLevel().getRawLevel();
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess<MetalPressRecipe, ?> process = state.processor.getQueue().get(i);
-			float processMaxTicks = process.getMaxTicks(te.getLevel());
+			float processMaxTicks = process.getMaxTicks(level);
 			float transportTime = getTransportTime(processMaxTicks);
 			float pressTime = getPressTime(processMaxTicks);
 			//+partialTicks
@@ -74,7 +74,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
-		MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
+		MultiblockOrientation orientation = ctx.getLevel().getOrientation();
 		Direction effectiveFacing = orientation.mirrored()?orientation.front().getOpposite(): orientation.front();
 		rotateForFacingNoCentering(matrixStack, effectiveFacing);
 		matrixStack.pushPose();
@@ -99,7 +99,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 			ClientUtils.mc().getItemRenderer().renderStatic(
 					state.mold, ItemDisplayContext.FIXED,
 					combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
-					te.getLevel(), 0
+					level, 0
 			);
 		}
 		matrixStack.popPose();
@@ -109,7 +109,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 			MultiblockProcess<?, ?> process = state.processor.getQueue().get(i);
 			if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 				continue;
-			List<ItemStack> displays = inWorld.getDisplayItem(te.getLevel());
+			List<ItemStack> displays = inWorld.getDisplayItem(level);
 			if(displays.isEmpty())
 				continue;
 			matrixStack.pushPose();
@@ -123,7 +123,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 			ClientUtils.mc().getItemRenderer().renderStatic(
 					displays.get(0), ItemDisplayContext.FIXED,
 					combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
-					te.getLevel(), 0);
+					level, 0);
 			matrixStack.popPose();
 		}
 		matrixStack.popPose();

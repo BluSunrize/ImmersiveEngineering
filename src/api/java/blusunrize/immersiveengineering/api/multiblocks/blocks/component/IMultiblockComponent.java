@@ -27,7 +27,6 @@ import java.util.function.Function;
 
 public interface IMultiblockComponent<State>
 {
-	// TODO probably needs to be redone
 	default void registerCapabilities(CapabilityRegistrar<State> register)
 	{
 	}

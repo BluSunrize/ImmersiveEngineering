@@ -39,10 +39,14 @@ public class BucketWheelCallbacks implements BlockCallback<Key>
 	@Override
 	public Key extractKey(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState blockState, BlockEntity blockEntity)
 	{
-		if(!(blockEntity instanceof MultiblockBlockEntityMaster<?> masterBE))
-			return getDefaultKey();
-		if(!(masterBE.getHelper().getState() instanceof State state))
-			return getDefaultKey();
+		if(blockEntity instanceof MultiblockBlockEntityMaster<?> masterBE&&
+				masterBE.getHelper().getState() instanceof State state)
+			return extractKey(state);
+		return getDefaultKey();
+	}
+
+	public Key extractKey(State state)
+	{
 		Map<String, TextureAtlasSprite> texMap = new HashMap<>();
 		for(int i = 0; i < state.digStacks.size(); i++)
 		{

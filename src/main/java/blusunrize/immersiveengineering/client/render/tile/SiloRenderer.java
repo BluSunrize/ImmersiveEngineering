@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -18,12 +18,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.joml.Quaternionf;
 
-public class SiloRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class SiloRenderer extends IEMultiblockRenderer<State>
 {
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(IMultiblockContext<State> context, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final State state = tile.getHelper().getState();
+		final State state = context.getState();
 		if(state.identStack.isEmpty())
 			return;
 		matrixStack.pushPose();
@@ -53,7 +53,7 @@ public class SiloRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMas
 			ClientUtils.mc().getItemRenderer().renderStatic(
 					state.identStack, ItemDisplayContext.GUI,
 					combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
-					tile.getLevel(), 0
+					context.getLevel().getRawLevel(), 0
 			);
 			matrixStack.popPose();
 

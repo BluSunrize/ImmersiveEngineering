@@ -69,7 +69,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags.EntityTypes;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
@@ -106,15 +105,16 @@ public class EventHandler
 		ImmersiveEngineering.proxy.onWorldLoad();
 	}
 
+	/*
+	TODO how to do this with only entity types available? Creating entities from those is not easy without a level
 	@SubscribeEvent
 	public void onCapabilitiesAttachEntity(RegisterCapabilitiesEvent event)
 	{
-		// TODO how to do this with only entity types available? Creating entities from those is not easy without a
-		//  level
-		//if(event.getObject() instanceof AbstractMinecart)
-		//	event.addCapability(new ResourceLocation("immersiveengineering:shader"),
-		//			new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
+		if(event.getObject() instanceof AbstractMinecart)
+			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
+					new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
 	}
+	 */
 
 	@SubscribeEvent
 	public void onMinecartInteraction(EntityInteractSpecific event)

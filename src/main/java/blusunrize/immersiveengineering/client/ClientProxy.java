@@ -100,7 +100,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -168,14 +167,14 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders ev)
 	{
-		ev.register(IEOBJLoader.LOADER_NAME.getPath(), IEOBJLoader.instance);
-		ev.register(ModelConfigurableSides.Loader.NAME.getPath(), new ModelConfigurableSides.Loader());
-		ev.register(ConveyorLoader.LOCATION.getPath(), new ConveyorLoader());
-		ev.register(CoresampleLoader.LOCATION.getPath(), new CoresampleLoader());
-		ev.register(FeedthroughLoader.LOCATION.getPath(), new FeedthroughLoader());
-		ev.register(SplitModelLoader.LOCATION.getPath(), new SplitModelLoader());
-		ev.register(Loader.LOADER_NAME.getPath(), new PotionBucketModel.Loader());
-		ev.register(MirroredModelLoader.ID.getPath(), new MirroredModelLoader());
+		ev.register(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
+		ev.register(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
+		ev.register(ConveyorLoader.LOCATION, new ConveyorLoader());
+		ev.register(CoresampleLoader.LOCATION, new CoresampleLoader());
+		ev.register(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+		ev.register(SplitModelLoader.LOCATION, new SplitModelLoader());
+		ev.register(Loader.LOADER_NAME, new PotionBucketModel.Loader());
+		ev.register(MirroredModelLoader.ID, new MirroredModelLoader());
 
 		ArcFurnaceRenderer.ELECTRODES = new DynamicModel(ArcFurnaceRenderer.NAME);
 		AutoWorkbenchRenderer.DYNAMIC = new DynamicModel(AutoWorkbenchRenderer.NAME);

@@ -8,9 +8,8 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.ActiveState;
@@ -27,17 +26,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.joml.Quaternionf;
 
-public class SawmillRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class SawmillRenderer extends IEMultiblockRenderer<State>
 {
 	public static final String NAME = "sawmill_blade";
 	public static DynamicModel BLADE;
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
-		final IMultiblockLevel level = helper.getContext().getLevel();
-		final State state = helper.getState();
+		final IMultiblockLevel level = ctx.getLevel();
+		final State state = ctx.getState();
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
@@ -70,9 +68,9 @@ public class SawmillRenderer extends IEBlockEntityRenderer<MultiblockBlockEntity
 		// Items
 		for(SawmillProcess process : state.sawmillProcessQueue)
 		{
-			float relative = process.getRelativeProcessStep(te.getLevel());
-			ItemStack rendered = process.getCurrentStack(te.getLevel(), sawblade);
-			renderItem(rendered, relative, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, te.getLevel());
+			float relative = process.getRelativeProcessStep(level.getRawLevel());
+			ItemStack rendered = process.getCurrentStack(level.getRawLevel(), sawblade);
+			renderItem(rendered, relative, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn, level.getRawLevel());
 		}
 		matrixStack.popPose();
 	}

@@ -8,8 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
@@ -24,17 +23,16 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Quaternionf;
 
-public class MixerRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class MixerRenderer extends IEMultiblockRenderer<State>
 {
 	public static final String NAME = "mixer_agitator";
 	public static DynamicModel AGITATOR;
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
-		final State state = helper.getState();
-		final MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
+		final State state = ctx.getState();
+		final MultiblockOrientation orientation = ctx.getLevel().getOrientation();
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
 		matrixStack.pushPose();

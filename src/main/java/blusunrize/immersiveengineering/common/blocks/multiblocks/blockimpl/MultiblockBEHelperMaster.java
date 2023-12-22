@@ -27,7 +27,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -204,6 +206,19 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 			clientTickable.tickClient(getContext());
 		for(final ComponentInstance<?> component : componentInstances)
 			component.tickClient();
+	}
+
+	@Override
+	public void invalidateAllCaps()
+	{
+		Level level = be.getLevel();
+		if(level==null)
+			return;
+		for(StructureBlockInfo blockInMB : multiblock.getStructure().apply(level))
+		{
+			BlockPos realPosition = context.getLevel().toAbsolute(blockInMB.pos());
+			level.invalidateCapabilities(realPosition);
+		}
 	}
 
 	public BlockEntity getMasterBE()

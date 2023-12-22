@@ -10,8 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -21,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkb
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -34,6 +34,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.joml.Quaternionf;
@@ -42,18 +43,24 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.getBlueprintDrawable;
 
-public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class AutoWorkbenchRenderer extends IEMultiblockRenderer<State>
 {
 	public static final String NAME = "auto_workbench_animated";
 	public static DynamicModel DYNAMIC;
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(
+			IMultiblockContext<State> ctx,
+			float partialTicks,
+			PoseStack matrixStack,
+			MultiBufferSource bufferIn,
+			int combinedLightIn,
+			int combinedOverlayIn
+	)
 	{
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BakedModel model = DYNAMIC.get();
-		final IMultiblockBEHelperMaster<State> helper = blockEntity.getHelper();
-		final State state = helper.getState();
+		final State state = ctx.getState();
 
 		//Item Displacement
 		float[][] itemDisplays = new float[state.processor.getQueueSize()][];
@@ -63,13 +70,14 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 		float press = 0;
 		float liftPress = 0;
 
+		Level level = ctx.getLevel().getRawLevel();
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
 			MultiblockProcess<?, ?> process = state.processor.getQueue().get(i);
-			if(process==null||process.processTick <= 0||process.processTick==process.getMaxTicks(blockEntity.getLevel()))
+			if(process==null||process.processTick <= 0||process.processTick==process.getMaxTicks(level))
 				continue;
 			//+partialTicks
-			float processTimer = ((float)process.processTick)/process.getMaxTicks(blockEntity.getLevel())*180;
+			float processTimer = ((float)process.processTick)/process.getMaxTicks(level)*180;
 			if(processTimer <= 9)
 				continue;
 
@@ -151,7 +159,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 
 		}
 
-		final MultiblockOrientation orientation = helper.getContext().getLevel().getOrientation();
+		final MultiblockOrientation orientation = ctx.getLevel().getOrientation();
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
 		bufferIn = BERenderUtils.mirror(orientation, matrixStack, bufferIn);
@@ -206,7 +214,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 					continue;
 
 				float scale = .3125f;
-				List<ItemStack> dList = inWorld.getDisplayItem(blockEntity.getLevel());
+				List<ItemStack> dList = inWorld.getDisplayItem(level);
 				if(!dList.isEmpty())
 					if(dList.size() < 2)
 					{
@@ -217,7 +225,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 						ClientUtils.mc().getItemRenderer().renderStatic(
 								dList.get(0), ItemDisplayContext.FIXED,
 								combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
-								blockEntity.getLevel(), 0
+								level, 0
 						);
 						matrixStack.popPose();
 					}
@@ -258,7 +266,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 							ClientUtils.mc().getItemRenderer().renderStatic(
 									dList.get(d), ItemDisplayContext.FIXED,
 									combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
-									blockEntity.getLevel(), 0
+									level, 0
 							);
 							matrixStack.popPose();
 						}
@@ -266,13 +274,15 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<MultiblockBlock
 			}
 
 		//Blueprint
-		double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(blockEntity.getBlockPos()));
+		double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(
+				ctx.getLevel().toAbsolute(IEMultiblockLogic.AUTO_WORKBENCH.masterPosInMB())
+		));
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
-			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(blockEntity.getLevel(), ItemNBTHelper.getString(blueprintStack, "blueprint"));
+			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(level, ItemNBTHelper.getString(blueprintStack, "blueprint"));
 			BlueprintCraftingRecipe recipe = (state.selectedRecipe < 0||state.selectedRecipe >= recipes.size())?null: recipes.get(state.selectedRecipe).value();
-			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, blockEntity.getLevel());
+			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, level);
 			if(blueprint!=null)
 			{
 				matrixStack.pushPose();

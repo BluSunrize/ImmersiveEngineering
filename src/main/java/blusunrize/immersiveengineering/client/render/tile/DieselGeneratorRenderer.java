@@ -8,8 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelperMaster;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
@@ -24,20 +23,19 @@ import org.joml.Quaternionf;
 
 import java.util.List;
 
-public class DieselGeneratorRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<DieselGeneratorLogic.State>>
+public class DieselGeneratorRenderer extends IEMultiblockRenderer<DieselGeneratorLogic.State>
 {
 	public static final String NAME = "diesel_gen_fan";
 	public static DynamicModel FAN;
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<DieselGeneratorLogic.State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		matrixStack.pushPose();
 		matrixStack.translate(0, .6875, 0);
 		matrixStack.translate(0.5, 0, 0.5);
-		final IMultiblockBEHelperMaster<State> helper = te.getHelper();
-		final Direction facing = helper.getContext().getLevel().getOrientation().front();
-		final State state = helper.getState();
+		final Direction facing = ctx.getLevel().getOrientation().front();
+		final State state = ctx.getState();
 
 		matrixStack.mulPose(new Quaternionf().rotateAxis(
 				(state.animation_fanRotation+(state.animation_fanRotationStep*partialTicks))*Mth.DEG_TO_RAD,

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
@@ -33,7 +33,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 import java.util.List;
 
-public class ArcFurnaceRenderer extends IEBlockEntityRenderer<MultiblockBlockEntityMaster<State>>
+public class ArcFurnaceRenderer extends IEMultiblockRenderer<State>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
@@ -44,11 +44,11 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<MultiblockBlockEnt
 	public static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
 
 	@Override
-	public void render(MultiblockBlockEntityMaster<State> te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
+	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		final State state = te.getHelper().getState();
-		final Direction facing = te.getHelper().getContext().getLevel().getOrientation().front();
+		final State state = ctx.getState();
+		final Direction facing = ctx.getLevel().getOrientation().front();
 		List<String> renderedParts = null;
 		for(int i = 0; i < ArcFurnaceLogic.ELECTRODE_COUNT; i++)
 			if((state.electrodePresence&(1<<i))!=0)
