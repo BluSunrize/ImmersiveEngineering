@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.common.entities.SkyhookUserData;
+import blusunrize.immersiveengineering.common.items.InternalStorageItem;
+import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
@@ -26,6 +28,11 @@ public class IEDataAttachments
 
 	public static final Supplier<AttachmentType<SkyhookUserData>> SKYHOOK_USER = REGISTER.register(
 			"skyhook_user", () -> AttachmentType.builder(SkyhookUserData::new).build()
+	);
+	public static final Supplier<AttachmentType<IEItemStackHandler>> ITEM_INVENTORY = REGISTER.register(
+			"item_inventory", () -> AttachmentType.<IEItemStackHandler>builder(() -> null)
+					.serialize(InternalStorageItem.DATA_SERIALIZER)
+					.build()
 	);
 	public static final Supplier<AttachmentType<ShaderWrapper_Direct>> MINECART_SHADER = REGISTER.register(
 			"minecart_shader",

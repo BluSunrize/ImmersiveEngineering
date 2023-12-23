@@ -9,10 +9,14 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
+import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -27,10 +31,21 @@ public abstract class InternalStorageItem extends IEBaseItem
 
 	public abstract int getSlotCount();
 
-	// TODO call from all implementations
 	public static void registerCapabilitiesISI(ItemCapabilityRegistrar registrar)
 	{
-		registrar.register(ItemHandler.ITEM, IEItemStackHandler::new);
+		registrar.register(ItemHandler.ITEM, stack -> {
+			AttachmentType<IEItemStackHandler> key = IEDataAttachments.ITEM_INVENTORY.get();
+			InternalStorageItem item = (InternalStorageItem)stack.getItem();
+			if(!stack.hasData(key))
+				stack.setData(key, new IEItemStackHandler(item, null));
+			IEItemStackHandler inventory = stack.getData(key);
+			if(inventory.getSlots()!=item.getSlotCount())
+			{
+				inventory = new IEItemStackHandler(item, inventory);
+				stack.setData(key, inventory);
+			}
+			return inventory;
+		});
 	}
 
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)
@@ -66,4 +81,26 @@ public abstract class InternalStorageItem extends IEBaseItem
 		else
 			return NonNullList.create();
 	}
+
+	public static final IAttachmentSerializer<CompoundTag, IEItemStackHandler> DATA_SERIALIZER = new IAttachmentSerializer<CompoundTag, IEItemStackHandler>()
+	{
+		@Override
+		public IEItemStackHandler read(CompoundTag tag)
+		{
+			if(tag.isEmpty())
+				return null;
+			IEItemStackHandler result = new IEItemStackHandler();
+			result.deserializeNBT(tag);
+			return result;
+		}
+
+		@Override
+		public CompoundTag write(IEItemStackHandler attachment)
+		{
+			if(attachment==null)
+				return new CompoundTag();
+			else
+				return attachment.serializeNBT();
+		}
+	};
 }
