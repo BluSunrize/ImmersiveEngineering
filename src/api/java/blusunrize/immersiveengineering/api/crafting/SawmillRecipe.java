@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +25,7 @@ public class SawmillRecipe extends MultiblockRecipe
 {
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<SawmillRecipe>> SERIALIZER;
 	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SAWMILL);
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final Ingredient input;
 	public final TagOutput stripped;
@@ -36,13 +38,12 @@ public class SawmillRecipe extends MultiblockRecipe
 			TagOutputList secondaryStripping, TagOutputList secondaryOutputs
 	)
 	{
-		super(output, IERecipeTypes.SAWMILL);
+		super(output, IERecipeTypes.SAWMILL, 80, energy, MULTIPLIERS);
 		this.output = output;
 		this.stripped = stripped;
 		this.input = input;
 		this.secondaryOutputs = secondaryOutputs;
 		this.secondaryStripping = secondaryStripping;
-		setTimeAndEnergy(80, energy);
 
 		setInputList(Lists.newArrayList(this.input));
 		this.outputList = new TagOutputList(List.of(output));

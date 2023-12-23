@@ -31,7 +31,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 			FluidTagInput.CODEC.fieldOf("input0").forGetter(r -> r.input0),
 			ExtraCodecs.strictOptionalField(FluidTagInput.CODEC, "input1").forGetter(r -> Optional.ofNullable(r.input1)),
 			ExtraCodecs.strictOptionalField(Ingredient.CODEC, "catalyst", Ingredient.EMPTY).forGetter(r -> r.catalyst),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy)
 	).apply(inst, RefineryRecipe::new));
 
 	@Override

@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLUEPRINT);
 	private static int reloadCountForCategories = CachedRecipeList.INVALID_RELOAD_COUNT;
@@ -46,16 +47,14 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public BlueprintCraftingRecipe(String blueprintCategory, TagOutput output, List<IngredientWithSize> inputs)
 	{
-		super(output, IERecipeTypes.BLUEPRINT);
+		//Time and energy values are for the automatic workbench
+		super(output, IERecipeTypes.BLUEPRINT, 180, 23040, MULTIPLIERS);
 		this.blueprintCategory = blueprintCategory;
 		this.output = output;
 		this.inputs = inputs;
 
 		setInputListWithSizes(Lists.newArrayList(this.inputs));
 		this.outputList = new TagOutputList(output);
-
-		//Time and energy values are for the automatic workbench
-		setTimeAndEnergy(180, 23040);
 	}
 
 	@Override
@@ -66,7 +65,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public static ItemStack getTypedBlueprint(String type)
 	{
-		ItemStack stack = new ItemStack(blueprintItem.getValue());
+		ItemStack stack = new ItemStack(blueprintItem.get());
 		stack.getOrCreateTag().putString("blueprint", type);
 		return stack;
 	}

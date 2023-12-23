@@ -494,7 +494,7 @@ public class ClientProxy extends CommonProxy
 			ManualRecipeRef[] refs = Arrays.stream(stacks)
 					.map(ManualRecipeRef::new)
 					.toArray(ManualRecipeRef[]::new);
-			return ManualHelper.MAKE_BLUEPRINT_ELEMENT_NEW.getValue().create(refs);
+			return ManualHelper.MAKE_BLUEPRINT_ELEMENT_NEW.get().create(refs);
 		});
 		IEManual.initManual();
 		ItemCallback.DYNAMIC_IEOBJ_RENDERER.setValue(new blusunrize.immersiveengineering.client.render.IEOBJItemRenderer(

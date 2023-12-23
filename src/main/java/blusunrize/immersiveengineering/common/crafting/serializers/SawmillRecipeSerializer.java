@@ -27,7 +27,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			optionalItemOutput("stripped").forGetter(r -> r.stripped),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy),
 			ExtraCodecs.strictOptionalField(TagOutputList.CODEC, "strippingSecondaries", TagOutputList.EMPTY).forGetter(r -> r.secondaryStripping),
 			ExtraCodecs.strictOptionalField(TagOutputList.CODEC, "secondaryOutputs", TagOutputList.EMPTY).forGetter(r -> r.secondaryOutputs)
 	).apply(inst, SawmillRecipe::new));

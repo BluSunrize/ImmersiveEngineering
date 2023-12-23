@@ -26,7 +26,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
 			BuiltInRegistries.ITEM.byNameCodec().fieldOf("mold").forGetter(r -> r.mold),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy)
 	).apply(inst, MetalPressRecipe::new));
 
 	@Override

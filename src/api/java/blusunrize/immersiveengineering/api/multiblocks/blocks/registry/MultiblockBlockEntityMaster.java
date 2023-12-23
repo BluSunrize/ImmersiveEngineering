@@ -42,7 +42,7 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 	)
 	{
 		super(type, worldPosition, blockState);
-		this.helper = IMultiblockBEHelperMaster.MAKE_HELPER.getValue().makeFor(this, multiblock);
+		this.helper = IMultiblockBEHelperMaster.MAKE_HELPER.get().makeFor(this, multiblock);
 	}
 
 	@Override

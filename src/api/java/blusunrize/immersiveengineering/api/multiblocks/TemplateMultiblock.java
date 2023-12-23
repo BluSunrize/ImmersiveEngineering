@@ -229,7 +229,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 
 	private static List<StructureBlockInfo> getStructureFromTemplate(StructureTemplate template)
 	{
-		return GET_PALETTES.getValue().apply(template).get(0).blocks();
+		return GET_PALETTES.get().apply(template).get(0).blocks();
 	}
 
 	@Override

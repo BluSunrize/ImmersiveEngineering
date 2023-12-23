@@ -202,7 +202,7 @@ public class ChemthrowerHandler
 			BlockHitResult rtr = (BlockHitResult)mop;
 			// Interactions with block at target position
 			BlockPos pos = rtr.getBlockPos();
-			SOLIDIFY_CONCRETE_POWDER.getValue().accept(world, pos);
+			SOLIDIFY_CONCRETE_POWDER.get().accept(world, pos);
 
 			// Interactions with block at offset position
 			pos = rtr.getBlockPos().relative(rtr.getDirection());

@@ -45,12 +45,12 @@ public interface IVertexBufferHolder
 
 	static IVertexBufferHolder create(NonNullSupplier<List<BakedQuad>> getQuads)
 	{
-		return CREATE.getValue().apply(getQuads);
+		return CREATE.get().apply(getQuads);
 	}
 
 	static IVertexBufferHolder create(Renderer render)
 	{
-		return CREATE.getValue().create(render);
+		return CREATE.get().create(render);
 	}
 
 	default void render(RenderType type, int light, int overlay, MultiBufferSource directOut, PoseStack transform)

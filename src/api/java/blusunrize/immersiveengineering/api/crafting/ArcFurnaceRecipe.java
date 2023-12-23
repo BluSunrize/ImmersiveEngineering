@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +33,7 @@ import java.util.Random;
 public class ArcFurnaceRecipe extends MultiblockRecipe
 {
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final IngredientWithSize input;
 	public final List<IngredientWithSize> additives;
@@ -51,12 +53,11 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 			List<IngredientWithSize> additives
 	)
 	{
-		super(output.getLazyList().get(0), IERecipeTypes.ARC_FURNACE);
+		super(output.getLazyList().get(0), IERecipeTypes.ARC_FURNACE, time, energy, MULTIPLIERS);
 		this.output = output;
 		this.secondaryOutputs = secondaryOutputs;
 		this.input = input;
 		this.slag = slag;
-		setTimeAndEnergy(time, energy);
 		this.additives = additives;
 
 		List<IngredientWithSize> inputList = Lists.newArrayList(this.input);

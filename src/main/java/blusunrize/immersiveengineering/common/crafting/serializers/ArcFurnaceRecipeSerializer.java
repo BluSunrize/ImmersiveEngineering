@@ -30,8 +30,8 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			TagOutputList.CODEC.fieldOf("results").forGetter(r -> r.output),
 			ExtraCodecs.strictOptionalField(TagOutput.CODEC, "slag", TagOutput.EMPTY).forGetter(r -> r.slag),
 			ExtraCodecs.strictOptionalField(CHANCE_LIST, "secondaries", List.of()).forGetter(r -> r.secondaryOutputs),
-			Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getTotalProcessTime),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
+			Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getBaseTime),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
 			IngredientWithSize.CODEC.listOf().fieldOf("additives").forGetter(r -> r.additives)
 	).apply(inst, ArcFurnaceRecipe::new));

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +35,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
 	public static final CachedRecipeList<MetalPressRecipe> STANDARD_RECIPES = new CachedRecipeList<>(IERecipeTypes.METAL_PRESS);
 	private static final Map<ResourceLocation, MetalPressRecipe> SPECIAL_RECIPES = new HashMap<>();
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public IngredientWithSize input;
 	public final Item mold;
@@ -46,11 +48,10 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public MetalPressRecipe(TagOutput output, IngredientWithSize input, Item mold, int energy)
 	{
-		super(output, IERecipeTypes.METAL_PRESS);
+		super(output, IERecipeTypes.METAL_PRESS, 60, energy, MULTIPLIERS);
 		this.output = output;
 		this.input = input;
 		this.mold = mold;
-		setTimeAndEnergy(60, energy);
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.outputList = new TagOutputList(this.output);

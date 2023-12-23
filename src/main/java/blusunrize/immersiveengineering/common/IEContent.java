@@ -310,6 +310,7 @@ public class IEContent
 		GlobalWireNetwork.MAKE_NETWORK.setValue((client, level) -> new GlobalWireNetwork(
 				client, new DefaultProxyProvider(level), new WireSyncManager(level)
 		));
+		IEServerConfig.MACHINES.populateAPI();
 		SetRestrictedField.lock(false);
 
 		ShieldDisablingHandler.registerDisablingFunction(Player.class, player -> player.disableShield(true));

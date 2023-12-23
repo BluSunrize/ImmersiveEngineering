@@ -13,20 +13,33 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
+	private final int baseEnergy;
+	private final int baseTime;
+	private final RecipeMultiplier multipliers;
+
 	protected <T extends Recipe<?>>
-	MultiblockRecipe(TagOutput outputDummy, IERecipeTypes.TypeWithClass<T> type)
+	MultiblockRecipe(
+			TagOutput outputDummy,
+			IERecipeTypes.TypeWithClass<T> type,
+			int baseEnergy,
+			int baseTime,
+			Supplier<RecipeMultiplier> multipliers
+	)
 	{
 		super(outputDummy, type);
+		this.baseEnergy = baseEnergy;
+		this.baseTime = baseTime;
+		this.multipliers = multipliers.get();
 	}
 
 	@Override
@@ -82,33 +95,29 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 		return fluidOutputList;
 	}
 
-	Lazy<Integer> totalProcessTime;
-
 	@Override
 	public int getTotalProcessTime()
 	{
-		return this.totalProcessTime.get();
+		return (int)(Math.max(1, baseTime*this.multipliers.timeModifier.getAsDouble()));
 	}
-
-	Lazy<Integer> totalProcessEnergy;
 
 	@Override
 	public int getTotalProcessEnergy()
 	{
-		return this.totalProcessEnergy.get();
+		return (int)(Math.max(1, baseEnergy*this.multipliers.energyModifier.getAsDouble()));
 	}
 
-	void setTimeAndEnergy(int time, int energy)
+	public int getBaseEnergy()
 	{
-		totalProcessEnergy = Lazy.of(() -> energy);
-		totalProcessTime = Lazy.of(() -> time);
+		return baseEnergy;
 	}
 
-	public void modifyTimeAndEnergy(DoubleSupplier timeModifier, DoubleSupplier energyModifier)
+	public int getBaseTime()
 	{
-		final Lazy<Integer> oldTime = totalProcessTime;
-		final Lazy<Integer> oldEnergy = totalProcessEnergy;
-		this.totalProcessTime = Lazy.of(() -> (int)(Math.max(1, oldTime.get()*timeModifier.getAsDouble())));
-		this.totalProcessEnergy = Lazy.of(() -> (int)(Math.max(1, oldEnergy.get()*energyModifier.getAsDouble())));
+		return baseTime;
+	}
+
+	public record RecipeMultiplier(DoubleSupplier timeModifier, DoubleSupplier energyModifier)
+	{
 	}
 }

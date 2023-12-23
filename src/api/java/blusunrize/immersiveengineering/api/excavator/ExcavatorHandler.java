@@ -189,7 +189,7 @@ public class ExcavatorHandler
 						if(initialVeinDepletion > 0)
 							vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
 						addVein(world.dimension(), vein);
-						MARK_SAVE_DATA_DIRTY.getValue().run();
+						MARK_SAVE_DATA_DIRTY.get().run();
 					}
 				}
 			}

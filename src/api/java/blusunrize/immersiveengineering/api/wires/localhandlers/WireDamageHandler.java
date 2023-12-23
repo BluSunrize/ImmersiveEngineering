@@ -73,7 +73,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		final float maxPossibleDamage = shockWire.getDamageAmount(e, info.connection(), totalAvailable);
 		if(maxPossibleDamage <= 0)
 			return;
-		IElectricDamageSource dmg = GET_WIRE_DAMAGE.getValue().make(
+		IElectricDamageSource dmg = GET_WIRE_DAMAGE.get().make(
 				e.level(), maxPossibleDamage, shockWire.getElectricSource()
 		);
 		if(!dmg.apply(e))

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -31,6 +32,7 @@ public class RefineryRecipe extends MultiblockRecipe
 {
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<RefineryRecipe>> SERIALIZER;
 	public static final CachedRecipeList<RefineryRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.REFINERY);
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final FluidStack output;
 	public final FluidTagInput input0;
@@ -45,12 +47,11 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public RefineryRecipe(FluidStack output, FluidTagInput input0, @Nullable FluidTagInput input1, Ingredient catalyst, int energy)
 	{
-		super(TagOutput.EMPTY, IERecipeTypes.REFINERY);
+		super(TagOutput.EMPTY, IERecipeTypes.REFINERY, 1, energy, MULTIPLIERS);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;
 		this.catalyst = catalyst;
-		setTimeAndEnergy(1, energy);
 
 		this.fluidInputList = Lists.newArrayList(this.input0);
 		if(this.input1!=null)

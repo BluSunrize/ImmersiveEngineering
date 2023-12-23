@@ -84,7 +84,7 @@ public class MineralVein
 		if(!isDepleted())
 		{
 			depletion++;
-			ExcavatorHandler.MARK_SAVE_DATA_DIRTY.getValue().run();
+			ExcavatorHandler.MARK_SAVE_DATA_DIRTY.get().run();
 		}
 	}
 

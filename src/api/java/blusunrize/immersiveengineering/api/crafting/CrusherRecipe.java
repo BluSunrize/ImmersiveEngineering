@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +31,7 @@ public class CrusherRecipe extends MultiblockRecipe
 {
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<CrusherRecipe>> SERIALIZER;
 	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CRUSHER);
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final Ingredient input;
 	public final TagOutput output;
@@ -37,11 +39,10 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public CrusherRecipe(TagOutput output, Ingredient input, int energy, List<StackWithChance> secondaryOutputs)
 	{
-		super(output, IERecipeTypes.CRUSHER);
+		super(output, IERecipeTypes.CRUSHER, 50, energy, MULTIPLIERS);
 		this.output = output;
 		this.input = input;
 		this.secondaryOutputs = secondaryOutputs;
-		setTimeAndEnergy(50, energy);
 
 		setInputList(Lists.newArrayList(this.input));
 		this.outputList = new TagOutputList(this.output);

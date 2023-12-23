@@ -243,7 +243,7 @@ public interface IConveyorBelt
 			{
 				if(!contact)
 				{
-					ItemAgeAccessor access = ConveyorHandler.ITEM_AGE_ACCESS.getValue();
+					ItemAgeAccessor access = ConveyorHandler.ITEM_AGE_ACCESS.get();
 					if(item.getAge() > item.lifespan-60*20&&!outputBlocked)
 						access.setAge(item, item.lifespan-60*20);
 				}

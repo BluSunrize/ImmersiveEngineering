@@ -71,7 +71,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 
 	public static IngredientWithSize read(FriendlyByteBuf input)
 	{
-		return SERIALIZER.getValue().parse(input);
+		return SERIALIZER.get().parse(input);
 	}
 
 	@Override
@@ -145,6 +145,6 @@ public class IngredientWithSize implements Predicate<ItemStack>
 
 	public void write(FriendlyByteBuf out)
 	{
-		SERIALIZER.getValue().write(out, this);
+		SERIALIZER.get().write(out, this);
 	}
 }

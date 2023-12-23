@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.Lists;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +35,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 {
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
 	public static final CachedRecipeList<SqueezerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SQUEEZER);
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
@@ -42,11 +44,10 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 	public SqueezerRecipe(FluidStack fluidOutput, @Nonnull TagOutput itemOutput, IngredientWithSize input, int energy)
 	{
-		super(itemOutput, IERecipeTypes.SQUEEZER);
+		super(itemOutput, IERecipeTypes.SQUEEZER, 80, energy, MULTIPLIERS);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;
-		setTimeAndEnergy(80, energy);
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);

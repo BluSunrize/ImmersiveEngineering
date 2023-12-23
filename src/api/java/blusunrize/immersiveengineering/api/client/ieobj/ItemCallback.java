@@ -28,7 +28,7 @@ public interface ItemCallback<Key> extends IEOBJCallback<Key>
 		@Override
 		public BlockEntityWithoutLevelRenderer getCustomRenderer()
 		{
-			return DYNAMIC_IEOBJ_RENDERER.getValue();
+			return DYNAMIC_IEOBJ_RENDERER.get();
 		}
 	};
 

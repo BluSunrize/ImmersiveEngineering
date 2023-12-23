@@ -90,9 +90,9 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 					return lastNet;
 			}
 			Factory<GlobalWireNetwork> factory = new Factory<>(
-					() -> MAKE_NETWORK.getValue().apply(false, w),
+					() -> MAKE_NETWORK.get().apply(false, w),
 					nbt -> {
-						GlobalWireNetwork net = MAKE_NETWORK.getValue().apply(false, w);
+						GlobalWireNetwork net = MAKE_NETWORK.get().apply(false, w);
 						net.readFromNBT(nbt);
 						return net;
 					}
@@ -107,7 +107,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 			if(w!=lastClientWorld.get()||lastClientNet==null)
 			{
 				lastClientWorld = new WeakReference<>(w);
-				lastClientNet = MAKE_NETWORK.getValue().apply(true, w);
+				lastClientNet = MAKE_NETWORK.get().apply(true, w);
 			}
 			return lastClientNet;
 		}
@@ -453,7 +453,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 		// FastUtil doesn't check for those, but random NPEs like in #5374 instead)
 		for(LocalWireNetwork net : localNetSet.toArray(LocalWireNetwork[]::new))
 			net.update(world);
-		if(SANITIZE_CONNECTIONS.getValue().getAsBoolean())
+		if(SANITIZE_CONNECTIONS.get().getAsBoolean())
 			NetworkSanitizer.tick(world, this);
 	}
 
@@ -461,7 +461,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 
 	private void validate(Level world)
 	{
-		if(world.isClientSide||!VALIDATE_CONNECTIONS.getValue().getAsBoolean())
+		if(world.isClientSide||!VALIDATE_CONNECTIONS.get().getAsBoolean())
 			return;
 		else
 			WireLogger.logger.info("Validating wire network...");

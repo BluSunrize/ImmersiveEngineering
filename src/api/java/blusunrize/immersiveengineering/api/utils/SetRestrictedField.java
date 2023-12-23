@@ -17,6 +17,7 @@ import net.neoforged.fml.loading.FMLLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Represents a value that depends on non-API IE code and should only be written to by IE.
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @param <T> type of the contained value
  */
-public class SetRestrictedField<T>
+public class SetRestrictedField<T> implements Supplier<T>
 {
 	private static final InitializationTracker CLIENT_FIELDS = new InitializationTracker();
 	private static final InitializationTracker COMMON_FIELDS = new InitializationTracker();
@@ -74,7 +75,8 @@ public class SetRestrictedField<T>
 		this.value = value;
 	}
 
-	public T getValue()
+	@Override
+	public T get()
 	{
 		return Preconditions.checkNotNull(value);
 	}

@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.config;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe.RecipeMultiplier;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
@@ -293,12 +294,26 @@ public class IEServerConfig
 			builder.pop();
 		}
 
-		private <T extends MultiblockRecipe> MachineRecipeConfig<T> addMachineEnergyTimeModifiers(Builder builder, String machine)
+		public void populateAPI()
+		{
+			MetalPressRecipe.MULTIPLIERS.setValue(metalPressConfig);
+			CrusherRecipe.MULTIPLIERS.setValue(crusherConfig);
+			SqueezerRecipe.MULTIPLIERS.setValue(squeezerConfig);
+			FermenterRecipe.MULTIPLIERS.setValue(fermenterConfig);
+			RefineryRecipe.MULTIPLIERS.setValue(new RecipeMultiplier(() -> 1, refineryConfig::get));
+			ArcFurnaceRecipe.MULTIPLIERS.setValue(arcFurnaceConfig);
+			BlueprintCraftingRecipe.MULTIPLIERS.setValue(autoWorkbenchConfig);
+			BottlingMachineRecipe.MULTIPLIERS.setValue(bottlingMachineConfig);
+			MixerRecipe.MULTIPLIERS.setValue(mixerConfig);
+			SawmillRecipe.MULTIPLIERS.setValue(sawmillConfig);
+		}
+
+		private RecipeMultiplier addMachineEnergyTimeModifiers(Builder builder, String machine)
 		{
 			return addMachineEnergyTimeModifiers(builder, machine, true);
 		}
 
-		private <T extends MultiblockRecipe> MachineRecipeConfig<T> addMachineEnergyTimeModifiers(Builder builder, String machine, boolean popCategory)
+		private RecipeMultiplier addMachineEnergyTimeModifiers(Builder builder, String machine, boolean popCategory)
 		{
 			builder.push(machine.replace(' ', '_'));
 			DoubleValue energy = builder
@@ -309,7 +324,7 @@ public class IEServerConfig
 					.defineInRange("timeModifier", 1, 1e-3, 1e3);
 			if(popCategory)
 				builder.pop();
-			return new MachineRecipeConfig<>(energy, time);
+			return new RecipeMultiplier(energy::get, time::get);
 		}
 
 		public static class CapacitorConfig
@@ -391,18 +406,17 @@ public class IEServerConfig
 
 
 		//Multiblock Recipes
-		// TODO hook these up with the new codec system
-		public final MachineRecipeConfig<MetalPressRecipe> metalPressConfig;
-		public final MachineRecipeConfig<CrusherRecipe> crusherConfig;
-		public final MachineRecipeConfig<SqueezerRecipe> squeezerConfig;
-		public final MachineRecipeConfig<FermenterRecipe> fermenterConfig;
+		public final RecipeMultiplier metalPressConfig;
+		public final RecipeMultiplier crusherConfig;
+		public final RecipeMultiplier squeezerConfig;
+		public final RecipeMultiplier fermenterConfig;
 		public final DoubleValue refineryConfig;
-		public final MachineRecipeConfig<ArcFurnaceRecipe> arcFurnaceConfig;
+		public final RecipeMultiplier arcFurnaceConfig;
 		public final IntValue arcfurnace_electrodeDamage;
-		public final MachineRecipeConfig<BlueprintCraftingRecipe> autoWorkbenchConfig;
-		public final MachineRecipeConfig<BottlingMachineRecipe> bottlingMachineConfig;
-		public final MachineRecipeConfig<MixerRecipe> mixerConfig;
-		public final MachineRecipeConfig<SawmillRecipe> sawmillConfig;
+		public final RecipeMultiplier autoWorkbenchConfig;
+		public final RecipeMultiplier bottlingMachineConfig;
+		public final RecipeMultiplier mixerConfig;
+		public final RecipeMultiplier sawmillConfig;
 		public final IntValue sawmill_bladeDamage;
 
 		//Other Multiblock machines
@@ -413,17 +427,6 @@ public class IEServerConfig
 		public final DoubleValue excavator_theshold;
 		public final IntValue excavator_yield;
 		public final DoubleValue excavator_initial_depletion;
-
-		public record MachineRecipeConfig<T extends MultiblockRecipe>(
-				DoubleValue energyModifier, DoubleValue timeModifier
-		)
-		{
-			public T apply(T in)
-			{
-				in.modifyTimeAndEnergy(timeModifier::get, energyModifier::get);
-				return in;
-			}
-		}
 	}
 
 	public static class Ores

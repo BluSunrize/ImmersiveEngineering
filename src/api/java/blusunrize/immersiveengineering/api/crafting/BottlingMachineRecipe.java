@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +33,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 {
 	public static DeferredHolder<RecipeSerializer<?>, IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
 	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BOTTLING_MACHINE);
+	public static final SetRestrictedField<RecipeMultiplier> MULTIPLIERS = SetRestrictedField.common();
 
 	public final List<IngredientWithSize> inputs;
 	public final FluidTagInput fluidInput;
@@ -39,11 +41,10 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public BottlingMachineRecipe(TagOutputList output, List<IngredientWithSize> inputs, FluidTagInput fluidInput)
 	{
-		super(output.getLazyList().get(0), IERecipeTypes.BOTTLING_MACHINE);
+		super(output.getLazyList().get(0), IERecipeTypes.BOTTLING_MACHINE, 60, 480, MULTIPLIERS);
 		this.output = output;
 		this.inputs = inputs;
 		this.fluidInput = fluidInput;
-		setTimeAndEnergy(60, 480);
 
 		setInputListWithSizes(Lists.newArrayList(this.inputs));
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);

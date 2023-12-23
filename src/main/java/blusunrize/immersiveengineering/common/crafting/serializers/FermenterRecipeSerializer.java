@@ -24,7 +24,7 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 			optionalFluidOutput("fluid").forGetter(r -> r.fluidOutput),
 			optionalItemOutput("result").forGetter(r -> r.itemOutput),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy)
 	).apply(inst, FermenterRecipe::new));
 
 	@Override

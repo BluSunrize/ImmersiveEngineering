@@ -26,7 +26,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	public static final Codec<CrusherRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy),
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy),
 			ExtraCodecs.strictOptionalField(CHANCE_LIST, "secondaries", List.of()).forGetter(r -> r.secondaryOutputs)
 	).apply(inst, CrusherRecipe::new));
 

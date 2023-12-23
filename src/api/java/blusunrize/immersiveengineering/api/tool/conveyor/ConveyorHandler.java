@@ -112,7 +112,7 @@ public class ConveyorHandler
 
 	public static BlockEntityType<? extends BlockEntity> getBEType(IConveyorType<?> type)
 	{
-		return BLOCK_ENTITY_TYPES.getValue().apply(type);
+		return BLOCK_ENTITY_TYPES.get().apply(type);
 	}
 
 	public static ResourceLocation getRegistryNameFor(ResourceLocation conveyorLoc)
@@ -135,7 +135,7 @@ public class ConveyorHandler
 
 	public static Block getBlock(IConveyorType<?> type)
 	{
-		return CONVEYOR_BLOCKS.getValue().apply(type);
+		return CONVEYOR_BLOCKS.get().apply(type);
 	}
 
 	public static boolean isConveyorBlock(Block b)

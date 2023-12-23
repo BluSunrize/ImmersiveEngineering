@@ -29,7 +29,7 @@ public class WirecoilUtils
 			float hitX, float hitY, float hitZ
 	)
 	{
-		return COIL_USE.getValue().doCoilUse(coil, player, world, pos, hand, side, hitX, hitY, hitZ);
+		return COIL_USE.get().doCoilUse(coil, player, world, pos, hand, side, hitX, hitY, hitZ);
 	}
 
 	public static void clearWireLink(ItemStack stack)

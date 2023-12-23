@@ -26,7 +26,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.fluidOutput),
 			FluidTagInput.CODEC.fieldOf("fluid").forGetter(r -> r.fluidInput),
 			IngredientWithSize.CODEC.listOf().fieldOf("inputs").forGetter(r -> r.itemInputs),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getTotalProcessEnergy)
+			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy)
 	).apply(inst, MixerRecipe::new));
 
 	@Override

@@ -49,7 +49,7 @@ public class ManualHelper
 
 	public static ManualInstance getManual()
 	{
-		return IE_MANUAL_INSTANCE.getValue();
+		return IE_MANUAL_INSTANCE.get();
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class ManualHelper
 	 */
 	public static void addConfigGetter(Function<String, Object> newGetter)
 	{
-		ADD_CONFIG_GETTER.getValue().accept(newGetter);
+		ADD_CONFIG_GETTER.get().accept(newGetter);
 	}
 
 	public interface MultiblockElementConstructor

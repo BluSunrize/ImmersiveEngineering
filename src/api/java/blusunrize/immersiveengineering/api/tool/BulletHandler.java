@@ -76,7 +76,7 @@ public class BulletHandler
 
 	public static Item getBulletItem(ResourceLocation key)
 	{
-		return GET_BULLET_ITEM.getValue().apply(getBullet(key));
+		return GET_BULLET_ITEM.get().apply(getBullet(key));
 	}
 
 	public static Collection<ResourceLocation> getAllKeys()
