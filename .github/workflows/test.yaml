@@ -10,9 +10,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            build/fg_cache
+            ~/.gradle
+            .gradle
+            build
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -52,9 +52,9 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            build/fg_cache
+            ~/.gradle
+            .gradle
+            build
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
