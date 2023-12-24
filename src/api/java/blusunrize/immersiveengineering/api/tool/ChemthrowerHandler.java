@@ -167,7 +167,6 @@ public class ChemthrowerHandler
 					{
 						MobEffectInstance e = this.potionEffects[iEffect];
 						MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), e.getDuration(), e.getAmplifier());
-						newEffect.setCurativeItems(new ArrayList<>(e.getCurativeItems()));
 						target.addEffect(newEffect);
 					}
 		}

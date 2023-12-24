@@ -23,7 +23,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Minecart;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,14 +37,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-// TODO superclass needs to go back to AbstractMinecart, just modified to compile without ATs right now
-public abstract class IEMinecartEntity<T extends BlockEntity> extends Minecart implements MenuProvider
+public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMinecart implements MenuProvider
 {
 	protected T containedBlockEntity;
 
 	protected IEMinecartEntity(EntityType<?> type, Level world, double x, double y, double z)
 	{
-		super(/*TODO type,*/ world, x, y, z);
+		super(type, world, x, y, z);
 		this.containedBlockEntity = getTileProvider().get();
 	}
 
@@ -161,8 +160,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends Minecart i
 
 	// This is only used by the super impl of destroy, which does not allow attaching NBT to the drop. So it's actually
 	// unused for our minecarts
-	// TODO missing AT in Forge?
-	//@Override
+	@Override
 	protected Item getDropItem()
 	{
 		return Items.MINECART;

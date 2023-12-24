@@ -35,7 +35,6 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.api.IETags.*;
@@ -57,7 +56,6 @@ public class ChemthrowerEffects
 					for(MobEffectInstance e : effects)
 					{
 						MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
-						newEffect.setCurativeItems(new ArrayList<>(e.getCurativeItems()));
 						target.addEffect(newEffect);
 					}
 				}
