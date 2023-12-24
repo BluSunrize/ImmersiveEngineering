@@ -839,8 +839,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
-		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart&&
-				event.getEntity().getCapability(CapabilityShader.ENTITY)!=null)
+		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart)
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity()));
 	}
 }

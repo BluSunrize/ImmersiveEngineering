@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.Lib.DamageTypes;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -28,6 +27,7 @@ import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.network.MessageOpenManual;
+import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
@@ -124,7 +124,7 @@ public class EventHandler
 			return;
 		if(stack.getItem() instanceof IShaderItem)
 		{
-			final ShaderWrapper wrapper = cart.getCapability(CapabilityShader.ENTITY);
+			final ShaderWrapper wrapper = cart.getData(IEDataAttachments.MINECART_SHADER);
 			if(wrapper!=null&&!event.getLevel().isClientSide)
 			{
 				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));

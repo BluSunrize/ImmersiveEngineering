@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
@@ -33,9 +32,6 @@ public class CapabilityShader
 	);
 	public static final BlockCapability<ShaderWrapper, Void> BLOCK = BlockCapability.createVoid(
 			IEApi.ieLoc("shader_block"), ShaderWrapper.class
-	);
-	public static final EntityCapability<ShaderWrapper, Void> ENTITY = EntityCapability.createVoid(
-			IEApi.ieLoc("shader_entity"), ShaderWrapper.class
 	);
 
 	public interface ShaderWrapper

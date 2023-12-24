@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
+import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -62,9 +62,9 @@ public class MessageMinecartShaderSync implements IMessage
 			ServerLevel world = Objects.requireNonNull(context.getSender()).serverLevel();
 			context.enqueueWork(() -> {
 				Entity entity = world.getEntity(entityID);
-				if(entity==null)
+				if(!(entity instanceof AbstractMinecart))
 					return;
-				ShaderWrapper cap = entity.getCapability(CapabilityShader.ENTITY);
+				ShaderWrapper cap = entity.getData(IEDataAttachments.MINECART_SHADER);
 				if(cap!=null)
 					ImmersiveEngineering.packetHandler.send(
 							PacketDistributor.DIMENSION.with(world::dimension),
