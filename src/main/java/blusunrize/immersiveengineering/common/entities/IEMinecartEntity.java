@@ -71,21 +71,6 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 		return Type.CHEST;
 	}
 
-	/*
-	TODO this needs to become a little less general for the new cap system...
-	@Override
-	@Nonnull
-	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
-	{
-		if(this.isAlive()&&this.containedBlockEntity!=null)
-		{
-			LazyOptional<C> beCap = this.containedBlockEntity.getCapability(capability, facing);
-			if(beCap.isPresent())
-				return beCap;
-		}
-		return super.getCapability(capability, facing);
-	}*/
-
 	@Override
 	public void destroy(@Nonnull DamageSource source)
 	{

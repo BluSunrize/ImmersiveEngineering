@@ -24,6 +24,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
@@ -44,6 +46,12 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	public BarrelMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
+	}
+
+	public static <T extends BarrelMinecartEntity>
+	void registerCapabilities(RegisterCapabilitiesEvent ev, Supplier<EntityType<T>> type)
+	{
+		ev.registerEntity(FluidHandler.ENTITY, type.get(), (e, $) -> e.containedBlockEntity.tank);
 	}
 
 	@Override

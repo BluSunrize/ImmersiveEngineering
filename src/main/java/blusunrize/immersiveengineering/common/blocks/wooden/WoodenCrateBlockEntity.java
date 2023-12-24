@@ -173,6 +173,11 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		registrar.registerAllContexts(ItemHandler.BLOCK, be -> be.inventoryCap);
 	}
 
+	public IItemHandler getInventoryCap()
+	{
+		return inventoryCap;
+	}
+
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack)
 	{

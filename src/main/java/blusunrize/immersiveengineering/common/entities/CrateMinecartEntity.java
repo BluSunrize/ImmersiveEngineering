@@ -27,6 +27,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,6 +49,12 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	public CrateMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
+	}
+
+	public static <T extends CrateMinecartEntity>
+	void registerCapabilities(RegisterCapabilitiesEvent ev, Supplier<EntityType<T>> type)
+	{
+		ev.registerEntity(ItemHandler.ENTITY, type.get(), (e, $) -> e.containedBlockEntity.getInventoryCap());
 	}
 
 	@Override
