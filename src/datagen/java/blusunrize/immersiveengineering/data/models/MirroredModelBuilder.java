@@ -27,7 +27,7 @@ public class MirroredModelBuilder<T extends ModelBuilder<T>> extends CustomLoade
 
 	protected MirroredModelBuilder(T parent, ExistingFileHelper existingFileHelper)
 	{
-		super(MirroredModelLoader.ID, parent, existingFileHelper);
+		super(MirroredModelLoader.ID, parent, existingFileHelper, false);
 	}
 
 	public MirroredModelBuilder<T> inner(NongeneratedModel inner)

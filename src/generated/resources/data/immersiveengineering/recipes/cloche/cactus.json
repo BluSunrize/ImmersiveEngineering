@@ -4,8 +4,8 @@
     "item": "minecraft:cactus"
   },
   "render": {
-    "type": "stacking",
-    "block": "minecraft:cactus"
+    "type": "immersiveengineering:stacking",
+    "value": "minecraft:cactus"
   },
   "results": [
     {

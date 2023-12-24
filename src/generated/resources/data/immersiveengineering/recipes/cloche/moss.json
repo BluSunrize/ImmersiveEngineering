@@ -4,8 +4,8 @@
     "item": "minecraft:moss_block"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:moss_carpet"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:moss_carpet"
   },
   "results": [
     {

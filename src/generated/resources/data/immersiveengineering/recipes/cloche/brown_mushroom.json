@@ -4,8 +4,8 @@
     "item": "minecraft:brown_mushroom"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:brown_mushroom"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:brown_mushroom"
   },
   "results": [
     {

@@ -105,17 +105,6 @@ public class EventHandler
 		ImmersiveEngineering.proxy.onWorldLoad();
 	}
 
-	/*
-	TODO how to do this with only entity types available? Creating entities from those is not easy without a level
-	@SubscribeEvent
-	public void onCapabilitiesAttachEntity(RegisterCapabilitiesEvent event)
-	{
-		if(event.getObject() instanceof AbstractMinecart)
-			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
-					new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
-	}
-	 */
-
 	@SubscribeEvent
 	public void onMinecartInteraction(EntityInteractSpecific event)
 	{

@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.RegistryAccess;
@@ -33,26 +32,24 @@ public class ClocheRecipe extends IESerializableRecipe
 	public final Ingredient seed;
 	public final Ingredient soil;
 	public final int time;
-	public final ClocheRenderReference renderReference;
 	public final ClocheRenderFunction renderFunction;
 
 	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CLOCHE);
 	private static final List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
-	public ClocheRecipe(TagOutputList outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
+	public ClocheRecipe(TagOutputList outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
 		super(outputs.getLazyList().get(0), IERecipeTypes.CLOCHE);
 		this.outputs = outputs;
 		this.seed = seed;
 		this.soil = soil;
 		this.time = time;
-		this.renderReference = renderReference;
-		this.renderFunction = ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.get(renderReference.getType()).apply(renderReference.getBlock());
+		this.renderFunction = renderFunction;
 	}
 
-	public ClocheRecipe(TagOutput output, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
+	public ClocheRecipe(TagOutput output, Ingredient seed, Ingredient soil, int time, ClocheRenderFunction renderFunction)
 	{
-		this(new TagOutputList(output), seed, soil, time, renderReference);
+		this(new TagOutputList(output), seed, soil, time, renderFunction);
 	}
 
 	// Allow for more dynamic recipes in subclasses

@@ -4,8 +4,8 @@
     "item": "minecraft:bamboo"
   },
   "render": {
-    "type": "stacking",
-    "block": "minecraft:bamboo"
+    "type": "immersiveengineering:stacking",
+    "value": "minecraft:bamboo"
   },
   "results": [
     {

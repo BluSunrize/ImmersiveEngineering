@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
-import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions.*;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -42,8 +42,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.conditions.NotCondition;
-import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.Locale;
@@ -598,21 +596,21 @@ public class MultiblockRecipes extends IERecipeProvider
 				.seed(Items.WHEAT_SEEDS)
 				.soil(Blocks.DIRT)
 				.setTime(640)
-				.setRender(new ClocheRenderReference("crop", Blocks.WHEAT))
+				.setRender(new RenderFunctionCrop(Blocks.WHEAT))
 				.build(out, toRL("cloche/wheat"));
 		ClocheRecipeBuilder.builder()
 				.output(new ItemStack(Items.POTATO, 2))
 				.seed(Items.POTATO)
 				.soil(Blocks.DIRT)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("crop", Blocks.POTATOES))
+				.setRender(new RenderFunctionCrop(Blocks.POTATOES))
 				.build(out, toRL("cloche/potato"));
 		ClocheRecipeBuilder.builder()
 				.output(new ItemStack(Items.CARROT, 2))
 				.seed(Items.CARROT)
 				.soil(Blocks.DIRT)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("crop", Blocks.CARROTS))
+				.setRender(new RenderFunctionCrop(Blocks.CARROTS))
 				.build(out, toRL("cloche/carrot"));
 		ClocheRecipeBuilder.builder()
 				.output(new ItemStack(Items.BEETROOT, 2))
@@ -620,28 +618,28 @@ public class MultiblockRecipes extends IERecipeProvider
 				.seed(Items.BEETROOT_SEEDS)
 				.soil(Blocks.DIRT)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("crop", Blocks.BEETROOTS))
+				.setRender(new RenderFunctionCrop(Blocks.BEETROOTS))
 				.build(out, toRL("cloche/beetroot"));
 		ClocheRecipeBuilder.builder()
 				.output(new ItemStack(Items.NETHER_WART, 2))
 				.seed(Items.NETHER_WART)
 				.soil(Blocks.SOUL_SAND)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("crop", Blocks.NETHER_WART))
+				.setRender(new RenderFunctionCrop(Blocks.NETHER_WART))
 				.build(out, toRL("cloche/nether_wart"));
 		ClocheRecipeBuilder.builder()
 				.output(new ItemStack(Items.SWEET_BERRIES, 2))
 				.seed(Items.SWEET_BERRIES)
 				.soil(Blocks.DIRT)
 				.setTime(560)
-				.setRender(new ClocheRenderReference("crop", Blocks.SWEET_BERRY_BUSH))
+				.setRender(new RenderFunctionCrop(Blocks.SWEET_BERRY_BUSH))
 				.build(out, toRL("cloche/sweet_berries"));
 		ClocheRecipeBuilder.builder()
 				.output(new ItemStack(Items.GLOW_BERRIES, 1))
 				.seed(Items.GLOW_BERRIES)
 				.soil(Blocks.MOSS_BLOCK)
 				.setTime(640)
-				.setRender(new ClocheRenderReference("crop", Blocks.CAVE_VINES))
+				.setRender(new RenderFunctionCrop(Blocks.CAVE_VINES))
 				.build(out, toRL("cloche/glow_berries"));
 
 		ClocheRecipeBuilder.builder()
@@ -649,14 +647,14 @@ public class MultiblockRecipes extends IERecipeProvider
 				.seed(Items.PUMPKIN_SEEDS)
 				.soil(Blocks.DIRT)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("stem", Blocks.PUMPKIN))
+				.setRender(new RenderFunctionStem(Blocks.PUMPKIN, Blocks.PUMPKIN_STEM, Blocks.ATTACHED_PUMPKIN_STEM))
 				.build(out, toRL("cloche/pumpkin"));
 		ClocheRecipeBuilder.builder()
 				.output(Items.MELON)
 				.seed(Items.MELON_SEEDS)
 				.soil(Blocks.DIRT)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("stem", Blocks.MELON))
+				.setRender(new RenderFunctionStem(Blocks.MELON, Blocks.MELON_STEM, Blocks.ATTACHED_MELON_STEM))
 				.build(out, toRL("cloche/melon"));
 
 		ClocheRecipeBuilder.builder()
@@ -664,7 +662,7 @@ public class MultiblockRecipes extends IERecipeProvider
 				.seed(Items.TORCHFLOWER_SEEDS)
 				.soil(Blocks.DIRT)
 				.setTime(1200)
-				.setRender(new ClocheRenderReference("crop", Blocks.TORCHFLOWER_CROP))
+				.setRender(new RenderFunctionCrop(Blocks.TORCHFLOWER_CROP))
 				.build(out, toRL("cloche/torchflower"));
 
 		ClocheRecipeBuilder.builder()
@@ -672,28 +670,28 @@ public class MultiblockRecipes extends IERecipeProvider
 				.seed(Items.SUGAR_CANE)
 				.soil(Tags.Items.SAND)
 				.setTime(560)
-				.setRender(new ClocheRenderReference("stacking", Blocks.SUGAR_CANE))
+				.setRender(new RenderFunctionStacking(Blocks.SUGAR_CANE))
 				.build(out, toRL("cloche/sugar_cane"));
 		ClocheRecipeBuilder.builder()
 				.output(Items.CACTUS)
 				.seed(Items.CACTUS)
 				.soil(Tags.Items.SAND)
 				.setTime(560)
-				.setRender(new ClocheRenderReference("stacking", Blocks.CACTUS))
+				.setRender(new RenderFunctionStacking(Blocks.CACTUS))
 				.build(out, toRL("cloche/cactus"));
 		ClocheRecipeBuilder.builder()
 				.output(Items.BAMBOO)
 				.seed(Items.BAMBOO)
 				.soil(Blocks.DIRT)
 				.setTime(560)
-				.setRender(new ClocheRenderReference("stacking", Blocks.BAMBOO))
+				.setRender(new RenderFunctionStacking(Blocks.BAMBOO))
 				.build(out, toRL("cloche/bamboo"));
 		ClocheRecipeBuilder.builder()
 				.output(Items.CHORUS_FRUIT)
 				.seed(Items.CHORUS_FLOWER)
 				.soil(Blocks.END_STONE)
 				.setTime(480)
-				.setRender(new ClocheRenderReference("chorus", Blocks.CHORUS_FLOWER))
+				.setRender(new RenderFunctionChorus())
 				.build(out, toRL("cloche/chorus_fruit"));
 		ClocheRecipeBuilder.builder()
 				.output(Ingredients.HEMP_FIBER)
@@ -701,7 +699,7 @@ public class MultiblockRecipes extends IERecipeProvider
 				.seed(Misc.HEMP_SEEDS)
 				.soil(Blocks.DIRT)
 				.setTime(800)
-				.setRender(new ClocheRenderReference("hemp", IEBlocks.Misc.HEMP_PLANT.get()))
+				.setRender(new RenderFunctionHemp())
 				.build(out, toRL("cloche/hemp"));
 
 		Ingredient shroomSoil = Ingredient.of(Blocks.MYCELIUM, Blocks.PODZOL);
@@ -710,21 +708,21 @@ public class MultiblockRecipes extends IERecipeProvider
 				.seed(Items.RED_MUSHROOM)
 				.soil(shroomSoil)
 				.setTime(480)
-				.setRender(new ClocheRenderReference("generic", Blocks.RED_MUSHROOM))
+				.setRender(new RenderFunctionGeneric(Blocks.RED_MUSHROOM))
 				.build(out, toRL("cloche/red_mushroom"));
 		ClocheRecipeBuilder.builder()
 				.output(Items.BROWN_MUSHROOM)
 				.seed(Items.BROWN_MUSHROOM)
 				.soil(shroomSoil)
 				.setTime(480)
-				.setRender(new ClocheRenderReference("generic", Blocks.BROWN_MUSHROOM))
+				.setRender(new RenderFunctionGeneric(Blocks.BROWN_MUSHROOM))
 				.build(out, toRL("cloche/brown_mushroom"));
 		ClocheRecipeBuilder.builder()
 				.output(Items.MOSS_BLOCK)
 				.seed(Items.MOSS_BLOCK)
 				.soil(Tags.Items.COBBLESTONE)
 				.setTime(1200)
-				.setRender(new ClocheRenderReference("generic", Blocks.MOSS_CARPET))
+				.setRender(new RenderFunctionGeneric(Blocks.MOSS_CARPET))
 				.build(out, toRL("cloche/moss"));
 	}
 

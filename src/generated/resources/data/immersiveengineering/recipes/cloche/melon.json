@@ -4,8 +4,10 @@
     "item": "minecraft:melon_seeds"
   },
   "render": {
-    "type": "stem",
-    "block": "minecraft:melon"
+    "type": "immersiveengineering:stem",
+    "attachedStem": "minecraft:attached_melon_stem",
+    "crop": "minecraft:melon",
+    "stem": "minecraft:melon_stem"
   },
   "results": [
     {

@@ -4,8 +4,8 @@
     "item": "minecraft:sweet_berries"
   },
   "render": {
-    "type": "crop",
-    "block": "minecraft:sweet_berry_bush"
+    "type": "immersiveengineering:crop",
+    "value": "minecraft:sweet_berry_bush"
   },
   "results": [
     {

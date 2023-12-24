@@ -4,8 +4,7 @@
     "item": "minecraft:chorus_flower"
   },
   "render": {
-    "type": "chorus",
-    "block": "minecraft:chorus_flower"
+    "type": "immersiveengineering:chorus"
   },
   "results": [
     {

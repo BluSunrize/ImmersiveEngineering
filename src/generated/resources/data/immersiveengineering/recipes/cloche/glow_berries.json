@@ -4,8 +4,8 @@
     "item": "minecraft:glow_berries"
   },
   "render": {
-    "type": "crop",
-    "block": "minecraft:cave_vines"
+    "type": "immersiveengineering:crop",
+    "value": "minecraft:cave_vines"
   },
   "results": [
     {

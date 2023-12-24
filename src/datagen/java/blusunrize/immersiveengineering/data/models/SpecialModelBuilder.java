@@ -19,7 +19,7 @@ public class SpecialModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
 {
 	private SpecialModelBuilder(ResourceLocation loaderId, T parent, ExistingFileHelper existingFileHelper)
 	{
-		super(loaderId, parent, existingFileHelper);
+		super(loaderId, parent, existingFileHelper, false);
 	}
 
 	public static <T extends ModelBuilder<T>>

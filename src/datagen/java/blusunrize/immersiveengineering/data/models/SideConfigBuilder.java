@@ -27,7 +27,7 @@ public class SideConfigBuilder<T extends ModelBuilder<T>> extends CustomLoaderBu
 
 	protected SideConfigBuilder(T parent, ExistingFileHelper existingFileHelper)
 	{
-		super(Loader.NAME, parent, existingFileHelper);
+		super(Loader.NAME, parent, existingFileHelper, false);
 	}
 
 	private Type type;

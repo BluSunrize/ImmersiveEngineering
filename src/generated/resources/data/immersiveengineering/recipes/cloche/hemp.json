@@ -4,8 +4,7 @@
     "item": "immersiveengineering:seed"
   },
   "render": {
-    "type": "hemp",
-    "block": "immersiveengineering:hemp"
+    "type": "immersiveengineering:hemp"
   },
   "results": [
     {

@@ -4,8 +4,8 @@
     "item": "minecraft:wheat_seeds"
   },
   "render": {
-    "type": "crop",
-    "block": "minecraft:wheat"
+    "type": "immersiveengineering:crop",
+    "value": "minecraft:wheat"
   },
   "results": [
     {

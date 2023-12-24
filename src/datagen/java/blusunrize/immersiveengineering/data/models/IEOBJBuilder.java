@@ -40,7 +40,7 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 
 	protected IEOBJBuilder(T parent, ExistingFileHelper existingFileHelper)
 	{
-		super(IEOBJLoader.LOADER_NAME, parent, existingFileHelper);
+		super(IEOBJLoader.LOADER_NAME, parent, existingFileHelper, false);
 	}
 
 	public IEOBJBuilder<T> modelLocation(ResourceLocation modelLocation)

@@ -4,8 +4,8 @@
     "item": "minecraft:nether_wart"
   },
   "render": {
-    "type": "crop",
-    "block": "minecraft:nether_wart"
+    "type": "immersiveengineering:crop",
+    "value": "minecraft:nether_wart"
   },
   "results": [
     {

@@ -31,8 +31,8 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 	MultiblockRecipe(
 			TagOutput outputDummy,
 			IERecipeTypes.TypeWithClass<T> type,
-			int baseEnergy,
 			int baseTime,
+			int baseEnergy,
 			Supplier<RecipeMultiplier> multipliers
 	)
 	{

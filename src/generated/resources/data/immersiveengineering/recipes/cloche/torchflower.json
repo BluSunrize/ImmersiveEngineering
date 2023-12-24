@@ -4,8 +4,8 @@
     "item": "minecraft:torchflower_seeds"
   },
   "render": {
-    "type": "crop",
-    "block": "minecraft:torchflower_crop"
+    "type": "immersiveengineering:crop",
+    "value": "minecraft:torchflower_crop"
   },
   "results": [
     {

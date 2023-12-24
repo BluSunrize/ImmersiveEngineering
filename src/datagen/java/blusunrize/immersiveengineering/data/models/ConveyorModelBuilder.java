@@ -26,7 +26,7 @@ public class ConveyorModelBuilder<T extends ModelBuilder<T>> extends CustomLoade
 
 	protected ConveyorModelBuilder(T parent, ExistingFileHelper existingFileHelper)
 	{
-		super(ConveyorLoader.LOCATION, parent, existingFileHelper);
+		super(ConveyorLoader.LOCATION, parent, existingFileHelper, false);
 	}
 
 	private IConveyorType<?> type;

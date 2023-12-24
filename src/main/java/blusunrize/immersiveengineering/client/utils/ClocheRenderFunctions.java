@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
@@ -18,6 +19,9 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -29,6 +33,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import org.joml.Vector3f;
 
 import java.util.Collection;
+import java.util.function.Function;
 
 public class ClocheRenderFunctions
 {
@@ -39,17 +44,30 @@ public class ClocheRenderFunctions
 				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.DIRT_PATH)), new ResourceLocation("block/farmland_moist"));
 
 		// register defaults
-		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("crop", RenderFunctionCrop::new);
-		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("stacking", RenderFunctionStacking::new);
-		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("stem", RenderFunctionStem::new);
-		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("generic", RenderFunctionGeneric::new);
+		register("crop", RenderFunctionCrop.CODEC);
+		register("stacking", RenderFunctionStacking.CODEC);
+		register("stem", RenderFunctionStem.CODEC);
+		register("generic", RenderFunctionGeneric.CODEC);
 
-		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("hemp", block -> new RenderFunctionHemp());
-		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("chorus", block -> new RenderFunctionChorus());
+		register("hemp", RenderFunctionHemp.CODEC);
+		register("chorus", RenderFunctionChorus.CODEC);
+	}
+
+	private static void register(String path, Codec<? extends ClocheRenderFunction> codec)
+	{
+		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put(IEApi.ieLoc(path), codec);
+	}
+
+	private static <F extends ClocheRenderFunction>
+	Codec<F> byBlockCodec(Function<F, Block> getBlock, Function<Block, F> make)
+	{
+		return BuiltInRegistries.BLOCK.byNameCodec().xmap(make, getBlock);
 	}
 
 	public static class RenderFunctionCrop implements ClocheRenderFunction
 	{
+		public static final Codec<RenderFunctionCrop> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionCrop::new);
+
 		final Block cropBlock;
 		int maxAge;
 		IntegerProperty ageProperty;
@@ -100,10 +118,18 @@ public class ClocheRenderFunctions
 				state = this.cropBlock.defaultBlockState().setValue(this.ageProperty, age);
 			return ImmutableList.of(Pair.of(state, new Transformation(null)));
 		}
+
+		@Override
+		public Codec<? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
 	}
 
 	public static class RenderFunctionStacking implements ClocheRenderFunction
 	{
+		public static final Codec<RenderFunctionStacking> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionStacking::new);
+
 		final Block cropBlock;
 
 		public RenderFunctionStacking(Block cropBlock)
@@ -126,21 +152,23 @@ public class ClocheRenderFunctions
 					Pair.of(this.cropBlock.defaultBlockState(), bottom),
 					Pair.of(this.cropBlock.defaultBlockState(), top));
 		}
+
+		@Override
+		public Codec<? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
 	}
 
-	public static class RenderFunctionStem implements ClocheRenderFunction
+	public record RenderFunctionStem(
+			Block cropBlock, Block stemBlock, Block attachedStemBlock
+	) implements ClocheRenderFunction
 	{
-		final Block cropBlock;
-		final Block stemBlock;
-		final Block attachedStemBlock;
-
-		public RenderFunctionStem(Block cropBlock)
-		{
-			this.cropBlock = cropBlock;
-			// TODO fix!
-			this.stemBlock = Blocks.MELON_STEM;//this.cropBlock.getStem();
-			this.attachedStemBlock = Blocks.ATTACHED_MELON_STEM;
-		}
+		public static final Codec<RenderFunctionStem> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("crop").forGetter(f -> f.cropBlock),
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("stem").forGetter(f -> f.stemBlock),
+				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("attachedStem").forGetter(f -> f.attachedStemBlock)
+		).apply(inst, RenderFunctionStem::new));
 
 		@Override
 		public float getScale(ItemStack seed, float growth)
@@ -175,10 +203,18 @@ public class ClocheRenderFunctions
 				);
 			}
 		}
+
+		@Override
+		public Codec<? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
 	}
 
 	public static class RenderFunctionGeneric implements ClocheRenderFunction
 	{
+		public static final Codec<RenderFunctionGeneric> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionGeneric::new);
+
 		final Block cropBlock;
 
 		public RenderFunctionGeneric(Block cropBlock)
@@ -199,10 +235,18 @@ public class ClocheRenderFunctions
 			Vector3f scale = new Vector3f(growth, growth, growth);
 			return ImmutableList.of(Pair.of(this.cropBlock.defaultBlockState(), new Transformation(transl, null, scale, null)));
 		}
+
+		@Override
+		public Codec<? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
 	}
 
 	public static class RenderFunctionChorus implements ClocheRenderFunction
 	{
+		public static final Codec<RenderFunctionChorus> CODEC = Codec.unit(new RenderFunctionChorus());
+
 		@Override
 		public float getScale(ItemStack seed, float growth)
 		{
@@ -222,10 +266,18 @@ public class ClocheRenderFunctions
 					Pair.of(stem, middle),
 					Pair.of(Blocks.CHORUS_FLOWER.defaultBlockState(), top));
 		}
+
+		@Override
+		public Codec<? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
 	}
 
 	public static class RenderFunctionHemp implements ClocheRenderFunction
 	{
+		public static final Codec<RenderFunctionHemp> CODEC = Codec.unit(new RenderFunctionHemp());
+
 		@Override
 		public float getScale(ItemStack seed, float growth)
 		{
@@ -245,6 +297,12 @@ public class ClocheRenderFunctions
 				);
 			}
 			return ImmutableList.of(Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.AGE, age), new Transformation(null)));
+		}
+
+		@Override
+		public Codec<? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
 		}
 	}
 }

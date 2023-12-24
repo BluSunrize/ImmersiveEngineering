@@ -4,8 +4,10 @@
     "item": "minecraft:pumpkin_seeds"
   },
   "render": {
-    "type": "stem",
-    "block": "minecraft:pumpkin"
+    "type": "immersiveengineering:stem",
+    "attachedStem": "minecraft:attached_pumpkin_stem",
+    "crop": "minecraft:pumpkin",
+    "stem": "minecraft:pumpkin_stem"
   },
   "results": [
     {

@@ -29,7 +29,7 @@ public class SplitModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBu
 
 	protected SplitModelBuilder(T parent, ExistingFileHelper existingFileHelper)
 	{
-		super(SplitModelLoader.LOCATION, parent, existingFileHelper);
+		super(SplitModelLoader.LOCATION, parent, existingFileHelper, false);
 	}
 
 	private List<Vec3i> parts;

@@ -8,9 +8,8 @@
 
 package blusunrize.immersiveengineering.data.recipes.builder;
 
-import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
-import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
+import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.TagOutputList;
 import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemOutput;
@@ -31,7 +30,7 @@ public class ClocheRecipeBuilder extends IERecipeBuilder<ClocheRecipeBuilder>
 	private Ingredient seed;
 	private Ingredient soil;
 	private int time;
-	private ClocheRenderReference renderReference;
+	private ClocheRenderFunction renderReference;
 
 	private ClocheRecipeBuilder()
 	{
@@ -77,7 +76,7 @@ public class ClocheRecipeBuilder extends IERecipeBuilder<ClocheRecipeBuilder>
 		return this;
 	}
 
-	public ClocheRecipeBuilder setRender(ClocheRenderReference renderReference)
+	public ClocheRecipeBuilder setRender(ClocheRenderFunction renderReference)
 	{
 		this.renderReference = renderReference;
 		return this;

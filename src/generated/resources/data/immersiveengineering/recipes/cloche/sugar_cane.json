@@ -4,8 +4,8 @@
     "item": "minecraft:sugar_cane"
   },
   "render": {
-    "type": "stacking",
-    "block": "minecraft:sugar_cane"
+    "type": "immersiveengineering:stacking",
+    "value": "minecraft:sugar_cane"
   },
   "results": [
     {

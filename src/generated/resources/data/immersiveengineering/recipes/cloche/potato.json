@@ -4,8 +4,8 @@
     "item": "minecraft:potato"
   },
   "render": {
-    "type": "crop",
-    "block": "minecraft:potatoes"
+    "type": "immersiveengineering:crop",
+    "value": "minecraft:potatoes"
   },
   "results": [
     {

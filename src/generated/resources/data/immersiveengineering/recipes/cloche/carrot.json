@@ -4,8 +4,8 @@
     "item": "minecraft:carrot"
   },
   "render": {
-    "type": "crop",
-    "block": "minecraft:carrots"
+    "type": "immersiveengineering:crop",
+    "value": "minecraft:carrots"
   },
   "results": [
     {

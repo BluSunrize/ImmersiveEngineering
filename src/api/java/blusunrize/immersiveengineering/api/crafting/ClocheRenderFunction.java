@@ -9,24 +9,18 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import com.google.gson.JsonElement;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public interface ClocheRenderFunction
 {
@@ -36,12 +30,9 @@ public interface ClocheRenderFunction
 
 	/**
 	 * Method to inject quads into the Cloche's plant rendering.
-	 * Any quads passed to the consumer will be included in the plant rendering.
-	 *
-	 *
+	 * Any quads passed to the consumer will be included in the plant rendering.<br>
 	 * Immersive Engineering will not cache any quads injected by this method,
-	 * therefore it is up to the implementation to make sure quads are properly cached.
-	 *
+	 * therefore it is up to the implementation to make sure quads are properly cached.<br>
 	 * Additionally, even though this method is only called client side, the containing class exists on both sides.
 	 * As a result, it is imperative that implementations of this method do not contain direct references to client-only
 	 * code.
@@ -55,6 +46,7 @@ public interface ClocheRenderFunction
 
 	}
 
+	Codec<? extends ClocheRenderFunction> codec();
 
 	/**
 	 * A map of factories for render functions, used to display blocks inside the cloche.
@@ -64,54 +56,19 @@ public interface ClocheRenderFunction
 	 * "stem", builds a render function for stem-grown plants like melon or pumpkin
 	 * "generic", builds a render function for any block, making it grow in size, like mushrooms
 	 */
-	Map<String, ClocheRenderFunctionFactory> RENDER_FUNCTION_FACTORIES = new HashMap<>();
+	BiMap<ResourceLocation, Codec<? extends ClocheRenderFunction>> RENDER_FUNCTION_FACTORIES = HashBiMap.create();
 
-	interface ClocheRenderFunctionFactory extends Function<Block, ClocheRenderFunction>
+	Codec<ClocheRenderFunction> CODEC = ResourceLocation.CODEC.dispatch(
+			f -> RENDER_FUNCTION_FACTORIES.inverse().get(f.codec()), RENDER_FUNCTION_FACTORIES::get
+	);
+
+	static void write(FriendlyByteBuf buffer, ClocheRenderFunction f)
 	{
+		buffer.writeJsonWithCodec(CODEC, f);
 	}
 
-	class ClocheRenderReference
+	static ClocheRenderFunction read(FriendlyByteBuf buffer)
 	{
-		public static final Codec<ClocheRenderReference> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				Codec.STRING.fieldOf("type").forGetter(r -> r.type),
-				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(r -> r.block)
-		).apply(inst, ClocheRenderReference::new));
-
-		private final String type;
-		private final Block block;
-
-		public ClocheRenderReference(String type, Block block)
-		{
-			this.type = type;
-			this.block = block;
-		}
-
-		public String getType()
-		{
-			return type;
-		}
-
-		public Block getBlock()
-		{
-			return block;
-		}
-
-		public void write(FriendlyByteBuf buffer)
-		{
-			buffer.writeUtf(getType());
-			buffer.writeResourceLocation(BuiltInRegistries.BLOCK.getKey(getBlock()));
-		}
-
-		public static ClocheRenderReference read(FriendlyByteBuf buffer)
-		{
-			String key = buffer.readUtf();
-			ResourceLocation rl = buffer.readResourceLocation();
-			return new ClocheRenderReference(key, BuiltInRegistries.BLOCK.get(rl));
-		}
-
-		public JsonElement serialize()
-		{
-			return CODEC.encodeStart(JsonOps.INSTANCE, this).result().orElseThrow();
-		}
+		return buffer.readJsonWithCodec(CODEC);
 	}
 }
