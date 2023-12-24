@@ -71,6 +71,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPipe, IColouredBE, IPlayerInteraction,
@@ -124,23 +125,22 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		{
 			BlockPos next = openList.get(0);
 			BlockEntity pipeTile = Utils.getExistingTileEntity(world, next);
-			if(!closedList.contains(next)&&(pipeTile instanceof FluidPipeBlockEntity))
+			if(!closedList.contains(next)&&(pipeTile instanceof FluidPipeBlockEntity pipe))
 			{
 				closedList.add(next);
 				for(Direction fd : DirectionUtils.VALUES)
-					if(((FluidPipeBlockEntity)pipeTile).hasOutputConnection(fd))
+					if(pipe.hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.relative(fd);
 						BlockEntity adjacentTile = Utils.getExistingTileEntity(world, nextPos);
-						if(adjacentTile!=null)
-							if(adjacentTile instanceof FluidPipeBlockEntity)
-								openList.add(nextPos);
-							else
-							{
-								IFluidHandler handler = world.getCapability(FluidHandler.BLOCK, nextPos, fd.getOpposite());
-								if(handler!=null&&handler.getTanks() > 0)
-									fluidHandlers.add(new DirectionalFluidOutput(handler, fd, adjacentTile));
-							}
+						if(adjacentTile instanceof FluidPipeBlockEntity)
+							openList.add(nextPos);
+						else
+						{
+							IFluidHandler handler = world.getCapability(FluidHandler.BLOCK, nextPos, fd.getOpposite());
+							if(handler!=null&&handler.getTanks() > 0)
+								fluidHandlers.add(new DirectionalFluidOutput(handler, fd, adjacentTile, nextPos));
+						}
 					}
 			}
 			openList.remove(0);
@@ -168,7 +168,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			for(Direction side : Direction.values())
 				neighbors.put(side, BlockCapabilityCache.create(
 						FluidHandler.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
-				));
+				)::getCapability);
 		}
 	}
 
@@ -258,7 +258,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			nbt.putInt("color", color.getId());
 	}
 
-	boolean canOutputPressurized(BlockEntity output, boolean consumePower)
+	boolean canOutputPressurized(@Nullable BlockEntity output, boolean consumePower)
 	{
 		if(output instanceof IFluidPipe)
 			return ((IFluidPipe)output).canOutputPressurized(consumePower);
@@ -266,11 +266,16 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	private final Map<Direction, IFluidHandler> sidedHandlers = new EnumMap<>(Direction.class);
-	private final Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighbors = new EnumMap<>(Direction.class);
+	private final Map<Direction, Supplier<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
 			sidedHandlers.put(f, new PipeFluidHandler(this, f));
+		// TODO should this really be queried client-side? Fluid caps are not necessarily available
+		for(Direction side : Direction.values())
+			neighbors.put(side, () -> level.getCapability(
+					FluidHandler.BLOCK, worldPosition.relative(side), side.getOpposite()
+			));
 	}
 
 	private void invalidateHandler(Direction side)
@@ -380,16 +385,16 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				return 0;
 			Set<DirectionalFluidOutput> outputList = getConnectedFluidHandlers(pipe.getBlockPos(), pipe.level);
 
-			if(outputList.size() < 1)
+			if(outputList.isEmpty())
 				//NO OUTPUTS!
 				return 0;
-			BlockPos ccFrom = new BlockPos(pipe.getBlockPos().relative(facing));
+			BlockPos ccFrom = new BlockPos(pipe.getBlockPos().relative(facing.getOpposite()));
 			int sum = 0;
 			HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<>();
 			for(DirectionalFluidOutput output : outputList)
 			{
-				BlockPos cc = output.containingTile.getBlockPos();
-				if(!cc.equals(ccFrom)&&pipe.level.hasChunkAt(cc)&&!pipe.equals(output.containingTile))
+				BlockPos cc = output.pos;
+				if(!cc.equals(ccFrom)&&pipe.level.hasChunkAt(cc)&&!pipe.getBlockPos().equals(output.pos))
 				{
 					int limit = getTransferableAmount(resource, output.containingTile);
 					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
@@ -429,7 +434,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			return 0;
 		}
 
-		private int getTransferableAmount(FluidStack resource, BlockEntity target)
+		private int getTransferableAmount(FluidStack resource, @Nullable BlockEntity target)
 		{
 			// certain targets may override the transfer limits. This only works for direct pipe connections.
 			if(target instanceof IPressurizedFluidOutput pressurizedOutput)
@@ -458,7 +463,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			Level world = pipe.getLevelNonnull();
 			List<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getBlockPos(), world));
 			BlockPos ccFrom = new BlockPos(pipe.getBlockPos().relative(facing));
-			outputList.removeIf(output -> ccFrom.equals(output.containingTile.getBlockPos()));
+			outputList.removeIf(output -> ccFrom.equals(output.pos));
 
 			if(outputList.size() < 1)
 				return FluidStack.EMPTY;
@@ -477,7 +482,8 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	public record DirectionalFluidOutput(
 			IFluidHandler output,
 			Direction direction,
-			BlockEntity containingTile
+			@Nullable BlockEntity containingTile,
+			BlockPos pos
 	)
 	{
 		boolean stripPressure()
@@ -498,7 +504,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		connections &= ~mask;
 		if(sideConfig.getBoolean(dir))
 		{
-			IFluidHandler handler = neighbors.get(dir).getCapability();
+			IFluidHandler handler = neighbors.get(dir).get();
 			if(handler!=null&&handler.getTanks() > 0)
 				connections |= mask;
 		}
@@ -517,7 +523,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					availableConnections |= mask;
 				else
 				{
-					IFluidHandler handler = neighbors.get(dir).getCapability();
+					IFluidHandler handler = neighbors.get(dir).get();
 					if(handler!=null&&handler.getTanks() > 0)
 						availableConnections |= mask;
 				}

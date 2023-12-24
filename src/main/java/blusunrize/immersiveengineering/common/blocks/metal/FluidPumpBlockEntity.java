@@ -276,6 +276,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 				IFluidHandler handler = neighborFluids.get(f).getCapability();
 				if(handler!=null)
 				{
+					// TODO check if there are bad BE assumptions here
 					BlockEntity tile = getLevelNonnull().getBlockEntity(worldPosition.relative(f));
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
@@ -283,7 +284,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					int temp = handler.fill(insertResource, FluidAction.SIMULATE);
 					if(temp > 0)
 					{
-						sorting.put(new DirectionalFluidOutput(handler, f, tile), temp);
+						sorting.put(new DirectionalFluidOutput(handler, f, tile, worldPosition.relative(f)), temp);
 						sum += temp;
 					}
 				}

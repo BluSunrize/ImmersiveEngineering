@@ -86,10 +86,10 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		super.onLoad();
 		if(level instanceof ServerLevel serverLevel)
 			neighbors = ImmutableMap.of(
-					Direction.DOWN, BlockCapabilityCache.create(
+					Direction.UP, BlockCapabilityCache.create(
 							FluidHandler.BLOCK, serverLevel, worldPosition.above(), Direction.DOWN
 					),
-					Direction.UP, BlockCapabilityCache.create(
+					Direction.DOWN, BlockCapabilityCache.create(
 							FluidHandler.BLOCK, serverLevel, worldPosition.below(), Direction.UP
 					)
 			);
