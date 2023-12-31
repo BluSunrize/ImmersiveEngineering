@@ -247,7 +247,8 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(entity==null||!entity.isAlive()||entity.getHealth() <= 0)
 			return false;
 		//Continue if blacklist and name is in list, or whitelist and name is not in list
-		if(whitelist^isListedName(targetList, entity.getName().getString()))
+		boolean isListed = isListedName(targetList, entity.getName().getString()) || isListedName(targetList, entity.getType().getDescription().getString());
+		if(whitelist^isListed)
 			return false;
 		//Same as above but for the owner of the pet, to prevent shooting wolves
 		if(entity instanceof TamableAnimal)
