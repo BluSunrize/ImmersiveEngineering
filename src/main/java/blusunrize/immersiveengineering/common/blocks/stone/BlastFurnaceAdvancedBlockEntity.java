@@ -204,8 +204,8 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 			registerCapability(new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true}))
 	);
 	//TODO output is facing, 2
-	private static final BlockPos outputOffset = new BlockPos(1, 0, 0);
-	private static final BlockPos slagOutputOffset = new BlockPos(1, 0, 2);
+	private static final BlockPos outputOffset = new BlockPos(1, 0, 2);
+	private static final BlockPos slagOutputOffset = new BlockPos(1, 0, 0);
 	private static final BlockPos inputOffset = new BlockPos(1, 3, 1);
 	private static final Set<BlockPos> ioOffsets = ImmutableSet.of(inputOffset, outputOffset, slagOutputOffset);
 

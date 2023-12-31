@@ -12,6 +12,7 @@
 - Fix external heater breaking when dealing with faster furnace recipes (TeamSpen210)
 - Fix stairs and slabs not receiving item tags (BluSunrize)
 - Fix potential crash with the accumulator backpack (BluSunrize)
+- Fix output positions on the improved blastfurnace being swapped around (BluSunrize)
 - Translations Added/Updated: cs_cz (RomanPlayer22)
 
 ##### Version 1.19.2-9.2.3-167
