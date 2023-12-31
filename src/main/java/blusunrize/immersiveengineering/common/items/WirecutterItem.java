@@ -29,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -155,7 +156,8 @@ public class WirecutterItem extends IEBaseItem
 				AtomicBoolean cut = new AtomicBoolean(false);
 				net.removeAllConnectionsAt(nodeHere, conn -> {
 					ItemStack coil = conn.type.getWireCoil(conn);
-					world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), coil));
+					if (world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
+					    world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), coil, 0, 0, 0));
 					cut.set(true);
 				});
 				if(cut.get())
@@ -180,7 +182,7 @@ public class WirecutterItem extends IEBaseItem
 			Connection target = WireUtils.getTargetConnection(world, player, null, reachDistance);
 			if(target!=null)
 			{
-				GlobalWireNetwork.getNetwork(world).removeAndDropConnection(target, player.blockPosition(), world);
+				GlobalWireNetwork.getNetwork(world).removeInsertAndDropConnection(target, player, world);
 				damageStack(stack, player, hand);
 			}
 		}
