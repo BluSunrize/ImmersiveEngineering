@@ -6,35 +6,29 @@
   "fail_chance": 0.05,
   "ores": [
     {
-      "chance": 0.5,
+      "chance": 0.65,
       "output": {
-        "item": "minecraft:clay"
+        "item": "minecraft:calcite"
       }
     },
     {
       "chance": 0.3,
       "output": {
-        "item": "minecraft:sand"
+        "item": "minecraft:dripstone_block"
       }
     },
     {
-      "chance": 0.2,
+      "chance": 0.05,
       "output": {
-        "item": "minecraft:gravel"
+        "item": "minecraft:bone_block"
       }
     }
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.6,
       "output": {
-        "item": "minecraft:coarse_dirt"
-      }
-    },
-    {
-      "chance": 0.5,
-      "output": {
-        "item": "minecraft:cobblestone"
+        "item": "minecraft:sandstone"
       }
     },
     {
@@ -42,7 +36,13 @@
       "output": {
         "item": "minecraft:gravel"
       }
+    },
+    {
+      "chance": 0.1,
+      "output": {
+        "item": "minecraft:sand"
+      }
     }
   ],
-  "weight": 25
+  "weight": 15
 }

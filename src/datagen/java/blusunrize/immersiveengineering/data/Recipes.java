@@ -1162,20 +1162,13 @@ public class Recipes extends RecipeProvider
 		TagKey<Item> emerald = Tags.Items.ORES_EMERALD;
 		Block prismarine = Blocks.PRISMARINE;
 		TagKey<Item> aquamarine = createItemWrapper(IETags.getGem("aquamarine"));
-
-		// Common things
+		//Dimensions
 		ResourceKey<DimensionType> overworld = BuiltinDimensionTypes.OVERWORLD;
 		ResourceKey<DimensionType> nether = BuiltinDimensionTypes.NETHER;
+
+		//Decorative Blocks
 		MineralMixBuilder.builder(overworld)
-				.addOverworldSpoils()
-				.addOre(Tags.Items.ORES_COAL, .8f)
-				.addOre(sulfur, .2f)
-				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
-				.setWeight(25)
-				.setFailchance(.05f)
-				.build(out, toRL("mineral/bituminous_coal"));
-		MineralMixBuilder.builder(overworld)
-				.addSiltSpoils()
+				.addSoilSpoils()
 				.addOre(Items.CLAY, .5f)
 				.addOre(Items.SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
@@ -1191,6 +1184,39 @@ public class Recipes extends RecipeProvider
 				.setWeight(25)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/igneous_rock"));
+		MineralMixBuilder.builder(overworld)
+				.addSoilSpoils()
+				.addOre(Items.TERRACOTTA, .6f)
+				.addOre(Items.RED_SANDSTONE, .3f)
+				.addOre(Items.RED_SAND, .1f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/hardened_clay_pan"));
+		MineralMixBuilder.builder(overworld)
+				.addSeabedSpoils()
+				.addOre(Blocks.CALCITE, .65f)
+				.addOre(Blocks.DRIPSTONE_BLOCK, .3f)
+				.addOre(Blocks.BONE_BLOCK, .05f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/ancient_seabed"));
+		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
+				.addOre(Blocks.AMETHYST_BLOCK, .4f)
+				.addOre(Blocks.CALCITE, .3f)
+				.addOre(Blocks.SMOOTH_BASALT, .3f)
+				.setWeight(10)
+				.setFailchance(.1f)
+				.build(out, toRL("mineral/amethyst_crevasse"));
+		// Common things
+		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
+				.addOre(Tags.Items.ORES_COAL, .8f)
+				.addOre(sulfur, .2f)
+				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
+				.setWeight(25)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/bituminous_coal"));
 		// Metals
 		MineralMixBuilder.builder(overworld)
 				.addOverworldSpoils()
