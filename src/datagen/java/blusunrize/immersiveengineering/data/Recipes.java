@@ -3296,6 +3296,28 @@ public class Recipes extends RecipeProvider
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.getTagsFor(EnumMetals.LEAD).nugget), RecipeCategory.MISC, Items.RED_DYE, 0.1f, standardSmeltingTime)
 				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
 				.save(out, toRL("smelting/lead_red"));
+
+		//Lead glass recipes
+		shapedMisc(Items.TINTED_GLASS, 3)
+				.pattern("LAL")
+				.pattern("AGA")
+				.pattern("LAL")
+				.define('L', Ingredients.WIRE_LEAD)
+				.define('A', Items.AMETHYST_SHARD)
+				.define('G', Tags.Items.GLASS_COLORLESS)
+				.unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
+				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
+				.save(out, toRL("tinted_glass_lead_wire"));
+		shapedMisc(Items.TINTED_GLASS, 3)
+				.pattern("LAL")
+				.pattern("AGA")
+				.pattern("LAL")
+				.define('L', IETags.getTagsFor(EnumMetals.LEAD).nugget)
+				.define('A', Items.AMETHYST_SHARD)
+				.define('G', StoneDecoration.SLAG_GLASS)
+				.unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
+				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
+				.save(out, toRL("tinted_glass_lead_nugget"));
 	}
 
 	private void addArmor(TagKey<Item> input, Map<ArmorItem.Type, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
