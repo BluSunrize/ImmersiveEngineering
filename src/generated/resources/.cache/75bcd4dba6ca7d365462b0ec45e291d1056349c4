@@ -1,4 +1,4 @@
-// 1.19.2	2023-10-03T14:05:29.6559284	Tags for minecraft:block
+// 1.19.2	2023-12-31T14:58:21.4017641	Tags for minecraft:block
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -66,8 +66,8 @@ c4d7716065b5d47dbbf59048b1cdd83d2dd9fcb3 data/minecraft/tags/blocks/mineable/pic
 7664fa2d24e4cac313d34871e35bfc4550d30dd8 data/minecraft/tags/blocks/needs_iron_tool.json
 0b44260a4bbb8be99039b3054c7e1faa8813d4a8 data/minecraft/tags/blocks/needs_stone_tool.json
 da83d2c4f2c93e3c8b94aaa7391d094b109192f9 data/minecraft/tags/blocks/planks.json
-e42b97be0dbdd3fc25e640ee4a2f6be17a7e99b4 data/minecraft/tags/blocks/slabs.json
-a5ed7315225fd88d9d974a689ff5e30dc08a2a56 data/minecraft/tags/blocks/stairs.json
+f195fd5da6a1f9d3816179864eda9bdb3a8871c1 data/minecraft/tags/blocks/slabs.json
+b1dad1e9baa66ffd3513cd24d5765c6fdc760ae5 data/minecraft/tags/blocks/stairs.json
 31aec3619b657eb55bc44a76ed1dba40e168472b data/minecraft/tags/blocks/wooden_fences.json
 4032d6002cc7e1160440993785fc797ab0f06481 data/minecraft/tags/blocks/wooden_slabs.json
 8df24af02f025c5e587901c704ac2c09e8d7d0aa data/minecraft/tags/blocks/wooden_stairs.json

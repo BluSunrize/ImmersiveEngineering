@@ -168,16 +168,16 @@ public class IEBlockTags extends BlockTagsProvider
 				.addOptionalTag(new ResourceLocation("dynamictrees","leaves"));
 		checkAllRegisteredForBreaking();
 
-		for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values())
+		for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values()) {
 			if(slab.get().defaultBlockState().getMaterial()==Material.WOOD)
 				tag(BlockTags.WOODEN_SLABS).add(slab.get());
-			else
-				tag(BlockTags.SLABS).add(slab.get());
-		for(BlockEntry<IEStairsBlock> stairs : IEBlocks.TO_STAIRS.values())
+			tag(BlockTags.SLABS).add(slab.get());
+		}
+		for(BlockEntry<IEStairsBlock> stairs : IEBlocks.TO_STAIRS.values()) {
 			if(stairs.get().defaultBlockState().getMaterial()==Material.WOOD)
 				tag(BlockTags.WOODEN_STAIRS).add(stairs.get());
-			else
-				tag(BlockTags.STAIRS).add(stairs.get());
+			tag(BlockTags.STAIRS).add(stairs.get());
+		}
 
 		/* MOD COMPAT STARTS HERE */
 

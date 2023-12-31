@@ -1,4 +1,4 @@
-// 1.19.2	2023-10-03T15:29:12.5488577	Tags for minecraft:item
+// 1.19.2	2023-12-31T14:58:21.3957641	Tags for minecraft:item
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 12af21b60a1c7cfb849c3d5c5858715afcc31f86 data/forge/tags/items/armors.json
@@ -159,3 +159,7 @@ abd64977cb7f9a82733f5a615230b150179a2123 data/immersiveengineering/tags/items/to
 721903046c1e90c28d2fede7814f04994baaf913 data/minecraft/tags/items/coals.json
 ca80813f3c36ca4d7cd3b091a242dffa5652499d data/minecraft/tags/items/lectern_books.json
 da83d2c4f2c93e3c8b94aaa7391d094b109192f9 data/minecraft/tags/items/planks.json
+f195fd5da6a1f9d3816179864eda9bdb3a8871c1 data/minecraft/tags/items/slabs.json
+b1dad1e9baa66ffd3513cd24d5765c6fdc760ae5 data/minecraft/tags/items/stairs.json
+4032d6002cc7e1160440993785fc797ab0f06481 data/minecraft/tags/items/wooden_slabs.json
+8df24af02f025c5e587901c704ac2c09e8d7d0aa data/minecraft/tags/items/wooden_stairs.json
