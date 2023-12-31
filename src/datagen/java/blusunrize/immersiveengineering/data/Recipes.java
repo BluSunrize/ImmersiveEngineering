@@ -1863,11 +1863,11 @@ public class Recipes extends RecipeProvider
 				.pattern("cbc")
 				.pattern("ici")
 				.define('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
-				.define('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
+				.define('c', IETags.getTagsFor(EnumMetals.CONSTANTAN).plate)
 				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_steel_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.unlockedBy("has_water_bucket", has(Items.WATER_BUCKET))
-				.unlockedBy("has_copper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.unlockedBy("has_constantan_ingot", has(IETags.getTagsFor(EnumMetals.CONSTANTAN).ingot))
 				.save(out, toRL(toPath(MetalDecoration.RADIATOR)));
 
 		shapedMisc(MetalDecoration.ALU_POST)
