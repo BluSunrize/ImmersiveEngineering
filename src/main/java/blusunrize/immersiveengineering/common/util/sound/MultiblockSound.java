@@ -21,12 +21,12 @@ import java.util.function.BooleanSupplier;
 
 public class MultiblockSound extends AbstractTickableSoundInstance
 {
-	private static final float ACTIVE_VOLUME = 0.5f;
 	private final BooleanSupplier active;
 	private final BooleanSupplier valid;
+	private final float maxVolume;
 
 	public MultiblockSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound, boolean loop
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound, boolean loop, float maxVolume
 	)
 	{
 		super(sound, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
@@ -37,20 +37,21 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		this.z = pos.z;
 		this.looping = loop;
 		this.volume = 0;
+		this.maxVolume = maxVolume;
 	}
 
 	public static BooleanSupplier startSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound, float maxVolume
 	)
 	{
-		return startSound(active, valid, pos, sound, true);
+		return startSound(active, valid, pos, sound, true, maxVolume);
 	}
 
 	public static BooleanSupplier startSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound, boolean loop
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, RegistryObject<SoundEvent> sound, boolean loop, float maxVolume
 	)
 	{
-		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get(), loop);
+		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.get(), loop, maxVolume);
 		final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 		soundManager.play(instance);
 		return () -> soundManager.isActive(instance);
@@ -68,7 +69,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		if(!valid.getAsBoolean())
 			this.stop();
 		else if(this.active.getAsBoolean())
-			this.volume = ACTIVE_VOLUME;
+			this.volume = maxVolume;
 		else
 			this.volume = 0;
 	}

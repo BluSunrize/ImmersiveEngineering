@@ -50,6 +50,13 @@ public class IESounds
 	public static final RegistryObject<SoundEvent> mixer = registerSound("mixer");
 	public static final RegistryObject<SoundEvent> fermenter = registerSound("fermenter");
 	public static final RegistryObject<SoundEvent> preheater = registerSound("preheater");
+	public static final RegistryObject<SoundEvent> arcFurnace = registerSound("arc_furnace");
+	public static final RegistryObject<SoundEvent> oreConveyor = registerSound("ore_conveyor");
+	public static final RegistryObject<SoundEvent> oreDump = registerSound("ore_dump");
+	public static final RegistryObject<SoundEvent> process1 = registerSound("process_1");
+	public static final RegistryObject<SoundEvent> process1Lift = registerSound("process_1_lift");
+	public static final RegistryObject<SoundEvent> process2 = registerSound("process_2");
+	public static final RegistryObject<SoundEvent> process2Lift = registerSound("process_2_lift");
 
 
 	public static void init()
