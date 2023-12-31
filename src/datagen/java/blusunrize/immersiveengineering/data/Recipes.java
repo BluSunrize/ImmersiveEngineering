@@ -3284,6 +3284,18 @@ public class Recipes extends RecipeProvider
 				.define('C', Items.MINECART)
 				.unlockedBy("has_minecart", has(Items.MINECART))
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+
+		//Lead to dye recipes
+		shapelessMisc(Items.WHITE_DYE, 16)
+				.requires(new IngredientFluidStack(IETags.fluidEthanol, FluidType.BUCKET_VOLUME))
+				.requires(Ingredient.of(Items.ROTTEN_FLESH), 2)
+				.requires(Items.DIRT)
+				.requires(IETags.getTagsFor(EnumMetals.LEAD).dust)
+				.unlockedBy("has_ethanol", has(IEFluids.ETHANOL.getBucket()))
+				.save(out, toRL("lead_white"));
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.getTagsFor(EnumMetals.LEAD).nugget), RecipeCategory.MISC, Items.RED_DYE, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
+				.save(out, toRL("smelting/lead_red"));
 	}
 
 	private void addArmor(TagKey<Item> input, Map<ArmorItem.Type, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
