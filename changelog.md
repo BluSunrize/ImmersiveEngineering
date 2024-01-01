@@ -1,3 +1,12 @@
+##### Version 1.20.1-10.0.1-pre
+- Includes all features from 9.2.4
+- Add sounds for Arc Furnace, Excavator, and Automated Workbench (voidsong-dragonfly)
+- Change hemp blocks to notify their neighbours when they grow (jrtc27)
+- Change Jade Tooltips for multiblocks to work when looking at any part of the machine (HermitOwO)
+- Fix conveyor rendering in the manual (Malte)
+- Fix broken translation keys (Malte & BluSunrize)
+- Fix turret GUI textfield not being editable (BluSunrize)
+
 ##### Version 1.19.2-9.2.4-pre
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
   - Amethyst Crevasse, a geode vein
