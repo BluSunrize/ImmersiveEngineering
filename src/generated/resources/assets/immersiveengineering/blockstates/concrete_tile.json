@@ -1,7 +1,30 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/concrete_tile"
-    }
+    "": [
+      {
+        "model": "immersiveengineering:block/concrete_tile0"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_tile1"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_tile2"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_tile3"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_tile4"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_tile5"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_tile6"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_tile7"
+      }
+    ]
   }
 }

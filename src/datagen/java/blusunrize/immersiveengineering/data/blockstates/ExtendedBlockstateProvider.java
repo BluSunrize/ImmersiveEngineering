@@ -30,6 +30,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
@@ -37,6 +38,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,8 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 {
@@ -81,6 +85,12 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		itemModel(b, model.model);
 	}
 
+	public void multiBlockAndItem(Supplier<? extends Block> b, ModelFile... models)
+	{
+		simpleBlock(b.get(), Stream.of(models).map(ConfiguredModel::new).toArray(ConfiguredModel[]::new));
+		itemModel(b, new ConfiguredModel(models[0]).model);
+	}
+
 	protected void cubeSideVertical(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation vertical)
 	{
 		simpleBlockAndItem(b, models().cubeBottomTop(name(b), side, vertical, vertical));
@@ -96,6 +106,30 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		final BlockModelBuilder model = models().cubeAll(name(b), texture);
 		setRenderType(layer, model);
 		simpleBlockAndItem(b, model);
+	}
+
+	protected void multiCubeAll(Supplier<? extends Block> b, ResourceLocation... textures)
+	{
+		multiCubeAll(b, null, textures);
+	}
+
+	protected void multiCubeAll(Supplier<? extends Block> b, @Nullable RenderType layer, ResourceLocation... textures)
+	{
+		final BlockModelBuilder[] models = new BlockModelBuilder[textures.length];
+		for (int i=0;i<textures.length;i++)
+		{
+			models[i]=models().cubeAll(name(b)+i, textures[i]);
+			setRenderType(layer, models[i]);
+		}
+		multiBlockAndItem(b, models);
+	}
+
+	protected void multiEightCubeAll(Supplier<? extends Block> b, ResourceLocation texture)
+	{
+		ResourceLocation[] textures = new ResourceLocation[8];
+		for (int i=0;i<8;i++)
+			textures[i] = new ResourceLocation(texture.toString()+i);
+		multiCubeAll(b, textures);
 	}
 
 	protected void scaffold(Supplier<? extends Block> b, ResourceLocation others, ResourceLocation top)
@@ -123,6 +157,46 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	protected void slabFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
 		slabFor(b, side, top, bottom, null);
+	}
+
+	protected void slabForMultiEightAll(Supplier<? extends Block> b, ResourceLocation texture)
+	{
+		ResourceLocation[] textures = new ResourceLocation[8];
+		for (int i=0;i<8;i++)
+			textures[i] = new ResourceLocation(texture.toString()+i);
+		slabForMultiAll(b, textures);
+	}
+
+	protected void slabForMultiAll(Supplier<? extends Block> b, ResourceLocation... textures)
+	{
+		slabForMultiAll(b, null, textures);
+	}
+
+	protected void slabForMultiAll(Supplier<? extends Block> full, @Nullable RenderType layer, ResourceLocation... textures)
+	{
+		SlabBlock b = IEBlocks.TO_SLAB.get(BuiltInRegistries.BLOCK.getKey(full.get())).get();
+
+		final ModelBuilder<?>[] mainModels = new ModelBuilder<?>[textures.length];
+		final ModelBuilder<?>[] topModels = new ModelBuilder<?>[textures.length];
+		final ModelBuilder<?>[] doubleModels = new ModelBuilder<?>[textures.length];
+		for (int i=0;i<textures.length;i++)
+		{
+			mainModels[i]=models().slab(name(b)+i+"_bottom", textures[i], textures[i], textures[i]);
+			topModels[i]=models().slabTop(name(b)+i+"_top", textures[i], textures[i], textures[i]);
+			doubleModels[i]=models().cubeAll(name(b)+i+"_double", textures[i]);
+			setRenderType(layer, mainModels[i], topModels[i], doubleModels[i]);
+		}
+
+		slabBlock(b, mainModels, topModels, doubleModels);
+		itemModel(() -> b, mainModels[0]);
+	}
+
+	//Forge method does not allow random textures for slabs, instead creating a ConfiguredModel directly from an input file
+	public void slabBlock(SlabBlock block, ModelFile[] bottom, ModelFile[] top, ModelFile[] doubleslab) {
+		getVariantBuilder(block)
+				.partialState().with(SlabBlock.TYPE, SlabType.BOTTOM).addModels(Stream.of(bottom).map(ConfiguredModel::new).toArray(ConfiguredModel[]::new))
+				.partialState().with(SlabBlock.TYPE, SlabType.TOP).addModels(Stream.of(top).map(ConfiguredModel::new).toArray(ConfiguredModel[]::new))
+				.partialState().with(SlabBlock.TYPE, SlabType.DOUBLE).addModels(Stream.of(doubleslab).map(ConfiguredModel::new).toArray(ConfiguredModel[]::new));
 	}
 
 	protected void slabFor(

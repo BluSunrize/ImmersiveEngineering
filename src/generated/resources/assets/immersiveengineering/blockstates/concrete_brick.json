@@ -1,7 +1,30 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/concrete_brick"
-    }
+    "": [
+      {
+        "model": "immersiveengineering:block/concrete_brick0"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_brick1"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_brick2"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_brick3"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_brick4"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_brick5"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_brick6"
+      },
+      {
+        "model": "immersiveengineering:block/concrete_brick7"
+      }
+    ]
   }
 }
