@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
@@ -65,9 +66,8 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
 		// Only difference to super version is the text color
-		final int color = 0x190b06;
-		this.font.draw(transform, title, titleLabelX, titleLabelY, color);
-		this.font.draw(transform, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
+		this.font.drawShadow(transform, title, titleLabelX, titleLabelY, Lib.COLOUR_I_ImmersiveOrange);
+		this.font.drawShadow(transform, playerInventoryTitle, inventoryLabelX, inventoryLabelY, Lib.COLOUR_I_ImmersiveOrange);
 	}
 
 	@Override

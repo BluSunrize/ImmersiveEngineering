@@ -82,7 +82,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherMenu>
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
-		this.font.draw(transform, I18n.get("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
+		this.font.drawShadow(transform, I18n.get("block.immersiveengineering.item_batcher"), 8, 6, Lib.COLOUR_I_ImmersiveOrange);
 
 		this.font.draw(transform, I18n.get(Lib.GUI_CONFIG+"item_batcher.filter"), 8, 20, 0xE0E0E0);
 		this.font.draw(transform, I18n.get(Lib.GUI_CONFIG+"item_batcher.buffer"), 8, 49, 0xE0E0E0);

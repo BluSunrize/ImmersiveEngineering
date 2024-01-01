@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.CraftingTableMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,6 @@ public class CraftingTableScreen extends IEContainerScreen<CraftingTableMenu>
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
 		super.renderLabels(transform, mouseX, mouseY);
-		this.font.draw(transform, title, 8, 6, 0x190b06);
+		this.font.drawShadow(transform, title, 8, 6, Lib.COLOUR_I_ImmersiveOrange);
 	}
 }

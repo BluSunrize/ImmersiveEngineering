@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import blusunrize.immersiveengineering.common.gui.CrateMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,15 +21,6 @@ public abstract class CrateScreen<C extends CrateMenu> extends IEContainerScreen
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("crate"));
 		this.imageHeight = 168;
-	}
-
-	@Override
-	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
-	{
-		// Only difference to super version is the text color
-		final int color = 0x190b06;
-		this.font.draw(transform, title, titleLabelX, titleLabelY, color);
-		this.font.draw(transform, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
 	}
 
 	// Unfortunately necessary to calm down the compiler wrt generics
