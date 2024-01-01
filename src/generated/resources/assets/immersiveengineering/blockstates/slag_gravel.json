@@ -1,7 +1,30 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/slag_gravel"
-    }
+    "": [
+      {
+        "model": "immersiveengineering:block/slag_gravel0"
+      },
+      {
+        "model": "immersiveengineering:block/slag_gravel1"
+      },
+      {
+        "model": "immersiveengineering:block/slag_gravel2"
+      },
+      {
+        "model": "immersiveengineering:block/slag_gravel3"
+      },
+      {
+        "model": "immersiveengineering:block/slag_gravel4"
+      },
+      {
+        "model": "immersiveengineering:block/slag_gravel5"
+      },
+      {
+        "model": "immersiveengineering:block/slag_gravel6"
+      },
+      {
+        "model": "immersiveengineering:block/slag_gravel7"
+      }
+    ]
   }
 }
