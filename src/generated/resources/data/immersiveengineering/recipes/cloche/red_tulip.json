@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:red_tulip"
+  },
+  "render": {
+    "type": "generic",
+    "block": "minecraft:red_tulip"
+  },
+  "results": [
+    {
+      "item": "minecraft:red_tulip"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

@@ -61,6 +61,12 @@ public class FluorescentTubeCallbacks implements ItemCallback<Key>
 			return new Vector4f(.067f, .067f, .067f, 1);
 	}
 
+	@Override
+	public Key getDefaultKey()
+	{
+		return new Key(new Vector4f(1, 1, 1, 1));
+	}
+
 	public record Key(Vector4f color)
 	{
 	}

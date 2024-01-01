@@ -29,6 +29,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -153,7 +154,15 @@ public class DrillCallbacks implements ItemCallback<Key>
 						transform==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND||transform==ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
 	}
 
-	public record Key(ResourceLocation headTexture, int damage, boolean waterproof, boolean oiled, boolean fortune)
+	@Override
+	public Key getDefaultKey()
+	{
+		return new Key(null, 0, false, false, false);
+	}
+
+	public record Key(
+			@Nullable ResourceLocation headTexture, int damage, boolean waterproof, boolean oiled, boolean fortune
+	)
 	{
 	}
 }

@@ -1,3 +1,21 @@
+##### Version 1.19.2-9.2.4-pre
+- Add new excavator veins for decoration blocks (voidsong-dragonfly)
+  - Amethyst Crevasse, a geode vein
+  - Hardened Claypan, a red sand & terracotta vein
+  - Ancient Seabed, a dead coral & dripstone vein
+- Add cloche recipes to grow flowers (voidsong-dragonfly)
+- Add crusher recipes to make dyes (voidsong-dragonfly)
+- Change turrets to accept generic entity terms like "Villager" for their black/whitelist (BluSunrize)
+- Change text rendering in GUIs to be more readable (BluSunrize)
+- Fix issues with multiblocks being accessed before being full formed (Malte)
+- Fix items with obj renders breaking in the AE2 inscriber
+- Fix drill overlay highlighting too many blocks (Malte)
+- Fix external heater breaking when dealing with faster furnace recipes (TeamSpen210)
+- Fix stairs and slabs not receiving item tags (BluSunrize)
+- Fix potential crash with the accumulator backpack (BluSunrize)
+- Fix output positions on the improved blastfurnace being swapped around (BluSunrize)
+- Translations Added/Updated: cs_cz (RomanPlayer22)
+
 ##### Version 1.20.1-10.0.0-169
 - First release for 1.20.1, now supporting NeoForged!
 - Includes all features from 9.4.1

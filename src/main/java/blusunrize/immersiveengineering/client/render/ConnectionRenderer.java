@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class ConnectionRenderer implements ResourceManagerReloadListener
 {
@@ -75,24 +76,44 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 	{
 		if(region==null)
 			return;
-		BlockPos chunkOrigin = renderChunk.getOrigin();
-		SectionPos section = SectionPos.of(chunkOrigin);
+		renderConnectionsInSection(
+				renderType -> {
+					BufferBuilder builder = buffers.builder(renderType);
+					if(layers.add(renderType))
+						((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
+					return builder;
+				},
+				region,
+				renderChunk.getOrigin()
+		);
+	}
+
+	public static boolean sectionNeedsRendering(SectionPos section)
+	{
+		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(Minecraft.getInstance().level);
+		List<ConnectionSegments> connectionParts = globalNet.getCollisionData().getWiresIn(section);
+		return connectionParts!=null&&!connectionParts.isEmpty();
+	}
+
+	public static void renderConnectionsInSection(
+			Function<RenderType, VertexConsumer> getBuffer, BlockAndTintGetter region, BlockPos sectionOrigin
+	)
+	{
+		SectionPos section = SectionPos.of(sectionOrigin);
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(Minecraft.getInstance().level);
 		List<ConnectionSegments> connectionParts = globalNet.getCollisionData().getWiresIn(section);
 		if(connectionParts==null||connectionParts.isEmpty())
 			return;
 		RenderType renderType = RenderType.solid();
-		BufferBuilder builder = buffers.builder(renderType);
-		if(layers.add(renderType))
-			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
+		VertexConsumer builder = getBuffer.apply(renderType);
 		for(ConnectionSegments connection : connectionParts)
 		{
 			ConnectionPoint connectionOrigin = connection.connection().getEndA();
 			renderSegments(
 					builder, connection,
-					connectionOrigin.getX()-chunkOrigin.getX(),
-					connectionOrigin.getY()-chunkOrigin.getY(),
-					connectionOrigin.getZ()-chunkOrigin.getZ(),
+					connectionOrigin.getX()-sectionOrigin.getX(),
+					connectionOrigin.getY()-sectionOrigin.getY(),
+					connectionOrigin.getZ()-sectionOrigin.getZ(),
 					region
 			);
 		}

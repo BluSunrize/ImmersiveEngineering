@@ -28,6 +28,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
 import javax.annotation.Nonnull;
@@ -50,18 +52,21 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	@Override
 	protected void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
 	{
-		BlockState state = logic.block().get().defaultBlockState();
-		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, !offsetFromMaster.equals(Vec3i.ZERO));
-		if(state.hasProperty(IEProperties.MIRRORED))
-			state = state.setValue(IEProperties.MIRRORED, mirrored);
-		if(state.hasProperty(IEProperties.FACING_HORIZONTAL))
-			state = state.setValue(IEProperties.FACING_HORIZONTAL, clickDirection.getOpposite());
-		world.setBlockAndUpdate(actualPos, state);
+		BlockState newState = logic.block().get().defaultBlockState();
+		newState = newState.setValue(IEProperties.MULTIBLOCKSLAVE, !offsetFromMaster.equals(Vec3i.ZERO));
+		if(newState.hasProperty(IEProperties.MIRRORED))
+			newState = newState.setValue(IEProperties.MIRRORED, mirrored);
+		if(newState.hasProperty(IEProperties.FACING_HORIZONTAL))
+			newState = newState.setValue(IEProperties.FACING_HORIZONTAL, clickDirection.getOpposite());
+		final BlockState oldState = world.getBlockState(actualPos);
+		world.setBlock(actualPos, newState,0);
 		BlockEntity curr = world.getBlockEntity(actualPos);
 		if(curr instanceof MultiblockBlockEntityDummy<?> dummy)
 			dummy.getHelper().setPositionInMB(info.pos());
 		else if(!(curr instanceof MultiblockBlockEntityMaster<?>))
 			IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
+		final LevelChunk chunk = world.getChunkAt(actualPos);
+		world.markAndNotifyBlock(actualPos, chunk, oldState, newState, Block.UPDATE_ALL, 512);
 	}
 
 	@Override

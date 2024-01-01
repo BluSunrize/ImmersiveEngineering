@@ -79,7 +79,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherMenu>
 	@Override
 	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
-		graphics.drawString(this.font, I18n.get("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
+		graphics.drawString(this.font, I18n.get("block.immersiveengineering.item_batcher"), 8, 6,  Lib.COLOUR_I_ImmersiveOrange, true);
 
 		graphics.drawString(this.font, I18n.get(Lib.GUI_CONFIG+"item_batcher.filter"), 8, 20, 0xE0E0E0);
 		graphics.drawString(this.font, I18n.get(Lib.GUI_CONFIG+"item_batcher.buffer"), 8, 49, 0xE0E0E0);

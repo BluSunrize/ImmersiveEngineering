@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
@@ -63,9 +64,8 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
 		// Only difference to super version is the text color
-		final int color = 0x190b06;
-		graphics.drawString(this.font, title, titleLabelX, titleLabelY, color, false);
-		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color, false);
+		graphics.drawString(this.font, title, titleLabelX, titleLabelY, Lib.COLOUR_I_ImmersiveOrange, true);
+		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, Lib.COLOUR_I_ImmersiveOrange, true);
 	}
 
 	@Override

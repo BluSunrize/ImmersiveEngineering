@@ -133,7 +133,7 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return this;
 	}
 
-	public MineralMixBuilder addSiltSpoils()
+	public MineralMixBuilder addSoilSpoils()
 	{
 		JsonObject coarseDirt = new JsonObject();
 		coarseDirt.addProperty("chance", 0.2f);
@@ -143,10 +143,27 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		cobblestone.addProperty("chance", 0.5f);
 		cobblestone.add("output", serializeItemStack(new ItemStack(Items.COBBLESTONE)));
 		spoilsArray.add(cobblestone);
-		JsonObject deepslateCobblestone = new JsonObject();
-		deepslateCobblestone.addProperty("chance", 0.3f);
-		deepslateCobblestone.add("output", serializeItemStack(new ItemStack(Items.COBBLED_DEEPSLATE)));
-		spoilsArray.add(deepslateCobblestone);
+		JsonObject gravel = new JsonObject();
+		gravel.addProperty("chance", 0.3f);
+		gravel.add("output", serializeItemStack(new ItemStack(Items.GRAVEL)));
+		spoilsArray.add(gravel);
+		return this;
+	}
+
+	public MineralMixBuilder addSeabedSpoils()
+	{
+		JsonObject sandstone = new JsonObject();
+		sandstone.addProperty("chance", 0.6f);
+		sandstone.add("output", serializeItemStack(new ItemStack(Items.SANDSTONE)));
+		spoilsArray.add(sandstone);
+		JsonObject gravel = new JsonObject();
+		gravel.addProperty("chance", 0.3f);
+		gravel.add("output", serializeItemStack(new ItemStack(Items.GRAVEL)));
+		spoilsArray.add(gravel);
+		JsonObject sand = new JsonObject();
+		sand.addProperty("chance", 0.1f);
+		sand.add("output", serializeItemStack(new ItemStack(Items.SAND)));
+		spoilsArray.add(sand);
 		return this;
 	}
 
