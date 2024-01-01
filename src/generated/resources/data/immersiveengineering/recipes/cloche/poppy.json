@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:poppy"
+  },
+  "render": {
+    "type": "generic",
+    "block": "minecraft:poppy"
+  },
+  "results": [
+    {
+      "item": "minecraft:poppy"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

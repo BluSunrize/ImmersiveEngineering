@@ -262,6 +262,8 @@ public class PowerpackItem extends UpgradeableToolItem
 	private Optional<EnergyConnector> findBestSource(GlobalWireNetwork globalNetwork, Connection connection)
 	{
 		EnergyTransferHandler energyHandler = connection.getContainingNet(globalNetwork).getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
+		if(energyHandler==null)
+			return Optional.empty();
 		return energyHandler.getSources().values().stream()
 				.filter(o -> o.getAvailableEnergy() > 0)
 				.max(Comparator.comparingInt(EnergyConnector::getAvailableEnergy));

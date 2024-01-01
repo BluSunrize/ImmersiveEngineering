@@ -22,15 +22,6 @@ public abstract class CrateScreen<C extends CrateMenu> extends IEContainerScreen
 		this.imageHeight = 168;
 	}
 
-	@Override
-	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
-	{
-		// Only difference to super version is the text color
-		final int color = 0x190b06;
-		graphics.drawString(this.font, title, titleLabelX, titleLabelY, color, false);
-		graphics.drawString(this.font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color, false);
-	}
-
 	// Unfortunately necessary to calm down the compiler wrt generics
 	public static class StandardCrate extends CrateScreen<CrateMenu>
 	{

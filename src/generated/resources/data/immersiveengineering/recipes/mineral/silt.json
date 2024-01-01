@@ -40,7 +40,7 @@
     {
       "chance": 0.3,
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "item": "minecraft:gravel"
       }
     }
   ],

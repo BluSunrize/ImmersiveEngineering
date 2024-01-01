@@ -268,6 +268,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Misc.FERTILIZER)
 				.build(out, toRL("fertilizer/fertilizer"));
 
+		//Crops
 		ClocheRecipeBuilder.builder(new ItemStack(Items.WHEAT, 2))
 				.addResult(new ItemStack(Items.WHEAT_SEEDS, 1))
 				.addInput(Items.WHEAT_SEEDS)
@@ -364,7 +365,7 @@ public class Recipes extends RecipeProvider
 				.setTime(800)
 				.setRender(new ClocheRenderReference("hemp", IEBlocks.Misc.HEMP_PLANT.get()))
 				.build(out, toRL("cloche/hemp"));
-
+		//Mushrooms & Blocks
 		Ingredient shroomSoil = Ingredient.of(Blocks.MYCELIUM, Blocks.PODZOL);
 		ClocheRecipeBuilder.builder(Items.RED_MUSHROOM)
 				.addInput(Items.RED_MUSHROOM)
@@ -378,12 +379,127 @@ public class Recipes extends RecipeProvider
 				.setTime(480)
 				.setRender(new ClocheRenderReference("generic", Blocks.BROWN_MUSHROOM))
 				.build(out, toRL("cloche/brown_mushroom"));
+		ClocheRecipeBuilder.builder(Items.WARPED_FUNGUS)
+				.addInput(Items.WARPED_FUNGUS)
+				.addSoil(Blocks.WARPED_NYLIUM)
+				.setTime(560)
+				.setRender(new ClocheRenderReference("generic", Blocks.WARPED_FUNGUS))
+				.build(out, toRL("cloche/warped_fungus"));
+		ClocheRecipeBuilder.builder(Items.CRIMSON_FUNGUS)
+				.addInput(Items.CRIMSON_FUNGUS)
+				.addSoil(Blocks.CRIMSON_NYLIUM)
+				.setTime(560)
+				.setRender(new ClocheRenderReference("generic", Blocks.CRIMSON_FUNGUS))
+				.build(out, toRL("cloche/crimson_fungus"));
 		ClocheRecipeBuilder.builder(Items.MOSS_BLOCK)
 				.addInput(Items.MOSS_BLOCK)
 				.addSoil(Tags.Items.COBBLESTONE)
 				.setTime(1200)
 				.setRender(new ClocheRenderReference("generic", Blocks.MOSS_CARPET))
 				.build(out, toRL("cloche/moss"));
+		//Flowers
+		ClocheRecipeBuilder.builder(Items.RED_TULIP)
+				.addInput(Items.RED_TULIP)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.RED_TULIP))
+				.build(out, toRL("cloche/red_tulip"));
+		ClocheRecipeBuilder.builder(Items.ORANGE_TULIP)
+				.addInput(Items.ORANGE_TULIP)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.ORANGE_TULIP))
+				.build(out, toRL("cloche/orange_tulip"));
+		ClocheRecipeBuilder.builder(Items.WHITE_TULIP)
+				.addInput(Items.WHITE_TULIP)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.WHITE_TULIP))
+				.build(out, toRL("cloche/white_tulip"));
+		ClocheRecipeBuilder.builder(Items.PINK_TULIP)
+				.addInput(Items.PINK_TULIP)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.PINK_TULIP))
+				.build(out, toRL("cloche/pink_tulip"));
+		ClocheRecipeBuilder.builder(Items.DANDELION)
+				.addInput(Items.DANDELION)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.DANDELION))
+				.build(out, toRL("cloche/dandelion"));
+		ClocheRecipeBuilder.builder(Items.POPPY)
+				.addInput(Items.POPPY)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.POPPY))
+				.build(out, toRL("cloche/poppy"));
+		ClocheRecipeBuilder.builder(Items.OXEYE_DAISY)
+				.addInput(Items.OXEYE_DAISY)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.OXEYE_DAISY))
+				.build(out, toRL("cloche/oxeye_daisy"));
+		ClocheRecipeBuilder.builder(Items.AZURE_BLUET)
+				.addInput(Items.AZURE_BLUET)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.AZURE_BLUET))
+				.build(out, toRL("cloche/azure_bluet"));
+		ClocheRecipeBuilder.builder(Items.ALLIUM)
+				.addInput(Items.ALLIUM)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.ALLIUM))
+				.build(out, toRL("cloche/allium"));
+		ClocheRecipeBuilder.builder(Items.LILY_OF_THE_VALLEY)
+				.addInput(Items.LILY_OF_THE_VALLEY)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.LILY_OF_THE_VALLEY))
+				.build(out, toRL("cloche/lily_of_the_valley"));
+		ClocheRecipeBuilder.builder(Items.CORNFLOWER)
+				.addInput(Items.CORNFLOWER)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.CORNFLOWER))
+				.build(out, toRL("cloche/cornflower"));
+		ClocheRecipeBuilder.builder(Items.BLUE_ORCHID)
+				.addInput(Items.BLUE_ORCHID)
+				.addSoil(Blocks.MUD)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.BLUE_ORCHID))
+				.build(out, toRL("cloche/blue_orchid"));
+		ClocheRecipeBuilder.builder(Items.LILAC)
+				.addInput(Items.LILAC)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.LILAC))
+				.build(out, toRL("cloche/lilac"));
+		ClocheRecipeBuilder.builder(Items.SUNFLOWER)
+				.addInput(Items.SUNFLOWER)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.SUNFLOWER))
+				.build(out, toRL("cloche/sunflower"));
+		ClocheRecipeBuilder.builder(Items.ROSE_BUSH)
+				.addInput(Items.ROSE_BUSH)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.ROSE_BUSH))
+				.build(out, toRL("cloche/rose_bush"));
+		ClocheRecipeBuilder.builder(Items.PEONY)
+				.addInput(Items.PEONY)
+				.addSoil(Blocks.DIRT)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.PEONY))
+				.build(out, toRL("cloche/peony"));
+		ClocheRecipeBuilder.builder(Items.WITHER_ROSE)
+				.addInput(Items.WITHER_ROSE)
+				.addSoil(Blocks.SOUL_SOIL)
+				.setTime(480)
+				.setRender(new ClocheRenderReference("generic", Blocks.WITHER_ROSE))
+				.build(out, toRL("cloche/wither_rose"));
 	}
 
 	private void recipesBlueprint(@Nonnull Consumer<FinishedRecipe> out)
@@ -939,6 +1055,24 @@ public class Recipes extends RecipeProvider
 				.setEnergy(1600)
 				.build(out, toRL("crusher/nether_wart"));
 
+		CrusherRecipeBuilder.builder(new ItemStack(Items.BLACK_DYE, 1))
+				.addSecondary(Items.GRAY_DYE, .2f)
+				.addInput(Items.CHARCOAL)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/black_dye"));
+
+		CrusherRecipeBuilder.builder(new ItemStack(Items.BLUE_DYE, 2))
+				.addSecondary(Items.LIGHT_GRAY_DYE, .1f)
+				.addInput(Tags.Items.GEMS_LAPIS)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/blue_dye"));
+
+		CrusherRecipeBuilder.builder(new ItemStack(Items.WHITE_DYE, 2))
+				.addSecondary(Items.LIGHT_GRAY_DYE, .1f)
+				.addInput(Items.BONE_MEAL)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/white_dye"));
+
 		/* SAWMILL */
 		for(RecipeWoods wood : RecipeWoods.values())
 		{
@@ -1167,20 +1301,13 @@ public class Recipes extends RecipeProvider
 		TagKey<Item> emerald = Tags.Items.ORES_EMERALD;
 		Block prismarine = Blocks.PRISMARINE;
 		TagKey<Item> aquamarine = createItemWrapper(IETags.getGem("aquamarine"));
-
-		// Common things
+		//Dimensions
 		ResourceKey<DimensionType> overworld = BuiltinDimensionTypes.OVERWORLD;
 		ResourceKey<DimensionType> nether = BuiltinDimensionTypes.NETHER;
+
+		//Decorative Blocks
 		MineralMixBuilder.builder(overworld)
-				.addOverworldSpoils()
-				.addOre(Tags.Items.ORES_COAL, .8f)
-				.addOre(sulfur, .2f)
-				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
-				.setWeight(25)
-				.setFailchance(.05f)
-				.build(out, toRL("mineral/bituminous_coal"));
-		MineralMixBuilder.builder(overworld)
-				.addSiltSpoils()
+				.addSoilSpoils()
 				.addOre(Items.CLAY, .5f)
 				.addOre(Items.SAND, .3f)
 				.addOre(Items.GRAVEL, .2f)
@@ -1196,6 +1323,39 @@ public class Recipes extends RecipeProvider
 				.setWeight(25)
 				.setFailchance(.05f)
 				.build(out, toRL("mineral/igneous_rock"));
+		MineralMixBuilder.builder(overworld)
+				.addSoilSpoils()
+				.addOre(Items.TERRACOTTA, .6f)
+				.addOre(Items.RED_SANDSTONE, .3f)
+				.addOre(Items.RED_SAND, .1f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/hardened_clay_pan"));
+		MineralMixBuilder.builder(overworld)
+				.addSeabedSpoils()
+				.addOre(Blocks.CALCITE, .65f)
+				.addOre(Blocks.DRIPSTONE_BLOCK, .3f)
+				.addOre(Blocks.BONE_BLOCK, .05f)
+				.setWeight(15)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/ancient_seabed"));
+		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
+				.addOre(Blocks.AMETHYST_BLOCK, .4f)
+				.addOre(Blocks.CALCITE, .3f)
+				.addOre(Blocks.SMOOTH_BASALT, .3f)
+				.setWeight(10)
+				.setFailchance(.1f)
+				.build(out, toRL("mineral/amethyst_crevasse"));
+		// Common things
+		MineralMixBuilder.builder(overworld)
+				.addOverworldSpoils()
+				.addOre(Tags.Items.ORES_COAL, .8f)
+				.addOre(sulfur, .2f)
+				.addOre(phosphorus, .2f, getTagCondition(phosphorus))
+				.setWeight(25)
+				.setFailchance(.05f)
+				.build(out, toRL("mineral/bituminous_coal"));
 		// Metals
 		MineralMixBuilder.builder(overworld)
 				.addOverworldSpoils()

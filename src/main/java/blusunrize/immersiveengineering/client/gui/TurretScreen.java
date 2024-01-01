@@ -57,6 +57,7 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 		this.nameField.setTextColorUneditable(-1);
 		this.nameField.setBordered(false);
 		this.nameField.setMaxLength(30);
+		this.addWidget(this.nameField);
 
 		this.clearWidgets();
 		this.addRenderableWidget(new GuiReactiveList(leftPos+10, topPos+10, 60, 72,
@@ -129,15 +130,14 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 	public boolean keyPressed(int key, int scancode, int p_keyPressed_3_)
 	{
 		if(this.nameField.isFocused())
-		{
 			if(key==GLFW.GLFW_KEY_ENTER)
+			{
 				addName();
-			else
-				this.nameField.keyPressed(key, scancode, p_keyPressed_3_);
-			return true;
-		}
-		else
-			return super.keyPressed(key, scancode, p_keyPressed_3_);
+				return true;
+			}
+			else if(this.nameField.keyPressed(key, scancode, p_keyPressed_3_))
+				return true;
+		return super.keyPressed(key, scancode, p_keyPressed_3_);
 	}
 
 	private void addName()
@@ -163,7 +163,11 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
 	{
-		super.mouseClicked(mouseX, mouseY, mouseButton);
-		return this.nameField.mouseClicked(mouseX, mouseY, mouseButton);
+		boolean ret = super.mouseClicked(mouseX, mouseY, mouseButton);
+		if (this.nameField.mouseClicked(mouseX, mouseY, mouseButton)) {
+			this.nameField.setFocused(true);
+			ret = true;
+		}
+		return ret;
 	}
 }

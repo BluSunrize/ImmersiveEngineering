@@ -66,6 +66,12 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 		return true;
 	}
 
+	@Override
+	public Key getDefaultKey()
+	{
+		return new Key(0, false, false, false);
+	}
+
 	public record Key(int third_person_pass, boolean antenna, boolean induction, boolean tesla)
 	{
 	}

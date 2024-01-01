@@ -9,9 +9,10 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,10 +21,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(AbstractFurnaceBlockEntity.class)
 public interface FurnaceTEAccess
 {
-	// This is a Forge-added field in 1.19, so it does not need to be remapped
-	@Accessor(remap = false)
+	@Accessor
 	@Final
-	RecipeType<? extends AbstractCookingRecipe> getRecipeType();
+	RecipeManager.CachedCheck<Container, ? extends AbstractCookingRecipe> getQuickCheck();
 
 	@Accessor
 	@Final

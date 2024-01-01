@@ -248,6 +248,12 @@ public class RevolverCallbacks implements ItemCallback<Key>
 		return "frame".equals(groups.get(0))?matClose: matCylinder;
 	}
 
+	@Override
+	public Key getDefaultKey()
+	{
+		return new Key("", "", false, false, false, false, false, 0);
+	}
+
 	public record Key(
 			String elite, String flavor, boolean extraBullets, boolean fancyAnimation, boolean extraMelee,
 			boolean electro, boolean scope, int reload
