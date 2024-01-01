@@ -45,7 +45,6 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 		super(inventorySlotsIn, inv, title);
 		this.background = background;
 		this.infoAreas = new ResettableLazy<>(this::makeInfoAreas);
-		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Override
@@ -53,6 +52,7 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	{
 		super.init();
 		this.infoAreas.reset();
+		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Nonnull
