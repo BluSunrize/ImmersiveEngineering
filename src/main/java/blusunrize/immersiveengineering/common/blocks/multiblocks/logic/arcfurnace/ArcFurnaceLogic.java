@@ -88,8 +88,8 @@ public class ArcFurnaceLogic
 	public static final int SLAG_SLOT = 22;
 	public static final int FIRST_ELECTRODE_SLOT = 23;
 	public static final int ELECTRODE_COUNT = 3;
-	private static final MultiblockFace SLAG_OUT_POS = new MultiblockFace(2, 0, -1, RelativeBlockFace.FRONT);
-	private static final MultiblockFace MAIN_OUT_POS = new MultiblockFace(2, 0, 5, RelativeBlockFace.BACK);
+	private static final MultiblockFace SLAG_OUT_POS = new MultiblockFace(2, 0, -1, RelativeBlockFace.BACK);
+	private static final MultiblockFace MAIN_OUT_POS = new MultiblockFace(2, 0, 5, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition SLAG_CAP_POS = CapabilityPosition.opposing(SLAG_OUT_POS);
 	private static final CapabilityPosition MAIN_CAP_POS = CapabilityPosition.opposing(MAIN_OUT_POS);
 	private static final int[] OUTPUT_SLOTS = Util.make(new int[OUT_SLOT_COUNT], slots -> {
