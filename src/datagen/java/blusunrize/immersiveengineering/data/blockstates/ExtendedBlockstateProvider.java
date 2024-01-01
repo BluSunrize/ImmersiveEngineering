@@ -29,8 +29,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
@@ -159,6 +162,21 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		slabFor(b, side, top, bottom, null);
 	}
 
+	protected void slabFor(
+			Supplier<? extends Block> full,
+			ResourceLocation side, ResourceLocation top, ResourceLocation bottom,
+			@Nullable RenderType layer
+	)
+	{
+		SlabBlock b = IEBlocks.TO_SLAB.get(BuiltInRegistries.BLOCK.getKey(full.get())).get();
+		ModelBuilder<?> mainModel = models().slab(name(b)+"_bottom", side, bottom, top);
+		ModelBuilder<?> topModel = models().slabTop(name(b)+"_top", side, bottom, top);
+		ModelBuilder<?> doubleModel = models().cubeBottomTop(name(b)+"_double", side, bottom, top);
+		setRenderType(layer, mainModel, topModel, doubleModel);
+		slabBlock(b, mainModel, topModel, doubleModel);
+		itemModel(() -> b, mainModel);
+	}
+
 	protected void slabForMultiEightAll(Supplier<? extends Block> b, ResourceLocation texture)
 	{
 		ResourceLocation[] textures = new ResourceLocation[8];
@@ -199,21 +217,6 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 				.partialState().with(SlabBlock.TYPE, SlabType.DOUBLE).addModels(Stream.of(doubleslab).map(ConfiguredModel::new).toArray(ConfiguredModel[]::new));
 	}
 
-	protected void slabFor(
-			Supplier<? extends Block> full,
-			ResourceLocation side, ResourceLocation top, ResourceLocation bottom,
-			@Nullable RenderType layer
-	)
-	{
-		SlabBlock b = IEBlocks.TO_SLAB.get(BuiltInRegistries.BLOCK.getKey(full.get())).get();
-		ModelBuilder<?> mainModel = models().slab(name(b)+"_bottom", side, bottom, top);
-		ModelBuilder<?> topModel = models().slabTop(name(b)+"_top", side, bottom, top);
-		ModelBuilder<?> doubleModel = models().cubeBottomTop(name(b)+"_double", side, bottom, top);
-		setRenderType(layer, mainModel, topModel, doubleModel);
-		slabBlock(b, mainModel, topModel, doubleModel);
-		itemModel(() -> b, mainModel);
-	}
-
 	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation texture)
 	{
 		stairsFor(b, texture, texture, texture, null);
@@ -233,6 +236,63 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		setRenderType(layer, stairs, stairsInner, stairsOuter);
 		stairsBlock(b, stairs, stairsInner, stairsOuter);
 		itemModel(() -> b, stairs);
+	}
+
+	protected void stairsForMultiEightAll(Supplier<? extends Block> b, ResourceLocation texture)
+	{
+		ResourceLocation[] textures = new ResourceLocation[8];
+		for (int i=0;i<8;i++)
+			textures[i] = new ResourceLocation(texture.toString()+i);
+		stairsForMultiAll(b, textures);
+	}
+
+	protected void stairsForMultiAll(Supplier<? extends Block> b, ResourceLocation... textures)
+	{
+		stairsForMultiAll(b, null, textures);
+	}
+
+	protected void stairsForMultiAll(Supplier<? extends Block> full, @Nullable RenderType layer, ResourceLocation... textures)
+	{
+		final IEStairsBlock b = IEBlocks.TO_STAIRS.get(BuiltInRegistries.BLOCK.getKey(full.get())).get();
+
+		final ModelBuilder<?>[] stairs = new ModelBuilder<?>[textures.length];
+		final ModelBuilder<?>[] stairsInner = new ModelBuilder<?>[textures.length];
+		final ModelBuilder<?>[] stairsOuter = new ModelBuilder<?>[textures.length];
+		for (int i=0;i<textures.length;i++)
+		{
+			stairs[i]=models().stairs(name(b)+i, textures[i], textures[i], textures[i]);
+			stairsInner[i]=models().stairsInner(name(b)+i+"_inner", textures[i], textures[i], textures[i]);
+			stairsOuter[i]=models().stairsOuter(name(b)+i+"_outer", textures[i], textures[i], textures[i]);
+			setRenderType(layer, stairs[i], stairsInner[i], stairsOuter[i]);
+		}
+
+		stairsBlock(b, stairs, stairsInner, stairsOuter);
+		itemModel(() -> b, stairs[0]);
+	}
+
+	//Forge method does not allow random textures for slabs, instead creating a ConfiguredModel directly from an input file
+	public void stairsBlock(StairBlock block, ModelFile[] stairs, ModelFile[] stairsInner, ModelFile[] stairsOuter) {
+		getVariantBuilder(block)
+				.forAllStatesExcept(state -> {
+					Direction facing = state.getValue(StairBlock.FACING);
+					Half half = state.getValue(StairBlock.HALF);
+					StairsShape shape = state.getValue(StairBlock.SHAPE);
+					int yRot = (int) facing.getClockWise().toYRot(); // Stairs model is rotated 90 degrees clockwise for some reason
+					if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) {
+						yRot += 270; // Left facing stairs are rotated 90 degrees clockwise
+					}
+					if (shape != StairsShape.STRAIGHT && half == Half.TOP) {
+						yRot += 90; // Top stairs are rotated 90 degrees clockwise
+					}
+					yRot %= 360;
+					boolean uvlock = yRot != 0 || half == Half.TOP; // Don't set uvlock for states that have no rotation
+					//We need multiple textures, so no builder
+					ModelFile[] files = (shape == StairsShape.STRAIGHT ? stairs : shape == StairsShape.INNER_LEFT || shape == StairsShape.INNER_RIGHT ? stairsInner : stairsOuter);
+					ConfiguredModel[] models = new ConfiguredModel[stairs.length];
+					for (int i=0;i<stairs.length;i++)
+						models[i] = new ConfiguredModel(files[i], half == Half.BOTTOM ? 0 : 180, yRot, uvlock);
+					return models;
+				}, StairBlock.WATERLOGGED);
 	}
 
 	protected void setRenderType(@Nullable RenderType type, ModelBuilder<?>... builders)

@@ -219,9 +219,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 		stairsFor(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete0"));
 		stairsFor(StoneDecoration.HEMPCRETE_BRICK, rl("block/stone_decoration/hempcrete_brick0"));
-		slabForMultiEightAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
-		slabForMultiEightAll(StoneDecoration.CONCRETE_BRICK, rl("block/stone_decoration/concrete_brick"));
-		slabForMultiEightAll(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
+		stairsForMultiEightAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
+		stairsForMultiEightAll(StoneDecoration.CONCRETE_BRICK, rl("block/stone_decoration/concrete_brick"));
+		stairsForMultiEightAll(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
 		stairsFor(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			stairsFor(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
