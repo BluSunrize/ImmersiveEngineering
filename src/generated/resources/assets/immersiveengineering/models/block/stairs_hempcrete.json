@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "immersiveengineering:block/stone_decoration/hempcrete0",
-    "side": "immersiveengineering:block/stone_decoration/hempcrete0",
-    "top": "immersiveengineering:block/stone_decoration/hempcrete0"
-  }
-}
