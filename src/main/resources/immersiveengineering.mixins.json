@@ -27,6 +27,7 @@
   "client": [
     "accessors.client.CompiledChunkAccess",
     "accessors.client.FontResourceManagerAccess",
+    "accessors.client.GuiSubtitleOverlayAccess",
     "accessors.client.MinecartRendererAccess",
     "accessors.client.MinecraftAccess",
     "accessors.client.ParticleManagerAccess",

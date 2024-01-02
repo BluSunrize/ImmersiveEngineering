@@ -68,6 +68,7 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
+import blusunrize.immersiveengineering.mixin.accessors.client.GuiSubtitleOverlayAccess;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.client.Minecraft;
@@ -81,6 +82,8 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -291,6 +294,13 @@ public class ClientProxy extends CommonProxy
 		else if(sound!=null&&(sound.donePlaying||!tileActive))
 		{
 			stopTileSound(null, tile);
+		}
+		else if(sound!=null&&tileActive&&mc().player.tickCount%30==0)
+		{
+			final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+			WeighedSoundEvents weighedsoundevents = sound.resolve(soundManager);
+			if(weighedsoundevents!=null)
+				((GuiSubtitleOverlayAccess)mc().gui).getSubtitleOverlay().onPlaySound(sound, weighedsoundevents);
 		}
 	}
 

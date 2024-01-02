@@ -19,6 +19,7 @@
 - Fix output positions on the improved blastfurnace being swapped around (BluSunrize)
 - Fix synchronization errors in the garden clocke (voidsong-dragonfly, Malte)
 - Fix induction charging on the accumulator backpack not working (BluSunrize)
+- Fix multiblock sounds not triggering subtitles continuously (BluSunrize)
 - Translations Added/Updated: cs_cz (RomanPlayer22)
 
 ##### Version 1.19.2-9.2.3-167
