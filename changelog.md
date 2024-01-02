@@ -7,6 +7,7 @@
 - Fix broken translation keys (Malte & BluSunrize)
 - Fix turret GUI textfield not being editable (BluSunrize)
 - Fix multiblock sounds not triggering subtitles continuously (BluSunrize)
+- Fix taiga villager houses being surrounded by air blocks (BluSunrize)
 
 ##### Version 1.19.2-9.2.4-pre
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
