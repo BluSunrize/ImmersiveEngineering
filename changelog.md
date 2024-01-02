@@ -6,6 +6,7 @@
 - Fix conveyor rendering in the manual (Malte)
 - Fix broken translation keys (Malte & BluSunrize)
 - Fix turret GUI textfield not being editable (BluSunrize)
+- Fix multiblock sounds not triggering subtitles continuously (BluSunrize)
 
 ##### Version 1.19.2-9.2.4-pre
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)

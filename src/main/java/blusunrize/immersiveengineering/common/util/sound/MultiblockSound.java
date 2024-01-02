@@ -8,10 +8,14 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.mixin.accessors.GuiSubtitleOverlayAccess;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
@@ -24,6 +28,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 	private final BooleanSupplier active;
 	private final BooleanSupplier valid;
 	private final float maxVolume;
+	private long subtitleMillis;
 
 	public MultiblockSound(
 			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound, boolean loop, float maxVolume
@@ -38,6 +43,7 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		this.looping = loop;
 		this.volume = 0;
 		this.maxVolume = maxVolume;
+		this.subtitleMillis = Util.getMillis();
 	}
 
 	public static BooleanSupplier startSound(
@@ -69,7 +75,19 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		if(!valid.getAsBoolean())
 			this.stop();
 		else if(this.active.getAsBoolean())
+		{
+			long currentMillis = Util.getMillis();
+			// refresh subtitle every second
+			if(currentMillis-this.subtitleMillis > 1000)
+			{
+				final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+				WeighedSoundEvents weighedsoundevents = this.resolve(soundManager);
+				if(weighedsoundevents!=null)
+					((GuiSubtitleOverlayAccess)ClientUtils.mc().gui).getSubtitleOverlay().onPlaySound(this, weighedsoundevents);
+				this.subtitleMillis = currentMillis;
+			}
 			this.volume = maxVolume;
+		}
 		else
 			this.volume = 0;
 	}
