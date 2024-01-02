@@ -147,7 +147,7 @@ public class ArcFurnaceLogic
 		{
 			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 3, 2.5));
 			state.isPlayingSound = MultiblockSound.startSound(
-					() -> state.active, context.isValid(), soundPos, IESounds.arcFurnace, 0.625f
+					() -> state.active, context.isValid(), soundPos, IESounds.arcFurnace, 0.375f
 			);
 		}
 		if(!state.active)
