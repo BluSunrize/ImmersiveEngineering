@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.items.SteelArmorItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
@@ -30,14 +31,19 @@ import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.*;
+import blusunrize.immersiveengineering.mixin.accessors.ItemModelGeneratorsAccess;
+import blusunrize.immersiveengineering.mixin.accessors.TrimModelDataAccess;
 import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -245,7 +251,10 @@ public class ItemModels extends TRSRItemModelProvider
 		for(Entry<IBullet, ItemRegObject<BulletItem>> bullet : Weapons.BULLETS.entrySet())
 			addLayeredItemModel(bullet.getValue().asItem(), bullet.getKey().getTextures());
 		addItemModels("", IEItems.Misc.FARADAY_SUIT.values());
-		addItemModels("", IEItems.Tools.STEEL_ARMOR.values());
+//		addItemModels("", IEItems.Tools.STEEL_ARMOR.values());
+		for(Entry<Type, ItemRegObject<SteelArmorItem>> armorPiece : IEItems.Tools.STEEL_ARMOR.entrySet())
+			addTrimmedArmorModel(armorPiece.getValue().get());
+
 		addItemModel("blueprint", IEItems.Misc.BLUEPRINT);
 		addItemModel("seed_hemp", IEItems.Misc.HEMP_SEEDS);
 		addItemModel("drillhead_iron", Tools.DRILLHEAD_IRON);
@@ -506,5 +515,25 @@ public class ItemModels extends TRSRItemModelProvider
 		int layerIdx = 0;
 		for(ResourceLocation layer : layers)
 			modelBuilder.texture("layer"+(layerIdx++), layer);
+	}
+
+	private void addTrimmedArmorModel(ArmorItem item)
+	{
+		String path = name(item);
+		ResourceLocation baseTexture = modLoc("item/"+path);
+		TRSRModelBuilder modelBuilder = withExistingParent(path, mcLoc("item/generated"))
+				.texture("layer0", baseTexture);
+		for(TrimModelDataAccess trim : ItemModelGeneratorsAccess.getGeneratedTrimModels())
+		{
+			String material = trim.getName();
+			String name = path+"_"+material+"_trim";
+			ResourceLocation trimTexture = mcLoc("trims/items/"+item.getType().getName()+"_trim_"+material);
+			// hacky workaround to avoid complaints about missing textures
+			existingFileHelper.trackGenerated(trimTexture, ModelProvider.TEXTURE);
+			TRSRModelBuilder trimModel = this.withExistingParent(name, mcLoc("item/generated"))
+					.texture("layer0", baseTexture)
+					.texture("layer1", trimTexture);
+			modelBuilder.override(trimModel, new ResourceLocation("trim_type"), trim.getItemModelIndex());
+		}
 	}
 }
