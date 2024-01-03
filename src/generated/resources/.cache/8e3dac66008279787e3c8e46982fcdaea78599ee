@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-01T12:10:54.8565049	Tags for minecraft:item mod id immersiveengineering
+// 1.20.1	2024-01-03T16:29:46.6095624	Tags for minecraft:item mod id immersiveengineering
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/forge/tags/items/armors.json
@@ -161,5 +161,6 @@ ca80813f3c36ca4d7cd3b091a242dffa5652499d data/minecraft/tags/items/lectern_books
 da83d2c4f2c93e3c8b94aaa7391d094b109192f9 data/minecraft/tags/items/planks.json
 f195fd5da6a1f9d3816179864eda9bdb3a8871c1 data/minecraft/tags/items/slabs.json
 b1dad1e9baa66ffd3513cd24d5765c6fdc760ae5 data/minecraft/tags/items/stairs.json
+5cdff4e8babeb2f2fb75067ceb0b6bfc37ec6c4e data/minecraft/tags/items/trimmable_armor.json
 485ca26048e0c430a7ab442ed9e5b1a1ea596bb5 data/minecraft/tags/items/wooden_slabs.json
 fcdf4c2b6abbfbd23b9e637503dacf20f77a9105 data/minecraft/tags/items/wooden_stairs.json

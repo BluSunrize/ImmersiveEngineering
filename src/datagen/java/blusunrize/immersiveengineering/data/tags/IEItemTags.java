@@ -150,9 +150,12 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.swords).add(Tools.STEEL_SWORD.get());
 
 		for(var slot : ArmorItem.Type.values())
-				tag(Tags.Items.ARMORS)
-						.add(Tools.STEEL_ARMOR.get(slot).asItem())
-						.add(Misc.FARADAY_SUIT.get(slot).asItem());
+		{
+			tag(Tags.Items.ARMORS)
+					.add(Tools.STEEL_ARMOR.get(slot).asItem())
+					.add(Misc.FARADAY_SUIT.get(slot).asItem());
+			tag(ItemTags.TRIMMABLE_ARMOR).add(Tools.STEEL_ARMOR.get(slot).asItem());
+		}
 		tag(Tags.Items.ARMORS_HELMETS)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.HELMET).asItem())
 				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.HELMET).asItem());
