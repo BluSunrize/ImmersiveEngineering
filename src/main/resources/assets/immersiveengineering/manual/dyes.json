@@ -3,10 +3,13 @@
     "type": "item_display",
     "items": [
       {
-        "item": "immersiveengineering:dust_lead"
+        "item": "immersiveengineering:ingot_lead"
       },
       {
-        "item": "immersiveengineering:ethanol_bucket"
+        "item": "minecraft:white_dye"
+      },
+      {
+        "item": "minecraft:red_dye"
       }
     ]
   },
@@ -16,6 +19,21 @@
   },
   "lead_red": {
     "type": "crafting",
-    "recipe": "smelting/lead_red"
+    "recipes": [
+      [
+        [
+          {
+            "x": 33,
+            "y": 0,
+            "item": "immersiveengineering:nugget_lead"
+          },
+          {
+            "x": 69,
+            "y": 0,
+            "item": "minecraft:red_dye"
+          }
+        ]
+      ]
+    ]
   }
 }
