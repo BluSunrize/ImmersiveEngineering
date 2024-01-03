@@ -3468,16 +3468,6 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
 				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
 				.save(out, toRL("tinted_glass_lead_wire"));
-		shapedMisc(Items.TINTED_GLASS, 3)
-				.pattern("LAL")
-				.pattern("AGA")
-				.pattern("LAL")
-				.define('L', IETags.getTagsFor(EnumMetals.LEAD).nugget)
-				.define('A', Items.AMETHYST_SHARD)
-				.define('G', StoneDecoration.SLAG_GLASS)
-				.unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
-				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
-				.save(out, toRL("tinted_glass_lead_nugget"));
 	}
 
 	private void addArmor(TagKey<Item> input, Map<ArmorItem.Type, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
