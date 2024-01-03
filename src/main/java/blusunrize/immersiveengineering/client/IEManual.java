@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
@@ -90,6 +91,10 @@ public class IEManual
 		ManualHelper.DYNAMIC_TABLES.put("thermoelectric", () -> formatToTable_ItemIntMap(
 				ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true),
 				"K"
+		));
+		ManualHelper.DYNAMIC_TABLES.put("generatorfuel", () -> formatToTable_ItemIntMap(
+				GeneratorFuel.getManualFuelList(Minecraft.getInstance().level),
+				"ticks"
 		));
 
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),

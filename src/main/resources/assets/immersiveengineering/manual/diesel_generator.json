@@ -2,5 +2,9 @@
   "structure": {
     "type": "multiblock",
     "name": "multiblocks/diesel_generator"
+  },
+  "list": {
+    "type": "dynamic_table",
+    "table": "generatorfuel"
   }
 }

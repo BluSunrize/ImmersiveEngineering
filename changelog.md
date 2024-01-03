@@ -1,6 +1,7 @@
 ##### Version 1.20.1-10.0.1-pre
 - Includes all features from 9.2.4
 - Add sounds for Arc Furnace, Excavator, and Automated Workbench (voidsong-dragonfly)
+- Add burn times for the diesel generator to the manual (BluSunrize)
 - Change hemp blocks to notify their neighbours when they grow (jrtc27)
 - Change Jade Tooltips for multiblocks to work when looking at any part of the machine (HermitOwO)
 - Fix conveyor rendering in the manual (Malte)
