@@ -3448,8 +3448,7 @@ public class Recipes extends RecipeProvider
 		//Lead to dye recipes
 		shapelessMisc(Items.WHITE_DYE, 16)
 				.requires(new IngredientFluidStack(IETags.fluidEthanol, FluidType.BUCKET_VOLUME))
-				.requires(Ingredient.of(Items.ROTTEN_FLESH), 2)
-				.requires(Items.DIRT)
+				.requires(Ingredient.of(Items.ROTTEN_FLESH), 3)
 				.requires(IETags.getTagsFor(EnumMetals.LEAD).dust)
 				.unlockedBy("has_ethanol", has(IEFluids.ETHANOL.getBucket()))
 				.save(out, toRL("lead_white"));

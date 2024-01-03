@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-03T13:57:17.765590453	Recipes
+// 1.20.1	2024-01-03T14:35:17.128162415	Recipes
 11eec1c90c86322604ee56b59c32dead974ae804 data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 351a01207bf89c71c2e95884864d365cd5d7a23d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 3aae30cf5b8337fcdd006bd53b3269616a8893ec data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -899,7 +899,7 @@ a859d3fb4ed3133903124fba6bff93ac17fd3179 data/immersiveengineering/recipes/craft
 8b109e4fb1f4d53a08e168c737773b5a9b9be4e4 data/immersiveengineering/recipes/crafting/item_batcher.json
 69d9b0b9794d0d22c143c494a57a251fc259aca2 data/immersiveengineering/recipes/crafting/jerrycan.json
 099d3401fd25aad6b0fc624c1025c6f46b747168 data/immersiveengineering/recipes/crafting/lantern.json
-dacdbae4a0d41a7a52acf2c11012c25ee51535b4 data/immersiveengineering/recipes/crafting/lead_white.json
+6d63df7b21459395df6935de7006b3c8c0bb2538 data/immersiveengineering/recipes/crafting/lead_white.json
 3ff7856907520d22c0c870404c0e6fb66e08491e data/immersiveengineering/recipes/crafting/light_engineering.json
 151cae15b4b23573e68a720e5bb9abed3e53eee2 data/immersiveengineering/recipes/crafting/logic_unit.json
 fda06b34ecdc8630e617a575cbf2c5d3a88eae8c data/immersiveengineering/recipes/crafting/maintenance_kit.json
