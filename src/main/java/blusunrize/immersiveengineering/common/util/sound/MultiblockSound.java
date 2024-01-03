@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.sound;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.mixin.accessors.GuiSubtitleOverlayAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.GuiSubtitleOverlayAccess;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
