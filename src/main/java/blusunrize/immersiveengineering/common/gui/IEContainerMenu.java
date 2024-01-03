@@ -225,7 +225,10 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 		return new MenuContext(pMenuType, pContainerId, () -> {
 			be.setChanged();
 			if(be instanceof IEBaseBlockEntity ieBE)
+			{
 				ieBE.markContainingBlockForUpdate(null);
+				// TODO: send sync packet somehow, the current method is Failing Badly at doing so
+			}
 		}, p -> {
 			BlockPos pos = be.getBlockPos();
 			Level level = be.getLevel();
