@@ -1,0 +1,39 @@
+{
+  "start": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:ingot_lead"
+      },
+      {
+        "item": "minecraft:white_dye"
+      },
+      {
+        "item": "minecraft:red_dye"
+      }
+    ]
+  },
+  "lead_white": {
+    "type": "crafting",
+    "recipe": "crafting/lead_white"
+  },
+  "lead_red": {
+    "type": "crafting",
+    "recipes": [
+      [
+        [
+          {
+            "x": 33,
+            "y": 0,
+            "item": "immersiveengineering:nugget_lead"
+          },
+          {
+            "x": 69,
+            "y": 0,
+            "item": "minecraft:red_dye"
+          }
+        ]
+      ]
+    ]
+  }
+}

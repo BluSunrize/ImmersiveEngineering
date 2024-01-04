@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_copper_ingot": {
+    "has_constantan_ingot": {
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/copper"
+            "tag": "forge:ingots/constantan"
           }
         ]
       },
@@ -44,7 +44,7 @@
     [
       "has_steel_sheetmetal",
       "has_water_bucket",
-      "has_copper_ingot",
+      "has_constantan_ingot",
       "has_the_recipe"
     ]
   ],

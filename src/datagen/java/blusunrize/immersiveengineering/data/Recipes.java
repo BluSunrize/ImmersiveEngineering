@@ -2023,11 +2023,11 @@ public class Recipes extends RecipeProvider
 				.pattern("cbc")
 				.pattern("ici")
 				.define('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
-				.define('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
+				.define('c', IETags.getTagsFor(EnumMetals.CONSTANTAN).plate)
 				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_steel_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.unlockedBy("has_water_bucket", has(Items.WATER_BUCKET))
-				.unlockedBy("has_copper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.unlockedBy("has_constantan_ingot", has(IETags.getTagsFor(EnumMetals.CONSTANTAN).ingot))
 				.save(out, toRL(toPath(MetalDecoration.RADIATOR)));
 
 		shapedMisc(MetalDecoration.ALU_POST)
@@ -3444,6 +3444,29 @@ public class Recipes extends RecipeProvider
 				.define('C', Items.MINECART)
 				.unlockedBy("has_minecart", has(Items.MINECART))
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+
+		//Lead to dye recipes
+		shapelessMisc(Items.WHITE_DYE, 16)
+				.requires(new IngredientFluidStack(IETags.fluidEthanol, FluidType.BUCKET_VOLUME))
+				.requires(Ingredient.of(Items.ROTTEN_FLESH), 3)
+				.requires(IETags.getTagsFor(EnumMetals.LEAD).dust)
+				.unlockedBy("has_ethanol", has(IEFluids.ETHANOL.getBucket()))
+				.save(out, toRL("lead_white"));
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.getTagsFor(EnumMetals.LEAD).nugget), RecipeCategory.MISC, Items.RED_DYE, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
+				.save(out, toRL("smelting/lead_red"));
+
+		//Lead glass recipes
+		shapedMisc(Items.TINTED_GLASS, 3)
+				.pattern("LAL")
+				.pattern("AGA")
+				.pattern("LAL")
+				.define('L', Ingredients.WIRE_LEAD)
+				.define('A', Items.AMETHYST_SHARD)
+				.define('G', Tags.Items.GLASS_COLORLESS)
+				.unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
+				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
+				.save(out, toRL("tinted_glass_lead_wire"));
 	}
 
 	private void addArmor(TagKey<Item> input, Map<ArmorItem.Type, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
