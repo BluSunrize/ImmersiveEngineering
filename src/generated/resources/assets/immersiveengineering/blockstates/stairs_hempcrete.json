@@ -1,209 +1,1724 @@
 {
   "variants": {
-    "facing=east,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=east,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner"
-    },
-    "facing=east,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=east,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer"
-    },
-    "facing=east,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete"
-    },
-    "facing=east,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=east,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=east,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=east,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=east,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=north,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=north,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=north,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=north,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=north,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=north,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=north,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=north,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=north,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=north,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=south,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner"
-    },
-    "facing=south,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=south,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer"
-    },
-    "facing=south,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=south,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=south,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=south,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=south,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=south,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=south,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=west,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=west,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=west,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=west,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=west,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=west,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=west,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=west,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=west,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_hempcrete_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=west,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_hempcrete",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    }
+    "facing=east,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=east,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner"
+      }
+    ],
+    "facing=east,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=east,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer"
+      }
+    ],
+    "facing=east,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7"
+      }
+    ],
+    "facing=east,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=east,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=east,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=east,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=east,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=south,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner"
+      }
+    ],
+    "facing=south,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer"
+      }
+    ],
+    "facing=south,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=south,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=south,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=west,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=west,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete0",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete1",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete2",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete3",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete4",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete5",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete6",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_hempcrete7",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ]
   }
 }

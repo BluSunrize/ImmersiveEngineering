@@ -1,7 +1,30 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/hempcrete"
-    }
+    "": [
+      {
+        "model": "immersiveengineering:block/hempcrete0"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete1"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete2"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete3"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete4"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete5"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete6"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete7"
+      }
+    ]
   }
 }

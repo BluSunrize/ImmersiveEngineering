@@ -1,209 +1,1724 @@
 {
   "variants": {
-    "facing=east,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=east,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner"
-    },
-    "facing=east,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=east,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer"
-    },
-    "facing=east,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick"
-    },
-    "facing=east,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=east,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=east,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=east,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=east,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=north,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=north,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=north,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=north,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=north,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick",
-      "uvlock": true,
-      "y": 270
-    },
-    "facing=north,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=north,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=north,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=north,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180
-    },
-    "facing=north,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=south,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner"
-    },
-    "facing=south,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=south,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer"
-    },
-    "facing=south,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=south,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=south,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=south,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=south,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=south,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=south,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick",
-      "uvlock": true,
-      "x": 180,
-      "y": 90
-    },
-    "facing=west,half=bottom,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=west,half=bottom,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=west,half=bottom,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "y": 90
-    },
-    "facing=west,half=bottom,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=west,half=bottom,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick",
-      "uvlock": true,
-      "y": 180
-    },
-    "facing=west,half=top,shape=inner_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=west,half=top,shape=inner_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_inner",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=west,half=top,shape=outer_left": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    },
-    "facing=west,half=top,shape=outer_right": {
-      "model": "immersiveengineering:block/stairs_concrete_brick_outer",
-      "uvlock": true,
-      "x": 180,
-      "y": 270
-    },
-    "facing=west,half=top,shape=straight": {
-      "model": "immersiveengineering:block/stairs_concrete_brick",
-      "uvlock": true,
-      "x": 180,
-      "y": 180
-    }
+    "facing=east,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=east,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner"
+      }
+    ],
+    "facing=east,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=east,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer"
+      }
+    ],
+    "facing=east,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7"
+      }
+    ],
+    "facing=east,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=east,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=east,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=east,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=east,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=north,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6",
+        "uvlock": true,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7",
+        "uvlock": true,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=north,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180
+      }
+    ],
+    "facing=north,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=south,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner"
+      }
+    ],
+    "facing=south,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer"
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer"
+      }
+    ],
+    "facing=south,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=south,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=south,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=south,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7",
+        "uvlock": true,
+        "x": 180,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=bottom,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "y": 90
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "y": 90
+      }
+    ],
+    "facing=west,half=bottom,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=bottom,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6",
+        "uvlock": true,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7",
+        "uvlock": true,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=inner_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=inner_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_inner",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=west,half=top,shape=outer_left": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ],
+    "facing=west,half=top,shape=outer_right": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7_outer",
+        "uvlock": true,
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "facing=west,half=top,shape=straight": [
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick0",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick1",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick2",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick3",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick4",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick5",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick6",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "immersiveengineering:block/stairs_concrete_brick7",
+        "uvlock": true,
+        "x": 180,
+        "y": 180
+      }
+    ]
   }
 }

@@ -1,7 +1,30 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/hempcrete_brick"
-    }
+    "": [
+      {
+        "model": "immersiveengineering:block/hempcrete_brick0"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete_brick1"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete_brick2"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete_brick3"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete_brick4"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete_brick5"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete_brick6"
+      },
+      {
+        "model": "immersiveengineering:block/hempcrete_brick7"
+      }
+    ]
   }
 }

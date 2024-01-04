@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "immersiveengineering:block/stone_decoration/concrete_tile4",
+    "side": "immersiveengineering:block/stone_decoration/concrete_tile4",
+    "top": "immersiveengineering:block/stone_decoration/concrete_tile4"
+  }
+}

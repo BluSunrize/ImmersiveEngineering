@@ -1,7 +1,30 @@
 {
   "variants": {
-    "": {
-      "model": "immersiveengineering:block/concrete"
-    }
+    "": [
+      {
+        "model": "immersiveengineering:block/concrete0"
+      },
+      {
+        "model": "immersiveengineering:block/concrete1"
+      },
+      {
+        "model": "immersiveengineering:block/concrete2"
+      },
+      {
+        "model": "immersiveengineering:block/concrete3"
+      },
+      {
+        "model": "immersiveengineering:block/concrete4"
+      },
+      {
+        "model": "immersiveengineering:block/concrete5"
+      },
+      {
+        "model": "immersiveengineering:block/concrete6"
+      },
+      {
+        "model": "immersiveengineering:block/concrete7"
+      }
+    ]
   }
 }

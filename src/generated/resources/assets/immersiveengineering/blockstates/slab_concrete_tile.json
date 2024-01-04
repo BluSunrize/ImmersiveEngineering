@@ -1,13 +1,82 @@
 {
   "variants": {
-    "type=bottom": {
-      "model": "immersiveengineering:block/slab_concrete_tile_bottom"
-    },
-    "type=double": {
-      "model": "immersiveengineering:block/slab_concrete_tile_double"
-    },
-    "type=top": {
-      "model": "immersiveengineering:block/slab_concrete_tile_top"
-    }
+    "type=bottom": [
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile0_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile1_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile2_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile3_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile4_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile5_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile6_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile7_bottom"
+      }
+    ],
+    "type=double": [
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile0_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile1_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile2_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile3_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile4_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile5_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile6_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile7_double"
+      }
+    ],
+    "type=top": [
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile0_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile1_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile2_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile3_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile4_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile5_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile6_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete_tile7_top"
+      }
+    ]
   }
 }

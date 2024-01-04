@@ -1,13 +1,82 @@
 {
   "variants": {
-    "type=bottom": {
-      "model": "immersiveengineering:block/slab_concrete_bottom"
-    },
-    "type=double": {
-      "model": "immersiveengineering:block/slab_concrete_double"
-    },
-    "type=top": {
-      "model": "immersiveengineering:block/slab_concrete_top"
-    }
+    "type=bottom": [
+      {
+        "model": "immersiveengineering:block/slab_concrete0_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete1_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete2_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete3_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete4_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete5_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete6_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete7_bottom"
+      }
+    ],
+    "type=double": [
+      {
+        "model": "immersiveengineering:block/slab_concrete0_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete1_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete2_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete3_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete4_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete5_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete6_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete7_double"
+      }
+    ],
+    "type=top": [
+      {
+        "model": "immersiveengineering:block/slab_concrete0_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete1_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete2_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete3_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete4_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete5_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete6_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_concrete7_top"
+      }
+    ]
   }
 }
