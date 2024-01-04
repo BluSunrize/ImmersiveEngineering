@@ -303,6 +303,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
+		final ItemStack oldSoil = inventory.get(SLOT_SOIL);
 		dummy = nbt.getInt("dummy");
 		// loadAllItems skips empty items, so if a slot was emptied it won't be properly synced without the fill call
 		Collections.fill(inventory, ItemStack.EMPTY);
@@ -316,6 +317,8 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			growth = nbt.getFloat("growth");
 		}
 		renderBB = null;
+		if(descPacket&&level!=null&&!ItemStack.isSame(oldSoil, inventory.get(SLOT_SOIL)))
+			markContainingBlockForUpdate(null);
 	}
 
 	@Override
