@@ -3,6 +3,11 @@
 - Add sounds for Arc Furnace, Excavator, and Automated Workbench (voidsong-dragonfly)
 - Add burn times for the diesel generator to the manual (BluSunrize)
 - Add support for armor trims on steel armor (BluSunrize)
+- Add additional uses for lead & nickel (voidsong-dragonfly)
+    - Lead can be crafted into red and white dyes
+    - Radiators now use constantan instead of copper
+    - Tinted glass can be made in larger quantities by using lead
+- Add randomized textures for various hempcrete & concrete blocks (voidsong-dragonfly)
 - Change hemp blocks to notify their neighbours when they grow (jrtc27)
 - Change Jade Tooltips for multiblocks to work when looking at any part of the machine (HermitOwO)
 - Fix conveyor rendering in the manual (Malte)
@@ -10,6 +15,7 @@
 - Fix turret GUI textfield not being editable (BluSunrize)
 - Fix multiblock sounds not triggering subtitles continuously (BluSunrize)
 - Fix taiga villager houses being surrounded by air blocks (BluSunrize)
+- Fix redstone control not working on the assembler (BluSunrize)
 
 ##### Version 1.19.2-9.2.4-pre
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
