@@ -4,8 +4,8 @@
     "item": "minecraft:crimson_fungus"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:crimson_fungus"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:crimson_fungus"
   },
   "results": [
     {

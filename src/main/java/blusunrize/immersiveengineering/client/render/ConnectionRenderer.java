@@ -80,7 +80,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 				renderType -> {
 					BufferBuilder builder = buffers.builder(renderType);
 					if(layers.add(renderType))
-						((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
+						((RenderSectionAccess)renderChunk).invokeBeginLayer(builder);
 					return builder;
 				},
 				region,

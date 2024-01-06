@@ -37,8 +37,8 @@ import blusunrize.immersiveengineering.data.recipes.builder.BlueprintCraftingRec
 import blusunrize.immersiveengineering.data.recipes.builder.MineralMixBuilder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
@@ -60,6 +60,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
+import static net.minecraft.data.recipes.SimpleCookingRecipeBuilder.smelting;
 
 public class MiscRecipes extends IERecipeProvider
 {
@@ -349,7 +350,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/bituminous_coal"));
 		MineralMixBuilder.builder()
 				.dimension(overworld)
-				.addSiltSpoils()
+				.addSoilSpoils()
 				.ore(Items.CLAY, .5f)
 				.ore(Items.SAND, .3f)
 				.ore(Items.GRAVEL, .2f)
@@ -366,6 +367,43 @@ public class MiscRecipes extends IERecipeProvider
 				.weight(25)
 				.failchance(.05f)
 				.build(out, toRL("mineral/igneous_rock"));
+		MineralMixBuilder.builder()
+				.dimension(overworld)
+				.addSoilSpoils()
+				.ore(Items.TERRACOTTA, .6f)
+				.ore(Items.RED_SANDSTONE, .3f)
+				.ore(Items.RED_SAND, .1f)
+				.weight(15)
+				.failchance(.05f)
+				.build(out, toRL("mineral/hardened_clay_pan"));
+		MineralMixBuilder.builder()
+				.dimension(overworld)
+				.addSeabedSpoils()
+				.ore(Blocks.CALCITE, .65f)
+				.ore(Blocks.DRIPSTONE_BLOCK, .3f)
+				.ore(Blocks.BONE_BLOCK, .05f)
+				.weight(15)
+				.failchance(.05f)
+				.build(out, toRL("mineral/ancient_seabed"));
+		MineralMixBuilder.builder()
+				.dimension(overworld)
+				.addOverworldSpoils()
+				.ore(Blocks.AMETHYST_BLOCK, .4f)
+				.ore(Blocks.CALCITE, .3f)
+				.ore(Blocks.SMOOTH_BASALT, .3f)
+				.weight(10)
+				.failchance(.1f)
+				.build(out, toRL("mineral/amethyst_crevasse"));
+		// Common things
+		MineralMixBuilder.builder()
+				.dimension(overworld)
+				.addOverworldSpoils()
+				.ore(Tags.Items.ORES_COAL, .8f)
+				.ore(sulfur, .2f)
+				.ore(phosphorus, .2f, getTagCondition(phosphorus))
+				.weight(25)
+				.failchance(.05f)
+				.build(out, toRL("mineral/bituminous_coal"));
 		// Metals
 		MineralMixBuilder.builder()
 				.dimension(overworld)
@@ -757,6 +795,29 @@ public class MiscRecipes extends IERecipeProvider
 				.define('C', Items.MINECART)
 				.unlockedBy("has_minecart", has(Items.MINECART))
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+
+		//Lead to dye recipes
+		shapelessMisc(Items.WHITE_DYE, 16)
+				.requires(new IngredientFluidStack(IETags.fluidEthanol, FluidType.BUCKET_VOLUME))
+				.requires(Ingredient.of(Items.ROTTEN_FLESH), 3)
+				.requires(IETags.getTagsFor(EnumMetals.LEAD).dust)
+				.unlockedBy("has_ethanol", has(IEFluids.ETHANOL.getBucket()))
+				.save(out, toRL("lead_white"));
+		smelting(Ingredient.of(IETags.getTagsFor(EnumMetals.LEAD).nugget), RecipeCategory.MISC, Items.RED_DYE, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
+				.save(out, toRL("smelting/lead_red"));
+
+		//Lead glass recipes
+		shapedMisc(Items.TINTED_GLASS, 3)
+				.pattern("LAL")
+				.pattern("AGA")
+				.pattern("LAL")
+				.define('L', Ingredients.WIRE_LEAD)
+				.define('A', Items.AMETHYST_SHARD)
+				.define('G', Tags.Items.GLASS_COLORLESS)
+				.unlockedBy("has_amethyst", has(Items.AMETHYST_SHARD))
+				.unlockedBy("has_lead", has(Metals.INGOTS.get(EnumMetals.LEAD)))
+				.save(out, toRL("tinted_glass_lead_wire"));
 	}
 
 	private void buildGeneratedList(RecipeOutput out, ResourceLocation name)

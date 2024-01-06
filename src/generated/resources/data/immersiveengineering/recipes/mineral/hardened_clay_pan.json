@@ -7,40 +7,52 @@
   "ores": [
     {
       "chance": 0.6,
+      "conditions": [],
       "output": {
-        "item": "minecraft:terracotta"
+        "Count": 1,
+        "id": "minecraft:terracotta"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:red_sandstone"
+        "Count": 1,
+        "id": "minecraft:red_sandstone"
       }
     },
     {
       "chance": 0.1,
+      "conditions": [],
       "output": {
-        "item": "minecraft:red_sand"
+        "Count": 1,
+        "id": "minecraft:red_sand"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:coarse_dirt"
+        "Count": 1,
+        "id": "minecraft:coarse_dirt"
       }
     },
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobblestone"
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     }
   ],

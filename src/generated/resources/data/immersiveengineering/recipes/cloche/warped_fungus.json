@@ -4,8 +4,8 @@
     "item": "minecraft:warped_fungus"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:warped_fungus"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:warped_fungus"
   },
   "results": [
     {

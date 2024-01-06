@@ -285,13 +285,14 @@ public class PowerpackItem extends UpgradeableToolItem
 			// check if NBT blacklisted (e.g.: on a conveyor)
 			return !itemEntity.getPersistentData().contains(Lib.MAGNET_PREVENT_NBT);
 		});
+		IEnergyStorage magnetEnergy = itemStack.getCapability(EnergyStorage.ITEM);
 		for(ItemEntity itemEntity : items)
-			if(itemEntity.distanceTo(player) > 0.001&&extractFlux(itemStack, MAGNET_CONSUMPTION, false) >= MAGNET_CONSUMPTION)
+			if(itemEntity.distanceTo(player) > 0.001&&magnetEnergy.extractEnergy(MAGNET_CONSUMPTION, false) >= MAGNET_CONSUMPTION)
 			{
 				if(!itemEntity.getPersistentData().contains(Lib.MAGNET_SOURCE_NBT))
 				{
 					// play sound when being initially moved
-					itemEntity.playSound(IESounds.electromagnet.get(), (float)(.125+player.getRandom().nextDouble()*.25), 1);
+					itemEntity.playSound(IESounds.electromagnet.value(), (float)(.125+player.getRandom().nextDouble()*.25), 1);
 					// mark the source of magnetism
 					itemEntity.getPersistentData().putString(Lib.MAGNET_SOURCE_NBT, player.getStringUUID());
 				}

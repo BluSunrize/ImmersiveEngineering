@@ -4,8 +4,8 @@
     "item": "minecraft:cornflower"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:cornflower"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:cornflower"
   },
   "results": [
     {

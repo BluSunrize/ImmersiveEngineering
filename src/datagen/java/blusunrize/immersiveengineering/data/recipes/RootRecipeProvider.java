@@ -37,5 +37,6 @@ public class RootRecipeProvider extends RecipeProvider
 		new DeviceRecipes(this.packOutput, lookupProvider).buildRecipes(out);
 		new MultiblockRecipes(this.packOutput, lookupProvider).buildRecipes(out);
 		new MiscRecipes(this.packOutput, lookupProvider).buildRecipes(out);
+		new ClocheRecipes(this.packOutput, lookupProvider).buildRecipes(out);
 	}
 }

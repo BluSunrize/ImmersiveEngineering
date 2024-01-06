@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 
@@ -30,8 +30,10 @@ import java.util.List;
 public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 {
 	public static final Codec<GeneratorFuel> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.FLUID), "fluidTag").forGetter(f -> f.getFluidsRaw().leftOptional()),
-			ExtraCodecs.strictOptionalField(BuiltInRegistries.FLUID.byNameCodec().listOf(), "fluidList").forGetter(f -> f.getFluidsRaw().rightOptional()),
+			Codec.mapEither(
+					TagKey.codec(Registries.FLUID).fieldOf("fluidTag"),
+					BuiltInRegistries.FLUID.byNameCodec().listOf().fieldOf("fluidList")
+			).forGetter(f -> f.getFluidsRaw().map(Either::left, Either::right)),
 			Codec.INT.fieldOf("burnTime").forGetter(GeneratorFuel::getBurnTime)
 	).apply(inst, GeneratorFuel::new));
 

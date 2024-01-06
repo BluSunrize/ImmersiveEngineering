@@ -5,11 +5,13 @@
     "item": "minecraft:charcoal"
   },
   "result": {
-    "item": "minecraft:black_dye"
+    "Count": 1,
+    "id": "minecraft:black_dye"
   },
   "secondaries": [
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
         "item": "minecraft:gray_dye"
       }

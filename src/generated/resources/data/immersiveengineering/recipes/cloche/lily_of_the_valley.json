@@ -4,8 +4,8 @@
     "item": "minecraft:lily_of_the_valley"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:lily_of_the_valley"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:lily_of_the_valley"
   },
   "results": [
     {

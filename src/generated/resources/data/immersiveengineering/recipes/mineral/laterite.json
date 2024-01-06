@@ -37,32 +37,27 @@
   ],
   "spoils": [
     {
-      "chance": 0.7,
-      "conditions": [],
-      "output": {
-        "tag": "forge:ores/aluminum"
-      }
-    },
-    {
       "chance": 0.2,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/iron"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     },
     {
-      "chance": 0.1,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/titanium"
-          }
-        }
-      ],
+      "chance": 0.5,
+      "conditions": [],
       "output": {
-        "tag": "forge:ores/titanium"
+        "Count": 1,
+        "id": "minecraft:cobblestone"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:cobbled_deepslate"
       }
     }
   ],

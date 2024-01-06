@@ -4,8 +4,8 @@
     "item": "minecraft:blue_orchid"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:blue_orchid"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:blue_orchid"
   },
   "results": [
     {

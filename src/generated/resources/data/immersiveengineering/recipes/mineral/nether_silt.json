@@ -37,7 +37,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:soul_soil"
+        "id": "minecraft:netherrack"
       }
     },
     {
@@ -45,7 +45,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:soul_sand"
+        "id": "minecraft:basalt"
       }
     },
     {

@@ -16,10 +16,10 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.Holder;
 
 import java.util.function.BooleanSupplier;
 
@@ -83,7 +83,8 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 				final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 				WeighedSoundEvents weighedsoundevents = this.resolve(soundManager);
 				if(weighedsoundevents!=null)
-					((GuiSubtitleOverlayAccess)ClientUtils.mc().gui).getSubtitleOverlay().onPlaySound(this, weighedsoundevents);
+					// TODO check if the 16 for range is right
+					((GuiSubtitleOverlayAccess)ClientUtils.mc().gui).getSubtitleOverlay().onPlaySound(this, weighedsoundevents, 16);
 				this.subtitleMillis = currentMillis;
 			}
 			this.volume = maxVolume;

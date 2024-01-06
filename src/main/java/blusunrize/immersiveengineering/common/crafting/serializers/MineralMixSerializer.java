@@ -15,15 +15,14 @@ import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	private static final Codec<MineralMix> CODEC = RecordCodecBuilder.create(
 			inst -> inst.group(
 					CHANCE_LIST.fieldOf("ores").forGetter(r -> r.outputs),
-					CHANCE_LIST.fieldOf("spoils").forGetter(r -> r.outputs),
+					CHANCE_LIST.fieldOf("spoils").forGetter(r -> r.spoils),
 					Codec.INT.fieldOf("weight").forGetter(r -> r.weight),
 					ExtraCodecs.strictOptionalField(Codec.FLOAT, "fail_chance", 0f).forGetter(r -> r.failChance),
 					ResourceKey.codec(Registries.DIMENSION_TYPE).listOf().fieldOf("dimensions").forGetter(r -> List.copyOf(r.dimensions)),

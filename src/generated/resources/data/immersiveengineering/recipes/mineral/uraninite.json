@@ -37,32 +37,27 @@
   ],
   "spoils": [
     {
-      "chance": 0.7,
+      "chance": 0.2,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/uranium"
+        "Count": 1,
+        "id": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/lead"
-      }
-    },
-    {
-      "chance": 0.1,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/thorium"
-          }
-        }
-      ],
-      "output": {
-        "tag": "forge:ores/thorium"
+        "Count": 1,
+        "id": "minecraft:cobbled_deepslate"
       }
     }
   ],

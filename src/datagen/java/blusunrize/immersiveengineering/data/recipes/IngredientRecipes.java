@@ -10,32 +10,25 @@ package blusunrize.immersiveengineering.data.recipes;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEFluids;
-import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
-import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.concurrent.CompletableFuture;
@@ -431,6 +424,14 @@ public class IngredientRecipes extends IERecipeProvider
 				.define('p', Items.PAPER)
 				.unlockedBy("has_"+toPath(Items.PAPER), has(Items.PAPER))
 				.save(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))
+				.pattern("wew")
+				.pattern("wiw")
+				.define('w', IETags.copperWire)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))));
 	}
 
 	private RecipeOutput buildBlueprint(RecipeOutput out, String blueprint)

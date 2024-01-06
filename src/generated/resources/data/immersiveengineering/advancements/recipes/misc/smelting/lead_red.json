@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_lead",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_lead"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:smelting/lead_red"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

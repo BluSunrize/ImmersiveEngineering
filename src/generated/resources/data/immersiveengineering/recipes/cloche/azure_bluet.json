@@ -4,8 +4,8 @@
     "item": "minecraft:azure_bluet"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:azure_bluet"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:azure_bluet"
   },
   "results": [
     {

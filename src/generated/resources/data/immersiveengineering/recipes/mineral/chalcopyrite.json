@@ -29,24 +29,27 @@
   ],
   "spoils": [
     {
-      "chance": 0.35,
+      "chance": 0.2,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/iron"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     },
     {
-      "chance": 0.35,
+      "chance": 0.5,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/copper"
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
       "conditions": [],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "Count": 1,
+        "id": "minecraft:cobbled_deepslate"
       }
     }
   ],

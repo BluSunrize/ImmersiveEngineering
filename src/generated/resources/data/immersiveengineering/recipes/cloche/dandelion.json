@@ -4,8 +4,8 @@
     "item": "minecraft:dandelion"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:dandelion"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:dandelion"
   },
   "results": [
     {

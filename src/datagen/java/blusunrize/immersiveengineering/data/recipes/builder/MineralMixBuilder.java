@@ -8,14 +8,9 @@
 
 package blusunrize.immersiveengineering.data.recipes.builder;
 
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
-import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemInput;
-import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemOutput;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -24,13 +19,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 {
@@ -99,11 +94,18 @@ public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 				.spoil(Items.COBBLED_DEEPSLATE, 0.3f);
 	}
 
-	public MineralMixBuilder addSiltSpoils()
+	public MineralMixBuilder addSoilSpoils()
 	{
 		return spoil(Items.COARSE_DIRT, 0.2f)
 				.spoil(Items.COBBLESTONE, 0.5f)
-				.spoil(Items.COBBLED_DEEPSLATE, 0.3f);
+				.spoil(Items.GRAVEL, 0.3f);
+	}
+
+	public MineralMixBuilder addSeabedSpoils()
+	{
+		return spoil(Items.SANDSTONE, 0.6f)
+				.spoil(Items.GRAVEL, 0.3f)
+				.spoil(Items.SAND, 0.1f);
 	}
 
 	public MineralMixBuilder addNetherSpoils()

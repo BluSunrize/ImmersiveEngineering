@@ -34,15 +34,14 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_amethyst",
-      "has_lead",
-      "has_the_recipe"
+      "has_lead"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/tinted_glass_lead_wire"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

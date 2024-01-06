@@ -38,33 +38,27 @@
   ],
   "spoils": [
     {
-      "chance": 0.3,
-      "conditions": [],
-      "output": {
-        "tag": "forge:ores/emerald"
-      }
-    },
-    {
-      "chance": 0.7,
+      "chance": 0.2,
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:prismarine"
+        "id": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:gems/aquamarine"
-          }
-        }
-      ],
+      "conditions": [],
       "output": {
-        "tag": "forge:gems/aquamarine"
+        "Count": 1,
+        "id": "minecraft:cobbled_deepslate"
       }
     }
   ],

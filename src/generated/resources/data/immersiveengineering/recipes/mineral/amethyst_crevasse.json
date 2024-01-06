@@ -7,40 +7,52 @@
   "ores": [
     {
       "chance": 0.4,
+      "conditions": [],
       "output": {
-        "item": "minecraft:amethyst_block"
+        "Count": 1,
+        "id": "minecraft:amethyst_block"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:calcite"
+        "Count": 1,
+        "id": "minecraft:calcite"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:smooth_basalt"
+        "Count": 1,
+        "id": "minecraft:smooth_basalt"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobblestone"
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobbled_deepslate"
+        "Count": 1,
+        "id": "minecraft:cobbled_deepslate"
       }
     }
   ],

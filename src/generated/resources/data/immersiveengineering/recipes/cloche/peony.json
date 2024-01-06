@@ -4,8 +4,8 @@
     "item": "minecraft:peony"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:peony"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:peony"
   },
   "results": [
     {

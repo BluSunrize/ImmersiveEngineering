@@ -260,7 +260,8 @@ public class ClientProxy extends CommonProxy
 			final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 			WeighedSoundEvents weighedsoundevents = sound.resolve(soundManager);
 			if(weighedsoundevents!=null)
-				((GuiSubtitleOverlayAccess)mc().gui).getSubtitleOverlay().onPlaySound(sound, weighedsoundevents);
+				// TODO is 16 reasonable
+				((GuiSubtitleOverlayAccess)mc().gui).getSubtitleOverlay().onPlaySound(sound, weighedsoundevents, 16);
 		}
 	}
 

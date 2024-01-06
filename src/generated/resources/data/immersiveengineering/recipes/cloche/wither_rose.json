@@ -4,8 +4,8 @@
     "item": "minecraft:wither_rose"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:wither_rose"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:wither_rose"
   },
   "results": [
     {

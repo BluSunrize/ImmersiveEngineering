@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_ethanol",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_ethanol"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/lead_white"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

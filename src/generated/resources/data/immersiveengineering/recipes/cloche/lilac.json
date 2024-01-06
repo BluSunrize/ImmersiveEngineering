@@ -4,8 +4,8 @@
     "item": "minecraft:lilac"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:lilac"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:lilac"
   },
   "results": [
     {

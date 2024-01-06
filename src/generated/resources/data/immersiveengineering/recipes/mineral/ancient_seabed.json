@@ -7,40 +7,52 @@
   "ores": [
     {
       "chance": 0.65,
+      "conditions": [],
       "output": {
-        "item": "minecraft:calcite"
+        "Count": 1,
+        "id": "minecraft:calcite"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:dripstone_block"
+        "Count": 1,
+        "id": "minecraft:dripstone_block"
       }
     },
     {
       "chance": 0.05,
+      "conditions": [],
       "output": {
-        "item": "minecraft:bone_block"
+        "Count": 1,
+        "id": "minecraft:bone_block"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.6,
+      "conditions": [],
       "output": {
-        "item": "minecraft:sandstone"
+        "Count": 1,
+        "id": "minecraft:sandstone"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.1,
+      "conditions": [],
       "output": {
-        "item": "minecraft:sand"
+        "Count": 1,
+        "id": "minecraft:sand"
       }
     }
   ],

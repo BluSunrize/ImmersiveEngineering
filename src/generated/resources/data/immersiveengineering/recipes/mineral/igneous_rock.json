@@ -40,11 +40,19 @@
   ],
   "spoils": [
     {
-      "chance": 0.3,
+      "chance": 0.2,
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:granite"
+        "id": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
@@ -52,23 +60,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:diorite"
-      }
-    },
-    {
-      "chance": 0.3,
-      "conditions": [],
-      "output": {
-        "Count": 1,
-        "id": "minecraft:andesite"
-      }
-    },
-    {
-      "chance": 0.1,
-      "conditions": [],
-      "output": {
-        "Count": 1,
-        "id": "minecraft:obsidian"
+        "id": "minecraft:cobbled_deepslate"
       }
     }
   ],

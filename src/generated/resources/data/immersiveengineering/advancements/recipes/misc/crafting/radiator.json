@@ -42,16 +42,15 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_steel_sheetmetal",
       "has_water_bucket",
-      "has_constantan_ingot",
-      "has_the_recipe"
+      "has_constantan_ingot"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/radiator"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

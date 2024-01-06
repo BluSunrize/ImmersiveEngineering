@@ -4,8 +4,8 @@
     "item": "minecraft:poppy"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:poppy"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:poppy"
   },
   "results": [
     {

@@ -37,7 +37,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:magma_block"
+        "id": "minecraft:netherrack"
       }
     },
     {
@@ -45,7 +45,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:smooth_basalt"
+        "id": "minecraft:basalt"
       }
     },
     {
@@ -53,7 +53,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:obsidian"
+        "id": "minecraft:gravel"
       }
     }
   ],

@@ -5,12 +5,13 @@
     "tag": "forge:gems/lapis"
   },
   "result": {
-    "count": 2,
-    "item": "minecraft:blue_dye"
+    "Count": 2,
+    "id": "minecraft:blue_dye"
   },
   "secondaries": [
     {
       "chance": 0.1,
+      "conditions": [],
       "output": {
         "item": "minecraft:light_gray_dye"
       }

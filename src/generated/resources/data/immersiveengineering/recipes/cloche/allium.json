@@ -4,8 +4,8 @@
     "item": "minecraft:allium"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:allium"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:allium"
   },
   "results": [
     {

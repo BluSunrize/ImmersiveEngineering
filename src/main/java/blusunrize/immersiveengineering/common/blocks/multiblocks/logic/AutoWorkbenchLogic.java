@@ -128,10 +128,20 @@ public class AutoWorkbenchLogic
 				switch(process.processTick)
 				{
 					default: break;
-					case 39: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_1_POS), IESounds.process1.get(), SoundSource.BLOCKS, .25f, 1f); break;
-					case 40: case 78: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_1_POS), IESounds.process1Lift.get(), SoundSource.BLOCKS, .64f, 1f); break;
-					case 136: case 163: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_2_POS), IESounds.process2Lift.get(), SoundSource.BLOCKS, 1f, 1f); break;
-					case 144: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_2_POS), IESounds.process2.get(), SoundSource.BLOCKS, 1F, 1f); break;
+					case 39:
+						rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_1_POS), IESounds.process1.value(), SoundSource.BLOCKS, .25f, 1f);
+						break;
+					case 40:
+					case 78:
+						rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_1_POS), IESounds.process1Lift.value(), SoundSource.BLOCKS, .64f, 1f);
+						break;
+					case 136:
+					case 163:
+						rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_2_POS), IESounds.process2Lift.value(), SoundSource.BLOCKS, 1f, 1f);
+						break;
+					case 144:
+						rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_2_POS), IESounds.process2.value(), SoundSource.BLOCKS, 1F, 1f);
+						break;
 				}
 			}
 	}

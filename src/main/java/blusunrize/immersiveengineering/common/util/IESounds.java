@@ -50,14 +50,14 @@ public class IESounds
 	public static final Holder<SoundEvent> mixer = registerSound("mixer");
 	public static final Holder<SoundEvent> fermenter = registerSound("fermenter");
 	public static final Holder<SoundEvent> preheater = registerSound("preheater");
-	public static final RegistryObject<SoundEvent> arcFurnace = registerSound("arc_furnace");
-	public static final RegistryObject<SoundEvent> oreConveyor = registerSound("ore_conveyor");
-	public static final RegistryObject<SoundEvent> oreDump = registerSound("ore_dump");
-	public static final RegistryObject<SoundEvent> process1 = registerSound("process_1");
-	public static final RegistryObject<SoundEvent> process1Lift = registerSound("process_1_lift");
-	public static final RegistryObject<SoundEvent> process2 = registerSound("process_2");
-	public static final RegistryObject<SoundEvent> process2Lift = registerSound("process_2_lift");
-	public static final RegistryObject<SoundEvent> electromagnet = registerSound("electromagnet");
+	public static final Holder<SoundEvent> arcFurnace = registerSound("arc_furnace");
+	public static final Holder<SoundEvent> oreConveyor = registerSound("ore_conveyor");
+	public static final Holder<SoundEvent> oreDump = registerSound("ore_dump");
+	public static final Holder<SoundEvent> process1 = registerSound("process_1");
+	public static final Holder<SoundEvent> process1Lift = registerSound("process_1_lift");
+	public static final Holder<SoundEvent> process2 = registerSound("process_2");
+	public static final Holder<SoundEvent> process2Lift = registerSound("process_2_lift");
+	public static final Holder<SoundEvent> electromagnet = registerSound("electromagnet");
 
 
 	public static void init(IEventBus modBus)

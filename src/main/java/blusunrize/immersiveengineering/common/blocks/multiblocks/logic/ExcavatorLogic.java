@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic.State;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ExcavatorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
@@ -43,7 +42,6 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -194,7 +192,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 					rawLevel.playSound(
 							null,
 							level.toAbsolute(HOPPER).x, level.toAbsolute(HOPPER).y, level.toAbsolute(HOPPER).z,
-							IESounds.oreDump.get(), SoundSource.BLOCKS,
+							IESounds.oreDump.value(), SoundSource.BLOCKS,
 							0.875f, 1f
 					);
 				}

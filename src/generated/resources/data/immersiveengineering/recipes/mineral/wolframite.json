@@ -46,32 +46,27 @@
   ],
   "spoils": [
     {
-      "chance": 0.5,
+      "chance": 0.2,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/tungsten"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     },
     {
       "chance": 0.5,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/iron"
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
-      "chance": 0.5,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/manganese"
-          }
-        }
-      ],
+      "chance": 0.3,
+      "conditions": [],
       "output": {
-        "tag": "forge:ores/manganese"
+        "Count": 1,
+        "id": "minecraft:cobbled_deepslate"
       }
     }
   ],

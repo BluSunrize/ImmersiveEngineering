@@ -41,11 +41,11 @@
   "sample_background": "minecraft:polished_blackstone",
   "spoils": [
     {
-      "chance": 0.4,
+      "chance": 0.5,
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:polished_blackstone_bricks"
+        "id": "minecraft:netherrack"
       }
     },
     {
@@ -53,7 +53,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:polished_blackstone"
+        "id": "minecraft:basalt"
       }
     },
     {
@@ -61,15 +61,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:ancient_debris"
-      }
-    },
-    {
-      "chance": 0.1,
-      "conditions": [],
-      "output": {
-        "Count": 1,
-        "id": "minecraft:gilded_blackstone"
+        "id": "minecraft:gravel"
       }
     }
   ],

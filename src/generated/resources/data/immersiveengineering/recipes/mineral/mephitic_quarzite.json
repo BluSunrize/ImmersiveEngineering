@@ -32,11 +32,19 @@
   "sample_background": "minecraft:netherrack",
   "spoils": [
     {
-      "chance": 0.6,
+      "chance": 0.5,
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:nether_quartz_ore"
+        "id": "minecraft:netherrack"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:basalt"
       }
     },
     {
@@ -44,14 +52,7 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:nether_gold_ore"
-      }
-    },
-    {
-      "chance": 0.2,
-      "conditions": [],
-      "output": {
-        "tag": "forge:dusts/sulfur"
+        "id": "minecraft:gravel"
       }
     }
   ],

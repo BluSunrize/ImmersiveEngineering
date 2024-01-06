@@ -4,8 +4,8 @@
     "item": "minecraft:pink_tulip"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:pink_tulip"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:pink_tulip"
   },
   "results": [
     {

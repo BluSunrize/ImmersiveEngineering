@@ -4,8 +4,8 @@
     "item": "minecraft:oxeye_daisy"
   },
   "render": {
-    "type": "generic",
-    "block": "minecraft:oxeye_daisy"
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:oxeye_daisy"
   },
   "results": [
     {

@@ -7,40 +7,52 @@
   "ores": [
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:clay"
+        "Count": 1,
+        "id": "minecraft:clay"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:sand"
+        "Count": 1,
+        "id": "minecraft:sand"
       }
     },
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.2,
+      "conditions": [],
       "output": {
-        "item": "minecraft:coarse_dirt"
+        "Count": 1,
+        "id": "minecraft:coarse_dirt"
       }
     },
     {
       "chance": 0.5,
+      "conditions": [],
       "output": {
-        "item": "minecraft:cobblestone"
+        "Count": 1,
+        "id": "minecraft:cobblestone"
       }
     },
     {
       "chance": 0.3,
+      "conditions": [],
       "output": {
-        "item": "minecraft:gravel"
+        "Count": 1,
+        "id": "minecraft:gravel"
       }
     }
   ],

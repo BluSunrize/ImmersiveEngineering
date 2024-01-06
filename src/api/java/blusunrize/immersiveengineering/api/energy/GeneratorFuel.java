@@ -16,10 +16,10 @@ import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -32,6 +32,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 
 public class GeneratorFuel extends IESerializableRecipe
@@ -43,14 +45,10 @@ public class GeneratorFuel extends IESerializableRecipe
 	private final FastEither<TagKey<Fluid>, List<Fluid>> fluids;
 	private final int burnTime;
 
-	public GeneratorFuel(Optional<TagKey<Fluid>> tag, Optional<List<Fluid>> fluids, int burnTime)
+	public GeneratorFuel(Either<TagKey<Fluid>, List<Fluid>> input, int burnTime)
 	{
 		super(TagOutput.EMPTY, IERecipeTypes.GENERATOR_FUEL);
-		Preconditions.checkState(tag.isPresent()!=fluids.isPresent());
-		if(tag.isPresent())
-			this.fluids = FastEither.left(tag.get());
-		else
-			this.fluids = FastEither.right(fluids.get());
+		this.fluids = input.map(FastEither::left, FastEither::right);
 		this.burnTime = burnTime;
 	}
 
@@ -119,9 +117,9 @@ public class GeneratorFuel extends IESerializableRecipe
 		SortedMap<Component, Integer> map = new TreeMap<>(
 				Comparator.comparing(Component::getString, Comparator.naturalOrder())
 		);
-		for(GeneratorFuel recipe : RECIPES.getRecipes(level))
-			for(Fluid f : recipe.getFluids())
-				map.put(f.getFluidType().getDescription(), recipe.getBurnTime());
+		for(RecipeHolder<GeneratorFuel> recipe : RECIPES.getRecipes(level))
+			for(Fluid f : recipe.value().getFluids())
+				map.put(f.getFluidType().getDescription(), recipe.value().getBurnTime());
 		return map;
 	}
 }

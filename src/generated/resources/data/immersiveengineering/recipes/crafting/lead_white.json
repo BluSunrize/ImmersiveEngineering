@@ -3,9 +3,11 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "immersiveengineering:fluid",
-      "amount": 1000,
-      "tag": "forge:ethanol"
+      "type": "immersiveengineering:fluid_stack",
+      "value": {
+        "amount": 1000,
+        "tag": "forge:ethanol"
+      }
     },
     {
       "item": "minecraft:rotten_flesh"

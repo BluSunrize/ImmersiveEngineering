@@ -5,12 +5,13 @@
     "item": "minecraft:bone_meal"
   },
   "result": {
-    "count": 2,
-    "item": "minecraft:white_dye"
+    "Count": 2,
+    "id": "minecraft:white_dye"
   },
   "secondaries": [
     {
       "chance": 0.1,
+      "conditions": [],
       "output": {
         "item": "minecraft:light_gray_dye"
       }
