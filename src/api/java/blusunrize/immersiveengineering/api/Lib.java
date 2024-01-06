@@ -42,6 +42,7 @@ public class Lib
 	public static final int COLOUR_I_ImmersiveOrangeShadow = 0xff3e200d;
 
 	public static final String MAGNET_PREVENT_NBT = "PreventRemoteMovement";
+	public static final String MAGNET_SOURCE_NBT = "immersiveengineering:magnet_source";
 
 	/**
 	 * Gui IDs

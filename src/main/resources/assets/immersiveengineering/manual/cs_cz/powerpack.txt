@@ -1,0 +1,12 @@
+Akumulátorový batůžek
+Do....Ray....Egon!
+Ukládání energie zabírá místo a vyžaduje těžké součásti, což dělá hromadné ukládání energie do nástrojů nemožné a dělá je divné při nošení.
+Akumulátorový batůžek se chová jako kompromis, nabízející centralizované úložiště energie pro jakékoliv poháněné nástroje. Pomocí tohoto receptu sestavíš jeho nosný rám a potom jej můžeš spojit s <link;workbench;Inženýrovym pracovním stolem;start> pro umístění <link;accumulators;Akumulátoru> dovnitř.
+Batůžek dokáže nabít nástroje které máš a brnění které nosíš. Můžeš jej nosit jako kus hrudního brnění, nebo jej můžeš spojit s pancířem v pracovním stole pro napájení a ochranu.
+Pamatuj si že nemůžeš použít <link;charging_station;Nabíjecí stanici> pro nabití když je připojen k brnění.
+<br>Následující stránky obsahují vylepšení které můžeš přidat k batůžku.<np>
+<&antenna>Napojením §2Nabíjecí antény§r k batůžku, můžeš nabíjet jeho akmulátor při cestách! Jednoduše projdi pod <link;wiring;un-izolovaným drátovým vedením;wire_recipes> aby se připojila anténa.<br>
+Zatímco jseš blízko k drátu, anténa se natáhne a zůstane připojena což pomalu nabíjí akumulátor.<np>
+<&induction>§2Indukční nabíječka§r umožnuje nabít všechny předměty v inventáři místo jen těch v ruce. Kvůli nepoužití drátového nabíjení, toto nabíjení je pomalejší.<np>
+<&tesla>Jak jeho jméno říká, §2Miniaturní teslův transformátor§r je jako jeho <link;tesla_coil;větší bratr>, zařízení které dává šok nepřátelům nablízku. Aktivuje se při napadení, což nahradí trnité brnění elektřinou.
+<br>Protože se napojuje na vrch jako anténa, nelze je obě použít najednou.

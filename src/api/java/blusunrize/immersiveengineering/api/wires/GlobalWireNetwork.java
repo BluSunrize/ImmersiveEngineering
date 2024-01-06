@@ -30,6 +30,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -208,6 +210,13 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 		double dz = dropAt.getZ()+.5;
 		if(world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
 			world.addFreshEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
+	}
+
+	public void removeInsertAndDropConnection(Connection c, Player player, Level world)
+	{
+		removeConnection(c);
+		if (world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
+			world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), c.type.getWireCoil(c), 0, 0, 0));
 	}
 
 	private void splitNet(LocalWireNetwork oldNet)

@@ -1,3 +1,49 @@
+##### Version 1.20.1-10.0.1-pre
+- Includes all features from 9.2.4
+- Add sounds for Arc Furnace, Excavator, and Automated Workbench (voidsong-dragonfly)
+- Add burn times for the diesel generator to the manual (BluSunrize)
+- Add support for armor trims on steel armor (BluSunrize)
+- Add additional uses for lead & nickel (voidsong-dragonfly)
+    - Lead can be crafted into red and white dyes
+    - Radiators now use constantan instead of copper
+    - Tinted glass can be made in larger quantities by using lead
+- Add randomized textures for various hempcrete & concrete blocks (voidsong-dragonfly)
+- Add the portable electromagnet! (BluSunrize)
+    - It attracts nearby items!
+    - Install it as an upgrade on your accumulator backpack!
+- Change hemp blocks to notify their neighbours when they grow (jrtc27)
+- Change Jade Tooltips for multiblocks to work when looking at any part of the machine (HermitOwO)
+- Fix conveyor rendering in the manual (Malte)
+- Fix broken translation keys (Malte & BluSunrize)
+- Fix turret GUI textfield not being editable (BluSunrize)
+- Fix taiga villager houses being surrounded by air blocks (BluSunrize)
+- Fix redstone control not working on the assembler (BluSunrize)
+- Fix villager names not being translated in JER and EMI (BluSunrize)
+
+##### Version 1.19.2-9.2.4-pre
+- Add new excavator veins for decoration blocks (voidsong-dragonfly)
+    - Amethyst Crevasse, a geode vein
+    - Hardened Claypan, a red sand & terracotta vein
+    - Ancient Seabed, a dead coral & dripstone vein
+- Add cloche recipes to grow flowers (voidsong-dragonfly)
+- Add crusher recipes to make dyes (voidsong-dragonfly)
+- Add items directly to inventory when: (voidsong-dragonfly)
+    - Cutting wires
+    - Picking up fluorescent tubes, core samples or the toolbox 
+- Change turrets to accept generic entity terms like "Villager" for their black/whitelist (BluSunrize)
+- Change text rendering in GUIs to be more readable (BluSunrize)
+- Fix issues with multiblocks being accessed before being full formed (Malte)
+- Fix items with obj renders breaking in the AE2 inscriber
+- Fix drill overlay highlighting too many blocks (Malte)
+- Fix external heater breaking when dealing with faster furnace recipes (TeamSpen210)
+- Fix stairs and slabs not receiving item tags (BluSunrize)
+- Fix potential crash with the accumulator backpack (BluSunrize)
+- Fix output positions on the improved blastfurnace being swapped around (BluSunrize)
+- Fix synchronization errors in the garden clocke (voidsong-dragonfly, Malte)
+- Fix induction charging on the accumulator backpack not working (BluSunrize)
+- Fix multiblock sounds not triggering subtitles continuously (BluSunrize)
+- Translations Added/Updated: cs_cz (RomanPlayer22)
+
 ##### Version 1.20.1-10.0.0-169
 - First release for 1.20.1, now supporting NeoForged!
 - Includes all features from 9.4.1

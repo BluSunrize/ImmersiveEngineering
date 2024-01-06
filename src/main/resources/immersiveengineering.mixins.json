@@ -16,6 +16,7 @@
     "accessors.FurnaceTEAccess",
     "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess",
+    "accessors.ItemModelGeneratorsAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
     "accessors.PotionMixAccessor",
@@ -24,6 +25,7 @@
     "accessors.TemplateAccess",
     "accessors.TemplatePoolAccess",
     "accessors.TNTEntityAccess",
+    "accessors.TrimModelDataAccess",
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin"
@@ -32,6 +34,7 @@
     "accessors.client.ChatComponentAccess",
     "accessors.client.CompiledSectionAccess",
     "accessors.client.FontResourceManagerAccess",
+    "accessors.client.GuiSubtitleOverlayAccess",
     "accessors.client.MinecartRendererAccess",
     "accessors.client.MinecraftAccess",
     "accessors.client.ParticleManagerAccess",

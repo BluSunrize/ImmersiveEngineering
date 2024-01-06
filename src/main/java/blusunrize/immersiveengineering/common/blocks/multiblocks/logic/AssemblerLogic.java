@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
@@ -25,11 +26,13 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.Assembler
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.AssemblerShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
 import net.minecraft.core.BlockPos;
@@ -38,6 +41,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
@@ -53,12 +57,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
+public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	public static final int NUM_PATTERNS = 3;
 	public static final int NUM_TANKS = 3;
@@ -74,9 +79,27 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 	};
 
 	@Override
+	public void tickClient(IMultiblockContext<State> context)
+	{
+		final State state = context.getState();
+		if(!state.isPlayingSound.getAsBoolean())
+		{
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			state.isPlayingSound = MultiblockSound.startSound(() -> state.shouldPlaySound, context.isValid(), soundPos, IESounds.assembler, 0.625f
+			);
+		}
+	}
+
+	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final State state = context.getState();
+		final boolean wasPlaying = state.shouldPlaySound;
+		if(!state.rsState.isEnabled(context) && wasPlaying!=state.rsState.isEnabled(context))
+		{
+			state.shouldPlaySound = false;
+			context.requestMasterBESync();
+		}
 		if(!context.getLevel().shouldTickModulo(16)||!state.rsState.isEnabled(context))
 			return;
 		final List<OutputBuffer> outputs = craftRecipes(context);
@@ -88,6 +111,9 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 				state.inventory.setStackInSlot(
 						18+i, Utils.insertStackIntoInventory(state.output, state.inventory.getStackInSlot(18+i), false)
 				);
+		state.shouldPlaySound = state.rsState.isEnabled(context)&&!outputs.isEmpty();
+		if(wasPlaying!=state.shouldPlaySound)
+			context.requestMasterBESync();
 	}
 
 	private List<OutputBuffer> craftRecipes(IMultiblockContext<State> ctx)
@@ -309,6 +335,8 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		private final Supplier<@Nullable IItemHandler> output;
 		private final IItemHandler itemInput;
 		private final IFluidHandler fluidInput;
+		private BooleanSupplier isPlayingSound = () -> false;
+		private boolean shouldPlaySound;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -349,6 +377,18 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			recursiveIngredients = nbt.getBoolean("recursiveIngredients");
 			inventory.deserializeNBT(nbt.getCompound("inventory"));
 			energy.deserializeNBT(nbt.get("energy"));
+		}
+
+		@Override
+		public void writeSyncNBT(CompoundTag nbt)
+		{
+			nbt.putBoolean("shouldPlaySound", shouldPlaySound);
+		}
+
+		@Override
+		public void readSyncNBT(CompoundTag nbt)
+		{
+			shouldPlaySound = nbt.getBoolean("shouldPlaySound");
 		}
 
 		public IItemHandler getInventory()

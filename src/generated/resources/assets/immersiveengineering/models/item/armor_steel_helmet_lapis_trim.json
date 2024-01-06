@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "immersiveengineering:item/armor_steel_helmet",
+    "layer1": "minecraft:trims/items/helmet_trim_lapis"
+  }
+}

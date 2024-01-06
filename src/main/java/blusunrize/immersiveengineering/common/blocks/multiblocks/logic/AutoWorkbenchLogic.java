@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
@@ -30,6 +31,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.AutoWork
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
@@ -38,6 +40,8 @@ import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -63,6 +67,8 @@ public class AutoWorkbenchLogic
 	private static final BlockPos INPUT_POS = new BlockPos(0, 1, 2);
 	private static final CapabilityPosition ENERGY_POS = new CapabilityPosition(0, 1, 2, RelativeBlockFace.UP);
 	public static final BlockPos REDSTONE_POS = new BlockPos(1, 0, 2);
+	public static final BlockPos PROCESS_1_POS = new BlockPos(1, 0, 0);
+	public static final BlockPos PROCESS_2_POS = new BlockPos(2, 1, 1);
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
@@ -112,9 +118,22 @@ public class AutoWorkbenchLogic
 	@Override
 	public void tickClient(IMultiblockContext<State> context)
 	{
+		final IMultiblockLevel level = context.getLevel();
+		final Level rawLevel = level.getRawLevel();
 		if(context.getState().active)
 			for(final MultiblockProcess<BlueprintCraftingRecipe, ProcessContextInWorld<BlueprintCraftingRecipe>> process : context.getState().processor.getQueue())
+			{
 				++process.processTick;
+				Player localPlayer = ImmersiveEngineering.proxy.getClientPlayer();
+				switch(process.processTick)
+				{
+					default: break;
+					case 39: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_1_POS), IESounds.process1.get(), SoundSource.BLOCKS, .25f, 1f); break;
+					case 40: case 78: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_1_POS), IESounds.process1Lift.get(), SoundSource.BLOCKS, .64f, 1f); break;
+					case 136: case 163: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_2_POS), IESounds.process2Lift.get(), SoundSource.BLOCKS, 1f, 1f); break;
+					case 144: rawLevel.playSound(localPlayer, level.toAbsolute(PROCESS_2_POS), IESounds.process2.get(), SoundSource.BLOCKS, 1F, 1f); break;
+				}
+			}
 	}
 
 	public static List<RecipeHolder<BlueprintCraftingRecipe>> getAvailableRecipes(Level level, State state)

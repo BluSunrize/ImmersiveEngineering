@@ -96,7 +96,10 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 		BUZZSAW_SPAREBLADES(ImmutableSet.of("BUZZSAW"), 1, (upgrade, modifications) -> modifications.putBoolean("spareblades", true)),
 		POWERPACK_ANTENNA(ImmutableSet.of("POWERPACK"), 1, (target, upgrade) -> !PowerpackItem.getUpgradesStatic(target).contains("tesla"), (upgrade, modifications) -> modifications.putBoolean("antenna", true)),
 		POWERPACK_INDUCTION(ImmutableSet.of("POWERPACK"), 1, (upgrade, modifications) -> modifications.putBoolean("induction", true)),
-		POWERPACK_TESLA(ImmutableSet.of("POWERPACK"), 1, (target, upgrade) -> !PowerpackItem.getUpgradesStatic(target).contains("antenna"), (upgrade, modifications) -> modifications.putBoolean("tesla", true));
+		POWERPACK_TESLA(ImmutableSet.of("POWERPACK"), 1, (target, upgrade) -> !PowerpackItem.getUpgradesStatic(target).contains("antenna"), (upgrade, modifications) -> modifications.putBoolean("tesla", true)),
+
+		POWERPACK_MAGNET(ImmutableSet.of("POWERPACK"), 1, (upgrade, modifications) -> modifications.putBoolean("magnet", true))
+		;
 
 		private ImmutableSet<String> toolset;
 		private int stackSize = 1;

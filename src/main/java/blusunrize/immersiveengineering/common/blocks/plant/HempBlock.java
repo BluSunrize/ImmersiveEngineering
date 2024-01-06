@@ -32,6 +32,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForgeConfig.Common;
 
 import java.util.function.Supplier;
 
@@ -145,7 +146,7 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 					{
 						BlockPos above = pos.above();
 						BlockState aboveState = this.getStateForAge(getMaxAge()).setValue(TOP, true);
-						world.setBlock(above, aboveState, 2);
+						world.setBlockAndUpdate(above, aboveState);
 						CommonHooks.onCropsGrowPost(world, above, aboveState);
 					}
 				}
@@ -173,6 +174,6 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 
 		world.setBlock(pos, this.getStateForAge(newAge), 2);
 		if(growTop)
-			world.setBlock(pos.above(), this.getStateForAge(getMaxAge()).setValue(TOP, true), 2);
+			world.setBlockAndUpdate(pos.above(), this.getStateForAge(getMaxAge()).setValue(TOP, true));
 	}
 }

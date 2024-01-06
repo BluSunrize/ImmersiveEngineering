@@ -1,0 +1,48 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "fail_chance": 0.05,
+  "ores": [
+    {
+      "chance": 0.65,
+      "output": {
+        "item": "minecraft:calcite"
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "item": "minecraft:dripstone_block"
+      }
+    },
+    {
+      "chance": 0.05,
+      "output": {
+        "item": "minecraft:bone_block"
+      }
+    }
+  ],
+  "spoils": [
+    {
+      "chance": 0.6,
+      "output": {
+        "item": "minecraft:sandstone"
+      }
+    },
+    {
+      "chance": 0.3,
+      "output": {
+        "item": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.1,
+      "output": {
+        "item": "minecraft:sand"
+      }
+    }
+  ],
+  "weight": 15
+}

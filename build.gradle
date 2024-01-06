@@ -128,7 +128,7 @@ dependencies {
     compileOnly "cc.tweaked:cc-tweaked-1.19.3-forge:${version_cctweaked}"
     compileOnly "curse.maven:the-one-probe-245211:3825695"
     compileOnly "curse.maven:curios-309927:4780213"
-    compileOnly "curse.maven:jade-324717:4434045"
+    compileOnly "curse.maven:jade-324717:4801177"
     compileOnly "curse.maven:opencomputers2-437654:3630307"
 
     implementation "malte0811:BlockModelSplitter:2.0.1"

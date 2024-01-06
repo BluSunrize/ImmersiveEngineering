@@ -136,7 +136,7 @@ public class DieselGeneratorLogic
 		{
 			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 1.5, 1.5));
 			state.isSoundPlaying = MultiblockSound.startSound(
-					() -> state.active, context.isValid(), soundPos, IESounds.dieselGenerator
+					() -> state.active, context.isValid(), soundPos, IESounds.dieselGenerator, 0.5f
 			);
 		}
 		if(state.active&&context.getLevel().shouldTickModulo(2))

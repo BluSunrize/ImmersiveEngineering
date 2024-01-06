@@ -208,5 +208,61 @@
 			"immersiveengineering:preheater"
 		],
 		"subtitle": "subtitle.immersiveengineering.preheater"
+	},
+	"arc_furnace": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:arc_furnace"
+		],
+		"subtitle": "subtitle.immersiveengineering.arc_furnace"
+	},
+	"ore_conveyor": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:ore_conveyor"
+		],
+		"subtitle": "subtitle.immersiveengineering.ore_conveyor"
+	},
+	"ore_dump": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:ore_dump"
+		],
+		"subtitle": "subtitle.immersiveengineering.ore_dump"
+	},
+	"process_1": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_1"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_1"
+	},
+	"process_1_lift": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_1_lift"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_1_lift"
+	},
+	"process_2": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_2"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_2"
+	},
+	"process_2_lift": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:process_2_lift"
+		],
+		"subtitle": "subtitle.immersiveengineering.process_2_lift"
+	},
+	"electromagnet": {
+		"category": "player",
+		"sounds": [
+			"immersiveengineering:electromagnet"
+		],
+		"subtitle": "subtitle.immersiveengineering.electromagnet"
 	}
 }

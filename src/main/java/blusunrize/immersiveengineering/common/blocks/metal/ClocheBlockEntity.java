@@ -175,9 +175,10 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		{
 			ClocheRecipe recipe = cachedRecipe.get();
 			int consumption = IEServerConfig.MACHINES.cloche_consumption.get();
+			//Consume needs to be outside of seed check in case power runs down while there is still a seed, to properly propagate updates to the client
+			boolean consume = false;
 			if(recipe!=null&&fertilizerAmount > 0&&energyStorage.extractEnergy(consumption, true)==consumption)
 			{
-				boolean consume = false;
 				if(growth >= recipe.getTime(seed, soil))
 				{
 					TagOutputList outputs = recipe.getOutputs(seed, soil);
@@ -234,14 +235,16 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 						sendSyncPacket();
 					}
 				}
-				else if(renderActive)
+			}
+			else
+			{
+				growth = 0;
+				if(renderActive)
 				{
 					renderActive = false;
 					sendSyncPacket();
 				}
 			}
-			else
-				growth = 0;
 
 			int fluidConsumption = IEServerConfig.MACHINES.cloche_fluid.get();
 			if(fertilizerAmount <= 0&&tank.getFluidAmount() >= fluidConsumption)
@@ -317,6 +320,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
+		final ItemStack oldSoil = inventory.get(SLOT_SOIL);
 		dummy = nbt.getInt("dummy");
 		// loadAllItems skips empty items, so if a slot was emptied it won't be properly synced without the fill call
 		Collections.fill(inventory, ItemStack.EMPTY);
@@ -330,6 +334,8 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			growth = nbt.getFloat("growth");
 		}
 		renderBB = null;
+		if(descPacket&&level!=null&&!ItemStack.matches(oldSoil, inventory.get(SLOT_SOIL)))
+			markContainingBlockForUpdate(null);
 	}
 
 	@Override

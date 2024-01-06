@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
@@ -25,10 +26,13 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic.State;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ExcavatorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -39,9 +43,12 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -61,9 +68,10 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
+public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
 	private static final Set<CapabilityPosition> ENERGY_INPUTS = Set.of(
 			new CapabilityPosition(2, 0, 4, RelativeBlockFace.LEFT),
@@ -74,6 +82,8 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	private static final MultiblockFace ITEM_OUTPUT = new MultiblockFace(1, 1, 6, RelativeBlockFace.BACK);
 	public static final BlockPos WHEEL_CENTER = new BlockPos(1, 1, 1);
 	private static final Vec3 WHEEL_CENTER_TOP = Vec3.atCenterOf(WHEEL_CENTER.above(2));
+	private static final Vec3 DIG_POSITION = Vec3.atCenterOf(WHEEL_CENTER.below(3));
+	private static final Vec3 HOPPER = Vec3.atCenterOf(WHEEL_CENTER.above().west());
 	private static final List<BlockPos> DIG_POSITIONS = Util.make(() -> {
 		BlockPos belowWheelCenter = WHEEL_CENTER.offset(0, -4, 0);
 		return List.of(
@@ -99,6 +109,19 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	});
 
 	@Override
+	public void tickClient(IMultiblockContext<State> context)
+	{
+		final State state = context.getState();
+		if(!state.isPlayingSound.getAsBoolean())
+		{
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(0.5, 1.5, 1.5));
+			state.isPlayingSound = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.oreConveyor, 0.125f
+			);
+		}
+	}
+
+	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final IMultiblockLevel level = context.getLevel();
@@ -116,6 +139,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		{
 			wheel.active = state.active;
 			wheelCtx.markDirtyAndSync();
+			context.requestMasterBESync();
 		}
 		rot = wheel.rotation;
 		if(rot%45 > 40)
@@ -155,7 +179,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 				else if(mineral!=null)
 				{
 					// Extracted to a method, to allow for early exiting
-					if(fillBucket(mineralVein, mineral, level.toAbsolute(WHEEL_CENTER), wheel, targetDown))
+					if(fillBucket(mineralVein, mineral, level.toAbsolute(WHEEL_CENTER), wheel, targetDown, level))
 						wheelChanged = true;
 					mineralVein.deplete();
 				}
@@ -165,7 +189,15 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 				state.output.insertOrDrop(wheel.digStacks.get(target).copy(), level);
 				Block b = Block.byItem(wheel.digStacks.get(target).getItem());
 				if(b!=Blocks.AIR)
+				{
 					spawnParticles(wheel.digStacks.get(target), level);
+					rawLevel.playSound(
+							null,
+							level.toAbsolute(HOPPER).x, level.toAbsolute(HOPPER).y, level.toAbsolute(HOPPER).z,
+							IESounds.oreDump.get(), SoundSource.BLOCKS,
+							0.875f, 1f
+					);
+				}
 				wheel.digStacks.set(target, ItemStack.EMPTY);
 				wheelChanged = true;
 			}
@@ -192,10 +224,10 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			return;
 		final Direction facing = level.getOrientation().front();
 		Axis axis = facing.getAxis();
-		int sign = level.getOrientation().mirrored()?-1: 1;
+		int sign = level.getOrientation().mirrored()?1: -1;
 		final Vec3 topCenterAbs = level.toAbsolute(WHEEL_CENTER_TOP);
-		double fixPosOffset = .5*sign;
-		double fixVelOffset = .075*sign;
+		double fixPosOffset = .5*sign*facing.getAxisDirection().getStep();
+		double fixVelOffset = .075*sign*facing.getAxisDirection().getStep();
 		for(int i = 0; i < 16; i++)
 		{
 			double mX = (rawLevel.random.nextDouble()-.5)*.01;
@@ -291,7 +323,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	private boolean fillBucket(
 			MineralVein mineralVein, MineralMix mineralMix,
 			BlockPos wheelPos, BucketWheelLogic.State wheel,
-			int targetDown
+			int targetDown, IMultiblockLevel level
 	)
 	{
 		if(mineralVein.isDepleted())
@@ -305,6 +337,12 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			wheel.digStacks.set(targetDown, mineralMix.getRandomSpoil(ApiUtils.RANDOM));
 		else
 			wheel.digStacks.set(targetDown, ore);
+		if(wheel.digStacks.get(targetDown).getItem() instanceof BlockItem blockItem)
+			level.getRawLevel().playSound(null,
+					level.toAbsolute(DIG_POSITION).x, level.toAbsolute(DIG_POSITION).y, level.toAbsolute(DIG_POSITION).z,
+					blockItem.getBlock().defaultBlockState().getSoundType().getBreakSound(),
+					SoundSource.BLOCKS, 1f, 1f
+		);
 		return true;
 	}
 
@@ -358,6 +396,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(64000);
 		private final DroppingMultiblockOutput output;
 		public final RSState rsState = RSState.enabledByDefault();
+		private BooleanSupplier isPlayingSound = () -> false;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -374,6 +413,18 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		public void readSaveNBT(CompoundTag nbt)
 		{
 			energy.deserializeNBT(nbt.get("energy"));
+		}
+
+		@Override
+		public void writeSyncNBT(CompoundTag nbt)
+		{
+			nbt.putBoolean("active", active);
+		}
+
+		@Override
+		public void readSyncNBT(CompoundTag nbt)
+		{
+			active = nbt.getBoolean("active");
 		}
 
 		public IEnergyStorage getEnergy()

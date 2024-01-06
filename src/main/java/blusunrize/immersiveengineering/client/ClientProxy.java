@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.client.ieobj.DefaultCallback;
 import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.immersiveengineering.api.wires.SectionConnectionRenderer;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
@@ -54,6 +55,7 @@ import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
+import blusunrize.immersiveengineering.mixin.accessors.client.GuiSubtitleOverlayAccess;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.client.Minecraft;
@@ -68,6 +70,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -250,6 +254,13 @@ public class ClientProxy extends CommonProxy
 		else if(sound!=null&&(sound.donePlaying||!tileActive))
 		{
 			stopTileSound(null, tile);
+		}
+		else if(sound!=null&&tileActive&&mc().player.tickCount%30==0)
+		{
+			final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+			WeighedSoundEvents weighedsoundevents = sound.resolve(soundManager);
+			if(weighedsoundevents!=null)
+				((GuiSubtitleOverlayAccess)mc().gui).getSubtitleOverlay().onPlaySound(sound, weighedsoundevents);
 		}
 	}
 
@@ -500,6 +511,8 @@ public class ClientProxy extends CommonProxy
 		ItemCallback.DYNAMIC_IEOBJ_RENDERER.setValue(new blusunrize.immersiveengineering.client.render.IEOBJItemRenderer(
 				Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()
 		));
+		SectionConnectionRenderer.RENDER_CONNECTIONS.setValue(ConnectionRenderer::renderConnectionsInSection);
+		SectionConnectionRenderer.SHOULD_RENDER_CONNECTIONS.setValue(ConnectionRenderer::sectionNeedsRendering);
 		SetRestrictedField.lock(true);
 	}
 }

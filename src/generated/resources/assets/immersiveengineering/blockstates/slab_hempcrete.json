@@ -1,13 +1,82 @@
 {
   "variants": {
-    "type=bottom": {
-      "model": "immersiveengineering:block/slab_hempcrete_bottom"
-    },
-    "type=double": {
-      "model": "immersiveengineering:block/slab_hempcrete_double"
-    },
-    "type=top": {
-      "model": "immersiveengineering:block/slab_hempcrete_top"
-    }
+    "type=bottom": [
+      {
+        "model": "immersiveengineering:block/slab_hempcrete0_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete1_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete2_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete3_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete4_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete5_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete6_bottom"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete7_bottom"
+      }
+    ],
+    "type=double": [
+      {
+        "model": "immersiveengineering:block/slab_hempcrete0_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete1_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete2_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete3_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete4_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete5_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete6_double"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete7_double"
+      }
+    ],
+    "type=top": [
+      {
+        "model": "immersiveengineering:block/slab_hempcrete0_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete1_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete2_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete3_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete4_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete5_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete6_top"
+      },
+      {
+        "model": "immersiveengineering:block/slab_hempcrete7_top"
+      }
+    ]
   }
 }

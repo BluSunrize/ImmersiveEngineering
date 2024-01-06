@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "G": {
+      "tag": "forge:glass/colorless"
+    },
+    "L": {
+      "item": "immersiveengineering:wire_lead"
+    }
+  },
+  "pattern": [
+    "LAL",
+    "AGA",
+    "LAL"
+  ],
+  "result": {
+    "count": 3,
+    "item": "minecraft:tinted_glass"
+  },
+  "show_notification": true
+}

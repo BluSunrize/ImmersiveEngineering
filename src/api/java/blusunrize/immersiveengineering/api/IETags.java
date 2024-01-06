@@ -44,6 +44,10 @@ public class IETags
 		toItemTag.put(Blocks.ORE_RATES_SINGULAR, Items.ORE_RATES_SINGULAR);
 		toItemTag.put(BlockTags.PLANKS, ItemTags.PLANKS);
 		toItemTag.put(Blocks.GRAVEL, Items.GRAVEL);
+		toItemTag.put(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS);
+		toItemTag.put(BlockTags.SLABS, ItemTags.SLABS);
+		toItemTag.put(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
+		toItemTag.put(BlockTags.STAIRS, ItemTags.STAIRS);
 	}
 
 	//Vanilla

@@ -28,15 +28,19 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Process
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ArcFurnaceSelectionShapes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ArcFurnaceShapes;
 import blusunrize.immersiveengineering.common.register.IEParticles;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
+import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -53,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -84,8 +89,8 @@ public class ArcFurnaceLogic
 	public static final int SLAG_SLOT = 22;
 	public static final int FIRST_ELECTRODE_SLOT = 23;
 	public static final int ELECTRODE_COUNT = 3;
-	private static final MultiblockFace SLAG_OUT_POS = new MultiblockFace(2, 0, -1, RelativeBlockFace.FRONT);
-	private static final MultiblockFace MAIN_OUT_POS = new MultiblockFace(2, 0, 5, RelativeBlockFace.BACK);
+	private static final MultiblockFace SLAG_OUT_POS = new MultiblockFace(2, 0, -1, RelativeBlockFace.BACK);
+	private static final MultiblockFace MAIN_OUT_POS = new MultiblockFace(2, 0, 5, RelativeBlockFace.FRONT);
 	private static final CapabilityPosition SLAG_CAP_POS = CapabilityPosition.opposing(SLAG_OUT_POS);
 	private static final CapabilityPosition MAIN_CAP_POS = CapabilityPosition.opposing(MAIN_OUT_POS);
 	private static final int[] OUTPUT_SLOTS = Util.make(new int[OUT_SLOT_COUNT], slots -> {
@@ -119,6 +124,18 @@ public class ArcFurnaceLogic
 
 		if(level.shouldTickModulo(8))
 			outputItems(state);
+
+		if(tickedAny&&ApiUtils.RANDOM.nextInt(10)==0)
+		{
+			final Level rawLevel = level.getRawLevel();
+			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
+			rawLevel.playSound(
+					null,
+					soundPos.x, soundPos.y, soundPos.z,
+					SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.BLOCKS,
+					0.6F+ApiUtils.RANDOM.nextFloat()*0.4F, 1.0f
+			);
+		}
 	}
 
 	@Override
@@ -127,6 +144,13 @@ public class ArcFurnaceLogic
 		final State state = context.getState();
 		if(state.pouringMetal > 0)
 			state.pouringMetal--;
+		if(!state.isPlayingSound.getAsBoolean())
+		{
+			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(2.5, 3, 2.5));
+			state.isPlayingSound = MultiblockSound.startSound(
+					() -> state.active, context.isValid(), soundPos, IESounds.arcFurnace, 0.375f
+			);
+		}
 		if(!state.active)
 			return;
 		final IMultiblockLevel level = context.getLevel();
@@ -317,6 +341,7 @@ public class ArcFurnaceLogic
 		public byte electrodePresence;
 		private int queueSize;
 		public int pouringMetal = 0;
+		private BooleanSupplier isPlayingSound = () -> false;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{

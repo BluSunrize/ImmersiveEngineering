@@ -29,4 +29,10 @@ public class DynamicSubmodelCallbacks implements IEOBJCallback<VisibilityList>
 	{
 		return new IEObjState(list);
 	}
+
+	@Override
+	public VisibilityList getDefaultKey()
+	{
+		return VisibilityList.showAll();
+	}
 }

@@ -8,10 +8,14 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.mixin.accessors.client.GuiSubtitleOverlayAccess;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
@@ -21,12 +25,13 @@ import java.util.function.BooleanSupplier;
 
 public class MultiblockSound extends AbstractTickableSoundInstance
 {
-	private static final float ACTIVE_VOLUME = 0.5f;
 	private final BooleanSupplier active;
 	private final BooleanSupplier valid;
+	private final float maxVolume;
+	private long subtitleMillis;
 
 	public MultiblockSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound, boolean loop
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, SoundEvent sound, boolean loop, float maxVolume
 	)
 	{
 		super(sound, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
@@ -37,20 +42,22 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		this.z = pos.z;
 		this.looping = loop;
 		this.volume = 0;
+		this.maxVolume = maxVolume;
+		this.subtitleMillis = Util.getMillis();
 	}
 
 	public static BooleanSupplier startSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, Holder<SoundEvent> sound
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, Holder<SoundEvent> sound, float maxVolume
 	)
 	{
-		return startSound(active, valid, pos, sound, true);
+		return startSound(active, valid, pos, sound, true, maxVolume);
 	}
 
 	public static BooleanSupplier startSound(
-			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, Holder<SoundEvent> sound, boolean loop
+			BooleanSupplier active, BooleanSupplier valid, Vec3 pos, Holder<SoundEvent> sound, boolean loop, float maxVolume
 	)
 	{
-		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.value(), loop);
+		final MultiblockSound instance = new MultiblockSound(active, valid, pos, sound.value(), loop, maxVolume);
 		final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 		soundManager.play(instance);
 		return () -> soundManager.isActive(instance);
@@ -68,7 +75,19 @@ public class MultiblockSound extends AbstractTickableSoundInstance
 		if(!valid.getAsBoolean())
 			this.stop();
 		else if(this.active.getAsBoolean())
-			this.volume = ACTIVE_VOLUME;
+		{
+			long currentMillis = Util.getMillis();
+			// refresh subtitle every second
+			if(currentMillis-this.subtitleMillis > 1000)
+			{
+				final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+				WeighedSoundEvents weighedsoundevents = this.resolve(soundManager);
+				if(weighedsoundevents!=null)
+					((GuiSubtitleOverlayAccess)ClientUtils.mc().gui).getSubtitleOverlay().onPlaySound(this, weighedsoundevents);
+				this.subtitleMillis = currentMillis;
+			}
+			this.volume = maxVolume;
+		}
 		else
 			this.volume = 0;
 	}

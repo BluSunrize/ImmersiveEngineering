@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "e": {
+      "item": "immersiveengineering:component_electronic"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "w": {
+      "tag": "forge:wires/copper"
+    }
+  },
+  "pattern": [
+    "wew",
+    "wiw"
+  ],
+  "result": {
+    "item": "immersiveengineering:toolupgrade_powerpack_magnet"
+  },
+  "show_notification": true
+}

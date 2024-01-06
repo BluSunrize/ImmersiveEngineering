@@ -25,10 +25,7 @@ import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.I
 import blusunrize.immersiveengineering.common.network.MessagePowerpackAntenna;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ItemGetterList;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import com.google.common.base.Suppliers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -41,6 +38,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -93,6 +91,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	public static final int INDUCTION_CHARGE_RATE = ITEM_CHARGE_RATE/32;
 	public static final int ANTENNA_CHARGE_RATE = 32;
 	public static final int TESLA_CONSUMPTION = 1024;
+	public static final int MAGNET_CONSUMPTION = 8;
 
 	public PowerpackItem()
 	{
@@ -148,7 +147,7 @@ public class PowerpackItem extends UpgradeableToolItem
 				final int selected = player.getInventory().selected;
 				for(int i = 0; i < allItems.size(); i++)
 				{
-					if(i!=selected) // ignore equipped item
+					if(i==selected) // ignore equipped item
 						continue;
 					energy -= insertInto(allItems.get(i), energy);
 					if(energy <= 0) // this is a long loop, so breaking early is good
@@ -160,6 +159,8 @@ public class PowerpackItem extends UpgradeableToolItem
 		}
 		if(getUpgrades(itemStack).getBoolean("antenna"))
 			handleAntennaTick(itemStack, world, player);
+		if(getUpgrades(itemStack).getBoolean("magnet")&&energy >= MAGNET_CONSUMPTION)
+			handleMagnetTick(itemStack, world, player);
 	}
 
 	private int insertInto(ItemStack insertInto, int maxAmount)
@@ -231,7 +232,7 @@ public class PowerpackItem extends UpgradeableToolItem
 			connection.ifPresent(conn -> {
 				PLAYER_ATTACHED_TO.put(player.getUUID(), conn);
 				PacketDistributor.ALL.noArg().send(new MessagePowerpackAntenna(player, conn));
-				if(player.getVehicle() instanceof AbstractMinecart minecart &&minecart.getDeltaMovement().lengthSqr() > 4)
+				if(player.getVehicle() instanceof AbstractMinecart minecart&&minecart.getDeltaMovement().lengthSqr() > 4)
 					findBestSource(global, conn).ifPresent(e -> {
 						if(e.getAvailableEnergy() >= 4096)
 						{
@@ -244,7 +245,7 @@ public class PowerpackItem extends UpgradeableToolItem
 							Vec3 off = dir.scale(0.125);
 							Vec3 left = minecart.position().add(orth.scale(0.625));
 							Vec3 right = minecart.position().add(orth.scale(-0.625));
-							for(int i=0; i<80; i++)
+							for(int i = 0; i < 80; i++)
 							{
 								left = left.add(off);
 								right = right.add(off);
@@ -261,9 +262,45 @@ public class PowerpackItem extends UpgradeableToolItem
 	private Optional<EnergyConnector> findBestSource(GlobalWireNetwork globalNetwork, Connection connection)
 	{
 		EnergyTransferHandler energyHandler = connection.getContainingNet(globalNetwork).getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
+		if(energyHandler==null)
+			return Optional.empty();
 		return energyHandler.getSources().values().stream()
 				.filter(o -> o.getAvailableEnergy() > 0)
 				.max(Comparator.comparingInt(EnergyConnector::getAvailableEnergy));
+	}
+
+	private void handleMagnetTick(ItemStack itemStack, Level world, Player player)
+	{
+		if(world.isClientSide())
+			return;
+
+		final int radius = 6;
+		List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(radius, radius, radius), itemEntity -> {
+			if(itemEntity.hasPickUpDelay())
+				return false;
+			// check if already being pulled by a different magnet
+			String magnetSource = itemEntity.getPersistentData().getString(Lib.MAGNET_SOURCE_NBT);
+			if(!magnetSource.isEmpty()&&!magnetSource.equals(player.getStringUUID()))
+				return false;
+			// check if NBT blacklisted (e.g.: on a conveyor)
+			return !itemEntity.getPersistentData().contains(Lib.MAGNET_PREVENT_NBT);
+		});
+		for(ItemEntity itemEntity : items)
+			if(itemEntity.distanceTo(player) > 0.001&&extractFlux(itemStack, MAGNET_CONSUMPTION, false) >= MAGNET_CONSUMPTION)
+			{
+				if(!itemEntity.getPersistentData().contains(Lib.MAGNET_SOURCE_NBT))
+				{
+					// play sound when being initially moved
+					itemEntity.playSound(IESounds.electromagnet.get(), (float)(.125+player.getRandom().nextDouble()*.25), 1);
+					// mark the source of magnetism
+					itemEntity.getPersistentData().putString(Lib.MAGNET_SOURCE_NBT, player.getStringUUID());
+				}
+				// get distance to player, then figure out relative movement needed to move it to the player
+				// Inspired by similar code in Mekanism
+				Vec3 dist = player.position().subtract(itemEntity.position());
+				Vec3 diffToPlayer = new Vec3(Math.min(dist.x, 1), Math.min(dist.y, 1), Math.min(dist.z, 1)).subtract(player.getDeltaMovement());
+				itemEntity.setDeltaMovement(diffToPlayer.scale(0.2));
+			}
 	}
 
 	@Override

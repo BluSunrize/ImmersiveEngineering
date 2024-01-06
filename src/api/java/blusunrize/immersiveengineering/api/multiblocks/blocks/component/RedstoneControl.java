@@ -110,13 +110,10 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 		{
 			if(computerControlState.isAttached()&&!computerControlState.isEnabled())
 				return false;
+			boolean hasRS = false;
 			for(final BlockPos rsPos : positions)
-			{
-				final boolean hasRS = ctx.getRedstoneInputValue(rsPos, 0) > 0;
-				if(rsEnablesMachine==hasRS)
-					return true;
-			}
-			return false;
+				hasRS = hasRS || ctx.getRedstoneInputValue(rsPos, 0) > 0;
+			return rsEnablesMachine==hasRS;
 		}
 
 		@Override

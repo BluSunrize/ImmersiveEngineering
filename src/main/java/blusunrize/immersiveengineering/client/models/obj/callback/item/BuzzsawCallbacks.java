@@ -28,6 +28,7 @@ import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BuzzsawCallbacks implements ItemCallback<Key>
@@ -108,6 +109,12 @@ public class BuzzsawCallbacks implements ItemCallback<Key>
 				new Vector3f(0.60945f, 0, 0),
 				new Quaternionf().rotateXYZ(0, angle, 0),
 				null, null);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return new Key(Arrays.asList(null, null, null), false, false, false);
 	}
 
 	public record Key(List<ResourceLocation> bladeTexture, boolean hasQuiver, boolean oiled, boolean launcher)

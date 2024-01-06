@@ -174,6 +174,18 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 			entityData.set(dataMarker_angleHorizontal, angleHorizontal);
 			return InteractionResult.SUCCESS;
 		}
+		else if (player.isShiftKeyDown())
+		{
+			if(isAlive()&&!level().isClientSide&&player.getItemInHand(hand).isEmpty())
+			{
+				ItemStack tube = new ItemStack(Misc.FLUORESCENT_TUBE);
+				FluorescentTubeItem.setRGB(tube, rgb);
+				ItemEntity ent = new ItemEntity(level(), player.getX(), player.getY(), player.getZ(), tube, 0, 0, 0);
+				level().addFreshEntity(ent);
+				discard();
+			}
+			return InteractionResult.SUCCESS;
+		}
 		return super.interactAt(player, targetVec3, hand);
 	}
 }

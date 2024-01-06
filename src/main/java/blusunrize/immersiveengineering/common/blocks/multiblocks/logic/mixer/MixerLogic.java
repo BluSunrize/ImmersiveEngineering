@@ -181,7 +181,7 @@ public class MixerLogic
 		{
 			final Vec3 soundPos = level.toAbsolute(new Vec3(1.5, 1.5, 1.5));
 			state.isSoundPlaying = MultiblockSound.startSound(
-					() -> state.isActive, context.isValid(), soundPos, IESounds.mixer
+					() -> state.isActive, context.isValid(), soundPos, IESounds.mixer, 0.075f
 			);
 		}
 		if(state.tank.fluids.isEmpty())

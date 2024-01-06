@@ -87,7 +87,10 @@ public class RefineryLogic
 	public void tickServer(IMultiblockContext<State> context)
 	{
 		final State state = context.getState();
+		final boolean wasActive = state.active;
 		state.active = state.processor.tickServer(state, context.getLevel(), state.rsState.isEnabled(context));
+		if(wasActive!=state.active)
+			context.requestMasterBESync();
 		tryEnqueueProcess(state, context.getLevel().getRawLevel());
 		FluidUtils.multiblockFluidOutput(
 				state.fluidOutput.get(), state.tanks.output(), SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, state.inventory
@@ -102,7 +105,7 @@ public class RefineryLogic
 		{
 			final Vec3 soundPos = context.getLevel().toAbsolute(new Vec3(1.5, 1.5, 1.5));
 			state.isSoundPlaying = MultiblockSound.startSound(
-					() -> state.active, context.isValid(), soundPos, IESounds.refinery
+					() -> state.active, context.isValid(), soundPos, IESounds.refinery, 0.25f
 			);
 		}
 	}
