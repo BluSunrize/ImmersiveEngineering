@@ -257,5 +257,12 @@
 			"immersiveengineering:process_2_lift"
 		],
 		"subtitle": "subtitle.immersiveengineering.process_2_lift"
+	},
+	"electromagnet": {
+		"category": "player",
+		"sounds": [
+			"immersiveengineering:electromagnet"
+		],
+		"subtitle": "subtitle.immersiveengineering.electromagnet"
 	}
 }

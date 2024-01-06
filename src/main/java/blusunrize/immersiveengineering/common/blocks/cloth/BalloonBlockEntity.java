@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -145,7 +146,19 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 	@Override
 	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
+		if(player.isShiftKeyDown())
+		{
+			if(!level.isClientSide)
+			{
+				ItemEntity entityitem = new ItemEntity(level, player.getX(), player.getY(), player.getZ(),
+						new ItemStack(level.getBlockState(getBlockPos()).getBlock()),
+						0, 0, 0);
+				level.removeBlock(getBlockPos(), false);
+				level.addFreshEntity(entityitem);
+			}
+			return true;
+		}
+		else if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
 		{
 			this.shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(heldItem, 1));
 			markContainingBlockForUpdate(null);

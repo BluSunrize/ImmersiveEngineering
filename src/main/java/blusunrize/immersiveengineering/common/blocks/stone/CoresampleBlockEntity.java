@@ -95,9 +95,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 		{
 			if(!level.isClientSide)
 			{
-				ItemEntity entityitem = new ItemEntity(level, getBlockPos().getX()+.5, getBlockPos().getY()+.5, getBlockPos().getZ()+.5,
-						coresample);
-				entityitem.setDefaultPickUpDelay();
+				ItemEntity entityitem = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), coresample, 0, 0, 0);
 				level.removeBlock(worldPosition, false);
 				level.addFreshEntity(entityitem);
 			}
