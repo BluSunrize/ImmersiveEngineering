@@ -90,9 +90,9 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 		{
 			if(!level.isClientSide)
 			{
-				ItemEntity entityitem = new ItemEntity(level, getBlockPos().getX()+.5, getBlockPos().getY()+.5,
-						getBlockPos().getZ()+.5, getPickBlock(player, getBlockState(), new BlockHitResult(new Vec3(hitX, hitY, hitZ), side, worldPosition, false)));
-				entityitem.setDefaultPickUpDelay();
+				ItemEntity entityitem = new ItemEntity(level, player.getX(), player.getY(), player.getZ(),
+				    getPickBlock(player, getBlockState(), new BlockHitResult(new Vec3(hitX, hitY, hitZ), side, worldPosition, false)),
+				    0, 0, 0);
 				level.removeBlock(getBlockPos(), false);
 				level.addFreshEntity(entityitem);
 			}
