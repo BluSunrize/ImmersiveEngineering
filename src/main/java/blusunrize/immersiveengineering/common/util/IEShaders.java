@@ -191,13 +191,10 @@ public class IEShaders
 		entry.getCase(ieLoc("banner")).addLayers(new ShaderLayer(ieLoc("block/shaders/banner_"+texture), colour));
 	}
 
-	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, final Consumer<Boolean> func_modifyRender)
-	{
-		addDynamicLayer(entry, texture, colour, func_getColour, func_modifyRender, false);
-	}
-
 	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, final Consumer<Boolean> func_modifyRender, boolean translucent)
 	{
+		if(!ImmersiveEngineering.DIST.isClient())
+			return;
 		entry.getCase(ieLoc("revolver")).addLayers(new InternalDynamicShaderLayer(ieLoc("item/revolvers/shaders/revolver_"+texture), colour, func_getColour, func_modifyRender, translucent));
 		entry.getCase(ieLoc("drill")).addLayers(new InternalDynamicShaderLayer(ieLoc("item/shaders/drill_diesel_"+texture), colour, func_getColour, func_modifyRender, translucent));
 		entry.getCase(ieLoc("buzzsaw")).addLayers(new InternalDynamicShaderLayer(ieLoc("item/shaders/buzzsaw_diesel_"+texture), colour, func_getColour, func_modifyRender, translucent));

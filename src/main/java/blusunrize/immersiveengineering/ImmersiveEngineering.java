@@ -74,6 +74,7 @@ import static net.minecraft.network.protocol.PacketFlow.SERVERBOUND;
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
 {
+	public static Dist DIST = Dist.DEDICATED_SERVER;
 	public static final String MODID = Lib.MODID;
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = IEApi.getCurrentVersion();
@@ -86,6 +87,7 @@ public class ImmersiveEngineering
 
 	public ImmersiveEngineering(Dist dist, IEventBus modBus)
 	{
+		DIST = dist;
 		IELogger.logger = LogManager.getLogger(MODID);
 		modBus.addListener(this::setup);
 		modBus.addListener(this::setupNetwork);
