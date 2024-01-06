@@ -151,6 +151,8 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<IEBaseBlock> SLAG_BRICK = BlockEntry.simple("slag_brick", STONE_DECO_GBRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> CLINKER_BRICK = BlockEntry.simple("clinker_brick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<HorizontalFacingBlock> CLINKER_BRICK_QUOIN = new BlockEntry<>(
+				"clinker_brick_quoin", STONE_DECO_BRICK_PROPS, HorizontalFacingBlock::new);
 		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple(
 				"coke", () -> Block.Properties.of()
 						.mapColor(MapColor.STONE)
@@ -213,11 +215,11 @@ public final class IEBlocks
 				PartialConcreteBlock::makeProperties, props -> new PartialConcreteBlock(props, 12)
 		);
 
-		public static final BlockEntry<HorizontalFacingBlock<CoresampleBlockEntity>> CORESAMPLE = new BlockEntry<>(
+		public static final BlockEntry<HorizontalFacingTileBlock<CoresampleBlockEntity>> CORESAMPLE = new BlockEntry<>(
 				"coresample",
 				// TODO move bounds code into the block impl and get rid of dynamic shapes
 				dynamicShape(STONE_DECO_PROPS_NOT_SOLID),
-				p -> new HorizontalFacingBlock<>(IEBlockEntities.CORE_SAMPLE, p)
+				p -> new HorizontalFacingTileBlock<>(IEBlockEntities.CORE_SAMPLE, p)
 		);
 
 		public static final BlockEntry<IEBaseBlock> DUROPLAST = BlockEntry.simple(
@@ -403,8 +405,8 @@ public final class IEBlocks
 		);
 		//TODO move to deco?
 		public static final BlockEntry<WallmountBlock> TREATED_WALLMOUNT = BlockEntry.wallmount("treated_wallmount", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
-		public static final BlockEntry<HorizontalFacingBlock<LogicUnitBlockEntity>> LOGIC_UNIT = new BlockEntry<>(
-				"logic_unit", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, p -> new HorizontalFacingBlock<>(IEBlockEntities.LOGIC_UNIT, p)
+		public static final BlockEntry<HorizontalFacingTileBlock<LogicUnitBlockEntity>> LOGIC_UNIT = new BlockEntry<>(
+				"logic_unit", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, p -> new HorizontalFacingTileBlock<>(IEBlockEntities.LOGIC_UNIT, p)
 		);
 
 		private static void init()
@@ -477,9 +479,9 @@ public final class IEBlocks
 		public static final BlockEntry<RazorWireBlock> RAZOR_WIRE = new BlockEntry<>(
 				"razor_wire", RazorWireBlock.PROPERTIES, RazorWireBlock::new
 		);
-		public static final BlockEntry<HorizontalFacingBlock<ToolboxBlockEntity>> TOOLBOX = new BlockEntry<>(
+		public static final BlockEntry<HorizontalFacingTileBlock<ToolboxBlockEntity>> TOOLBOX = new BlockEntry<>(
 				// TODO move shape into block
-				"toolbox_block", dynamicShape(METAL_PROPERTIES_NO_OVERLAY), p -> new HorizontalFacingBlock<>(IEBlockEntities.TOOLBOX, p)
+				"toolbox_block", dynamicShape(METAL_PROPERTIES_NO_OVERLAY), p -> new HorizontalFacingTileBlock<>(IEBlockEntities.TOOLBOX, p)
 		);
 		public static final BlockEntry<IEEntityBlock<CapacitorBlockEntity>> CAPACITOR_LV = new BlockEntry<>(
 				"capacitor_lv", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.CAPACITOR_LV, p)
@@ -507,8 +509,8 @@ public final class IEBlocks
 		public static final BlockEntry<FurnaceHeaterBlock> FURNACE_HEATER = new BlockEntry<>(
 				"furnace_heater", DEFAULT_METAL_PROPERTIES, FurnaceHeaterBlock::new
 		);
-		public static final BlockEntry<HorizontalFacingBlock<DynamoBlockEntity>> DYNAMO = new BlockEntry<>(
-				"dynamo", DEFAULT_METAL_PROPERTIES, p -> new HorizontalFacingBlock<>(IEBlockEntities.DYNAMO, p)
+		public static final BlockEntry<HorizontalFacingTileBlock<DynamoBlockEntity>> DYNAMO = new BlockEntry<>(
+				"dynamo", DEFAULT_METAL_PROPERTIES, p -> new HorizontalFacingTileBlock<>(IEBlockEntities.DYNAMO, p)
 		);
 		public static final BlockEntry<IEEntityBlock<ThermoelectricGenBlockEntity>> THERMOELECTRIC_GEN = new BlockEntry<>(
 				"thermoelectric_generator", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.THERMOELECTRIC_GEN, p)
@@ -516,9 +518,9 @@ public final class IEBlocks
 		public static final BlockEntry<ElectricLanternBlock> ELECTRIC_LANTERN = new BlockEntry<>(
 				"electric_lantern", ElectricLanternBlock.PROPERTIES, ElectricLanternBlock::new
 		);
-		public static final BlockEntry<HorizontalFacingBlock<ChargingStationBlockEntity>> CHARGING_STATION = new BlockEntry<>(
+		public static final BlockEntry<HorizontalFacingTileBlock<ChargingStationBlockEntity>> CHARGING_STATION = new BlockEntry<>(
 				// TODO move shape into block impl
-				"charging_station", dynamicShape(METAL_PROPERTIES_NO_OVERLAY), p -> new HorizontalFacingBlock<>(IEBlockEntities.CHARGING_STATION, p)
+				"charging_station", dynamicShape(METAL_PROPERTIES_NO_OVERLAY), p -> new HorizontalFacingTileBlock<>(IEBlockEntities.CHARGING_STATION, p)
 		);
 		public static final BlockEntry<FluidPipeBlock> FLUID_PIPE = new BlockEntry<>("fluid_pipe", METAL_PROPERTIES_DYNAMIC, FluidPipeBlock::new);
 		public static final BlockEntry<SampleDrillBlock> SAMPLE_DRILL = new BlockEntry<>("sample_drill", METAL_PROPERTIES_NO_OCCLUSION, SampleDrillBlock::new);

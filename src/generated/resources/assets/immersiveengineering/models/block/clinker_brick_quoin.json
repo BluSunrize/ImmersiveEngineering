@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick_quoin_bottom",
+    "east": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick_quoin_side",
+    "north": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick_quoin_side_reversed",
+    "particle": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "south": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "up": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick_quoin_top",
+    "west": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0"
+  }
+}
