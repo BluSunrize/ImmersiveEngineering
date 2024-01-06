@@ -5,6 +5,9 @@
     - Ancient Seabed, a dead coral & dripstone vein
 - Add cloche recipes to grow flowers (voidsong-dragonfly)
 - Add crusher recipes to make dyes (voidsong-dragonfly)
+- Add items directly to inventory when: (voidsong-dragonfly)
+    - Cutting wires
+    - Picking up fluorescent tubes, core samples or the toolbox 
 - Change turrets to accept generic entity terms like "Villager" for their black/whitelist (BluSunrize)
 - Change text rendering in GUIs to be more readable (BluSunrize)
 - Fix issues with multiblocks being accessed before being full formed (Malte)
@@ -14,6 +17,8 @@
 - Fix stairs and slabs not receiving item tags (BluSunrize)
 - Fix potential crash with the accumulator backpack (BluSunrize)
 - Fix output positions on the improved blastfurnace being swapped around (BluSunrize)
+- Fix synchronization errors in the garden clocke (voidsong-dragonfly, Malte)
+- Fix induction charging on the accumulator backpack not working (BluSunrize)
 - Translations Added/Updated: cs_cz (RomanPlayer22)
 
 ##### Version 1.19.2-9.2.3-167
