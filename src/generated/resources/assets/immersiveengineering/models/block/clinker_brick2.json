@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick2"
+  }
+}

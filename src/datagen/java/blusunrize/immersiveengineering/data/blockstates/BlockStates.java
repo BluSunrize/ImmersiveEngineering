@@ -155,6 +155,8 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.COKEBRICK, rl("block/stone_decoration/cokebrick"));
 		cubeAll(StoneDecoration.BLASTBRICK, rl("block/stone_decoration/blastbrick"));
 		cubeAll(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
+		multiEightCubeAll(StoneDecoration.SLAG_BRICK, rl("block/stone_decoration/slag_brick/slag_brick"));
+		multiEightCubeAll(StoneDecoration.CLINKER_BRICK, rl("block/stone_decoration/clinker_brick/clinker_brick"));
 		multiEightCubeAll(StoneDecoration.SLAG_GRAVEL, rl("block/stone_decoration/slag_gravel/slag_gravel"));
 		multiEightCubeAll(StoneDecoration.GRIT_SAND, rl("block/stone_decoration/grit_sand/grit_sand"));
 		cubeAll(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
@@ -206,6 +208,8 @@ public class BlockStates extends ExtendedBlockstateProvider
 		slabFor(StoneDecoration.COKEBRICK, rl("block/stone_decoration/cokebrick"));
 		slabFor(StoneDecoration.BLASTBRICK, rl("block/stone_decoration/blastbrick"));
 		slabFor(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
+		slabForMultiEightAll(StoneDecoration.SLAG_BRICK, rl("block/stone_decoration/slag_brick/slag_brick"));
+		slabForMultiEightAll(StoneDecoration.CLINKER_BRICK, rl("block/stone_decoration/clinker_brick/clinker_brick"));
 		slabFor(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
 		slabForMultiEightAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete/concrete"));
 		slabForMultiEightAll(StoneDecoration.CONCRETE_BRICK, rl("block/stone_decoration/concrete_brick/concrete_brick"));
@@ -218,6 +222,8 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			slabFor(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
 
+		stairsForMultiEightAll(StoneDecoration.SLAG_BRICK, rl("block/stone_decoration/slag_brick/slag_brick"));
+		stairsForMultiEightAll(StoneDecoration.CLINKER_BRICK, rl("block/stone_decoration/clinker_brick/clinker_brick"));
 		stairsForMultiEightAll(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete/hempcrete"));
 		stairsForMultiEightAll(StoneDecoration.HEMPCRETE_BRICK, rl("block/stone_decoration/hempcrete_brick/hempcrete_brick"));
 		stairsForMultiEightAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete/concrete"));
