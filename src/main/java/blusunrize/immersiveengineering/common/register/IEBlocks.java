@@ -148,6 +148,14 @@ public final class IEBlocks
 						.strength(0.6F).sound(SoundType.GRAVEL),
 				SlagGravelBlock::new
 		);
+		public static final BlockEntry<FallingBlock> GRIT_SAND = new BlockEntry<>(
+				"grit_sand",
+				() -> Block.Properties.of()
+						.mapColor(MapColor.SAND)
+						.instrument(NoteBlockInstrument.SNARE)
+						.strength(0.6F).sound(SoundType.GRAVEL),
+				SlagGravelBlock::new
+		);
 
 		public static final BlockEntry<IEBaseBlock> HEMPCRETE = BlockEntry.simple("hempcrete", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> HEMPCRETE_BRICK = BlockEntry.simple("hempcrete_brick", STONE_DECO_BRICK_PROPS);

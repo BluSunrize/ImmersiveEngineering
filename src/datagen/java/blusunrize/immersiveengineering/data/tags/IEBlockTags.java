@@ -149,6 +149,18 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
+		//Add parity tags to gravel & sand for IE similar blocks
+		tag(BlockTags.BAMBOO_PLANTABLE_ON)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.SCULK_REPLACEABLE)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.AZALEA_ROOT_REPLACEABLE)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.DEAD_BUSH_MAY_PLACE_ON)
+				.add(StoneDecoration.GRIT_SAND.get());
 
 		registerHammerMineable();
 		registerRockcutterMineable();
@@ -157,7 +169,8 @@ public class IEBlockTags extends BlockTagsProvider
 		registerAxeMineable();
 		tag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.add(WoodenDecoration.SAWDUST.get())
-				.add(StoneDecoration.SLAG_GRAVEL.get());
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
 		tag(IETags.wirecutterHarvestable)
 				.add(MetalDevices.RAZOR_WIRE.get());
 		tag(IETags.drillHarvestable)

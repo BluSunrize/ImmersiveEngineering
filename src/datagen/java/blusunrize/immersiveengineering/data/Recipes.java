@@ -3444,6 +3444,12 @@ public class Recipes extends RecipeProvider
 				.define('C', Items.MINECART)
 				.unlockedBy("has_minecart", has(Items.MINECART))
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+		shapelessMisc(StoneDecoration.GRIT_SAND, 5)
+				.requires(Ingredient.of(Tags.Items.GRAVEL), 1)
+				.requires(Ingredient.of(Tags.Items.SAND_COLORLESS), 4)
+				.unlockedBy("has_sand", has(Tags.Items.GRAVEL))
+				.unlockedBy("has_gravel", has(Tags.Items.SAND_COLORLESS))
+				.save(out, toRL("grit_sand"));
 
 		//Lead to dye recipes
 		shapelessMisc(Items.WHITE_DYE, 16)

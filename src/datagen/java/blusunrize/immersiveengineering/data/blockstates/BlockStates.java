@@ -156,6 +156,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.BLASTBRICK, rl("block/stone_decoration/blastbrick"));
 		cubeAll(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
 		multiEightCubeAll(StoneDecoration.SLAG_GRAVEL, rl("block/stone_decoration/slag_gravel"));
+		multiEightCubeAll(StoneDecoration.GRIT_SAND, rl("block/stone_decoration/grit_sand"));
 		cubeAll(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
 		multiEightCubeAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
 		multiEightCubeAll(StoneDecoration.CONCRETE_BRICK, rl("block/stone_decoration/concrete_brick"));

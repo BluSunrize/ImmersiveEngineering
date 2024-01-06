@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-03T14:35:17.128162415	Recipes
+// 1.20.1	2024-01-06T00:35:18.203006418	Recipes
 11eec1c90c86322604ee56b59c32dead974ae804 data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 351a01207bf89c71c2e95884864d365cd5d7a23d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 3aae30cf5b8337fcdd006bd53b3269616a8893ec data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -124,6 +124,7 @@ e8c83787cdf78a5aa0371b49a0a488d28a773bbe data/immersiveengineering/advancements/
 7fc5ca6e05ef47c3e66768e53002353b2386288b data/immersiveengineering/advancements/recipes/misc/crafting/furnace_heater.json
 a4b62f90c3ef86483aa8200aa89cf81739b9b298 data/immersiveengineering/advancements/recipes/misc/crafting/generator.json
 01d1c101fc59d47fcf49447d36213260b3c582d8 data/immersiveengineering/advancements/recipes/misc/crafting/glider.json
+53fd9e70a8b7c753764e561287ed2f22d22f2a4d data/immersiveengineering/advancements/recipes/misc/crafting/grit_sand.json
 8b5532821e7c9dece8d21b78d3c408802109af7f data/immersiveengineering/advancements/recipes/misc/crafting/gunpart_barrel.json
 e6bee2cc27dbb774f5de7428bc0a66ca74a29c3c data/immersiveengineering/advancements/recipes/misc/crafting/gunpart_drum.json
 08aa0508842b4250af242265de64a5bd2d4dddcf data/immersiveengineering/advancements/recipes/misc/crafting/gunpart_hammer.json
@@ -847,6 +848,7 @@ e9cdac4f10d2c2f08f620bde394396f8d9549894 data/immersiveengineering/recipes/craft
 f9f42b070088be1ba9e14630d5e310dc7b349a03 data/immersiveengineering/recipes/crafting/furnace_heater.json
 0597a48f924f1591f65b963dfc2c8808321de09b data/immersiveengineering/recipes/crafting/generator.json
 5b1bfa3d5e39ef170347897eba4fccb18178ab7f data/immersiveengineering/recipes/crafting/glider.json
+3bdbac1a17c46147ea110c77e3ee9fe80d1294f6 data/immersiveengineering/recipes/crafting/grit_sand.json
 e454fa0cfe9c148881bfd66de859f032e17f93d7 data/immersiveengineering/recipes/crafting/gunpart_barrel.json
 0c3013b77801c025bb639277bf22a2dbfee57eaf data/immersiveengineering/recipes/crafting/gunpart_drum.json
 4a2747cf980723d475d860f5d3537c4a6eb69902 data/immersiveengineering/recipes/crafting/gunpart_hammer.json
