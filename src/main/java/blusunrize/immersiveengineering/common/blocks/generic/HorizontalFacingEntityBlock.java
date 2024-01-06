@@ -17,9 +17,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraftforge.registries.RegistryObject;
 
-public class HorizontalFacingTileBlock<T extends BlockEntity> extends IEEntityBlock<T>
+public class HorizontalFacingEntityBlock<T extends BlockEntity> extends IEEntityBlock<T>
 {
-	public HorizontalFacingTileBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
+	public HorizontalFacingEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
 	{
 		super(tileType, blockProps);
 	}
