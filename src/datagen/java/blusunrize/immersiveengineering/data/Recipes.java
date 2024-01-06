@@ -3003,6 +3003,14 @@ public class Recipes extends RecipeProvider
 				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))));
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))
+				.pattern("wew")
+				.pattern("wiw")
+				.define('w', IETags.copperWire)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))));
 
 		shapelessMisc(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)

@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-03T19:04:04.0849608	Item models
+// 1.20.1	2024-01-06T16:21:06.1073216	Item models
 88d3c4ffa914af5a3f1ace93ca44a7a9de73bd8f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 664c9c7b0167f65704ad818df56918137dbb47dc assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -310,6 +310,7 @@ f8fd62f94917360b686b94d38e12a4d25c5d92dc assets/immersiveengineering/models/item
 213aeeb117d2149b3f5e460adc79706822299ad5 assets/immersiveengineering/models/item/toolupgrade_drill_waterproof.json
 bcf9b9c9637527e4a7970c6cb179a33043e49a20 assets/immersiveengineering/models/item/toolupgrade_powerpack_antenna.json
 d8485031d485c631ebccb308bb7f98c5c01503af assets/immersiveengineering/models/item/toolupgrade_powerpack_induction.json
+e4613e2ed3e3870efd45ac04e4bcabf3546004c5 assets/immersiveengineering/models/item/toolupgrade_powerpack_magnet.json
 8dc2ea558e732432595c8b3afa9bf8bcaf0c9229 assets/immersiveengineering/models/item/toolupgrade_powerpack_tesla.json
 19406f00618ab60cd40d9c7cdd8ea2d680fa51be assets/immersiveengineering/models/item/toolupgrade_railgun_capacitors.json
 ca6234d8be8c81e03b200705ec6cb760ffbb575d assets/immersiveengineering/models/item/toolupgrade_railgun_scope.json

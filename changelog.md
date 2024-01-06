@@ -8,6 +8,9 @@
     - Radiators now use constantan instead of copper
     - Tinted glass can be made in larger quantities by using lead
 - Add randomized textures for various hempcrete & concrete blocks (voidsong-dragonfly)
+- Add the portable electromagnet! (BluSunrize)
+    - It attracts nearby items!
+    - Install it as an upgrade on your accumulator backpack!
 - Change hemp blocks to notify their neighbours when they grow (jrtc27)
 - Change Jade Tooltips for multiblocks to work when looking at any part of the machine (HermitOwO)
 - Fix conveyor rendering in the manual (Malte)

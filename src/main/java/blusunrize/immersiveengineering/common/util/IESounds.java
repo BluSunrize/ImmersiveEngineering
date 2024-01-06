@@ -57,6 +57,7 @@ public class IESounds
 	public static final RegistryObject<SoundEvent> process1Lift = registerSound("process_1_lift");
 	public static final RegistryObject<SoundEvent> process2 = registerSound("process_2");
 	public static final RegistryObject<SoundEvent> process2Lift = registerSound("process_2_lift");
+	public static final RegistryObject<SoundEvent> electromagnet = registerSound("electromagnet");
 
 
 	public static void init()

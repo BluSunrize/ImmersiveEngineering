@@ -11,6 +11,10 @@
     "type": "crafting",
     "recipe": "crafting/toolupgrade_powerpack_induction"
   },
+  "magnet": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_powerpack_magnet"
+  },
   "tesla": {
     "type": "crafting",
     "recipe": "crafting/toolupgrade_powerpack_tesla"
