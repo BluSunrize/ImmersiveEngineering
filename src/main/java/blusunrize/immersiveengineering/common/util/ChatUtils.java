@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.network.MessageNoSpamChat;
 import net.minecraft.network.chat.Component;
@@ -30,8 +29,6 @@ public class ChatUtils
 	{
 		if(!(player instanceof ServerPlayer serverPlayer))
 			return;
-		ImmersiveEngineering.packetHandler.send(
-				PacketDistributor.PLAYER.with(() -> serverPlayer), new MessageNoSpamChat(message)
-		);
+		PacketDistributor.PLAYER.with(serverPlayer).send(new MessageNoSpamChat(message));
 	}
 }

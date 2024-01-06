@@ -22,8 +22,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -41,7 +39,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.NetworkHooks;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
@@ -290,7 +287,7 @@ public class SkylineHookEntity extends Entity
 	private void sendUpdatePacketTo(Player player)
 	{
 		if(player instanceof ServerPlayer)
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new MessageSkyhookSync(this));
+			PacketDistributor.PLAYER.with((ServerPlayer)player).send(new MessageSkyhookSync(this));
 	}
 
 	public void switchConnection(ConnectionPoint posForSwitch, Player player, double lastHorSpeed)
@@ -454,14 +451,6 @@ public class SkylineHookEntity extends Entity
 	public boolean isControlledByLocalInstance()
 	{
 		return false;
-	}
-
-	@Nonnull
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket()
-	{
-		// TODO see fluorescent tube
-		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	private void handleDismount(Entity passenger)

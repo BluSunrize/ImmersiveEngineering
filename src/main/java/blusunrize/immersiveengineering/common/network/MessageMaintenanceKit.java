@@ -8,16 +8,19 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageMaintenanceKit implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("maintenance_kit");
 	EquipmentSlot slot;
 	CompoundTag nbt;
 
@@ -34,20 +37,25 @@ public class MessageMaintenanceKit implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeUtf(this.slot.getName());
 		buf.writeNbt(this.nbt);
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		ServerPlayer player = context.getSender();
-		assert player!=null;
-		context.enqueueWork(() -> {
+		Player player = context.player().orElseThrow();
+		context.workHandler().execute(() -> {
 			if(player.containerMenu instanceof MaintenanceKitContainer)
 				ModWorkbenchBlockEntity.applyConfigTo(player.containerMenu.slots.get(0).getItem(), nbt);
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

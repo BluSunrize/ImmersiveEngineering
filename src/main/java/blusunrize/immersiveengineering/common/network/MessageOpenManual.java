@@ -9,11 +9,15 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageOpenManual implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("open_manual");
+
 	public MessageOpenManual()
 	{
 	}
@@ -23,13 +27,19 @@ public class MessageOpenManual implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		context.enqueueWork(ImmersiveEngineering.proxy::openManual);
+		context.workHandler().execute(ImmersiveEngineering.proxy::openManual);
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

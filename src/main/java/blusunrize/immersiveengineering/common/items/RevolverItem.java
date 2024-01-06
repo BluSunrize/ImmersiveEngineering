@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
@@ -271,8 +270,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.getInventory().setChanged();
 								if(player instanceof ServerPlayer)
-									ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
-											new MessageSpeedloaderSync(i, hand));
+									PacketDistributor.PLAYER.with((ServerPlayer)player).send(new MessageSpeedloaderSync(i, hand));
 
 								ItemNBTHelper.putInt(revolver, "reload", 60);
 								return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);

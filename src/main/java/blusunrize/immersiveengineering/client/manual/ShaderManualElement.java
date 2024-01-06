@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.manual;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -36,6 +35,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,7 +142,9 @@ public class ShaderManualElement extends SpecialManualElements
 					Component.literal(I18n.get("ie.manual.entry.shaderList.order")+" "+cost+"x   ").withStyle(ChatFormatting.BOLD),
 					btn -> {
 						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.getAbilities().instabuild)
-							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN, shader.getName()));
+							PacketDistributor.SERVER.noArg().send(
+									new MessageShaderManual(MessageType.SPAWN, shader.getName())
+							);
 						gui.fullInit();
 					})
 					.setTextColour(gui.getManual().getTextColour(), gui.getManual().getHighlightColour()));
@@ -155,7 +157,7 @@ public class ShaderManualElement extends SpecialManualElements
 						Component.translatable("ie.manual.entry.shaderList.unlock"),
 						btn -> {
 							UUID playerId = mc().player.getUUID();
-							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.UNLOCK, shader.getName()));
+							PacketDistributor.SERVER.noArg().send(new MessageShaderManual(MessageType.UNLOCK, shader.getName()));
 							ShaderRegistry.receivedShaders.put(playerId, shader.getName());
 							gui.fullInit();
 						})

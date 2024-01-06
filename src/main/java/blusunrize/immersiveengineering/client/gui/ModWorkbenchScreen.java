@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.gui.info.BlueprintOutputArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -24,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	protected void sendMessage(CompoundTag data)
 	{
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(this.workbench, data));
+		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(this.workbench, data));
 	}
 
 	@Nonnull

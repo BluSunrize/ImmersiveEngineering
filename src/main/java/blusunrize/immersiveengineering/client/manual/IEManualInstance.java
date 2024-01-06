@@ -28,6 +28,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -270,7 +271,7 @@ public class IEManualInstance extends ManualInstance
 	public void openEntry(ManualEntry entry)
 	{
 		if(SHADER_ENTRY.equals(entry.getLocation()))
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SYNC));
+			PacketDistributor.SERVER.noArg().send(new MessageShaderManual(MessageType.SYNC));
 	}
 
 	@Override

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.mixin.accessors.client.ChatComponentAccess;
 import net.minecraft.client.GuiMessage;
@@ -15,28 +16,31 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.List;
 import java.util.Objects;
 
 public record MessageNoSpamChat(Component message) implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("no_spam_chat");
+
 	public MessageNoSpamChat(FriendlyByteBuf buffer)
 	{
 		this(buffer.readComponent());
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeComponent(message);
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		context.enqueueWork(() -> {
+		context.workHandler().execute(() -> {
 			final ChatComponent chat = Minecraft.getInstance().gui.getChat();
 			final ChatComponentAccess chatAccess = ((ChatComponentAccess)chat);
 			final List<GuiMessage> allMessages = chatAccess.getAllMessages();
@@ -44,5 +48,11 @@ public record MessageNoSpamChat(Component message) implements IMessage
 			chatAccess.invokeRefreshTrimmedMessage();
 			chat.addMessage(message, ChatUtils.NO_SPAM_SIGNATURE, null);
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

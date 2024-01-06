@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
@@ -304,8 +303,8 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("growth", growth);
 		nbt.putBoolean("renderActive", renderActive);
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
-				new MessageBlockEntitySync(this, nbt));
+		PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(worldPosition))
+				.send(new MessageBlockEntitySync(this, nbt));
 	}
 
 	@Override

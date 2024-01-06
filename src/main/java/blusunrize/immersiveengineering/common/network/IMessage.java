@@ -9,12 +9,16 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public interface IMessage
+public interface IMessage extends CustomPacketPayload
 {
-	void toBytes(FriendlyByteBuf buf);
+	void process(PlayPayloadContext context);
 
-	void process(Context context);
+	default ServerPlayer serverPlayer(PlayPayloadContext ctx)
+	{
+		return (ServerPlayer)ctx.player().orElseThrow();
+	}
 }

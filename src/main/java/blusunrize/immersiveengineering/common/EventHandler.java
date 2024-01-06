@@ -117,10 +117,7 @@ public class EventHandler
 			if(wrapper!=null&&!event.getLevel().isClientSide)
 			{
 				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));
-				ImmersiveEngineering.packetHandler.send(
-						PacketDistributor.TRACKING_ENTITY.with(() -> cart),
-						new MessageMinecartShaderSync(cart, wrapper)
-				);
+				PacketDistributor.TRACKING_ENTITY.with(cart).send(new MessageMinecartShaderSync(cart, wrapper));
 			}
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.SUCCESS);
@@ -381,9 +378,7 @@ public class EventHandler
 			if(!event.getEntity().isShiftKeyDown())
 			{
 				if(event.getEntity() instanceof ServerPlayer serverPlayer)
-					ImmersiveEngineering.packetHandler.send(
-							PacketDistributor.PLAYER.with(() -> serverPlayer), new MessageOpenManual()
-					);
+					PacketDistributor.PLAYER.with(serverPlayer).send(new MessageOpenManual());
 			}
 			else
 			{

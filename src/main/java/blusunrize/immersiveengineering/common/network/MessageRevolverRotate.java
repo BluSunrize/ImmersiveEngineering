@@ -8,15 +8,18 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageRevolverRotate implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("revolver_rotate");
 	private boolean forward;
 
 	public MessageRevolverRotate(boolean forward)
@@ -30,20 +33,25 @@ public class MessageRevolverRotate implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeBoolean(this.forward);
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		ServerPlayer player = context.getSender();
-		assert player!=null;
-		context.enqueueWork(() -> {
+		Player player = context.player().orElseThrow();
+		context.workHandler().execute(() -> {
 			ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
 			if(equipped.getItem() instanceof RevolverItem)
 				((RevolverItem)equipped.getItem()).rotateCylinder(equipped, player, forward);
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

@@ -8,15 +8,18 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageMagnetEquip implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("magnet_equip");
 	private int fetchSlot;
 
 	public MessageMagnetEquip(int fetch)
@@ -30,17 +33,17 @@ public class MessageMagnetEquip implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.fetchSlot);
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		ServerPlayer player = context.getSender();
+		Player player = context.player().orElseThrow();
 		assert player!=null;
-		context.enqueueWork(() -> {
+		context.workHandler().execute(() -> {
 			ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
 			if(fetchSlot >= 0)
 			{
@@ -64,5 +67,11 @@ public class MessageMagnetEquip implements IMessage
 				}
 			}
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

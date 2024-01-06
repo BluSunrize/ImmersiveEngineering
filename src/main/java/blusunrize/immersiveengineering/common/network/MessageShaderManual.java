@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -19,14 +20,15 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.Collection;
 import java.util.UUID;
 
 public class MessageShaderManual implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("shader_manual");
 	private MessageType key;
 	private ResourceLocation[] args;
 
@@ -46,7 +48,7 @@ public class MessageShaderManual implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.key.ordinal());
 		if(args!=null)
@@ -67,20 +69,18 @@ public class MessageShaderManual implements IMessage
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		if(context.getDirection().getReceptionSide()==LogicalSide.SERVER)
+		if(context.flow().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerPlayer player = context.getSender();
-			assert player!=null;
+			ServerPlayer player = serverPlayer(context);
 			UUID playerId = player.getUUID();
-			context.enqueueWork(() -> {
+			context.workHandler().execute(() -> {
 				if(key==MessageType.SYNC)
 				{
 					Collection<ResourceLocation> received = ShaderRegistry.receivedShaders.get(playerId);
 					ResourceLocation[] ss = received.toArray(new ResourceLocation[0]);
-					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> player),
-							new MessageShaderManual(MessageType.SYNC, ss));
+					PacketDistributor.PLAYER.with(player).send(new MessageShaderManual(MessageType.SYNC, ss));
 				}
 				else if(key==MessageType.UNLOCK&&args.length > 0)
 				{
@@ -102,7 +102,7 @@ public class MessageShaderManual implements IMessage
 			});
 		}
 		else
-			context.enqueueWork(() -> {
+			context.workHandler().execute(() -> {
 				if(key==MessageType.SYNC)
 				{
 					Player player = ImmersiveEngineering.proxy.getClientPlayer();
@@ -115,5 +115,11 @@ public class MessageShaderManual implements IMessage
 					}
 				}
 			});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

@@ -9,18 +9,21 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageSpeedloaderSync implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("speedloader_sync");
 	private final int slot;
 	private final InteractionHand hand;
 
@@ -37,16 +40,16 @@ public class MessageSpeedloaderSync implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeByte(slot);
 		buf.writeByte(hand.ordinal());
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		context.enqueueWork(() -> {
+		context.workHandler().execute(() -> {
 			Player player = ImmersiveEngineering.proxy.getClientPlayer();
 			if(player!=null)
 			{
@@ -58,5 +61,11 @@ public class MessageSpeedloaderSync implements IMessage
 				player.getInventory().setItem(slot, new ItemStack(Weapons.SPEEDLOADER));
 			}
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

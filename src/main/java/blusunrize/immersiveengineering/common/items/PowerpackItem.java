@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.wires.Connection;
@@ -201,7 +200,7 @@ public class PowerpackItem extends UpgradeableToolItem
 			if(orthLength < 0||orthLength > 1||dist >= 8)
 			{
 				PLAYER_ATTACHED_TO.remove(player.getUUID());
-				ImmersiveEngineering.packetHandler.send(PacketDistributor.ALL.noArg(), new MessagePowerpackAntenna(player, null));
+				PacketDistributor.ALL.noArg().send(new MessagePowerpackAntenna(player, null));
 				break tooFar;
 			}
 
@@ -231,7 +230,7 @@ public class PowerpackItem extends UpgradeableToolItem
 					.findAny();
 			connection.ifPresent(conn -> {
 				PLAYER_ATTACHED_TO.put(player.getUUID(), conn);
-				ImmersiveEngineering.packetHandler.send(PacketDistributor.ALL.noArg(), new MessagePowerpackAntenna(player, conn));
+				PacketDistributor.ALL.noArg().send(new MessagePowerpackAntenna(player, conn));
 				if(player.getVehicle() instanceof AbstractMinecart minecart &&minecart.getDeltaMovement().lengthSqr() > 4)
 					findBestSource(global, conn).ifPresent(e -> {
 						if(e.getAvailableEnergy() >= 4096)

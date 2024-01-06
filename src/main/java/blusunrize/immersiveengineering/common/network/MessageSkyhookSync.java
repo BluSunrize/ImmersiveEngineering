@@ -9,17 +9,20 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageSkyhookSync implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("skyhook_sync");
 	private int entityID;
 	private Connection connection;
 	private ConnectionPoint start;
@@ -46,7 +49,7 @@ public class MessageSkyhookSync implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(entityID);
 		buf.writeNbt(connection.toNBT());
@@ -56,9 +59,9 @@ public class MessageSkyhookSync implements IMessage
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		context.enqueueWork(() -> {
+		context.workHandler().execute(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null)
 			{
@@ -67,5 +70,11 @@ public class MessageSkyhookSync implements IMessage
 					hook.setConnectionAndPos(connection, start, linePos, speed);
 			}
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

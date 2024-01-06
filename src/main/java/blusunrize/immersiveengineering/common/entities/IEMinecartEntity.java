@@ -12,8 +12,6 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,7 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -103,9 +100,9 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 		if(player instanceof ServerPlayer serverPlayer&&this.containedBlockEntity instanceof MenuProvider menuProvider)
 		{
 			if(menuProvider instanceof IInteractionObjectIE<?>)
-				NetworkHooks.openScreen(serverPlayer, this, buffer -> buffer.writeInt(this.getId()));
+				serverPlayer.openMenu(this, buffer -> buffer.writeInt(this.getId()));
 			else
-				NetworkHooks.openScreen(serverPlayer, this);
+				serverPlayer.openMenu(this);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -134,13 +131,6 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 		super.readAdditionalSaveData(compound);
 		this.containedBlockEntity = getTileProvider().get();
 		this.containedBlockEntity.load(compound);
-	}
-
-	@Override
-	public @Nonnull Packet<ClientGamePacketListener> getAddEntityPacket()
-	{
-		// TODO see fluorescent tube
-		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	// This is only used by the super impl of destroy, which does not allow attaching NBT to the drop. So it's actually

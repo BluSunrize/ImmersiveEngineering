@@ -9,20 +9,22 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
-
-import java.util.Objects;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
 public class MessageBlockEntitySync implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("be_sync");
+
 	private final BlockPos pos;
 	private final CompoundTag nbt;
 
@@ -40,18 +42,18 @@ public class MessageBlockEntitySync implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
 		buf.writeNbt(this.nbt);
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		if(context.getDirection().getReceptionSide()==LogicalSide.SERVER)
-			context.enqueueWork(() -> {
-				ServerLevel world = Objects.requireNonNull(context.getSender()).serverLevel();
+		if(context.flow().getReceptionSide()==LogicalSide.SERVER)
+			context.workHandler().execute(() -> {
+				Level world = context.player().orElseThrow().level();
 				if(world.isAreaLoaded(pos, 1))
 				{
 					BlockEntity tile = world.getBlockEntity(pos);
@@ -60,7 +62,7 @@ public class MessageBlockEntitySync implements IMessage
 				}
 			});
 		else
-			context.enqueueWork(() -> {
+			context.workHandler().execute(() -> {
 				Level world = ImmersiveEngineering.proxy.getClientWorld();
 				if(world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
@@ -69,5 +71,12 @@ public class MessageBlockEntitySync implements IMessage
 						((IEBaseBlockEntity)tile).receiveMessageFromServer(nbt);
 				}
 			});
+	}
+
+	@Override
+	@NotNull
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

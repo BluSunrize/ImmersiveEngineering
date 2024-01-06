@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.network.MessageBirthdayParty;
@@ -106,7 +105,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "tools/secret_birthdayparty");
 					level().playSound(null, getX(), getY(), getZ(), IESounds.birthdayParty.value(), SoundSource.PLAYERS, 1.0F, 1.2F/(this.random.nextFloat()*0.2F+0.9F));
-					ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_ENTITY.with(() -> hitEntity), new MessageBirthdayParty((LivingEntity)hitEntity));
+					PacketDistributor.TRACKING_ENTITY.with(hitEntity).send(new MessageBirthdayParty((LivingEntity)hitEntity));
 				}
 			}
 		}

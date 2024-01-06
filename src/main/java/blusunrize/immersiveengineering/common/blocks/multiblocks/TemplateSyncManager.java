@@ -43,8 +43,7 @@ public class TemplateSyncManager
 				ResourceLocation rl = templateMB.getTemplateLocation();
 				toSync.add(new SyncedTemplate(template, rl));
 			}
-		ImmersiveEngineering.packetHandler.send(
-				PacketDistributor.PLAYER.with(() -> player), new MessageMultiblockSync(toSync)
-		);
+
+		PacketDistributor.PLAYER.with(player).send(new MessageMultiblockSync(toSync));
 	}
 }

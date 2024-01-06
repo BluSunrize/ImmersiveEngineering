@@ -9,20 +9,23 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class MessagePowerpackAntenna implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("powerpack_antenna");
 	UUID player;
 	boolean remove = false;
 	BlockPos from;
@@ -52,7 +55,7 @@ public class MessagePowerpackAntenna implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeUUID(this.player);
 		buf.writeBoolean(this.remove);
@@ -64,9 +67,9 @@ public class MessagePowerpackAntenna implements IMessage
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		context.enqueueWork(() -> {
+		context.workHandler().execute(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{
@@ -86,5 +89,11 @@ public class MessagePowerpackAntenna implements IMessage
 				}
 			}
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

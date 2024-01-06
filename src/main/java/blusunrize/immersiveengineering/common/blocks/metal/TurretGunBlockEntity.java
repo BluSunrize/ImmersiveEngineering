@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
@@ -151,8 +150,8 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	{
 		CompoundTag tag = new CompoundTag();
 		tag.putBoolean("cycle", true);
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> getLevelNonnull().getChunkAt(worldPosition)),
-				new MessageBlockEntitySync(this, tag));
+		PacketDistributor.TRACKING_CHUNK.with(getLevelNonnull().getChunkAt(worldPosition))
+				.send(new MessageBlockEntitySync(this, tag));
 	}
 
 	RevolvershotEntity getBulletEntity(Level world, Vec3 vecDir, IBullet type)

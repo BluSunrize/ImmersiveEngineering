@@ -9,16 +9,18 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import java.util.Set;
 
@@ -27,6 +29,7 @@ import static blusunrize.immersiveengineering.common.network.MessageWireSync.Ope
 
 public class MessageWireSync implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("wire_sync");
 	private final ConnectionPoint start;
 	private final ConnectionPoint end;
 	private final WireType type;
@@ -66,7 +69,7 @@ public class MessageWireSync implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeByte(operation.ordinal());
 		writeConnPoint(start, buf);
@@ -77,9 +80,9 @@ public class MessageWireSync implements IMessage
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		context.enqueueWork(() -> {
+		context.workHandler().execute(() -> {
 			WireLogger.logger.debug(
 					"Processing sync for connection from {} to {}, type {}, op {}",
 					start, end, type, operation.name()
@@ -102,7 +105,6 @@ public class MessageWireSync implements IMessage
 			for(SectionPos section : sectionsToRerender)
 				Minecraft.getInstance().levelRenderer.setSectionDirty(section.x(), section.y(), section.z());
 		});
-		context.setPacketHandled(true);
 	}
 
 	private void removeProxyIfNoWires(ConnectionPoint point, GlobalWireNetwork globalNet)
@@ -118,5 +120,11 @@ public class MessageWireSync implements IMessage
 		ADD, REMOVE, UPDATE;
 
 		private static final Operation[] VALUES = values();
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

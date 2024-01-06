@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
@@ -192,8 +191,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 									else
 									{
 										player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"cantSee"), true);
-										ImmersiveEngineering.packetHandler.send(
-												PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
+										PacketDistributor.PLAYER.with((ServerPlayer)player).send(
 												new MessageObstructedConnection(conn, failedReasons)
 										);
 									}

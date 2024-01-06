@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.mixin.accessors.PaletteAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
@@ -21,7 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import net.neoforged.neoforge.registries.GameData;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.Objects;
 
 public class MessageMultiblockSync implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("multiblock_sync");
 	private final List<SyncedTemplate> templates;
 
 	public MessageMultiblockSync(List<SyncedTemplate> templatesToSync)
@@ -42,15 +44,15 @@ public class MessageMultiblockSync implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		PacketUtils.writeList(buf, templates, SyncedTemplate::writeTo);
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		context.enqueueWork(() -> {
+		context.workHandler().execute(() -> {
 			for(SyncedTemplate synced : templates)
 			{
 				StructureTemplate template = new StructureTemplate();
@@ -106,5 +108,11 @@ public class MessageMultiblockSync implements IMessage
 			buffer.writeBlockPos(info.pos());
 			buffer.writeNbt(info.nbt());
 		}
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

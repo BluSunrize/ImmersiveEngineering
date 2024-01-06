@@ -92,7 +92,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 					Int2ObjectMap<ItemStack> changes = new Int2ObjectOpenHashMap<>();
 					for(int slot = 0; slot < Math.min(convertedInput.size(), 9); slot++)
 						changes.put(i*10+slot, convertedInput.get(slot));
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageSetGhostSlots(changes));
+					PacketDistributor.SERVER.noArg().send(new MessageSetGhostSlots(changes));
 				}
 				return null;
 			}

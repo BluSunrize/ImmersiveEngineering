@@ -8,20 +8,23 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.gui.IESlot.ItemHandlerGhost;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageSetGhostSlots implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("set_ghost_slot");
 	private final Int2ObjectMap<ItemStack> stacksToSet;
 
 	public MessageSetGhostSlots(Int2ObjectMap<ItemStack> stacksToSet)
@@ -41,7 +44,7 @@ public class MessageSetGhostSlots implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(stacksToSet.size());
 		for(Entry<ItemStack> e : stacksToSet.int2ObjectEntrySet())
@@ -52,11 +55,10 @@ public class MessageSetGhostSlots implements IMessage
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		ServerPlayer player = context.getSender();
-		assert player!=null;
-		context.enqueueWork(() -> {
+		Player player = context.player().orElseThrow();
+		context.workHandler().execute(() -> {
 			AbstractContainerMenu container = player.containerMenu;
 			if(container!=null)
 				for(Entry<ItemStack> e : stacksToSet.int2ObjectEntrySet())
@@ -76,5 +78,11 @@ public class MessageSetGhostSlots implements IMessage
 					}
 				}
 		});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

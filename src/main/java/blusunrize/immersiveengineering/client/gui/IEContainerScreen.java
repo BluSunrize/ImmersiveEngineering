@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -129,6 +130,6 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 
 	protected void sendUpdateToServer(CompoundTag message)
 	{
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(menu.containerId, message));
+		PacketDistributor.SERVER.noArg().send(new MessageContainerUpdate(menu.containerId, message));
 	}
 }

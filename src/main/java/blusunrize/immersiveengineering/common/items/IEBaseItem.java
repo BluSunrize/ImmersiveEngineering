@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerTypeNew;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
@@ -24,7 +23,6 @@ import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -76,18 +74,20 @@ public class IEBaseItem extends Item
 		ItemStack stack = player.getItemBySlot(slot);
 		ItemContainerTypeNew<?> typeNew = getContainerTypeNew();
 		if(typeNew!=null)
-			NetworkHooks.openScreen(
-					(ServerPlayer)player,
+			player.openMenu(
 					new SimpleMenuProvider((id, inv, p) -> typeNew.create(id, inv, slot, stack), Component.empty())
 			);
 		else
 		{
 			ItemContainerType<?> typeOld = getContainerType();
 			if(typeOld!=null)
-				NetworkHooks.openScreen((ServerPlayer)player, new SimpleMenuProvider(
-						(id, inv, p) -> typeOld.create(id, inv, player.level(), slot, stack),
-						Component.empty()
-				), buffer -> buffer.writeInt(slot.ordinal()));
+				player.openMenu(
+						new SimpleMenuProvider(
+								(id, inv, p) -> typeOld.create(id, inv, player.level(), slot, stack),
+								Component.empty()
+						),
+						buffer -> buffer.writeInt(slot.ordinal())
+				);
 		}
 	}
 

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
@@ -237,7 +236,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("targetEntity", target.getId());
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new MessageBlockEntitySync(this, tag));
+		PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(worldPosition)).send(new MessageBlockEntitySync(this, tag));
 	}
 
 	protected void sendFreePacket(double tL, double tH, double tV)
@@ -246,7 +245,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 		tag.putDouble("tL", tL);
 		tag.putDouble("tV", tV);
 		tag.putDouble("tH", tH);
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new MessageBlockEntitySync(this, tag));
+		PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(worldPosition)).send(new MessageBlockEntitySync(this, tag));
 	}
 
 	@Override

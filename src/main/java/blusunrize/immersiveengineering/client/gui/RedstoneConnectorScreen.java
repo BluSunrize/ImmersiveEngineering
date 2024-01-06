@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
@@ -24,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -73,7 +73,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 	{
 		CompoundTag message = new CompoundTag();
 		message.putInt(key, value);
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

@@ -105,6 +105,7 @@ import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -148,7 +149,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						{
 							if(((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
 									((IEShieldItem)held.getItem()).getUpgrades(held).contains("prevSlot"))
-								ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(-1));
+								PacketDistributor.SERVER.noArg().send(new MessageMagnetEquip(-1));
 						}
 						else
 						{
@@ -156,7 +157,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 							{
 								ItemStack s = player.getInventory().items.get(i);
 								if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-									ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
+									PacketDistributor.SERVER.noArg().send(new MessageMagnetEquip(i));
 							}
 						}
 					}
@@ -168,7 +169,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				{
 					ItemStack held = event.player.getItemInHand(InteractionHand.MAIN_HAND);
 					if(held.getItem() instanceof IScrollwheel)
-						ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(true));
+						PacketDistributor.SERVER.noArg().send(new MessageScrollwheelItem(true));
 				}
 
 				if(!IEKeybinds.keybind_railgunZoom.isUnbound()&&IEKeybinds.keybind_railgunZoom.consumeClick())
@@ -580,7 +581,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		boolean matches = VoltmeterItem.lastEnergyUpdate.pos().equals(pos);
 		long sinceLast = player.level().getGameTime()-VoltmeterItem.lastEnergyUpdate.measuredInTick();
 		if(!matches||sinceLast > 20)
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestEnergyUpdate(pos));
+			PacketDistributor.SERVER.noArg().send(new MessageRequestEnergyUpdate(pos));
 
 		if(VoltmeterItem.lastEnergyUpdate.isValid()&&matches)
 		{
@@ -597,7 +598,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			matches = VoltmeterItem.lastRedstoneUpdate.pos().equals(pos.leftNonnull());
 			sinceLast = player.level().getGameTime()-VoltmeterItem.lastRedstoneUpdate.measuredInTick();
 			if(!matches||sinceLast > 20)
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestRedstoneUpdate(pos.leftNonnull()));
+				PacketDistributor.SERVER.noArg().send(new MessageRequestRedstoneUpdate(pos.leftNonnull()));
 
 			if(VoltmeterItem.lastRedstoneUpdate.isSignalSource()&&matches)
 			{
@@ -705,12 +706,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			{
 				if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(event.getScrollDeltaY() < 0));
+					PacketDistributor.SERVER.noArg().send(new MessageScrollwheelItem(event.getScrollDeltaY() < 0));
 					event.setCanceled(true);
 				}
 				if(equipped.getItem() instanceof RevolverItem)
 				{
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageRevolverRotate(event.getScrollDeltaY() < 0));
+					PacketDistributor.SERVER.noArg().send(new MessageRevolverRotate(event.getScrollDeltaY() < 0));
 					event.setCanceled(true);
 				}
 			}
@@ -840,6 +841,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
 		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart)
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity()));
+			PacketDistributor.SERVER.noArg().send(new MessageMinecartShaderSync(event.getEntity()));
 	}
 }

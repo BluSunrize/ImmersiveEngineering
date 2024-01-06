@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.gui.IESlot.AlwaysEmptySlot;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
@@ -18,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 
@@ -32,7 +32,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 	@Override
 	protected void sendMessage(CompoundTag data)
 	{
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(menu.getEquipmentSlot(), data));
+		PacketDistributor.SERVER.noArg().send(new MessageMaintenanceKit(menu.getEquipmentSlot(), data));
 	}
 
 	@Override

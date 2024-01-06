@@ -9,23 +9,23 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
 import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.NetworkEvent.Context;
 import net.neoforged.neoforge.network.PacketDistributor;
-
-import java.util.Objects;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 public class MessageMinecartShaderSync implements IMessage
 {
+	public static final ResourceLocation ID = IEApi.ieLoc("minecart_shader_sync");
 	private final int entityID;
 	private final ItemStack shader;
 
@@ -48,32 +48,30 @@ public class MessageMinecartShaderSync implements IMessage
 	}
 
 	@Override
-	public void toBytes(FriendlyByteBuf buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.entityID);
 		buf.writeItem(this.shader);
 	}
 
 	@Override
-	public void process(Context context)
+	public void process(PlayPayloadContext context)
 	{
-		if(context.getDirection().getReceptionSide()==LogicalSide.SERVER)
+		if(context.flow().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerLevel world = Objects.requireNonNull(context.getSender()).serverLevel();
-			context.enqueueWork(() -> {
+			Level world = context.player().orElseThrow().level();
+			context.workHandler().execute(() -> {
 				Entity entity = world.getEntity(entityID);
 				if(!(entity instanceof AbstractMinecart))
 					return;
 				ShaderWrapper cap = entity.getData(IEDataAttachments.MINECART_SHADER);
 				if(cap!=null)
-					ImmersiveEngineering.packetHandler.send(
-							PacketDistributor.DIMENSION.with(world::dimension),
-							new MessageMinecartShaderSync(entity, cap)
-					);
+					PacketDistributor.DIMENSION.with(world.dimension())
+							.send(new MessageMinecartShaderSync(entity, cap));
 			});
 		}
 		else
-			context.enqueueWork(() -> {
+			context.workHandler().execute(() -> {
 				Level world = ImmersiveEngineering.proxy.getClientWorld();
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
@@ -82,5 +80,11 @@ public class MessageMinecartShaderSync implements IMessage
 						ShaderMinecartRenderer.shadedCarts.put(entityID, shader);
 				}
 			});
+	}
+
+	@Override
+	public ResourceLocation id()
+	{
+		return ID;
 	}
 }

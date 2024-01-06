@@ -45,8 +45,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.minecraft.core.Holder;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -299,13 +297,13 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 						// This can be removed once IEBaseContainerOld is gone
 						var tempMenu = interaction.createMenu(0, player.getInventory(), player);
 						if(tempMenu instanceof IEBaseContainerOld<?>)
-							NetworkHooks.openScreen(serverPlayer, interaction, ((BlockEntity)interaction).getBlockPos());
+							serverPlayer.openMenu(interaction, ((BlockEntity)interaction).getBlockPos());
 						else
-							NetworkHooks.openScreen(serverPlayer, interaction);
+							serverPlayer.openMenu(interaction);
 					}
 				}
 				else
-					NetworkHooks.openScreen(serverPlayer, menuProvider);
+					serverPlayer.openMenu(menuProvider);
 			}
 			return InteractionResult.SUCCESS;
 		}

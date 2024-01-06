@@ -11,8 +11,6 @@ package blusunrize.immersiveengineering.common.entities;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -27,7 +25,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -289,13 +286,6 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	public boolean hurt(DamageSource source, float amount)
 	{
 		return false;
-	}
-
-	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket()
-	{
-		// TODO see fluorescent tube
-		return (Packet<ClientGamePacketListener>)NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	public void setOwner(@Nullable Entity entityIn)
