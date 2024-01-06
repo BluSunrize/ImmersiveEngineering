@@ -21,9 +21,9 @@
 
 ##### Version 1.19.2-9.2.4-pre
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
-  - Amethyst Crevasse, a geode vein
-  - Hardened Claypan, a red sand & terracotta vein
-  - Ancient Seabed, a dead coral & dripstone vein
+    - Amethyst Crevasse, a geode vein
+    - Hardened Claypan, a red sand & terracotta vein
+    - Ancient Seabed, a dead coral & dripstone vein
 - Add cloche recipes to grow flowers (voidsong-dragonfly)
 - Add crusher recipes to make dyes (voidsong-dragonfly)
 - Add items directly to inventory when: (voidsong-dragonfly)
