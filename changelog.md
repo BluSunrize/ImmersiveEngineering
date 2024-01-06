@@ -18,6 +18,7 @@
 - Fix turret GUI textfield not being editable (BluSunrize)
 - Fix taiga villager houses being surrounded by air blocks (BluSunrize)
 - Fix redstone control not working on the assembler (BluSunrize)
+- Fix villager names not being translated in JER and EMI (BluSunrize)
 
 ##### Version 1.19.2-9.2.4-pre
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
