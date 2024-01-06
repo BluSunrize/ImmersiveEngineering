@@ -157,7 +157,7 @@ public class PowerpackItem extends UpgradeableToolItem
 				final int selected = player.getInventory().selected;
 				for(int i = 0; i < allItems.size(); i++)
 				{
-					if(i!=selected) // ignore equipped item
+					if(i==selected) // ignore equipped item
 						continue;
 					ItemStack inventoryItem = allItems.get(i);
 					if(isFluxReceiver(inventoryItem)&&!(inventoryItem.getItem() instanceof PowerpackItem)&&!(inventoryItem.getItem() instanceof BlockItem))
