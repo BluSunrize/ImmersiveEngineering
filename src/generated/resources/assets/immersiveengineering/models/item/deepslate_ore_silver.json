@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "immersiveengineering:block/metal/deepslate_ore_silver"
-  }
+  "parent": "immersiveengineering:block/deepslate_ore_silver"
 }

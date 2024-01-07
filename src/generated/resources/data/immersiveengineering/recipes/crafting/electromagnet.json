@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "e": {
-      "item": "immersiveengineering:component_electronic_adv"
+    "c": {
+      "item": "immersiveengineering:component_electronic"
     },
     "i": {
       "tag": "forge:ingots/iron"
     },
-    "r": {
+    "p": {
       "tag": "forge:rods/steel"
     },
     "w": {
@@ -16,12 +16,12 @@
     }
   },
   "pattern": [
-    "rer",
+    "pcp",
     "wiw",
-    " w "
+    "pwp"
   ],
   "result": {
-    "item": "immersiveengineering:toolupgrade_powerpack_magnet"
+    "item": "immersiveengineering:electromagnet"
   },
   "show_notification": true
 }

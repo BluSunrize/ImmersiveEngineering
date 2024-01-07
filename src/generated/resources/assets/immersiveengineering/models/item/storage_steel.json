@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "immersiveengineering:block/metal/storage_steel"
-  }
+  "parent": "immersiveengineering:block/storage_steel"
 }

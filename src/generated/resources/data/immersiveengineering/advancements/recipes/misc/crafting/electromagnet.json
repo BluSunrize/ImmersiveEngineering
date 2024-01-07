@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_component_electronic": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:component_electronic"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/electromagnet"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_component_electronic",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/electromagnet"
+    ]
+  },
+  "sends_telemetry_event": false
+}

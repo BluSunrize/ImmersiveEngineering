@@ -443,6 +443,16 @@ public class BlockStates extends ExtendedBlockstateProvider
 							.type(b.get().getType())
 							.end()
 			));
+		{
+			ModelFile magnetModel = models().cubeBottomTop("electromagnet",
+					modLoc("block/metal_device/electromagnet"),
+					modLoc("block/metal_device/electromagnet_bottom"),
+					modLoc("block/metal_device/electromagnet_top")
+			);
+			createRotatedBlock(MetalDevices.ELECTROMAGNET, magnetModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
+			itemModel(MetalDevices.ELECTROMAGNET, magnetModel);
+		}
+
 		createHemp();
 		{
 			final var pottedHempModel = models()

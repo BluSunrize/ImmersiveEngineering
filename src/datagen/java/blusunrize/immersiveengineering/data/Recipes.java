@@ -2297,6 +2297,16 @@ public class Recipes extends RecipeProvider
 					.define('s', IETags.getItemTag(IETags.getTagsFor(chute.getKey()).sheetmetal))
 					.unlockedBy("has_plate", has(IETags.getTagsFor(chute.getKey()).plate))
 					.save(out, toRL(toPath(chute.getValue())));
+		shapedMisc(MetalDevices.ELECTROMAGNET)
+				.pattern("pcp")
+				.pattern("wiw")
+				.pattern("pwp")
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('p', IETags.steelRod)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.define('c', Ingredients.COMPONENT_ELECTRONIC)
+				.unlockedBy("has_"+toPath(Ingredients.COMPONENT_ELECTRONIC), has(Ingredients.COMPONENT_ELECTRONIC))
+				.save(out, toRL(toPath(MetalDevices.ELECTROMAGNET)));
 	}
 
 	private void recipesConnectors(@Nonnull Consumer<FinishedRecipe> out)
@@ -2995,19 +3005,21 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))));
 		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))
 				.pattern("iii")
-				.pattern("cfc")
-				.pattern("cec")
+				.pattern("wfw")
+				.pattern("wew")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
 				.define('f', WoodenDecoration.TREATED_FENCE)
-				.define('c', IETags.electrumWire)
+				.define('w', Misc.WIRE_COILS.get(WireType.ELECTRUM))
 				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))));
 		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))
-				.pattern("wew")
+				.pattern("rer")
 				.pattern("wiw")
-				.define('w', IETags.copperWire)
-				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.pattern(" w ")
+				.define('r', IETags.steelRod)
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))));
