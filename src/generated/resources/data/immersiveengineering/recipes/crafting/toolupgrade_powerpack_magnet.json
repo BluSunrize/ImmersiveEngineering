@@ -3,18 +3,22 @@
   "category": "misc",
   "key": {
     "e": {
-      "item": "immersiveengineering:component_electronic"
+      "item": "immersiveengineering:component_electronic_adv"
     },
     "i": {
       "tag": "forge:ingots/iron"
     },
+    "r": {
+      "tag": "forge:rods/steel"
+    },
     "w": {
-      "tag": "forge:wires/copper"
+      "item": "immersiveengineering:wirecoil_copper"
     }
   },
   "pattern": [
-    "wew",
-    "wiw"
+    "rer",
+    "wiw",
+    " w "
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_powerpack_magnet"

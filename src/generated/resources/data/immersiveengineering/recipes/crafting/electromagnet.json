@@ -9,7 +9,7 @@
       "tag": "forge:ingots/iron"
     },
     "p": {
-      "tag": "forge:plates/steel"
+      "tag": "forge:rods/steel"
     },
     "w": {
       "item": "immersiveengineering:wirecoil_copper"
