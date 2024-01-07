@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "immersiveengineering:block/electromagnet",
+      "x": -180
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/electromagnet",
+      "x": -90,
+      "y": 270
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/electromagnet",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/electromagnet",
+      "x": -90
+    },
+    "facing=up": {
+      "model": "immersiveengineering:block/electromagnet"
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/electromagnet",
+      "x": -90,
+      "y": 90
+    }
+  }
+}

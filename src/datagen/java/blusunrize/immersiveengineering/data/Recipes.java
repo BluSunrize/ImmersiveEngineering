@@ -2297,6 +2297,16 @@ public class Recipes extends RecipeProvider
 					.define('s', IETags.getItemTag(IETags.getTagsFor(chute.getKey()).sheetmetal))
 					.unlockedBy("has_plate", has(IETags.getTagsFor(chute.getKey()).plate))
 					.save(out, toRL(toPath(chute.getValue())));
+		shapedMisc(MetalDevices.ELECTROMAGNET)
+				.pattern("pcp")
+				.pattern("wiw")
+				.pattern("pwp")
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.define('c', Ingredients.COMPONENT_ELECTRONIC)
+				.unlockedBy("has_"+toPath(Ingredients.COMPONENT_ELECTRONIC), has(Ingredients.COMPONENT_ELECTRONIC))
+				.save(out, toRL(toPath(MetalDevices.ELECTROMAGNET)));
 	}
 
 	private void recipesConnectors(@Nonnull Consumer<FinishedRecipe> out)

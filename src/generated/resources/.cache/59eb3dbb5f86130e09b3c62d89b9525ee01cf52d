@@ -1,4 +1,4 @@
-// 1.20.1	2023-10-03T23:54:11.5534264	Loot Tables
+// 1.20.1	2024-01-07T14:12:22.0635178	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -86,6 +86,7 @@ a1fb269c5096d09c006fab34f4486e52eb22fa10 data/immersiveengineering/loot_tables/b
 0291c172eb69cfcc08528a2400fba23cb7a6db7c data/immersiveengineering/loot_tables/blocks/duroplast.json
 1bcf943539b7d90472ae121c433ba0d0a277ad69 data/immersiveengineering/loot_tables/blocks/dynamo.json
 e0fbfe58856b42378a56f9cf9fa2451e96486f7c data/immersiveengineering/loot_tables/blocks/electric_lantern.json
+42191f21229d06a5b526d2ab53d126fbe0cdd748 data/immersiveengineering/loot_tables/blocks/electromagnet.json
 99c9e1cd4070cbeebc5656002c1aca77f3bfe794 data/immersiveengineering/loot_tables/blocks/ethanol_fluid_block.json
 1a1b41d5e894f35ed9be9586855da076d9554dff data/immersiveengineering/loot_tables/blocks/excavator.json
 d1dcb9201b801bd477152277f5c1529ba0e666a4 data/immersiveengineering/loot_tables/blocks/fake_light.json
