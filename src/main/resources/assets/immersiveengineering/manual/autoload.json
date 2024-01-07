@@ -92,6 +92,7 @@
       "fluid_transport",
       "fluid_router",
       "external_heater",
+      "electromagnet",
       "garden_cloche",
       "charging_station",
       "razor_wire",
