@@ -177,19 +177,6 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
 		cubeAll(StoneDecoration.DUROPLAST, rl("block/stone_decoration/duroplast"), translucent());
 
-		{
-			ModelFile clinkerBrickQuoin = models().withExistingParent("clinker_brick_quoin", mcLoc("block/cube"))
-					.texture("down", modLoc("block/stone_decoration/clinker_brick/clinker_brick_quoin_bottom"))
-					.texture("south", modLoc("block/stone_decoration/clinker_brick/clinker_brick0"))
-					.texture("up", modLoc("block/stone_decoration/clinker_brick/clinker_brick_quoin_top"))
-					.texture("north", modLoc("block/stone_decoration/clinker_brick/clinker_brick_quoin_side_reversed"))
-					.texture("west", modLoc("block/stone_decoration/clinker_brick/clinker_brick0"))
-					.texture("east", modLoc("block/stone_decoration/clinker_brick/clinker_brick_quoin_side"))
-					.texture("particle", modLoc("block/stone_decoration/clinker_brick/clinker_brick0"));
-			createHorizontalRotatedBlock(StoneDecoration.CLINKER_BRICK_QUOIN, clinkerBrickQuoin);
-			itemModel(StoneDecoration.CLINKER_BRICK_QUOIN, clinkerBrickQuoin);
-		}
-
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			cubeAll(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
 		cubeAll(WoodenDecoration.FIBERBOARD, rl("block/wooden_decoration/fiberboard"));
