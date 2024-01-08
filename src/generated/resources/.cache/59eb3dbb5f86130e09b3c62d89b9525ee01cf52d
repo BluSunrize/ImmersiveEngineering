@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-07T13:30:48.112746733	Loot Tables
+// 1.20.1	2024-01-07T22:06:03.898140419	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -290,6 +290,8 @@ a5be78f55a3169d6eaaf30fa355b2ae5b4445408 data/immersiveengineering/loot_tables/b
 02edf7d1b715910a14f5239c02c69d381d12f274 data/immersiveengineering/loot_tables/blocks/turntable.json
 f08a17ecab6d429e25a41c452867d5e278c1176a data/immersiveengineering/loot_tables/blocks/turret_chem.json
 ed51f4e8a2a1a34a9bcd478cd270a143e1ecd07e data/immersiveengineering/loot_tables/blocks/turret_gun.json
+9dd3dd57a3edaaf81ee0b23867833481be951421 data/immersiveengineering/loot_tables/blocks/wall_clinker_brick.json
+35a1f1abef8f97f35cf91209d7f05d27ba710b11 data/immersiveengineering/loot_tables/blocks/wall_slag_brick.json
 68ec48ba08ce6efb722ea396daf9397ff7459174 data/immersiveengineering/loot_tables/blocks/watermill.json
 8b64db2582e78e85a65dff431f7dbedfc508d236 data/immersiveengineering/loot_tables/blocks/windmill.json
 e6239c92b4557085cd63e425437de05bb04b5547 data/immersiveengineering/loot_tables/blocks/wooden_barrel.json

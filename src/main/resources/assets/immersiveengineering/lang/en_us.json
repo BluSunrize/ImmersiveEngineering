@@ -874,6 +874,8 @@
   "block.immersiveengineering.stairs_concrete_brick": "Concrete Brick Stairs",
   "block.immersiveengineering.stairs_concrete_tile": "Concrete Tile Stairs",
   "block.immersiveengineering.stairs_concrete_leaded": "Leaded Concrete Stairs",
+  "block.immersiveengineering.wall_slag_brick": "Slag Brick Wall",
+  "block.immersiveengineering.wall_clinker_brick": "Clinker Brick Wall",
   "block.immersiveengineering.coke_oven": "Coke Oven",
   "block.immersiveengineering.blast_furnace": "Crude Blast Furnace",
   "block.immersiveengineering.advanced_blast_furnace": "Improved Blast Furnace",

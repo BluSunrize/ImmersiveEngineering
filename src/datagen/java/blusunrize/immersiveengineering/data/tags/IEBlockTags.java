@@ -195,6 +195,8 @@ public class IEBlockTags extends BlockTagsProvider
 			tag(BlockTags.SLABS).add(slab.get());
 		for(BlockEntry<?> stairs : IEBlocks.TO_STAIRS.values())
 			tag(BlockTags.STAIRS).add(stairs.get());
+		for(BlockEntry<?> stairs : IEBlocks.TO_WALL.values())
+			tag(BlockTags.WALLS).add(stairs.get());
 
 		/* MOD COMPAT STARTS HERE */
 
@@ -316,6 +318,9 @@ public class IEBlockTags extends BlockTagsProvider
 			BlockEntry<?> stairs = IEBlocks.TO_STAIRS.get(entry.getId());
 			if(stairs!=null)
 				tag.add(stairs.get());
+			BlockEntry<?> wall = IEBlocks.TO_WALL.get(entry.getId());
+			if(wall!=null)
+				tag.add(wall.get());
 		}
 	}
 

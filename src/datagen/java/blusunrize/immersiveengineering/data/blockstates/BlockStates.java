@@ -233,6 +233,15 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			stairsFor(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
 
+		wallForMultiEight(StoneDecoration.SLAG_BRICK,
+				rl("block/stone_decoration/slag_brick/slag_brick"),
+				rl("block/stone_decoration/slag_brick/slag_brick_wall"),
+				rl("block/stone_decoration/slag_brick/slag_brick_top"));
+		wallForMultiEight(StoneDecoration.CLINKER_BRICK,
+				rl("block/stone_decoration/clinker_brick/clinker_brick"),
+				rl("block/stone_decoration/clinker_brick/clinker_brick_wall"),
+				rl("block/stone_decoration/clinker_brick/clinker_brick_top"));
+
 		postBlock(WoodenDecoration.TREATED_POST, rl("block/wooden_decoration/post"));
 		postBlock(MetalDecoration.STEEL_POST, rl("block/metal_decoration/steel_post"));
 		postBlock(MetalDecoration.ALU_POST, rl("block/metal_decoration/aluminum_post"));

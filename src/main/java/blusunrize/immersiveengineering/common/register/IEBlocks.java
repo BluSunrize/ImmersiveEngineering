@@ -138,6 +138,7 @@ public final class IEBlocks
 
 	public static final Map<ResourceLocation, BlockEntry<SlabBlock>> TO_SLAB = new HashMap<>();
 	public static final Map<ResourceLocation, BlockEntry<IEStairsBlock>> TO_STAIRS = new HashMap<>();
+	public static final Map<ResourceLocation, BlockEntry<IEWallBlock>> TO_WALL = new HashMap<>();
 
 	public static final class StoneDecoration
 	{
@@ -654,6 +655,15 @@ public final class IEBlocks
 		));
 	}
 
+	private static <T extends Block & IIEBlock> void registerWall(BlockEntry<T> fullBlock)
+	{
+		TO_WALL.put(fullBlock.getId(), new BlockEntry<>(
+				"wall_"+fullBlock.getId().getPath(),
+				fullBlock::getProperties,
+				p -> new IEWallBlock(p, fullBlock)
+		));
+	}
+
 	private static Supplier<BlockBehaviour.Properties> dynamicShape(Supplier<BlockBehaviour.Properties> baseProps)
 	{
 		return () -> baseProps.get().dynamicShape();
@@ -693,6 +703,8 @@ public final class IEBlocks
 		registerStairs(StoneDecoration.CONCRETE_BRICK);
 		registerStairs(StoneDecoration.CONCRETE_TILE);
 		registerStairs(StoneDecoration.CONCRETE_LEADED);
+		registerWall(StoneDecoration.SLAG_BRICK);
+		registerWall(StoneDecoration.CLINKER_BRICK);
 
 		for(BlockEntry<?> entry : BlockEntry.ALL_ENTRIES)
 		{

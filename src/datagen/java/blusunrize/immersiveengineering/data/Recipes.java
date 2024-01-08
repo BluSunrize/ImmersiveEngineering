@@ -1570,10 +1570,15 @@ public class Recipes extends RecipeProvider
 		addStairs(StoneDecoration.CONCRETE_TILE, out);
 		addStairs(StoneDecoration.CONCRETE_LEADED, out);
 
+		addWall(StoneDecoration.SLAG_BRICK, out);
+		addWall(StoneDecoration.CLINKER_BRICK, out);
+
 		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.SLAG_BRICK.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.SLAG_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_WALL.get(StoneDecoration.SLAG_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CLINKER_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.CLINKER_BRICK.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CLINKER_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.CLINKER_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.CLINKER_BRICK, IEBlocks.TO_WALL.get(StoneDecoration.CLINKER_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE_BRICK.getId()), 2, out);
@@ -3592,6 +3597,17 @@ public class Recipes extends RecipeProvider
 				.pattern("sss")
 				.unlockedBy("has_"+toPath(block), has(block))
 				.save(out, toRL(toPath(stairs)));
+	}
+
+	private void addWall(ItemLike block, Consumer<FinishedRecipe> out)
+	{
+		ItemLike wall = IEBlocks.TO_WALL.get(BuiltInRegistries.ITEM.getKey(block.asItem()));
+		shapedMisc(wall, 6)
+				.define('s', block)
+				.pattern("sss")
+				.pattern("sss")
+				.unlockedBy("has_"+toPath(block), has(block))
+				.save(out, toRL(toPath(wall)));
 	}
 
 	private void addStonecuttingRecipe(ItemLike input, ItemLike output, Consumer<FinishedRecipe> out)
