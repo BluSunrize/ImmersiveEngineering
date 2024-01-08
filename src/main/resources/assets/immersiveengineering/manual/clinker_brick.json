@@ -1,0 +1,51 @@
+{
+  "smoker_recipe": {
+    "type": "crafting",
+    "recipes": [
+      [
+        [
+          {
+            "x": 24,
+            "y": 0,
+            "item": "minecraft:bricks"
+          },
+          {
+            "x": 42,
+            "y": 0,
+            "item": "minecraft:smoker"
+          },
+          {
+            "x": 78,
+            "y": 0,
+            "item": "immersiveengineering:clinker_brick"
+          }
+        ]
+      ]
+    ]
+  },
+  "variants": {
+    "type": "crafting",
+    "recipes": [
+      {
+        "recipe": "crafting/clinker_brick_quoin"
+      },
+      {
+        "recipe": "crafting/clinker_brick_sill"
+      }
+    ]
+  },
+  "cut_variants": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:stairs_clinker_brick"
+      },
+      {
+        "item": "immersiveengineering:wall_clinker_brick"
+      },
+      {
+        "item": "immersiveengineering:slab_clinker_brick"
+      }
+    ]
+  }
+}

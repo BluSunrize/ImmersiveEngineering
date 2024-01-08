@@ -1,0 +1,12 @@
+Clinker Bricks
+Glass Houses and Stones
+<&smoker_recipe>
+The art of baking bricks has progressed past wasting several parts of the batch producing clinker for being too close to the fire.
+
+Those looking to recreate the iconic look of clinker brick facades may, however, heat bricks in the §2Smoker§r to vitrify and char the external bricks, turning them into §2Clinker Bricks§r.
+<&variants>
+To complement the look of facades made from them, clinker bricks can be combined with terracotta to produce several decorative variants for facades: §2Clinker Brick Quoins§r and §2Sills§r.
+<&cut_variants>
+Clinker Bricks can also be formed into stairs, slabs, and walls.
+
+§2Clinker Brick Walls§r have a small sill of baked brick on the top-most layer.

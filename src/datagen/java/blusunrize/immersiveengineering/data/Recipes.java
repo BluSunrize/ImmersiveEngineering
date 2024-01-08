@@ -1580,6 +1580,7 @@ public class Recipes extends RecipeProvider
 		addWall(StoneDecoration.SLAG_BRICK, out);
 		addWall(StoneDecoration.CLINKER_BRICK, out);
 
+		addStonecuttingRecipe(Ingredients.SLAG, StoneDecoration.SLAG_BRICK, out);
 		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.SLAG_BRICK.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.SLAG_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_WALL.get(StoneDecoration.SLAG_BRICK.getId()), out);
