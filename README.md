@@ -11,3 +11,5 @@ Wires, transformers, capacitors!
 - Sound for the collapsible glider is by Iain McCurdy on [freesound.org](https://freesound.org/people/iainmccurdy/sounds/645974/), licensed under CC BY 4.0
 - Sound for the excavator ore conveyor is by tosha73 on [freesound.org](https://freesound.org/people/tosha73/sounds/584592/), licensed under CC BY 4.0
 - Sound for the electromagnet is by _MC5_ on [freesound.org](https://freesound.org/people/_MC5_/sounds/672082/), licensed under CC BY 4.0
+- Assets for several blocks are derived from @stfwi assets in [Engineer's Decor](https://github.com/stfwi/engineers-decor), licensed under MIT
+    - These assets include clinker bricks, slag bricks, and grit sand
