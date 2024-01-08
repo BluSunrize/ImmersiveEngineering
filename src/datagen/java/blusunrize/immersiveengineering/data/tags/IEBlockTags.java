@@ -360,6 +360,7 @@ public class IEBlockTags extends BlockTagsProvider
 				StoneDecoration.SLAG_BRICK,
 				StoneDecoration.CLINKER_BRICK,
 				StoneDecoration.CLINKER_BRICK_QUOIN,
+				StoneDecoration.CLINKER_BRICK_SILL,
 				StoneDecoration.COKE,
 				StoneDecoration.HEMPCRETE,
 				StoneDecoration.HEMPCRETE_BRICK,

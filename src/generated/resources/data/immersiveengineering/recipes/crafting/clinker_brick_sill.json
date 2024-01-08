@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "immersiveengineering:clinker_brick"
+    },
+    "t": {
+      "item": "minecraft:white_terracotta"
+    }
+  },
+  "pattern": [
+    "tt",
+    "bb"
+  ],
+  "result": {
+    "count": 4,
+    "item": "immersiveengineering:clinker_brick_sill"
+  },
+  "show_notification": true
+}

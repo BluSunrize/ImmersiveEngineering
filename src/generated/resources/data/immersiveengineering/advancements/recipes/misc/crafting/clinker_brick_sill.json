@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "immersiveengineering:crafting/clinker_brick_quoin"
+        "recipe": "immersiveengineering:crafting/clinker_brick_sill"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "immersiveengineering:crafting/clinker_brick_quoin"
+      "immersiveengineering:crafting/clinker_brick_sill"
     ]
   },
   "sends_telemetry_event": false

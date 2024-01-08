@@ -1,4 +1,4 @@
-// 1.20.1	2024-01-07T22:06:03.898140419	Loot Tables
+// 1.20.1	2024-01-07T22:48:27.934027178	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -37,6 +37,7 @@ afa9a4b9aac3a2d06d6550a4b744761c003bd1d5 data/immersiveengineering/loot_tables/b
 c79b0a33c3b848edf16848b8a8074df1cd05d03a data/immersiveengineering/loot_tables/blocks/circuit_table.json
 dfb916f24eefac7552f8e31274dac808402f1871 data/immersiveengineering/loot_tables/blocks/clinker_brick.json
 5c918aa037827394243d2b7ce97a07b2667808a0 data/immersiveengineering/loot_tables/blocks/clinker_brick_quoin.json
+8831057dfd3a1e70d1886daf6e4476a3d4444f43 data/immersiveengineering/loot_tables/blocks/clinker_brick_sill.json
 46e97ca8ba8f5e65f2562db1bfed5b83fd6225e8 data/immersiveengineering/loot_tables/blocks/cloche.json
 fa734a60c8fca0819939899c46b0769abcea1004 data/immersiveengineering/loot_tables/blocks/coil_hv.json
 7b7bad2fc4630992c0ae28346631b4962224db37 data/immersiveengineering/loot_tables/blocks/coil_lv.json

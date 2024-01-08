@@ -157,6 +157,12 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
 		multiEightCubeAll(StoneDecoration.SLAG_BRICK, rl("block/stone_decoration/slag_brick/slag_brick"));
 		multiEightCubeAll(StoneDecoration.CLINKER_BRICK, rl("block/stone_decoration/clinker_brick/clinker_brick"));
+		simpleBlockAndItem(StoneDecoration.CLINKER_BRICK_SILL, new ConfiguredModel(models().cubeBottomTop(
+				"clinker_brick_sill",
+				modLoc("block/stone_decoration/clinker_brick/clinker_brick_sill_side"),
+				modLoc("block/stone_decoration/clinker_brick/clinker_brick0"),
+				modLoc("block/stone_decoration/clinker_brick/clinker_brick_sill_top")
+		)));
 		multiEightCubeAll(StoneDecoration.SLAG_GRAVEL, rl("block/stone_decoration/slag_gravel/slag_gravel"));
 		multiEightCubeAll(StoneDecoration.GRIT_SAND, rl("block/stone_decoration/grit_sand/grit_sand"));
 		cubeAll(StoneDecoration.COKE, rl("block/stone_decoration/coke"));

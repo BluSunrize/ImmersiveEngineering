@@ -1540,8 +1540,15 @@ public class Recipes extends RecipeProvider
 				.pattern("bb")
 				.define('t', Blocks.WHITE_TERRACOTTA)
 				.define('b', StoneDecoration.CLINKER_BRICK)
-				.unlockedBy("has_slag", has(IETags.slag))
+				.unlockedBy("has_bricks", has(Blocks.BRICKS))
 				.save(out, toRL(toPath(StoneDecoration.CLINKER_BRICK_QUOIN)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.CLINKER_BRICK_SILL, 4)
+				.pattern("tt")
+				.pattern("bb")
+				.define('t', Blocks.WHITE_TERRACOTTA)
+				.define('b', StoneDecoration.CLINKER_BRICK)
+				.unlockedBy("has_bricks", has(Blocks.BRICKS))
+				.save(out, toRL(toPath(StoneDecoration.CLINKER_BRICK_SILL)));
 		addSandwich(StoneDecoration.HEMPCRETE, 6,
 				makeIngredient(IETags.clay),
 				makeIngredient(IETags.fiberHemp),

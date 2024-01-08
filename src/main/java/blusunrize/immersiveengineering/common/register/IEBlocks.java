@@ -152,6 +152,7 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<IEBaseBlock> SLAG_BRICK = BlockEntry.simple("slag_brick", STONE_DECO_GBRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> CLINKER_BRICK = BlockEntry.simple("clinker_brick", STONE_DECO_BRICK_PROPS);
+		public static final BlockEntry<IEBaseBlock> CLINKER_BRICK_SILL = BlockEntry.simple("clinker_brick_sill", STONE_DECO_BRICK_PROPS);
 		public static final BlockEntry<HorizontalFacingBlock> CLINKER_BRICK_QUOIN = new BlockEntry<>(
 				"clinker_brick_quoin", STONE_DECO_BRICK_PROPS, HorizontalFacingBlock::new);
 		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple(
