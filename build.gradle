@@ -141,13 +141,13 @@ if (customGradle.exists()) {
 }
 
 task signJar(type: PotentiallySignJar) {
+    input = shadowJar.archiveFile
+    output = jar.archiveFile
     if (project.hasProperty('keyStore')) {
         keyStore = project.keyStore
         alias = project.storeAlias
         storePass = project.storePass
         keyPass = project.storePass
-        input = shadowJar.archiveFile
-        output = jar.archiveFile
     } else {
         logger.warn("No key store found, not signing the output jar\n")
     }
