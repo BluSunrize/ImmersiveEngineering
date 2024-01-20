@@ -22,8 +22,8 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEItems;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import net.minecraft.core.HolderLookup.Provider;
@@ -654,6 +654,16 @@ public class DeviceRecipes extends IERecipeProvider
 					.define('s', IETags.getItemTag(IETags.getTagsFor(chute.getKey()).sheetmetal))
 					.unlockedBy("has_plate", has(IETags.getTagsFor(chute.getKey()).plate))
 					.save(out, toRL(toPath(chute.getValue())));
+		shapedMisc(MetalDevices.ELECTROMAGNET)
+				.pattern("pcp")
+				.pattern("wiw")
+				.pattern("pwp")
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('p', IETags.steelRod)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.define('c', Ingredients.COMPONENT_ELECTRONIC)
+				.unlockedBy("has_"+toPath(Ingredients.COMPONENT_ELECTRONIC), has(Ingredients.COMPONENT_ELECTRONIC))
+				.save(out, toRL(toPath(MetalDevices.ELECTROMAGNET)));
 	}
 
 	private void addCoveyorCoveringRecipe(ItemLike basic, RecipeOutput out)

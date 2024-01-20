@@ -326,14 +326,24 @@ public class IngredientRecipes extends IERecipeProvider
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_INDUCTION))));
 		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))
 				.pattern("iii")
-				.pattern("cfc")
-				.pattern("cec")
+				.pattern("wfw")
+				.pattern("wew")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
 				.define('f', WoodenDecoration.TREATED_FENCE)
-				.define('c', IETags.electrumWire)
+				.define('w', Misc.WIRE_COILS.get(WireType.ELECTRUM))
 				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_TESLA))));
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))
+				.pattern("rer")
+				.pattern("wiw")
+				.pattern(" w ")
+				.define('r', IETags.steelRod)
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))));
 
 		shapelessMisc(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)
@@ -424,14 +434,6 @@ public class IngredientRecipes extends IERecipeProvider
 				.define('p', Items.PAPER)
 				.unlockedBy("has_"+toPath(Items.PAPER), has(Items.PAPER))
 				.save(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
-		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))
-				.pattern("wew")
-				.pattern("wiw")
-				.define('w', IETags.copperWire)
-				.define('e', Ingredients.COMPONENT_ELECTRONIC)
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
-				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))));
 	}
 
 	private RecipeOutput buildBlueprint(RecipeOutput out, String blueprint)

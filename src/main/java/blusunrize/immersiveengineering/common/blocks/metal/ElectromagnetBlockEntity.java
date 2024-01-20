@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -19,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -38,13 +38,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
@@ -52,8 +47,7 @@ import java.util.function.Supplier;
 
 public class ElectromagnetBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IStateBasedDirectional, IScrewdriverInteraction
 {
-	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
-	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
+	private final MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
 	public boolean redstoneControlInverted = false;
 
 	public static final int MAGNET_CONSUMPTION = 32;
@@ -76,19 +70,19 @@ public class ElectromagnetBlockEntity extends IEBaseBlockEntity implements IESer
 			final int radius = 6;
 			Direction facing = getFacing();
 			Vec3 sourcePos = getBlockPos().relative(facing).getCenter().add(0, .25, 0);
-			AABB area;
+			BlockPos bottomClose;
+			BlockPos topFar;
 			if(getFacing().getAxis()!=Axis.Y)
 			{
-				BlockPos bottomClose = getBlockPos().relative(facing.getCounterClockWise(), radius).below(radius);
-				BlockPos topFar = getBlockPos().relative(facing, radius).relative(facing.getClockWise(), radius).above(radius);
-				area = new AABB(bottomClose, topFar);
+				bottomClose = getBlockPos().relative(facing.getCounterClockWise(), radius).below(radius);
+				topFar = getBlockPos().relative(facing, radius).relative(facing.getClockWise(), radius).above(radius);
 			}
 			else
 			{
-				BlockPos bottomClose = getBlockPos().offset(-radius, 0, -radius);
-				BlockPos topFar = getBlockPos().offset(radius, 0, radius).relative(facing, radius);
-				area = new AABB(bottomClose, topFar);
+				bottomClose = getBlockPos().offset(-radius, 0, -radius);
+				topFar = getBlockPos().offset(radius, 0, radius).relative(facing, radius);
 			}
+			AABB area = new AABB(Vec3.atCenterOf(bottomClose), Vec3.atCenterOf(topFar));
 			// perform attraction
 			List<ItemEntity> items = performMagnetAttraction(getLevelNonnull(), area, 0.75, sourcePos, Vec3.ZERO, getBlockPos().toShortString(), () -> true);
 			// stop items from being attracted when they get close enough
@@ -133,7 +127,7 @@ public class ElectromagnetBlockEntity extends IEBaseBlockEntity implements IESer
 				if(!itemEntity.getPersistentData().contains(Lib.MAGNET_SOURCE_NBT))
 				{
 					// play sound when being initially moved
-					itemEntity.playSound(IESounds.electromagnet.get(), (float)(.125+world.getRandom().nextDouble()*.25), 1);
+					itemEntity.playSound(IESounds.electromagnet.value(), (float)(.125+world.getRandom().nextDouble()*.25), 1);
 					// mark the source of magnetism
 					itemEntity.getPersistentData().putString(Lib.MAGNET_SOURCE_NBT, sourceName);
 				}
@@ -159,13 +153,9 @@ public class ElectromagnetBlockEntity extends IEBaseBlockEntity implements IESer
 		EnergyHelper.serializeTo(energyStorage, nbt);
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	public static void registerCapabilities(BECapabilityRegistrar<ElectromagnetBlockEntity> registrar)
 	{
-		if(cap==ForgeCapabilities.ENERGY&&(side==null||side!=getFacing()))
-			return energyCap.cast();
-		return super.getCapability(cap, side);
+		registrar.register(EnergyStorage.BLOCK, (be, side) -> side!=be.getFacing()?be.energyStorage: null);
 	}
 
 	@Override

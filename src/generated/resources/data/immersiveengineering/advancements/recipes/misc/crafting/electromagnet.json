@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_component_electronic",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_component_electronic"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/electromagnet"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -57,6 +57,7 @@ public class BlockCapabilityRegistration
 		FluidPipeBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FLUID_PIPE));
 		FluidPumpBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FLUID_PUMP));
 		FluidPlacerBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FLUID_PLACER));
+		ElectromagnetBlockEntity.registerCapabilities(forType(event, IEBlockEntities.ELECTROMAGNET));
 		MetalBarrelBlockEntity.registerCapabilities(forType(event, IEBlockEntities.METAL_BARREL));
 		SampleDrillBlockEntity.registerCapabilities(forType(event, IEBlockEntities.SAMPLE_DRILL));
 		TeslaCoilBlockEntity.registerCapabilities(forType(event, IEBlockEntities.TESLACOIL));

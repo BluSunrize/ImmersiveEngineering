@@ -15,11 +15,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 public class AnyFacingEntityBlock<T extends BlockEntity> extends IEEntityBlock<T>
 {
-	public AnyFacingEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
+	public AnyFacingEntityBlock(Supplier<BlockEntityType<T>> tileType, Properties blockProps)
 	{
 		super(tileType, blockProps);
 	}
