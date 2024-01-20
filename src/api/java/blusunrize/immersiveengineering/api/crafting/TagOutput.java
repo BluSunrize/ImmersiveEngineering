@@ -68,7 +68,12 @@ public class TagOutput
 	{
 		if(cachedStack==null)
 			cachedStack = rawData.map(
-					iws -> IEApi.getPreferredStackbyMod(iws.getMatchingStacks()),
+					iws -> {
+						if(iws.basePredicate.isEmpty())
+							return ItemStack.EMPTY;
+						else
+							return IEApi.getPreferredStackbyMod(iws.getMatchingStacks());
+					},
 					Function.identity()
 			);
 		return cachedStack;
