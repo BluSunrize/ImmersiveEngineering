@@ -43,6 +43,7 @@ public class Lib
 
 	public static final String MAGNET_PREVENT_NBT = "PreventRemoteMovement";
 	public static final String MAGNET_SOURCE_NBT = "immersiveengineering:magnet_source";
+	public static final String MAGNET_TIME_NBT = "immersiveengineering:magnet_last_pulled";
 
 	/**
 	 * Gui IDs

@@ -510,7 +510,9 @@ public final class IEBlocks
 		public static final BlockEntry<ClocheBlock> CLOCHE = new BlockEntry<>("cloche", METAL_PROPERTIES_NO_OCCLUSION, ClocheBlock::new);
 		public static final Map<IConveyorType<?>, BlockEntry<ConveyorBlock>> CONVEYORS = new HashMap<>();
 		public static final Map<EnumMetals, BlockEntry<ChuteBlock>> CHUTES = new EnumMap<>(EnumMetals.class);
-
+		public static final BlockEntry<AnyFacingEntityBlock<ElectromagnetBlockEntity>> ELECTROMAGNET = new BlockEntry<>(
+				"electromagnet", DEFAULT_METAL_PROPERTIES, p -> new AnyFacingEntityBlock<>(IEBlockEntities.ELECTROMAGNET, p)
+		);
 		private static void init()
 		{
 			for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})

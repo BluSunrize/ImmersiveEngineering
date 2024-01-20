@@ -197,6 +197,9 @@ public class IEBlockEntities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ChuteBlockEntity>> CHUTE = REGISTER.register(
 			"chute", makeTypeMultipleBlocks(ChuteBlockEntity::new, MetalDevices.CHUTES.values())
 	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectromagnetBlockEntity>> ELECTROMAGNET = REGISTER.register(
+			"electromagnet", makeType(ElectromagnetBlockEntity::new, MetalDevices.ELECTROMAGNET)
+	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FakeLightBlockEntity>> FAKE_LIGHT = REGISTER.register(
 			"fakelight", makeType(FakeLightBlockEntity::new, Misc.FAKE_LIGHT)
 	);

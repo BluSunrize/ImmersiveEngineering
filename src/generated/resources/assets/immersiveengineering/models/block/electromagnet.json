@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "immersiveengineering:block/metal_device/electromagnet_bottom",
+    "side": "immersiveengineering:block/metal_device/electromagnet",
+    "top": "immersiveengineering:block/metal_device/electromagnet_top"
+  }
+}
