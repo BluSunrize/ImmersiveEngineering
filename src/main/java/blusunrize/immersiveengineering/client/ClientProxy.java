@@ -59,7 +59,6 @@ import blusunrize.immersiveengineering.mixin.accessors.client.GuiSubtitleOverlay
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.ManualRecipeRef;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -94,11 +93,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Arrays;
@@ -206,7 +202,6 @@ public class ClientProxy extends CommonProxy
 	{
 		if(IEClientConfig.stencilBufferEnabled.get())
 			ev.enqueueWork(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
-		registerContainersAndScreens();
 
 		IEManual.addIEManualEntries();
 		IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
@@ -401,37 +396,37 @@ public class ClientProxy extends CommonProxy
 		registerEntityRenderingHandler(event, IEEntityTypes.BULWARK, BulwarkRenderer::new);
 	}
 
-	private static void registerContainersAndScreens()
+	public static void registerContainersAndScreens(RegisterMenuScreensEvent ev)
 	{
-		MenuScreens.register(IEMenuTypes.COKE_OVEN.getType(), CokeOvenScreen::new);
-		MenuScreens.register(IEMenuTypes.ALLOY_SMELTER.getType(), AlloySmelterScreen::new);
-		MenuScreens.register(IEMenuTypes.BLAST_FURNACE.getType(), BlastFurnaceScreen::new);
-		MenuScreens.register(IEMenuTypes.BLAST_FURNACE_ADV.getType(), BlastFurnaceScreen.Advanced::new);
-		MenuScreens.register(IEMenuTypes.CRAFTING_TABLE.getType(), CraftingTableScreen::new);
-		MenuScreens.register(IEMenuTypes.WOODEN_CRATE.get(), CrateScreen.StandardCrate::new);
-		registerTileScreen(IEMenuTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
-		MenuScreens.register(IEMenuTypes.CIRCUIT_TABLE.getType(), CircuitTableScreen::new);
-		MenuScreens.register(IEMenuTypes.ASSEMBLER.getType(), AssemblerScreen::new);
-		MenuScreens.register(IEMenuTypes.SORTER.getType(), SorterScreen::new);
-		MenuScreens.register(IEMenuTypes.ITEM_BATCHER.getType(), ItemBatcherScreen::new);
-		MenuScreens.register(IEMenuTypes.LOGIC_UNIT.getType(), LogicUnitScreen::new);
-		MenuScreens.register(IEMenuTypes.SQUEEZER.getType(), SqueezerScreen::new);
-		MenuScreens.register(IEMenuTypes.FERMENTER.getType(), FermenterScreen::new);
-		MenuScreens.register(IEMenuTypes.REFINERY.getType(), RefineryScreen::new);
-		MenuScreens.register(IEMenuTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
-		MenuScreens.register(IEMenuTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
-		MenuScreens.register(IEMenuTypes.MIXER.getType(), MixerScreen::new);
-		MenuScreens.register(IEMenuTypes.GUN_TURRET.getType(), GunTurretScreen::new);
-		MenuScreens.register(IEMenuTypes.CHEM_TURRET.getType(), ChemTurretScreen::new);
-		MenuScreens.register(IEMenuTypes.FLUID_SORTER.getType(), FluidSorterScreen::new);
-		MenuScreens.register(IEMenuTypes.CLOCHE.getType(), ClocheScreen::new);
-		MenuScreens.register(IEMenuTypes.TOOLBOX_BLOCK.getType(), ToolboxScreen::new);
-		MenuScreens.register(IEMenuTypes.TOOLBOX.getType(), ToolboxScreen::new);
+		ev.register(IEMenuTypes.COKE_OVEN.getType(), CokeOvenScreen::new);
+		ev.register(IEMenuTypes.ALLOY_SMELTER.getType(), AlloySmelterScreen::new);
+		ev.register(IEMenuTypes.BLAST_FURNACE.getType(), BlastFurnaceScreen::new);
+		ev.register(IEMenuTypes.BLAST_FURNACE_ADV.getType(), BlastFurnaceScreen.Advanced::new);
+		ev.register(IEMenuTypes.CRAFTING_TABLE.getType(), CraftingTableScreen::new);
+		ev.register(IEMenuTypes.WOODEN_CRATE.get(), CrateScreen.StandardCrate::new);
+		registerTileScreen(ev, IEMenuTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
+		ev.register(IEMenuTypes.CIRCUIT_TABLE.getType(), CircuitTableScreen::new);
+		ev.register(IEMenuTypes.ASSEMBLER.getType(), AssemblerScreen::new);
+		ev.register(IEMenuTypes.SORTER.getType(), SorterScreen::new);
+		ev.register(IEMenuTypes.ITEM_BATCHER.getType(), ItemBatcherScreen::new);
+		ev.register(IEMenuTypes.LOGIC_UNIT.getType(), LogicUnitScreen::new);
+		ev.register(IEMenuTypes.SQUEEZER.getType(), SqueezerScreen::new);
+		ev.register(IEMenuTypes.FERMENTER.getType(), FermenterScreen::new);
+		ev.register(IEMenuTypes.REFINERY.getType(), RefineryScreen::new);
+		ev.register(IEMenuTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
+		ev.register(IEMenuTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
+		ev.register(IEMenuTypes.MIXER.getType(), MixerScreen::new);
+		ev.register(IEMenuTypes.GUN_TURRET.getType(), GunTurretScreen::new);
+		ev.register(IEMenuTypes.CHEM_TURRET.getType(), ChemTurretScreen::new);
+		ev.register(IEMenuTypes.FLUID_SORTER.getType(), FluidSorterScreen::new);
+		ev.register(IEMenuTypes.CLOCHE.getType(), ClocheScreen::new);
+		ev.register(IEMenuTypes.TOOLBOX_BLOCK.getType(), ToolboxScreen::new);
+		ev.register(IEMenuTypes.TOOLBOX.getType(), ToolboxScreen::new);
 
-		registerScreen(IEMenuTypes.REVOLVER, RevolverScreen::new);
-		registerScreen(IEMenuTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
+		registerScreen(ev, IEMenuTypes.REVOLVER, RevolverScreen::new);
+		registerScreen(ev, IEMenuTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
 
-		MenuScreens.register(IEMenuTypes.CRATE_MINECART.get(), CrateScreen.EntityCrate::new);
+		ev.register(IEMenuTypes.CRATE_MINECART.get(), CrateScreen.EntityCrate::new);
 	}
 
 	private static <T extends BlockEntity>
@@ -483,15 +478,17 @@ public class ClientProxy extends CommonProxy
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
-	void registerScreen(IEMenuTypes.ItemContainerType<C> type, ScreenConstructor<C, S> factory)
+	void registerScreen(
+			RegisterMenuScreensEvent ev, IEMenuTypes.ItemContainerType<C> type, ScreenConstructor<C, S> factory
+	)
 	{
-		MenuScreens.register(type.getType(), factory);
+		ev.register(type.getType(), factory);
 	}
 
 	public static <C extends IEBaseContainerOld<?>, S extends Screen & MenuAccess<C>>
-	void registerTileScreen(ArgContainer<?, C> type, ScreenConstructor<C, S> factory)
+	void registerTileScreen(RegisterMenuScreensEvent ev, ArgContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
-		MenuScreens.register(type.getType(), factory);
+		ev.register(type.getType(), factory);
 	}
 
 	public static void populateAPI()
