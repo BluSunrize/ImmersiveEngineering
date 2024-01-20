@@ -61,18 +61,18 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 				.addItemStack(recipe.output.get());
 
 		int i = 0;
-		for(Lazy<ItemStack> out : recipe.secondaryStripping)
+		for(ItemStack out : recipe.secondaryStripping.get())
 		{
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 47+i%2*18, 29+i/2*18)
-					.addItemStack(out.get());
+					.addItemStack(out);
 			i++;
 		}
 
 		i = 0;
-		for(Lazy<ItemStack> out : recipe.secondaryOutputs)
+		for(ItemStack out : recipe.secondaryOutputs.get())
 		{
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 91+i%2*18, 29+i/2*18)
-					.addItemStack(out.get())
+					.addItemStack(out)
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 			i++;
 		}

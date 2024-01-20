@@ -57,6 +57,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -152,15 +153,15 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(JEIRecipeTypes.MIXER, getFiltered(MixerRecipe.RECIPES, IJEIRecipe::listInJEI));
 	}
 
-	private <T extends Recipe<?>> List<T> getRecipes(CachedRecipeList<T> cachedList)
+	private <T extends Recipe<?>> List<RecipeHolder<T>> getRecipes(CachedRecipeList<T> cachedList)
 	{
 		return getFiltered(cachedList, $ -> true);
 	}
 
-	private <T extends Recipe<?>> List<T> getFiltered(CachedRecipeList<T> cachedList, Predicate<T> include)
+	private <T extends Recipe<?>> List<RecipeHolder<T>> getFiltered(CachedRecipeList<T> cachedList, Predicate<T> include)
 	{
 		return cachedList.getRecipes(Minecraft.getInstance().level).stream()
-				.filter(include)
+				.filter(h -> include.test(h.value()))
 				.toList();
 	}
 
@@ -221,13 +222,13 @@ public class JEIHelper implements IModPlugin
 
 
 	// TODO these throw when joining servers!
-	private ArrayList<BottlingMachineRecipe> getFluidBucketRecipes()
+	private List<RecipeHolder<BottlingMachineRecipe>> getFluidBucketRecipes()
 	{
 		// assume a source and flowing version of each fluid:
-		int fluidCount = BuiltInRegistries.FLUIDS.getValues().size()/2;
+		int fluidCount = BuiltInRegistries.FLUID.size()/2;
 
-		ArrayList<BottlingMachineRecipe> recipes = new ArrayList<>(fluidCount);
-		for(Fluid f : BuiltInRegistries.FLUIDS)
+		List<RecipeHolder<BottlingMachineRecipe>> recipes = new ArrayList<>(fluidCount);
+		for(Fluid f : BuiltInRegistries.FLUID)
 			if(f.isSource(f.defaultFluidState()))
 			{
 				// Sort tags, prioritize vanilla/forge tags, and assume that more slashes means more specific tag
@@ -244,12 +245,15 @@ public class JEIHelper implements IModPlugin
 						});
 				ItemStack bucket = f.getBucket().getDefaultInstance();
 				if(!bucket.isEmpty()&&tag.isPresent())
-					recipes.add(new BottlingMachineRecipe(
-							new ResourceLocation(Lib.MODID, "jei_bucket_"+BuiltInRegistries.FLUID.getKey(f).getPath()),
-							List.of(Lazy.of(() -> bucket)),
-							IngredientWithSize.of(new ItemStack(Items.BUCKET)),
-							new FluidTagInput(tag.get(), 1000)
-					));
+					recipes.add(
+							new RecipeHolder<>(
+									new ResourceLocation(Lib.MODID, "jei_bucket_"+BuiltInRegistries.FLUID.getKey(f).getPath()),
+									new BottlingMachineRecipe(
+											new TagOutputList(new TagOutput(bucket)),
+											IngredientWithSize.of(new ItemStack(Items.BUCKET)),
+											new FluidTagInput(tag.get(), 1000)
+									))
+					);
 			}
 		return recipes;
 	}

@@ -29,6 +29,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -37,7 +39,7 @@ import java.util.Optional;
 /**
  * @author BluSunrize - 08.09.2016
  */
-public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<AssemblerMenu, CraftingRecipe>
+public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<AssemblerMenu, RecipeHolder<CraftingRecipe>>
 {
 	private final IRecipeTransferHandlerHelper transferHandlerHelper;
 
@@ -59,14 +61,14 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 	}
 
 	@Override
-	public RecipeType<CraftingRecipe> getRecipeType()
+	public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType()
 	{
 		return RecipeTypes.CRAFTING;
 	}
 
 	@Override
 	@Nullable
-	public IRecipeTransferError transferRecipe(AssemblerMenu container, CraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer)
+	public IRecipeTransferError transferRecipe(AssemblerMenu container, RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer)
 	{
 		for(int i = 0; i < 3; i++)
 			if(container.patterns.get(i).getStackInSlot(9).isEmpty())

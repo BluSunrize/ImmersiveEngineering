@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.data.recipes.builder;
 
-import mezz.jei.api.recipe.category.extensions.IExtendableRecipeCategory;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import java.util.ArrayList;

@@ -33,9 +33,7 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
-		{
-			shader = ShaderWrapper_Direct.SERIALIZER.read(nbt.getCompound("shader"));
-		}
+			shader = ShaderWrapper_Direct.SERIALIZER.read(this, nbt.getCompound("shader"));
 	}
 
 	@Override

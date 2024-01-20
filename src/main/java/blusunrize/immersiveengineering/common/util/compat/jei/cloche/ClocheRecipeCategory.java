@@ -19,6 +19,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
@@ -43,9 +44,10 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 				.addItemStacks(Arrays.asList(recipe.soil.getItems()))
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
-		for(int i = 0; i < recipe.outputs.size(); i++)
+		NonNullList<ItemStack> outputs = recipe.outputs.get();
+		for(int i = 0; i < outputs.size(); i++)
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 65+i%2*18, 13+i/2*18)
-					.addItemStack(recipe.outputs.get(i).get())
+					.addItemStack(outputs.get(i))
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 

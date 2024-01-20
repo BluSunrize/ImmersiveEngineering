@@ -29,6 +29,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 {
 	private final IDrawableStatic arrow;
 
-	public ArcFurnaceRecipeCategory(IGuiHelper helper, RecipeType<ArcFurnaceRecipe> type)
+	public ArcFurnaceRecipeCategory(IGuiHelper helper, RecipeType<RecipeHolder<ArcFurnaceRecipe>> type)
 	{
 		super(helper, type, "block.immersiveengineering.arc_furnace");
 		setBackground(helper.createBlankDrawable(148, 54));
@@ -66,9 +67,9 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, x+8, 1)
 				.addItemStacks(recipe.input.getMatchingStackList());
 
-		for(int j = 0; j < recipe.additives.length; j++)
+		for(int j = 0; j < recipe.additives.size(); j++)
 			builder.addSlot(RecipeIngredientRole.INPUT, x+j%2*18, 19+j/2*18)
-					.addItemStacks(recipe.additives[j].getMatchingStackList());
+					.addItemStacks(recipe.additives.get(j).getMatchingStackList());
 
 		NonNullList<ItemStack> simulatedOutput = recipe.getBaseOutputs();
 		int outputSize = simulatedOutput.size();
@@ -125,8 +126,9 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	}
 
 	@Override
-	public List<Component> getTooltipStrings(ArcFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
+	public List<Component> getTooltipStrings(RecipeHolder<ArcFurnaceRecipe> holder, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
 	{
+		ArcFurnaceRecipe recipe = holder.value();
 		int x = (148-getWidth(recipe))/2;
 		if(mouseX >= x+40&&mouseX <= x+64&&mouseY >= 8&&mouseY <= 26)
 		{
@@ -138,6 +140,6 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 					Component.translatable("desc.immersiveengineering.info.seconds", Utils.formatDouble(time/20, "#.##"))
 			);
 		}
-		return super.getTooltipStrings(recipe, recipeSlotsView, mouseX, mouseY);
+		return super.getTooltipStrings(holder, recipeSlotsView, mouseX, mouseY);
 	}
 }

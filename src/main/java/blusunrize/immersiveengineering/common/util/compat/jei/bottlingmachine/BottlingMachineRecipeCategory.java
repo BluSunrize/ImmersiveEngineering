@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -47,11 +47,11 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, BottlingMachineRecipe recipe, IFocusGroup focuses)
 	{
-		int inLength = recipe.inputs.length;
+		int inLength = recipe.inputs.size();
 		int yStart = 29-Math.min(inLength, 3)*9;
 		for(int i=0; i<inLength; i++)
 			builder.addSlot(RecipeIngredientRole.INPUT, 1, yStart+i*18)
-				.addItemStacks(recipe.inputs[i].getMatchingStackList())
+				.addItemStacks(recipe.inputs.get(i).getMatchingStackList())
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		List<ItemStack> outputs = recipe.output.get();
@@ -64,7 +64,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		int tankSize = Math.max(FluidType.BUCKET_VOLUME, recipe.fluidInput.getAmount());
 		builder.addSlot(RecipeIngredientRole.INPUT, 24, 2)
 				.setFluidRenderer(tankSize, false, 16, 52)
-				.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks())
+				.addIngredients(NeoForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 

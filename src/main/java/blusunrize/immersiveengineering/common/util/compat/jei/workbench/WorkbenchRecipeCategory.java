@@ -39,10 +39,10 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 		builder.addSlot(RecipeIngredientRole.INPUT, 25, 6)
 				.addItemStacks(Lists.newArrayList(BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory)))
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
-		int y = recipe.inputs.length <= 4?13: 1;
-		for(int j = 0; j < recipe.inputs.length; j++)
+		int y = recipe.inputs.size() <= 4?13: 1;
+		for(int j = 0; j < recipe.inputs.size(); j++)
 			builder.addSlot(RecipeIngredientRole.INPUT, 81+j%2*18, y+j/2*18)
-					.addItemStacks(Arrays.asList(recipe.inputs[j].getMatchingStacks()))
+					.addItemStacks(Arrays.asList(recipe.inputs.get(j).getMatchingStacks()))
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 141, 15)
 				.addItemStack(recipe.output.get())

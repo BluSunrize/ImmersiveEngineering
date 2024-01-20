@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -53,7 +53,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 106, 9)
 					.setFluidRenderer(tankSize, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
-					.addIngredient(ForgeTypes.FLUID_STACK, recipe.fluidOutput)
+					.addIngredient(NeoForgeTypes.FLUID_STACK, recipe.fluidOutput)
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 		}
 	}

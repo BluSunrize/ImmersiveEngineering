@@ -16,6 +16,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -85,7 +86,7 @@ public abstract class InternalStorageItem extends IEBaseItem
 	public static final IAttachmentSerializer<CompoundTag, IEItemStackHandler> DATA_SERIALIZER = new IAttachmentSerializer<CompoundTag, IEItemStackHandler>()
 	{
 		@Override
-		public IEItemStackHandler read(CompoundTag tag)
+		public IEItemStackHandler read(IAttachmentHolder holder, CompoundTag tag)
 		{
 			if(tag.isEmpty())
 				return null;

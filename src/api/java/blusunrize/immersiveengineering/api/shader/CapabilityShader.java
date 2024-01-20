@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -146,7 +147,7 @@ public class CapabilityShader
 		}
 
 		@Override
-		public ShaderWrapper_Direct read(CompoundTag tag)
+		public ShaderWrapper_Direct read(IAttachmentHolder holder, CompoundTag tag)
 		{
 			ShaderWrapper_Direct wrapper = new ShaderWrapper_Direct(new ResourceLocation(tag.getString("IE:ShaderType")));
 			if(!tag.contains("IE:NoShader"))

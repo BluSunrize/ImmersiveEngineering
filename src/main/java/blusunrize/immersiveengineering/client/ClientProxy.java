@@ -288,9 +288,9 @@ public class ClientProxy extends CommonProxy
 		}
 		for(Model skin : ev.getSkins())
 		{
-			LivingEntityRenderer<?, ?> render = ev.getSkin(skin);
-			if(render!=null)
-				addIELayer(render, ev.getEntityModels());
+			EntityRenderer<? extends Player> render = ev.getSkin(skin);
+			if(render instanceof LivingEntityRenderer<?, ?> livingRenderer)
+				addIELayer(livingRenderer, ev.getEntityModels());
 		}
 		ShaderMinecartRenderer.overrideMinecartModels();
 	}

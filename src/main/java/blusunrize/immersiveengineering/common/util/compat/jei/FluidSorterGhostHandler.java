@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.client.gui.FluidSorterScreen;
 import com.google.common.collect.ImmutableList;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.renderer.Rect2i;
@@ -25,7 +25,7 @@ public class FluidSorterGhostHandler implements IGhostIngredientHandler<FluidSor
 	@Override
 	public <I> List<Target<I>> getTargetsTyped(FluidSorterScreen gui, ITypedIngredient<I> ingredient, boolean doStart)
 	{
-		Optional<FluidStack> ingr = ingredient.getIngredient(ForgeTypes.FLUID_STACK);
+		Optional<FluidStack> ingr = ingredient.getIngredient(NeoForgeTypes.FLUID_STACK);
 		if(ingr.isEmpty())
 			return ImmutableList.of();
 		ImmutableList.Builder<Target<I>> builder = ImmutableList.builder();

@@ -73,7 +73,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		if(oldStyle!=style||oldC0!=colour0||oldC1!=colour1)
 			requestModelDataUpdate();
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
-			shader = ShaderWrapper_Direct.SERIALIZER.read(nbt.getCompound("shader"));
+			shader = ShaderWrapper_Direct.SERIALIZER.read(this, nbt.getCompound("shader"));
 		markContainingBlockForUpdate(null);
 	}
 
