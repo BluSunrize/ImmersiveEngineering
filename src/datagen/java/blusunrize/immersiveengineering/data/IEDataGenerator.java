@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.data.blockstates.BlockStates;
 import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
+import blusunrize.immersiveengineering.data.loot.LootModifierProvider;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import blusunrize.immersiveengineering.data.recipes.RootRecipeProvider;
 import blusunrize.immersiveengineering.data.tags.*;
@@ -57,6 +58,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new DynamicModels(multiblocks, output, exHelper));
+			gen.addProvider(true, new LootModifierProvider(output));
 			for(final DataProvider provider : WorldGenerationProvider.makeProviders(output, lookup, exHelper))
 				gen.addProvider(true, provider);
 			ManualDataGenerator.addProviders(gen, exHelper);

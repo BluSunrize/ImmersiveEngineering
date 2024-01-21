@@ -1,0 +1,48 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2024
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.data.loot;
+
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.util.loot.AddDropModifier;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.neoforged.neoforge.common.Tags.Items;
+import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
+
+import static net.minecraft.advancements.critereon.ItemPredicate.Builder.item;
+import static net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition.invert;
+import static net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition.randomChance;
+import static net.minecraft.world.level.storage.loot.predicates.MatchTool.toolMatches;
+
+public class LootModifierProvider extends GlobalLootModifierProvider
+{
+	public LootModifierProvider(PackOutput output)
+	{
+		super(output, Lib.MODID);
+	}
+
+	@Override
+	protected void start()
+	{
+		add("hemp_from_grass", new AddDropModifier(
+				Misc.HEMP_SEEDS,
+				randomChance(0.1f),
+				invert(toolMatches(item().of(Items.SHEARS))),
+				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.SHORT_GRASS)
+		));
+		add("hemp_from_tall_grass", new AddDropModifier(
+				Misc.HEMP_SEEDS,
+				randomChance(0.1f),
+				invert(toolMatches(item().of(Items.SHEARS))),
+				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.TALL_GRASS)
+		));
+	}
+}

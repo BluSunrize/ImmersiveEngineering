@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:add_drop",
+  "conditions": [
+    {
+      "chance": 0.1,
+      "condition": "minecraft:random_chance"
+    },
+    {
+      "condition": "minecraft:inverted",
+      "term": {
+        "condition": "minecraft:match_tool",
+        "predicate": {
+          "tag": "forge:shears"
+        }
+      }
+    },
+    {
+      "block": "minecraft:tall_grass",
+      "condition": "minecraft:block_state_property"
+    }
+  ],
+  "item": "immersiveengineering:seed"
+}

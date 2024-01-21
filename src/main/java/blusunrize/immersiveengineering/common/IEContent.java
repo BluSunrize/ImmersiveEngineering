@@ -62,7 +62,7 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.commands.IEArgumentTypes;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
-import blusunrize.immersiveengineering.common.util.loot.GrassDropModifier;
+import blusunrize.immersiveengineering.common.util.loot.AddDropModifier;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.wires.WireSyncManager;
@@ -144,7 +144,7 @@ public class IEContent
 		IEItems.init(modBus);
 		IESounds.init(modBus);
 		IEBlocks.init(modBus);
-		GrassDropModifier.init(modBus);
+		AddDropModifier.init(modBus);
 		IERecipeTypes.init(modBus);
 		IELootFunctions.init(modBus);
 		IEArgumentTypes.init(modBus);
