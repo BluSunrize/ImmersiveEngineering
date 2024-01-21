@@ -27,10 +27,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -187,7 +187,6 @@ public class ManualScreen extends Screen
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float deltaTime)
 	{
-		super.render(graphics, mouseX, mouseY, deltaTime);
 		final PoseStack transform = graphics.pose();
 		transform.pushPose();
 		if(scaleFactor!=1)
@@ -196,6 +195,7 @@ public class ManualScreen extends Screen
 			mouseX /= scaleFactor;
 			mouseY /= scaleFactor;
 		}
+		super.render(graphics, mouseX, mouseY, deltaTime);
 
 		manual.entryRenderPre();
 
@@ -251,7 +251,8 @@ public class ManualScreen extends Screen
 	@Override
 	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float deltaTime)
 	{
-		super.renderBackground(graphics, mouseX, mouseY, deltaTime);
+		// TODO do we want this or not?
+		//  super.renderBackground(graphics, mouseX, mouseY, deltaTime);
 		graphics.blit(texture, guiLeft, guiTop, 0, 0, xSize, ySize);
 		if(this.searchField!=null)
 		{
@@ -282,7 +283,6 @@ public class ManualScreen extends Screen
 				}
 			}
 		}
-
 	}
 
 	@Override
