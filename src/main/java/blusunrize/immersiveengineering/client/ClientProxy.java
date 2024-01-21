@@ -396,6 +396,7 @@ public class ClientProxy extends CommonProxy
 		registerEntityRenderingHandler(event, IEEntityTypes.BULWARK, BulwarkRenderer::new);
 	}
 
+	@SubscribeEvent
 	public static void registerContainersAndScreens(RegisterMenuScreensEvent ev)
 	{
 		ev.register(IEMenuTypes.COKE_OVEN.getType(), CokeOvenScreen::new);
