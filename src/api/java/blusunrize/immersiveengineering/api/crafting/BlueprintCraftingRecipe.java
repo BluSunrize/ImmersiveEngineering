@@ -127,32 +127,25 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public NonNullList<ItemStack> consumeInputs(NonNullList<ItemStack> query, int crafted)
 	{
 		NonNullList<ItemStack> consumed = NonNullList.create();
-		Iterator<IngredientWithSize> inputIt = inputs.iterator();
-		while(inputIt.hasNext())
+		for(IngredientWithSize ingr : inputs)
 		{
-			IngredientWithSize ingr = inputIt.next();
 			int inputSize = ingr.getCount()*crafted;
 
 			for(int i = 0; i < query.size(); i++)
 			{
 				ItemStack queryStack = query.get(i);
-				if(!queryStack.isEmpty())
-					if(ingr.test(queryStack))
-					{
-						int taken = Math.min(queryStack.getCount(), inputSize);
-						consumed.add(ItemHandlerHelper.copyStackWithSize(queryStack, taken));
-						if(taken >= queryStack.getCount()&&queryStack.getItem().hasCraftingRemainingItem(queryStack))
-							query.set(i, queryStack.getItem().getCraftingRemainingItem(queryStack));
-						else
-							queryStack.shrink(taken);
-						inputSize -= taken;
-						if(inputSize <= 0)
-						{
-							inputIt.remove();
-							break;
-						}
-					}
-
+				if(!queryStack.isEmpty()&&ingr.test(queryStack))
+				{
+					int taken = Math.min(queryStack.getCount(), inputSize);
+					consumed.add(ItemHandlerHelper.copyStackWithSize(queryStack, taken));
+					if(taken >= queryStack.getCount()&&queryStack.getItem().hasCraftingRemainingItem(queryStack))
+						query.set(i, queryStack.getItem().getCraftingRemainingItem(queryStack));
+					else
+						queryStack.shrink(taken);
+					inputSize -= taken;
+					if(inputSize <= 0)
+						break;
+				}
 			}
 		}
 		return consumed;
