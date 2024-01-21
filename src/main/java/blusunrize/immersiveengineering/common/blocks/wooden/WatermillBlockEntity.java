@@ -67,7 +67,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			outputCap = BlockCapabilityCache.create(
 					IRotationAcceptor.CAPABILITY, serverLevel, worldPosition.relative(facing.getOpposite()), facing
 			);
-			outputCap = BlockCapabilityCache.create(
+			reverseOutputCap = BlockCapabilityCache.create(
 					IRotationAcceptor.CAPABILITY, serverLevel, worldPosition.relative(facing), facing.getOpposite()
 			);
 		}
