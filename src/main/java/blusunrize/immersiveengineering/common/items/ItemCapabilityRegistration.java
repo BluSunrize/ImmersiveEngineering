@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
@@ -51,6 +52,8 @@ public class ItemCapabilityRegistration
 		InternalStorageItem.registerCapabilitiesISI(forType(event, Tools.TOOLBOX));
 		InternalStorageItem.registerCapabilitiesISI(forType(event, Weapons.SPEEDLOADER));
 		InternalStorageItem.registerCapabilitiesISI(forType(event, Misc.SKYHOOK));
+
+		IEFluids.registerBucketCapabilities(event);
 	}
 
 	private static void registerCapacitorCapabilities(
