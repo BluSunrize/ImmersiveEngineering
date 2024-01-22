@@ -23,15 +23,15 @@ import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -59,7 +59,7 @@ public class IEBlockEntities
 			"craftingtable", makeType(CraftingTableBlockEntity::new, WoodenDevices.CRAFTING_TABLE)
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WoodenCrateBlockEntity>> WOODEN_CRATE = REGISTER.register(
-			"woodencrate", makeType(WoodenCrateBlockEntity::new, WoodenDevices.CRATE)
+			"woodencrate", makeTypeMultipleBlocks(WoodenCrateBlockEntity::new, List.of(WoodenDevices.CRATE, WoodenDevices.REINFORCED_CRATE))
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WoodenBarrelBlockEntity>> WOODEN_BARREL = REGISTER.register(
 			"woodenbarrel", makeType(WoodenBarrelBlockEntity::new, WoodenDevices.WOODEN_BARREL)

@@ -73,6 +73,7 @@ public class BlockCapabilityRegistration
 		LogicUnitBlockEntity.registerCapabilities(forType(event, IEBlockEntities.LOGIC_UNIT));
 		SorterBlockEntity.registerCapabilities(forType(event, IEBlockEntities.SORTER));
 		WoodenBarrelBlockEntity.registerCapabilities(forType(event, IEBlockEntities.WOODEN_BARREL));
+		WoodenCrateBlockEntity.registerCapabilities(forType(event, IEBlockEntities.WOODEN_CRATE));
 
 		// Vanilla
 		event.registerBlockEntity(
