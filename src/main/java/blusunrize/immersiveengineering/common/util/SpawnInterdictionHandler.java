@@ -45,10 +45,10 @@ public class SpawnInterdictionHandler
 	@SubscribeEvent
 	public static void onEntitySpawnCheck(MobSpawnEvent.FinalizeSpawn event)
 	{
-		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY||event.getSpawner()!=null)
+		if(event.isSpawnCancelled()||event.getSpawner()!=null)
 			return;
 		if(shouldCancel(event.getEntity()))
-			event.setResult(Event.Result.DENY);
+			event.setSpawnCancelled(true);
 	}
 
 	@SubscribeEvent
