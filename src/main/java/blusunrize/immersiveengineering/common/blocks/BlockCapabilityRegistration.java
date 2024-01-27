@@ -53,11 +53,12 @@ public class BlockCapabilityRegistration
 					forType(event, () -> (BlockEntityType<ConveyorBeltBlockEntity<?>>)beType.get())
 			);
 		DynamoBlockEntity.registerCapabilities(forType(event, IEBlockEntities.DYNAMO));
+		ElectromagnetBlockEntity.registerCapabilities(forType(event, IEBlockEntities.ELECTROMAGNET));
 		EnergyConnectorBlockEntity.registerCapabilities(event);
 		FluidPipeBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FLUID_PIPE));
 		FluidPumpBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FLUID_PUMP));
 		FluidPlacerBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FLUID_PLACER));
-		ElectromagnetBlockEntity.registerCapabilities(forType(event, IEBlockEntities.ELECTROMAGNET));
+		FurnaceHeaterBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FURNACE_HEATER));
 		MetalBarrelBlockEntity.registerCapabilities(forType(event, IEBlockEntities.METAL_BARREL));
 		SampleDrillBlockEntity.registerCapabilities(forType(event, IEBlockEntities.SAMPLE_DRILL));
 		TeslaCoilBlockEntity.registerCapabilities(forType(event, IEBlockEntities.TESLACOIL));
