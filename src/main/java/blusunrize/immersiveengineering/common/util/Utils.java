@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.Raytracer;
+import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -24,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -58,8 +60,8 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BucketPickup;
@@ -827,10 +829,9 @@ public class Utils
 
 	public static ItemStack getPickBlock(BlockState state, HitResult rtr, Player player)
 	{
-		//TODO
-		// BlockGetter w = getSingleBlockWorldAccess(state);
-		// return state.getBlock().getCloneItemStack(state, rtr, w, BlockPos.ZERO, player);
-		return ItemStack.EMPTY;
+		final RegistryAccess registries = player.level().registryAccess();
+		final LevelReader w = TemplateWorld.createSingleBlock(state, registries);
+		return state.getBlock().getCloneItemStack(state, rtr, w, BlockPos.ZERO, player);
 	}
 
 	public static ItemStack getPickBlock(BlockState state)
@@ -862,59 +863,5 @@ public class Utils
 		if(flipFront)
 			result = new AABB(result.minX, result.minY, 1-result.maxZ, result.maxX, result.maxY, 1-result.minZ);
 		return result;
-	}
-
-	public static BlockGetter getSingleBlockWorldAccess(BlockState state)
-	{
-		return new SingleBlockAcess(state);
-	}
-
-	private static class SingleBlockAcess implements BlockGetter
-	{
-		private final BlockState state;
-
-		public SingleBlockAcess(BlockState state)
-		{
-			this.state = state;
-		}
-
-		@Nullable
-		@Override
-		public BlockEntity getBlockEntity(@Nonnull BlockPos pos)
-		{
-			return null;
-		}
-
-		@Nonnull
-		@Override
-		public BlockState getBlockState(@Nonnull BlockPos pos)
-		{
-			return pos.equals(BlockPos.ZERO)?state: Blocks.AIR.defaultBlockState();
-		}
-
-		@Nonnull
-		@Override
-		public FluidState getFluidState(@Nonnull BlockPos blockPos)
-		{
-			return getBlockState(blockPos).getFluidState();
-		}
-
-		@Override
-		public int getMaxLightLevel()
-		{
-			return 0;
-		}
-
-		@Override
-		public int getHeight()
-		{
-			return 1;
-		}
-
-		@Override
-		public int getMinBuildHeight()
-		{
-			return 0;
-		}
 	}
 }

@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
@@ -68,6 +69,13 @@ public class TemplateWorld extends Level
 	private final RecipeManager recipeManager = new RecipeManager();
 	private final TemplateChunkProvider chunkProvider;
 	private final TickRateManager tickRateManager = new TickRateManager();
+
+	public static LevelReader createSingleBlock(BlockState stateAtZero, RegistryAccess regAccess)
+	{
+		return new TemplateWorld(
+				List.of(new StructureBlockInfo(BlockPos.ZERO, stateAtZero, null)), bp -> true, regAccess
+		);
+	}
 
 	public TemplateWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow, RegistryAccess regAccess)
 	{
