@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -52,15 +51,14 @@ import net.neoforged.neoforge.fluids.FluidType;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
 public class DecorationRecipes extends IERecipeProvider
 {
-	public DecorationRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public DecorationRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

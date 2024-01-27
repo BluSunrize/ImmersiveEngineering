@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -39,13 +38,12 @@ import net.neoforged.neoforge.common.Tags;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class ToolRecipes extends IERecipeProvider
 {
-	public ToolRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public ToolRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

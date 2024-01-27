@@ -8,12 +8,9 @@
 
 package blusunrize.immersiveengineering.data.recipes;
 
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-
-import java.util.concurrent.CompletableFuture;
 
 // RecipeProvider overrides name to "Recipes" with a final override, so we cannot have more than two "top-level"
 // providers inheriting from it
@@ -21,22 +18,22 @@ public class RootRecipeProvider extends RecipeProvider
 {
 	private final PackOutput packOutput;
 
-	public RootRecipeProvider(PackOutput packOutput, CompletableFuture<Provider> lookupProvider)
+	public RootRecipeProvider(PackOutput packOutput)
 	{
-		super(packOutput, lookupProvider);
+		super(packOutput);
 		this.packOutput = packOutput;
 	}
 
 	@Override
 	protected void buildRecipes(RecipeOutput out)
 	{
-		new OreRecipes(this.packOutput, lookupProvider).buildRecipes(out);
-		new ToolRecipes(this.packOutput, lookupProvider).buildRecipes(out);
-		new DecorationRecipes(this.packOutput, lookupProvider).buildRecipes(out);
-		new IngredientRecipes(this.packOutput, lookupProvider).buildRecipes(out);
-		new DeviceRecipes(this.packOutput, lookupProvider).buildRecipes(out);
-		new MultiblockRecipes(this.packOutput, lookupProvider).buildRecipes(out);
-		new MiscRecipes(this.packOutput, lookupProvider).buildRecipes(out);
-		new ClocheRecipes(this.packOutput, lookupProvider).buildRecipes(out);
+		new OreRecipes(this.packOutput).buildRecipes(out);
+		new ToolRecipes(this.packOutput).buildRecipes(out);
+		new DecorationRecipes(this.packOutput).buildRecipes(out);
+		new IngredientRecipes(this.packOutput).buildRecipes(out);
+		new DeviceRecipes(this.packOutput).buildRecipes(out);
+		new MultiblockRecipes(this.packOutput).buildRecipes(out);
+		new MiscRecipes(this.packOutput).buildRecipes(out);
+		new ClocheRecipes(this.packOutput).buildRecipes(out);
 	}
 }

@@ -35,7 +35,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.data.recipes.builder.BlueprintCraftingRecipeBuilder;
 import blusunrize.immersiveengineering.data.recipes.builder.MineralMixBuilder;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -56,17 +55,15 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
-import java.util.concurrent.CompletableFuture;
-
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 import static net.minecraft.data.recipes.SimpleCookingRecipeBuilder.smelting;
 
 public class MiscRecipes extends IERecipeProvider
 {
-	public MiscRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public MiscRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

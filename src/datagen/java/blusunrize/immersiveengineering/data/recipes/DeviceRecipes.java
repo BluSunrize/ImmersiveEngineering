@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -41,13 +40,12 @@ import net.neoforged.neoforge.fluids.FluidType;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.CompletableFuture;
 
 public class DeviceRecipes extends IERecipeProvider
 {
-	public DeviceRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public DeviceRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

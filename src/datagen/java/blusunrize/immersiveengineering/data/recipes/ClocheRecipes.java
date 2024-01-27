@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions.*;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.data.recipes.builder.ClocheRecipeBuilder;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -24,13 +23,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
-import java.util.concurrent.CompletableFuture;
-
 public class ClocheRecipes extends IERecipeProvider
 {
-	public ClocheRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public ClocheRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

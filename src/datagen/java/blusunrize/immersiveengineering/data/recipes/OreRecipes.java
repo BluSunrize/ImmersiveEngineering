@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.data.resources.RecipeMetals;
 import blusunrize.immersiveengineering.data.resources.RecipeMetals.AlloyProperties;
 import blusunrize.immersiveengineering.data.resources.RecipeOres;
 import blusunrize.immersiveengineering.data.resources.SecondaryOutput;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -33,15 +32,13 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
-import java.util.concurrent.CompletableFuture;
-
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
 public class OreRecipes extends IERecipeProvider
 {
-	public OreRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public OreRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

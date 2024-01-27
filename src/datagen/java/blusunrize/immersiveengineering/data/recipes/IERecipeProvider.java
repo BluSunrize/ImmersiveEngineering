@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.data.recipes;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -18,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.conditions.NotCondition;
@@ -27,7 +25,6 @@ import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
@@ -38,9 +35,9 @@ public abstract class IERecipeProvider extends RecipeProvider
 
 	private final HashMap<String, Integer> pathCount = new HashMap<>();
 
-	public IERecipeProvider(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public IERecipeProvider(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	protected ResourceLocation toRL(String s)

@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
@@ -31,13 +30,11 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
-import java.util.concurrent.CompletableFuture;
-
 public class IngredientRecipes extends IERecipeProvider
 {
-	public IngredientRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public IngredientRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

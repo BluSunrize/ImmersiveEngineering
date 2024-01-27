@@ -27,7 +27,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.data.recipes.builder.*;
 import blusunrize.immersiveengineering.data.resources.RecipeWoods;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
@@ -43,7 +42,6 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.api.IETags.getItemTag;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
@@ -56,9 +54,9 @@ public class MultiblockRecipes extends IERecipeProvider
 	private static final int quarter_bucket = FluidType.BUCKET_VOLUME/4;
 	private static final int eighth_bucket = FluidType.BUCKET_VOLUME/8;
 
-	public MultiblockRecipes(PackOutput p_248933_, CompletableFuture<Provider> lookupProvider)
+	public MultiblockRecipes(PackOutput p_248933_)
 	{
-		super(p_248933_, lookupProvider);
+		super(p_248933_);
 	}
 
 	@Override

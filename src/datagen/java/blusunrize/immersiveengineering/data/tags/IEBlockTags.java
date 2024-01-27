@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -41,7 +42,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.minecraft.core.Holder;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -149,6 +149,15 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
+		tag(IETags.concreteForFeet)
+				.add(StoneDecoration.CONCRETE.get())
+				.add(StoneDecoration.CONCRETE_TILE.get())
+				.add(StoneDecoration.CONCRETE_SPRAYED.get())
+				.add(IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()).get())
+				.add(StoneDecoration.CONCRETE_THREE_QUARTER.get())
+				.add(StoneDecoration.CONCRETE_SHEET.get())
+				.add(StoneDecoration.CONCRETE_QUARTER.get())
+				.add(StoneDecoration.CONCRETE_LEADED.get());
 
 		registerHammerMineable();
 		registerRockcutterMineable();

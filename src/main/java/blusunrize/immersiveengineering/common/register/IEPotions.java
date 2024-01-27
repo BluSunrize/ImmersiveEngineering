@@ -8,12 +8,10 @@
 
 package blusunrize.immersiveengineering.common.register;
 
-import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -24,16 +22,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class IEPotions
@@ -67,16 +60,6 @@ public class IEPotions
 
 	public static class IEPotion extends MobEffect
 	{
-		private static final Set<Block> concrete = ImmutableSet.<Block>builder()
-				.add(StoneDecoration.CONCRETE.get())
-				.add(StoneDecoration.CONCRETE_TILE.get())
-				.add(StoneDecoration.CONCRETE_SPRAYED.get())
-				.add(IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()).get())
-				.add(StoneDecoration.CONCRETE_THREE_QUARTER.get())
-				.add(StoneDecoration.CONCRETE_SHEET.get())
-				.add(StoneDecoration.CONCRETE_QUARTER.get())
-				.add(StoneDecoration.CONCRETE_LEADED.get())
-				.build();
 		final int tickrate;
 		final boolean halfTickRateWIthAmplifier;
 		boolean showInInventory = true;
@@ -138,12 +121,7 @@ public class IEPotions
 			else if(this==IEPotions.CONCRETE_FEET.value()&&!living.level().isClientSide)
 			{
 				BlockState state = living.level().getBlockState(living.blockPosition());
-				if(!concrete.contains(state.getBlock())&&
-						concrete.stream()
-								.map(BuiltInRegistries.BLOCK::getKey)
-								.map(IEBlocks.TO_SLAB::get)
-								.filter(Objects::nonNull)
-								.noneMatch(b -> b.get()==state.getBlock()))
+				if(!state.is(IETags.concreteForFeet))
 					living.removeEffect(this);
 			}
 		}
