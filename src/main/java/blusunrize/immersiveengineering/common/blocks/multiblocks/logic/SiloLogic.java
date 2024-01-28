@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SiloLogic.State;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SiloShapes;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SiloTankShapes;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -39,6 +39,7 @@ import java.util.function.Supplier;
 
 public class SiloLogic implements IMultiblockLogic<State>, IServerTickableComponent<State>
 {
+	private static final SiloTankShapes SHAPE_GETTER = new SiloTankShapes(6);
 	private static final int MAX_STORAGE = 41472;
 	public static final BlockPos OUTPUT_POS = new BlockPos(1, 0, 1);
 	private static final Set<BlockPos> IO_OFFSETS = Set.of(OUTPUT_POS, new BlockPos(1, 6, 1));
@@ -90,7 +91,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType)
 	{
-		return SiloShapes.SHAPE_GETTER;
+		return SHAPE_GETTER;
 	}
 
 	public static class State implements IMultiblockState

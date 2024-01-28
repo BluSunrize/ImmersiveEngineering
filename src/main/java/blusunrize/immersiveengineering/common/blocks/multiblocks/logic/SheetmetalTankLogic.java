@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SheetmetalTankLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SiloTankShapes;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -30,7 +31,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -46,6 +46,7 @@ import java.util.function.Supplier;
 
 public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBOverlayText<State>
 {
+	private static final SiloTankShapes SHAPE_GETTER = new SiloTankShapes(4);
 	public static final BlockPos IO_POS = new BlockPos(1, 0, 1);
 	private static final BlockPos INPUT_POS = new BlockPos(1, 4, 1);
 
@@ -107,12 +108,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	@Override
 	public Function<BlockPos, VoxelShape> shapeGetter(ShapeType forType)
 	{
-		return pos -> {
-			if(pos.getX()%2==0&&pos.getY()==0&&pos.getZ()%2==0)
-				return Shapes.box(.375f, 0, .375f, .625f, 1, .625f);
-			else
-				return Shapes.block();
-		};
+		return SHAPE_GETTER;
 	}
 
 	@Override
