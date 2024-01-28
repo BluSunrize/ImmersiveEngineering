@@ -238,9 +238,11 @@ public class IEBlockTags extends BlockTagsProvider
 	private void registerRockcutterMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(IETags.rockcutterHarvestable);
+		tag.addTag(Tags.Blocks.COBBLESTONE);
 		tag.addTag(Tags.Blocks.STONE);
 		tag.addTag(Tags.Blocks.GLASS);
 		tag.addTag(BlockTags.ICE);
+		tag.addTag(Tags.Blocks.ORES);
 	}
 
 	private void registerGrindingDiskMineable()

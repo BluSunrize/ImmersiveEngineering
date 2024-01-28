@@ -1,7 +1,9 @@
 {
   "values": [
+    "#forge:cobblestone",
     "#forge:stone",
     "#forge:glass",
-    "#minecraft:ice"
+    "#minecraft:ice",
+    "#forge:ores"
   ]
 }
