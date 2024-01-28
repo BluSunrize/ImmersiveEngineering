@@ -155,7 +155,7 @@ public class CrusherLogic implements
 		if(!collided.isAlive()||!state.rsState.isEnabled(ctx))
 			return;
 		final IMultiblockLevel level = ctx.getLevel();
-		final AABB internalBB = new AABB(1.9375, 1.25, 0.9375, 3.0625, 2.5, 2.0625);
+		final AABB internalBB = new AABB(1.4375, 1.25, 0.4375, 3.5625, 2.5, 2.5625);
 		final AABB crusherInternal = level.toAbsolute(internalBB);
 		if(!collided.getBoundingBox().intersects(crusherInternal))
 			return;
