@@ -410,7 +410,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_copper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.unlockedBy("has_redstone", has(Items.REDSTONE))
 				.save(
-						new WrappingRecipeOutput<ShapedRecipe>(out, r -> new TurnAndCopyRecipe(r).allowQuarterTurn()),
+						new WrappingRecipeOutput<ShapedRecipe>(out, r -> new TurnAndCopyRecipe(r).allowEighthTurn()),
 						toRL(toPath(MetalDecoration.ENGINEERING_RS))
 				);
 		shapedMisc(MetalDecoration.ENGINEERING_LIGHT, 4)

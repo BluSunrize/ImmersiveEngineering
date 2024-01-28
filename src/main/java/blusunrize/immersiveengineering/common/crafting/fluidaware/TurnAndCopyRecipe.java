@@ -17,7 +17,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -32,6 +31,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 {
 	protected boolean allowQuarter;
 	protected boolean allowEighth;
+	@Nonnull
 	protected final List<Integer> nbtCopyTargetSlot;
 	protected Pattern nbtCopyPredicate = null;
 
@@ -74,17 +74,15 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 	public ItemStack assemble(@Nonnull CraftingContainer matrix, RegistryAccess access)
 	{
 		ItemStack out = super.assemble(matrix, access);
-		if(nbtCopyTargetSlot!=null)
+		CompoundTag tag = new CompoundTag();
+		for(int targetSlot : nbtCopyTargetSlot)
 		{
-			CompoundTag tag = out.getOrCreateTag();
-			for(int targetSlot : nbtCopyTargetSlot)
-			{
-				ItemStack s = matrix.getItem(targetSlot);
-				if(!s.isEmpty()&&s.hasTag())
-					tag = ItemNBTHelper.combineTags(tag, s.getOrCreateTag(), nbtCopyPredicate);
-			}
-			out.setTag(tag);
+			ItemStack s = matrix.getItem(targetSlot);
+			if(!s.isEmpty()&&s.hasTag())
+				tag = ItemNBTHelper.combineTags(tag, s.getOrCreateTag(), nbtCopyPredicate);
 		}
+		if(!tag.isEmpty())
+			out.setTag(tag);
 		return out;
 	}
 

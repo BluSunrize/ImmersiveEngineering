@@ -15,19 +15,17 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopyRecipe>
 {
 	private record AdditionalData(
-			Optional<List<Integer>> copySlots,
+			List<Integer> copySlots,
 			boolean quarter,
 			boolean eights,
 			Optional<String> predicate
@@ -36,7 +34,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 		public AdditionalData(TurnAndCopyRecipe recipe)
 		{
 			this(
-					Optional.ofNullable(recipe.getCopyTargets()),
+					recipe.getCopyTargets(),
 					recipe.isQuarterTurn(),
 					recipe.isEightTurn(),
 					Optional.ofNullable(recipe.getBufferPredicate())
@@ -45,7 +43,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	}
 
 	private static final Codec<AdditionalData> ADDITIONAL_CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			ExtraCodecs.strictOptionalField(Codec.INT.listOf(), "copyNBT").forGetter(AdditionalData::copySlots),
+			ExtraCodecs.strictOptionalField(Codec.INT.listOf(), "copyNBT", List.of()).forGetter(AdditionalData::copySlots),
 			ExtraCodecs.strictOptionalField(Codec.BOOL, "quarter_turn", false).forGetter(AdditionalData::quarter),
 			ExtraCodecs.strictOptionalField(Codec.BOOL, "eight_turn", false).forGetter(AdditionalData::eights),
 			ExtraCodecs.strictOptionalField(Codec.STRING, "copy_nbt_predicate").forGetter(AdditionalData::predicate)
@@ -56,7 +54,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	).xmap(
 			p -> {
 				AdditionalData extra = p.getSecond();
-				TurnAndCopyRecipe result = new TurnAndCopyRecipe(p.getFirst(), extra.copySlots().orElse(null));
+				TurnAndCopyRecipe result = new TurnAndCopyRecipe(p.getFirst(), extra.copySlots());
 				if(extra.quarter())
 					result.allowQuarterTurn();
 				if(extra.eights())
@@ -93,10 +91,7 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull TurnAndCopyRecipe recipe)
 	{
 		RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.toVanilla());
-		buffer.writeCollection(
-				Objects.requireNonNullElse(recipe.getCopyTargets(), List.of()),
-				FriendlyByteBuf::writeVarInt
-		);
+		buffer.writeCollection(recipe.getCopyTargets(), FriendlyByteBuf::writeVarInt);
 		if(recipe.hasCopyPredicate())
 		{
 			buffer.writeBoolean(true);

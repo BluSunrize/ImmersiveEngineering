@@ -2,7 +2,7 @@
   "type": "immersiveengineering:turn_and_copy",
   "value": {
     "category": "misc",
-    "copyNBT": [],
+    "eight_turn": true,
     "key": {
       "c": {
         "tag": "forge:ingots/copper"
@@ -19,7 +19,6 @@
       "rcr",
       "iri"
     ],
-    "quarter_turn": true,
     "result": {
       "count": 4,
       "item": "immersiveengineering:rs_engineering"
