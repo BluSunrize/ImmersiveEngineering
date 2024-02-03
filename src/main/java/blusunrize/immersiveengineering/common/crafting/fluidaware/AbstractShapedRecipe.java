@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
@@ -96,5 +97,18 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 	public int getRecipeHeight()
 	{
 		return recipeHeight;
+	}
+
+	@Override
+	public boolean isIncomplete()
+	{
+		// Copied from Forge patch to ShapedRecipe
+		NonNullList<Ingredient> nonnulllist = getIngredients();
+		if(nonnulllist.isEmpty())
+			return true;
+		else
+			return nonnulllist.stream()
+					.filter(ingredient -> !ingredient.isEmpty())
+					.anyMatch(CommonHooks::hasNoElements);
 	}
 }
