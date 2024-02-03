@@ -35,6 +35,20 @@ public class CapabilityShader
 			IEApi.ieLoc("shader_block"), ShaderWrapper.class
 	);
 
+	public static boolean shouldReequipDueToShader(ItemStack oldStack, ItemStack newStack)
+	{
+		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
+		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
+		if(wrapperOld==null&&wrapperNew!=null)
+			return true;
+		else if(wrapperOld!=null&&wrapperNew==null)
+			return true;
+		else if(wrapperOld!=null)
+			return !ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
+		else
+			return false;
+	}
+
 	public interface ShaderWrapper
 	{
 		ResourceLocation getShaderType();

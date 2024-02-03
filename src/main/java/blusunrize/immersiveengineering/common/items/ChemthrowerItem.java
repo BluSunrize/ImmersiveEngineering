@@ -229,16 +229,8 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		if(slotChanged)
+		if(slotChanged||CapabilityShader.shouldReequipDueToShader(oldStack, newStack))
 			return true;
-		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
-		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
-		if(wrapperOld==null&&wrapperNew!=null)
-			return true;
-		else if(wrapperOld!=null&&wrapperNew==null)
-			return true;
-		else if(wrapperOld!=null)
-			return ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
 		else
 			return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}

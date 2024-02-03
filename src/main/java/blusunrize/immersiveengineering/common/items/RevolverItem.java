@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
@@ -561,17 +560,9 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		if(slotChanged)
+		if(slotChanged||CapabilityShader.shouldReequipDueToShader(oldStack, newStack))
 			return true;
 
-		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
-		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
-		if(wrapperOld==null&&wrapperNew!=null)
-			return true;
-		else if(wrapperOld!=null&&wrapperNew==null)
-			return true;
-		else if(wrapperOld!=null)
-			return ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
 		if(ItemNBTHelper.hasKey(oldStack, "elite")||ItemNBTHelper.hasKey(newStack, "elite"))
 			return !ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite"));
 

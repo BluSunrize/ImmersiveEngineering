@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
@@ -167,16 +166,8 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		if(slotChanged)
+		if(slotChanged||CapabilityShader.shouldReequipDueToShader(oldStack, newStack))
 			return true;
-		ShaderWrapper wrapperOld = oldStack.getCapability(CapabilityShader.ITEM);
-		ShaderWrapper wrapperNew = newStack.getCapability(CapabilityShader.ITEM);
-		if(wrapperOld==null&&wrapperNew!=null)
-			return true;
-		else if(wrapperOld!=null&&wrapperNew==null)
-			return true;
-		else if(wrapperOld!=null)
-			return ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
 		else
 			return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
 	}

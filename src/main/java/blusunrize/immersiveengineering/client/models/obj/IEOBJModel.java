@@ -21,6 +21,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.NeoForgeRenderTypes;
+import net.neoforged.neoforge.client.RenderTypeGroup;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
@@ -50,7 +51,7 @@ public record IEOBJModel(
 		if(layers!=null)
 			for(final ResourceLocation name : layers)
 			{
-				final var types = context.getRenderType(name);
+				final RenderTypeGroup types = context.getRenderType(name);
 				blockTypes.add(types.block());
 				itemTypes.add(types.entity());
 				fabulousItemTypes.add(types.entityFabulous());
