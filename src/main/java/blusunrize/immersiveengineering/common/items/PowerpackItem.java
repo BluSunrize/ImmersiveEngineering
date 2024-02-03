@@ -133,7 +133,9 @@ public class PowerpackItem extends UpgradeableToolItem
 	@Override
 	public void onArmorTick(ItemStack itemStack, Level world, Player player)
 	{
-		IEnergyStorage packEnergy = Objects.requireNonNull(itemStack.getCapability(EnergyStorage.ITEM));
+		IEnergyStorage packEnergy = itemStack.getCapability(EnergyStorage.ITEM);
+		if(packEnergy==null)
+			return;
 		int energy = packEnergy.getEnergyStored();
 		if(energy > 0)
 		{
