@@ -272,10 +272,10 @@ public class RenderUtils
 
 	public static void renderTexturedBox(VertexConsumer wr, PoseStack stack, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)
 	{
-		float minU = tex.getU(x0*16);
-		float maxU = tex.getU(x1*16);
-		float minV = tex.getV((yForV?y1: z0)*16);
-		float maxV = tex.getV((yForV?y0: z1)*16);
+		float minU = tex.getU(x0);
+		float maxU = tex.getU(x1);
+		float minV = tex.getV(yForV?y1: z0);
+		float maxV = tex.getV(yForV?y0: z1);
 		renderTexturedBox(wr, stack, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV, LightTexture.FULL_BRIGHT);
 	}
 
