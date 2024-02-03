@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
@@ -51,6 +51,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IScrollwheel
 {
@@ -237,9 +239,12 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 	public static void registerCapabilities(ItemCapabilityRegistrar registrar)
 	{
+		registerCapabilitiesISI(registrar);
 		registrar.register(FluidHandler.ITEM, stack -> new IEItemFluidHandler(stack, CAPACITY));
-		// TODO shader
-		// new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "chemthrower"), stack)
+		registrar.register(
+				CapabilityShader.ITEM,
+				stack -> new ShaderWrapper_Item(ieLoc("chemthrower"), stack)
+		);
 	}
 
 	@Override
