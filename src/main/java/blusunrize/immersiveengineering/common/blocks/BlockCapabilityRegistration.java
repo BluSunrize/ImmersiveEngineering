@@ -45,6 +45,7 @@ public class BlockCapabilityRegistration
 		CapacitorBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CAPACITOR_LV));
 		CapacitorBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CAPACITOR_MV));
 		CapacitorBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CAPACITOR_HV));
+		CapacitorBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CAPACITOR_CREATIVE));
 		ChargingStationBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CHARGING_STATION));
 		ChuteBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CHUTE));
 		ClocheBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CLOCHE));

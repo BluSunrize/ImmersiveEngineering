@@ -53,9 +53,9 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 	private final CapacitorConfig configValues;
 	private final IEnergyStorage energyStorage;
-	private final Map<Direction, IEnergyStorage> energyCaps = new EnumMap<>(Direction.class);
+	protected final Map<Direction, IEnergyStorage> energyCaps = new EnumMap<>(Direction.class);
 	private final Map<Direction, BlockCapabilityCache<IEnergyStorage, ?>> connectedCaps = new EnumMap<>(Direction.class);
-	private final IEnergyStorage nullEnergyCap;
+	protected final IEnergyStorage nullEnergyCap;
 
 	public int comparatorOutput = 0;
 
@@ -185,7 +185,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 			EnergyHelper.deserializeFrom(forgeStorage, nbt);
 	}
 
-	public static void registerCapabilities(BECapabilityRegistrar<CapacitorBlockEntity> registrar)
+	public static void registerCapabilities(BECapabilityRegistrar<? extends CapacitorBlockEntity> registrar)
 	{
 		registrar.register(
 				Capabilities.EnergyStorage.BLOCK,
