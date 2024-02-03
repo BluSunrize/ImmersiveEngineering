@@ -160,7 +160,7 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 	public static class State implements IMultiblockState
 	{
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(
-				IEServerConfig.MACHINES.lightning_output.get()
+				IEServerConfig.MACHINES.lightning_output.get(), 0, IEServerConfig.MACHINES.lightning_output.get()
 		);
 		private final ImmutableList<Supplier<@Nullable IEnergyStorage>> energyOutputs;
 		@Nullable
