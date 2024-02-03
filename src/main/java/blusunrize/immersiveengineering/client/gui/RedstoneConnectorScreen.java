@@ -145,15 +145,12 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 			@Override
 			public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 			{
-				super.render(graphics, mouseX, mouseY, partialTicks);
-				if(this.visible)
-				{
-					int col = color.getTextColor();
-					if(!getState())
-						col = ClientUtils.getDarkenedTextColour(col);
-					col = 0xff000000|col;
-					graphics.fillGradient(getX()+3, getY()+3, getX()+9, getY()+9, col, col);
-				}
+				super.renderWidget(graphics, mouseX, mouseY, partialTicks);
+				int col = color.getTextColor();
+				if(!getState())
+					col = ClientUtils.getDarkenedTextColour(col);
+				col = 0xff000000|col;
+				graphics.fillGradient(getX()+3, getY()+3, getX()+9, getY()+9, col, col);
 			}
 		};
 	}

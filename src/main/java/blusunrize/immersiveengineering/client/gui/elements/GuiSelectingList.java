@@ -28,7 +28,7 @@ public class GuiSelectingList extends GuiReactiveList
 	@Override
 	public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTicks)
 	{
-		super.render(graphics, mx, my, partialTicks);
+		super.renderWidget(graphics, mx, my, partialTicks);
 		if(selectedOption >= offset&&selectedOption-offset < perPage)
 		{
 			Font fr = ClientUtils.mc().font;

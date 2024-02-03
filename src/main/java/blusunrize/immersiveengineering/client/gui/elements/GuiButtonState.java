@@ -75,26 +75,23 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		Minecraft mc = Minecraft.getInstance();
-		if(this.visible)
+		Font fontrenderer = mc.font;
+		this.isHovered = mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
+		RenderSystem.enableBlend();
+		RenderSystem.blendFuncSeparate(770, 771, 1, 0);
+		RenderSystem.blendFunc(770, 771);
+		int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state.getAsInt();
+		int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state.getAsInt();
+		graphics.blit(texture, getX(), getY(), u, v, width, height);
+		if(!getMessage().getString().isEmpty())
 		{
-			Font fontrenderer = mc.font;
-			this.isHovered = mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-			RenderSystem.blendFunc(770, 771);
-			int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state.getAsInt();
-			int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state.getAsInt();
-			graphics.blit(texture, getX(), getY(), u, v, width, height);
-			if(!getMessage().getString().isEmpty())
-			{
-				int txtCol = 0xE0E0E0;
-				if(!this.active)
-					txtCol = 0xA0A0A0;
-				else if(this.isHovered)
-					txtCol = Lib.COLOUR_I_ImmersiveOrange;
-				int[] offset = getTextOffset(fontrenderer);
-				graphics.drawString(fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], txtCol, false);
-			}
+			int txtCol = 0xE0E0E0;
+			if(!this.active)
+				txtCol = 0xA0A0A0;
+			else if(this.isHovered)
+				txtCol = Lib.COLOUR_I_ImmersiveOrange;
+			int[] offset = getTextOffset(fontrenderer);
+			graphics.drawString(fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], txtCol, false);
 		}
 	}
 

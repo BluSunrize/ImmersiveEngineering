@@ -66,13 +66,10 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 	@Override
 	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
-		super.render(graphics, mouseX, mouseY, partialTicks);
-		if(this.visible)
-		{
-			LogicCircuitRegister state = getState();
-			if(state.ordinal() < 16)
-				GuiHelper.drawColouredRect(graphics.pose(), getX()+3, getY()+3, 12, 12, DyeColor.byId(state.ordinal()));
-		}
+		super.renderWidget(graphics, mouseX, mouseY, partialTicks);
+		LogicCircuitRegister state = getState();
+		if(state.ordinal() < 16)
+			GuiHelper.drawColouredRect(graphics.pose(), getX()+3, getY()+3, 12, 12, DyeColor.byId(state.ordinal()));
 	}
 
 	public void setState(int state)
