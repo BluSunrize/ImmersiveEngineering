@@ -47,8 +47,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
-import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -65,7 +63,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -98,7 +95,6 @@ import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
-import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -261,32 +257,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 									Component.literal(oid.toString()),
 									ChatFormatting.GRAY
 							)));
-	}
-
-	@SubscribeEvent
-	public void onPlaySound(PlaySoundEvent event)
-	{
-		if(event.getSound()==null)
-			return;
-		else
-			event.getSound().getSource();
-		if(!EarmuffsItem.affectedSoundCategories.contains(event.getSound().getSource().getName()))
-			return;
-		if(ClientUtils.mc().player!=null)
-		{
-			ItemStack earmuffs = EarmuffsItem.EARMUFF_GETTERS.getFrom(ClientUtils.mc().player);
-			if(!earmuffs.isEmpty()&&
-					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getSource().getName()))
-			{
-				for(String blacklist : IEClientConfig.earDefenders_SoundBlacklist.get())
-					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getLocation().toString()))
-						return;
-				if(event.getSound() instanceof TickableSoundInstance)
-					event.setSound(new IEMuffledTickableSound((TickableSoundInstance)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
-				else
-					event.setSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
-			}
-		}
 	}
 
 	@SubscribeEvent

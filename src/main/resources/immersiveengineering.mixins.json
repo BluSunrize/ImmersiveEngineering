@@ -45,7 +45,8 @@
     "accessors.client.WorldRendererAccess",
     "coremods.client.BipedModelMixin",
     "coremods.client.LevelRendererMixin",
-    "coremods.client.RebuildTaskMixin"
+    "coremods.client.RebuildTaskMixin",
+    "coremods.client.SoundEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1
