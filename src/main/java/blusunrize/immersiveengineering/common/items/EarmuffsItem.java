@@ -33,6 +33,14 @@ import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendC
 
 public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, IConfigurableTool, IColouredItem
 {
+	/**
+	 * The minimum allowed volume multiplier, i.e. the strongest attenuation. Note that this has to be strictly
+	 * positive: otherwise the vanilla sound system will not start any sounds while earmuffs are worn, so long-playing
+	 * sounds will not return after the earmuffs are removed.
+	 */
+	public static final float MIN_MULTIPLIER = 0.05f;
+	public static final float MAX_REDUCTION = 1-MIN_MULTIPLIER;
+
 	public static ItemGetterList EARMUFF_GETTERS = new ItemGetterList(
 			entity -> {
 				ItemStack head = entity.getItemBySlot(EquipmentSlot.HEAD);
@@ -141,7 +149,9 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 	@Override
 	public ToolConfigFloat[] getFloatOptions(ItemStack stack)
 	{
-		return new ToolConfigFloat[]{new ToolConfigFloat("reductionValue", 60, 20, 1-getVolumeMod(stack))};
+		return new ToolConfigFloat[]{
+				new ToolConfigFloat("reductionValue", 60, 20, MAX_REDUCTION-getVolumeMod(stack), 0, MAX_REDUCTION)
+		};
 	}
 
 	@Override
@@ -161,9 +171,9 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 	@Override
 	public void applyConfigOption(ItemStack stack, String key, Object value)
 	{
-		if(value instanceof Boolean)
-			ItemNBTHelper.putBoolean(stack, "IE:Earmuffs:Cat_"+key, !(Boolean)value);
-		else if(value instanceof Float)
-			ItemNBTHelper.putFloat(stack, "IE:Earmuffs:Volume", 1-(Float)value);
+		if(value instanceof Boolean bool)
+			ItemNBTHelper.putBoolean(stack, "IE:Earmuffs:Cat_"+key, !bool);
+		else if(value instanceof Float flt)
+			ItemNBTHelper.putFloat(stack, "IE:Earmuffs:Volume", MAX_REDUCTION-flt);
 	}
 }

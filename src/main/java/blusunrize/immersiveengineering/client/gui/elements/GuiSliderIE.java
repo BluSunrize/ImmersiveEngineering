@@ -22,13 +22,13 @@ public class GuiSliderIE extends ExtendedSlider
 {
 	private final FloatConsumer handler;
 
-	public GuiSliderIE(int x, int y, int width, String name, float value, FloatConsumer handler)
+	public GuiSliderIE(int x, int y, int width, String name, float min, float max, float value, FloatConsumer handler)
 	{
 		super(
 				x, y, width, 8,
 				Component.nullToEmpty(name+" "),
 				Component.nullToEmpty("%"),
-				0, 100, 100*value,
+				100*min, 100*max, 100*value,
 				1, 0, true
 		);
 		this.handler = handler;
