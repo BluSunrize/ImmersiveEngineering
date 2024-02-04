@@ -31,7 +31,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -59,7 +58,7 @@ import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.isChunkSa
 @EventBusSubscriber(modid = Lib.MODID)
 public class GlobalWireNetwork extends SavedData implements IWorldTickable
 {
-	public static final String SAVEDATA_KEY = Lib.MODID+":wire_network";
+	public static final String SAVEDATA_KEY = Lib.MODID+"_wire_network";
 	public static final SetRestrictedField<BooleanSupplier> SANITIZE_CONNECTIONS = SetRestrictedField.common();
 	public static final SetRestrictedField<BooleanSupplier> VALIDATE_CONNECTIONS = SetRestrictedField.common();
 	public static final SetRestrictedField<BiFunction<Boolean, Level, GlobalWireNetwork>> MAKE_NETWORK = SetRestrictedField.common();
