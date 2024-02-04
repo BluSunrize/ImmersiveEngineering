@@ -54,8 +54,11 @@ public abstract class ToolModificationScreen<C extends AbstractContainerMenu> ex
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
-					this.addRenderableWidget(new GuiSliderIE(leftPos+f.x, topPos+f.y, 80, tool.fomatConfigName(stack, f), f.value,
-							value -> sendChange(value, f.name, FloatTag::valueOf)));
+					this.addRenderableWidget(new GuiSliderIE(
+							leftPos+f.x, topPos+f.y, 80,
+							tool.fomatConfigName(stack, f), f.min, f.max,
+							f.value, value -> sendChange(value, f.name, FloatTag::valueOf)
+					));
 		}
 	}
 

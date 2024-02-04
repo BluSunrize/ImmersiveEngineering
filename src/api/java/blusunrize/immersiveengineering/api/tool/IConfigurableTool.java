@@ -73,12 +73,21 @@ public interface IConfigurableTool
 
 		public static class ToolConfigFloat extends ToolConfig
 		{
-			public float value;
+			public final float value;
+			public final float min;
+			public final float max;
 
 			public ToolConfigFloat(String name, int x, int y, float value)
 			{
+				this(name, x, y, value, 0, 1);
+			}
+
+			public ToolConfigFloat(String name, int x, int y, float value, float min, float max)
+			{
 				super(name, x, y);
 				this.value = value;
+				this.min = min;
+				this.max = max;
 			}
 		}
 	}
