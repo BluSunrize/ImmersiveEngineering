@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.config;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
+import blusunrize.immersiveengineering.client.EarmuffHandler;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import net.neoforged.api.distmarker.Dist;
@@ -122,6 +123,7 @@ public class IEClientConfig
 				ImmersiveEngineering.proxy.resetManual();
 			}
 			FluidUtils.enableFractionDisplay = fractionDisplay.get();
+			EarmuffHandler.onConfigUpdate();
 		}
 	}
 }
