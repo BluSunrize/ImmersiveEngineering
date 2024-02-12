@@ -73,6 +73,7 @@ public class BlockCapabilityRegistration
 		FluidSorterBlockEntity.registerCapabilities(forType(event, IEBlockEntities.FLUID_SORTER));
 		ItemBatcherBlockEntity.registerCapabilities(forType(event, IEBlockEntities.ITEM_BATCHER));
 		LogicUnitBlockEntity.registerCapabilities(forType(event, IEBlockEntities.LOGIC_UNIT));
+		MachineInterfaceBlockEntity.registerCapabilities(forType(event, IEBlockEntities.MACHINE_INTERFACE));
 		SorterBlockEntity.registerCapabilities(forType(event, IEBlockEntities.SORTER));
 		WoodenBarrelBlockEntity.registerCapabilities(forType(event, IEBlockEntities.WOODEN_BARREL));
 		WoodenCrateBlockEntity.registerCapabilities(forType(event, IEBlockEntities.WOODEN_CRATE));

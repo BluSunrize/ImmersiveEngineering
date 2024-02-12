@@ -1,0 +1,139 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2024
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.api.tool;
+
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.Lib;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
+
+public class MachineInterfaceHandler
+{
+	public static ResourceLocation BASIC_ITEM_IN = new ResourceLocation(Lib.MODID, "basic/item_input");
+	public static ResourceLocation BASIC_ITEM_OUT = new ResourceLocation(Lib.MODID, "basic/item_output");
+	public static ResourceLocation BASIC_FLUID_IN = new ResourceLocation(Lib.MODID, "basic/fluid_input");
+	public static ResourceLocation BASIC_FLUID_OUT = new ResourceLocation(Lib.MODID, "basic/fluid_output");
+	public static ResourceLocation BASIC_ENERGY = new ResourceLocation(Lib.MODID, "basic/energy_storage");
+
+	private static final Map<ResourceLocation, ConditionOption<?>[]> CONDITION_REGISTRY = new HashMap<>();
+
+	public static void register(ResourceLocation key, ConditionOption<?>... options)
+	{
+		CONDITION_REGISTRY.put(key, options);
+	}
+
+	public static void copyOptions(ResourceLocation newKey, ResourceLocation oldKey)
+	{
+		CONDITION_REGISTRY.put(newKey, CONDITION_REGISTRY.get(oldKey));
+	}
+
+	static
+	{
+		// Items
+		register(BASIC_ITEM_IN,
+				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "empty"), h -> getInventoryFill(h) <= 0),
+				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "quarter"), h -> getInventoryFill(h) > 0.25),
+				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "half"), h -> getInventoryFill(h) > 0.5),
+				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "three_quarter"), h -> getInventoryFill(h) > 0.75),
+				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "full"), h -> getInventoryFill(h) >= 1)
+		);
+		copyOptions(BASIC_ITEM_OUT, BASIC_ITEM_IN);
+		// Fluids
+		register(BASIC_FLUID_IN,
+				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "empty"), h -> getTankFill(h) <= 0),
+				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "quarter"), h -> getTankFill(h) > 0.25),
+				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "half"), h -> getTankFill(h) > 0.5),
+				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "three_quarter"), h -> getTankFill(h) > 0.75),
+				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "full"), h -> getTankFill(h) >= 1)
+		);
+		copyOptions(BASIC_FLUID_OUT, BASIC_FLUID_IN);
+		// Energy
+		register(BASIC_ENERGY,
+				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "empty"), h -> getEnergyFill(h) <= 0),
+				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "quarter"), h -> getEnergyFill(h) > 0.25),
+				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "half"), h -> getEnergyFill(h) > 0.5),
+				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "three_quarter"), h -> getEnergyFill(h) > 0.75),
+				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "full"), h -> getEnergyFill(h) >= 1)
+		);
+	}
+
+	private static float getInventoryFill(IItemHandler itemHandler)
+	{
+		float f = 0;
+		for(int iSlot = 0; iSlot < itemHandler.getSlots(); iSlot++)
+		{
+			ItemStack itemstack = itemHandler.getStackInSlot(iSlot);
+			if(!itemstack.isEmpty())
+				f += itemstack.getCount()/(float)Math.min(itemHandler.getSlotLimit(iSlot), itemstack.getMaxStackSize());
+		}
+		f /= (float)itemHandler.getSlots();
+		return f;
+	}
+
+	private static float getTankFill(IFluidHandler fluidHandler)
+	{
+		float f = 0;
+		for(int iTank = 0; iTank < fluidHandler.getTanks(); iTank++)
+		{
+			FluidStack fluid = fluidHandler.getFluidInTank(iTank);
+			if(!fluid.isEmpty())
+				f += fluid.getAmount()/(float)fluidHandler.getTankCapacity(iTank);
+		}
+		f /= (float)fluidHandler.getTanks();
+		return f;
+	}
+
+	private static float getEnergyFill(IEnergyStorage energyStorage)
+	{
+		return energyStorage.getEnergyStored()/(float)energyStorage.getMaxEnergyStored();
+	}
+
+	public record ConditionOption<T>(ResourceLocation name, Predicate<T> condition)
+	{
+		public Component getName()
+		{
+			return Component.translatable("gui."+name.getNamespace()+".config.machine_interface.option."+name.getPath());
+		}
+
+		public boolean test(T input)
+		{
+			return condition.test(input);
+		}
+	}
+
+	public record MachineCheckImplementation<T>(T instance, ResourceLocation key, ConditionOption<T>[] options)
+	{
+		@SuppressWarnings("unchecked")
+		public MachineCheckImplementation(T instance, ResourceLocation key)
+		{
+			this(instance, key, (ConditionOption<T>[])CONDITION_REGISTRY.get(key));
+		}
+	}
+
+	public interface IMachineInterfaceConnection
+	{
+		BlockCapability<IMachineInterfaceConnection, @Nullable Direction> CAPABILITY = BlockCapability.createSided(
+				IEApi.ieLoc("machine_interface_connection"), IMachineInterfaceConnection.class
+		);
+
+		MachineCheckImplementation<?>[] getAvailableChecks();
+	}
+}

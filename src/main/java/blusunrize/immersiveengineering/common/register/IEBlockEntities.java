@@ -85,6 +85,9 @@ public class IEBlockEntities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LogicUnitBlockEntity>> LOGIC_UNIT = REGISTER.register(
 			"logicunit", makeType(LogicUnitBlockEntity::new, WoodenDevices.LOGIC_UNIT)
 	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MachineInterfaceBlockEntity>> MACHINE_INTERFACE = REGISTER.register(
+			"machineinterface", makeType(MachineInterfaceBlockEntity::new, WoodenDevices.MACHINE_INTERFACE)
+	);
 	public static final MultiblockBEType<WatermillBlockEntity> WATERMILL = makeMultiblock(
 			"watermill", WatermillBlockEntity::new, WoodenDevices.WATERMILL
 	);

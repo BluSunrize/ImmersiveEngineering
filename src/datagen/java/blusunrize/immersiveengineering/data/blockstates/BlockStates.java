@@ -364,6 +364,15 @@ public class BlockStates extends ExtendedBlockstateProvider
 						.layer(solid(), translucent())
 						.end()
 		);
+		{
+			ModelFile machineInterfaceModel = models().cubeBottomTop("machine_interface",
+					modLoc("block/wooden_device/machine_interface"),
+					modLoc("block/wooden_device/machine_interface_back"),
+					modLoc("block/wooden_device/machine_interface_front")
+			);
+			createRotatedBlock(WoodenDevices.MACHINE_INTERFACE, machineInterfaceModel, IEProperties.FACING_HORIZONTAL, ImmutableList.of(), -90, 0);
+			itemModel(WoodenDevices.MACHINE_INTERFACE, machineInterfaceModel);
+		}
 
 		createHorizontalRotatedBlock(Cloth.STRIP_CURTAIN,
 				state -> new ExistingModelFile(rl(

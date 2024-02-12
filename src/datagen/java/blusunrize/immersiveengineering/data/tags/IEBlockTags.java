@@ -337,6 +337,7 @@ public class IEBlockTags extends BlockTagsProvider
 				WoodenDevices.WATERMILL,
 				WoodenDevices.TREATED_WALLMOUNT,
 				WoodenDevices.LOGIC_UNIT,
+				WoodenDevices.MACHINE_INTERFACE,
 				WoodenDecoration.TREATED_FENCE,
 				WoodenDecoration.TREATED_SCAFFOLDING,
 				WoodenDecoration.TREATED_POST,
