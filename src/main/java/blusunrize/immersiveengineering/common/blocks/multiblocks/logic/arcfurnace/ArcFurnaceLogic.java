@@ -21,6 +21,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -286,6 +289,10 @@ public class ArcFurnaceLogic
 			else
 				return null;
 		});
+		register.register(
+				IMachineInterfaceConnection.CAPABILITY,
+				(state, pos) -> pos.side()==null||REDSTONE_POS.equals(pos.posInMultiblock())?state.mifHandler: null
+		);
 	}
 
 	@Override
@@ -334,6 +341,7 @@ public class ArcFurnaceLogic
 		private final IItemHandler additiveHandler;
 		private final IItemHandler outputHandler;
 		private final IItemHandler slagHandler;
+		private final IMachineInterfaceConnection mifHandler;
 		public final RSState rsControl = RSState.enabledByDefault();
 
 		// Client/sync fields
@@ -362,6 +370,11 @@ public class ArcFurnaceLogic
 			this.slagHandler = new WrappingItemHandler(
 					inventory, false, true, new IntRange(SLAG_SLOT, SLAG_SLOT+1)
 			);
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>(insertionHandler, MachineInterfaceHandler.BASIC_ITEM_IN),
+					new MachineCheckImplementation<>(outputHandler, MachineInterfaceHandler.BASIC_ITEM_OUT),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY)
+			};
 		}
 
 		@Override
