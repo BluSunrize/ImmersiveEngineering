@@ -8,42 +8,46 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.commons.compress.utils.Lists;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 
 public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE,
-		IInteractionObjectIE<MachineInterfaceBlockEntity>, IStateBasedDirectional
+		IPlayerInteraction, IStateBasedDirectional
 {
-	private final IEBlockCapabilityCache<IMachineInterfaceConnection> machine = IEBlockCapabilityCaches.forNeighbor(
+	public final IEBlockCapabilityCache<IMachineInterfaceConnection> machine = IEBlockCapabilityCaches.forNeighbor(
 			IMachineInterfaceConnection.CAPABILITY, this, this::getFacing
 	);
 
-	private Collection<MachineInterfaceConfig> configurations = Lists.newArrayList();
+	public List<MachineInterfaceConfig<?>> configurations = Lists.newArrayList();
 
 	private final boolean[] outputs = new boolean[DyeColor.values().length];
 
@@ -60,7 +64,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		{
 			boolean[] outPre = Arrays.copyOf(outputs, outputs.length);
 			Arrays.fill(outputs, false);
-			configurations.forEach(config -> outputs[config.outputColor.getId()] = config.test());
+			configurations.forEach(config -> outputs[config.outputColor.getId()] = config.test(machineCapability));
 			if(!Arrays.equals(outPre, outputs))
 				redstoneCap.markDirty();
 		}
@@ -69,32 +73,41 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-
+		ListTag list = nbt.getList("configurations", Tag.TAG_COMPOUND);
+		configurations.clear();
+		for(int i = 0; i < list.size(); i++)
+			configurations.add(MachineInterfaceConfig.readFromNBT(list.getCompound(i)));
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-
-	}
-
-	@Nullable
-	@Override
-	public MachineInterfaceBlockEntity getGuiMaster()
-	{
-		return this;
+		ListTag list = new ListTag();
+		configurations.forEach(conf -> list.add(conf.writeToNBT()));
+		nbt.put("configurations", list);
 	}
 
 	@Override
-	public ArgContainer<? super MachineInterfaceBlockEntity, ?> getContainerType()
+	public void receiveMessageFromClient(CompoundTag message)
 	{
-		return null;
+		if(message.contains("configuration"))
+		{
+			int idx =message.getInt("idx");
+			if(idx>=this.configurations.size())
+				this.configurations.add(MachineInterfaceConfig.readFromNBT(message.getCompound("configuration")));
+			else
+				this.configurations.set(idx, MachineInterfaceConfig.readFromNBT(message.getCompound("configuration")));
+			setChanged();
+			this.markContainingBlockForUpdate(null);
+		}
 	}
 
 	@Override
-	public boolean canUseGui(Player player)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		return false;
+		if(level.isClientSide)
+			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_MachineInterface, this);
+		return true;
 	}
 
 	@Override
@@ -128,11 +141,33 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		);
 	}
 
-	record MachineInterfaceConfig<T>(MachineCheckImplementation<T> imp, int selectedOption, DyeColor outputColor)
+	@SuppressWarnings("unchecked")
+	public record MachineInterfaceConfig<T>(int selectedCheck, int selectedOption, DyeColor outputColor)
 	{
-		boolean test()
+		boolean test(IMachineInterfaceConnection connection)
 		{
-			return imp().options()[selectedOption()].test(imp().instance());
+			MachineCheckImplementation<T>[] checks = (MachineCheckImplementation<T>[])connection.getAvailableChecks();
+			if(selectedCheck < checks.length&&selectedOption < checks[selectedCheck].options().length)
+				return checks[selectedCheck].options()[selectedOption()].test(checks[selectedCheck].instance());
+			return false;
+		}
+
+		public CompoundTag writeToNBT()
+		{
+			CompoundTag nbt = new CompoundTag();
+			nbt.putInt("selectedCheck", selectedCheck());
+			nbt.putInt("selectedOption", selectedOption());
+			nbt.putInt("outputColor", outputColor().getId());
+			return nbt;
+		}
+
+		static MachineInterfaceConfig<?> readFromNBT(CompoundTag nbt)
+		{
+			return new MachineInterfaceConfig<>(
+					nbt.getInt("selectedCheck"),
+					nbt.getInt("selectedOption"),
+					DyeColor.byId(nbt.getInt("outputColor"))
+			);
 		}
 	}
 }

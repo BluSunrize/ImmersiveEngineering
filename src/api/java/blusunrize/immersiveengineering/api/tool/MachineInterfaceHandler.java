@@ -78,13 +78,20 @@ public class MachineInterfaceHandler
 	private static float getInventoryFill(IItemHandler itemHandler)
 	{
 		float f = 0;
+		// This is a bit of a nasty workaround to deal with our own WrappingItemHandler
+		// We use its isItemValid check to rule out slots not covered by the wrapping
+		int validSlots = 0;
 		for(int iSlot = 0; iSlot < itemHandler.getSlots(); iSlot++)
 		{
 			ItemStack itemstack = itemHandler.getStackInSlot(iSlot);
-			if(!itemstack.isEmpty())
-				f += itemstack.getCount()/(float)Math.min(itemHandler.getSlotLimit(iSlot), itemstack.getMaxStackSize());
+			if(itemHandler.isItemValid(iSlot, itemstack))
+			{
+				if(!itemstack.isEmpty())
+					f += itemstack.getCount()/(float)Math.min(itemHandler.getSlotLimit(iSlot), itemstack.getMaxStackSize());
+				validSlots++;
+			}
 		}
-		f /= (float)itemHandler.getSlots();
+		f /= (float)validSlots;
 		return f;
 	}
 
@@ -125,6 +132,11 @@ public class MachineInterfaceHandler
 		public MachineCheckImplementation(T instance, ResourceLocation key)
 		{
 			this(instance, key, (ConditionOption<T>[])CONDITION_REGISTRY.get(key));
+		}
+
+		public Component getName()
+		{
+			return Component.translatable("gui."+key.getNamespace()+".config.machine_interface.check."+key.getPath().replaceAll("/", "."));
 		}
 	}
 

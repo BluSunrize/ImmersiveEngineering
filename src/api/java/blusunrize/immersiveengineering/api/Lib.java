@@ -61,6 +61,7 @@ public class Lib
 	public static final String GUIID_Sorter = "sorter";
 	public static final String GUIID_ItemBatcher = "item_batcher";
 	public static final String GUIID_LogicUnit = "logic_unit";
+	public static final String GUIID_MachineInterface = "machineinterface";
 	public static final String GUIID_Squeezer = "squeezer";
 	public static final String GUIID_Fermenter = "fermenter";
 	public static final String GUIID_Refinery = "refinery";
