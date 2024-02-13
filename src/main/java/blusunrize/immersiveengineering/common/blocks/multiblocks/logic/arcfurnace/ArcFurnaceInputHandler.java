@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace;
 
-import blusunrize.immersiveengineering.common.util.inventory.InsertOnlyInventory;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,7 +21,7 @@ import java.util.List;
 import static blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.FIRST_IN_SLOT;
 import static blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace.ArcFurnaceLogic.IN_SLOT_COUNT;
 
-public class ArcFurnaceInputHandler extends InsertOnlyInventory
+public class ArcFurnaceInputHandler implements IItemHandler
 {
 	private final IItemHandlerModifiable wrapped;
 	private final Runnable onChanged;
@@ -32,7 +33,7 @@ public class ArcFurnaceInputHandler extends InsertOnlyInventory
 	}
 
 	@Override
-	protected ItemStack insert(ItemStack stack, boolean simulate)
+	public @NotNull ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 	{
 		if(stack.isEmpty())
 			return stack;
@@ -72,6 +73,30 @@ public class ArcFurnaceInputHandler extends InsertOnlyInventory
 	@Override
 	public int getSlots()
 	{
-		return 26;
+		return IN_SLOT_COUNT;
+	}
+
+	@Override
+	public @NotNull ItemStack getStackInSlot(int slot)
+	{
+		return wrapped.getStackInSlot(slot);
+	}
+
+	@Override
+	public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate)
+	{
+		return ItemStack.EMPTY;
+	}
+
+	@Override
+	public int getSlotLimit(int slot)
+	{
+		return wrapped.getSlotLimit(slot);
+	}
+
+	@Override
+	public boolean isItemValid(int slot, @NotNull ItemStack stack)
+	{
+		return wrapped.isItemValid(slot, stack);
 	}
 }
