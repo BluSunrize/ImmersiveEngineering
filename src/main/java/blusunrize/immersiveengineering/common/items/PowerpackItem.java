@@ -23,14 +23,17 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.Cap
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.network.MessagePowerpackAntenna;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemGetterList;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Suppliers;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
@@ -39,6 +42,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -51,7 +55,6 @@ import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -66,6 +69,7 @@ import static blusunrize.immersiveengineering.common.util.EnergyHelper.insertFlu
  */
 public class PowerpackItem extends UpgradeableToolItem
 {
+	public static final int CHEST_SLOT = Inventory.INVENTORY_SIZE+EquipmentSlot.CHEST.getIndex();
 	private static final Supplier<Map<Item, CapacitorConfig>> capacitorConfigMap = Suppliers.memoize(() -> {
 		Map<Item, CapacitorConfig> capacitorConfigMap = new HashMap<>();
 		capacitorConfigMap.put(MetalDevices.CAPACITOR_LV.asItem(), IEServerConfig.MACHINES.lvCapConfig);
@@ -131,11 +135,19 @@ public class PowerpackItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public void onArmorTick(ItemStack itemStack, Level world, Player player)
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected)
+	{
+		// We'll just have to assume that's Curios which sets the slot of -1
+		if(entity instanceof Player player&&(itemSlot==CHEST_SLOT||itemSlot==-1))
+			tickWornPack(stack, world, player);
+	}
+
+	public static void tickWornPack(ItemStack itemStack, Level world, Player player)
 	{
 		IEnergyStorage packEnergy = itemStack.getCapability(EnergyStorage.ITEM);
 		if(packEnergy==null)
 			return;
+		CompoundTag upgrades = getUpgradesStatic(itemStack);
 		int energy = packEnergy.getEnergyStored();
 		if(energy > 0)
 		{
@@ -143,7 +155,7 @@ public class PowerpackItem extends UpgradeableToolItem
 			for(EquipmentSlot slot : EquipmentSlot.values())
 				energy -= insertInto(player.getItemBySlot(slot), energy);
 			// induction charging only happens every 4 ticks
-			if(getUpgrades(itemStack).getBoolean("induction")&&player.tickCount%4==0)
+			if(upgrades.getBoolean("induction")&&player.tickCount%4==0)
 			{
 				NonNullList<ItemStack> allItems = player.getInventory().items;
 				final int selected = player.getInventory().selected;
@@ -159,13 +171,13 @@ public class PowerpackItem extends UpgradeableToolItem
 			if(pre!=energy)
 				packEnergy.extractEnergy(pre-energy, false);
 		}
-		if(getUpgrades(itemStack).getBoolean("antenna"))
+		if(upgrades.getBoolean("antenna"))
 			handleAntennaTick(itemStack, world, player);
-		if(getUpgrades(itemStack).getBoolean("magnet")&&energy >= MAGNET_CONSUMPTION)
+		if(upgrades.getBoolean("magnet")&&energy >= MAGNET_CONSUMPTION)
 			handleMagnetTick(itemStack, world, player);
 	}
 
-	private int insertInto(ItemStack insertInto, int maxAmount)
+	private static int insertInto(ItemStack insertInto, int maxAmount)
 	{
 		IEnergyStorage equippedEnergy = insertInto.getCapability(Capabilities.EnergyStorage.ITEM);
 		Item insertItem = insertInto.getItem();
@@ -175,7 +187,7 @@ public class PowerpackItem extends UpgradeableToolItem
 			return 0;
 	}
 
-	private void handleAntennaTick(ItemStack itemStack, Level world, Player player)
+	private static void handleAntennaTick(ItemStack itemStack, Level world, Player player)
 	{
 		// attachment only works when grounded
 		boolean grounded = player.getRootVehicle().onGround();
@@ -261,7 +273,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		}
 	}
 
-	private Optional<EnergyConnector> findBestSource(GlobalWireNetwork globalNetwork, Connection connection)
+	private static Optional<EnergyConnector> findBestSource(GlobalWireNetwork globalNetwork, Connection connection)
 	{
 		EnergyTransferHandler energyHandler = connection.getContainingNet(globalNetwork).getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 		if(energyHandler==null)
@@ -271,7 +283,7 @@ public class PowerpackItem extends UpgradeableToolItem
 				.max(Comparator.comparingInt(EnergyConnector::getAvailableEnergy));
 	}
 
-	private void handleMagnetTick(ItemStack itemStack, Level world, Player player)
+	private static void handleMagnetTick(ItemStack itemStack, Level world, Player player)
 	{
 		if(world.isClientSide())
 			return;
@@ -304,25 +316,6 @@ public class PowerpackItem extends UpgradeableToolItem
 				Vec3 diffToPlayer = new Vec3(Math.min(dist.x, 1), Math.min(dist.y, 1), Math.min(dist.z, 1)).subtract(player.getDeltaMovement());
 				itemEntity.setDeltaMovement(diffToPlayer.scale(0.2));
 			}
-	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected)
-	{
-		// Migration for older powerpacks before they had item storage
-		if(ItemNBTHelper.hasKey(stack, "energy"))
-		{
-			int previousEnergy = ItemNBTHelper.getInt(stack, "energy");
-			IItemHandler inv = Objects.requireNonNull(stack.getCapability(ItemHandler.ITEM));
-			ItemStack newCapacitor = new ItemStack(IEBlocks.MetalDevices.CAPACITOR_LV);
-			ItemNBTHelper.putInt(newCapacitor, EnergyHelper.ENERGY_KEY, previousEnergy);
-			((IItemHandlerModifiable)inv).setStackInSlot(0, newCapacitor);
-			ItemNBTHelper.remove(stack, "energy");
-		}
-
-		// We'll just have to assume that's Curios which sets the slot of -1
-		if(itemSlot==-1&&entity instanceof Player)
-			onArmorTick(stack, world, (Player)entity);
 	}
 
 	public static ItemStack getCapacitorStatic(ItemStack container)

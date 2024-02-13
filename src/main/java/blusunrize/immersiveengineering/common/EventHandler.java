@@ -289,11 +289,16 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingUpdate(LivingTickEvent event)
 	{
-		if(event.getEntity() instanceof Player&&!event.getEntity().getItemBySlot(EquipmentSlot.CHEST).isEmpty()&&ItemNBTHelper.hasKey(event.getEntity().getItemBySlot(EquipmentSlot.CHEST), Lib.NBT_Powerpack))
+		LivingEntity entity = event.getEntity();
+		ItemStack chestplate = entity.getItemBySlot(EquipmentSlot.CHEST);
+		if(entity instanceof Player player&&!chestplate.isEmpty()&&ItemNBTHelper.hasKey(chestplate, Lib.NBT_Powerpack))
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getEntity().getItemBySlot(EquipmentSlot.CHEST), Lib.NBT_Powerpack);
+			ItemStack powerpack = ItemNBTHelper.getItemStack(chestplate, Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
-				powerpack.getItem().onArmorTick(powerpack, event.getEntity().getCommandSenderWorld(), (Player)event.getEntity());
+			{
+				PowerpackItem.tickWornPack(powerpack, entity.level(), player);
+				ItemNBTHelper.setItemStack(chestplate, Lib.NBT_Powerpack, powerpack);
+			}
 		}
 	}
 
