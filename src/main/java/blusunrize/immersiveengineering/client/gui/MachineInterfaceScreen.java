@@ -17,11 +17,13 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonSelectBox;
+import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity.MachineInterfaceConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,12 +33,19 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
 
 public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInterfaceBlockEntity>
 {
 	public static final ResourceLocation TEXTURE = makeTextureLocation("machine_interface");
+	private static final int GUI_WIDTH_LEFT = 23;
+	private static final int GUI_WIDTH_MIDDLE = 16;
+	private static final int GUI_WIDTH_RIGHT = 41;
+	// "slotted" space available on the left + right segments
+	// not pixel accurate, in order to leave some padding on the sides
+	private static final int GUI_WIDTH_SLOT = 28;
 
 	public MachineInterfaceScreen(MachineInterfaceBlockEntity blockEntity, Component title)
 	{
@@ -46,10 +55,14 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	}
 
 	private MachineCheckImplementation<?>[] availableChecks;
+	private List<MachineInterfaceConfig<?>> configList;
 
-	private List<MachineInterfaceConfig<?>> configList = new ArrayList<>();
-	//	private List<GuiButtonCheckOption> optionButtons;
-	private GuiButtonIE addButton;
+	private final List<ConfigurationRow> rows = new ArrayList<>();
+	private int scrollIndex = 0;
+	private static final int MAX_SCROLL = 6;
+	private static final int ROW_HEIGHT = 24;
+
+	private int middleSegmentCount;
 
 	@Override
 	public void init()
@@ -67,11 +80,40 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 
 			int rowIndex = 0;
 			for(; rowIndex < configList.size(); rowIndex++)
-				addConfigurationRow(rowIndex);
+			{
+				ConfigurationRow row = addConfigurationRow(rowIndex);
+				if(rowIndex >= MAX_SCROLL)
+					row.hide();
+			}
 
-			addButton = new GuiButtonIE(
+			final int guiTotalWidth;
+			// if no conditions exist yet, we have to work with a dummy
+			if(rows.isEmpty())
+			{
+				configList.add(new MachineInterfaceConfig<>(0, 0, DyeColor.WHITE));
+				guiTotalWidth = addConfigurationRow(0).rowWidth();
+				rows.clear();
+				configList.clear();
+				clearWidgets();
+			}
+			else
+				guiTotalWidth = rows.get(0).rowWidth();
+
+			// Update width of GUI, based on collective width of buttons
+			this.middleSegmentCount = (int)Math.ceil((guiTotalWidth-GUI_WIDTH_SLOT)/(float)GUI_WIDTH_MIDDLE);
+			this.xSize = GUI_WIDTH_LEFT+GUI_WIDTH_MIDDLE*middleSegmentCount+GUI_WIDTH_RIGHT;
+			// recalculate guiLeft, shift existing buttons
+			int newGuiLeft = (this.width-this.xSize)/2;
+			int dist = newGuiLeft-this.guiLeft;
+			this.guiLeft = newGuiLeft;
+			this.children().forEach((Consumer<GuiEventListener>)guiEventListener -> {
+				if(guiEventListener instanceof GuiButtonIE button)
+					button.setX(button.getX()+dist);
+			});
+
+			this.addRenderableWidget(new GuiButtonIE(
 					guiLeft+6, guiTop+162,
-					56, 20, Component.translatable(Lib.GUI_CONFIG+"machine_interface.add"),
+					72, 20, Component.translatable(Lib.GUI_CONFIG+"machine_interface.add"),
 					TEXTURE, 0, 186,
 					(IIEPressable<Button>)btn -> {
 						final MachineInterfaceConfig<?> newConfig = new MachineInterfaceConfig<>(0, 0, DyeColor.WHITE);
@@ -81,37 +123,59 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 						sendConfig(idx, newConfig);
 						// add buttons for it
 						addConfigurationRow(idx);
-						// shift this button down
-						addButton.setY(addButton.getY()+24);
+						int scrollsNeeded = idx-scrollIndex-MAX_SCROLL;
+						for(int i = 0; i <= scrollsNeeded; i++)
+							scrollDown();
 					}
-			);
-			this.addRenderableWidget(addButton);
+			));
+
+			this.addRenderableWidget(new GuiButtonIE(
+					guiLeft+xSize-20, guiTop+12,
+					16, 12, Component.nullToEmpty("^"),
+					TEXTURE, 72, 202,
+					(IIEPressable<Button>)btn -> scrollUp()
+			));
+
+			this.addRenderableWidget(new GuiButtonIE(
+					guiLeft+xSize-20, guiTop+147,
+					16, 12, Component.nullToEmpty("V"),
+					TEXTURE, 72, 202,
+					(IIEPressable<Button>)btn -> scrollDown()
+			));
 		}
 	}
 
-	private void addConfigurationRow(final int idx)
+	private void scrollDown()
 	{
-		GuiButtonSelectBox<MachineCheckImplementation<?>> checkButton = new GuiButtonSelectBox<>(
-				guiLeft+10, guiTop+8+idx*24, "checktype", availableChecks, () -> configList.get(idx).selectedCheck(),
-				MachineCheckImplementation::getName,
-				btn -> sendConfig(idx, new MachineInterfaceConfig<>(btn.getClickedState(), 0, configList.get(idx).outputColor()))
-		);
-		this.addRenderableWidget(checkButton);
+		if(scrollIndex+1 < rows.size())
+		{
+			rows.get(scrollIndex).hide();
+			rows.forEach(ConfigurationRow::shiftUp);
+			if(rows.size() > MAX_SCROLL+scrollIndex)
+				rows.get(MAX_SCROLL+scrollIndex).show();
+			scrollIndex++;
+		}
+	}
 
-		GuiButtonSelectBox<ConditionOption<?>> optionButton = new GuiButtonSelectBox<>(
-				guiLeft+14+checkButton.getWidth(), guiTop+8+idx*24, "option", checkButton.getState().options(), () -> configList.get(idx).selectedOption(),
-				ConditionOption::getName,
-				btn -> sendConfig(idx, new MachineInterfaceConfig<>(configList.get(idx).selectedCheck(), btn.getClickedState(), configList.get(idx).outputColor()))
-		);
-		this.addRenderableWidget(optionButton);
+	private void scrollUp()
+	{
+		if(scrollIndex > 0)
+		{
+			rows.get(--scrollIndex).show();
+			rows.forEach(ConfigurationRow::shiftDown);
+			if(rows.size() > MAX_SCROLL+scrollIndex)
+				rows.get(MAX_SCROLL+scrollIndex).hide();
+		}
+	}
 
-		GuiButtonDyeColor dyeButton = new GuiButtonDyeColor(
-				guiLeft+18+checkButton.getWidth()+optionButton.getWidth(), guiTop+8+idx*24, null, () -> configList.get(idx).outputColor().getId(),
-				btn -> sendConfig(idx, new MachineInterfaceConfig<>(configList.get(idx).selectedCheck(), configList.get(idx).selectedOption(), btn.getNextState())),
-				(components, dyeColor) -> {
-				}
-		);
-		this.addRenderableWidget(dyeButton);
+	private ConfigurationRow addConfigurationRow(final int idx)
+	{
+		int yPos = guiTop+10;
+		if(!rows.isEmpty())
+			yPos = rows.get(rows.size()-1).buttons[0].getY()+ROW_HEIGHT;
+		ConfigurationRow row = new ConfigurationRow(idx, guiLeft+10, yPos, this);
+		rows.add(row);
+		return row;
 	}
 
 	private void sendConfig(int idx, MachineInterfaceConfig<?> config)
@@ -128,13 +192,20 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
-		graphics.blit(TEXTURE, guiLeft, guiTop, 0, 0, xSize, ySize);
+		graphics.blit(TEXTURE, guiLeft, guiTop, 0, 0, GUI_WIDTH_LEFT, ySize);
+		int offset = GUI_WIDTH_LEFT;
+		for(int i = 0; i < middleSegmentCount; i++, offset += GUI_WIDTH_MIDDLE)
+			graphics.blit(TEXTURE, guiLeft+offset, guiTop, GUI_WIDTH_LEFT+2, 0, GUI_WIDTH_MIDDLE, ySize);
+		graphics.blit(TEXTURE, guiLeft+offset, guiTop, GUI_WIDTH_LEFT+GUI_WIDTH_MIDDLE+4, 0, GUI_WIDTH_RIGHT, ySize);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		ArrayList<Component> tooltip = new ArrayList<>();
+		for(GuiEventListener w : children())
+			if(w.isMouseOver(mouseX, mouseY)&&w instanceof ITooltipWidget ttw)
+				ttw.gatherTooltip(mouseX, mouseY, tooltip);
 //		for(int i = 0; i < colorButtonsSend.length; i++)
 //			if(colorButtonsSend[i].isHoveredOrFocused()||colorButtonsReceive[i].isHoveredOrFocused())
 //			{
@@ -149,8 +220,97 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
 	}
 
-	record ConfigurationRow()
+	static final class ConfigurationRow
 	{
+		private int idx;
+		private final GuiButtonIE[] buttons;
 
+		ConfigurationRow(int i, int xPos, int yPos, MachineInterfaceScreen gui)
+		{
+			this.idx = i;
+			IntSupplier idxGetter = () -> idx;
+
+			GuiButtonIE trashButton = gui.addRenderableWidget(new GuiButtonIE(
+					xPos, yPos, 16, 16, Component.empty(), TEXTURE, 72, 214,
+					(IIEPressable<Button>)btn -> gui.removeConfigurationRow(idxGetter.getAsInt())
+			));
+
+			GuiButtonSelectBox<MachineCheckImplementation<?>> checkButton = gui.addRenderableWidget(new GuiButtonSelectBox<>(
+					getFollowIngButtonX(trashButton), yPos, "checktype", gui.availableChecks, () -> gui.configList.get(idxGetter.getAsInt()).selectedCheck(),
+					MachineCheckImplementation::getName,
+					btn -> gui.sendConfig(idxGetter.getAsInt(), new MachineInterfaceConfig<>(btn.getClickedState(), 0, gui.configList.get(idxGetter.getAsInt()).outputColor()))
+			));
+
+			GuiButtonSelectBox<ConditionOption<?>> optionButton = gui.addRenderableWidget(new GuiButtonSelectBox<>(
+					getFollowIngButtonX(checkButton), yPos, "option", checkButton.getState().options(), () -> gui.configList.get(idxGetter.getAsInt()).selectedOption(),
+					ConditionOption::getName,
+					btn -> gui.sendConfig(idxGetter.getAsInt(), new MachineInterfaceConfig<>(gui.configList.get(idxGetter.getAsInt()).selectedCheck(), btn.getClickedState(), gui.configList.get(idxGetter.getAsInt()).outputColor()))
+			));
+
+			GuiButtonDyeColor colorButton = gui.addRenderableWidget(new GuiButtonDyeColor(
+					getFollowIngButtonX(optionButton), yPos, 16, 16,
+					() -> gui.configList.get(idxGetter.getAsInt()).outputColor().getId(), TEXTURE, 72, 186,
+					btn -> gui.sendConfig(idxGetter.getAsInt(), new MachineInterfaceConfig<>(gui.configList.get(idxGetter.getAsInt()).selectedCheck(), gui.configList.get(idxGetter.getAsInt()).selectedOption(), btn.getNextState())),
+					ItemBatcherScreen::gatherRedstoneTooltip
+			));
+
+			this.buttons = new GuiButtonIE[]{
+					trashButton, checkButton, optionButton, colorButton
+			};
+		}
+
+		private void shiftIndex(int removed)
+		{
+			if(this.idx > removed)
+			{
+				this.idx--;
+				shiftUp();
+			}
+		}
+
+		private int getFollowIngButtonX(GuiButtonIE button)
+		{
+			return button.getX()+button.getWidth()+4;
+		}
+
+		public void shiftDown()
+		{
+			for(GuiButtonIE button : buttons)
+				button.setY(button.getY()+ROW_HEIGHT);
+		}
+
+		public void shiftUp()
+		{
+			for(GuiButtonIE button : buttons)
+				button.setY(button.getY()-ROW_HEIGHT);
+		}
+
+		public void hide()
+		{
+			for(GuiButtonIE button : buttons)
+				button.visible = false;
+		}
+
+		public void show()
+		{
+			for(GuiButtonIE button : buttons)
+				button.visible = true;
+		}
+
+		public int rowStart()
+		{
+			return buttons[0].getX();
+		}
+
+		public int rowEnd()
+		{
+			GuiButtonIE lastButton = buttons[buttons.length-1];
+			return lastButton.getX()+lastButton.getWidth();
+		}
+
+		public int rowWidth()
+		{
+			return rowEnd()-rowStart();
+		}
 	}
 }

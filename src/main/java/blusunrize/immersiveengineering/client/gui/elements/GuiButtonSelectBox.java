@@ -36,7 +36,7 @@ public class GuiButtonSelectBox<E> extends GuiButtonState<E>
 	)
 	{
 		super(x, y, 64, 16, Component.nullToEmpty(name), options, selectedOption,
-				MachineInterfaceScreen.TEXTURE, 56, 186, -1, btn -> handler.onIEPress((GuiButtonSelectBox<E>)btn));
+				MachineInterfaceScreen.TEXTURE, 88, 186, -1, btn -> handler.onIEPress((GuiButtonSelectBox<E>)btn));
 		this.messageGetter = messageGetter;
 		// set width based on widest text
 		this.width = 16+Arrays.stream(options).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width);
