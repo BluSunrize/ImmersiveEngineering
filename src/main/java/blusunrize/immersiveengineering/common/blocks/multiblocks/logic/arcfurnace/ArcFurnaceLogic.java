@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
@@ -42,6 +43,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -102,6 +104,18 @@ public class ArcFurnaceLogic
 	});
 	public static final int NUM_SLOTS = FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT;
 	public static final int ENERGY_CAPACITY = 64000;
+
+	// register additional conditions for machine interface
+	public static ResourceLocation MIF_CONDITION_ADDITIVES = new ResourceLocation(Lib.MODID, "arc_furnace/additives");
+	public static ResourceLocation MIF_CONDITION_SLAG = new ResourceLocation(Lib.MODID, "arc_furnace/slag");
+	public static ResourceLocation MIF_CONDITION_ELECTRODES = new ResourceLocation(Lib.MODID, "arc_furnace/electrodes");
+
+	static
+	{
+		MachineInterfaceHandler.copyOptions(MIF_CONDITION_ADDITIVES, MachineInterfaceHandler.BASIC_ITEM_IN);
+		MachineInterfaceHandler.copyOptions(MIF_CONDITION_SLAG, MachineInterfaceHandler.BASIC_ITEM_OUT);
+		MachineInterfaceHandler.register(MIF_CONDITION_ELECTRODES, MachineInterfaceHandler.buildComparativeConditions(State.class, State::getElectrodeComparatorValue));
+	}
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
@@ -325,7 +339,9 @@ public class ArcFurnaceLogic
 
 	public static ComparatorManager<State> makeElectrodeComparator()
 	{
-		return ComparatorManager.makeSimple(State::getElectrodeComparatorValue, ELECTRODE_COMPARATOR_POS);
+		return ComparatorManager.makeSimple(
+				state -> Mth.ceil(Math.max(state.getElectrodeComparatorValue(), 0)*15), ELECTRODE_COMPARATOR_POS
+		);
 	}
 
 	public static class State implements IMultiblockState, ProcessContextInMachine<ArcFurnaceRecipe>
@@ -372,8 +388,11 @@ public class ArcFurnaceLogic
 			);
 			this.mifHandler = () -> new MachineCheckImplementation[]{
 					new MachineCheckImplementation<>(insertionHandler, MachineInterfaceHandler.BASIC_ITEM_IN),
+					new MachineCheckImplementation<>(additiveHandler, MIF_CONDITION_ADDITIVES),
 					new MachineCheckImplementation<>(outputHandler, MachineInterfaceHandler.BASIC_ITEM_OUT),
-					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY)
+					new MachineCheckImplementation<>(slagHandler, MIF_CONDITION_SLAG),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+					new MachineCheckImplementation<>(this, MIF_CONDITION_ELECTRODES)
 			};
 		}
 
@@ -453,7 +472,7 @@ public class ArcFurnaceLogic
 			return processor.getQueue();
 		}
 
-		private int getElectrodeComparatorValue()
+		private float getElectrodeComparatorValue()
 		{
 			float f = 0;
 			for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
@@ -462,7 +481,7 @@ public class ArcFurnaceLogic
 				if(!electrode.isEmpty())
 					f += 1-(electrode.getDamageValue()/(float)electrode.getMaxDamage());
 			}
-			return Mth.ceil(Math.max(f/3f, 0)*15);
+			return f/3f;
 		}
 
 		public boolean hasElectrodes()
