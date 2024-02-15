@@ -218,7 +218,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 artifacts {
     archives sourcesJar
-    archives shadowJar
+    archives signJar.output
     archives datagenJar
     archives apiJar
 }
@@ -273,7 +273,7 @@ publishing {
             artifactId = project.archivesBaseName
 
             artifact sourcesJar
-            artifact shadowJar
+            artifact signJar.output
             artifact datagenJar
             artifact apiJar
 
