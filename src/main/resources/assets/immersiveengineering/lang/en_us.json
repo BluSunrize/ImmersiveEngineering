@@ -471,6 +471,7 @@
   "gui.immersiveengineering.config.machine_interface.check.basic.fluid_input": "Fluid Input",
   "gui.immersiveengineering.config.machine_interface.check.basic.fluid_output":"Fluid Output",
   "gui.immersiveengineering.config.machine_interface.check.basic.energy_storage": "Energy Storage",
+  "gui.immersiveengineering.config.machine_interface.option.comparator": "Comparator Output",
   "gui.immersiveengineering.config.machine_interface.option.empty": "Empty",
   "gui.immersiveengineering.config.machine_interface.option.quarter": "25% Filled",
   "gui.immersiveengineering.config.machine_interface.option.half":  "50% Filled",

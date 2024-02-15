@@ -49,7 +49,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 
 	public List<MachineInterfaceConfig<?>> configurations = Lists.newArrayList();
 
-	private final boolean[] outputs = new boolean[DyeColor.values().length];
+	private final int[] outputs = new int[DyeColor.values().length];
 
 	public MachineInterfaceBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -62,9 +62,9 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		IMachineInterfaceConnection machineCapability = machine.getCapability();
 		if(machineCapability!=null)
 		{
-			boolean[] outPre = Arrays.copyOf(outputs, outputs.length);
-			Arrays.fill(outputs, false);
-			configurations.forEach(config -> outputs[config.outputColor.getId()] = config.test(machineCapability));
+			int[] outPre = Arrays.copyOf(outputs, outputs.length);
+			Arrays.fill(outputs, 0);
+			configurations.forEach(config -> outputs[config.outputColor.getId()] = config.getValue(machineCapability));
 			if(!Arrays.equals(outPre, outputs))
 				redstoneCap.markDirty();
 		}
@@ -92,8 +92,8 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	{
 		if(message.contains("configuration"))
 		{
-			int idx =message.getInt("idx");
-			if(idx>=this.configurations.size())
+			int idx = message.getInt("idx");
+			if(idx >= this.configurations.size())
 				this.configurations.add(MachineInterfaceConfig.readFromNBT(message.getCompound("configuration")));
 			else
 				this.configurations.set(idx, MachineInterfaceConfig.readFromNBT(message.getCompound("configuration")));
@@ -124,14 +124,14 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		return IEProperties.FACING_HORIZONTAL;
 	}
 
+
 	private final RedstoneBundleConnection redstoneCap = new RedstoneBundleConnection()
 	{
 		@Override
 		public void updateInput(byte[] signals, Direction side)
 		{
 			for(DyeColor dye : DyeColor.values())
-				if(outputs[dye.getId()])
-					signals[dye.getId()] = (byte)15;
+				signals[dye.getId()] = (byte)outputs[dye.getId()];
 		}
 	};
 
@@ -146,12 +146,12 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	@SuppressWarnings("unchecked")
 	public record MachineInterfaceConfig<T>(int selectedCheck, int selectedOption, DyeColor outputColor)
 	{
-		boolean test(IMachineInterfaceConnection connection)
+		int getValue(IMachineInterfaceConnection connection)
 		{
 			MachineCheckImplementation<T>[] checks = (MachineCheckImplementation<T>[])connection.getAvailableChecks();
 			if(selectedCheck < checks.length&&selectedOption < checks[selectedCheck].options().length)
-				return checks[selectedCheck].options()[selectedOption()].test(checks[selectedCheck].instance());
-			return false;
+				return checks[selectedCheck].options()[selectedOption()].getValue(checks[selectedCheck].instance());
+			return 0;
 		}
 
 		public CompoundTag writeToNBT()

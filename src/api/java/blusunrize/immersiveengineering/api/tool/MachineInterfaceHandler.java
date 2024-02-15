@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -24,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
 
 public class MachineInterfaceHandler
 {
@@ -49,29 +52,32 @@ public class MachineInterfaceHandler
 	{
 		// Items
 		register(BASIC_ITEM_IN,
-				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "empty"), h -> getInventoryFill(h) <= 0),
-				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "quarter"), h -> getInventoryFill(h) > 0.25),
-				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "half"), h -> getInventoryFill(h) > 0.5),
-				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "three_quarter"), h -> getInventoryFill(h) > 0.75),
-				new ConditionOption<IItemHandler>(new ResourceLocation(Lib.MODID, "full"), h -> getInventoryFill(h) >= 1)
+				ConditionOption.doubleCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "comparator"), MachineInterfaceHandler::getInventoryFill),
+				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "empty"), h -> getInventoryFill(h) <= 0),
+				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "quarter"), h -> getInventoryFill(h) > 0.25),
+				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "half"), h -> getInventoryFill(h) > 0.5),
+				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "three_quarter"), h -> getInventoryFill(h) > 0.75),
+				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "full"), h -> getInventoryFill(h) >= 1)
 		);
 		copyOptions(BASIC_ITEM_OUT, BASIC_ITEM_IN);
 		// Fluids
 		register(BASIC_FLUID_IN,
-				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "empty"), h -> getTankFill(h) <= 0),
-				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "quarter"), h -> getTankFill(h) > 0.25),
-				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "half"), h -> getTankFill(h) > 0.5),
-				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "three_quarter"), h -> getTankFill(h) > 0.75),
-				new ConditionOption<IFluidHandler>(new ResourceLocation(Lib.MODID, "full"), h -> getTankFill(h) >= 1)
+				ConditionOption.doubleCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "comparator"), MachineInterfaceHandler::getTankFill),
+				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "empty"), h -> getTankFill(h) <= 0),
+				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "quarter"), h -> getTankFill(h) > 0.25),
+				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "half"), h -> getTankFill(h) > 0.5),
+				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "three_quarter"), h -> getTankFill(h) > 0.75),
+				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "full"), h -> getTankFill(h) >= 1)
 		);
 		copyOptions(BASIC_FLUID_OUT, BASIC_FLUID_IN);
 		// Energy
 		register(BASIC_ENERGY,
-				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "empty"), h -> getEnergyFill(h) <= 0),
-				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "quarter"), h -> getEnergyFill(h) > 0.25),
-				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "half"), h -> getEnergyFill(h) > 0.5),
-				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "three_quarter"), h -> getEnergyFill(h) > 0.75),
-				new ConditionOption<IEnergyStorage>(new ResourceLocation(Lib.MODID, "full"), h -> getEnergyFill(h) >= 1)
+				ConditionOption.doubleCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "comparator"), MachineInterfaceHandler::getEnergyFill),
+				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "empty"), h -> getEnergyFill(h) <= 0),
+				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "quarter"), h -> getEnergyFill(h) > 0.25),
+				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "half"), h -> getEnergyFill(h) > 0.5),
+				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "three_quarter"), h -> getEnergyFill(h) > 0.75),
+				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "full"), h -> getEnergyFill(h) >= 1)
 		);
 	}
 
@@ -113,16 +119,28 @@ public class MachineInterfaceHandler
 		return energyStorage.getEnergyStored()/(float)energyStorage.getMaxEnergyStored();
 	}
 
-	public record ConditionOption<T>(ResourceLocation name, Predicate<T> condition)
+	public record ConditionOption<T>(ResourceLocation name, ToIntFunction<T> condition)
 	{
+		// helper method to turn boolean conditions into comparator signals
+		public static <T> ConditionOption<T> booleanCondition(Class<T> clazz, ResourceLocation name, final Predicate<T> predicate)
+		{
+			return new ConditionOption<>(name, value -> predicate.test(value)?15: 0);
+		}
+
+		// helper method to turn double conditions into comparator signals
+		public static <T> ConditionOption<T> doubleCondition(Class<T> clazz, ResourceLocation name, final ToDoubleFunction<T> toDouble)
+		{
+			return new ConditionOption<>(name, value -> Mth.ceil(Math.max(toDouble.applyAsDouble(value), 0)*15));
+		}
+
 		public Component getName()
 		{
 			return Component.translatable("gui."+name.getNamespace()+".config.machine_interface.option."+name.getPath());
 		}
 
-		public boolean test(T input)
+		public int getValue(T input)
 		{
-			return condition.test(input);
+			return condition.applyAsInt(input);
 		}
 	}
 
