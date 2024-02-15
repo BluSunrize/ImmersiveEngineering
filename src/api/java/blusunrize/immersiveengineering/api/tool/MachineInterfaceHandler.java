@@ -51,34 +51,25 @@ public class MachineInterfaceHandler
 	static
 	{
 		// Items
-		register(BASIC_ITEM_IN,
-				ConditionOption.doubleCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "comparator"), MachineInterfaceHandler::getInventoryFill),
-				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "empty"), h -> getInventoryFill(h) <= 0),
-				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "quarter"), h -> getInventoryFill(h) > 0.25),
-				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "half"), h -> getInventoryFill(h) > 0.5),
-				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "three_quarter"), h -> getInventoryFill(h) > 0.75),
-				ConditionOption.booleanCondition(IItemHandler.class, new ResourceLocation(Lib.MODID, "full"), h -> getInventoryFill(h) >= 1)
-		);
+		register(BASIC_ITEM_IN, buildComparativeConditions(IItemHandler.class, MachineInterfaceHandler::getInventoryFill));
 		copyOptions(BASIC_ITEM_OUT, BASIC_ITEM_IN);
 		// Fluids
-		register(BASIC_FLUID_IN,
-				ConditionOption.doubleCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "comparator"), MachineInterfaceHandler::getTankFill),
-				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "empty"), h -> getTankFill(h) <= 0),
-				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "quarter"), h -> getTankFill(h) > 0.25),
-				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "half"), h -> getTankFill(h) > 0.5),
-				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "three_quarter"), h -> getTankFill(h) > 0.75),
-				ConditionOption.booleanCondition(IFluidHandler.class, new ResourceLocation(Lib.MODID, "full"), h -> getTankFill(h) >= 1)
-		);
+		register(BASIC_FLUID_IN, buildComparativeConditions(IFluidHandler.class, MachineInterfaceHandler::getTankFill));
 		copyOptions(BASIC_FLUID_OUT, BASIC_FLUID_IN);
 		// Energy
-		register(BASIC_ENERGY,
-				ConditionOption.doubleCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "comparator"), MachineInterfaceHandler::getEnergyFill),
-				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "empty"), h -> getEnergyFill(h) <= 0),
-				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "quarter"), h -> getEnergyFill(h) > 0.25),
-				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "half"), h -> getEnergyFill(h) > 0.5),
-				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "three_quarter"), h -> getEnergyFill(h) > 0.75),
-				ConditionOption.booleanCondition(IEnergyStorage.class, new ResourceLocation(Lib.MODID, "full"), h -> getEnergyFill(h) >= 1)
-		);
+		register(BASIC_ENERGY, buildComparativeConditions(IEnergyStorage.class, MachineInterfaceHandler::getEnergyFill));
+	}
+
+	public static <T> ConditionOption<?>[] buildComparativeConditions(Class<T> clazz, ToDoubleFunction<T> tdf)
+	{
+		return new ConditionOption<?>[]{
+				ConditionOption.doubleCondition(clazz, new ResourceLocation(Lib.MODID, "comparator"), tdf),
+				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "empty"), h -> tdf.applyAsDouble(h) <= 0),
+				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "quarter"), h -> tdf.applyAsDouble(h) > 0.25),
+				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "half"), h -> tdf.applyAsDouble(h) > 0.5),
+				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "three_quarter"), h -> tdf.applyAsDouble(h) > 0.75),
+				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "full"), h -> tdf.applyAsDouble(h) >= 1)
+		};
 	}
 
 	private static float getInventoryFill(IItemHandler itemHandler)
