@@ -114,7 +114,7 @@ public class ArcFurnaceLogic
 	{
 		MachineInterfaceHandler.copyOptions(MIF_CONDITION_ADDITIVES, MachineInterfaceHandler.BASIC_ITEM_IN);
 		MachineInterfaceHandler.copyOptions(MIF_CONDITION_SLAG, MachineInterfaceHandler.BASIC_ITEM_OUT);
-		MachineInterfaceHandler.register(MIF_CONDITION_ELECTRODES, MachineInterfaceHandler.buildComparativeConditions(State.class, State::getElectrodeComparatorValue));
+		MachineInterfaceHandler.register(MIF_CONDITION_ELECTRODES, MachineInterfaceHandler.buildComparativeConditions(State::getElectrodeComparatorValue));
 	}
 
 	@Override

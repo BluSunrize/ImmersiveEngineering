@@ -51,24 +51,24 @@ public class MachineInterfaceHandler
 	static
 	{
 		// Items
-		register(BASIC_ITEM_IN, buildComparativeConditions(IItemHandler.class, MachineInterfaceHandler::getInventoryFill));
+		register(BASIC_ITEM_IN, buildComparativeConditions(MachineInterfaceHandler::getInventoryFill));
 		copyOptions(BASIC_ITEM_OUT, BASIC_ITEM_IN);
 		// Fluids
-		register(BASIC_FLUID_IN, buildComparativeConditions(IFluidHandler.class, MachineInterfaceHandler::getTankFill));
+		register(BASIC_FLUID_IN, buildComparativeConditions(MachineInterfaceHandler::getTankFill));
 		copyOptions(BASIC_FLUID_OUT, BASIC_FLUID_IN);
 		// Energy
-		register(BASIC_ENERGY, buildComparativeConditions(IEnergyStorage.class, MachineInterfaceHandler::getEnergyFill));
+		register(BASIC_ENERGY, buildComparativeConditions(MachineInterfaceHandler::getEnergyFill));
 	}
 
-	public static <T> ConditionOption<?>[] buildComparativeConditions(Class<T> clazz, ToDoubleFunction<T> tdf)
+	public static <T> ConditionOption<?>[] buildComparativeConditions(ToDoubleFunction<T> tdf)
 	{
 		return new ConditionOption<?>[]{
-				ConditionOption.doubleCondition(clazz, new ResourceLocation(Lib.MODID, "comparator"), tdf),
-				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "empty"), h -> tdf.applyAsDouble(h) <= 0),
-				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "quarter"), h -> tdf.applyAsDouble(h) > 0.25),
-				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "half"), h -> tdf.applyAsDouble(h) > 0.5),
-				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "three_quarter"), h -> tdf.applyAsDouble(h) > 0.75),
-				ConditionOption.booleanCondition(clazz, new ResourceLocation(Lib.MODID, "full"), h -> tdf.applyAsDouble(h) >= 1)
+				ConditionOption.doubleCondition(new ResourceLocation(Lib.MODID, "comparator"), tdf),
+				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "empty"), h -> tdf.applyAsDouble(h) <= 0),
+				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "quarter"), h -> tdf.applyAsDouble(h) > 0.25),
+				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "half"), h -> tdf.applyAsDouble(h) > 0.5),
+				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "three_quarter"), h -> tdf.applyAsDouble(h) > 0.75),
+				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "full"), h -> tdf.applyAsDouble(h) >= 1)
 		};
 	}
 
@@ -113,13 +113,13 @@ public class MachineInterfaceHandler
 	public record ConditionOption<T>(ResourceLocation name, ToIntFunction<T> condition)
 	{
 		// helper method to turn boolean conditions into comparator signals
-		public static <T> ConditionOption<T> booleanCondition(Class<T> clazz, ResourceLocation name, final Predicate<T> predicate)
+		public static <T> ConditionOption<T> booleanCondition(/*Class<T> clazz,*/ ResourceLocation name, final Predicate<T> predicate)
 		{
 			return new ConditionOption<>(name, value -> predicate.test(value)?15: 0);
 		}
 
 		// helper method to turn double conditions into comparator signals
-		public static <T> ConditionOption<T> doubleCondition(Class<T> clazz, ResourceLocation name, final ToDoubleFunction<T> toDouble)
+		public static <T> ConditionOption<T> doubleCondition(/*Class<T> clazz,*/ ResourceLocation name, final ToDoubleFunction<T> toDouble)
 		{
 			return new ConditionOption<>(name, value -> Mth.ceil(Math.max(toDouble.applyAsDouble(value), 0)*15));
 		}
