@@ -97,9 +97,11 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 				this.configurations.add(MachineInterfaceConfig.readFromNBT(message.getCompound("configuration")));
 			else
 				this.configurations.set(idx, MachineInterfaceConfig.readFromNBT(message.getCompound("configuration")));
-			setChanged();
-			this.markContainingBlockForUpdate(null);
 		}
+		else if(message.getBoolean("delete"))
+			this.configurations.remove(message.getInt("idx"));
+		setChanged();
+		this.markContainingBlockForUpdate(null);
 	}
 
 	@Override

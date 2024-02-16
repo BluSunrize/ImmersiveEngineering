@@ -30,10 +30,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.IntSupplier;
 
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
 
@@ -68,7 +70,6 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	public void init()
 	{
 		super.init();
-
 		clearWidgets();
 
 		IMachineInterfaceConnection attachedMachine = blockEntity.machine.getCapability();
@@ -178,14 +179,34 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 		return row;
 	}
 
-	private void sendConfig(int idx, MachineInterfaceConfig<?> config)
+	private void removeConfigurationRow(final int idx)
+	{
+		// remove from collections
+		for(GuiButtonIE b : this.rows.remove(idx).buttons)
+			this.removeWidget(b);
+		this.configList.remove(idx);
+		// shift index of remaining ones
+		this.rows.forEach(row -> row.shiftIndex(idx));
+		// unhide potential offscreen button
+		int nextOffscreen = scrollIndex+MAX_SCROLL-1;
+		if(nextOffscreen < this.rows.size())
+			this.rows.get(nextOffscreen).show();
+		// finally, send to server
+		this.sendConfig(idx, null);
+	}
+
+	private void sendConfig(int idx, @Nullable MachineInterfaceConfig<?> config)
 	{
 		//update client
-		configList.set(idx, config);
+		if(config!=null)
+			configList.set(idx, config);
 		//update server
 		CompoundTag message = new CompoundTag();
 		message.putInt("idx", idx);
-		message.put("configuration", config.writeToNBT());
+		if(config!=null)
+			message.put("configuration", config.writeToNBT());
+		else
+			message.putBoolean("delete", true);
 		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
 	}
 
