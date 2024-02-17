@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.IntSupplier;
 
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
 
@@ -53,6 +54,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 
 	private MachineCheckImplementation<?>[] availableChecks;
 	private List<MachineInterfaceConfig<?>> configList;
+	private final static MachineInterfaceConfig<?> FALLBACK_CONFIG = new MachineInterfaceConfig<>(0, 0, DyeColor.WHITE);
 
 	private WidgetRowList<?> rowList;
 
@@ -80,25 +82,25 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							x, y, btn -> removeConfigurationRow(idx.getAsInt())
 					),
 					(x, y, idx) -> new GuiButtonSelectBox<>(
-							x+4, y, "checktype", availableChecks, () -> configList.get(idx.getAsInt()).getSelectedCheck(),
+							x+4, y, "checktype", availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
 							MachineCheckImplementation::getName,
-							btn -> sendConfig(idx.getAsInt(), configList.get(idx.getAsInt())
+							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
 									.setSelectedCheck(btn.getClickedState())
 									.setSelectedOption(0) // we can't assume the number of options on the check, so reset it
 							)
 					),
 					(x, y, idx) -> new GuiButtonSelectBox<>(
-							x+4, y, "option", availableChecks[configList.get(idx.getAsInt()).getSelectedCheck()].options(),
-							() -> configList.get(idx.getAsInt()).getSelectedOption(),
+							x+4, y, "option", availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
+							() -> getConfigSafe(idx).getSelectedOption(),
 							CheckOption::getName,
-							btn -> sendConfig(idx.getAsInt(), configList.get(idx.getAsInt())
+							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
 									.setSelectedOption(btn.getClickedState())
 							)
 					),
 					(x, y, idx) -> new GuiButtonDyeColor(
 							x+4, y, 16, 16,
-							() -> configList.get(idx.getAsInt()).getOutputColor().getId(), TEXTURE, 192, 18,
-							btn -> sendConfig(idx.getAsInt(), configList.get(idx.getAsInt())
+							() -> getConfigSafe(idx).getOutputColor().getId(), TEXTURE, 192, 18,
+							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
 									.setOutputColor(btn.getNextState())
 							),
 							ItemBatcherScreen::gatherRedstoneTooltip
@@ -146,6 +148,14 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 					(IIEPressable<Button>)btn -> this.rowList.scrollDown()
 			).setHoverOffset(16, 0));
 		}
+	}
+
+	private MachineInterfaceConfig<?> getConfigSafe(IntSupplier supp)
+	{
+		int i = supp.getAsInt();
+		if(i >= this.configList.size())
+			return FALLBACK_CONFIG;
+		return this.configList.get(i);
 	}
 
 
