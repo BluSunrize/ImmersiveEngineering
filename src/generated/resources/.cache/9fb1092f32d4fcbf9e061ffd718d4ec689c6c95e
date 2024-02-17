@@ -1,4 +1,4 @@
-// 1.20.4	2024-04-25T11:36:01.5540403	Recipes
+// 1.20.4	2024-04-25T13:56:47.3517641	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -170,6 +170,7 @@ ae96ffc35eefbe1cd916ac45281646c05d4ee1a2 data/immersiveengineering/advancements/
 50fee346bf8e5ebfad13e979599c832f2d543b2e data/immersiveengineering/advancements/recipes/misc/crafting/lead_white.json
 5ce827f0eb83f1edbfcc472d72747407ab62dc21 data/immersiveengineering/advancements/recipes/misc/crafting/light_engineering.json
 7fc404e5e0bffdd167ad447482e5964239610a2c data/immersiveengineering/advancements/recipes/misc/crafting/logic_unit.json
+48efd6910ed2c468997ee7776ca8f6da6b16adfe data/immersiveengineering/advancements/recipes/misc/crafting/machine_interface.json
 48d25274422104e733fab8699657bc7afd63e83c data/immersiveengineering/advancements/recipes/misc/crafting/maintenance_kit.json
 8e424d3e6372894a5b3346395858789ba2f66688 data/immersiveengineering/advancements/recipes/misc/crafting/manual.json
 57c55c952d60245d9c545d0e4fe7da2995e64a9b data/immersiveengineering/advancements/recipes/misc/crafting/metal_barrel.json
@@ -930,6 +931,7 @@ f4fb15423e981998ff3102f5ddd5c2b59520e2bf data/immersiveengineering/recipes/craft
 b8fc7416e3e3f3db3c5b18583eb48e1bf6245526 data/immersiveengineering/recipes/crafting/lead_white.json
 70266607b8a371fc3794b72c69f17151cb689eff data/immersiveengineering/recipes/crafting/light_engineering.json
 e0fb1261753dea9b9b307698ba5cca593d2ec921 data/immersiveengineering/recipes/crafting/logic_unit.json
+f55d956096b7c9f8d0c35cc8ae1799b255ea7830 data/immersiveengineering/recipes/crafting/machine_interface.json
 a82505d39718e69e8f47b67f4912d12c341012f6 data/immersiveengineering/recipes/crafting/maintenance_kit.json
 16012fea250be797fd7f6d312dbd37d2349323e9 data/immersiveengineering/recipes/crafting/manual.json
 fbe4ddb0611dbac2d1e46ea4d657471e3fa051dd data/immersiveengineering/recipes/crafting/metal_barrel.json

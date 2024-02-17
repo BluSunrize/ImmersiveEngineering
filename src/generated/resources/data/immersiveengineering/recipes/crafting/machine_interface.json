@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:wires/aluminum"
+    },
+    "c": {
+      "item": "immersiveengineering:circuit_board"
+    },
+    "e": {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    }
+  },
+  "pattern": [
+    "aea",
+    "wcw"
+  ],
+  "result": {
+    "item": "immersiveengineering:machine_interface"
+  }
+}
