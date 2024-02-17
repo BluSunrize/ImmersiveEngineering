@@ -24,6 +24,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -31,6 +32,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
@@ -48,7 +50,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	public MachineInterfaceScreen(MachineInterfaceBlockEntity blockEntity, Component title)
 	{
 		super(blockEntity, title);
-		this.xSize = 208;
+		this.xSize = 144;
 		this.ySize = 186;
 	}
 
@@ -187,16 +189,32 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
-		graphics.blit(TEXTURE, guiLeft, guiTop, 0, 0, GUI_WIDTH_LEFT, ySize);
-		int offset = GUI_WIDTH_LEFT;
-		for(int i = 0; i < middleSegmentCount; i++, offset += GUI_WIDTH_MIDDLE)
-			graphics.blit(TEXTURE, guiLeft+offset, guiTop, GUI_WIDTH_LEFT+2, 0, GUI_WIDTH_MIDDLE, ySize);
-		graphics.blit(TEXTURE, guiLeft+offset, guiTop, GUI_WIDTH_LEFT+GUI_WIDTH_MIDDLE+4, 0, GUI_WIDTH_RIGHT, ySize);
+		if(availableChecks==null)
+			graphics.blit(TEXTURE, guiLeft, guiTop+(ySize-74)/2, 112, 80, xSize, 106);
+		else
+		{
+			graphics.blit(TEXTURE, guiLeft, guiTop, 0, 0, GUI_WIDTH_LEFT, ySize);
+			int offset = GUI_WIDTH_LEFT;
+			for(int i = 0; i < middleSegmentCount; i++, offset += GUI_WIDTH_MIDDLE)
+				graphics.blit(TEXTURE, guiLeft+offset, guiTop, GUI_WIDTH_LEFT+2, 0, GUI_WIDTH_MIDDLE, ySize);
+			graphics.blit(TEXTURE, guiLeft+offset, guiTop, GUI_WIDTH_LEFT+GUI_WIDTH_MIDDLE+4, 0, GUI_WIDTH_RIGHT, ySize);
+		}
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
+		if(availableChecks==null)
+		{
+			Component c = Component.translatable(Lib.GUI_CONFIG+"machine_interface.not_connected");
+			List<FormattedCharSequence> text = font.split(c, 122);
+			int yPos = guiTop+(ySize-74)/2+14;
+			for(int i = 0; i < text.size(); i++)
+				graphics.drawString(font, text.get(i),
+						guiLeft+12, yPos+i*font.lineHeight, 0x555555, false
+				);
+		}
+
 		ArrayList<Component> tooltip = new ArrayList<>();
 		for(GuiEventListener w : children())
 			if(w.isMouseOver(mouseX, mouseY)&&w instanceof ITooltipWidget ttw)
