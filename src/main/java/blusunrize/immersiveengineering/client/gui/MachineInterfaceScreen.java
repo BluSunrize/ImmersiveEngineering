@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.ConditionOption;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.CheckOption;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
@@ -265,9 +265,9 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 					)
 			));
 
-			GuiButtonSelectBox<ConditionOption<?>> optionButton = gui.addRenderableWidget(new GuiButtonSelectBox<>(
+			GuiButtonSelectBox<CheckOption<?>> optionButton = gui.addRenderableWidget(new GuiButtonSelectBox<>(
 					getFollowIngButtonX(checkButton), yPos, "option", checkButton.getState().options(), () -> gui.configList.get(idxGetter.getAsInt()).getSelectedOption(),
-					ConditionOption::getName,
+					CheckOption::getName,
 					btn -> gui.sendConfig(idxGetter.getAsInt(), gui.configList.get(idxGetter.getAsInt())
 							.setSelectedOption(btn.getClickedState())
 					)

@@ -36,9 +36,9 @@ public class MachineInterfaceHandler
 	public static ResourceLocation BASIC_FLUID_OUT = new ResourceLocation(Lib.MODID, "basic/fluid_output");
 	public static ResourceLocation BASIC_ENERGY = new ResourceLocation(Lib.MODID, "basic/energy_storage");
 
-	private static final Map<ResourceLocation, ConditionOption<?>[]> CONDITION_REGISTRY = new HashMap<>();
+	private static final Map<ResourceLocation, CheckOption<?>[]> CONDITION_REGISTRY = new HashMap<>();
 
-	public static void register(ResourceLocation key, ConditionOption<?>... options)
+	public static void register(ResourceLocation key, CheckOption<?>... options)
 	{
 		CONDITION_REGISTRY.put(key, options);
 	}
@@ -60,15 +60,15 @@ public class MachineInterfaceHandler
 		register(BASIC_ENERGY, buildComparativeConditions(MachineInterfaceHandler::getEnergyFill));
 	}
 
-	public static <T> ConditionOption<?>[] buildComparativeConditions(ToDoubleFunction<T> tdf)
+	public static <T> CheckOption<?>[] buildComparativeConditions(ToDoubleFunction<T> tdf)
 	{
-		return new ConditionOption<?>[]{
-				ConditionOption.doubleCondition(new ResourceLocation(Lib.MODID, "comparator"), tdf),
-				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "empty"), h -> tdf.applyAsDouble(h) <= 0),
-				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "quarter"), h -> tdf.applyAsDouble(h) > 0.25),
-				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "half"), h -> tdf.applyAsDouble(h) > 0.5),
-				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "three_quarter"), h -> tdf.applyAsDouble(h) > 0.75),
-				ConditionOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "full"), h -> tdf.applyAsDouble(h) >= 1)
+		return new CheckOption<?>[]{
+				CheckOption.doubleCondition(new ResourceLocation(Lib.MODID, "comparator"), tdf),
+				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "empty"), h -> tdf.applyAsDouble(h) <= 0),
+				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "quarter"), h -> tdf.applyAsDouble(h) > 0.25),
+				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "half"), h -> tdf.applyAsDouble(h) > 0.5),
+				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "three_quarter"), h -> tdf.applyAsDouble(h) > 0.75),
+				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "full"), h -> tdf.applyAsDouble(h) >= 1)
 		};
 	}
 
@@ -110,18 +110,18 @@ public class MachineInterfaceHandler
 		return energyStorage.getEnergyStored()/(float)energyStorage.getMaxEnergyStored();
 	}
 
-	public record ConditionOption<T>(ResourceLocation name, ToIntFunction<T> condition)
+	public record CheckOption<T>(ResourceLocation name, ToIntFunction<T> condition)
 	{
 		// helper method to turn boolean conditions into comparator signals
-		public static <T> ConditionOption<T> booleanCondition(/*Class<T> clazz,*/ ResourceLocation name, final Predicate<T> predicate)
+		public static <T> CheckOption<T> booleanCondition(ResourceLocation name, final Predicate<T> predicate)
 		{
-			return new ConditionOption<>(name, value -> predicate.test(value)?15: 0);
+			return new CheckOption<>(name, value -> predicate.test(value)?15: 0);
 		}
 
 		// helper method to turn double conditions into comparator signals
-		public static <T> ConditionOption<T> doubleCondition(/*Class<T> clazz,*/ ResourceLocation name, final ToDoubleFunction<T> toDouble)
+		public static <T> CheckOption<T> doubleCondition(ResourceLocation name, final ToDoubleFunction<T> toDouble)
 		{
-			return new ConditionOption<>(name, value -> Mth.ceil(Math.max(toDouble.applyAsDouble(value), 0)*15));
+			return new CheckOption<>(name, value -> Mth.ceil(Math.max(toDouble.applyAsDouble(value), 0)*15));
 		}
 
 		public Component getName()
@@ -135,12 +135,12 @@ public class MachineInterfaceHandler
 		}
 	}
 
-	public record MachineCheckImplementation<T>(T instance, ResourceLocation key, ConditionOption<T>[] options)
+	public record MachineCheckImplementation<T>(T instance, ResourceLocation key, CheckOption<T>[] options)
 	{
 		@SuppressWarnings("unchecked")
 		public MachineCheckImplementation(T instance, ResourceLocation key)
 		{
-			this(instance, key, (ConditionOption<T>[])CONDITION_REGISTRY.get(key));
+			this(instance, key, (CheckOption<T>[])CONDITION_REGISTRY.get(key));
 		}
 
 		public Component getName()
