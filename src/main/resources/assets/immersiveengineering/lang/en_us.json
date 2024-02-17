@@ -466,6 +466,7 @@
   "gui.immersiveengineering.config.redstone_color_receiving": "Receiving Signal Color:",
   "gui.immersiveengineering.config.output_threshold": "Signal threshold: ",
   "gui.immersiveengineering.config.machine_interface.add": "Add Condition",
+  "gui.immersiveengineering.config.machine_interface.remove": "Remove Condition",
   "gui.immersiveengineering.config.machine_interface.check.basic.item_input": "Item Input",
   "gui.immersiveengineering.config.machine_interface.check.basic.item_output": "Item Output",
   "gui.immersiveengineering.config.machine_interface.check.basic.fluid_input": "Fluid Input",

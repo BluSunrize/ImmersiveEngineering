@@ -76,9 +76,8 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 
 			// initialize list of rows
 			this.rowList = new WidgetRowList<>(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
-					(x, y, idx) -> new GuiButtonIE(
-							x, y, 16, 16, Component.empty(), TEXTURE, 72, 214,
-							(IIEPressable<Button>)btn -> removeConfigurationRow(idx.getAsInt())
+					(x, y, idx) -> new GuiButtonDelete(
+							x, y, btn -> removeConfigurationRow(idx.getAsInt())
 					),
 					(x, y, idx) -> new GuiButtonSelectBox<>(
 							x+4, y, "checktype", availableChecks, () -> configList.get(idx.getAsInt()).getSelectedCheck(),
@@ -98,7 +97,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 					),
 					(x, y, idx) -> new GuiButtonDyeColor(
 							x+4, y, 16, 16,
-							() -> configList.get(idx.getAsInt()).getOutputColor().getId(), TEXTURE, 72, 186,
+							() -> configList.get(idx.getAsInt()).getOutputColor().getId(), TEXTURE, 192, 18,
 							btn -> sendConfig(idx.getAsInt(), configList.get(idx.getAsInt())
 									.setOutputColor(btn.getNextState())
 							),
@@ -121,10 +120,11 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 					widget.setX(widget.getX()+dist);
 			});
 
+			// add button
 			this.addRenderableWidget(new GuiButtonIE(
 					guiLeft+6, guiTop+162,
-					72, 20, Component.translatable(Lib.GUI_CONFIG+"machine_interface.add"),
-					TEXTURE, 0, 186,
+					72, 18, Component.translatable(Lib.GUI_CONFIG+"machine_interface.add"),
+					TEXTURE, 185, 0,
 					(IIEPressable<Button>)btn -> {
 						final MachineInterfaceConfig<?> newConfig = new MachineInterfaceConfig<>(0, 0, DyeColor.WHITE);
 						final int idx = configList.size();
@@ -132,23 +132,19 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 						// send new config to server
 						sendConfig(idx, newConfig);
 						// add buttons for it and scoll down
-						this.rowList.scrollTo(this.rowList.addRow().getRowIndex());
+						this.rowList.scrollTo(this.rowList.addRow(this::addRenderableWidget).getRowIndex());
 					}
 			));
 
 			this.addRenderableWidget(new GuiButtonIE(
-					guiLeft+xSize-20, guiTop+12,
-					16, 12, Component.nullToEmpty("^"),
-					TEXTURE, 72, 202,
+					guiLeft+xSize-20, guiTop+12, 16, 12, Component.empty(), TEXTURE, 224, 18,
 					(IIEPressable<Button>)btn -> this.rowList.scrollUp()
-			));
+			).setHoverOffset(16, 0));
 
 			this.addRenderableWidget(new GuiButtonIE(
-					guiLeft+xSize-20, guiTop+147,
-					16, 12, Component.nullToEmpty("V"),
-					TEXTURE, 72, 202,
+					guiLeft+xSize-20, guiTop+147, 16, 12, Component.empty(), TEXTURE, 224, 30,
 					(IIEPressable<Button>)btn -> this.rowList.scrollDown()
-			));
+			).setHoverOffset(16, 0));
 		}
 	}
 
@@ -198,5 +194,20 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 
 		if(!tooltip.isEmpty())
 			graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
+	}
+
+	private static class GuiButtonDelete extends GuiButtonIE implements ITooltipWidget
+	{
+		public GuiButtonDelete(int x, int y, IIEPressable<?> handler)
+		{
+			super(x, y, 16, 16, Component.empty(), TEXTURE, 208, 18, handler);
+			this.setHoverOffset(0, 16);
+		}
+
+		@Override
+		public void gatherTooltip(int mouseX, int mouseY, List<Component> tooltip)
+		{
+			tooltip.add(Component.translatable(Lib.GUI_CONFIG+"machine_interface.remove"));
+		}
 	}
 }
