@@ -257,21 +257,28 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			));
 
 			GuiButtonSelectBox<MachineCheckImplementation<?>> checkButton = gui.addRenderableWidget(new GuiButtonSelectBox<>(
-					getFollowIngButtonX(trashButton), yPos, "checktype", gui.availableChecks, () -> gui.configList.get(idxGetter.getAsInt()).selectedCheck(),
+					getFollowIngButtonX(trashButton), yPos, "checktype", gui.availableChecks, () -> gui.configList.get(idxGetter.getAsInt()).getSelectedCheck(),
 					MachineCheckImplementation::getName,
-					btn -> gui.sendConfig(idxGetter.getAsInt(), new MachineInterfaceConfig<>(btn.getClickedState(), 0, gui.configList.get(idxGetter.getAsInt()).outputColor()))
+					btn -> gui.sendConfig(idxGetter.getAsInt(), gui.configList.get(idxGetter.getAsInt())
+							.setSelectedCheck(btn.getClickedState())
+							.setSelectedOption(0) // we can't assume the number of options on the check, so reset it
+					)
 			));
 
 			GuiButtonSelectBox<ConditionOption<?>> optionButton = gui.addRenderableWidget(new GuiButtonSelectBox<>(
-					getFollowIngButtonX(checkButton), yPos, "option", checkButton.getState().options(), () -> gui.configList.get(idxGetter.getAsInt()).selectedOption(),
+					getFollowIngButtonX(checkButton), yPos, "option", checkButton.getState().options(), () -> gui.configList.get(idxGetter.getAsInt()).getSelectedOption(),
 					ConditionOption::getName,
-					btn -> gui.sendConfig(idxGetter.getAsInt(), new MachineInterfaceConfig<>(gui.configList.get(idxGetter.getAsInt()).selectedCheck(), btn.getClickedState(), gui.configList.get(idxGetter.getAsInt()).outputColor()))
+					btn -> gui.sendConfig(idxGetter.getAsInt(), gui.configList.get(idxGetter.getAsInt())
+							.setSelectedOption(btn.getClickedState())
+					)
 			));
 
 			GuiButtonDyeColor colorButton = gui.addRenderableWidget(new GuiButtonDyeColor(
 					getFollowIngButtonX(optionButton), yPos, 16, 16,
-					() -> gui.configList.get(idxGetter.getAsInt()).outputColor().getId(), TEXTURE, 72, 186,
-					btn -> gui.sendConfig(idxGetter.getAsInt(), new MachineInterfaceConfig<>(gui.configList.get(idxGetter.getAsInt()).selectedCheck(), gui.configList.get(idxGetter.getAsInt()).selectedOption(), btn.getNextState())),
+					() -> gui.configList.get(idxGetter.getAsInt()).getOutputColor().getId(), TEXTURE, 72, 186,
+					btn -> gui.sendConfig(idxGetter.getAsInt(), gui.configList.get(idxGetter.getAsInt())
+							.setOutputColor(btn.getNextState())
+					),
 					ItemBatcherScreen::gatherRedstoneTooltip
 			));
 

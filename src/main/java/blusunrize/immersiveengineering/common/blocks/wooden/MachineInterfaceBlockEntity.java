@@ -107,7 +107,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	@Override
 	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(level.isClientSide)
+		if(getLevelNonnull().isClientSide)
 			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_MachineInterface, this);
 		return true;
 	}
@@ -143,23 +143,34 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		);
 	}
 
-	@SuppressWarnings("unchecked")
-	public record MachineInterfaceConfig<T>(int selectedCheck, int selectedOption, DyeColor outputColor)
+	public static final class MachineInterfaceConfig<T>
 	{
+		private int selectedCheck;
+		private int selectedOption;
+		private DyeColor outputColor;
+
+		public MachineInterfaceConfig(int selectedCheck, int selectedOption, DyeColor outputColor)
+		{
+			this.selectedCheck = selectedCheck;
+			this.selectedOption = selectedOption;
+			this.outputColor = outputColor;
+		}
+
+		@SuppressWarnings("unchecked")
 		int getValue(IMachineInterfaceConnection connection)
 		{
 			MachineCheckImplementation<T>[] checks = (MachineCheckImplementation<T>[])connection.getAvailableChecks();
 			if(selectedCheck < checks.length&&selectedOption < checks[selectedCheck].options().length)
-				return checks[selectedCheck].options()[selectedOption()].getValue(checks[selectedCheck].instance());
+				return checks[selectedCheck].options()[selectedOption].getValue(checks[selectedCheck].instance());
 			return 0;
 		}
 
 		public CompoundTag writeToNBT()
 		{
 			CompoundTag nbt = new CompoundTag();
-			nbt.putInt("selectedCheck", selectedCheck());
-			nbt.putInt("selectedOption", selectedOption());
-			nbt.putInt("outputColor", outputColor().getId());
+			nbt.putInt("selectedCheck", selectedCheck);
+			nbt.putInt("selectedOption", selectedOption);
+			nbt.putInt("outputColor", outputColor.getId());
 			return nbt;
 		}
 
@@ -170,6 +181,39 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 					nbt.getInt("selectedOption"),
 					DyeColor.byId(nbt.getInt("outputColor"))
 			);
+		}
+
+		public int getSelectedCheck()
+		{
+			return selectedCheck;
+		}
+
+		public MachineInterfaceConfig<T> setSelectedCheck(int selectedCheck)
+		{
+			this.selectedCheck = selectedCheck;
+			return this;
+		}
+
+		public int getSelectedOption()
+		{
+			return selectedOption;
+		}
+
+		public MachineInterfaceConfig<T> setSelectedOption(int selectedOption)
+		{
+			this.selectedOption = selectedOption;
+			return this;
+		}
+
+		public DyeColor getOutputColor()
+		{
+			return outputColor;
+		}
+
+		public MachineInterfaceConfig<T> setOutputColor(DyeColor outputColor)
+		{
+			this.outputColor = outputColor;
+			return this;
 		}
 	}
 }
