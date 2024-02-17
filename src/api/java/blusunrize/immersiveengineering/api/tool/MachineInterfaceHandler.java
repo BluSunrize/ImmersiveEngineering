@@ -24,12 +24,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 
 public class MachineInterfaceHandler
 {
+	public static ResourceLocation BASIC_ACTIVE = new ResourceLocation(Lib.MODID, "basic/active");
 	public static ResourceLocation BASIC_ITEM_IN = new ResourceLocation(Lib.MODID, "basic/item_input");
 	public static ResourceLocation BASIC_ITEM_OUT = new ResourceLocation(Lib.MODID, "basic/item_output");
 	public static ResourceLocation BASIC_FLUID_IN = new ResourceLocation(Lib.MODID, "basic/fluid_input");
@@ -50,6 +52,11 @@ public class MachineInterfaceHandler
 
 	static
 	{
+		// Active, yes/no
+		register(BASIC_ACTIVE,
+				new CheckOption<BooleanSupplier>(new ResourceLocation(Lib.MODID, "yes"), value -> value.getAsBoolean()?15: 0),
+				new CheckOption<BooleanSupplier>(new ResourceLocation(Lib.MODID, "no"), value -> value.getAsBoolean()?0: 15)
+		);
 		// Items
 		register(BASIC_ITEM_IN, buildComparativeConditions(MachineInterfaceHandler::getInventoryFill));
 		copyOptions(BASIC_ITEM_OUT, BASIC_ITEM_IN);

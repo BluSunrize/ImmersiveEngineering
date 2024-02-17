@@ -387,6 +387,7 @@ public class ArcFurnaceLogic
 					inventory, false, true, new IntRange(SLAG_SLOT, SLAG_SLOT+1)
 			);
 			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
 					new MachineCheckImplementation<>(insertionHandler, MachineInterfaceHandler.BASIC_ITEM_IN),
 					new MachineCheckImplementation<>(additiveHandler, MIF_CONDITION_ADDITIVES),
 					new MachineCheckImplementation<>(outputHandler, MachineInterfaceHandler.BASIC_ITEM_OUT),
