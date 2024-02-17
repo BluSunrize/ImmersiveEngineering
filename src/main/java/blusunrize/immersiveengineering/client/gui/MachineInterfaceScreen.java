@@ -76,37 +76,37 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 
 			// initialize list of rows
 			this.rowList = new WidgetRowList<>(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
-					(x, y, idx) -> this.addRenderableWidget(new GuiButtonIE(
+					(x, y, idx) -> new GuiButtonIE(
 							x, y, 16, 16, Component.empty(), TEXTURE, 72, 214,
 							(IIEPressable<Button>)btn -> removeConfigurationRow(idx.getAsInt())
-					)),
-					(x, y, idx) -> this.addRenderableWidget(new GuiButtonSelectBox<>(
+					),
+					(x, y, idx) -> new GuiButtonSelectBox<>(
 							x+4, y, "checktype", availableChecks, () -> configList.get(idx.getAsInt()).getSelectedCheck(),
 							MachineCheckImplementation::getName,
 							btn -> sendConfig(idx.getAsInt(), configList.get(idx.getAsInt())
 									.setSelectedCheck(btn.getClickedState())
 									.setSelectedOption(0) // we can't assume the number of options on the check, so reset it
 							)
-					)),
-					(x, y, idx) -> this.addRenderableWidget(new GuiButtonSelectBox<>(
+					),
+					(x, y, idx) -> new GuiButtonSelectBox<>(
 							x+4, y, "option", availableChecks[configList.get(idx.getAsInt()).getSelectedCheck()].options(),
 							() -> configList.get(idx.getAsInt()).getSelectedOption(),
 							CheckOption::getName,
 							btn -> sendConfig(idx.getAsInt(), configList.get(idx.getAsInt())
 									.setSelectedOption(btn.getClickedState())
 							)
-					)),
-					(x, y, idx) -> this.addRenderableWidget(new GuiButtonDyeColor(
+					),
+					(x, y, idx) -> new GuiButtonDyeColor(
 							x+4, y, 16, 16,
 							() -> configList.get(idx.getAsInt()).getOutputColor().getId(), TEXTURE, 72, 186,
 							btn -> sendConfig(idx.getAsInt(), configList.get(idx.getAsInt())
 									.setOutputColor(btn.getNextState())
 							),
 							ItemBatcherScreen::gatherRedstoneTooltip
-					))
+					)
 			);
 			// populate rows
-			this.configList.forEach(c -> this.rowList.addRow());
+			this.configList.forEach(c -> this.rowList.addRow(this::addRenderableWidget));
 
 			// update width of GUI, based on collective width of buttons
 			this.middleSegmentCount = (int)Math.ceil((rowList.getRowWidth()-GUI_WIDTH_SLOT)/(float)GUI_WIDTH_MIDDLE);

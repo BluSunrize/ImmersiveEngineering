@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.client.gui.elements.WidgetRowList.WidgetRow;
 import net.minecraft.client.gui.components.AbstractWidget;
 
+import javax.annotation.Nullable;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
 public class WidgetRowList<R extends WidgetRow>
@@ -59,12 +61,16 @@ public class WidgetRowList<R extends WidgetRow>
 		return widgets;
 	}
 
-	public WidgetRow addRow()
+	public WidgetRow addRow(@Nullable Consumer<AbstractWidget> screenAddFunction)
 	{
 		int y = yPos;
 		if(!rows.isEmpty())
 			y = rows.getLast().widgets[0].getY()+getRowHeight();
 		WidgetRow row = new WidgetRow(this, rows.size(), xPos, y);
+		// add to screen
+		if(screenAddFunction!=null)
+			for(AbstractWidget widget : row.widgets)
+				screenAddFunction.accept(widget);
 		// hide if offscreen
 		if((row.rowIndex-scrollIndex) >= maxScroll)
 			row.hide();
