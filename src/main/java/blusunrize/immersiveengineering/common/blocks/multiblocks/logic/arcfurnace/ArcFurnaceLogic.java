@@ -303,10 +303,7 @@ public class ArcFurnaceLogic
 			else
 				return null;
 		});
-		register.register(
-				IMachineInterfaceConnection.CAPABILITY,
-				(state, pos) -> pos.side()==null||REDSTONE_POS.equals(pos.posInMultiblock())?state.mifHandler: null
-		);
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
