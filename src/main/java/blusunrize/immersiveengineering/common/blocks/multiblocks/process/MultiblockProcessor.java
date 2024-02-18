@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.CheckOption;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -205,6 +207,36 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 	{
 		return processQueue.size();
 	}
+
+	public float getQueueFill(boolean allowStacking)
+	{
+		if(maxQueueLength <= 0) // I don't think we have an example of this, but sanity checks are good
+			return 0;
+		if(!allowStacking) // Easy and early return
+			return this.getQueueSize()/(float)maxQueueLength;
+
+		// And the messy one where we have to analyze the whole queue
+		return getQueue().stream().map(process -> {
+			if(process instanceof MultiblockProcessInWorld<? extends MultiblockRecipe> inWorld)
+			{
+				float f = 0;
+				for(ItemStack stack : inWorld.inputItems)
+					if(!stack.isEmpty())
+						f = stack.getCount()/(float)stack.getMaxStackSize();
+				return f/(float)inWorld.inputItems.size();
+			}
+			else
+			{
+				return 1f;
+			}
+		}).reduce(Float::sum).orElse(0f)/(float)maxQueueLength;
+	}
+
+	public CheckOption<MultiblockProcessor<R, CTX>>[] getMachineInterfaceOptions(boolean allowStacking)
+	{
+		return MachineInterfaceHandler.buildComparativeConditions(value -> value.getQueueFill(allowStacking));
+	}
+
 
 	public List<MultiblockProcess<R, CTX>> getQueue()
 	{

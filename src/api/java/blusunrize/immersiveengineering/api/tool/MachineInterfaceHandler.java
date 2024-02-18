@@ -67,9 +67,10 @@ public class MachineInterfaceHandler
 		register(BASIC_ENERGY, buildComparativeConditions(MachineInterfaceHandler::getEnergyFill));
 	}
 
-	public static <T> CheckOption<?>[] buildComparativeConditions(ToDoubleFunction<T> tdf)
+	@SuppressWarnings("unchecked")
+	public static <T> CheckOption<T>[] buildComparativeConditions(ToDoubleFunction<T> tdf)
 	{
-		return new CheckOption<?>[]{
+		return (CheckOption<T>[])new CheckOption<?>[]{
 				CheckOption.doubleCondition(new ResourceLocation(Lib.MODID, "comparator"), tdf),
 				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "empty"), h -> tdf.applyAsDouble(h) <= 0),
 				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "quarter"), h -> tdf.applyAsDouble(h) > 0.25),
