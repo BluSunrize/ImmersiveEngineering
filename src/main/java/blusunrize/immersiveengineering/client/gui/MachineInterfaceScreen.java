@@ -107,7 +107,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							ItemBatcherScreen::gatherRedstoneTooltip
 					),
 					(x, y, idx) -> new GuiButtonSelectBox<>(
-							x+4, y, "checktype", () -> availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
+							x+4, y, 100, () -> availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
 							MachineCheckImplementation::getName,
 							btn -> {
 								sendConfig(idx.getAsInt(), getConfigSafe(idx)
@@ -119,7 +119,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							}
 					),
 					(x, y, idx) -> new GuiButtonSelectBox<>(
-							x+4, y, "option", () -> availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
+							x+4, y, 110, () -> availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
 							() -> getConfigSafe(idx).getSelectedOption(),
 							CheckOption::getName,
 							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)

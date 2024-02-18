@@ -27,20 +27,22 @@ public class GuiButtonSelectBox<E> extends GuiButtonState<E>
 {
 	private final Supplier<E[]> optionGetter;
 	private final Function<E, Component> messageGetter;
+	private final int minWidth;
 	private boolean opened = false;
 	private int openedHeight;
 
 	private int selectedState = -1;
 
 	public GuiButtonSelectBox(
-			int x, int y, String name, Supplier<E[]> optionGetter, IntSupplier selectedOption,
+			int x, int y, int minWidth, Supplier<E[]> optionGetter, IntSupplier selectedOption,
 			Function<E, Component> messageGetter, IIEPressable<GuiButtonSelectBox<E>> handler
 	)
 	{
-		super(x, y, 64, 16, Component.nullToEmpty(name), optionGetter.get(), selectedOption,
+		super(x, y, 64, 16, Component.empty(), optionGetter.get(), selectedOption,
 				MachineInterfaceScreen.TEXTURE, 88, 186, -1, btn -> handler.onIEPress((GuiButtonSelectBox<E>)btn));
 		this.optionGetter = optionGetter;
 		this.messageGetter = messageGetter;
+		this.minWidth = minWidth;
 		this.recalculateOptionsAndSize();
 	}
 
@@ -48,7 +50,10 @@ public class GuiButtonSelectBox<E> extends GuiButtonState<E>
 	{
 		this.states = optionGetter.get();
 		// set width based on widest text
-		this.width = 16+Arrays.stream(this.states).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width);
+		this.width = Math.max(
+				minWidth,
+				16+Arrays.stream(this.states).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width)
+		);
 		this.openedHeight = mc().font.lineHeight*this.states.length;
 
 	}
