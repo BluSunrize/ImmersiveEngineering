@@ -22,6 +22,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkbenchLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -51,6 +54,7 @@ import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -162,6 +166,7 @@ public class AutoWorkbenchLogic
 	{
 		register.register(ItemHandler.BLOCK, (state, pos) -> INPUT_POS.equals(pos.posInMultiblock())?state.input: null);
 		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_POS, state -> state.energy);
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -196,6 +201,7 @@ public class AutoWorkbenchLogic
 
 		private final DroppingMultiblockOutput output;
 		private final IItemHandler input;
+		private final IMachineInterfaceConnection mifHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -215,6 +221,11 @@ public class AutoWorkbenchLogic
 			this.input = new WrappingItemHandler(
 					inventory, true, false, new IntRange(FIRST_INPUT_SLOT, NUM_SLOTS)
 			);
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(input, MachineInterfaceHandler.BASIC_ITEM_IN),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+			};
 		}
 
 		@Override
