@@ -9,24 +9,22 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.ConnectionSegments;
-import blusunrize.immersiveengineering.mixin.accessors.client.RenderSectionAccess;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import malte0811.modelsplitter.model.UVCoords;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.SectionBufferBuilderPack;
-import net.minecraft.client.renderer.chunk.SectionRenderDispatcher.RenderSection;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -37,15 +35,19 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.event.AddSectionGeometryEvent;
+import net.neoforged.neoforge.client.event.AddSectionGeometryEvent.SectionRenderingContext;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.FORGE)
 public class ConnectionRenderer implements ResourceManagerReloadListener
 {
 	private static final LoadingCache<SectionKey, List<RenderedSegment>> SEGMENT_CACHE = CacheBuilder.newBuilder()
@@ -69,58 +71,42 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		SEGMENT_CACHE.invalidateAll();
 	}
 
-	public static void renderConnectionsInSection(
-			Set<RenderType> layers, SectionBufferBuilderPack buffers,
-			@Nullable BlockAndTintGetter region, RenderSection renderChunk
-	)
+	@SubscribeEvent
+	public static void onSectionRender(AddSectionGeometryEvent ev)
 	{
-		if(region==null)
-			return;
-		renderConnectionsInSection(
-				renderType -> {
-					BufferBuilder builder = buffers.builder(renderType);
-					if(layers.add(renderType))
-						((RenderSectionAccess)renderChunk).invokeBeginLayer(builder);
-					return builder;
-				},
-				region,
-				renderChunk.getOrigin()
-		);
-	}
-
-	public static boolean sectionNeedsRendering(SectionPos section)
-	{
-		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(Minecraft.getInstance().level);
-		List<ConnectionSegments> connectionParts = globalNet.getCollisionData().getWiresIn(section);
-		return connectionParts!=null&&!connectionParts.isEmpty();
+		final BlockPos origin = ev.getSectionOrigin();
+		final SectionPos section = SectionPos.of(origin);
+		final GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(ev.getLevel());
+		final List<ConnectionSegments> connectionParts = globalNet.getCollisionData().getWiresIn(section);
+		if(connectionParts!=null&&!connectionParts.isEmpty())
+			ev.addRenderer(context -> renderConnectionsInSection(origin, context, connectionParts));
 	}
 
 	public static void renderConnectionsInSection(
-			Function<RenderType, VertexConsumer> getBuffer, BlockAndTintGetter region, BlockPos sectionOrigin
+			BlockPos sectionOrigin, SectionRenderingContext context, List<ConnectionSegments> segments
 	)
 	{
-		SectionPos section = SectionPos.of(sectionOrigin);
-		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(Minecraft.getInstance().level);
-		List<ConnectionSegments> connectionParts = globalNet.getCollisionData().getWiresIn(section);
-		if(connectionParts==null||connectionParts.isEmpty())
-			return;
-		RenderType renderType = RenderType.solid();
-		VertexConsumer builder = getBuffer.apply(renderType);
-		for(ConnectionSegments connection : connectionParts)
+		final VertexConsumer builder = context.getOrCreateChunkBuffer(RenderType.solid());
+		final PoseStack transform = context.getPoseStack();
+		for(ConnectionSegments connection : segments)
 		{
+			transform.pushPose();
 			ConnectionPoint connectionOrigin = connection.connection().getEndA();
-			renderSegments(
-					builder, connection,
+			transform.translate(
 					connectionOrigin.getX()-sectionOrigin.getX(),
 					connectionOrigin.getY()-sectionOrigin.getY(),
-					connectionOrigin.getZ()-sectionOrigin.getZ(),
-					region
+					connectionOrigin.getZ()-sectionOrigin.getZ()
 			);
+			renderSegments(builder, connection, context.getRegion(), transform);
+			transform.popPose();
 		}
 	}
 
 	public static void renderSegments(
-			VertexConsumer out, ConnectionSegments toRender, int offX, int offY, int offZ, BlockAndTintGetter level
+			VertexConsumer out,
+			ConnectionSegments toRender,
+			BlockAndTintGetter level,
+			PoseStack transform
 	)
 	{
 		Connection connection = toRender.connection();
@@ -136,7 +122,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 			if(i==0)
 				lastLight = getLight(connection, segment.offsetStart, level);
 			int nextLight = getLight(connection, segment.offsetEnd, level);
-			segment.render(lastLight, nextLight, OverlayTexture.NO_OVERLAY, offX, offY, offZ, out);
+			segment.render(lastLight, nextLight, OverlayTexture.NO_OVERLAY, out, transform);
 			lastLight = nextLight;
 		}
 	}
@@ -150,8 +136,9 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		final List<RenderedSegment> section = SEGMENT_CACHE.getUnchecked(new SectionKey(
 				radius, color, catenaryData, 0, Connection.RENDER_POINTS_PER_WIRE
 		));
+		final PoseStack transform = new PoseStack();
 		for(RenderedSegment renderedSegment : section)
-			renderedSegment.render(light, light, overlay, 0, 0, 0, out);
+			renderedSegment.render(light, light, overlay, out, transform);
 	}
 
 	private static List<RenderedSegment> renderSectionForCache(SectionKey key)
@@ -237,16 +224,16 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 
 	private record RenderedSegment(List<Vertex> vertices, Vec3i offsetStart, Vec3i offsetEnd)
 	{
-		public void render(int lightStart, int lightEnd, int overlay, int offX, int offY, int offZ, VertexConsumer out)
+		public void render(int lightStart, int lightEnd, int overlay, VertexConsumer out, PoseStack transform)
 		{
 			for(Vertex v : vertices)
-				out.vertex(
-						offX+v.posX, offY+v.posY, offZ+v.posZ,
-						v.red, v.green, v.blue, 1,
-						v.texU, v.texV,
-						overlay, v.lightForStart?lightStart: lightEnd,
-						v.normalX, v.normalY, v.normalZ
-				);
+				out.vertex(transform.last().pose(), v.posX, v.posY, v.posZ)
+						.color(v.red, v.green, v.blue, 1)
+						.uv(v.texU, v.texV)
+						.overlayCoords(overlay)
+						.uv2(v.lightForStart?lightStart: lightEnd)
+						.normal(transform.last().normal(), v.normalX, v.normalY, v.normalZ)
+						.endVertex();
 		}
 	}
 }

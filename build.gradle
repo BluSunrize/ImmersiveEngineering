@@ -115,6 +115,7 @@ repositories {
             includeModule("org.squiddev", "Cobalt")
         }
     }
+    mavenLocal()
 }
 
 dependencies {

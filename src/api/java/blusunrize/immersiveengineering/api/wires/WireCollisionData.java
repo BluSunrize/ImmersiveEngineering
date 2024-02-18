@@ -49,10 +49,7 @@ public class WireCollisionData
 		WireLogger.logger.info("Adding block data for {}", conn);
 		if(isClient)
 			forEachSection(conn, (sectionPos, segments) -> {
-				synchronized(sectionsToWires)
-				{
-					sectionsToWires.computeIfAbsent(sectionPos, $ -> new ArrayList<>()).add(segments);
-				}
+				sectionsToWires.computeIfAbsent(sectionPos, $ -> new ArrayList<>()).add(segments);
 			});
 		else
 		{
@@ -71,15 +68,12 @@ public class WireCollisionData
 		WireLogger.logger.info("Removing block data for {}", conn);
 		if(isClient)
 			forEachSection(conn, (sectionPos, segments) -> {
-				synchronized(sectionsToWires)
+				List<ConnectionSegments> forSection = sectionsToWires.get(sectionPos);
+				if(forSection!=null)
 				{
-					List<ConnectionSegments> forSection = sectionsToWires.get(sectionPos);
-					if(forSection!=null)
-					{
-						forSection.remove(segments);
-						if(forSection.isEmpty())
-							sectionsToWires.remove(sectionPos);
-					}
+					forSection.remove(segments);
+					if(forSection.isEmpty())
+						sectionsToWires.remove(sectionPos);
 				}
 			});
 		else
@@ -136,14 +130,11 @@ public class WireCollisionData
 	@Nullable
 	public List<ConnectionSegments> getWiresIn(SectionPos section)
 	{
-		synchronized(sectionsToWires)
-		{
-			List<ConnectionSegments> containedWires = sectionsToWires.get(section);
-			if(containedWires==null)
-				return null;
-			else
-				return List.copyOf(containedWires);
-		}
+		List<ConnectionSegments> containedWires = sectionsToWires.get(section);
+		if(containedWires==null)
+			return null;
+		else
+			return List.copyOf(containedWires);
 	}
 
 	public record CollisionInfo(
