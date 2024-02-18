@@ -30,10 +30,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.IntSupplier;
+import java.util.function.ToIntFunction;
 
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
 
@@ -74,9 +75,23 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 		IMachineInterfaceConnection attachedMachine = blockEntity.machine.getCapability();
 		if(attachedMachine!=null)
 		{
-			// collect checks & data from block entity
+			// collect checks
 			this.availableChecks = attachedMachine.getAvailableChecks();
-			this.configList = new ArrayList<>(blockEntity.configurations);
+
+			// make sure the fallback is the widest row it can be
+			int recentMax = 0;
+			int highestIndex = 0;
+			for(int j = 0; j < this.availableChecks.length; j++)
+			{
+				int length = this.availableChecks[j].getName().getString().length()
+						+Arrays.stream(this.availableChecks[j].options()).mapToInt((ToIntFunction<CheckOption<?>>)value -> value.getName().getString().length()).max().orElse(0);
+				if(length > recentMax)
+				{
+					recentMax = length;
+					highestIndex = j;
+				}
+			}
+			FALLBACK_CONFIG.setSelectedCheck(highestIndex);
 
 			// initialize list of rows
 			this.rowList = new WidgetRowList<>(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
@@ -108,7 +123,9 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							ItemBatcherScreen::gatherRedstoneTooltip
 					)
 			);
-			// populate rows
+
+			// fetch data from block entity & populate rows
+			this.configList = new ArrayList<>(blockEntity.configurations);
 			this.configList.forEach(c -> this.rowList.addRow(this::addRenderableWidget));
 
 			// update width of GUI, based on collective width of buttons
@@ -155,7 +172,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	private MachineInterfaceConfig<?> getConfigSafe(IntSupplier supp)
 	{
 		int i = supp.getAsInt();
-		if(i >= this.configList.size())
+		if(this.configList==null||i >= this.configList.size())
 			return FALLBACK_CONFIG;
 		return this.configList.get(i);
 	}
