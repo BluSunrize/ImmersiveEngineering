@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
@@ -20,6 +21,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -41,6 +45,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -76,6 +81,12 @@ public class MixerLogic
 	public static final int NUM_SLOTS = 8;
 	public static final int ENERGY_CAPACITY = 16000;
 	public static final int TANK_VOLUME = 8*FluidType.BUCKET_VOLUME;
+	public static ResourceLocation MIF_CONDITION_TANK = new ResourceLocation(Lib.MODID, "mixer/tank");
+
+	static
+	{
+		MachineInterfaceHandler.copyOptions(MIF_CONDITION_TANK, MachineInterfaceHandler.BASIC_FLUID_IN);
+	}
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
@@ -223,6 +234,7 @@ public class MixerLogic
 				ItemHandler.BLOCK,
 				(state, position) -> ITEM_INPUT.equals(position.posInMultiblock())?state.inventory: null
 		);
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -255,6 +267,7 @@ public class MixerLogic
 		private final Supplier<@Nullable IFluidHandler> outputRef;
 		private final IFluidHandler fluidInput;
 		private final IFluidHandler fluidOutput;
+		private final IMachineInterfaceConnection mifHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -267,6 +280,12 @@ public class MixerLogic
 			this.outputRef = ctx.getCapabilityAt(FluidHandler.BLOCK, OUTPUT_POS);
 			this.fluidInput = ArrayFluidHandler.fillOnly(tank, ctx.getMarkDirtyRunnable());
 			this.fluidOutput = ArrayFluidHandler.drainOnly(tank, ctx.getMarkDirtyRunnable());
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.isActive, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(inventory, MachineInterfaceHandler.BASIC_ITEM_IN),
+					new MachineCheckImplementation<>(tank, MIF_CONDITION_TANK),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+			};
 		}
 
 		@Override
