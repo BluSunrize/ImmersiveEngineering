@@ -477,6 +477,7 @@
   "gui.immersiveengineering.config.machine_interface.check.arc_furnace.additives": "Additive Input",
   "gui.immersiveengineering.config.machine_interface.check.arc_furnace.slag": "Slag Output",
   "gui.immersiveengineering.config.machine_interface.check.arc_furnace.electrodes": "Electrode Integrity",
+  "gui.immersiveengineering.config.machine_interface.check.sawmill.blade": "Sawblade Integrity",
   "gui.immersiveengineering.config.machine_interface.check.refinery.tank_left": "Left Input Tank",
   "gui.immersiveengineering.config.machine_interface.check.refinery.tank_right": "Right Input Tank",
   "gui.immersiveengineering.config.machine_interface.option.yes": "Yes",
