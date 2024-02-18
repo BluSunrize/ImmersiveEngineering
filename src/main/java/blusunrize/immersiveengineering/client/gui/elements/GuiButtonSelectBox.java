@@ -19,35 +19,44 @@ import net.minecraft.network.chat.Component;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class GuiButtonSelectBox<E> extends GuiButtonState<E>
 {
+	private final Supplier<E[]> optionGetter;
 	private final Function<E, Component> messageGetter;
 	private boolean opened = false;
-	private final int openedHeight;
+	private int openedHeight;
 
 	private int selectedState = -1;
 
 	public GuiButtonSelectBox(
-			int x, int y, String name, E[] options, IntSupplier selectedOption,
+			int x, int y, String name, Supplier<E[]> optionGetter, IntSupplier selectedOption,
 			Function<E, Component> messageGetter, IIEPressable<GuiButtonSelectBox<E>> handler
 	)
 	{
-		super(x, y, 64, 16, Component.nullToEmpty(name), options, selectedOption,
+		super(x, y, 64, 16, Component.nullToEmpty(name), optionGetter.get(), selectedOption,
 				MachineInterfaceScreen.TEXTURE, 88, 186, -1, btn -> handler.onIEPress((GuiButtonSelectBox<E>)btn));
+		this.optionGetter = optionGetter;
 		this.messageGetter = messageGetter;
+		this.recalculateOptionsAndSize();
+	}
+
+	public void recalculateOptionsAndSize()
+	{
+		this.states = optionGetter.get();
 		// set width based on widest text
-		this.width = 16+Arrays.stream(options).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width);
-		this.openedHeight = mc().font.lineHeight*options.length;
+		this.width = 16+Arrays.stream(this.states).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width);
+		this.openedHeight = mc().font.lineHeight*this.states.length;
+
 	}
 
 	public int getClickedState()
 	{
 		return selectedState!=-1?selectedState: this.getStateAsInt();
 	}
-
 
 	@Override
 	public Component getMessage()

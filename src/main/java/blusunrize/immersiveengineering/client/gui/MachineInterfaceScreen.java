@@ -98,22 +98,6 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 					(x, y, idx) -> new GuiButtonDelete(
 							x, y, btn -> removeConfigurationRow(idx.getAsInt())
 					),
-					(x, y, idx) -> new GuiButtonSelectBox<>(
-							x+4, y, "checktype", availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
-							MachineCheckImplementation::getName,
-							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
-									.setSelectedCheck(btn.getClickedState())
-									.setSelectedOption(0) // we can't assume the number of options on the check, so reset it
-							)
-					),
-					(x, y, idx) -> new GuiButtonSelectBox<>(
-							x+4, y, "option", availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
-							() -> getConfigSafe(idx).getSelectedOption(),
-							CheckOption::getName,
-							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
-									.setSelectedOption(btn.getClickedState())
-							)
-					),
 					(x, y, idx) -> new GuiButtonDyeColor(
 							x+4, y, 16, 16,
 							() -> getConfigSafe(idx).getOutputColor().getId(), TEXTURE, 192, 18,
@@ -121,6 +105,26 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 									.setOutputColor(btn.getNextState())
 							),
 							ItemBatcherScreen::gatherRedstoneTooltip
+					),
+					(x, y, idx) -> new GuiButtonSelectBox<>(
+							x+4, y, "checktype", () -> availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
+							MachineCheckImplementation::getName,
+							btn -> {
+								sendConfig(idx.getAsInt(), getConfigSafe(idx)
+										.setSelectedCheck(btn.getClickedState())
+										.setSelectedOption(0) // we can't assume the number of options on the check, so reset it
+								);
+								if(this.renderables.get(this.renderables.indexOf(btn)+1) instanceof GuiButtonSelectBox<?> optionButton)
+									optionButton.recalculateOptionsAndSize();
+							}
+					),
+					(x, y, idx) -> new GuiButtonSelectBox<>(
+							x+4, y, "option", () -> availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
+							() -> getConfigSafe(idx).getSelectedOption(),
+							CheckOption::getName,
+							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
+									.setSelectedOption(btn.getClickedState())
+							)
 					)
 			);
 
