@@ -106,7 +106,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							),
 							ItemBatcherScreen::gatherRedstoneTooltip
 					),
-					(x, y, idx) -> new GuiButtonSelectBox<>(
+					(x, y, idx) -> new GuiSelectBox<>(
 							x+4, y, 100, () -> availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
 							MachineCheckImplementation::getName,
 							btn -> {
@@ -114,11 +114,11 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 										.setSelectedCheck(btn.getClickedState())
 										.setSelectedOption(0) // we can't assume the number of options on the check, so reset it
 								);
-								if(this.renderables.get(this.renderables.indexOf(btn)+1) instanceof GuiButtonSelectBox<?> optionButton)
+								if(this.renderables.get(this.renderables.indexOf(btn)+1) instanceof GuiSelectBox<?> optionButton)
 									optionButton.recalculateOptionsAndSize();
 							}
 					),
-					(x, y, idx) -> new GuiButtonSelectBox<>(
+					(x, y, idx) -> new GuiSelectBox<>(
 							x+4, y, 110, () -> availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
 							() -> getConfigSafe(idx).getSelectedOption(),
 							CheckOption::getName,

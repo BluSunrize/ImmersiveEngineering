@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class GuiButtonSelectBox<E> extends GuiButtonState<E>
+public class GuiSelectBox<E> extends GuiButtonState<E>
 {
 	private final Supplier<E[]> optionGetter;
 	private final Function<E, Component> messageGetter;
@@ -33,13 +33,13 @@ public class GuiButtonSelectBox<E> extends GuiButtonState<E>
 
 	private int selectedState = -1;
 
-	public GuiButtonSelectBox(
+	public GuiSelectBox(
 			int x, int y, int minWidth, Supplier<E[]> optionGetter, IntSupplier selectedOption,
-			Function<E, Component> messageGetter, IIEPressable<GuiButtonSelectBox<E>> handler
+			Function<E, Component> messageGetter, IIEPressable<GuiSelectBox<E>> handler
 	)
 	{
 		super(x, y, 64, 16, Component.empty(), optionGetter.get(), selectedOption,
-				MachineInterfaceScreen.TEXTURE, 88, 186, -1, btn -> handler.onIEPress((GuiButtonSelectBox<E>)btn));
+				MachineInterfaceScreen.TEXTURE, 88, 186, -1, btn -> handler.onIEPress((GuiSelectBox<E>)btn));
 		this.optionGetter = optionGetter;
 		this.messageGetter = messageGetter;
 		this.minWidth = minWidth;
