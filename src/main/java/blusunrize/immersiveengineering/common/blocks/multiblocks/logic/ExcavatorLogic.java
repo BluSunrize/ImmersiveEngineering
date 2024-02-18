@@ -25,6 +25,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockL
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.ExcavatorLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.ExcavatorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -340,7 +343,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 					level.toAbsolute(DIG_POSITION).x, level.toAbsolute(DIG_POSITION).y, level.toAbsolute(DIG_POSITION).z,
 					blockItem.getBlock().defaultBlockState().getSoundType().getBreakSound(),
 					SoundSource.BLOCKS, 1f, 1f
-		);
+			);
 		return true;
 	}
 
@@ -353,6 +356,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 			else
 				return null;
 		});
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	public static int computeComparatorValue(State state, IMultiblockLevel level)
@@ -392,6 +396,7 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 	{
 		private boolean active = false;
 		private final MutableEnergyStorage energy = new MutableEnergyStorage(64000);
+		private final IMachineInterfaceConnection mifHandler;
 		private final DroppingMultiblockOutput output;
 		public final RSState rsState = RSState.enabledByDefault();
 		private BooleanSupplier isPlayingSound = () -> false;
@@ -399,6 +404,10 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		public State(IInitialMultiblockContext<State> ctx)
 		{
 			this.output = new DroppingMultiblockOutput(ITEM_OUTPUT, ctx);
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE)
+					//I wish we could monitor the vein here, but we don't have level access...
+			};
 		}
 
 		@Override
