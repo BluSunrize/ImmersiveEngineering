@@ -25,6 +25,15 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class GuiSelectBox<E> extends GuiButtonState<E>
 {
+	private static final int WIDTH_LEFT = 8;
+	private static final int WIDTH_MIDDLE = 4;
+	private static final int WIDTH_RIGHT = 12;
+	private static final int WIDTH_STATIC = WIDTH_LEFT+WIDTH_RIGHT;
+	private static final int WIDTH_BUTTON = 10;
+	private static final int HEIGHT_BASE = 16;
+	private static final int OPEN_OFFSET = 8;
+	private static final int TEXT_INDENT = 4;
+
 	private final Supplier<E[]> optionGetter;
 	private final Function<E, Component> messageGetter;
 	private final int minWidth;
@@ -39,7 +48,7 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 	)
 	{
 		super(x, y, 64, 16, Component.empty(), optionGetter.get(), selectedOption,
-				MachineInterfaceScreen.TEXTURE, 88, 186, -1, btn -> handler.onIEPress((GuiSelectBox<E>)btn));
+				MachineInterfaceScreen.TEXTURE, 166, 18, -1, btn -> handler.onIEPress((GuiSelectBox<E>)btn));
 		this.optionGetter = optionGetter;
 		this.messageGetter = messageGetter;
 		this.minWidth = minWidth;
@@ -52,7 +61,7 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 		// set width based on widest text
 		this.width = Math.max(
 				minWidth,
-				16+Arrays.stream(this.states).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width)
+				WIDTH_STATIC+Arrays.stream(this.states).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width)
 		);
 		this.openedHeight = mc().font.lineHeight*this.states.length;
 
@@ -70,11 +79,11 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 	}
 
 	@Override
-	protected int getTextColor()
+	protected int getTextColor(boolean highlighted)
 	{
-		if(this.isHovered)
+		if(highlighted)
 			return Lib.COLOUR_I_ImmersiveOrange;
-		return 0x2C2C2C;
+		return 0x555555;
 	}
 
 	@Override
@@ -83,14 +92,14 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 		if(!opened)
 		{
 			this.opened = true;
-			this.height = 16+openedHeight;
+			this.height = HEIGHT_BASE+openedHeight;
 		}
 		else
 		{
 			this.selectedState = getHighlightedIndex((int)mouseY);
 			this.onPress.onPress(this);
 			this.opened = false;
-			this.height = 16;
+			this.height = HEIGHT_BASE;
 		}
 	}
 
@@ -113,50 +122,48 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 			RenderSystem.blendFunc(770, 771);
 
+			// basic field
+			graphics.blit(texture, getX(), getY(), texU, texV, WIDTH_LEFT, HEIGHT_BASE);
+			for(int i = 0; i < width-WIDTH_STATIC; i += WIDTH_MIDDLE)
+				graphics.blit(texture, getX()+WIDTH_LEFT+i, getY(), texU+WIDTH_LEFT+1, texV, WIDTH_MIDDLE, HEIGHT_BASE);
+			graphics.blit(texture, getX()+width-WIDTH_RIGHT, getY(), texU+WIDTH_LEFT+WIDTH_MIDDLE+2, texV, WIDTH_RIGHT, HEIGHT_BASE);
+
 			if(!this.opened)
 			{
-				// background
-				graphics.blit(texture, getX(), getY(), texU, texV, 8, height);
-				for(int i = 0; i < width-16; i += 2)
-					graphics.blit(texture, getX()+8+i, getY(), texU+9, texV, 2, height);
-				graphics.blit(texture, getX()+width-8, getY(), texU+12, texV, 8, height);
 				// text
 				Component text = getMessage();
-				int textX = getX()+width/2-fontrenderer.width(text)/2;
-				int textY = getY()+height/2-fontrenderer.lineHeight/2;
-				graphics.drawString(fontrenderer, text, textX, textY, getTextColor(), false);
+				int textX = getX()+TEXT_INDENT;
+				int textY = getY()+HEIGHT_BASE/2-fontrenderer.lineHeight/2;
+				graphics.drawString(fontrenderer, text, textX, textY, getTextColor(this.isHovered), false);
 			}
 			else
 			{
 				graphics.pose().pushPose();
 				graphics.pose().translate(0, 0, 2);
 				// background
-				graphics.blit(texture, getX(), getY(), texU, texV, 8, 8);
-				for(int i = 0; i < width-16; i += 2)
-					graphics.blit(texture, getX()+8+i, getY(), texU+9, texV, 2, 8);
-				graphics.blit(texture, getX()+width-8, getY(), texU+12, texV, 8, 8);
 
+				int openV = texV+17;
+				int borderV = texV+20;
 				for(int j = 0; j < openedHeight; j += 2)
 				{
-					graphics.blit(texture, getX(), getY()+8+j, texU, texV+17, 8, 2);
-					for(int i = 0; i < width-16; i += 2)
-						graphics.blit(texture, getX()+8+i, getY()+8+j, texU+9, texV+17, 2, 2);
-					graphics.blit(texture, getX()+width-8, getY()+8+j, texU+12, texV+17, 8, 2);
+					graphics.blit(texture, getX(), getY()+OPEN_OFFSET+j, texU, openV, WIDTH_LEFT, 2);
+					for(int i = 0; i < width-WIDTH_STATIC; i += WIDTH_MIDDLE)
+						graphics.blit(texture, getX()+WIDTH_LEFT+i, getY()+OPEN_OFFSET+j, texU+WIDTH_LEFT+1, openV, WIDTH_MIDDLE, 2);
+					graphics.blit(texture, getX()+width-WIDTH_RIGHT, getY()+OPEN_OFFSET+j, texU+WIDTH_LEFT+WIDTH_MIDDLE+2, openV, WIDTH_RIGHT, 2);
 				}
-
-				graphics.blit(texture, getX(), getY()+8+openedHeight, texU, texV+8, 8, 8);
-				for(int i = 0; i < width-16; i += 2)
-					graphics.blit(texture, getX()+8+i, getY()+8+openedHeight, texU+9, texV+8, 2, 8);
-				graphics.blit(texture, getX()+width-8, getY()+8+openedHeight, texU+12, texV+8, 8, 8);
+				graphics.blit(texture, getX(), getY()+8+openedHeight, texU, borderV, WIDTH_LEFT, 2);
+				for(int i = 0; i < width-WIDTH_STATIC; i += WIDTH_MIDDLE)
+					graphics.blit(texture, getX()+WIDTH_LEFT+i, getY()+8+openedHeight, texU+WIDTH_LEFT+1, borderV, WIDTH_MIDDLE, 2);
+				graphics.blit(texture, getX()+width-WIDTH_RIGHT, getY()+8+openedHeight, texU+WIDTH_LEFT+WIDTH_MIDDLE+2, borderV, WIDTH_RIGHT, 2);
 
 				// text
 				for(int j = 0; j < states.length; j++)
 				{
 					Component text = messageGetter.apply(states[j]);
-					int textX = getX()+width/2-fontrenderer.width(text)/2;
-					int textY = getY()+8+j*fontrenderer.lineHeight;
+					int textX = getX()+TEXT_INDENT;
+					int textY = getY()+OPEN_OFFSET+j*fontrenderer.lineHeight;
 					boolean highlighted = isHovered&&getHighlightedIndex(mouseY)==j;
-					graphics.drawString(fontrenderer, text, textX, textY, highlighted?Lib.COLOUR_I_ImmersiveOrange: 0x2C2C2C, false);
+					graphics.drawString(fontrenderer, text, textX, textY, getTextColor(highlighted), false);
 				}
 				graphics.pose().popPose();
 			}

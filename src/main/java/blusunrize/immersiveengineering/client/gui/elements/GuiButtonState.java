@@ -71,11 +71,11 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 		return this.textOffset;
 	}
 
-	protected int getTextColor()
+	protected int getTextColor(boolean highlighted)
 	{
 		if(!this.active)
 			return 0xA0A0A0;
-		if(this.isHovered)
+		if(highlighted)
 			return Lib.COLOUR_I_ImmersiveOrange;
 		return 0xE0E0E0;
 	}
@@ -95,7 +95,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 		if(!getMessage().getString().isEmpty())
 		{
 			int[] offset = getTextOffset(fontrenderer);
-			graphics.drawString(fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], getTextColor(), false);
+			graphics.drawString(fontrenderer, getMessage(), getX()+offset[0], getY()+offset[1], getTextColor(this.isHovered), false);
 		}
 	}
 

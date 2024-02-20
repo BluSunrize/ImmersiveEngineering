@@ -149,7 +149,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			this.addRenderableWidget(new GuiButtonIE(
 					guiLeft+6, guiTop+162,
 					72, 18, Component.translatable(Lib.GUI_CONFIG+"machine_interface.add"),
-					TEXTURE, 185, 0,
+					TEXTURE, 184, 0,
 					(IIEPressable<Button>)btn -> {
 						final MachineInterfaceConfig<?> newConfig = new MachineInterfaceConfig<>(0, 0, DyeColor.WHITE);
 						final int idx = configList.size();
