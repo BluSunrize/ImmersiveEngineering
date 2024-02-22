@@ -78,22 +78,18 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			// collect checks
 			this.availableChecks = attachedMachine.getAvailableChecks();
 
-			// make sure the fallback is the widest row it can be
-			int recentMax = 0;
-			int highestIndex = 0;
-			for(int j = 0; j < this.availableChecks.length; j++)
+			int longestCheck = 0;
+			int longestOption = 0;
+			for(MachineCheckImplementation<?> availableCheck : this.availableChecks)
 			{
-				int length = this.availableChecks[j].getName().getString().length()
-						+Arrays.stream(this.availableChecks[j].options()).mapToInt((ToIntFunction<CheckOption<?>>)value -> value.getName().getString().length()).max().orElse(0);
-				if(length > recentMax)
-				{
-					recentMax = length;
-					highestIndex = j;
-				}
+				longestCheck = Math.max(longestCheck, this.font.width(availableCheck.getName()));
+				for(CheckOption<?> option : availableCheck.options())
+					longestOption = Math.max(longestOption, this.font.width(option.getName()));
 			}
-			FALLBACK_CONFIG.setSelectedCheck(highestIndex);
 
 			// initialize list of rows
+			int finalLongestCheck = longestCheck;
+			int finalLongestOption = longestOption;
 			this.rowList = new WidgetRowList<>(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
 					(x, y, idx) -> new GuiButtonDelete(
 							x, y, btn -> removeConfigurationRow(idx.getAsInt())
@@ -107,7 +103,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							ItemBatcherScreen::gatherRedstoneTooltip
 					),
 					(x, y, idx) -> new GuiSelectBox<>(
-							x+4, y, 100, () -> availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
+							x+4, y, finalLongestCheck, () -> availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
 							MachineCheckImplementation::getName,
 							btn -> {
 								sendConfig(idx.getAsInt(), getConfigSafe(idx)
@@ -119,7 +115,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							}
 					),
 					(x, y, idx) -> new GuiSelectBox<>(
-							x+4, y, 110, () -> availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
+							x+4, y, finalLongestOption, () -> availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
 							() -> getConfigSafe(idx).getSelectedOption(),
 							CheckOption::getName,
 							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)

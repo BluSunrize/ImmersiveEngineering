@@ -60,7 +60,7 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 		this.states = optionGetter.get();
 		// set width based on widest text
 		this.width = Math.max(
-				minWidth,
+				WIDTH_STATIC+minWidth,
 				WIDTH_STATIC+Arrays.stream(this.states).mapToInt(value -> mc().font.width(messageGetter.apply(value))).max().orElse(this.width)
 		);
 		this.openedHeight = mc().font.lineHeight*this.states.length;
