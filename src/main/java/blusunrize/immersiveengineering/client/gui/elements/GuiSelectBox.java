@@ -96,16 +96,22 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 		}
 		else
 		{
-			this.selectedState = getHighlightedIndex((int)mouseY);
-			this.onPress.onPress(this);
+			int sel = getHighlightedIndex(mouseX, mouseY);
+			if(sel!=-1)
+			{
+				this.selectedState = sel;
+				this.onPress.onPress(this);
+			}
 			this.opened = false;
 			this.height = HEIGHT_BASE;
 		}
 	}
 
-	private int getHighlightedIndex(int mouseY)
+	private int getHighlightedIndex(double mouseX, double mouseY)
 	{
-		int calc = (mouseY-getY()-8)/mc().font.lineHeight;
+		if(mouseX > getX()+(width-WIDTH_BUTTON))
+			return -1;
+		int calc = (int)((mouseY-getY()-8)/mc().font.lineHeight);
 		return calc >= 0&&calc < states.length?calc: -1;
 	}
 
@@ -162,7 +168,7 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 					Component text = messageGetter.apply(states[j]);
 					int textX = getX()+TEXT_INDENT;
 					int textY = getY()+OPEN_OFFSET+j*fontrenderer.lineHeight;
-					boolean highlighted = isHovered&&getHighlightedIndex(mouseY)==j;
+					boolean highlighted = isHovered&&getHighlightedIndex(mouseX, mouseY)==j;
 					graphics.drawString(fontrenderer, text, textX, textY, getTextColor(highlighted), false);
 				}
 				graphics.pose().popPose();
