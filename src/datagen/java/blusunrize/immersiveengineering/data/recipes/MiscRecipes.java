@@ -391,16 +391,6 @@ public class MiscRecipes extends IERecipeProvider
 				.weight(10)
 				.failchance(.1f)
 				.build(out, toRL("mineral/amethyst_crevasse"));
-		// Common things
-		MineralMixBuilder.builder()
-				.dimension(overworld)
-				.addOverworldSpoils()
-				.ore(Tags.Items.ORES_COAL, .8f)
-				.ore(sulfur, .2f)
-				.ore(phosphorus, .2f, getTagCondition(phosphorus))
-				.weight(25)
-				.failchance(.05f)
-				.build(out, toRL("mineral/bituminous_coal"));
 		// Metals
 		MineralMixBuilder.builder()
 				.dimension(overworld)

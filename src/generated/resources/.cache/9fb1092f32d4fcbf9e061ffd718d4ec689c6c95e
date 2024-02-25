@@ -1,4 +1,4 @@
-// 1.20.4	2024-01-28T16:22:26.566924772	Recipes
+// 1.20.4	2024-02-25T11:41:01.171109858	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -1410,7 +1410,6 @@ ead2f5c29c05c8db9adeaa77bdb45444ad3555ee data/immersiveengineering/recipes/metal
 8572edb442b1427b6fb67f7e996a35ef800b6888 data/immersiveengineering/recipes/mineral/auricupride.json
 91bc64a2fd31562fda66fc51740c7e03b500d4ad data/immersiveengineering/recipes/mineral/beryl.json
 a9b9df57983084b5938d1c3050875dc9d2868c44 data/immersiveengineering/recipes/mineral/bituminous_coal.json
-a9b9df57983084b5938d1c3050875dc9d2868c44 data/immersiveengineering/recipes/mineral/bituminous_coal2.json
 c635676a3232695f8f96fba503ab957d9d2a658e data/immersiveengineering/recipes/mineral/cassiterite.json
 d90176122ef4d2f0b461771abcbcda7184ce4c4d data/immersiveengineering/recipes/mineral/chalcopyrite.json
 5f620b2ee76fb9b76db7768c297de05a73fe620e data/immersiveengineering/recipes/mineral/cinnabar.json
