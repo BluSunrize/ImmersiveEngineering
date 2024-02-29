@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetw
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
@@ -41,7 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE,
-		IPlayerInteraction, IStateBasedDirectional
+		IPlayerInteraction, IStateBasedDirectional, IRedstoneOutput
 {
 	public final IEBlockCapabilityCache<IMachineInterfaceConnection> machine = IEBlockCapabilityCaches.forNeighbor(
 			IMachineInterfaceConnection.CAPABILITY, this, this::getFacing
@@ -50,6 +51,9 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	public List<MachineInterfaceConfig<?>> configurations = Lists.newArrayList();
 
 	private final int[] outputs = new int[DyeColor.values().length];
+
+	public DyeColor inputColor = DyeColor.WHITE;
+	private byte inputSignalStrength = 0;
 
 	public MachineInterfaceBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -83,6 +87,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		configurations.clear();
 		for(int i = 0; i < list.size(); i++)
 			configurations.add(MachineInterfaceConfig.readFromNBT(list.getCompound(i)));
+		inputColor = DyeColor.byId(nbt.getInt("inputColor"));
 	}
 
 	@Override
@@ -91,6 +96,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		ListTag list = new ListTag();
 		configurations.forEach(conf -> list.add(conf.writeToNBT()));
 		nbt.put("configurations", list);
+		nbt.putInt("inputColor", inputColor.getId());
 	}
 
 	@Override
@@ -106,6 +112,8 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 		}
 		else if(message.getBoolean("delete"))
 			this.configurations.remove(message.getInt("idx"));
+		else if(message.contains("inputColor"))
+			this.inputColor = DyeColor.byId(message.getInt("inputColor"));
 		setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
@@ -134,6 +142,17 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	private final RedstoneBundleConnection redstoneCap = new RedstoneBundleConnection()
 	{
 		@Override
+		public void onChange(byte[] externalInputs, Direction side)
+		{
+			if(externalInputs[inputColor.getId()]!=inputSignalStrength)
+			{
+				inputSignalStrength = externalInputs[inputColor.getId()];
+				markChunkDirty();
+				markContainingBlockForUpdate(getBlockState());
+			}
+		}
+
+		@Override
 		public void updateInput(byte[] signals, Direction side)
 		{
 			for(DyeColor dye : DyeColor.values())
@@ -147,6 +166,18 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 				CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION,
 				(be, side) -> be.redstoneCap
 		);
+	}
+
+	@Override
+	public int getStrongRSOutput(Direction side)
+	{
+		return canConnectRedstone(side)?inputSignalStrength: 0;
+	}
+
+	@Override
+	public boolean canConnectRedstone(Direction side)
+	{
+		return side==getFacing().getOpposite();
 	}
 
 	public static final class MachineInterfaceConfig<T>

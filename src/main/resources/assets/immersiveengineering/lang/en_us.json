@@ -468,6 +468,7 @@
   "gui.immersiveengineering.config.machine_interface.not_connected": "The Machine Interface is not attached to a valid machine.\nPlease ensure that the interface was placed against the redstone control port of an Immersive Engineering multiblock.",
   "gui.immersiveengineering.config.machine_interface.add": "Add Condition",
   "gui.immersiveengineering.config.machine_interface.remove": "Remove Condition",
+  "gui.immersiveengineering.config.machine_interface.input_color": "Control Signal Input:",
   "gui.immersiveengineering.config.machine_interface.check.basic.active": "Machine Active",
   "gui.immersiveengineering.config.machine_interface.check.basic.item_input": "Item Input",
   "gui.immersiveengineering.config.machine_interface.check.basic.item_output": "Item Output",

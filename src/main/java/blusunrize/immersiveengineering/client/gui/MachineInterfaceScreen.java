@@ -30,11 +30,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.IntSupplier;
-import java.util.function.ToIntFunction;
 
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
 
@@ -157,6 +155,15 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 					}
 			));
 
+			// input color button
+			this.addRenderableWidget(new GuiButtonDyeColor(
+					guiLeft+xSize-40, guiTop+163, 16, 16,
+					() -> blockEntity.inputColor.getId(), TEXTURE, 192, 18,
+					btn -> sendInputColor(btn.getNextState()),
+					ItemBatcherScreen::gatherRedstoneTooltip
+			));
+
+			// scroll buttons
 			this.addRenderableWidget(new GuiButtonIE(
 					guiLeft+xSize-20, guiTop+12, 16, 12, Component.empty(), TEXTURE, 224, 18,
 					(IIEPressable<Button>)btn -> this.rowList.scrollUp()
@@ -203,6 +210,16 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
 	}
 
+	private void sendInputColor(DyeColor col)
+	{
+		//update client
+		blockEntity.inputColor = col;
+		//update server
+		CompoundTag message = new CompoundTag();
+		message.putInt("inputColor", col.getId());
+		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+	}
+
 	@Override
 	protected void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
@@ -230,6 +247,14 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 				graphics.drawString(font, text.get(i),
 						guiLeft+12, yPos+i*font.lineHeight, 0x555555, false
 				);
+		}
+		else
+		{
+			Component text = Component.translatable(Lib.GUI_CONFIG+"machine_interface.input_color");
+			int textWidth = font.width(text);
+			graphics.drawString(font, text,
+					guiLeft+xSize-48-textWidth, guiTop+167, 0xE0E0E0, false
+			);
 		}
 
 		ArrayList<Component> tooltip = new ArrayList<>();
