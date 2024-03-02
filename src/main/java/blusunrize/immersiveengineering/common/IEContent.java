@@ -31,7 +31,6 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
-import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
@@ -65,7 +64,7 @@ import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.AddDropModifier;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
-import blusunrize.immersiveengineering.common.wires.WireSyncManager;
+import blusunrize.immersiveengineering.common.wires.WireNetworkCreator;
 import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
@@ -307,9 +306,7 @@ public class IEContent
 		ConveyorHandler.BLOCK_ENTITY_TYPES.setValue(rl -> ConveyorBeltBlockEntity.BE_TYPES.get(rl).get());
 		IMultiblockBEHelperMaster.MAKE_HELPER.setValue(MultiblockBEHelperMaster::new);
 		IMultiblockBEHelperDummy.MAKE_HELPER.setValue(MultiblockBEHelperDummy::new);
-		GlobalWireNetwork.MAKE_NETWORK.setValue((client, level) -> new GlobalWireNetwork(
-				client, new DefaultProxyProvider(level), new WireSyncManager(level)
-		));
+		GlobalWireNetwork.GET_NET_UNCACHED.setValue(WireNetworkCreator::getOrCreateNetwork);
 		IEServerConfig.MACHINES.populateAPI();
 		SetRestrictedField.lock(false);
 

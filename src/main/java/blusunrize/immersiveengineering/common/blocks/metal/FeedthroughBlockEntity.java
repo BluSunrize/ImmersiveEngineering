@@ -22,7 +22,10 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -114,18 +117,6 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 			if(!c.isInternal())
 				return false;
 		return true;
-	}
-
-	@Override
-	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
-	{
-
-	}
-
-	@Override
-	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
-	{
-
 	}
 
 	@Override

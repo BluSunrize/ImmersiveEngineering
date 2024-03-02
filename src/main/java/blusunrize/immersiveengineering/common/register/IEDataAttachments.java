@@ -11,9 +11,11 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
+import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.entities.SkyhookUserData;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
+import blusunrize.immersiveengineering.common.wires.WireNetworkCreator;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
@@ -38,6 +40,11 @@ public class IEDataAttachments
 			"minecart_shader",
 			() -> AttachmentType.builder(() -> new ShaderWrapper_Direct(IEApi.ieLoc("minecart")))
 					.serialize(ShaderWrapper_Direct.SERIALIZER)
+					.build()
+	);
+	public static final Supplier<AttachmentType<GlobalWireNetwork>> WIRE_NETWORK = REGISTER.register(
+			"wire_network", () -> AttachmentType.builder(WireNetworkCreator.CREATOR)
+					.serialize(WireNetworkCreator.SERIALIZER)
 					.build()
 	);
 }
