@@ -381,7 +381,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			if(outputList.isEmpty())
 				//NO OUTPUTS!
 				return 0;
-			BlockPos ccFrom = new BlockPos(pipe.getBlockPos().relative(facing.getOpposite()));
+			BlockPos ccFrom = new BlockPos(pipe.getBlockPos().relative(facing));
 			int sum = 0;
 			HashMap<DirectionalFluidOutput, Integer> sorting = new HashMap<>();
 			for(DirectionalFluidOutput output : outputList)
