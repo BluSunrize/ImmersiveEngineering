@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
@@ -28,11 +29,13 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 
+// TODO split into two separate classes for filling and "real" processes?
 public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRecipe>
 {
 	private static final RecipeHolder<BottlingMachineRecipe> DUMMY_RECIPE = new RecipeHolder<>(
@@ -53,11 +56,14 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 			BiFunction<Level, ResourceLocation, BottlingMachineRecipe> getRecipe, CompoundTag nbt, State state
 	)
 	{
-		super(getRecipe, nbt);
+		super(nbt.getBoolean("isFilling")?($, $1) -> DUMMY_RECIPE.value(): getRecipe, nbt);
 		this.tank = state.tank;
 		this.allowPartialFill = () -> state.allowPartialFill;
 		this.isFilling = nbt.getBoolean("isFilling");
-		this.filledContainer = List.of();
+		final ListTag filledNBT = nbt.getList("filledContainer", CompoundTag.TAG_COMPOUND);
+		this.filledContainer = new ArrayList<>();
+		for(int i = 0; i < filledNBT.size(); i++)
+			this.filledContainer.add(ItemStack.of(filledNBT.getCompound(i)));
 	}
 
 	public BottlingProcess(RecipeHolder<BottlingMachineRecipe> recipe, NonNullList<ItemStack> inputItem, State state)
@@ -134,5 +140,9 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	{
 		super.writeExtraDataToNBT(nbt);
 		nbt.putBoolean("isFilling", isFilling);
+		final ListTag filledNBT = new ListTag();
+		for(ItemStack stack : this.filledContainer)
+			filledNBT.add(stack.save(new CompoundTag()));
+		nbt.put("filledContainer", filledNBT);
 	}
 }

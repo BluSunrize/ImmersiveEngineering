@@ -212,7 +212,6 @@ public class BottlingMachineRenderer extends IEMultiblockRenderer<State>
 		PoseStack innerStack = new PoseStack();
 		innerStack.last().pose().mul(matrix.last().pose());
 		innerStack.last().normal().mul(matrix.last().normal());
-		// TODO may be broken?
 		MultiBufferSource stencilWrapper = IERenderTypes.wrapWithStencil(
 				baseBuffer,
 				vertexBuilder -> {
