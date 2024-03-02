@@ -12,13 +12,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.common.crafting.LazyShapelessRecipe;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.Nonnull;
@@ -27,9 +27,10 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShape
 {
 	private final Codec<LazyShapelessRecipe> codec = RecordCodecBuilder.create(inst -> inst.group(
 			TagOutput.CODEC.fieldOf("result").forGetter(LazyShapelessRecipe::getResult),
-			Ingredient.CODEC.xmap(i -> NonNullList.withSize(1, i), l -> l.get(0))
-					.fieldOf("input").forGetter(ShapelessRecipe::getIngredients)
-	).apply(inst, (result, ingredients) -> new LazyShapelessRecipe("", result, ingredients, this)));
+			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.getIngredients().get(0))
+	).apply(inst, (result, input) -> new LazyShapelessRecipe(
+			"", result, NonNullList.of(Ingredient.EMPTY, input, Ingredient.of(IEItems.Tools.HAMMER)), this
+	)));
 
 	@Override
 	public Codec<LazyShapelessRecipe> codec()
