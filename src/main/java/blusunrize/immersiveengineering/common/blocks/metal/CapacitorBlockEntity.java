@@ -115,7 +115,6 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		if(this.sideConfig.get(side)!=IOSideConfig.OUTPUT)
 			return;
-		BlockPos outPos = getBlockPos().relative(side);
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
 		IEnergyStorage neighborCap = this.connectedCaps.get(side).getCapability();
 		if(neighborCap!=null)

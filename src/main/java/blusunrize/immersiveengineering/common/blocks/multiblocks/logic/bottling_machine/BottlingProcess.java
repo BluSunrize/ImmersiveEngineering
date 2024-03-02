@@ -10,10 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling
 
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.TagOutputList;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
@@ -41,7 +38,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	private static final RecipeHolder<BottlingMachineRecipe> DUMMY_RECIPE = new RecipeHolder<>(
 			IEApi.ieLoc("bottling_dummy"),
 			new BottlingMachineRecipe(
-					TagOutputList.EMPTY, IngredientWithSize.of(ItemStack.EMPTY),
+					new TagOutputList(TagOutput.EMPTY), IngredientWithSize.of(ItemStack.EMPTY),
 					new FluidTagInput(FluidTags.WATER, 0)
 			)
 	);
