@@ -28,6 +28,8 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -35,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -50,7 +51,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -97,18 +97,9 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		super(type, pos, state);
 	}
 
-	private final Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighborFluids = new EnumMap<>(Direction.class);
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			for(Direction side : Direction.values())
-				neighborFluids.put(side, BlockCapabilityCache.create(
-						FluidHandler.BLOCK, serverLevel, worldPosition.relative(side), side
-				));
-	}
+	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> neighborFluids = IEBlockCapabilityCaches.allNeighbors(
+			FluidHandler.BLOCK, this
+	);
 
 	@Override
 	public void tickServer()

@@ -18,12 +18,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -33,7 +34,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -49,28 +49,16 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public boolean multiblock = false;
 	private boolean beingBroken = false;
 	public double perTick;
-	private BlockCapabilityCache<IRotationAcceptor, ?> outputCap;
-	private BlockCapabilityCache<IRotationAcceptor, ?> reverseOutputCap;
+	private IEBlockCapabilityCache<IRotationAcceptor> outputCap = IEBlockCapabilityCaches.forNeighbor(
+			IRotationAcceptor.CAPABILITY, this, () -> getFacing().getOpposite()
+	);
+	private IEBlockCapabilityCache<IRotationAcceptor> reverseOutputCap = IEBlockCapabilityCaches.forNeighbor(
+			IRotationAcceptor.CAPABILITY, this, this::getFacing
+	);
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-		{
-			Direction facing = getFacing();
-			outputCap = BlockCapabilityCache.create(
-					IRotationAcceptor.CAPABILITY, serverLevel, worldPosition.relative(facing.getOpposite()), facing
-			);
-			reverseOutputCap = BlockCapabilityCache.create(
-					IRotationAcceptor.CAPABILITY, serverLevel, worldPosition.relative(facing), facing.getOpposite()
-			);
-		}
 	}
 
 	@Override

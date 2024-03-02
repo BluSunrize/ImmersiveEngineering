@@ -23,6 +23,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.WorldMap;
 import com.google.common.collect.ImmutableSet;
@@ -59,7 +61,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -71,7 +72,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPipe, IColouredBE, IPlayerInteraction,
@@ -165,10 +165,6 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					markContainingBlockForUpdate(null);
 				}
 			});
-			for(Direction side : Direction.values())
-				neighbors.put(side, BlockCapabilityCache.create(
-						FluidHandler.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
-				)::getCapability);
 		}
 	}
 
@@ -266,16 +262,13 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	private final Map<Direction, IFluidHandler> sidedHandlers = new EnumMap<>(Direction.class);
-	private final Map<Direction, Supplier<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
+	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> neighbors = IEBlockCapabilityCaches.allNeighbors(
+			FluidHandler.BLOCK, this
+	);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
 			sidedHandlers.put(f, new PipeFluidHandler(this, f));
-		// TODO should this really be queried client-side? Fluid caps are not necessarily available
-		for(Direction side : Direction.values())
-			neighbors.put(side, () -> level.getCapability(
-					FluidHandler.BLOCK, worldPosition.relative(side), side.getOpposite()
-			));
 	}
 
 	private void invalidateHandler(Direction side)
@@ -504,7 +497,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		connections &= ~mask;
 		if(sideConfig.getBoolean(dir))
 		{
-			IFluidHandler handler = neighbors.get(dir).get();
+			IFluidHandler handler = neighbors.get(dir).getCapability();
 			if(handler!=null&&handler.getTanks() > 0)
 				connections |= mask;
 		}
@@ -523,7 +516,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					availableConnections |= mask;
 				else
 				{
-					IFluidHandler handler = neighbors.get(dir).get();
+					IFluidHandler handler = neighbors.get(dir).getCapability();
 					if(handler!=null&&handler.getTanks() > 0)
 						availableConnections |= mask;
 				}

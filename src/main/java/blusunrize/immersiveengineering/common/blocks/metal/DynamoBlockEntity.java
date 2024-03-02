@@ -17,18 +17,17 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import java.util.EnumMap;
 import java.util.Map;
 
 public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional
@@ -67,23 +66,14 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 	}
 
 	private final IRotationAcceptor rotationCap = new RotationAcceptor();
-	private final Map<Direction, BlockCapabilityCache<IEnergyStorage, ?>> neighbors = new EnumMap<>(Direction.class);
+	private final Map<Direction, IEBlockCapabilityCache<IEnergyStorage>> neighbors = IEBlockCapabilityCaches.allNeighbors(
+			EnergyStorage.BLOCK, this
+	);
 
 	public static void registerCapabilities(BECapabilityRegistrar<DynamoBlockEntity> registrar)
 	{
 		registrar.registerAllContexts(EnergyStorage.BLOCK, $ -> NullEnergyStorage.INSTANCE);
 		registrar.register(IRotationAcceptor.CAPABILITY, (be, side) -> side==be.getFacing()?be.rotationCap: null);
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			for(Direction side : Direction.values())
-				neighbors.put(side, BlockCapabilityCache.create(
-						EnergyStorage.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
-				));
 	}
 
 	private class RotationAcceptor implements IRotationAcceptor
@@ -93,7 +83,7 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 		public void inputRotation(double rotation)
 		{
 			int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
-			for(BlockCapabilityCache<IEnergyStorage, ?> neighbor : neighbors.values())
+			for(IEBlockCapabilityCache<IEnergyStorage> neighbor : neighbors.values())
 			{
 				IEnergyStorage capOnSide = neighbor.getCapability();
 				if(capOnSide!=null)

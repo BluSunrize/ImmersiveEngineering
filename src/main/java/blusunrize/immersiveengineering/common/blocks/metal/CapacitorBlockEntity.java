@@ -26,11 +26,12 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -38,7 +39,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -54,7 +54,9 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	private final CapacitorConfig configValues;
 	private final IEnergyStorage energyStorage;
 	protected final Map<Direction, IEnergyStorage> energyCaps = new EnumMap<>(Direction.class);
-	private final Map<Direction, BlockCapabilityCache<IEnergyStorage, ?>> connectedCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, IEBlockCapabilityCache<IEnergyStorage>> connectedCaps = IEBlockCapabilityCaches.allNeighbors(
+			Capabilities.EnergyStorage.BLOCK, this
+	);
 	protected final IEnergyStorage nullEnergyCap;
 
 	public int comparatorOutput = 0;
@@ -76,17 +78,6 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 			energyCaps.put(f, new CapacitorEnergyHandler(f, sideConfig, energyStorage));
 		}
 		nullEnergyCap = new WrappingEnergyStorage(energyStorage, false, false);
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			for(Direction f : DirectionUtils.VALUES)
-				connectedCaps.put(f, BlockCapabilityCache.create(
-						Capabilities.EnergyStorage.BLOCK, serverLevel, worldPosition.relative(f), f.getOpposite()
-				));
 	}
 
 	@Override

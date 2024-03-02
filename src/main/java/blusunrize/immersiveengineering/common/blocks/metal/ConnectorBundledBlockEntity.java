@@ -22,13 +22,14 @@ import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,7 +38,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,25 +63,14 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 		super(type, pos, state);
 	}
 
-	private BlockCapabilityCache<RedstoneBundleConnection, ?> attached;
+	private final IEBlockCapabilityCache<RedstoneBundleConnection> attached = IEBlockCapabilityCaches.forNeighbor(
+			CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION, this, this::getFacing
+	);
 	private boolean dirtyExtraSource = false;
 
 	private DirectionalBlockPos getAttachedFace()
 	{
 		return new DirectionalBlockPos(worldPosition.relative(getFacing()), getFacing().getOpposite());
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-		{
-			DirectionalBlockPos face = getAttachedFace();
-			attached = BlockCapabilityCache.create(
-					CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION, serverLevel, face.position(), face.side()
-			);
-		}
 	}
 
 	@Override

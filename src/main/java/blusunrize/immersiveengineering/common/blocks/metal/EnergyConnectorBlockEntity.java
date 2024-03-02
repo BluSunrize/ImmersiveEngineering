@@ -24,6 +24,8 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -36,7 +38,6 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -45,7 +46,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -95,7 +95,9 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	private final MutableEnergyStorage storageToMachine;
 	private final IEnergyStorage energyCap;
 
-	private BlockCapabilityCache<IEnergyStorage, ?> output;
+	private final IEBlockCapabilityCache<IEnergyStorage> output = IEBlockCapabilityCaches.forNeighbor(
+			EnergyStorage.BLOCK, this, this::getFacing
+	);
 
 	public EnergyConnectorBlockEntity(BlockEntityType<? extends EnergyConnectorBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -111,19 +113,6 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public EnergyConnectorBlockEntity(String voltage, boolean relay, BlockPos pos, BlockState state)
 	{
 		this(SPEC_TO_TYPE.get(Pair.of(voltage, relay)).get(), pos, state);
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-		{
-			Direction facing = getFacing();
-			output = BlockCapabilityCache.create(
-					EnergyStorage.BLOCK, serverLevel, worldPosition.relative(facing), facing.getOpposite()
-			);
-		}
 	}
 
 	@Override

@@ -17,15 +17,15 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
@@ -36,22 +36,13 @@ import java.util.function.BiFunction;
 public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE
 {
 	private int energyOutput = -1;
-	private final Map<Direction, BlockCapabilityCache<IEnergyStorage, ?>> energyWrappers = new EnumMap<>(Direction.class);
+	private final Map<Direction, IEBlockCapabilityCache<IEnergyStorage>> energyWrappers = IEBlockCapabilityCaches.allNeighbors(
+			EnergyStorage.BLOCK, this
+	);
 
 	public ThermoelectricGenBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.THERMOELECTRIC_GEN.get(), pos, state);
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			for(Direction side : Direction.values())
-				energyWrappers.put(side, BlockCapabilityCache.create(
-						EnergyStorage.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
-				));
 	}
 
 	@Override

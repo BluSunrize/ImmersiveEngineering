@@ -19,17 +19,17 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -55,22 +55,13 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
 	 */
 	private static Set<BlockPos> usedRouters = null;
-	private final Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighborCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> neighborCaps = IEBlockCapabilityCaches.allNeighbors(
+			FluidHandler.BLOCK, this
+	);
 
 	public FluidSorterBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.FLUID_SORTER.get(), pos, state);
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			for(Direction side : Direction.values())
-				neighborCaps.put(side, BlockCapabilityCache.create(
-						FluidHandler.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
-				));
 	}
 
 	public int routeFluid(Direction inputSide, FluidStack stack, FluidAction doFill)
@@ -113,8 +104,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		{
 			int rand = ApiUtils.RANDOM.nextInt(lengthFiltered);
 			Direction currentSide = sides[rand];
-			BlockCapabilityCache<IFluidHandler, ?> capRef = neighborCaps.get(currentSide);
-			IFluidHandler fluidOut = capRef.getCapability();
+			IFluidHandler fluidOut = neighborCaps.get(currentSide).getCapability();
 			if(fluidOut!=null)
 			{
 				int filledHere = fluidOut.fill(available, doFill);

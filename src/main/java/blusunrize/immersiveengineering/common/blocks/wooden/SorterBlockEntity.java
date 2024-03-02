@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -25,13 +27,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -57,23 +57,14 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	 */
 	private static Set<BlockPos> routed = null;
 
-	private final Map<Direction, BlockCapabilityCache<IItemHandler, ?>> neighborCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, IEBlockCapabilityCache<IItemHandler>> neighborCaps = IEBlockCapabilityCaches.allNeighbors(
+			ItemHandler.BLOCK, this
+	);
 
 	public SorterBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.SORTER.get(), pos, state);
 		filter = new SorterInventory();
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			for(Direction side : Direction.values())
-				neighborCaps.put(side, BlockCapabilityCache.create(
-						ItemHandler.BLOCK, serverLevel, worldPosition.relative(side), side.getOpposite()
-				));
 	}
 
 	public ItemStack routeItem(Direction inputSide, ItemStack stack, boolean simulate)
@@ -188,7 +179,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			for(Direction side : Direction.values())
 				if(side!=outputSide)
 				{
-					BlockCapabilityCache<IItemHandler, ?> capRef = neighborCaps.get(side);
+					IEBlockCapabilityCache<IItemHandler> capRef = neighborCaps.get(side);
 					IItemHandler itemHandler = capRef.getCapability();
 					if(itemHandler!=null)
 					{

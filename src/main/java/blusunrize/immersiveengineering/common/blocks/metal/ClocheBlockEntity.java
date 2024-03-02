@@ -29,10 +29,8 @@ import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
-import blusunrize.immersiveengineering.common.util.CachedRecipe;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
@@ -41,7 +39,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -54,7 +51,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
@@ -112,8 +108,12 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	private float growth = 0;
 	public float renderGrowth = 0;
 	public boolean renderActive = false;
-	@Nullable
-	private BlockCapabilityCache<IItemHandler, ?> output;
+	private final IEBlockCapabilityCache<IItemHandler> output = IEBlockCapabilityCaches.create(
+			ItemHandler.BLOCK,
+			() -> worldPosition.above().relative(getFacing().getOpposite()),
+			this::getFacing,
+			this::getLevel
+	);
 
 
 	public ClocheBlockEntity(BlockEntityType<ClocheBlockEntity> type, BlockPos pos, BlockState state)
@@ -123,19 +123,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			this.particles = new MutableObject<>(new CustomParticleManager());
 		else
 			this.particles = new MutableObject<>();
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			this.output = BlockCapabilityCache.create(
-					ItemHandler.BLOCK,
-					serverLevel,
-					worldPosition.above().relative(getFacing().getOpposite()),
-					getFacing()
-			);
 	}
 
 	@Override

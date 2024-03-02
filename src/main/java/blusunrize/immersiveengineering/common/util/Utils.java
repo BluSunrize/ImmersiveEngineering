@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.Raytracer;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
@@ -83,7 +84,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.TierSortingRegistry;
@@ -569,7 +569,7 @@ public class Utils
 		return null;
 	}
 
-	public static ItemStack insertStackIntoInventory(BlockCapabilityCache<IItemHandler, ?> ref, ItemStack stack, boolean simulate)
+	public static ItemStack insertStackIntoInventory(IEBlockCapabilityCache<IItemHandler> ref, ItemStack stack, boolean simulate)
 	{
 		return insertStackIntoInventory(ref.getCapability(), stack, simulate);
 	}

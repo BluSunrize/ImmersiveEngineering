@@ -19,6 +19,8 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelBlockEntit
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
@@ -26,7 +28,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +38,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -78,22 +78,14 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		this(IEBlockEntities.WOODEN_BARREL.get(), pos, state);
 	}
 
-	private Map<Direction, BlockCapabilityCache<IFluidHandler, ?>> neighbors;
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		if(level instanceof ServerLevel serverLevel)
-			neighbors = ImmutableMap.of(
-					Direction.UP, BlockCapabilityCache.create(
-							FluidHandler.BLOCK, serverLevel, worldPosition.above(), Direction.DOWN
-					),
-					Direction.DOWN, BlockCapabilityCache.create(
-							FluidHandler.BLOCK, serverLevel, worldPosition.below(), Direction.UP
-					)
-			);
-	}
+	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> neighbors = ImmutableMap.of(
+			Direction.UP, IEBlockCapabilityCaches.forNeighbor(
+					FluidHandler.BLOCK, this, () -> Direction.UP
+			),
+			Direction.DOWN, IEBlockCapabilityCaches.forNeighbor(
+					FluidHandler.BLOCK, this, () -> Direction.DOWN
+			)
+	);
 
 	@Override
 	public void tickServer()
@@ -103,7 +95,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 			if(tank.getFluidAmount() > 0&&sideConfig.get(side)==OUTPUT)
 			{
 				int out = Math.min(FluidType.BUCKET_VOLUME, tank.getFluidAmount());
-				BlockCapabilityCache<IFluidHandler, ?> capRef = neighbors.get(side);
+				IEBlockCapabilityCache<IFluidHandler> capRef = neighbors.get(side);
 				IFluidHandler handler = capRef.getCapability();
 				if(handler!=null)
 				{

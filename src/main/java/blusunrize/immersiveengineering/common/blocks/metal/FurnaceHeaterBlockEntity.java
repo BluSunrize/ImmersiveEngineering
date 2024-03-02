@@ -22,21 +22,20 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IActiveState,
@@ -44,23 +43,13 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 {
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000, getEnergyIO());
 	private final IEnergyStorage energyCap = makeEnergyInput(energyStorage);
-	private final Collection<BlockCapabilityCache<IExternalHeatable, ?>> heatables = new ArrayList<>();
+	private final Collection<IEBlockCapabilityCache<IExternalHeatable>> heatables = IEBlockCapabilityCaches.allNeighbors(
+			ExternalHeaterHandler.CAPABILITY, this
+	).values();
 
 	public FurnaceHeaterBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.FURNACE_HEATER.get(), pos, state);
-	}
-
-	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		heatables.clear();
-		if(level instanceof ServerLevel serverLevel)
-			for(Direction side : Direction.values())
-				heatables.add(BlockCapabilityCache.create(
-						ExternalHeaterHandler.CAPABILITY, serverLevel, worldPosition.relative(side), side.getOpposite()
-				));
 	}
 
 	@Override
@@ -72,7 +61,7 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 		if(activeBeforeTick&&!redstonePower)
 			newActive = false;
 		if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
-			for(BlockCapabilityCache<IExternalHeatable, ?> capRef : heatables)
+			for(IEBlockCapabilityCache<IExternalHeatable> capRef : heatables)
 			{
 				IExternalHeatable heatable = capRef.getCapability();
 				if(heatable!=null)
