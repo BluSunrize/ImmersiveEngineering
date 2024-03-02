@@ -25,6 +25,8 @@ jobs:
         run: ./gradlew compileJava
       - name: Run unit tests
         run: ./gradlew test
+      - name: Install ffprobe
+        run: sudo apt install ffmpeg
       - name: Check for stereo sound files
         run: scripts/check_sounds.sh
   datagen:
