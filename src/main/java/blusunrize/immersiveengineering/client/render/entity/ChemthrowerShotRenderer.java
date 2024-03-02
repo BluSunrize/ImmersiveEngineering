@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -25,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nonnull;
 
@@ -75,16 +74,16 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		builder.setLight(packedLightIn);
 		builder.setOverlay(OverlayTexture.NO_OVERLAY);
 		builder.vertex(-.25f, -.25f, 0)
-				.uv(sprite.getU(4), sprite.getV(4))
+				.uv(sprite.getU(0.25f), sprite.getV(0.25f))
 				.endVertex();
 		builder.vertex(.25f, -.25f, 0)
-				.uv(sprite.getU(0), sprite.getV(4))
+				.uv(sprite.getU(0), sprite.getV(0.25f))
 				.endVertex();
 		builder.vertex(.25f, .25f, 0)
 				.uv(sprite.getU(0), sprite.getV(0))
 				.endVertex();
 		builder.vertex(-.25f, .25f, 0)
-				.uv(sprite.getU(4), sprite.getV(0))
+				.uv(sprite.getU(0.25f), sprite.getV(0))
 				.endVertex();
 		matrixStackIn.popPose();
 	}
