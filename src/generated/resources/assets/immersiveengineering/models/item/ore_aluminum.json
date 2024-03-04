@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "immersiveengineering:block/metal/ore_aluminum"
-  }
+  "parent": "immersiveengineering:block/ore_aluminum"
 }

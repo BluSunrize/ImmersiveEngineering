@@ -1526,6 +1526,29 @@ public class Recipes extends RecipeProvider
 				makeIngredient(Tags.Items.INGOTS_BRICK),
 				makeIngredient(Blocks.MAGMA_BLOCK),
 				has(Tags.Items.INGOTS_BRICK), out);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.SLAG_BRICK, 4)
+				.pattern("ss")
+				.pattern("ss")
+				.define('s', IETags.slag)
+				.unlockedBy("has_slag", has(IETags.slag))
+				.save(out, toRL(toPath(StoneDecoration.SLAG_BRICK)));
+		SimpleCookingRecipeBuilder.smoking(Ingredient.of(Blocks.BRICKS), RecipeCategory.MISC, StoneDecoration.CLINKER_BRICK, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_bricks", has(Blocks.BRICKS))
+				.save(out, toRL("smoking/"+toPath(StoneDecoration.CLINKER_BRICK)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.CLINKER_BRICK_QUOIN, 4)
+				.pattern("tb")
+				.pattern("bb")
+				.define('t', Blocks.WHITE_TERRACOTTA)
+				.define('b', StoneDecoration.CLINKER_BRICK)
+				.unlockedBy("has_bricks", has(Blocks.BRICKS))
+				.save(out, toRL(toPath(StoneDecoration.CLINKER_BRICK_QUOIN)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.CLINKER_BRICK_SILL, 4)
+				.pattern("tt")
+				.pattern("bb")
+				.define('t', Blocks.WHITE_TERRACOTTA)
+				.define('b', StoneDecoration.CLINKER_BRICK)
+				.unlockedBy("has_bricks", has(Blocks.BRICKS))
+				.save(out, toRL(toPath(StoneDecoration.CLINKER_BRICK_SILL)));
 		addSandwich(StoneDecoration.HEMPCRETE, 6,
 				makeIngredient(IETags.clay),
 				makeIngredient(IETags.fiberHemp),
@@ -1545,6 +1568,8 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(StoneDecoration.HEMPCRETE_PILLAR)));
 		add3x3Conversion(StoneDecoration.COKE, IEItems.Ingredients.COAL_COKE, IETags.coalCoke, out);
 
+		addStairs(StoneDecoration.SLAG_BRICK, out);
+		addStairs(StoneDecoration.CLINKER_BRICK, out);
 		addStairs(StoneDecoration.HEMPCRETE, out);
 		addStairs(StoneDecoration.HEMPCRETE_BRICK, out);
 		addStairs(StoneDecoration.CONCRETE, out);
@@ -1552,6 +1577,16 @@ public class Recipes extends RecipeProvider
 		addStairs(StoneDecoration.CONCRETE_TILE, out);
 		addStairs(StoneDecoration.CONCRETE_LEADED, out);
 
+		addWall(StoneDecoration.SLAG_BRICK, out);
+		addWall(StoneDecoration.CLINKER_BRICK, out);
+
+		addStonecuttingRecipe(Ingredients.SLAG, StoneDecoration.SLAG_BRICK, out);
+		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.SLAG_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.SLAG_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.SLAG_BRICK, IEBlocks.TO_WALL.get(StoneDecoration.SLAG_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.CLINKER_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.CLINKER_BRICK.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.CLINKER_BRICK, IEBlocks.TO_STAIRS.get(StoneDecoration.CLINKER_BRICK.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.CLINKER_BRICK, IEBlocks.TO_WALL.get(StoneDecoration.CLINKER_BRICK.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, IEBlocks.TO_STAIRS.get(StoneDecoration.HEMPCRETE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE_BRICK, IEBlocks.TO_SLAB.get(StoneDecoration.HEMPCRETE_BRICK.getId()), 2, out);
@@ -1582,7 +1617,7 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL("smelting/"+toPath(StoneDecoration.CONCRETE_BRICK_CRACKED)));
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(StoneDecoration.HEMPCRETE_BRICK), RecipeCategory.MISC, StoneDecoration.HEMPCRETE_BRICK_CRACKED, 0.1f, standardSmeltingTime)
-				.unlockedBy("has_hempcrete", has(StoneDecoration.CONCRETE))
+				.unlockedBy("has_hempcrete", has(StoneDecoration.HEMPCRETE))
 				.save(out, toRL("smelting/"+toPath(StoneDecoration.HEMPCRETE_BRICK_CRACKED)));
 
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.slag), RecipeCategory.MISC, StoneDecoration.SLAG_GLASS, 0.1f, standardSmeltingTime)
@@ -3464,6 +3499,12 @@ public class Recipes extends RecipeProvider
 				.define('C', Items.MINECART)
 				.unlockedBy("has_minecart", has(Items.MINECART))
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+		shapelessMisc(StoneDecoration.GRIT_SAND, 5)
+				.requires(Ingredient.of(Tags.Items.GRAVEL), 1)
+				.requires(Ingredient.of(Tags.Items.SAND_COLORLESS), 4)
+				.unlockedBy("has_sand", has(Tags.Items.GRAVEL))
+				.unlockedBy("has_gravel", has(Tags.Items.SAND_COLORLESS))
+				.save(out, toRL("grit_sand"));
 
 		//Lead to dye recipes
 		shapelessMisc(Items.WHITE_DYE, 16)
@@ -3564,6 +3605,17 @@ public class Recipes extends RecipeProvider
 				.pattern("sss")
 				.unlockedBy("has_"+toPath(block), has(block))
 				.save(out, toRL(toPath(stairs)));
+	}
+
+	private void addWall(ItemLike block, Consumer<FinishedRecipe> out)
+	{
+		ItemLike wall = IEBlocks.TO_WALL.get(BuiltInRegistries.ITEM.getKey(block.asItem()));
+		shapedMisc(wall, 6)
+				.define('s', block)
+				.pattern("sss")
+				.pattern("sss")
+				.unlockedBy("has_"+toPath(block), has(block))
+				.save(out, toRL(toPath(wall)));
 	}
 
 	private void addStonecuttingRecipe(ItemLike input, ItemLike output, Consumer<FinishedRecipe> out)

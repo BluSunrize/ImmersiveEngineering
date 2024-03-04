@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "immersiveengineering:block/grit_sand0"
+      },
+      {
+        "model": "immersiveengineering:block/grit_sand1"
+      },
+      {
+        "model": "immersiveengineering:block/grit_sand2"
+      },
+      {
+        "model": "immersiveengineering:block/grit_sand3"
+      },
+      {
+        "model": "immersiveengineering:block/grit_sand4"
+      },
+      {
+        "model": "immersiveengineering:block/grit_sand5"
+      },
+      {
+        "model": "immersiveengineering:block/grit_sand6"
+      },
+      {
+        "model": "immersiveengineering:block/grit_sand7"
+      }
+    ]
+  }
+}

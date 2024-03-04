@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "immersiveengineering:block/clinker_brick0"
+      },
+      {
+        "model": "immersiveengineering:block/clinker_brick1"
+      },
+      {
+        "model": "immersiveengineering:block/clinker_brick2"
+      },
+      {
+        "model": "immersiveengineering:block/clinker_brick3"
+      },
+      {
+        "model": "immersiveengineering:block/clinker_brick4"
+      },
+      {
+        "model": "immersiveengineering:block/clinker_brick5"
+      },
+      {
+        "model": "immersiveengineering:block/clinker_brick6"
+      },
+      {
+        "model": "immersiveengineering:block/clinker_brick7"
+      }
+    ]
+  }
+}

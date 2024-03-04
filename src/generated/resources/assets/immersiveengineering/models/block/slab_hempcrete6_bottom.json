@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/slab",
   "textures": {
-    "bottom": "immersiveengineering:block/stone_decoration/hempcrete6",
-    "side": "immersiveengineering:block/stone_decoration/hempcrete6",
-    "top": "immersiveengineering:block/stone_decoration/hempcrete6"
+    "bottom": "immersiveengineering:block/stone_decoration/hempcrete/hempcrete6",
+    "side": "immersiveengineering:block/stone_decoration/hempcrete/hempcrete6",
+    "top": "immersiveengineering:block/stone_decoration/hempcrete/hempcrete6"
   }
 }
