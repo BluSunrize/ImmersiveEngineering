@@ -8,7 +8,7 @@ license="Blu's License of Common Sense"
 
 [[mods]]
 modId = "immersiveengineering"
-version = "${version}"
+version = "${ie_version}"
 displayName = "Immersive Engineering"
 description = "A tech based mod focused on realism."
 authors = "BluSunrize and Damien A.W. Hazard"
