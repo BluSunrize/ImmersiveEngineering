@@ -11,7 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
 public class ImprovedBlastfurnaceMultiblock extends StoneMultiblock
 {
@@ -26,5 +30,23 @@ public class ImprovedBlastfurnaceMultiblock extends StoneMultiblock
 	public float getManualScale()
 	{
 		return 14;
+	}
+
+	@Override
+	protected void replaceStructureBlock(
+			StructureBlockInfo info, Level world, BlockPos actualPos,
+			boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster
+	)
+	{
+		// This is a hack: The improved BF has its "front" on the wrong side, but we cannot change the meaning of the
+		// "front" of a multiblock without breaking existing worlds. This should be removed at the next world-breaking
+		// opportunity (1.20.5?).
+		super.replaceStructureBlock(
+				info, world,
+				new BlockPos(actualPos.getX()-2*offsetFromMaster.getX(), actualPos.getY(), actualPos.getZ()-2*offsetFromMaster.getZ()),
+				mirrored,
+				clickDirection.getOpposite(),
+				new Vec3i(-offsetFromMaster.getX(), offsetFromMaster.getY(), -offsetFromMaster.getZ())
+		);
 	}
 }
