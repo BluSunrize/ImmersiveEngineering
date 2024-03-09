@@ -189,7 +189,10 @@ public class MetalPressLogic
 	public void dropExtraItems(State state, Consumer<ItemStack> drop)
 	{
 		if(!state.mold.isEmpty())
+		{
 			drop.accept(state.mold.copy());
+			state.mold = ItemStack.EMPTY;
+		}
 	}
 
 	@Override

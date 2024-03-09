@@ -206,6 +206,7 @@ public class BottlingMachineLogic
 		for(final MultiblockProcess<BottlingMachineRecipe, ?> process : state.processor.getQueue())
 			if(process instanceof BottlingProcess bottlingProcess)
 				bottlingProcess.inputItems.forEach(drop);
+		state.processor.clear();
 	}
 
 	@Override

@@ -45,6 +45,11 @@ public interface IMultiblockComponent<State>
 		return InteractionResult.PASS;
 	}
 
+	/**
+	 * Drops any items that need to be dropped when the multiblock is broken. Note that this may be called multiple
+	 * times for the same multiblock (e.g. when the master block is broken using a drill), so the dropped items should
+	 * be removed from the multiblock's own inventory.
+	 */
 	default void dropExtraItems(State state, Consumer<ItemStack> drop)
 	{
 	}

@@ -211,6 +211,13 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		return Collections.unmodifiableList(processQueue);
 	}
 
+	public void clear()
+	{
+		this.processQueue.clear();
+		this.markDirty.run();
+		this.onQueueChange.run();
+	}
+
 	public interface ProcessLoader<R extends MultiblockRecipe, CTX extends ProcessContext<R>>
 	{
 		MultiblockProcess<R, CTX> fromNBT(BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data);

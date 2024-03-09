@@ -314,7 +314,10 @@ public class SawmillLogic
 	public void dropExtraItems(State state, Consumer<ItemStack> drop)
 	{
 		if(!state.sawblade.isEmpty())
+		{
 			drop.accept(state.sawblade);
+			state.sawblade = ItemStack.EMPTY;
+		}
 	}
 
 	@Override
