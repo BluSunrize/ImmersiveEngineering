@@ -174,6 +174,8 @@ public class IEMultiblockLogic
 				.strength(2, 20);
 		if(!solid)
 			properties.noOcclusion();
+		else
+			properties.forceSolidOn();
 		return new IEMultiblockBuilder<>(logic, name)
 				.notMirrored()
 				.customBlock(
