@@ -444,3 +444,9 @@ task updateJson(type: GenerateUpdateJSON) {
 
 processResources.dependsOn updateJson
 
+
+tasks.withType(Task) {
+    if (it.name == "runServer") {
+        it.standardInput = System.in
+    }
+}
