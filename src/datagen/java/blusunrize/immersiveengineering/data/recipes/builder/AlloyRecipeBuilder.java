@@ -8,19 +8,13 @@
 
 package blusunrize.immersiveengineering.data.recipes.builder;
 
-import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemInput;
 import blusunrize.immersiveengineering.data.recipes.builder.BaseHelpers.ItemOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.conditions.ICondition;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AlloyRecipeBuilder extends IERecipeBuilder<AlloyRecipeBuilder>
 		implements ItemOutput<AlloyRecipeBuilder>, ItemInput<AlloyRecipeBuilder>
@@ -28,7 +22,7 @@ public class AlloyRecipeBuilder extends IERecipeBuilder<AlloyRecipeBuilder>
 	private IngredientWithSize input0;
 	private IngredientWithSize input1;
 	private TagOutput output;
-	private int time;
+	private int time = 200;
 
 	private AlloyRecipeBuilder()
 	{
