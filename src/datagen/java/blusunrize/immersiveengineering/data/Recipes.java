@@ -261,10 +261,27 @@ public class Recipes extends RecipeProvider
 
 	private void recipesCloche(@Nonnull Consumer<FinishedRecipe> out)
 	{
-		ClocheFertilizerBuilder.builder(1.25f)
+		//Minor nutrients are 10% boost (calcium, magnesium, sulfur), major nutrients are 20% (phosphorous, nitrogen, potassium)
+		//Single-nutrient fertilizers:
+		ClocheFertilizerBuilder.builder(1.10f)
+				.addInput(IETags.sulfurDust)
+				.build(out, toRL("fertilizer/sulfur"));
+		//Dual-nutrient fertilizers:
+		//Slag: Phosphorous, Calcium
+		ClocheFertilizerBuilder.builder(1.30f)
+				.addInput(IETags.slag)
+				.build(out, toRL("fertilizer/slag"));
+		//Nitrate: Nitrogen, no Potassium because it can be many things including sodium - and the recipe is closest to Chilean saltpeter (NaNO3)
+		ClocheFertilizerBuilder.builder(1.20f)
+				.addInput(IETags.saltpeterDust)
+				.build(out, toRL("fertilizer/saltpeter"));
+		//Bonemeal: Calcium, Phosphorous
+		ClocheFertilizerBuilder.builder(1.30f)
 				.addInput(Items.BONE_MEAL)
-				.build(out, toRL("fertilizer/bone_meal"));
-		ClocheFertilizerBuilder.builder(1.25f)
+				.build(out, toRL("fertilizer/bonemeal"));
+		//Quad-nutrient fertilizers:
+		//Industrial Fertilizer: Nitrogen, Phosphorous, Sulfur, Calcium
+		ClocheFertilizerBuilder.builder(1.60f)
 				.addInput(Misc.FERTILIZER)
 				.build(out, toRL("fertilizer/fertilizer"));
 
@@ -3455,10 +3472,14 @@ public class Recipes extends RecipeProvider
 				.define('W', ItemTags.WOOL)
 				.unlockedBy("has_iron_rod", has(IETags.ironRod))
 				.save(out, toRL(toPath(Misc.EARMUFFS)));
-		shapelessMisc(Misc.FERTILIZER)
+		shapelessMisc(Misc.FERTILIZER, 3)
 				.requires(IETags.saltpeterDust)
 				.requires(IETags.slag)
+				.requires(IETags.sulfurDust)
+				.requires(new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_saltpeter", has(IETags.saltpeterDust))
+				.unlockedBy("has_sulfur", has(IETags.sulfurDust))
+				.unlockedBy("has_slag", has(IETags.slag))
 				.save(out, toRL(toPath(Misc.FERTILIZER)));
 
 		shapedMisc(MetalDecoration.LANTERN)

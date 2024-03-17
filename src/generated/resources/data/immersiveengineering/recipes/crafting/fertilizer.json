@@ -7,9 +7,18 @@
     },
     {
       "tag": "forge:slag"
+    },
+    {
+      "tag": "forge:dusts/sulfur"
+    },
+    {
+      "type": "immersiveengineering:fluid",
+      "amount": 1000,
+      "tag": "minecraft:water"
     }
   ],
   "result": {
+    "count": 3,
     "item": "immersiveengineering:fertilizer"
   }
 }

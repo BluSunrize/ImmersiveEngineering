@@ -11,6 +11,26 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
+    "has_slag": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:slag"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_sulfur": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/sulfur"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "immersiveengineering:crafting/fertilizer"
@@ -21,6 +41,8 @@
   "requirements": [
     [
       "has_saltpeter",
+      "has_sulfur",
+      "has_slag",
       "has_the_recipe"
     ]
   ],
