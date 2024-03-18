@@ -1402,5 +1402,6 @@
   "config.jade.plugin_immersiveengineering.multiblock_icon": "Multiblock Icons",
   "config.jade.plugin_immersiveengineering.multiblock_tank": "Multiblock Tank",
   "config.jade.plugin_immersiveengineering.multiblock_inventory": "Multiblock Inventory",
-  "ie.jei.category.fertilizer": "Garden Cloche Fertilizer"
+  "desc.immersiveengineering.jei.category.fertilizer": "Garden Cloche Fertilizer",
+  "desc.immersiveengineering.jei.cloche_modifier": "Growth Modifier: %1$s"
 }
