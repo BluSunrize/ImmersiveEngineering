@@ -281,7 +281,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		ClocheRecipe recipe = cachedRecipe.get();
 		if(recipe==null)
 			return 0;
-		return Mth.clamp(renderGrowth/recipe.getTime(seed, soil), 0, 1);
+		return Mth.clamp(growth/recipe.getTime(seed, soil), 0, 1);
 	}
 
 	protected void sendSyncPacket()

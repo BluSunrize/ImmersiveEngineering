@@ -1,0 +1,7 @@
+{
+  "type": "immersiveengineering:fertilizer",
+  "growthModifier": 1.2,
+  "input": {
+    "tag": "forge:dusts/saltpeter"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "type": "immersiveengineering:fertilizer",
-  "growthModifier": 1.25,
+  "growthModifier": 1.6,
   "input": {
     "item": "immersiveengineering:fertilizer"
   }
