@@ -27,12 +27,15 @@ import java.util.function.Supplier;
  */
 public class ManualHelper
 {
-	public static String CAT_GENERAL = "general";
+	public static String CAT_RESOURCES = "resources";
+	public static String CAT_WORKBENCHES_STORAGE = "workbenches_storage";
 	public static String CAT_CONSTRUCTION = "construction";
-	public static String CAT_ENERGY = "energy";
-	public static String CAT_MACHINES = "machines";
+	public static String CAT_ELECTRICAL_GRIDS = "electrical_grids";
+	public static String CAT_EXPLOSIVES_WEAPONRY = "explosives_weaponry";
 	public static String CAT_TOOLS = "tools";
-	public static String CAT_HEAVYMACHINES = "heavymachines";
+	public static String CAT_DEVICES = "devices";
+	public static String CAT_SIMPLE_MACHINERY = "simple_machinery";
+	public static String CAT_HEAVY_MACHINERY = "heavy_machinery";
 	public static String CAT_UPDATE = "update";
 
 	/**

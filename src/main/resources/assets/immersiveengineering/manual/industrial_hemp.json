@@ -18,8 +18,8 @@
     "type": "crafting",
     "recipe": "crafting/cushion"
   },
-  "curtain_recipe": {
+  "ersatz_leather": {
     "type": "crafting",
-    "recipe": "crafting/strip_curtain"
+    "recipe": "crafting/ersatz_leather"
   }
 }

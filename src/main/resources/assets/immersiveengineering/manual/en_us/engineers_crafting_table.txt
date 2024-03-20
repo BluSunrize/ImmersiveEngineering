@@ -1,0 +1,4 @@
+Engineer's Crafting Table
+For various projects
+The Engineer's Crafting Table is a simple upgrade to the normal Crafting Table. In addition to the treated wood top, it keeps ingredients inside the crafting grid when it is closed.
+The table also features a small drawer to store some of your crafting components.

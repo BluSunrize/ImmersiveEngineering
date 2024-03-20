@@ -7,14 +7,6 @@
       }
     ]
   },
-  "acetaldehyde": {
-    "type": "item_display",
-    "items": [
-      {
-        "item": "immersiveengineering:acetaldehyde_bucket"
-      }
-    ]
-  },
   "duroplast_sheet": {
     "type": "bottling",
     "recipe": {

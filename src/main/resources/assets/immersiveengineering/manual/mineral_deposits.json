@@ -18,5 +18,19 @@
         }]
       }
     }
+  },
+  "spoils": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "minecraft:cobbled_deepslate"
+      },
+      {
+        "item": "minecraft:cobblestone"
+      },
+      {
+        "item": "minecraft:gravel"
+      }
+    ]
   }
 }
