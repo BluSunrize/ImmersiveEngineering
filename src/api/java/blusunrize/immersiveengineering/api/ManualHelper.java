@@ -33,8 +33,8 @@ public class ManualHelper
 	public static String CAT_ELECTRICAL_GRIDS = "electrical_grids";
 	public static String CAT_EXPLOSIVES_WEAPONRY = "explosives_weaponry";
 	public static String CAT_TOOLS = "tools";
-	public static String CAT_DEVICES = "devices";
 	public static String CAT_SIMPLE_MACHINERY = "simple_machinery";
+	public static String CAT_LARGE_FURNACES_OVENS = "large_furnaces_ovens";
 	public static String CAT_HEAVY_MACHINERY = "heavy_machinery";
 	public static String CAT_UPDATE = "update";
 

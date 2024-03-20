@@ -1,5 +1,5 @@
 {
-    "start": {
+    "mech_components": {
         "type": "crafting",
         "recipes": [
             [
@@ -8,11 +8,7 @@
             ]
         ]
     },
-    "create_bp": {
-        "type": "crafting",
-        "recipe": "crafting/blueprint_components"
-    },
-    "mech_components": {
+    "component_blueprint": {
         "type": "blueprint",
         "recipes": [
             "blueprint/component_iron",

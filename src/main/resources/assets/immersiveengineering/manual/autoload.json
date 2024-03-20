@@ -6,7 +6,8 @@
       "ores",
       "industrial_hemp",
       "industrial_dyes",
-      "duroplast"
+      "crafting_components",
+      "resin_and_duroplast"
     ]
   },
   "workbenches_storage": {
@@ -30,10 +31,11 @@
   "electrical_grids": {
     "category_weight": 30,
     "entry_list": [
-      "grid_construction",
+      "basic_wiring",
       "accumulators",
+      "breaker_switch",
       "redstone_wiring",
-      "redstone_control",
+      "current_transformer",
       "kinetic_dynamo",
       "thermoelectric_generator",
       "diesel_generator",
@@ -68,7 +70,7 @@
       "shaders"
     ]
   },
-  "devices": {
+  "simple_machinery": {
     "category_weight": 60,
     "entry_list": [
       "turntable",
@@ -83,7 +85,7 @@
       "charging_station"
     ]
   },
-  "simple_machinery": {
+  "large_furnaces_ovens": {
     "category_weight": 70,
     "entry_list": [
       "coke_oven",
