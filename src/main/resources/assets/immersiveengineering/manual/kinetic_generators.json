@@ -3,19 +3,6 @@
     "type": "crafting",
     "recipe": "crafting/dynamo"
   },
-  "waterwheel_recipes": {
-    "type": "crafting",
-    "recipes": [
-      [
-      {
-        "recipe": "crafting/watermill"
-      },
-      {
-        "recipe": "crafting/waterwheel_segment"
-      }
-      ]
-    ]
-  },
   "windmill_recipes": {
     "type": "crafting",
     "recipes": [
@@ -32,5 +19,18 @@
   "sail_recipe": {
     "type": "crafting",
     "recipe": "crafting/windmill_sail"
+  },
+  "waterwheel_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/watermill"
+        },
+        {
+          "recipe": "crafting/waterwheel_segment"
+        }
+      ]
+    ]
   }
 }

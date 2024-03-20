@@ -36,7 +36,7 @@
       "breaker_switch",
       "redstone_wiring",
       "current_transformer",
-      "kinetic_dynamo",
+      "kinetic_generators",
       "thermoelectric_generator",
       "diesel_generator",
       "lightning_rod"
