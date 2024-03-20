@@ -7,18 +7,10 @@
     "type": "crafting",
     "recipes": [
       [
-        {
-          "recipe": "crafting/armor_faraday_feet"
-        },
-        {
-          "recipe": "crafting/armor_faraday_legs"
-        },
-        {
-          "recipe": "crafting/armor_faraday_chest"
-        },
-        {
-          "recipe": "crafting/armor_faraday_head"
-        }
+        "crafting/armor_faraday_helmet",
+        "crafting/armor_faraday_chestplate",
+        "crafting/armor_faraday_leggings",
+        "crafting/armor_faraday_boots"
       ]
     ]
   },
