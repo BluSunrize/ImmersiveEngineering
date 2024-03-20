@@ -1,19 +1,13 @@
-Basic Wiring
+Grid Construction
 Bzzzt!
-The energy-net of Immersive Engineering has four important blocks: §lconnectors§r as inputs and outputs for the net, §lrelays§r to connect wires together and §ltransformers§r to switch between different levels of wire.<np>
-<&wire_recipes>To connect two blocks, simply click the first one with a wire coil, then use the same coil on the second block. The total transfer rate between two points depends on the weakest type of wire between them.
-<&images>Note that restrictions apply based on blocks: Connectors and relays will only take wires of the same type that is already connected, transformers will only take two wires of a different type, and wires can only connect to blocks that match the voltage. There are two important values to note about wiring:
-Each connector has an input value (§o<config;iA;machines.wireConnectorInput>§r) and each wire has a maximum transfer rate (§o<config;iA;wires.wireTransferRate;l3>§r).
-The connector limits how much power can be in- and output, but multiple connectors can §ounify§r into a single wire, allowing you to combine the transfer over longer ranges. Note however that the §omaximum transfer rate of the wire must not be exceeded, or else the wire will §oburn up§r.<br>
-Wires will transfer energy even through §ounloaded chunks§r as long as the input and output chunks are loaded.<br>
-Uninsulated wires connected to an energy source will cause damage to players and mobs too close to them. Insulated wires are available for low and medium voltage.<br>
+Power grids have three important devices: §lconnectors§r as inputs and outputs for the net, §lrelays§r attach multiple wires together, and <link;transformers;Transformers> that convert between different voltages of wire.<br>
+To connect two devices, simply use a wire coil on the first device, then use the same coil on the second device. The total transfer rate between two points depends on the weakest type of wire between them.
+<&images>Connectors and relays can only take wires of the same voltage that the device was designed for. Transformers will only take two wires of different voltages, and voltages only work with devices designed for them.<np>
+Connectors have a maximum power they will transmit in IF/t (§o<config;iA;machines.wireConnectorInput>§r), and wires have a maximum power before they fail (§o<config;iA;wires.wireTransferRate;l3>§r) IF/t.<br>
+Multiple connectors can §ounify§r onto a single wire using relays, centralizing long-range transfer to just a single wire. If enough connectors are unified that the §omaximum transfer rate§r exceeds that of the wire, §othe wire will burn up§r.<np>
+Only the input and output of a wire need be working for the wire to transfer energy.<br>
+Low and medium voltage wires can be insulated to prevent damage to nearby creatures.<br>
 Sneaking when using the "Pick Block" function on a connector will pick the connected wire from your inventory.<br>
-Wire connections will break if a block obstructing the wire is placed.<np>
-<&connector_recipes>§lConnectors§r serve as in- and outputs to the energy-net. You can place them on accumulators or other Flux handlers and they will transfer power through connected wires. §lRelays§r can't in- or output, they serve as connection points between wires.<np>
-<&transformer_recipes>§lTransformers§r allow you to transition between different types of wire. The weakest wire restricts the transfer rate. Note that HV Transformers can step down to LV or MV, so you do not need to chain two transformers.
-You can attach <link;this;transformers to wooden poles;images+1> as shown on the second image on page 4, however only non-HV Transformers can be placed like this.<np>
-<&wirecutter_recipe>The §lWire Cutters§r are used to remove all the wires connected to a block by simply rightclicking it.<np>
-<&voltmeter_recipe>The §lMultimeter§r is used to measure connections. Aiming it at any energy storage or rightclicking it will read its current storage. Sneak+rightclick two connectors to calculate the average loss between them.
-It can also be used to read redstone levels.<np>
-<&feedthrough>Feedthrough Insulators allow connecting wiring from one side of a wall to wiring on the other side without a hole. They can be created with any "normal" solid block in the middle, by right-clicking either of two connectors with an Engineer's Hammer.
-All common types of connectors (power and redstone) can be used to create feedthrough insulators for the corresponding wire type.
+Wire connections will break if a block obstructs the wire.<np>
+<&connector_recipes>§lConnectors§r serve as in- and outputs to the electrical grid. Accumulators and powered devices connected with them will transfer power through the grid.<br>
+Relays will not in- or output power, they serve as hubs for the electrical grid.
