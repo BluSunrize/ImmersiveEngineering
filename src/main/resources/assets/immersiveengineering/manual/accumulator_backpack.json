@@ -1,5 +1,5 @@
 {
-  "start": {
+  "frame_recipe": {
     "type": "crafting",
     "recipe": "crafting/powerpack"
   },

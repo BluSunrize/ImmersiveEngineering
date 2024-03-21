@@ -77,7 +77,7 @@
       "conveyor_belts",
       "item_router",
       "item_batcher",
-      "fluid_pipes",
+      "fluid_pipes_pumps_outlets",
       "fluid_router",
       "external_heater",
       "electromagnet",
