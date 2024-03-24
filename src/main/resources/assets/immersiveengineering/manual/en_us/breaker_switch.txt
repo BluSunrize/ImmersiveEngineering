@@ -1,0 +1,6 @@
+Breaker Switch
+Clap on - Clap off
+<&manual_breaker>Breaker Switches are simple switches that can stop the flow of power through wires. They connect two wires of the same type and will only allow power to pass when activated. Due to the high risk, these switches will not accept HV wires.<br>
+This can be used to separate power-hungry machinery from the network or hook up an additional set of generators when needed.<br>
+They will also emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Screwdriver.<br>
+Additionally they are an excellent way to control your <link;lighting;powered lights;electric_lantern>!

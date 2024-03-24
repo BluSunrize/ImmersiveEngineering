@@ -1,0 +1,5 @@
+Slitinová pec
+Míchání kovů
+<&recipe>Slitinová pec je jednoduchá pec vyrobená ze žáruvzdorného pískovce a cihel. Uvnitř, teploty jsou dostatečně vysoké, aby dovolily kovům se roztavit a smíchat, což vytváří <link;alloys;slitinu>.
+Toto umožnuje tvoření důležitých slitin jako elektrum a konstantat bez vyžadování míchání prachu. <&multiblock>Pro stvoření pece, postav 8 Cihel slitinové pece ve tvaru 2x2x2 , jak ukázáno, a klikni pravým tlačítken na jeden postranní blok s Inženýrovým kladivem.
+<&insulating_glass>Slitinová pec je také důležitvá ve tvorbě §2izolačního skla§r, součásti použité ve stavbě <link;wiring;vysokonapětové architektury;connector_recipes>.

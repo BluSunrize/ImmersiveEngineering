@@ -1,0 +1,3 @@
+Slitiny
+Díla s míchanými kovy
+Míchání prášků vytváří směs slitin, která může být vypečena na ingoty. Konstantan has termoelektrické vlastnosti a je použit v <link;generator;termoelektrickém generátoru> a elektrum je dobrý vodič ve <link;wiring;středněnapěťové architektuře>.

@@ -1,0 +1,17 @@
+Mineral Deposits
+Oresome
+Scattered throughout the stone of the world are small, concentrated deposits of <link;ores;ores>, visible to the naked eye and recoverable with hand tools.<br>
+Outside of those and in the underlying rock are §2Mineral Veins§r, composed of several different ores, too sparse for all but a <link;excavator;special machine> to recover.<br>
+At the end of this section is an appendix listing all known mineral veins.<np>
+<&survey_tools>As mineral veins are a part of the stone, §2Survey Tools§r are necessary to locate traces. Venturing out and using these tools on blocks of natural rock and soil will allow the identification of approximate vein locations.<br>
+Each sample taken of the same vein allows more accurate identification of its center and contents. Mineral veins may overlap, so surveying can show traces of veins in close proximity. Sample sites that are too close, however, do not provide useful information on vein location.<br>
+Artifical blocks such as sheetmetal, plants such as logs, and fluids such as water do not contain traces of mineral veins, and thus cannot be used with the survey tools.<np>
+<&sample_drill>§2Core Sample Drills§r provide precise identification of the composition and expected yield of a mineral vein. As with mineral surveying, they cannot be done upon the air or water.<br>
+The drill can be started by hand or by redstone signal. When supplied with power, such as from an <link;accumulators;accumulator> for a portable battery, the drill will consume <config;i;machines.coredrill.consumption> Flux/t to produce a §2core sample§r.<br>
+Core samples are delicate and must be extracted manually in a similar way to activating the machine again.<np>
+<&core_sample>Core samples can be easily analyzed visually to determine the relative presence of minerals at the location.<br>
+Unlike simple surveying, in-depth analysis with the core sample drill allows §2Saturation§r to be determined. A higher saturation means a higher chance for an excavator to return an ore.<br>
+Core samples can be placed while sneaking, allowing the easy identification of information at a glance. Additionally, when placed, markers can be applied to maps when the sample is right clicked, locating the vein with a red triangle on the map.<br>
+Core samples do not display aquifers or other fluid traces in the region; they only display the mineral wealth of the survey.<np>
+<&spoils>Even high saturation veins cannot be excavated without bringing up stone surrounding the vein. When deposits are excavated from far away, more of the ore is contained within the spoil rock and dirt.<br>
+Because of the inefficient excavation, these veins wil produce less ore than a well sited deposit.<np>

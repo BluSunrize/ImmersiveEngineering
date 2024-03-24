@@ -1,0 +1,52 @@
+{
+  "images": [
+    {
+    "type": "image",
+    "images": [
+      {
+        "location": "textures/misc/wiring.png",
+        "uMin": 0,
+        "vMin": 0,
+        "uSize": 110,
+        "vSize": 40
+      },
+      {
+        "location": "textures/misc/wiring.png",
+        "uMin": 0,
+        "vMin": 40,
+        "uSize": 110,
+        "vSize": 30
+      }
+    ]
+    }
+  ],
+  "connector_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+      {
+        "recipe": "crafting/connector_lv"
+      },
+      {
+        "recipe": "crafting/connector_lv_relay"
+      },
+      {
+        "recipe": "crafting/connector_mv"
+      },
+      {
+        "recipe": "crafting/connector_mv_relay"
+      },
+      {
+        "recipe": "crafting/connector_hv"
+      },
+      {
+        "recipe": "crafting/connector_hv_relay"
+      }
+      ]
+    ]
+  },
+  "feedthrough": {
+    "type": "multiblock",
+    "name": "feedthrough"
+  }
+}

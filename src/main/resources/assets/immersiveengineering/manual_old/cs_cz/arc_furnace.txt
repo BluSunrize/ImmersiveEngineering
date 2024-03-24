@@ -1,0 +1,15 @@
+Oblouková pec
+Není to reaktor
+Oblouková pec je obrovská struktura určená pro rychlé tavení kovů. Skládá se z ocelové kádě zavíčkovanou elektrodami, které zahřívají kovy.
+Pec je dobrá v tavení rud a vytváření oceli a její schopnosti zpracování více předmětů najednou, ale je složitá ve své práci a vyžaduje údržbu pro funkci.
+Struska musí být odstraněna ze stroje nebo přestane fungovat, a degradované elektrody musí být vyměněny.
+Pro stvoření struktury, smontuj jí jako na první stránce, pak klikni na kotel s inženýrovým kladivem.
+Energie je napojena přes tři spojení vzadu, a zasílání ruditového signálu do ovladače vypne stroj. Pravým kliknutím na panel, 'kbelík' nebo káď otevře rozhraní.<np>
+§lRozhraní:§r
+Rozhraní se může zdát problematické při prvním vidění, ale je velmi jednoduché.
+
+Tři políčka na vrchu jsou pro <link;graphite;Grafitové elektrody;electrode>.
+Dvanáct políček na vrchu je pro kovy a rudy. Každé poličko má teplotní měřič, reprezentující proces tavby.
+Čtyři políčka napravo jsou pro "přídavky", různé materiály přidané do tekutého kovu. Příklad tohoto je přidání Koksového prachu do tavícího železa pro vytvoření oceli.
+Vstupy a přídavky jsou vloženy dvěma poklopy na vrchu struktury, vstupy nalevo a přídavky napravo od elektrod.
+Sedm políček na spodku jsou výstupy a jedno políčko pro strusku. Výrobky jsou vytaženy z 'kbelíku' ve předu struktury, struska vstupem na straně stroje. Oblouková pec automaticky vysune výrobky a strusku do spojených inventářů (toto také obsahuje pásy).
