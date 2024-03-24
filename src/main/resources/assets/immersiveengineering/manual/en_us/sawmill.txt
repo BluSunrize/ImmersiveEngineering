@@ -1,13 +1,12 @@
 Sawmill
 ???
-The sawmill is a machine assembly which cuts wooden logs into neatly stacked planks. The machine operates in two stages by first stripping the bark of the log and then using a <link;buzzsaw;sawblade> to cut the stripped log apart.<np>
-<&sawdust>Both steps of the process create §2sawdust§r, which is collected and output through the port at the front of the machine. That sawdust can then be processed into paper later on.<np>
-The machine is built as shown on the first page and formed by using an §2Engineer's Hammer§r on the central sheetmetal block.
-Applying a redstone signal to the control panel at the front will stop the machine, this behavior can be inverted by the §2Engineer's Screwdriver§r.
-
-Trying to remove the sawblade while in operation will cause injury. To ensure the machine is not in operation, disable the machine with redstone while the machine is empty. <np>
-To be ready for processing, you will need to craft a <link;buzzsaw;sawblade> and insert it into the slot on the back by right-clicking. Sneak and right-click to take the sawblade out again.
-
-Running logs through the machine without a sawblade will create §2stripped logs§r that will not be cut apart. This process is much quicker than stripping them manually.
-
+The sawmill is a machine assembly which cuts wooden logs into neatly stacked planks.<br>
+The machine operates in two stages: first, the log is stripped, then the stripped law is cut apart using a <link;buzzsaw;sawblade>.<np>
+<&sawdust>Both steps of the process create §2sawdust§r, which is collected and output through the port at the front of the machine.<br>
+That sawdust can later be processed into paper or other useful materials, such as <link;resin_and_duroplast;Fiberboard;fiberboard>.<np>
+The machine is built as shown on the first page and formed by using an §2Engineer's Hammer§r on the central sheetmetal block.<br>
+Applying a redstone signal to the control panel at the front will stop the machine, this behavior can be inverted by the §2Engineer's Screwdriver§r.<br>
+To be ready for processing, you will need to craft a <link;buzzsaw;sawblade> and insert it into the slot on the back by right-clicking. Sneak and right-click to take the sawblade out again.<br>
+Trying to remove the sawblade while in operation will cause injury. To ensure the machine is not in operation, disable the machine with redstone while the machine is empty.<br>
+Running logs through the machine without a sawblade will create §2stripped logs§r that will not be cut apart. This process is much quicker than stripping them manually.<br>
 The sawblade will be damaged while it's in use and may need to be replaced after a while.

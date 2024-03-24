@@ -5,8 +5,10 @@
     "entry_list": [
       "ores",
       "industrial_hemp",
+      "treated_wood",
       "industrial_dyes",
       "crafting_components",
+      "coke_graphite",
       "resin_and_duroplast"
     ]
   },
