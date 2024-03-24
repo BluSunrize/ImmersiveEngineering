@@ -1,4 +1,4 @@
-Fluid Transport
+Fluid Pipes, Pumps, & Outlets
 Professional Plumber
 <&pipe_recipe>Transporting fluids has become quite essential in the engineering business. Fluid Pipes and Fluid Pumps do exactly that. On their own, Fluid Pipes are quite slow at transferring fluids, but if a pump is used to insert the fluid, it'll move much faster.<np>
 You can rightclick the connection piece of a pipe with an Engineer's Hammer to prevent it from connecting to that side.

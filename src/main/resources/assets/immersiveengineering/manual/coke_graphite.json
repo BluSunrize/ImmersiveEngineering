@@ -1,5 +1,16 @@
 {
-  "start": {
+  "coke": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:coal_coke"
+      },
+      {
+        "item": "immersiveengineering:dust_coke"
+      }
+    ]
+  },
+  "graphite": {
     "type": "item_display",
     "items": [
       {

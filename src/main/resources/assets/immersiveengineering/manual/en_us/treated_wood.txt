@@ -1,0 +1,7 @@
+Treated Wood
+Highly Durable
+<&treated_wood>Treated wood is any kind of wooden planks impregnated with <link;industrial_fluids;Creosote Oil;creosote_oil>.<br>
+Despite their simplicity, these weatherproof planks are used throughout industrial matters where a durable wood is needed.<np>
+<&recipes>
+<&wallmount>Treated wood can also be used to craft §2Wallmounts§r, which can be very useful to mount connectors in a visually attractive way without using posts.<br>
+Wallmounts can be placed facing upwards or downwards, and do not automatically connect to blocks placed near them.
