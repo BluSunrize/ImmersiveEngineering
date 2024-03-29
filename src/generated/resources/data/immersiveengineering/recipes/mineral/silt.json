@@ -12,10 +12,10 @@
       ]
     }
   ],
-  "fail_chance": 0.05,
+  "fail_chance": 0.2,
   "ores": [
     {
-      "chance": 0.5,
+      "chance": 0.6,
       "conditions": [],
       "output": {
         "Count": 1,
@@ -23,33 +23,25 @@
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.4,
       "conditions": [],
       "output": {
         "Count": 1,
         "id": "minecraft:sand"
       }
-    },
+    }
+  ],
+  "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.6,
       "conditions": [],
       "output": {
         "Count": 1,
         "id": "minecraft:gravel"
       }
-    }
-  ],
-  "spoils": [
-    {
-      "chance": 0.2,
-      "conditions": [],
-      "output": {
-        "Count": 1,
-        "id": "minecraft:coarse_dirt"
-      }
     },
     {
-      "chance": 0.5,
+      "chance": 0.3,
       "conditions": [],
       "output": {
         "Count": 1,
@@ -57,11 +49,11 @@
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.1,
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:gravel"
+        "id": "minecraft:coarse_dirt"
       }
     }
   ],

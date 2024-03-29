@@ -41,19 +41,11 @@
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.6,
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:coarse_dirt"
-      }
-    },
-    {
-      "chance": 0.5,
-      "conditions": [],
-      "output": {
-        "Count": 1,
-        "id": "minecraft:cobblestone"
+        "id": "minecraft:gravel"
       }
     },
     {
@@ -61,7 +53,15 @@
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:gravel"
+        "id": "minecraft:cobblestone"
+      }
+    },
+    {
+      "chance": 0.1,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:coarse_dirt"
       }
     }
   ],

@@ -110,9 +110,9 @@ public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 
 	public MineralMixBuilder addSoilSpoils()
 	{
-		return spoil(Items.COARSE_DIRT, 0.2f)
-				.spoil(Items.COBBLESTONE, 0.5f)
-				.spoil(Items.GRAVEL, 0.3f);
+		return spoil(Items.GRAVEL, 0.6f)
+				.spoil(Items.COBBLESTONE, 0.3f)
+				.spoil(Items.COARSE_DIRT, 0.1f);
 	}
 
 	public MineralMixBuilder addSeabedSpoils()
