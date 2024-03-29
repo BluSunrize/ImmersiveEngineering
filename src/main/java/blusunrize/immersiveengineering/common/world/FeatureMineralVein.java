@@ -50,7 +50,7 @@ public class FeatureMineralVein extends Feature<NoneFeatureConfiguration>
 		if(!veinGeneratedChunks.containsEntry(dimension, chunkPos))
 		{
 			veinGeneratedChunks.put(dimension, chunkPos);
-			ExcavatorHandler.generatePotentialVein(realLevel, chunkPos, ctx.random());
+			ExcavatorHandler.generatePotentialVein(realLevel, ctx.level(), chunkPos, ctx.random());
 			return true;
 		}
 		return false;
