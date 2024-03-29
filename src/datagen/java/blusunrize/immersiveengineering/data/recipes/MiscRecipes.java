@@ -336,7 +336,7 @@ public class MiscRecipes extends IERecipeProvider
 		ResourceKey<DimensionType> overworld = BuiltinDimensionTypes.OVERWORLD;
 		ResourceKey<DimensionType> nether = BuiltinDimensionTypes.NETHER;
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(Tags.Items.ORES_COAL, .8f)
 				.ore(sulfur, .2f)
@@ -345,7 +345,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/bituminous_coal"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addSoilSpoils()
 				.ore(Items.CLAY, .5f)
 				.ore(Items.SAND, .3f)
@@ -354,7 +354,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/silt"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(Blocks.GRANITE, .3f)
 				.ore(Blocks.DIORITE, .3f)
@@ -364,7 +364,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/igneous_rock"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addSoilSpoils()
 				.ore(Items.TERRACOTTA, .6f)
 				.ore(Items.RED_SANDSTONE, .3f)
@@ -373,7 +373,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/hardened_clay_pan"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addSeabedSpoils()
 				.ore(Blocks.CALCITE, .65f)
 				.ore(Blocks.DRIPSTONE_BLOCK, .3f)
@@ -382,7 +382,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/ancient_seabed"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(Blocks.AMETHYST_BLOCK, .4f)
 				.ore(Blocks.CALCITE, .3f)
@@ -392,7 +392,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/amethyst_crevasse"));
 		// Metals
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(iron, .35f)
 				.ore(nickel, .35f)
@@ -401,7 +401,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/pentlandite"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(iron, .35f)
 				.ore(copper, .35f)
@@ -410,7 +410,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/chalcopyrite"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(aluminum, .7f)
 				.ore(iron, .2f)
@@ -419,7 +419,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/laterite"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(copper, .75f)
 				.ore(gold, .25f)
@@ -427,7 +427,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.1f)
 				.build(out, toRL("mineral/auricupride"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(lead, .4f)
 				.ore(sulfur, .4f)
@@ -436,7 +436,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/galena"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(redstone, .6f)
 				.ore(sulfur, .4f)
@@ -446,7 +446,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/cinnabar"));
 		// Rare
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(uranium, .7f)
 				.ore(lead, .3f)
@@ -455,7 +455,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.15f)
 				.build(out, toRL("mineral/uraninite"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(emerald, .3f)
 				.ore(prismarine, .7f)
@@ -465,7 +465,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/beryl"));
 		// Nether
 		MineralMixBuilder.builder()
-				.dimension(nether)
+				.dimensionNether()
 				.addNetherSpoils()
 				.ore(Blocks.NETHER_QUARTZ_ORE, .6f)
 				.ore(Blocks.NETHER_GOLD_ORE, .2f)
@@ -475,7 +475,7 @@ public class MiscRecipes extends IERecipeProvider
 				.background(Blocks.NETHERRACK)
 				.build(out, toRL("mineral/mephitic_quarzite"));
 		MineralMixBuilder.builder()
-				.dimension(nether)
+				.dimensionNether()
 				.addNetherSpoils()
 				.ore(Blocks.POLISHED_BLACKSTONE_BRICKS, .4f)
 				.ore(Blocks.POLISHED_BLACKSTONE, .3f)
@@ -486,7 +486,7 @@ public class MiscRecipes extends IERecipeProvider
 				.background(Blocks.POLISHED_BLACKSTONE)
 				.build(out, toRL("mineral/ancient_debris"));
 		MineralMixBuilder.builder()
-				.dimension(nether)
+				.dimensionNether()
 				.addNetherSpoils()
 				.ore(Items.SOUL_SOIL, .5f)
 				.ore(Items.SOUL_SAND, .3f)
@@ -496,7 +496,7 @@ public class MiscRecipes extends IERecipeProvider
 				.background(Blocks.SOUL_SOIL)
 				.build(out, toRL("mineral/nether_silt"));
 		MineralMixBuilder.builder()
-				.dimension(nether)
+				.dimensionNether()
 				.addNetherSpoils()
 				.ore(Items.MAGMA_BLOCK, .5f)
 				.ore(Items.SMOOTH_BASALT, .3f)
@@ -508,7 +508,7 @@ public class MiscRecipes extends IERecipeProvider
 
 		// Compat
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.addCondition(getTagCondition(tin))
 				.ore(tin, 1)
@@ -516,7 +516,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.build(out, toRL("mineral/cassiterite"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.addCondition(getTagCondition(platinum))
 				.ore(platinum, .5f)
@@ -526,7 +526,7 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.1f)
 				.build(out, toRL("mineral/cooperite"));
 		MineralMixBuilder.builder()
-				.dimension(overworld)
+				.dimensionOverworld()
 				.addOverworldSpoils()
 				.addCondition(getTagCondition(tungsten))
 				.ore(tungsten, .5f)

@@ -9,8 +9,12 @@
     }
   ],
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:overworld"
+  "biome_predicates": [
+    {
+      "biome_tags": [
+        "minecraft:is_overworld"
+      ]
+    }
   ],
   "fail_chance": 0.05,
   "ores": [
