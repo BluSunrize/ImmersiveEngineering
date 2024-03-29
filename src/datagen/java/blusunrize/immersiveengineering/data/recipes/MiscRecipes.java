@@ -335,15 +335,7 @@ public class MiscRecipes extends IERecipeProvider
 		// Common things
 		ResourceKey<DimensionType> overworld = BuiltinDimensionTypes.OVERWORLD;
 		ResourceKey<DimensionType> nether = BuiltinDimensionTypes.NETHER;
-		MineralMixBuilder.builder()
-				.dimensionOverworld()
-				.addOverworldSpoils()
-				.ore(Tags.Items.ORES_COAL, .8f)
-				.ore(sulfur, .2f)
-				.ore(phosphorus, .2f, getTagCondition(phosphorus))
-				.weight(25)
-				.failchance(.05f)
-				.build(out, toRL("mineral/bituminous_coal"));
+		// Rocks & decoration
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addSoilSpoils()
@@ -390,16 +382,17 @@ public class MiscRecipes extends IERecipeProvider
 				.weight(10)
 				.failchance(.1f)
 				.build(out, toRL("mineral/amethyst_crevasse"));
-		// Metals
+
+		// Core resources
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.ore(iron, .35f)
-				.ore(nickel, .35f)
-				.ore(sulfur, .3f)
+				.ore(Tags.Items.ORES_COAL, .8f)
+				.ore(sulfur, .2f)
+				.ore(phosphorus, .2f, getTagCondition(phosphorus))
 				.weight(25)
 				.failchance(.05f)
-				.build(out, toRL("mineral/pentlandite"));
+				.build(out, toRL("mineral/bituminous_coal"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
@@ -412,12 +405,12 @@ public class MiscRecipes extends IERecipeProvider
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.ore(aluminum, .7f)
-				.ore(iron, .2f)
-				.ore(titanium, .1f, getTagCondition(titanium))
-				.weight(20)
-				.failchance(.05f)
-				.build(out, toRL("mineral/laterite"));
+				.ore(redstone, .6f)
+				.ore(sulfur, .4f)
+				.ore(mercury, .3f, getTagCondition(mercury))
+				.weight(15)
+				.failchance(.1f)
+				.build(out, toRL("mineral/cinnabar"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
@@ -426,6 +419,15 @@ public class MiscRecipes extends IERecipeProvider
 				.weight(30)
 				.failchance(.1f)
 				.build(out, toRL("mineral/auricupride"));
+		MineralMixBuilder.builder()
+				.dimensionOverworld()
+				.addOverworldSpoils()
+				.ore(aluminum, .7f)
+				.ore(iron, .2f)
+				.ore(titanium, .1f, getTagCondition(titanium))
+				.weight(20)
+				.failchance(.05f)
+				.build(out, toRL("mineral/laterite"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
@@ -438,13 +440,23 @@ public class MiscRecipes extends IERecipeProvider
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.ore(redstone, .6f)
-				.ore(sulfur, .4f)
-				.ore(mercury, .3f, getTagCondition(mercury))
-				.weight(15)
-				.failchance(.1f)
-				.build(out, toRL("mineral/cinnabar"));
-		// Rare
+				.ore(iron, .35f)
+				.ore(nickel, .35f)
+				.ore(sulfur, .3f)
+				.weight(25)
+				.failchance(.05f)
+				.build(out, toRL("mineral/pentlandite"));
+
+		// Rare resources
+		MineralMixBuilder.builder()
+				.dimensionOverworld()
+				.addOverworldSpoils()
+				.ore(emerald, .3f)
+				.ore(prismarine, .7f)
+				.ore(aquamarine, .3f, getTagCondition(aquamarine))
+				.weight(5)
+				.failchance(.2f)
+				.build(out, toRL("mineral/beryl"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
@@ -457,12 +469,32 @@ public class MiscRecipes extends IERecipeProvider
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.ore(emerald, .3f)
-				.ore(prismarine, .7f)
-				.ore(aquamarine, .3f, getTagCondition(aquamarine))
+				.addCondition(getTagCondition(tungsten)) // Vein is only found when tungsten is present
+				.ore(tungsten, .5f)
+				.ore(iron, .5f)
+				.ore(manganese, .5f, getTagCondition(manganese))
 				.weight(5)
-				.failchance(.2f)
-				.build(out, toRL("mineral/beryl"));
+				.failchance(.1f)
+				.build(out, toRL("mineral/wolframite"));
+		MineralMixBuilder.builder()
+				.dimensionOverworld()
+				.addOverworldSpoils()
+				.addCondition(getTagCondition(tin)) // Vein is only found when tungsten is present
+				.ore(tin, 1)
+				.weight(20)
+				.failchance(.05f)
+				.build(out, toRL("mineral/cassiterite"));
+		MineralMixBuilder.builder()
+				.dimensionOverworld()
+				.addOverworldSpoils()
+				.addCondition(getTagCondition(platinum)) // Vein is only found when platinum is present
+				.ore(platinum, .5f)
+				.ore(paladium, .5f, getTagCondition(paladium))
+				.ore(nickel, .5f)
+				.weight(5)
+				.failchance(.1f)
+				.build(out, toRL("mineral/cooperite"));
+
 		// Nether
 		MineralMixBuilder.builder()
 				.dimensionNether()
@@ -506,35 +538,6 @@ public class MiscRecipes extends IERecipeProvider
 				.background(Blocks.NETHERRACK)
 				.build(out, toRL("mineral/cooled_lava_tube"));
 
-		// Compat
-		MineralMixBuilder.builder()
-				.dimensionOverworld()
-				.addOverworldSpoils()
-				.addCondition(getTagCondition(tin))
-				.ore(tin, 1)
-				.weight(20)
-				.failchance(.05f)
-				.build(out, toRL("mineral/cassiterite"));
-		MineralMixBuilder.builder()
-				.dimensionOverworld()
-				.addOverworldSpoils()
-				.addCondition(getTagCondition(platinum))
-				.ore(platinum, .5f)
-				.ore(paladium, .5f, getTagCondition(paladium))
-				.ore(nickel, .5f)
-				.weight(5)
-				.failchance(.1f)
-				.build(out, toRL("mineral/cooperite"));
-		MineralMixBuilder.builder()
-				.dimensionOverworld()
-				.addOverworldSpoils()
-				.addCondition(getTagCondition(tungsten))
-				.ore(tungsten, .5f)
-				.ore(iron, .5f)
-				.ore(manganese, .5f, getTagCondition(manganese))
-				.weight(5)
-				.failchance(.1f)
-				.build(out, toRL("mineral/wolframite"));
 		//todo
 		//	Lapis
 		//	Cinnabar
