@@ -324,7 +324,6 @@ public class MiscRecipes extends IERecipeProvider
 		TagKey<Item> manganese = createItemWrapper(IETags.getOre("manganese"));
 		TagKey<Item> platinum = createItemWrapper(IETags.getOre("platinum"));
 		TagKey<Item> osmium = createItemWrapper(IETags.getOre("osmium"));
-		TagKey<Item> paladium = createItemWrapper(IETags.getOre("paladium"));
 		TagKey<Item> mercury = createItemWrapper(IETags.getOre("mercury"));
 		// Gems & Dusts
 		TagKey<Item> sulfur = IETags.sulfurDust;
@@ -453,11 +452,13 @@ public class MiscRecipes extends IERecipeProvider
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.ore(iron, .35f)
-				.ore(nickel, .35f)
-				.ore(sulfur, .3f)
-				.weight(25)
-				.failchance(.05f)
+				.ore(nickel, .65f)
+				.ore(iron, .25f)
+				.ore(sulfur, .1f)
+				.ore(platinum, .1f, getTagCondition(platinum))
+				.ore(osmium, .1f, getTagCondition(osmium))
+				.weight(15)
+				.failchance(.1f)
 				.build(out, toRL("mineral/pentlandite"));
 
 		// Rare resources
@@ -519,16 +520,6 @@ public class MiscRecipes extends IERecipeProvider
 				.weight(20)
 				.failchance(.05f)
 				.build(out, toRL("mineral/cassiterite"));
-		MineralMixBuilder.builder()
-				.dimensionOverworld()
-				.addOverworldSpoils()
-				.addCondition(getTagCondition(platinum)) // Vein is only found when platinum is present
-				.ore(platinum, .5f)
-				.ore(paladium, .5f, getTagCondition(paladium))
-				.ore(nickel, .5f)
-				.weight(5)
-				.failchance(.1f)
-				.build(out, toRL("mineral/cooperite"));
 
 		// Nether
 		MineralMixBuilder.builder()
