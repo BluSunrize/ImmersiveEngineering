@@ -1,0 +1,76 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "biome_predicates": [
+    {
+      "biome_tags": [
+        "minecraft:is_overworld"
+      ]
+    },
+    {
+      "biome_tags": [
+        "minecraft:is_river"
+      ]
+    }
+  ],
+  "fail_chance": 0.2,
+  "ores": [
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "tag": "forge:gems/diamond"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:clay"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:sand"
+      }
+    },
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:gravel"
+      }
+    }
+  ],
+  "spoils": [
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:coarse_dirt"
+      }
+    },
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:cobblestone"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:gravel"
+      }
+    }
+  ],
+  "weight": 15
+}

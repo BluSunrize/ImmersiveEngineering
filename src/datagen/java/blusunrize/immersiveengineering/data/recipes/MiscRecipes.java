@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.data.recipes.builder.BlueprintCraftingRecipeBuilder;
 import blusunrize.immersiveengineering.data.recipes.builder.MineralMixBuilder;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -474,6 +475,17 @@ public class MiscRecipes extends IERecipeProvider
 				.weight(5)
 				.failchance(.2f)
 				.build(out, toRL("mineral/beryl"));
+		MineralMixBuilder.builder()
+				.dimensionOverworld()
+				.biomeCondition(ImmutableSet.of(BiomeTags.IS_RIVER))
+				.addSoilSpoils()
+				.ore(Tags.Items.GEMS_DIAMOND, .2f)
+				.ore(Items.CLAY, .3f)
+				.ore(Items.SAND, .3f)
+				.ore(Items.GRAVEL, .2f)
+				.weight(15)
+				.failchance(.2f)
+				.build(out, toRL("mineral/alluvial_sift"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
