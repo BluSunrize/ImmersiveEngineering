@@ -572,10 +572,6 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.05f)
 				.background(Blocks.NETHERRACK)
 				.build(out, toRL("mineral/cooled_lava_tube"));
-
-		//todo
-		//	Lapis
-		//	Cinnabar
 	}
 
 	private void thermoelectricFuels(RecipeOutput out)
