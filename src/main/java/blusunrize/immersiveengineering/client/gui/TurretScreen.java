@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.gui.TurretMenu;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
@@ -130,6 +131,7 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 	public boolean keyPressed(int key, int scancode, int p_keyPressed_3_)
 	{
 		if(this.nameField.isFocused())
+		{
 			if(key==GLFW.GLFW_KEY_ENTER)
 			{
 				addName();
@@ -137,6 +139,13 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 			}
 			else if(this.nameField.keyPressed(key, scancode, p_keyPressed_3_))
 				return true;
+			InputConstants.Key keyData = InputConstants.getKey(key, scancode);
+			// Hack: Stop AbstractContainerScreen.keyPressed from closing the screen when the inventory key ('E') is
+			// pressed. The name field handles its input in the (later) charTyped.
+			if(minecraft!=null&&minecraft.options.keyInventory.isActiveAndMatches(keyData))
+				return true;
+		}
+
 		return super.keyPressed(key, scancode, p_keyPressed_3_);
 	}
 
