@@ -473,7 +473,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/lazulitic_intrusion"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(BiomeTags.IS_MOUNTAIN, BiomeTags.IS_RIVER))
+				.biomeCondition(ImmutableSet.of(BiomeTags.IS_MOUNTAIN, BiomeTags.IS_OCEAN))
 				.addOverworldSpoils()
 				.ore(emerald, .3f)
 				.ore(prismarine, .7f)
