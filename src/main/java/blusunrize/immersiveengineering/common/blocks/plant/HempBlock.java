@@ -32,7 +32,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.NeoForgeConfig.Common;
 
 import java.util.function.Supplier;
 
@@ -112,7 +111,8 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	{
 		if(state.getValue(TOP))
 			return false;
-		return !world.getBlockState(pos.above()).getBlock().equals(this);
+		BlockState stateAbove = world.getBlockState(pos.above());
+		return !stateAbove.getBlock().equals(this)&&stateAbove.isAir();
 	}
 
 	@Override
