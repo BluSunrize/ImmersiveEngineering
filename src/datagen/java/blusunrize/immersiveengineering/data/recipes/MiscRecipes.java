@@ -339,6 +339,7 @@ public class MiscRecipes extends IERecipeProvider
 		// Rocks & decoration
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
+				.biomeCondition(ImmutableSet.of(BiomeTags.IS_RIVER))
 				.addSoilSpoils()
 				.ore(Items.CLAY, .5f)
 				.ore(Items.SAND, .3f)
@@ -358,6 +359,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/igneous_rock"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
+				.biomeCondition(ImmutableSet.of(IETags.generateClaypan))
 				.addSoilSpoils()
 				.ore(Items.TERRACOTTA, .6f)
 				.ore(Items.RED_SANDSTONE, .3f)
@@ -367,6 +369,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/hardened_clay_pan"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
+				.biomeCondition(ImmutableSet.of(IETags.generateSeabed))
 				.addSeabedSpoils()
 				.ore(Blocks.CALCITE, .65f)
 				.ore(Blocks.DRIPSTONE_BLOCK, .3f)

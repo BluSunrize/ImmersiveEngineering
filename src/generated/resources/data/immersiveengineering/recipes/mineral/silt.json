@@ -5,6 +5,11 @@
       "biome_tags": [
         "minecraft:is_overworld"
       ]
+    },
+    {
+      "biome_tags": [
+        "minecraft:is_river"
+      ]
     }
   ],
   "fail_chance": 0.05,

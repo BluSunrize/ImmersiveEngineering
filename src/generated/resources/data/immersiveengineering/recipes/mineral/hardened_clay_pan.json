@@ -5,6 +5,11 @@
       "biome_tags": [
         "minecraft:is_overworld"
       ]
+    },
+    {
+      "biome_tags": [
+        "immersiveengineering:generate_hardened_clay_pan"
+      ]
     }
   ],
   "fail_chance": 0.05,
