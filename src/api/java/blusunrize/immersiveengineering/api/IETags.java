@@ -57,9 +57,11 @@ public class IETags
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final TagKey<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
 	public static final TagKey<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
-	public static final TagKey<Item> cutCopperBlocks = createItemWrapper(rl("cut_blocks/copper"));
-	public static final TagKey<Item> cutCopperStairs = createItemWrapper(rl("cut_stairs/copper"));
-	public static final TagKey<Item> cutCopperSlabs = createItemWrapper(rl("cut_slabs/copper"));
+	public static final TagKey<Block> copperBlocks = createBlockTag(rl("blocks/copper"));
+	public static final TagKey<Block> cutCopperBlocks = createBlockTag(rl("cut_blocks/copper"));
+
+	public static final TagKey<Block> cutCopperStairs = createBlockTag(rl("cut_stairs/copper"));
+	public static final TagKey<Block> cutCopperSlabs = createBlockTag(rl("cut_slabs/copper"));
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));

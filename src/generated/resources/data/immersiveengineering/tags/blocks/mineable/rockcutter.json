@@ -2,8 +2,15 @@
   "values": [
     "#forge:cobblestone",
     "#forge:stone",
+    "#forge:ores",
     "#forge:glass",
     "#minecraft:ice",
-    "#forge:ores"
+    "minecraft:glowstone",
+    "minecraft:sea_lantern",
+    "#forge:chests/ender",
+    "minecraft:sculk",
+    "minecraft:sculk_catalyst",
+    "minecraft:sculk_sensor",
+    "minecraft:calibrated_sculk_sensor"
   ]
 }
