@@ -333,9 +333,6 @@ public class MiscRecipes extends IERecipeProvider
 		Block prismarine = Blocks.PRISMARINE;
 		TagKey<Item> aquamarine = createItemWrapper(IETags.getGem("aquamarine"));
 
-		// Common things
-		ResourceKey<DimensionType> overworld = BuiltinDimensionTypes.OVERWORLD;
-		ResourceKey<DimensionType> nether = BuiltinDimensionTypes.NETHER;
 		// Rocks & decoration
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
