@@ -503,23 +503,16 @@ public class MiscRecipes extends IERecipeProvider
 				.failchance(.15f)
 				.build(out, toRL("mineral/uraninite"));
 		MineralMixBuilder.builder()
-				.dimensionOverworld()
-				.addOverworldSpoils()
 				.addCondition(getTagCondition(tungsten)) // Vein is only found when tungsten is present
-				.ore(tungsten, .5f)
-				.ore(iron, .5f)
-				.ore(manganese, .5f, getTagCondition(manganese))
-				.weight(5)
-				.failchance(.1f)
-				.build(out, toRL("mineral/wolframite"));
-		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.addCondition(getTagCondition(tin)) // Vein is only found when tungsten is present
-				.ore(tin, 1)
-				.weight(20)
-				.failchance(.05f)
-				.build(out, toRL("mineral/cassiterite"));
+				.ore(tungsten, .7f)
+				.ore(iron, .3f)
+				.ore(manganese, .3f, getTagCondition(manganese))
+				.ore(tin, .3f, getTagCondition(tin))
+				.weight(5)
+				.failchance(.15f)
+				.build(out, toRL("mineral/wolframite"));
 
 		// Nether
 		MineralMixBuilder.builder()
