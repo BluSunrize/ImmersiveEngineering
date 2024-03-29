@@ -64,9 +64,10 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 		for(ExtraComponent<State, ?> c : multiblock.extraComponents())
 			this.componentInstances.add(ComponentInstance.make(c, this.state, this.context));
 		this.renderBox = new CachedValue<>((origin, orientation) -> {
-			final BlockPos max = new BlockPos(multiblock.size(level.getRawLevel()));
-			final BlockPos absoluteOffset = orientation.getAbsoluteOffset(max);
-			return new AABB(Vec3.ZERO, Vec3.atLowerCornerOf(absoluteOffset)).move(origin);
+			final BlockPos maxBlock = new BlockPos(multiblock.size(level.getRawLevel()));
+			final Vec3 max = Vec3.atLowerCornerOf(maxBlock).add(1, 1, 1);
+			final Vec3 absoluteOffset = orientation.getAbsoluteOffset(max);
+			return new AABB(Vec3.ZERO, absoluteOffset).move(origin);
 		});
 	}
 
