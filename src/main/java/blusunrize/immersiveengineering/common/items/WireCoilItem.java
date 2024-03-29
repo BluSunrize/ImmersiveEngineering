@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -32,10 +33,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static blusunrize.immersiveengineering.api.wires.utils.WireUtils.findObstructingBlocks;
 import static blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.clearWireLink;
@@ -74,8 +72,16 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 		if(hasWireLink(stack))
 		{
 			WireLink link = WireLink.readFromItem(stack);
+			String dimensionName = "";
+			if(link.dimension!=null)
+			{
+				String s2 = link.dimension.location().getPath();
+				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
+					s2 = s2.substring(4);
+				dimensionName = Utils.toCamelCase(s2);
+			}
 			list.add(Component.translatable(Lib.DESC_INFO+"attachedToDim", link.cp.getX(),
-					link.cp.getY(), link.cp.getZ(), link.dimension));
+					link.cp.getY(), link.cp.getZ(), dimensionName));
 		}
 	}
 
