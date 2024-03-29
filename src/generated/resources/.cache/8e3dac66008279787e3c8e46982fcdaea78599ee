@@ -1,4 +1,4 @@
-// 1.20.1	2024-03-30T17:35:01.3616029	Tags for minecraft:item mod id immersiveengineering
+// 1.20.1	2024-04-20T14:54:38.6432231	Tags for minecraft:item mod id immersiveengineering
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/forge/tags/items/armors.json
@@ -137,6 +137,7 @@ f5470081131755f2ca6efe914c57a261c517eec5 data/forge/tags/items/wires/copper.json
 ef8563aa2ee1f32b7bea78d511d14c4de2fa7f9f data/forge/tags/items/wires/electrum.json
 9b11ddba67b507e14e22e33521204309ef1e6dfe data/forge/tags/items/wires/lead.json
 090c3aab10acd9836ba1976243fc7ce381120a1a data/forge/tags/items/wires/steel.json
+085238f24aca214ce9eb3f57ab02370467990f33 data/immersiveengineering/tags/items/blocks/copper.json
 d6dd4d8bc65e07b1262b11dc0177d1fe5fbf9680 data/immersiveengineering/tags/items/circuits/logic.json
 1fe9d2f525aae99bcd22b42ce0a5601f493e62b6 data/immersiveengineering/tags/items/circuits/pcb.json
 c1d78e3fa5f5148f12a3f9c5eefe3940a3779908 data/immersiveengineering/tags/items/circuits/solder.json
