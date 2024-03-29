@@ -10,17 +10,17 @@
   "fail_chance": 0.1,
   "ores": [
     {
-      "chance": 0.75,
-      "conditions": [],
-      "output": {
-        "tag": "forge:ores/copper"
-      }
-    },
-    {
-      "chance": 0.25,
+      "chance": 0.6,
       "conditions": [],
       "output": {
         "tag": "forge:ores/gold"
+      }
+    },
+    {
+      "chance": 0.4,
+      "conditions": [],
+      "output": {
+        "tag": "forge:ores/copper"
       }
     }
   ],
@@ -50,5 +50,5 @@
       }
     }
   ],
-  "weight": 30
+  "weight": 20
 }

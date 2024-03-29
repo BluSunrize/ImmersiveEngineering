@@ -323,6 +323,7 @@ public class MiscRecipes extends IERecipeProvider
 		TagKey<Item> tungsten = createItemWrapper(IETags.getOre("tungsten"));
 		TagKey<Item> manganese = createItemWrapper(IETags.getOre("manganese"));
 		TagKey<Item> platinum = createItemWrapper(IETags.getOre("platinum"));
+		TagKey<Item> osmium = createItemWrapper(IETags.getOre("osmium"));
 		TagKey<Item> paladium = createItemWrapper(IETags.getOre("paladium"));
 		TagKey<Item> mercury = createItemWrapper(IETags.getOre("mercury"));
 		// Gems & Dusts
@@ -404,11 +405,12 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/banded_iron"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
+				.biomeCondition(ImmutableSet.of(BiomeTags.IS_MOUNTAIN))
 				.addOverworldSpoils()
-				.ore(iron, .35f)
-				.ore(copper, .35f)
-				.ore(sulfur, .3f)
-				.weight(20)
+				.ore(iron, .5f)
+				.ore(copper, .45f)
+				.ore(sulfur, .05f)
+				.weight(25)
 				.failchance(.05f)
 				.build(out, toRL("mineral/chalcopyrite"));
 		MineralMixBuilder.builder()
@@ -417,22 +419,23 @@ public class MiscRecipes extends IERecipeProvider
 				.ore(redstone, .6f)
 				.ore(sulfur, .4f)
 				.ore(mercury, .3f, getTagCondition(mercury))
-				.weight(15)
+				.weight(20)
 				.failchance(.1f)
 				.build(out, toRL("mineral/cinnabar"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.ore(copper, .75f)
-				.ore(gold, .25f)
-				.weight(30)
+				.ore(gold, .6f)
+				.ore(copper, .4f)
+				.weight(20)
 				.failchance(.1f)
 				.build(out, toRL("mineral/auricupride"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
-				.ore(aluminum, .7f)
-				.ore(iron, .2f)
+				.ore(aluminum, .6f)
+				.ore(iron, .3f)
+				.ore(nickel, .1f)
 				.ore(titanium, .1f, getTagCondition(titanium))
 				.weight(20)
 				.failchance(.05f)
@@ -441,9 +444,10 @@ public class MiscRecipes extends IERecipeProvider
 				.dimensionOverworld()
 				.addOverworldSpoils()
 				.ore(lead, .4f)
-				.ore(sulfur, .4f)
-				.ore(silver, .2f)
-				.weight(15)
+				.ore(silver, .25f)
+				.ore(gold, .25f)
+				.ore(sulfur, .1f)
+				.weight(20)
 				.failchance(.05f)
 				.build(out, toRL("mineral/galena"));
 		MineralMixBuilder.builder()
@@ -468,11 +472,12 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/lazulitic_intrusion"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
+				.biomeCondition(ImmutableSet.of(BiomeTags.IS_MOUNTAIN, BiomeTags.IS_RIVER))
 				.addOverworldSpoils()
 				.ore(emerald, .3f)
 				.ore(prismarine, .7f)
 				.ore(aquamarine, .3f, getTagCondition(aquamarine))
-				.weight(5)
+				.weight(15)
 				.failchance(.2f)
 				.build(out, toRL("mineral/beryl"));
 		MineralMixBuilder.builder()
@@ -488,11 +493,12 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/alluvial_sift"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
+				.biomeCondition(ImmutableSet.of(BiomeTags.IS_BADLANDS, BiomeTags.IS_TAIGA))
 				.addOverworldSpoils()
-				.ore(uranium, .7f)
-				.ore(lead, .3f)
+				.ore(uranium, .6f)
+				.ore(lead, .4f)
 				.ore(thorium, .1f, getTagCondition(thorium))
-				.weight(10)
+				.weight(15)
 				.failchance(.15f)
 				.build(out, toRL("mineral/uraninite"));
 		MineralMixBuilder.builder()
