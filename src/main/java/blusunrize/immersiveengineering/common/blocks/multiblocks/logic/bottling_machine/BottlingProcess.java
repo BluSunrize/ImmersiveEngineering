@@ -57,7 +57,10 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 		this.tank = state.tank;
 		this.allowPartialFill = () -> state.allowPartialFill;
 		this.isFilling = nbt.getBoolean("isFilling");
-		this.filledContainer = List.of();
+		if(nbt.contains("filledContainer"))
+			this.filledContainer = Arrays.asList(ItemStack.of(nbt.getCompound("filledContainer")));
+		else
+			this.filledContainer = List.of();
 	}
 
 	public BottlingProcess(BottlingMachineRecipe recipe, NonNullList<ItemStack> inputItem, State state)
@@ -81,7 +84,11 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 
 	public static InWorldProcessLoader<BottlingMachineRecipe> loader(State state)
 	{
-		return (getRecipe, tag) -> new BottlingProcess(getRecipe, tag, state);
+		return (getRecipe, tag) -> {
+			if(tag.getBoolean("isFilling"))
+				return new BottlingProcess((level, resourceLocation) -> DUMMY_RECIPE, tag, state);
+			return new BottlingProcess(getRecipe, tag, state);
+		};
 	}
 
 	@Override
@@ -134,5 +141,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	{
 		super.writeExtraDataToNBT(nbt);
 		nbt.putBoolean("isFilling", isFilling);
+		if(isFilling&&!filledContainer.isEmpty())
+			nbt.put("filledContainer", filledContainer.get(0).serializeNBT());
 	}
 }
