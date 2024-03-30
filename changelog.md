@@ -11,6 +11,7 @@
 - Add the plated shield to the "forge:tools/shields" tag (BluSunrize)
 - Change turrets to accept generic entity terms like "Villager" for their black/whitelist (BluSunrize)
 - Change text rendering in GUIs to be more readable (BluSunrize)
+- Change assembler to handle buckets in recipes better (BluSunrize)
 - Fix issues with multiblocks being accessed before being full formed (Malte)
 - Fix items with obj renders breaking in the AE2 inscriber
 - Fix drill overlay highlighting too many blocks (Malte)
