@@ -110,6 +110,8 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	{
 		if(state.getValue(TOP))
 			return false;
+		if(!world.isEmptyBlock(pos.above()))
+			return false;
 		return !world.getBlockState(pos.above()).getBlock().equals(this);
 	}
 
