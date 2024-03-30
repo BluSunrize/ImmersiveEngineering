@@ -111,7 +111,6 @@ public class RailgunShotEntity extends IEProjectileEntity
 	@Override
 	protected void onHitEntity(EntityHitResult result)
 	{
-		super.onHitEntity(result);
 		if(!this.level.isClientSide&&!getAmmo().isEmpty())
 		{
 			IRailgunProjectile projectileProperties = getProjectileProperties();
@@ -124,10 +123,13 @@ public class RailgunShotEntity extends IEProjectileEntity
 				DamageSource source = projectileProperties.getDamageSource(this.level, hit, shooterUuid, this);
 				if(source==null)
 					source = IEDamageSources.causeRailgunDamage(this, shooter);
+				if(shooter instanceof LivingEntity livingShooter)
+					livingShooter.setLastHurtMob(hit);
 				hit.hurt(source, (float)(damage*IEServerConfig.TOOLS.railgun_damage.get()));
 				projectileProperties.onHitTarget(this.level, result, shooterUuid, this);
 			}
 		}
+		this.discard();
 	}
 
 	@Override
