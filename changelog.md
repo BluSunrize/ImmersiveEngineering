@@ -29,6 +29,7 @@
 - Fix bottling machine deleting items on the conveyor (BluSunrize)
 - Fix bottling machine not rendering bucket-filling recipes properly (BluSunrize)
 - Fix hemp replacing blocks above it when growing (BluSunrize)
+- Fix fluid pipes losing their colour because the chunk wasn't marked as dirty (BluSunrize)
 - Translations Added/Updated: ja_jo (karakufire)
 
 ##### Version 1.19.2-9.2.4-170

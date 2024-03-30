@@ -716,6 +716,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			if(!player.level().isClientSide)
 			{
 				color = heldDye;
+				markChunkDirty();
 				markContainingBlockForUpdate(null);
 				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 			}
