@@ -8,6 +8,7 @@
 - Add items directly to inventory when: (voidsong-dragonfly)
     - Cutting wires
     - Picking up fluorescent tubes, core samples or the toolbox 
+- Add the plated shield to the "forge:tools/shields" tag (BluSunrize)
 - Change turrets to accept generic entity terms like "Villager" for their black/whitelist (BluSunrize)
 - Change text rendering in GUIs to be more readable (BluSunrize)
 - Fix issues with multiblocks being accessed before being full formed (Malte)
@@ -20,6 +21,10 @@
 - Fix synchronization errors in the garden clocke (voidsong-dragonfly, Malte)
 - Fix induction charging on the accumulator backpack not working (BluSunrize)
 - Fix multiblock sounds not triggering subtitles continuously (BluSunrize)
+- Fix hemp seeds being tagged as "rods" (BluSunrize)
+- Fix railgun rods applying damage like a normal arrow (BluSunrize)
+- Fix villager houses for structural engineer and machinist having the wrong workstation (BluSunrize)
+- Fix blueprint crafting with split up ingredients (BluSunrize)
 - Translations Added/Updated: cs_cz (RomanPlayer22)
 
 ##### Version 1.19.2-9.2.3-167
