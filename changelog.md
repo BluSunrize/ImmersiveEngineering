@@ -12,6 +12,10 @@
     - It attracts nearby items when given power! 
 - Add the portable electromagnet! (BluSunrize)
     - Install it as an upgrade on your accumulator backpack to have a magnet on the go!
+- Add various blocks from Engineer's Decor (voidsong-dragonfly)
+    - Thank you wilechaote for giving us permission to include these blocks in the mod <3
+- Add additional fertilizers for the cloche (voidsong-dragonfly)
+    - This should allow people to use up their surplus suflur!
 - Change hemp blocks to notify their neighbours when they grow (jrtc27)
 - Change Jade Tooltips for multiblocks to work when looking at any part of the machine (HermitOwO)
 - Fix conveyor rendering in the manual (Malte)
@@ -20,6 +24,10 @@
 - Fix taiga villager houses being surrounded by air blocks (BluSunrize)
 - Fix redstone control not working on the assembler (BluSunrize)
 - Fix villager names not being translated in JER and EMI (BluSunrize)
+- Fix error related to deprecated unicode font (BluSunrize)
+- Fix bottling machine deleting items on the conveyor (BluSunrize)
+- Fix bottling machine not rendering bucket-filling recipes properly (BluSunrize)
+- Translations Added/Updated: ja_jo (karakufire)
 
 ##### Version 1.19.2-9.2.4-170
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
