@@ -25,6 +25,7 @@ public class JEIRecipeTypes
 	public static final RecipeType<BlueprintCraftingRecipe> BLUEPRINT = create(IERecipeTypes.BLUEPRINT);
 	public static final RecipeType<BottlingMachineRecipe> BOTTLING_MACHINE = create(IERecipeTypes.BOTTLING_MACHINE);
 	public static final RecipeType<ClocheRecipe> CLOCHE = create(IERecipeTypes.CLOCHE);
+	public static final RecipeType<ClocheFertilizer> CLOCHE_FERTILIZER = create(IERecipeTypes.FERTILIZER);
 	public static final RecipeType<CokeOvenRecipe> COKE_OVEN = create(IERecipeTypes.COKE_OVEN);
 	public static final RecipeType<CrusherRecipe> CRUSHER = create(IERecipeTypes.CRUSHER);
 	public static final RecipeType<FermenterRecipe> FERMENTER = create(IERecipeTypes.FERMENTER);

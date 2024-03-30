@@ -1365,7 +1365,7 @@
   "item.immersiveengineering.minecart_woodenbarrel": "Minecart with Wooden Barrel",
   "item.immersiveengineering.minecart_metalbarrel": "Minecart with Metal Barrel",
   "item.immersiveengineering.logic_circuit": "Logic Circuit",
-  "item.immersiveengineering.fertilizer": "Fertilizer",
+  "item.immersiveengineering.fertilizer": "Industrial Fertilizer",
   "item.immersiveengineering.bannerpattern_hammer": "Banner Pattern",
   "item.immersiveengineering.bannerpattern_hammer.desc": "Hammer",
   "item.immersiveengineering.bannerpattern_bevels": "Banner Pattern",
@@ -1401,5 +1401,7 @@
   "config.jade.plugin_immersiveengineering.hemp":  "Industrial Hemp Crop Growth",
   "config.jade.plugin_immersiveengineering.multiblock_icon": "Multiblock Icons",
   "config.jade.plugin_immersiveengineering.multiblock_tank": "Multiblock Tank",
-  "config.jade.plugin_immersiveengineering.multiblock_inventory": "Multiblock Inventory"
+  "config.jade.plugin_immersiveengineering.multiblock_inventory": "Multiblock Inventory",
+  "desc.immersiveengineering.jei.category.fertilizer": "Garden Cloche Fertilizer",
+  "desc.immersiveengineering.jei.cloche_modifier": "Growth Modifier: %1$s"
 }
