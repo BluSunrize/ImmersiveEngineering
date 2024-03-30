@@ -21,18 +21,20 @@
 - Fix redstone control not working on the assembler (BluSunrize)
 - Fix villager names not being translated in JER and EMI (BluSunrize)
 
-##### Version 1.19.2-9.2.4-pre
+##### Version 1.19.2-9.2.4-170
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
-    - Amethyst Crevasse, a geode vein
-    - Hardened Claypan, a red sand & terracotta vein
-    - Ancient Seabed, a dead coral & dripstone vein
+  - Amethyst Crevasse, a geode vein
+  - Hardened Claypan, a red sand & terracotta vein
+  - Ancient Seabed, a dead coral & dripstone vein
 - Add cloche recipes to grow flowers (voidsong-dragonfly)
 - Add crusher recipes to make dyes (voidsong-dragonfly)
 - Add items directly to inventory when: (voidsong-dragonfly)
-    - Cutting wires
-    - Picking up fluorescent tubes, core samples or the toolbox 
+  - Cutting wires
+  - Picking up fluorescent tubes, core samples or the toolbox
+- Add the plated shield to the "forge:tools/shields" tag (BluSunrize)
 - Change turrets to accept generic entity terms like "Villager" for their black/whitelist (BluSunrize)
 - Change text rendering in GUIs to be more readable (BluSunrize)
+- Change assembler to handle buckets in recipes better (BluSunrize)
 - Fix issues with multiblocks being accessed before being full formed (Malte)
 - Fix items with obj renders breaking in the AE2 inscriber
 - Fix drill overlay highlighting too many blocks (Malte)
@@ -43,6 +45,10 @@
 - Fix synchronization errors in the garden clocke (voidsong-dragonfly, Malte)
 - Fix induction charging on the accumulator backpack not working (BluSunrize)
 - Fix multiblock sounds not triggering subtitles continuously (BluSunrize)
+- Fix hemp seeds being tagged as "rods" (BluSunrize)
+- Fix railgun rods applying damage like a normal arrow (BluSunrize)
+- Fix villager houses for structural engineer and machinist having the wrong workstation (BluSunrize)
+- Fix blueprint crafting with split up ingredients (BluSunrize)
 - Translations Added/Updated: cs_cz (RomanPlayer22)
 
 ##### Version 1.20.1-10.0.0-169
