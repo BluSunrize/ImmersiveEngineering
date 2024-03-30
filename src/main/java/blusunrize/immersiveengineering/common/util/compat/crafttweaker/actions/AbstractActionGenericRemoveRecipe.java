@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.base.IRuntimeAction;
@@ -43,6 +44,12 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> imp
 	}
 
 	@Override
+	public String systemName()
+	{
+		return Lib.MODID;
+	}
+
+	@Override
 	public void apply()
 	{
 		int count = 0;
@@ -57,7 +64,7 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> imp
 				final T recipe = iterator.next().getValue();
 				if(recipe instanceof GeneratedListRecipe)
 				{
-					CraftTweakerAPI.LOGGER.debug("Skipping GeneratedListRecipe '{}'", recipe.getId());
+					logger().debug("Skipping GeneratedListRecipe '{}'", recipe.getId());
 					continue;
 				}
 
@@ -69,12 +76,12 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> imp
 			}
 		} catch(ClassCastException exception)
 		{
-			CraftTweakerAPI.LOGGER.error(
+			logger().error(
 					"There is an illegal entry in "+manager.getCommandString()+" that caused an exception: ", exception
 			);
 		}
 
-		CraftTweakerAPI.LOGGER.info("Removed {} \"{}\" recipes", count, manager.getCommandString());
+		logger().info("Removed {} \"{}\" recipes", count, manager.getCommandString());
 	}
 
 	public abstract boolean shouldRemove(T recipe);

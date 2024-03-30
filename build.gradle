@@ -212,7 +212,7 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${version_jei}")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${version_jei}")
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.2:9.1.137")
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:14.0.34")
     //TODO only API. For some reason IPeripheral (an API class) does not show up in the API artifact
     // compileOnly fg.deobf("cc.tweaked:cc-tweaked-1.19.3-forge-api:${version_cctweaked}")
     compileOnly fg.deobf("cc.tweaked:cc-tweaked-1.19.3-forge:${version_cctweaked}")

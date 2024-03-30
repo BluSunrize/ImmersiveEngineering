@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
@@ -121,7 +122,7 @@ public class ClocheRecipeManager implements IRecipeManager<ClocheRecipe>
 			CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 		} catch(Exception ex)
 		{
-			CraftTweakerAPI.LOGGER.error("Could not create Cloche recipe '{}' with renderType '{}': ", recipePath, renderType, ex);
+			CraftTweakerAPI.getLogger(Lib.MODID).error("Could not create Cloche recipe '{}' with renderType '{}': ", recipePath, renderType, ex);
 		}
 	}
 }
