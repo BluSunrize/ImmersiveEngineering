@@ -16,6 +16,7 @@
     - Thank you wilechaote for giving us permission to include these blocks in the mod <3
 - Add additional fertilizers for the cloche (voidsong-dragonfly)
     - This should allow people to use up their surplus suflur!
+- Add ability to place Engineer's Manual in a chiseled bookshelf (BluSunrize)
 - Change hemp blocks to notify their neighbours when they grow (jrtc27)
 - Change Jade Tooltips for multiblocks to work when looking at any part of the machine (HermitOwO)
 - Fix conveyor rendering in the manual (Malte)

@@ -1,4 +1,4 @@
-// 1.20.1	2024-03-30T12:40:12.4791574	Tags for minecraft:item mod id immersiveengineering
+// 1.20.1	2024-03-30T17:35:01.3616029	Tags for minecraft:item mod id immersiveengineering
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/forge/tags/items/armors.json
@@ -156,6 +156,7 @@ e5c3944c2ae80d9e04025f18f44f3f7f45e17818 data/immersiveengineering/tags/items/to
 6e2720545b691b7dd962c68ecb9715cab8583fb9 data/immersiveengineering/tags/items/tools/hammers.json
 72757ad4db4fa6ebbe78f75376dd9544720b1c61 data/immersiveengineering/tags/items/tools/screwdrivers.json
 abd64977cb7f9a82733f5a615230b150179a2123 data/immersiveengineering/tags/items/tools/wirecutters.json
+ca80813f3c36ca4d7cd3b091a242dffa5652499d data/minecraft/tags/items/bookshelf_books.json
 36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/minecraft/tags/items/cluster_max_harvestables.json
 721903046c1e90c28d2fede7814f04994baaf913 data/minecraft/tags/items/coals.json
 ca80813f3c36ca4d7cd3b091a242dffa5652499d data/minecraft/tags/items/lectern_books.json

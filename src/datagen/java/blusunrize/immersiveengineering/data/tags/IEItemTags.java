@@ -84,7 +84,8 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);
 
-		tag(net.minecraft.tags.ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
+		tag(ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
+		tag(ItemTags.BOOKSHELF_BOOKS).add(Tools.MANUAL.get());
 		tag(Tags.Items.SEEDS).add(Misc.HEMP_SEEDS.get());
 		tag(IETags.seedsHemp).add(Misc.HEMP_SEEDS.get());
 		tag(Tags.Items.RODS_WOODEN).add(Ingredients.STICK_TREATED.get());
