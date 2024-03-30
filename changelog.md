@@ -1,4 +1,4 @@
-##### Version 1.19.2-9.2.4-pre
+##### Version 1.19.2-9.2.4-170
 - Add new excavator veins for decoration blocks (voidsong-dragonfly)
     - Amethyst Crevasse, a geode vein
     - Hardened Claypan, a red sand & terracotta vein
