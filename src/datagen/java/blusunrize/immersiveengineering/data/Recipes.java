@@ -1096,7 +1096,7 @@ public class Recipes extends RecipeProvider
 			// Basic log
 			if(wood.getLog()!=null)
 			{
-				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), wood.plankCount()))
 						.addInput(wood.getLog())
 						.setEnergy(1600);
 				if(wood.getStripped()!=null)
@@ -1112,7 +1112,7 @@ public class Recipes extends RecipeProvider
 			// All-bark block
 			if(wood.getWood()!=null)
 			{
-				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), wood.plankCount()))
 						.addInput(wood.getWood())
 						.setEnergy(1600);
 				if(wood.getStrippedWood()!=null)
@@ -1128,7 +1128,7 @@ public class Recipes extends RecipeProvider
 			// Already stripped log
 			if(wood.getStripped()!=null)
 			{
-				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), 6))
+				sawmillBuilder = SawmillRecipeBuilder.builder(new ItemStack(wood.getPlank(), wood.plankCount()))
 						.setEnergy(800);
 				if(wood.getWood()!=null)
 					sawmillBuilder.addInput(wood.getStripped(), wood.getStrippedWood());

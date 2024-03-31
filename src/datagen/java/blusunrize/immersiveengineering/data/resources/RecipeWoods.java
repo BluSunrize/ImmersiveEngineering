@@ -35,6 +35,8 @@ public enum RecipeWoods
 			Items.MANGROVE_WOOD, Items.STRIPPED_MANGROVE_WOOD, Items.MANGROVE_DOOR, Items.MANGROVE_STAIRS, Items.MANGROVE_SLAB),
 	CHERRY_LOGS("cherry", true, Items.CHERRY_PLANKS, Items.CHERRY_LOG, Items.STRIPPED_CHERRY_LOG,
 			Items.CHERRY_WOOD, Items.STRIPPED_CHERRY_WOOD, Items.CHERRY_DOOR, Items.CHERRY_STAIRS, Items.CHERRY_SLAB),
+	BAMBOO("bamboo", true, 3, Items.BAMBOO_PLANKS, Items.BAMBOO_BLOCK, Items.STRIPPED_BAMBOO_BLOCK,
+			null, null, Items.BAMBOO_DOOR, Items.BAMBOO_STAIRS, Items.BAMBOO_SLAB),
 	CRIMSON_STEMS("crimson", true, Items.CRIMSON_PLANKS, Items.CRIMSON_STEM, Items.STRIPPED_CRIMSON_STEM,
 			Items.CRIMSON_HYPHAE, Items.STRIPPED_CRIMSON_HYPHAE, Items.CRIMSON_DOOR, Items.CRIMSON_STAIRS, Items.CRIMSON_SLAB),
 	WARPED_STEMS("warped", true, Items.WARPED_PLANKS, Items.WARPED_STEM, Items.STRIPPED_WARPED_STEM,
@@ -42,6 +44,7 @@ public enum RecipeWoods
 
 	private final String name;
 	private final boolean produceSawdust;
+	private final int plankCount;
 	private final ItemLike plank;
 	private final ItemLike log;
 	private final ItemLike stripped;
@@ -51,13 +54,14 @@ public enum RecipeWoods
 	private final ItemLike stairs;
 	private final ItemLike slab;
 
-	RecipeWoods(String name, boolean produceSawdust, ItemLike plank, ItemLike log, ItemLike stripped,
+	RecipeWoods(String name, boolean produceSawdust, int plankCount, ItemLike plank, ItemLike log, ItemLike stripped,
 				ItemLike wood, ItemLike strippedWood, ItemLike door, ItemLike stairs, ItemLike slab)
 	{
 		Preconditions.checkNotNull(name);
 		Preconditions.checkNotNull(plank);
 		this.name = name;
 		this.produceSawdust = produceSawdust;
+		this.plankCount = plankCount;
 		this.plank = plank;
 		this.log = log;
 		this.stripped = stripped;
@@ -66,6 +70,12 @@ public enum RecipeWoods
 		this.door = door;
 		this.stairs = stairs;
 		this.slab = slab;
+	}
+
+	RecipeWoods(String name, boolean produceSawdust, ItemLike plank, ItemLike log, ItemLike stripped,
+				ItemLike wood, ItemLike strippedWood, ItemLike door, ItemLike stairs, ItemLike slab)
+	{
+		this(name, produceSawdust, 6, plank, log, stripped, wood, strippedWood, door, stairs, slab);
 	}
 
 	public String getName()
@@ -96,6 +106,11 @@ public enum RecipeWoods
 	public ItemLike getPlank()
 	{
 		return plank;
+	}
+
+	public int plankCount()
+	{
+		return plankCount;
 	}
 
 	public ItemLike getWood()
