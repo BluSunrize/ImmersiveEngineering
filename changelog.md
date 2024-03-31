@@ -1,4 +1,4 @@
-##### Version 1.20.1-10.0.1-pre
+##### Version 1.20.1-10.1.0-171
 - Includes all features from 9.2.4
 - Add sounds for Arc Furnace, Excavator, and Automated Workbench (voidsong-dragonfly)
 - Add burn times for the diesel generator to the manual (BluSunrize)
