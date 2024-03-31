@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_bricks",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_bricks"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:smoking/clinker_brick"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

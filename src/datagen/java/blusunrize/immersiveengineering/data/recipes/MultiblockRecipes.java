@@ -362,7 +362,7 @@ public class MultiblockRecipes extends IERecipeProvider
 			if(wood.getLog()!=null)
 			{
 				SawmillRecipeBuilder sawmillBuilder = SawmillRecipeBuilder.builder()
-						.output(wood.getPlank(), 6)
+						.output(wood.getPlank(), wood.plankCount())
 						.input(wood.getLog())
 						.setEnergy(1600);
 				if(wood.getStripped()!=null)
@@ -379,7 +379,7 @@ public class MultiblockRecipes extends IERecipeProvider
 			if(wood.getWood()!=null)
 			{
 				var sawmillBuilder = SawmillRecipeBuilder.builder()
-						.output(wood.getPlank(), 6)
+						.output(wood.getPlank(), wood.plankCount())
 						.input(wood.getWood())
 						.setEnergy(1600);
 				if(wood.getStrippedWood()!=null)
@@ -396,7 +396,7 @@ public class MultiblockRecipes extends IERecipeProvider
 			if(wood.getStripped()!=null)
 			{
 				var sawmillBuilder = SawmillRecipeBuilder.builder()
-						.output(wood.getPlank(), 6)
+						.output(wood.getPlank(), wood.plankCount())
 						.setEnergy(800);
 				if(wood.getWood()!=null)
 					sawmillBuilder.input(Ingredient.of(wood.getStripped(), wood.getStrippedWood()));

@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_clinker_brick",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_clinker_brick"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/clinker_brick_from_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

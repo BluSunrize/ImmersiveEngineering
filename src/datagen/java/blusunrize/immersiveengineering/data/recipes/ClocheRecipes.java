@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.data.recipes;
 
-import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions.*;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.data.recipes.builder.ClocheFertilizerBuilder;
 import blusunrize.immersiveengineering.data.recipes.builder.ClocheRecipeBuilder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -33,12 +34,7 @@ public class ClocheRecipes extends IERecipeProvider
 	@Override
 	protected void buildRecipes(RecipeOutput out)
 	{
-		out.accept(
-				toRL("fertilizer/bone_meal"), new ClocheFertilizer(Ingredient.of(Items.BONE_MEAL), 1.25f), null
-		);
-		out.accept(
-				toRL("fertilizer/fertilizer"), new ClocheFertilizer(Ingredient.of(Misc.FERTILIZER), 1.25f), null
-		);
+		fertilizers(out);
 
 		simpleCrops(out);
 		stemCrops(out);
@@ -54,6 +50,33 @@ public class ClocheRecipes extends IERecipeProvider
 
 		mushrooms(out);
 		flowers(out);
+	}
+
+	private void fertilizers(RecipeOutput out)
+	{
+		//Minor nutrients are 10% boost (calcium, magnesium, sulfur), major nutrients are 20% (phosphorous, nitrogen, potassium)
+		//Single-nutrient fertilizers:
+		ClocheFertilizerBuilder.builder(1.10f)
+				.input(IETags.sulfurDust)
+				.build(out, toRL("fertilizer/sulfur"));
+		//Dual-nutrient fertilizers:
+		//Slag: Phosphorous, Calcium
+		ClocheFertilizerBuilder.builder(1.30f)
+				.input(IETags.slag)
+				.build(out, toRL("fertilizer/slag"));
+		//Nitrate: Nitrogen, no Potassium because it can be many things including sodium - and the recipe is closest to Chilean saltpeter (NaNO3)
+		ClocheFertilizerBuilder.builder(1.20f)
+				.input(IETags.saltpeterDust)
+				.build(out, toRL("fertilizer/saltpeter"));
+		//Bonemeal: Calcium, Phosphorous
+		ClocheFertilizerBuilder.builder(1.30f)
+				.input(Items.BONE_MEAL)
+				.build(out, toRL("fertilizer/bonemeal"));
+		//Quad-nutrient fertilizers:
+		//Industrial Fertilizer: Nitrogen, Phosphorous, Sulfur, Calcium
+		ClocheFertilizerBuilder.builder(1.60f)
+				.input(Misc.FERTILIZER)
+				.build(out, toRL("fertilizer/fertilizer"));
 	}
 
 	private void flowers(RecipeOutput out)

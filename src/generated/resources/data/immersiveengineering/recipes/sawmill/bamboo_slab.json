@@ -5,15 +5,15 @@
     "item": "minecraft:bamboo_planks"
   },
   "result": {
-    "count": 2,
-    "item": "minecraft:bamboo_slab"
+    "basePredicate": {
+      "item": "minecraft:bamboo_slab"
+    },
+    "count": 2
   },
-  "secondaries": [
+  "secondaryOutputs": [],
+  "strippingSecondaries": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ]
 }

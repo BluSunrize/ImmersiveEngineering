@@ -15,29 +15,26 @@ import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 {
@@ -71,13 +68,13 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, 6, 6)
 				.setFluidRenderer(4000, false, 20, 51)
 				.setOverlay(tankOverlay, 0, 0)
-				.addIngredient(ForgeTypes.FLUID_STACK, new FluidStack(Fluids.WATER, 4000))
+				.addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(Fluids.WATER, 4000))
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		// TODO: Fix this to not be this unperformant and just bad, if there is a better way to do it
 		ArrayList<ItemStack> fertilizers = new ArrayList<>(Collections.singleton(ItemStack.EMPTY));
-		for(ClocheFertilizer fertilizerList : ClocheFertilizer.RECIPES.getRecipes(Minecraft.getInstance().level))
-			fertilizers.addAll(Arrays.stream(fertilizerList.input.getItems()).toList());
+		for(RecipeHolder<ClocheFertilizer> fertilizerList : ClocheFertilizer.RECIPES.getRecipes(Minecraft.getInstance().level))
+			fertilizers.addAll(Arrays.stream(fertilizerList.value().input.getItems()).toList());
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 8, 59)
 				.addItemStacks(fertilizers);

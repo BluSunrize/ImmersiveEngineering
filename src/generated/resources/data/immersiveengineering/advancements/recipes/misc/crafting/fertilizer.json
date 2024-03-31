@@ -40,10 +40,10 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_saltpeter",
       "has_sulfur",
-      "has_slag",
-      "has_the_recipe"
+      "has_slag"
     ]
   ],
   "rewards": {

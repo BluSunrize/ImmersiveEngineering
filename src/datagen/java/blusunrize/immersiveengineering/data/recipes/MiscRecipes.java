@@ -26,11 +26,10 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRec
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
-import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
-import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEItems.Metals;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.data.recipes.builder.BlueprintCraftingRecipeBuilder;
@@ -738,10 +737,14 @@ public class MiscRecipes extends IERecipeProvider
 				.define('W', ItemTags.WOOL)
 				.unlockedBy("has_iron_rod", has(IETags.ironRod))
 				.save(out, toRL(toPath(Misc.EARMUFFS)));
-		shapelessMisc(Misc.FERTILIZER)
+		shapelessMisc(Misc.FERTILIZER, 3)
 				.requires(IETags.saltpeterDust)
 				.requires(IETags.slag)
+				.requires(IETags.sulfurDust)
+				.requires(new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_saltpeter", has(IETags.saltpeterDust))
+				.unlockedBy("has_sulfur", has(IETags.sulfurDust))
+				.unlockedBy("has_slag", has(IETags.slag))
 				.save(out, toRL(toPath(Misc.FERTILIZER)));
 
 		shapedMisc(MetalDecoration.LANTERN)
@@ -782,6 +785,12 @@ public class MiscRecipes extends IERecipeProvider
 				.define('C', Items.MINECART)
 				.unlockedBy("has_minecart", has(Items.MINECART))
 				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+		shapelessMisc(StoneDecoration.GRIT_SAND, 5)
+				.requires(Ingredient.of(Tags.Items.GRAVEL), 1)
+				.requires(Ingredient.of(Tags.Items.SAND_COLORLESS), 4)
+				.unlockedBy("has_sand", has(Tags.Items.GRAVEL))
+				.unlockedBy("has_gravel", has(Tags.Items.SAND_COLORLESS))
+				.save(out, toRL("grit_sand"));
 
 		//Lead to dye recipes
 		shapelessMisc(Items.WHITE_DYE, 16)

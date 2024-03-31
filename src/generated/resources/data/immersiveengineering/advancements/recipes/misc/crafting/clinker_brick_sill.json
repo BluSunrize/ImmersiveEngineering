@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_bricks",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_bricks"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/clinker_brick_sill"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

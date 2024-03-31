@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_slag",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_slag"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:stonecutting/slag_brick"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

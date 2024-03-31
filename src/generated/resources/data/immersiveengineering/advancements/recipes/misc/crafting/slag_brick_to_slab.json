@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_slag_brick",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_slag_brick"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/slag_brick_to_slab"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

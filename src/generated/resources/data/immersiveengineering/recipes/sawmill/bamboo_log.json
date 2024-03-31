@@ -5,24 +5,22 @@
     "item": "minecraft:bamboo_block"
   },
   "result": {
-    "count": 3,
-    "item": "minecraft:bamboo_planks"
-  },
-  "secondaries": [
-    {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": true
+    "basePredicate": {
+      "item": "minecraft:bamboo_planks"
     },
+    "count": 3
+  },
+  "secondaryOutputs": [
     {
-      "output": {
-        "tag": "forge:dusts/wood"
-      },
-      "stripping": false
+      "tag": "forge:dusts/wood"
     }
   ],
   "stripped": {
     "item": "minecraft:stripped_bamboo_block"
-  }
+  },
+  "strippingSecondaries": [
+    {
+      "tag": "forge:dusts/wood"
+    }
+  ]
 }

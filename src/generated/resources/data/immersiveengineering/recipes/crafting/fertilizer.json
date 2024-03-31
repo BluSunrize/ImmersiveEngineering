@@ -12,9 +12,11 @@
       "tag": "forge:dusts/sulfur"
     },
     {
-      "type": "immersiveengineering:fluid",
-      "amount": 1000,
-      "tag": "minecraft:water"
+      "type": "immersiveengineering:fluid_stack",
+      "value": {
+        "amount": 1000,
+        "tag": "minecraft:water"
+      }
     }
   ],
   "result": {

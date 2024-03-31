@@ -30,15 +30,14 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_sand",
-      "has_gravel",
-      "has_the_recipe"
+      "has_gravel"
     ]
   ],
   "rewards": {
     "recipes": [
       "immersiveengineering:crafting/grit_sand"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

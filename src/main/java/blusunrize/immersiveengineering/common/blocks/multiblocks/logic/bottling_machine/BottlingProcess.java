@@ -89,7 +89,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	{
 		return (getRecipe, tag) -> {
 			if(tag.getBoolean("isFilling"))
-				return new BottlingProcess((level, resourceLocation) -> DUMMY_RECIPE, tag, state);
+				return new BottlingProcess((level, resourceLocation) -> DUMMY_RECIPE.value(), tag, state);
 			return new BottlingProcess(getRecipe, tag, state);
 		};
 	}
