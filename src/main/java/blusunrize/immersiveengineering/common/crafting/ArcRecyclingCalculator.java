@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
@@ -127,11 +126,13 @@ public class ArcRecyclingCalculator
 
 			private void fillInRecipes(MinecraftServer server)
 			{
-				Preconditions.checkState(result.getValue()==null);
-				MinecraftForge.EVENT_BUS.unregister(eventListener.getValue());
-				Collection<Recipe<?>> recipes = server.getRecipeManager().getRecipes();
-				ArcRecyclingCalculator calculator = new ArcRecyclingCalculator(recipes, server.registryAccess());
-				result.setValue(calculator.run());
+				if(result.getValue()==null)
+				{
+					MinecraftForge.EVENT_BUS.unregister(eventListener.getValue());
+					Collection<Recipe<?>> recipes = server.getRecipeManager().getRecipes();
+					ArcRecyclingCalculator calculator = new ArcRecyclingCalculator(recipes, server.registryAccess());
+					result.setValue(calculator.run());
+				}
 			}
 		});
 		MinecraftForge.EVENT_BUS.register(eventListener.getValue());
