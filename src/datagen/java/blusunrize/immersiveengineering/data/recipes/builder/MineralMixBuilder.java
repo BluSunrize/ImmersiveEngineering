@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralMix.BiomeTagPredicate;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -27,7 +28,6 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 {
@@ -47,9 +47,11 @@ public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 		return new MineralMixBuilder();
 	}
 
-	public MineralMixBuilder biomeCondition(Set<TagKey<Biome>> tags)
+	@SafeVarargs
+	public final MineralMixBuilder biomeCondition(TagKey<Biome>... tags)
 	{
-		this.biomeTagPredicates.add(new BiomeTagPredicate(tags));
+		// normal Set.of results in varying order of elements during datagen
+		this.biomeTagPredicates.add(new BiomeTagPredicate(ImmutableSet.copyOf(tags)));
 		return this;
 	}
 

@@ -336,7 +336,7 @@ public class MiscRecipes extends IERecipeProvider
 		// Rocks & decoration
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(BiomeTags.IS_RIVER))
+				.biomeCondition(BiomeTags.IS_RIVER)
 				.addSoilSpoils()
 				.ore(Items.CLAY, .6f)
 				.ore(Items.SAND, .4f)
@@ -355,7 +355,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/igneous_rock"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(IETags.generateClaypan))
+				.biomeCondition(IETags.generateClaypan)
 				.addSoilSpoils()
 				.ore(Items.TERRACOTTA, .6f)
 				.ore(Items.RED_SANDSTONE, .3f)
@@ -365,7 +365,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/hardened_clay_pan"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(IETags.generateSeabed))
+				.biomeCondition(IETags.generateSeabed)
 				.addSeabedSpoils()
 				.ore(Blocks.CALCITE, .65f)
 				.ore(Blocks.DRIPSTONE_BLOCK, .3f)
@@ -403,7 +403,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/banded_iron"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(BiomeTags.IS_MOUNTAIN))
+				.biomeCondition(BiomeTags.IS_MOUNTAIN)
 				.addOverworldSpoils()
 				.ore(iron, .5f)
 				.ore(copper, .45f)
@@ -472,7 +472,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/lazulitic_intrusion"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(BiomeTags.IS_MOUNTAIN, BiomeTags.IS_OCEAN))
+				.biomeCondition(BiomeTags.IS_MOUNTAIN, BiomeTags.IS_OCEAN)
 				.addOverworldSpoils()
 				.ore(emerald, .3f)
 				.ore(prismarine, .7f)
@@ -482,7 +482,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/beryl"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(BiomeTags.IS_RIVER))
+				.biomeCondition(BiomeTags.IS_RIVER)
 				.addSoilSpoils()
 				.ore(Tags.Items.GEMS_DIAMOND, .2f)
 				.ore(Items.CLAY, .4f)
@@ -492,7 +492,7 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("mineral/alluvial_sift"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(ImmutableSet.of(BiomeTags.IS_BADLANDS, BiomeTags.IS_TAIGA))
+				.biomeCondition(BiomeTags.IS_BADLANDS, BiomeTags.IS_TAIGA)
 				.addOverworldSpoils()
 				.ore(uranium, .6f)
 				.ore(lead, .4f)
