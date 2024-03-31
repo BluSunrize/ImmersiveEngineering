@@ -1,17 +1,13 @@
 {
   "type": "immersiveengineering:mineral_mix",
   "biome_predicates": [
-    {
-      "biome_tags": [
-        "minecraft:is_overworld"
-      ]
-    },
-    {
-      "biome_tags": [
-        "minecraft:is_badlands",
-        "minecraft:is_taiga"
-      ]
-    }
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "minecraft:is_badlands",
+      "minecraft:is_taiga"
+    ]
   ],
   "fail_chance": 0.15,
   "ores": [

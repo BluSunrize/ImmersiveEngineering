@@ -1,16 +1,12 @@
 {
   "type": "immersiveengineering:mineral_mix",
   "biome_predicates": [
-    {
-      "biome_tags": [
-        "minecraft:is_overworld"
-      ]
-    },
-    {
-      "biome_tags": [
-        "minecraft:is_river"
-      ]
-    }
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "minecraft:is_river"
+    ]
   ],
   "fail_chance": 0.2,
   "ores": [

@@ -1,16 +1,12 @@
 {
   "type": "immersiveengineering:mineral_mix",
   "biome_predicates": [
-    {
-      "biome_tags": [
-        "minecraft:is_overworld"
-      ]
-    },
-    {
-      "biome_tags": [
-        "immersiveengineering:generate_ancient_seabed"
-      ]
-    }
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "immersiveengineering:generate_ancient_seabed"
+    ]
   ],
   "fail_chance": 0.05,
   "ores": [

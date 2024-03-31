@@ -1,11 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
   "biome_predicates": [
-    {
-      "biome_tags": [
-        "minecraft:is_nether"
-      ]
-    }
+    [
+      "minecraft:is_nether"
+    ]
   ],
   "fail_chance": 0.15,
   "ores": [

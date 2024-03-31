@@ -1,16 +1,12 @@
 {
   "type": "immersiveengineering:mineral_mix",
   "biome_predicates": [
-    {
-      "biome_tags": [
-        "minecraft:is_overworld"
-      ]
-    },
-    {
-      "biome_tags": [
-        "immersiveengineering:generate_hardened_clay_pan"
-      ]
-    }
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "immersiveengineering:generate_hardened_clay_pan"
+    ]
   ],
   "fail_chance": 0.05,
   "ores": [

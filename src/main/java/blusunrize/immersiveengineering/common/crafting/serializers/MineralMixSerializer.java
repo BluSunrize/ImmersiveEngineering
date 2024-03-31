@@ -35,7 +35,7 @@ import java.util.Set;
 
 public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 {
-	public static final Codec<BiomeTagPredicate> BIOME_TAG_PREDICATE_CODEC = makeBiomePredicateCodec();
+	public static final Codec<BiomeTagPredicate> BIOME_TAG_PREDICATE_CODEC = NeoForgeExtraCodecs.setOf(TagKey.codec(Registries.BIOME)).xmap(BiomeTagPredicate::new, BiomeTagPredicate::tags);
 
 	private static final Codec<MineralMix> CODEC = RecordCodecBuilder.create(
 			inst -> inst.group(
@@ -105,10 +105,4 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		PacketUtils.writeRegistryElement(buffer, BuiltInRegistries.BLOCK, recipe.background);
 	}
 
-	private static Codec<BiomeTagPredicate> makeBiomePredicateCodec()
-	{
-		return RecordCodecBuilder.create(inst -> inst.group(
-				NeoForgeExtraCodecs.setOf(TagKey.codec(Registries.BIOME)).fieldOf("biome_tags").forGetter(BiomeTagPredicate::tags)
-		).apply(inst, BiomeTagPredicate::new));
-	}
 }
