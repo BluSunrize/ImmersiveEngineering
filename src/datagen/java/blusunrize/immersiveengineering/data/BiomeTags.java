@@ -32,6 +32,10 @@ public class BiomeTags extends BiomeTagsProvider
 	@Override
 	protected void addTags(Provider p_255894_)
 	{
+		// swamps
+		tag(IETags.is_swamp)
+				.add(Biomes.SWAMP)
+				.add(Biomes.MANGROVE_SWAMP);
 		// deserts, plains, mesas, savannas, ice plains
 		tag(IETags.generateClaypan)
 				.add(Biomes.DESERT)
@@ -42,8 +46,7 @@ public class BiomeTags extends BiomeTagsProvider
 				.add(Biomes.SNOWY_PLAINS);
 		// swamps, beaches, coral reefs, stony shore
 		tag(IETags.generateSeabed)
-				.add(Biomes.SWAMP)
-				.add(Biomes.MANGROVE_SWAMP)
+				.addTag(IETags.is_swamp)
 				.addTag(net.minecraft.tags.BiomeTags.IS_BEACH)
 				.add(Biomes.WARM_OCEAN)
 				.add(Biomes.STONY_SHORE);

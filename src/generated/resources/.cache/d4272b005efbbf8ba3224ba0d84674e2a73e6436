@@ -1,3 +1,4 @@
-// 1.20.4	2024-03-31T13:21:55.5779162	IE biome tags
-d45ecfba197394907e27e9146636de63184c8c82 data/immersiveengineering/tags/worldgen/biome/generate_ancient_seabed.json
+// 1.20.4	2024-03-31T13:39:54.2309202	IE biome tags
+6525dda69924a36f16797ed873bffc083e1f4de5 data/forge/tags/worldgen/biome/is_swamp.json
+c0c470427a11897933a7e68932e0d3cb25c14915 data/immersiveengineering/tags/worldgen/biome/generate_ancient_seabed.json
 af85e3ac097959db37cc110a60aa2ecd62a3216b data/immersiveengineering/tags/worldgen/biome/generate_hardened_clay_pan.json

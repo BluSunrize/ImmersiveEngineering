@@ -151,6 +151,7 @@ public class IETags
 	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(rl("shaderbag/whitelist"));
 	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(rl("shaderbag/blacklist"));
 
+	public static final TagKey<Biome> is_swamp = createBiomeWrapper(forgeLoc("is_swamp"));
 	public static final TagKey<Biome> generateClaypan = createBiomeWrapper(rl("generate_hardened_clay_pan"));
 	public static final TagKey<Biome> generateSeabed = createBiomeWrapper(rl("generate_ancient_seabed"));
 
