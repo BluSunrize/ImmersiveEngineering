@@ -44,8 +44,7 @@ public class BiomeTags extends BiomeTagsProvider
 		tag(IETags.generateSeabed)
 				.add(Biomes.SWAMP)
 				.add(Biomes.MANGROVE_SWAMP)
-				.add(Biomes.BEACH)
-				.add(Biomes.SNOWY_BEACH)
+				.addTag(net.minecraft.tags.BiomeTags.IS_BEACH)
 				.add(Biomes.WARM_OCEAN)
 				.add(Biomes.STONY_SHORE);
 	}
