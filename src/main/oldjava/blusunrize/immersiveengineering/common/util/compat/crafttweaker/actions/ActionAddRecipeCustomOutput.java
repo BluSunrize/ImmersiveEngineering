@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions;
 
+import blusunrize.immersiveengineering.api.Lib;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.fluid.MCFluidStackMutable;
@@ -34,9 +35,9 @@ public class ActionAddRecipeCustomOutput<T extends Recipe<?>> extends ActionAddR
 		this.output = output;
 	}
 
-	@Override
-	protected String describeOutputs()
-	{
-		return output;
-	}
+//	@Override
+//	protected String describeOutputs()
+//	{
+//		return output;
+//	}
 }

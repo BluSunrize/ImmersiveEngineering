@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "immersiveengineering:block/slag_brick0"
+      },
+      {
+        "model": "immersiveengineering:block/slag_brick1"
+      },
+      {
+        "model": "immersiveengineering:block/slag_brick2"
+      },
+      {
+        "model": "immersiveengineering:block/slag_brick3"
+      },
+      {
+        "model": "immersiveengineering:block/slag_brick4"
+      },
+      {
+        "model": "immersiveengineering:block/slag_brick5"
+      },
+      {
+        "model": "immersiveengineering:block/slag_brick6"
+      },
+      {
+        "model": "immersiveengineering:block/slag_brick7"
+      }
+    ]
+  }
+}

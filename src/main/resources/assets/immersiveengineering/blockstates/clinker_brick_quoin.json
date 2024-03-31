@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:block/clinker_brick_quoin_east"
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/clinker_brick_quoin_north"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/clinker_brick_quoin_south"
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/clinker_brick_quoin_west"
+    }
+  }
+}

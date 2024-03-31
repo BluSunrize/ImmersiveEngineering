@@ -1,7 +1,0 @@
-{
-  "type": "immersiveengineering:fertilizer",
-  "growthModifier": 1.25,
-  "input": {
-    "item": "minecraft:bone_meal"
-  }
-}

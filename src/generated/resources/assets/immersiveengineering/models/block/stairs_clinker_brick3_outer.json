@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick3",
+    "side": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick3",
+    "top": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick3"
+  }
+}

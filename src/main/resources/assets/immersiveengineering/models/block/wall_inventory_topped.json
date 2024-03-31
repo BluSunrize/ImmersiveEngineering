@@ -1,0 +1,46 @@
+{
+  "parent": "block/block",
+  "display": {
+    "gui": {
+      "rotation": [ 30, 135, 0 ],
+      "translation": [ 0, 0, 0],
+      "scale":[ 0.625, 0.625, 0.625 ]
+    },
+    "fixed": {
+      "rotation": [ 0, 90, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.5, 0.5, 0.5 ]
+    }
+  },
+  "textures": {
+    "particle": "#wall_bottom"
+  },
+  "elements": [
+    {
+      "from": [ 4, 0, 4 ],
+      "to": [ 12, 16, 12 ],
+      "faces": {
+        "down":  { "uv": [ 4, 4, 12, 12 ], "texture": "#wall_bottom", "cullface": "down" },
+        "up":    { "uv": [ 4, 4, 12, 12 ], "texture": "#wall_top" },
+        "north": { "uv": [ 4, 0, 12, 16 ], "texture": "#wall_side" },
+        "south": { "uv": [ 4, 0, 12, 16 ], "texture": "#wall_side" },
+        "west":  { "uv": [ 4, 0, 12, 16 ], "texture": "#wall_side" },
+        "east":  { "uv": [ 4, 0, 12, 16 ], "texture": "#wall_side" }
+      },
+      "__comment": "Center post"
+    },
+    {
+      "from": [ 5, 0, 0 ],
+      "to": [ 11, 14, 16 ],
+      "faces": {
+        "down":  { "uv": [ 5, 0, 11, 16 ], "texture": "#wall_bottom", "cullface": "down" },
+        "up":    { "uv": [ 5, 0, 11, 16 ], "texture": "#wall_top" },
+        "north": { "uv": [ 5, 2, 11, 16 ], "texture": "#wall_side", "cullface": "north" },
+        "south": { "uv": [ 5, 2, 11, 16 ], "texture": "#wall_side", "cullface": "south" },
+        "west":  { "uv": [ 0, 2, 16, 16 ], "texture": "#wall_side" },
+        "east":  { "uv": [ 0, 2, 16, 16 ], "texture": "#wall_side" }
+      },
+      "__comment": "Full wall"
+    }
+  ]
+}

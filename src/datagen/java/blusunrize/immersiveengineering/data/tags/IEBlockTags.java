@@ -169,6 +169,18 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
+		//Add parity tags to gravel & sand for IE similar blocks
+		tag(BlockTags.BAMBOO_PLANTABLE_ON)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.SCULK_REPLACEABLE)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.AZALEA_ROOT_REPLACEABLE)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.DEAD_BUSH_MAY_PLACE_ON)
+				.add(StoneDecoration.GRIT_SAND.get());
 		tag(IETags.concreteForFeet)
 				.add(StoneDecoration.CONCRETE.get())
 				.add(StoneDecoration.CONCRETE_TILE.get())
@@ -186,7 +198,8 @@ public class IEBlockTags extends BlockTagsProvider
 		registerAxeMineable();
 		tag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.add(WoodenDecoration.SAWDUST.get())
-				.add(StoneDecoration.SLAG_GRAVEL.get());
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
 		tag(IETags.wirecutterHarvestable)
 				.add(MetalDevices.RAZOR_WIRE.get());
 		tag(IETags.drillHarvestable)
@@ -211,6 +224,8 @@ public class IEBlockTags extends BlockTagsProvider
 			tag(BlockTags.SLABS).add(slab.get());
 		for(BlockEntry<?> stairs : IEBlocks.TO_STAIRS.values())
 			tag(BlockTags.STAIRS).add(stairs.get());
+		for(BlockEntry<?> stairs : IEBlocks.TO_WALL.values())
+			tag(BlockTags.WALLS).add(stairs.get());
 
 		/* MOD COMPAT STARTS HERE */
 
@@ -362,6 +377,9 @@ public class IEBlockTags extends BlockTagsProvider
 			BlockEntry<?> stairs = IEBlocks.TO_STAIRS.get(entry.getId());
 			if(stairs!=null)
 				tag.add(stairs.get());
+			BlockEntry<?> wall = IEBlocks.TO_WALL.get(entry.getId());
+			if(wall!=null)
+				tag.add(wall.get());
 		}
 	}
 
@@ -398,6 +416,10 @@ public class IEBlockTags extends BlockTagsProvider
 				StoneDecoration.COKEBRICK,
 				StoneDecoration.BLASTBRICK,
 				StoneDecoration.BLASTBRICK_REINFORCED,
+				StoneDecoration.SLAG_BRICK,
+				StoneDecoration.CLINKER_BRICK,
+				StoneDecoration.CLINKER_BRICK_QUOIN,
+				StoneDecoration.CLINKER_BRICK_SILL,
 				StoneDecoration.COKE,
 				StoneDecoration.HEMPCRETE,
 				StoneDecoration.HEMPCRETE_BRICK,

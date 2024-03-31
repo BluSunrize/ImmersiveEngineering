@@ -32,6 +32,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurn
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceFuelCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.bottlingmachine.BottlingMachineRecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.cloche.ClocheFertilizerCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.cloche.ClocheRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.cokeoven.CokeOvenRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.crusher.CrusherRecipeCategory;
@@ -114,6 +115,7 @@ public class JEIHelper implements IModPlugin
 				new BlastFurnaceRecipeCategory(guiHelper),
 				new BlastFurnaceFuelCategory(guiHelper),
 				new ClocheRecipeCategory(guiHelper),
+				new ClocheFertilizerCategory(guiHelper),
 				new MetalPressRecipeCategory(guiHelper),
 				new CrusherRecipeCategory(guiHelper),
 				new SawmillRecipeCategory(guiHelper),
@@ -139,6 +141,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(JEIRecipeTypes.BLAST_FURNACE, getRecipes(BlastFurnaceRecipe.RECIPES));
 		registration.addRecipes(JEIRecipeTypes.BLAST_FUEL, getRecipes(BlastFurnaceFuel.RECIPES));
 		registration.addRecipes(JEIRecipeTypes.CLOCHE, getRecipes(ClocheRecipe.RECIPES));
+		registration.addRecipes(JEIRecipeTypes.CLOCHE_FERTILIZER, getRecipes(ClocheFertilizer.RECIPES));
 		registration.addRecipes(JEIRecipeTypes.METAL_PRESS, getFiltered(MetalPressRecipe.STANDARD_RECIPES, IJEIRecipe::listInJEI));
 		registration.addRecipes(JEIRecipeTypes.CRUSHER, getFiltered(CrusherRecipe.RECIPES, IJEIRecipe::listInJEI));
 		registration.addRecipes(JEIRecipeTypes.SAWMILL, getFiltered(SawmillRecipe.RECIPES, IJEIRecipe::listInJEI));
@@ -185,6 +188,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipeCatalyst(IEMultiblockLogic.ADV_BLAST_FURNACE.iconStack(), JEIRecipeTypes.BLAST_FURNACE, JEIRecipeTypes.BLAST_FUEL);
 		registration.addRecipeCatalyst(IEMultiblockLogic.BLAST_FURNACE.iconStack(), JEIRecipeTypes.BLAST_FURNACE, JEIRecipeTypes.BLAST_FUEL);
 		registration.addRecipeCatalyst(new ItemStack(MetalDevices.CLOCHE), JEIRecipeTypes.CLOCHE);
+		registration.addRecipeCatalyst(new ItemStack(MetalDevices.CLOCHE), JEIRecipeTypes.CLOCHE_FERTILIZER);
 		registration.addRecipeCatalyst(IEMultiblockLogic.METAL_PRESS.iconStack(), JEIRecipeTypes.METAL_PRESS);
 		registration.addRecipeCatalyst(IEMultiblockLogic.CRUSHER.iconStack(), JEIRecipeTypes.CRUSHER);
 		registration.addRecipeCatalyst(IEMultiblockLogic.SAWMILL.iconStack(), JEIRecipeTypes.SAWMILL);

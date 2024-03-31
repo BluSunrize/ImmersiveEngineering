@@ -21,10 +21,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import malte0811.modelsplitter.model.Group;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType.CompositeState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.resources.ResourceLocation;
@@ -36,6 +38,7 @@ import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -110,10 +113,13 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			RenderType baseType;
 			ResourceLocation atlas = InventoryMenu.BLOCK_ATLAS;
 			Vector4f color = quadsForLayer.layer().getColor();
+			List<RenderType> renderTypes = model.getRenderTypes(stack, Minecraft.useFancyGraphics());
 			if(bright)
 				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
-			else if(quadsForLayer.layer().isTranslucent() || color.w()<1)
+			else if(quadsForLayer.layer().isTranslucent()||color.w() < 1)
 				baseType = RenderType.entityTranslucent(atlas);
+			else if(!renderTypes.isEmpty())
+				baseType = renderTypes.get(0);
 			else
 				baseType = RenderType.entityCutoutNoCull(atlas);
 			RenderType actualType = quadsForLayer.layer().getRenderType(baseType);

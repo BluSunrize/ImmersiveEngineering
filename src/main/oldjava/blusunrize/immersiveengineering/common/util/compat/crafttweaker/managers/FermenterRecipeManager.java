@@ -96,7 +96,7 @@ public class FermenterRecipeManager implements IRecipeManager<FermenterRecipe>
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, IIngredientWithAmount input, int energy, IFluidStack fluidOutput)
 	{
-		addRecipe(recipePath, input, energy, MCItemStack.EMPTY.get(), fluidOutput);
+		addRecipe(recipePath, input, energy, IItemStack.empty(), fluidOutput);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class FermenterRecipeManager implements IRecipeManager<FermenterRecipe>
 			@Override
 			public boolean shouldRemove(FermenterRecipe recipe)
 			{
-				return output.getInternal().isFluidStackIdentical(recipe.fluidOutput);
+				return ((FluidStack)output.getInternal()).isFluidStackIdentical(recipe.fluidOutput);
 			}
 		});
 	}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "immersiveengineering:clinker_brick"
+    }
+  },
+  "pattern": [
+    "sss",
+    "sss"
+  ],
+  "result": {
+    "count": 6,
+    "item": "immersiveengineering:wall_clinker_brick"
+  },
+  "show_notification": true
+}

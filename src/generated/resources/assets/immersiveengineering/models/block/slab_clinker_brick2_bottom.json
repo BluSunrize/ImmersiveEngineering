@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick2",
+    "side": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick2",
+    "top": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick2"
+  }
+}

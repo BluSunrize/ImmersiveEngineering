@@ -1,0 +1,8 @@
+{
+  "parent": "immersiveengineering:block/wall_side_topped",
+  "textures": {
+    "wall_bottom": "immersiveengineering:block/stone_decoration/slag_brick/slag_brick3",
+    "wall_side": "immersiveengineering:block/stone_decoration/slag_brick/slag_brick_wall3",
+    "wall_top": "immersiveengineering:block/stone_decoration/slag_brick/slag_brick_top3"
+  }
+}

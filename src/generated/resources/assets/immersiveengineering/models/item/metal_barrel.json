@@ -1,8 +1,3 @@
 {
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "immersiveengineering:block/metal_device/barrel_up_none",
-    "side": "immersiveengineering:block/metal_device/barrel_side",
-    "top": "immersiveengineering:block/metal_device/barrel_up_none"
-  }
+  "parent": "immersiveengineering:metal_devices/barrel"
 }

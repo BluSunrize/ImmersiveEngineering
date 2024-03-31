@@ -1,0 +1,19 @@
+{
+  "parent": "immersiveengineering:block/cube_overlay",
+  "textures": {
+    "down": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "east": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "north": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "particle": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "south": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "up": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "west": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "down_overlay": "immersiveengineering:block/stone_decoration/clinker_brick/quoin_overlay_top_bl",
+    "east_overlay": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "north_overlay": "immersiveengineering:block/stone_decoration/clinker_brick/quoin_overlay",
+    "particle_overlay": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "south_overlay": "immersiveengineering:block/stone_decoration/clinker_brick/clinker_brick0",
+    "up_overlay": "immersiveengineering:block/stone_decoration/clinker_brick/quoin_overlay_top_tl",
+    "west_overlay": "immersiveengineering:block/stone_decoration/clinker_brick/quoin_overlay_reversed"
+  }
+}

@@ -88,6 +88,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -189,8 +191,7 @@ public class IEContent
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
-		AssemblerHandler.registerSpecialIngredientConverter((o, remain) ->
-		{
+		AssemblerHandler.registerSpecialIngredientConverter((o, remain) -> {
 			if(o instanceof IngredientFluidStack)
 				return new FluidTagRecipeQuery(((IngredientFluidStack)o).getFluidTagInput());
 			else
@@ -199,35 +200,39 @@ public class IEContent
 		// Buckets
 		// TODO add "duplicates" of the fluid-aware recipes that only use buckets, so that other mods using similar
 		//  code don't need explicit compat?
-		AssemblerHandler.registerSpecialIngredientConverter((o, remain) ->
-		{
-			final ItemStack[] matching = o.getItems();
-			//TODO
-			if(/*!o.isVanilla()||*/matching.length!=1)
+		AssemblerHandler.registerSpecialIngredientConverter((o, remain) -> {
+			// Must be a vanilla ingredient, which returns an empty bucket
+			// TODO
+			if(/*!o.isVanilla()||*/remain.getItem()!=Items.BUCKET)
 				return null;
-			final Item potentialBucket = matching[0].getItem();
-			if(!(potentialBucket instanceof BucketItem))
+			// Find bucket out of available items
+			Optional<ItemStack> potentialBucket = Arrays.stream(o.getItems())
+					.filter(stack -> stack.getItem() instanceof BucketItem)
+					.findFirst();
+			if(potentialBucket.isEmpty())
 				return null;
-			// bucket was consumed in recipe
-			if(remain.getItem()!=Items.BUCKET)
-				return null;
+			final Item bucketItem = potentialBucket.get().getItem();
 			//Explicitly check for vanilla-style non-dynamic container items
 			//noinspection deprecation
-			if(!potentialBucket.hasCraftingRemainingItem()||potentialBucket.getCraftingRemainingItem()!=Items.BUCKET)
+			if(!bucketItem.hasCraftingRemainingItem()||bucketItem.getCraftingRemainingItem()!=Items.BUCKET)
 				return null;
-			final Fluid contained = ((BucketItem)potentialBucket).getFluid();
+			final Fluid contained = ((BucketItem)bucketItem).getFluid();
 			return new FluidStackRecipeQuery(new FluidStack(contained, FluidType.BUCKET_VOLUME));
 		});
 		// Milk is a weird special case
 		AssemblerHandler.registerSpecialIngredientConverter((o, remain) -> {
-			final ItemStack[] matching = o.getItems();
-			//TODO
-			if(/*!o.isVanilla()||*/matching.length!=1)
+			// Only works when the milk fluid is enabled
+			if(!NeoForgeMod.MILK.isBound())
 				return null;
-			if(matching[0].getItem()!=Items.MILK_BUCKET||!NeoForgeMod.MILK.isBound())
+			// Must be a vanilla ingredient, which returns an empty bucket
+			// TODO
+			if(/*!o.isVanilla()||*/remain.getItem()!=Items.BUCKET)
 				return null;
-			// bucket was consumed in recipe
-			if(remain.getItem()!=Items.BUCKET)
+			// Find milk bucket out of available items
+			Optional<ItemStack> potentialBucket = Arrays.stream(o.getItems())
+					.filter(stack -> stack.getItem()==Items.MILK_BUCKET)
+					.findFirst();
+			if(potentialBucket.isEmpty())
 				return null;
 			return new FluidStackRecipeQuery(new FluidStack(NeoForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
 		});
