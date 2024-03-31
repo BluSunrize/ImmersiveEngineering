@@ -336,7 +336,7 @@ public class MiscRecipes extends IERecipeProvider
 		// Rocks & decoration
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
-				.biomeCondition(BiomeTags.IS_RIVER)
+				.biomeCondition(BiomeTags.IS_RIVER, IETags.is_swamp, BiomeTags.IS_OCEAN)
 				.addSoilSpoils()
 				.ore(Items.CLAY, .6f)
 				.ore(Items.SAND, .4f)

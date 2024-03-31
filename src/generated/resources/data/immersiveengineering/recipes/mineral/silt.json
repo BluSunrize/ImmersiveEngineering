@@ -5,7 +5,9 @@
       "minecraft:is_overworld"
     ],
     [
-      "minecraft:is_river"
+      "minecraft:is_river",
+      "forge:is_swamp",
+      "minecraft:is_ocean"
     ]
   ],
   "fail_chance": 0.2,

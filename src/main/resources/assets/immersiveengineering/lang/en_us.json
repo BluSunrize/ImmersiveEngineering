@@ -1405,6 +1405,7 @@
   "tag.biome.minecraft.is_river": "rivers",
   "tag.biome.minecraft.is_badlands": "badlands",
   "tag.biome.minecraft.is_taiga": "taigas",
+  "tag.biome.forge.is_swamp": "swamps",
   "tag.biome.immersiveengineering.generate_hardened_clay_pan": "flat and dry",
   "tag.biome.immersiveengineering.generate_ancient_seabed": "swampy or growing corals",
   "ie.manual.newerVersion": " - New!",
