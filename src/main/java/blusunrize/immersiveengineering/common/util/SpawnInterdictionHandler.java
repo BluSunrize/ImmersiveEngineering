@@ -48,7 +48,7 @@ public class SpawnInterdictionHandler
 		if(event.getResult()==Event.Result.ALLOW||event.getResult()==Event.Result.DENY||event.getSpawner()!=null)
 			return;
 		if(shouldCancel(event.getEntity()))
-			event.setResult(Event.Result.DENY);
+			event.setSpawnCancelled(true);
 	}
 
 	@SubscribeEvent
