@@ -40,7 +40,10 @@ public class CachedMirroredModel<K, T extends ICacheKeyProvider<K>> extends Comp
 	@Override
 	public List<BakedQuad> getQuads(K key)
 	{
-		return cache.getUnchecked(key);
+		if(key!=null)
+			return cache.getUnchecked(key);
+		else
+			return List.of();
 	}
 
 	@Nullable
