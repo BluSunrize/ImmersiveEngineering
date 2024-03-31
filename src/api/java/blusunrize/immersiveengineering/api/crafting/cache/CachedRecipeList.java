@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
@@ -27,9 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,13 +56,13 @@ public class CachedRecipeList<R extends Recipe<?>>
 		this(type.type(), type.recipeClass());
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onTagsUpdated(TagsUpdatedEvent ev)
 	{
 		++reloadCount;
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public static void onRecipeUpdatedClient(RecipesUpdatedEvent ev)
 	{
 		++reloadCount;
