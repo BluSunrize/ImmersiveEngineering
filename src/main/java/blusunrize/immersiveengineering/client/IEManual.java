@@ -190,7 +190,7 @@ public class IEManual
 			String biomeText = mineral.biomeTagPredicates.stream().map(
 					biomeTagPredicate -> biomeTagPredicate.tags().stream().map(biomeTagKey -> {
 						// translate biome tags where possible, fall back to location path otherwise
-						String key = "ie.manual.entry.minerals.biome_tag."+biomeTagKey.location();
+						String key = biomeTagKey.location().toLanguageKey("tag.biome").replaceAll("/", ".");
 						if(I18n.exists(key))
 							return I18n.get(key);
 						else
