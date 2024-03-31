@@ -423,11 +423,20 @@ public class MiscRecipes extends IERecipeProvider
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
+				.ore(copper, .7f)
+				.ore(gold, .3f)
+				.weight(20)
+				.failchance(.1f)
+				.build(out, toRL("mineral/auricupride"));
+		MineralMixBuilder.builder()
+				.dimensionOverworld()
+				.biomeCondition(BiomeTags.IS_BADLANDS)
+				.addOverworldSpoils()
 				.ore(gold, .6f)
 				.ore(copper, .4f)
 				.weight(20)
 				.failchance(.1f)
-				.build(out, toRL("mineral/auricupride"));
+				.build(out, toRL("mineral/rich_auricupride"));
 		MineralMixBuilder.builder()
 				.dimensionOverworld()
 				.addOverworldSpoils()
