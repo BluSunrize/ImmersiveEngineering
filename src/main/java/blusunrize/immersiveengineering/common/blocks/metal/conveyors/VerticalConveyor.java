@@ -313,6 +313,8 @@ public class VerticalConveyor extends ConveyorBase
 
 	public static boolean renderBottomBelt(BlockEntity tile, Direction facing)
 	{
+		if(!tile.hasLevel())
+			return false;
 		BlockEntity te = tile.getLevel().getBlockEntity(tile.getBlockPos().offset(0, -1, 0));
 		if(te instanceof IConveyorBlockEntity&&((IConveyorBlockEntity)te).getConveyorInstance()!=null)
 			for(Direction f : ((IConveyorBlockEntity)te).getConveyorInstance().sigTransportDirections())

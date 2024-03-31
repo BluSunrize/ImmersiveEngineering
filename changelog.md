@@ -34,6 +34,7 @@
 - Fix transparency issues with the shield and a few other item models (BluSunrize)
 - Fix spawn interdiction from lanterns not working (BluSunrize)
 - Fix rare crash in arc recycling calculation (BluSunrize)
+- Fix possible crash in conveyor rendering (BluSunrize)
 - Translations Added/Updated: ja_jo (karakufire)
 
 ##### Version 1.19.2-9.2.4-170
