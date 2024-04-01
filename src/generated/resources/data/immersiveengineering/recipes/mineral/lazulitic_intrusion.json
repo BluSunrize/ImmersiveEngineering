@@ -1,46 +1,31 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:ores/platinum"
-      }
-    }
-  ],
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:overworld"
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ]
   ],
   "fail_chance": 0.1,
   "ores": [
     {
-      "chance": 0.5,
+      "chance": 0.75,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/platinum"
+        "tag": "forge:ores/lapis"
       }
     },
     {
-      "chance": 0.5,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/paladium"
-          }
-        }
-      ],
+      "chance": 0.15,
+      "conditions": [],
       "output": {
-        "tag": "forge:ores/paladium"
+        "tag": "forge:ores/gold"
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.1,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/nickel"
+        "tag": "forge:dusts/sulfur"
       }
     }
   ],
@@ -70,5 +55,5 @@
       }
     }
   ],
-  "weight": 5
+  "weight": 15
 }

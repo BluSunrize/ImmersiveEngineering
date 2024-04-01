@@ -1,7 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:the_nether"
+  "biome_predicates": [
+    [
+      "minecraft:is_nether"
+    ]
   ],
   "fail_chance": 0.5,
   "ores": [

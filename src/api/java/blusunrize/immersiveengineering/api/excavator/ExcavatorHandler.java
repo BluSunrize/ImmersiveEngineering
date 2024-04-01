@@ -15,12 +15,17 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 
 import javax.annotation.Nullable;
@@ -130,7 +135,7 @@ public class ExcavatorHandler
 		return foundVeins;
 	}
 
-	public static void generatePotentialVein(Level world, ChunkPos chunkpos, RandomSource rand)
+	public static void generatePotentialVein(Level world, WorldGenLevel worldGenLevel, ChunkPos chunkpos, RandomSource rand)
 	{
 		int xStart = chunkpos.getMinBlockX();
 		int zStart = chunkpos.getMinBlockZ();
@@ -168,7 +173,12 @@ public class ExcavatorHandler
 				if(!crossover)
 				{
 					RecipeHolder<MineralMix> mineralMix = null;
-					MineralSelection selection = new MineralSelection(world);
+					Set<Holder<Biome>> biomes = new HashSet<>();
+					BiomeManager biomeManager = worldGenLevel.getBiomeManager();
+					int surfaceHeight = worldGenLevel.getHeight(Types.WORLD_SURFACE_WG, finalPos.x(), finalPos.z());
+					for(int i = worldGenLevel.getMinBuildHeight(); i <= surfaceHeight; i++)
+						biomes.add(biomeManager.getNoiseBiomeAtPosition(pos.x(), i, pos.z()));
+					MineralSelection selection = new MineralSelection(world, biomes);
 					if(selection.getTotalWeight() > 0)
 					{
 						int weight = selection.getRandomWeight(rand);
@@ -222,12 +232,12 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<RecipeHolder<MineralMix>> validMinerals;
 
-		public MineralSelection(Level dimension)
+		public MineralSelection(Level world, Set<Holder<Biome>> biomes)
 		{
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
-			for(RecipeHolder<MineralMix> e : MineralMix.RECIPES.getRecipes(dimension))
-				if(e.value().validDimension(dimension.dimensionTypeId()))
+			for(RecipeHolder<MineralMix> e : MineralMix.RECIPES.getRecipes(world))
+				if(biomes.stream().anyMatch(biome -> e.value().validBiome(biome)))
 				{
 					validMinerals.add(e);
 					weight += e.value().weight;

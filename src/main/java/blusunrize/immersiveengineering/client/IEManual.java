@@ -37,20 +37,17 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.VersionChecker;
 import net.neoforged.fml.VersionChecker.CheckResult;
 import net.neoforged.fml.VersionChecker.Status;
-import net.minecraft.core.registries.BuiltInRegistries;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.io.IOException;
@@ -189,20 +186,25 @@ public class IEManual
 		for(RecipeHolder<MineralMix> holder : mineralsToAdd)
 		{
 			final MineralMix mineral = holder.value();
-			String dimensionString;
-			if(mineral.dimensions!=null&&!mineral.dimensions.isEmpty())
-			{
-				StringBuilder validDims = new StringBuilder();
-				for(ResourceKey<DimensionType> dim : mineral.dimensions)
-					validDims.append((!validDims.isEmpty())?", ": "")
-							.append("<dim;")
-							.append(dim.location())
-							.append(">");
-				dimensionString = I18n.get("ie.manual.entry.mineralsDimValid", toName.apply(holder), validDims.toString());
-			}
-			else
-				dimensionString = I18n.get("ie.manual.entry.mineralsDimAny", toName.apply(holder));
+			// Assemble text for biome limitations
+			String biomeText = mineral.biomeTagPredicates.stream().map(
+					biomeTagPredicate -> biomeTagPredicate.tags().stream().map(biomeTagKey -> {
+						// translate biome tags where possible, fall back to location path otherwise
+						String key = biomeTagKey.location().toLanguageKey("tag.biome").replaceAll("/", ".");
+						if(I18n.exists(key))
+							return I18n.get(key);
+						else
+							return biomeTagKey.location().getPath();
+					}).reduce((s, s2) -> I18n.get("ie.manual.entry.minerals.biomes_or", s, s2)).orElse("")
+			).reduce((s, s2) -> I18n.get("ie.manual.entry.minerals.biomes_and", s, s2)).orElse("");
+			// Combine it with the name of the vein
+			String openingString = I18n.get(
+					"ie.manual.entry.minerals.biomes",
+					toName.apply(holder),
+					biomeText
+			);
 
+			// Format output and spoils
 			List<StackWithChance> formattedOutputs = new ArrayList<>(mineral.outputs);
 			List<StackWithChance> formattedSpoils = new ArrayList<>(mineral.spoils);
 			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.chance()));
@@ -238,7 +240,12 @@ public class IEManual
 			}
 
 			specials.add(new SpecialElementData(holder.id().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
-			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString(), spoilString.toString());
+			String desc = I18n.get(
+					"ie.manual.entry.minerals_desc",
+					openingString,
+					outputString.toString(),
+					spoilString.toString()
+			);
 
 			if(!text.isEmpty())
 				text.append("<np>");

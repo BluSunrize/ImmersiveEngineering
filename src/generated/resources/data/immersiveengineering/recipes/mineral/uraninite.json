@@ -1,19 +1,25 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:overworld"
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "minecraft:is_badlands",
+      "minecraft:is_taiga"
+    ]
   ],
   "fail_chance": 0.15,
   "ores": [
     {
-      "chance": 0.7,
+      "chance": 0.6,
       "conditions": [],
       "output": {
         "tag": "forge:ores/uranium"
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.4,
       "conditions": [],
       "output": {
         "tag": "forge:ores/lead"
@@ -61,5 +67,5 @@
       }
     }
   ],
-  "weight": 10
+  "weight": 15
 }

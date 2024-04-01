@@ -1,24 +1,25 @@
 {
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:not",
-      "value": {
-        "type": "neoforge:tag_empty",
-        "tag": "forge:ores/tin"
-      }
-    }
-  ],
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:overworld"
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ]
   ],
   "fail_chance": 0.05,
   "ores": [
     {
-      "chance": 1.0,
+      "chance": 0.8,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/tin"
+        "tag": "forge:ores/iron"
+      }
+    },
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:dripstone_block"
       }
     }
   ],
@@ -48,5 +49,5 @@
       }
     }
   ],
-  "weight": 20
+  "weight": 25
 }

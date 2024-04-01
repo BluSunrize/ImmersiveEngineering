@@ -3,28 +3,40 @@
   "biome_predicates": [
     [
       "minecraft:is_overworld"
+    ],
+    [
+      "minecraft:is_river"
     ]
   ],
-  "fail_chance": 0.1,
+  "fail_chance": 0.2,
   "ores": [
     {
-      "chance": 0.7,
+      "chance": 0.2,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/copper"
+        "tag": "forge:gems/diamond"
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.4,
       "conditions": [],
       "output": {
-        "tag": "forge:ores/gold"
+        "Count": 1,
+        "id": "minecraft:clay"
+      }
+    },
+    {
+      "chance": 0.4,
+      "conditions": [],
+      "output": {
+        "Count": 1,
+        "id": "minecraft:sand"
       }
     }
   ],
   "spoils": [
     {
-      "chance": 0.2,
+      "chance": 0.6,
       "conditions": [],
       "output": {
         "Count": 1,
@@ -32,7 +44,7 @@
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.3,
       "conditions": [],
       "output": {
         "Count": 1,
@@ -40,13 +52,13 @@
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.1,
       "conditions": [],
       "output": {
         "Count": 1,
-        "id": "minecraft:cobbled_deepslate"
+        "id": "minecraft:coarse_dirt"
       }
     }
   ],
-  "weight": 20
+  "weight": 15
 }

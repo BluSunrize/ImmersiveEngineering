@@ -9,27 +9,29 @@
     }
   ],
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:overworld"
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ]
   ],
-  "fail_chance": 0.1,
+  "fail_chance": 0.15,
   "ores": [
     {
-      "chance": 0.5,
+      "chance": 0.7,
       "conditions": [],
       "output": {
         "tag": "forge:ores/tungsten"
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.3,
       "conditions": [],
       "output": {
         "tag": "forge:ores/iron"
       }
     },
     {
-      "chance": 0.5,
+      "chance": 0.3,
       "conditions": [
         {
           "type": "neoforge:not",
@@ -41,6 +43,21 @@
       ],
       "output": {
         "tag": "forge:ores/manganese"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:ores/tin"
+          }
+        }
+      ],
+      "output": {
+        "tag": "forge:ores/tin"
       }
     }
   ],

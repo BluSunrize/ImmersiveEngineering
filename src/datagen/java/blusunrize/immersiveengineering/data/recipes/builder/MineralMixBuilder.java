@@ -11,17 +11,19 @@ package blusunrize.immersiveengineering.data.recipes.builder;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.excavator.MineralMix.BiomeTagPredicate;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 	private final List<StackWithChance> spoils = new ArrayList<>();
 	private int weight;
 	private float failChance;
-	private ResourceKey<DimensionType> dimension;
+	private List<BiomeTagPredicate> biomeTagPredicates = new ArrayList<>();
 	private Block background = Blocks.STONE;
 
 	private MineralMixBuilder()
@@ -45,9 +47,23 @@ public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 		return new MineralMixBuilder();
 	}
 
-	public MineralMixBuilder dimension(ResourceKey<DimensionType> dimension)
+	@SafeVarargs
+	public final MineralMixBuilder biomeCondition(TagKey<Biome>... tags)
 	{
-		this.dimension = dimension;
+		// normal Set.of results in varying order of elements during datagen
+		this.biomeTagPredicates.add(new BiomeTagPredicate(ImmutableSet.copyOf(tags)));
+		return this;
+	}
+
+	public MineralMixBuilder dimensionOverworld()
+	{
+		this.biomeTagPredicates.add(new BiomeTagPredicate(BiomeTags.IS_OVERWORLD));
+		return this;
+	}
+
+	public MineralMixBuilder dimensionNether()
+	{
+		this.biomeTagPredicates.add(new BiomeTagPredicate(BiomeTags.IS_NETHER));
 		return this;
 	}
 
@@ -96,9 +112,9 @@ public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 
 	public MineralMixBuilder addSoilSpoils()
 	{
-		return spoil(Items.COARSE_DIRT, 0.2f)
-				.spoil(Items.COBBLESTONE, 0.5f)
-				.spoil(Items.GRAVEL, 0.3f);
+		return spoil(Items.GRAVEL, 0.6f)
+				.spoil(Items.COBBLESTONE, 0.3f)
+				.spoil(Items.COARSE_DIRT, 0.1f);
 	}
 
 	public MineralMixBuilder addSeabedSpoils()
@@ -118,7 +134,7 @@ public class MineralMixBuilder extends IERecipeBuilder<MineralMixBuilder>
 	public void build(RecipeOutput out, ResourceLocation name)
 	{
 		MineralMix recipe = new MineralMix(
-				outputs, spoils, weight, failChance, List.of(dimension), background
+				outputs, spoils, weight, failChance, biomeTagPredicates, background
 		);
 		out.accept(name, recipe, null, getConditions());
 	}
