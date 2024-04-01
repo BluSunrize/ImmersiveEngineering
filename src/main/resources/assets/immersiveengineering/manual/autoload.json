@@ -77,9 +77,12 @@
     "entry_list": [
       "turntable",
       "conveyor_belts",
+      "chutes",
       "item_router",
       "item_batcher",
-      "fluid_pipes_pumps_outlets",
+      "fluid_pipes",
+      "fluid_pump",
+      "fluid_outlet",
       "fluid_router",
       "external_heater",
       "electromagnet",

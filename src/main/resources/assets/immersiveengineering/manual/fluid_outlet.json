@@ -1,0 +1,6 @@
+{
+  "outlet_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/fluid_placer"
+  }
+}

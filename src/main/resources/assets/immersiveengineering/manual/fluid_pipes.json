@@ -1,0 +1,6 @@
+{
+  "pipe_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/fluid_pipe"
+  }
+}

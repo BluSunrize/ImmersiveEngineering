@@ -1,0 +1,8 @@
+Fluid Pipes
+Professional Plumber
+<&pipe_recipe>Fluid Pipes are a versatile and efficient method of transporting fluids, unlike moving tanks ore buckets around en masse.<br>
+Pipe systems will output any fluid input to them across the available ouputs, split evenly.<br>
+At low pressure, pipe systems will transport fluid slowly. Pressurized fluids output from a <link;fluid_pump;Fluid Pump> or certain large machines can move much faster.<br>
+Fluid Pipes will connect to all possible connections when they are placed. The Engineer's Hammer can be used to connect or disconnect fluid pipes from each other and from tanks.<br>
+Fluid Pipes can be covered with scaffolding. Placing the scaffolding onto a pipe will cover it, and sneaking + rightclicking the pipe will remove it.<br>
+Additionally, rightclicking a pipe with any dye will color it to allow easy identification. Colored pipes do not connect to newly placed pipes.
