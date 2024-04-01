@@ -1,3 +1,22 @@
+##### Version 1.20.4-11.0.0-pre
+- First release for 1.20.4
+- Includes all features from 10.1.0
+- **All** of the porting work and bugfixing courtesy of Malte
+- Overhauled Mineral Veins (BluSunrize, voidsong-dragonfly)
+    - Mineral veins now use biome tags as conditions, this replaces dimension keys and allows more precise filtering
+    - New Vein: **Banded Iron**, a primary iron deposit because it's IE's most common resource
+    - New Vein: **Lazulitic Intrusion**, comprised of lapis and gold, making it ideal for decoration and enchanting
+    - New Vein: **Alluvial Sift**, only found in river biomes, this allows the excavator to mine for diamonds
+    - New Vein: **Rich Auricupride**, only found in mesa biomes, high in gold and some copper
+    - Changed **Pentlandite** to be primarily a nickel vein since its essential for IE's mid- and lategame architecture
+    - Changed **Wolframite** to include tin when present
+    - Changed all veins to output less sulfur
+    - Changed a variety of other veins to prioritze secondary ores that IE relies on (lead, silver)
+    - Changed weight and failchance on various veins, this makes "necessary" resources more common
+    - Changed various veins to only show up in certain biomes, making "decorative" veins like Silt less common
+    - Actually increased the weight of "rare" veins such as **Beryl** and **Uraninite**, because they are now limited by biome
+    - Allow survey tools to be used on netherrack and soul sand, to make searching in the Nether viable
+
 ##### Version 1.20.1-10.1.0-171
 - Includes all features from 9.2.4
 - Add sounds for Arc Furnace, Excavator, and Automated Workbench (voidsong-dragonfly)
