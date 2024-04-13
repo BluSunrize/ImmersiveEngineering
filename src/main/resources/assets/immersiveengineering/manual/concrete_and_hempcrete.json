@@ -58,5 +58,18 @@
     "recipe": {
       "fluid": "immersiveengineering:concrete"
     }
+  },
+  "hempcrete": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/hempcrete"
+        },
+        {
+          "recipe": "crafting/hempcrete2"
+        }
+      ]
+    ]
   }
 }

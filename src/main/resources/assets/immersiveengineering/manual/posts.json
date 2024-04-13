@@ -1,0 +1,18 @@
+{
+  "recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/treated_post"
+        },
+        {
+          "recipe": "crafting/steel_post"
+        },
+        {
+          "recipe": "crafting/alu_post"
+        }
+      ]
+    ]
+  }
+}
