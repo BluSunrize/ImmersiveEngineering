@@ -33,7 +33,11 @@
     "entry_list": [
       "concrete",
       "hempcrete",
-      "posts",
+      "clinker_brick",
+      "slag_products",
+      "posts_and_wallmounts",
+      "scaffolding_and_ladders",
+      "metal_constructions",
       "engineered_lighting",
       "balloon"
     ]

@@ -1,0 +1,45 @@
+{
+  "scaffolding_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/steel_scaffolding_standard"
+        },
+        {
+          "recipe": "crafting/alu_scaffolding_standard"
+        }
+      ],
+      [
+        {
+          "recipe": "crafting/steel_scaffolding_grate_top_from_standard"
+        },
+        {
+          "recipe": "crafting/steel_scaffolding_wooden_top_from_grate_top"
+        },
+        {
+          "recipe": "crafting/alu_scaffolding_grate_top_from_standard"
+        },
+        {
+          "recipe": "crafting/alu_scaffolding_wooden_top_from_grate_top"
+        }
+      ]
+    ]
+  },
+  "ladder_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/metal_ladder_none"
+        },
+        {
+          "recipe": "crafting/metal_ladder_alu"
+        },
+        {
+          "recipe": "crafting/metal_ladder_steel"
+        }
+      ]
+    ]
+  }
+}

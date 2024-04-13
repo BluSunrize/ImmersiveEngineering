@@ -1,5 +1,5 @@
 {
-  "recipes": {
+  "post_recipes": {
     "type": "crafting",
     "recipes": [
       [
@@ -11,6 +11,19 @@
         },
         {
           "recipe": "crafting/alu_post"
+        }
+      ]
+    ]
+  },
+  "wallmount_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/steel_wallmount"
+        },
+        {
+          "recipe": "crafting/alu_wallmount"
         }
       ]
     ]

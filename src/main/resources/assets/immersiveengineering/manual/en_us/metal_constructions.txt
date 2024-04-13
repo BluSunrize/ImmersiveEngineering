@@ -1,0 +1,10 @@
+Metal Constructions
+Riveting
+<&storage_recipes>Apart from Treated Wood, processed metals make for common construction blocks.<br>
+All metals can be crafted into blocks and slabs, or plates into sheetmetal as shown in the next page.<np>
+<&sheetmetal_recipes>Sheetmetal can be dyed to color it into sixteen shades.<np>
+<&fence_recipes>Metal fencing is the counterpart to standard wooden and treated wooden fencing.<br>
+Unable to burn, metal fencing can be used to effectively keep in hot creatures such as Blazes or burning undead.<np>
+<&connector_recipe>Structural Connectors work similarly to normal connectors, but are purely decorative.<br>
+These connectors can be rotated through several degrees of rotation by rightclicking them with an Engineer's Hammer.<np>
+<&coil_recipes>Structural Connectors will not accept normal wires, instead accepting rope and wire at a maximum range of 32m.<br>

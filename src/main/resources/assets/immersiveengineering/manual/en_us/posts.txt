@@ -1,7 +1,0 @@
-Posts
-???
-<&recipes>Posts can be made from structural materials, including Treated Wood, Steel, and Aluminium.<br>
-Unlike fence posts, these posts will not connect together, but instead can be used to hang <link;basic_wiring;wires> or <link;engineered_lighting;lamps>.<np>
-Posts are four blocks high and thus cannot be placed without the proper clearance.<br>
-Using the Engineer's Hammer on the sides of the topmost block will attach an arm to the post.<br>
-Placing blocks below the arms of the wooden post will flip the arms upside down.
