@@ -44,9 +44,5 @@
       }
       ]
     ]
-  },
-  "feedthrough": {
-    "type": "multiblock",
-    "name": "feedthrough"
   }
 }
