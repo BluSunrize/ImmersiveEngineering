@@ -17,6 +17,14 @@
     "entry_list": [
       "storage_crates",
       "storage_barrels",
+      "conveyor_belts",
+      "chutes",
+      "item_router",
+      "item_batcher",
+      "fluid_pipes",
+      "fluid_pump",
+      "fluid_outlet",
+      "fluid_router",
       "silo",
       "tank"
     ]
@@ -78,14 +86,6 @@
     "category_weight": 60,
     "entry_list": [
       "turntable",
-      "conveyor_belts",
-      "chutes",
-      "item_router",
-      "item_batcher",
-      "fluid_pipes",
-      "fluid_pump",
-      "fluid_outlet",
-      "fluid_router",
       "external_heater",
       "electromagnet",
       "garden_cloche",
