@@ -169,11 +169,18 @@ public class DecorationRecipes extends IERecipeProvider
 				makeIngredient(Tags.Items.INGOTS_BRICK),
 				makeIngredient(Blocks.MAGMA_BLOCK),
 				has(Tags.Items.INGOTS_BRICK), out);
-		addSandwich(StoneDecoration.HEMPCRETE, 6,
-				makeIngredient(IETags.clay),
-				makeIngredient(IETags.fiberHemp),
-				makeIngredient(IETags.clay),
-				has(IETags.fiberHemp), out);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.HEMPCRETE, 8)
+			.pattern("scs")
+			.pattern("tbt")
+			.pattern("scs")
+			.define('s', Tags.Items.SAND)
+			.define('c', IETags.clay)
+			.define('t', Ingredients.HEMP_FABRIC)
+			.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
+			.unlockedBy("has_clay", has(IETags.clay))
+			.save(new WrappingRecipeOutput<ShapedRecipe>(
+				out, r -> new TurnAndCopyRecipe(r, List.of()).allowQuarterTurn()
+			), toRL("hempcrete"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.HEMPCRETE_BRICK, 4)
 				.pattern("hh")
 				.pattern("hh")

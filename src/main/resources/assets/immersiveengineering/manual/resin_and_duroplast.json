@@ -7,6 +7,17 @@
       }
     ]
   },
+  "duroplast": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:duroplast"
+      },
+      {
+        "item": "immersiveengineering:plate_duroplast"
+      }
+    ]
+  },
   "duroplast_sheet": {
     "type": "bottling",
     "recipe": {

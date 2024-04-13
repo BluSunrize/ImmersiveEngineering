@@ -8,16 +8,15 @@
       "treated_wood",
       "industrial_dyes",
       "crafting_components",
-      "coke_graphite",
+      "coke_and_graphite",
       "resin_and_duroplast"
     ]
   },
-  "workbenches_storage": {
+  "storage_transport": {
     "category_weight": 10,
     "entry_list": [
-      "engineers_crafting_table",
-      "engineers_workbench",
-      "blueprints",
+      "storage_crates",
+      "storage_barrels",
       "silo",
       "tank"
     ]
@@ -25,17 +24,20 @@
   "construction": {
     "category_weight": 20,
     "entry_list": [
-      "concrete",
-      "balloon",
-      "engineered_lighting"
+      "concrete_and_hempcrete",
+      "posts",
+      "engineered_lighting",
+      "balloon"
     ]
   },
   "electrical_grids": {
     "category_weight": 30,
     "entry_list": [
       "basic_wiring",
+      "transformers",
+      "feedthrough_insulators",
       "accumulators",
-      "breaker_switch",
+      "circuit_breakers",
       "redstone_wiring",
       "current_transformer",
       "kinetic_generators",

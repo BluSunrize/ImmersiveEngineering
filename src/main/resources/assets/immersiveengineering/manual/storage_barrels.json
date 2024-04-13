@@ -1,0 +1,10 @@
+{
+  "wooden_barrel": {
+    "type": "crafting",
+    "recipe": "crafting/wooden_barrel"
+  },
+  "metal_barrel": {
+    "type": "crafting",
+    "recipe": "crafting/metal_barrel"
+  }
+}

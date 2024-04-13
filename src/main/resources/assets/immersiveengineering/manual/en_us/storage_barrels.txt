@@ -1,0 +1,6 @@
+Storage Barrels
+Doesn't roll
+<&wooden_barrel>Wooden Barrels are simple containers that can store up to 12 buckets of liquid, but not gasses or hot fluids.<br>
+Right-clicking the vertical sides of the barrel with the Engineer's Hammer will configure them.<np>
+<&metal_barrel>Metal Barrels are identical to their wooden counterparts, other than the material of their construction.<br>
+Metal barrels may store hot fluids as well as gasses, and their automatic output can be disabled by a redstone signal.

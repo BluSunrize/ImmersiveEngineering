@@ -1,4 +1,4 @@
-Coke & Graphite
+Coke and Graphite
 Coal stuff
 <&coke>Coal Coke is a purified form of carbon similar to charcoal. Coke is created from coal in the <link;coke_oven;Coke Oven>.<br>
 It is used in steelmaking of all forms, from the <link;crude_blast_furnace;simplest> to the <link;arc_furnace;most advanced>, and is a better furnace fuel than coal.
