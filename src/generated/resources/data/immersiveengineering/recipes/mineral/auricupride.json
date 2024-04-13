@@ -1,19 +1,21 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:overworld"
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ]
   ],
   "fail_chance": 0.1,
   "ores": [
     {
-      "chance": 0.75,
+      "chance": 0.7,
       "conditions": [],
       "output": {
         "tag": "forge:ores/copper"
       }
     },
     {
-      "chance": 0.25,
+      "chance": 0.3,
       "conditions": [],
       "output": {
         "tag": "forge:ores/gold"
@@ -46,5 +48,5 @@
       }
     }
   ],
-  "weight": 30
+  "weight": 20
 }

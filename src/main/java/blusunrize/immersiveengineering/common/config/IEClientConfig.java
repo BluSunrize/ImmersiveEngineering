@@ -78,7 +78,7 @@ public class IEClientConfig
 				.define("fluidFractions", true);
 		tagTooltips = builder
 				.comment("Controls if item tooltips should contain the tags names of items. These tooltips are only visible in advanced tooltip mode (F3+H)")
-				.define("tagTooltips", true);
+				.define("tagTooltips", false);
 		increasedTileRenderdistance = builder
 				.comment("Increase the distance at which certain TileEntities (specifically windmills) are still visible. This is a modifier, so set it to 1 for default render distance, to 2 for doubled distance and so on.")
 				.defineInRange("increasedTileRenderdistance", 1.5, 0, Double.MAX_VALUE);

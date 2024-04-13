@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "immersiveengineering:block/stone_decoration/hempcrete4"
+    "all": "immersiveengineering:block/stone_decoration/hempcrete/hempcrete4"
   }
 }

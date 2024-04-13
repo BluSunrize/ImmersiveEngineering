@@ -36,18 +36,25 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.ibm.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class IEBlockTags extends BlockTagsProvider
 {
@@ -87,6 +94,19 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(Blocks.CUT_RED_SANDSTONE)
 				.add(Blocks.CHISELED_RED_SANDSTONE)
 				.add(Blocks.SMOOTH_RED_SANDSTONE);
+		tag(IETags.copperBlocks)
+				.add(Blocks.COPPER_BLOCK, Blocks.EXPOSED_COPPER, Blocks.WEATHERED_COPPER, Blocks.OXIDIZED_COPPER)
+				.add(Blocks.WAXED_COPPER_BLOCK, Blocks.WAXED_EXPOSED_COPPER, Blocks.WAXED_WEATHERED_COPPER, Blocks.WAXED_OXIDIZED_COPPER);
+		tag(IETags.cutCopperBlocks)
+				.add(Blocks.CUT_COPPER, Blocks.EXPOSED_CUT_COPPER, Blocks.WEATHERED_CUT_COPPER, Blocks.OXIDIZED_CUT_COPPER)
+				.add(Blocks.WAXED_CUT_COPPER, Blocks.WAXED_EXPOSED_CUT_COPPER, Blocks.WAXED_WEATHERED_CUT_COPPER, Blocks.WAXED_OXIDIZED_CUT_COPPER);
+		tag(IETags.cutCopperStairs)
+				.add(Blocks.CUT_COPPER_STAIRS, Blocks.EXPOSED_CUT_COPPER_STAIRS, Blocks.WEATHERED_CUT_COPPER_STAIRS, Blocks.OXIDIZED_CUT_COPPER_STAIRS)
+				.add(Blocks.WAXED_CUT_COPPER_STAIRS, Blocks.WAXED_EXPOSED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS, Blocks.WAXED_OXIDIZED_CUT_COPPER_STAIRS);
+		tag(IETags.cutCopperSlabs)
+				.add(Blocks.CUT_COPPER_SLAB, Blocks.EXPOSED_CUT_COPPER_SLAB, Blocks.WEATHERED_CUT_COPPER_SLAB, Blocks.OXIDIZED_CUT_COPPER_SLAB)
+				.add(Blocks.WAXED_CUT_COPPER_SLAB, Blocks.WAXED_EXPOSED_CUT_COPPER_SLAB, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB, Blocks.WAXED_OXIDIZED_CUT_COPPER_SLAB);
+
 		for(BlockEntry<MetalLadderBlock> b : MetalDecoration.METAL_LADDER.values())
 			tag(BlockTags.CLIMBABLE).add(b.get());
 		for(EnumMetals metal : EnumMetals.values())
@@ -149,6 +169,18 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
+		//Add parity tags to gravel & sand for IE similar blocks
+		tag(BlockTags.BAMBOO_PLANTABLE_ON)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.SCULK_REPLACEABLE)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.AZALEA_ROOT_REPLACEABLE)
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
+		tag(BlockTags.DEAD_BUSH_MAY_PLACE_ON)
+				.add(StoneDecoration.GRIT_SAND.get());
 		tag(IETags.concreteForFeet)
 				.add(StoneDecoration.CONCRETE.get())
 				.add(StoneDecoration.CONCRETE_TILE.get())
@@ -166,7 +198,8 @@ public class IEBlockTags extends BlockTagsProvider
 		registerAxeMineable();
 		tag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.add(WoodenDecoration.SAWDUST.get())
-				.add(StoneDecoration.SLAG_GRAVEL.get());
+				.add(StoneDecoration.SLAG_GRAVEL.get())
+				.add(StoneDecoration.GRIT_SAND.get());
 		tag(IETags.wirecutterHarvestable)
 				.add(MetalDevices.RAZOR_WIRE.get());
 		tag(IETags.drillHarvestable)
@@ -191,6 +224,8 @@ public class IEBlockTags extends BlockTagsProvider
 			tag(BlockTags.SLABS).add(slab.get());
 		for(BlockEntry<?> stairs : IEBlocks.TO_STAIRS.values())
 			tag(BlockTags.STAIRS).add(stairs.get());
+		for(BlockEntry<?> stairs : IEBlocks.TO_WALL.values())
+			tag(BlockTags.WALLS).add(stairs.get());
 
 		/* MOD COMPAT STARTS HERE */
 
@@ -233,25 +268,53 @@ public class IEBlockTags extends BlockTagsProvider
 		}
 	}
 
-	// TODO rockcutter and grinding disk tags are nowhere near complete at this point, they were determined based on
-	//  block material in <=1.19.4
 	private void registerRockcutterMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(IETags.rockcutterHarvestable);
+		// stones & ores
 		tag.addTag(Tags.Blocks.COBBLESTONE);
 		tag.addTag(Tags.Blocks.STONE);
+		tag.addTag(Tags.Blocks.ORES);
+		// glass, ice, glowing blocks
 		tag.addTag(Tags.Blocks.GLASS);
 		tag.addTag(BlockTags.ICE);
-		tag.addTag(Tags.Blocks.ORES);
+		tag.add(Blocks.GLOWSTONE);
+		tag.add(Blocks.SEA_LANTERN);
+		// enderchest
+		tag.addTag(Tags.Blocks.CHESTS_ENDER);
+		// skulk, but intentionally only some of them
+		tag.add(Blocks.SCULK, Blocks.SCULK_CATALYST, Blocks.SCULK_SENSOR, Blocks.CALIBRATED_SCULK_SENSOR);
 	}
 
 	private void registerGrindingDiskMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(IETags.grindingDiskHarvestable);
+		// storage and sheetmetal
 		tag.addTag(Tags.Blocks.STORAGE_BLOCKS);
 		tag.addTag(IETags.sheetmetals);
+		// storage and sheetmetal slabs
+		for(EnumMetals metal : EnumMetals.values())
+			if(!metal.isVanillaMetal())
+				tag.add(IEBlocks.TO_SLAB.get(Metals.STORAGE.get(metal).getId()).get());
+		tag.addTag(IETags.sheetmetalSlabs);
+		// copper
+		tag.addTag(IETags.copperBlocks);
+		tag.addTag(IETags.cutCopperBlocks);
+		tag.addTag(IETags.cutCopperSlabs);
+		tag.addTag(IETags.cutCopperStairs);
+		// scaffolding
 		tag.addTag(IETags.scaffoldingSteel);
 		tag.addTag(IETags.scaffoldingAlu);
+		tag.add(MetalDecoration.ALU_FENCE.get(), MetalDecoration.ALU_POST.get(), MetalDecoration.ALU_WALLMOUNT.get(), MetalDecoration.ALU_SLOPE.get());
+		tag.add(MetalDecoration.STEEL_FENCE.get(), MetalDecoration.STEEL_POST.get(), MetalDecoration.STEEL_WALLMOUNT.get(), MetalDecoration.STEEL_SLOPE.get());
+		MetalDecoration.METAL_LADDER.values().forEach(entry -> tag.add(entry.get()));
+		// chutes
+		MetalDevices.CHUTES.values().forEach(entry -> tag.add(entry.get()));
+		// fluid machines
+		tag.add(MetalDevices.BARREL.get(), MetalDevices.FLUID_PUMP.get(), MetalDevices.FLUID_PIPE.get(), MetalDevices.FLUID_PLACER.get());
+		// multiblock components
+		tag.add(MetalDecoration.LV_COIL.get(), MetalDecoration.MV_COIL.get(), MetalDecoration.MV_COIL.get());
+		tag.add(MetalDecoration.ENGINEERING_RS.get(), MetalDecoration.ENGINEERING_LIGHT.get(), MetalDecoration.ENGINEERING_HEAVY.get(), MetalDecoration.RADIATOR.get(), MetalDecoration.GENERATOR.get());
 	}
 
 	private void registerAxeMineable()
@@ -314,6 +377,9 @@ public class IEBlockTags extends BlockTagsProvider
 			BlockEntry<?> stairs = IEBlocks.TO_STAIRS.get(entry.getId());
 			if(stairs!=null)
 				tag.add(stairs.get());
+			BlockEntry<?> wall = IEBlocks.TO_WALL.get(entry.getId());
+			if(wall!=null)
+				tag.add(wall.get());
 		}
 	}
 
@@ -350,6 +416,10 @@ public class IEBlockTags extends BlockTagsProvider
 				StoneDecoration.COKEBRICK,
 				StoneDecoration.BLASTBRICK,
 				StoneDecoration.BLASTBRICK_REINFORCED,
+				StoneDecoration.SLAG_BRICK,
+				StoneDecoration.CLINKER_BRICK,
+				StoneDecoration.CLINKER_BRICK_QUOIN,
+				StoneDecoration.CLINKER_BRICK_SILL,
 				StoneDecoration.COKE,
 				StoneDecoration.HEMPCRETE,
 				StoneDecoration.HEMPCRETE_BRICK,
@@ -470,12 +540,12 @@ public class IEBlockTags extends BlockTagsProvider
 	private void setMiningLevel(Supplier<Block> block, Tiers level)
 	{
 		TagKey<Block> tag = switch(level)
-		{
-			case STONE -> BlockTags.NEEDS_STONE_TOOL;
-			case IRON -> BlockTags.NEEDS_IRON_TOOL;
-			case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
-			default -> throw new IllegalArgumentException("No tag available for "+level.name());
-		};
+				{
+					case STONE -> BlockTags.NEEDS_STONE_TOOL;
+					case IRON -> BlockTags.NEEDS_IRON_TOOL;
+					case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
+					default -> throw new IllegalArgumentException("No tag available for "+level.name());
+				};
 		tag(tag).add(block.get());
 	}
 

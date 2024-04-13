@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "immersiveengineering:block/metal/sheetmetal_aluminum"
-  }
+  "parent": "immersiveengineering:block/sheetmetal_aluminum"
 }

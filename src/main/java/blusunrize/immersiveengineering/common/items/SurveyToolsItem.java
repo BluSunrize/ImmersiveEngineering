@@ -55,10 +55,14 @@ public class SurveyToolsItem extends IEBaseItem
 		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(IETags.surveyToolTargets));
 		// Stone, Diorite, Andesite, etc.
 		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(Tags.Blocks.STONE));
-		// Stone, Diorite, Andesite, etc.
+		// Nether materials
 		CAN_USE_ON.add((world, pos) -> {
-			Block block = world.getBlockState(pos).getBlock();
-			return block==Blocks.BLACKSTONE||block==Blocks.BASALT;
+			BlockState state = world.getBlockState(pos);
+			Block block = state.getBlock();
+			return state.is(Tags.Blocks.NETHERRACK)
+					||block==Blocks.SOUL_SAND
+					||block==Blocks.BLACKSTONE
+					||block==Blocks.BASALT;
 		});
 		// soft rocks
 		CAN_USE_ON.add((world, pos) -> {
@@ -104,7 +108,7 @@ public class SurveyToolsItem extends IEBaseItem
 		BlockHitResult rtr = getPlayerPOVHitResult(world, player, Fluid.NONE);
 		BlockPos pos = rtr.getBlockPos();
 		MineralVein vein = ExcavatorHandler.getRandomMineral(world, pos);
-		if(vein==null || vein.getMineral(world)==null)
+		if(vein==null||vein.getMineral(world)==null)
 		{
 			player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"survey.no_vein"), true);
 			return stack;

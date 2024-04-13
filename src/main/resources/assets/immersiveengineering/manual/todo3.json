@@ -14,5 +14,22 @@
         "item": "immersiveengineering:slag_glass"
       }
     ]
+  },
+  "slag_bricks": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:slag_brick"
+      },
+      {
+        "item": "immersiveengineering:stairs_slag_brick"
+      },
+      {
+        "item": "immersiveengineering:wall_slag_brick"
+      },
+      {
+        "item": "immersiveengineering:slab_slag_brick"
+      }
+    ]
   }
 }

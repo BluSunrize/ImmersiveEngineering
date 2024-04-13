@@ -1,26 +1,31 @@
 {
   "type": "immersiveengineering:mineral_mix",
-  "dimensions": [
-    "minecraft:overworld"
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "minecraft:is_mountain"
+    ]
   ],
   "fail_chance": 0.05,
   "ores": [
     {
-      "chance": 0.35,
+      "chance": 0.5,
       "conditions": [],
       "output": {
         "tag": "forge:ores/iron"
       }
     },
     {
-      "chance": 0.35,
+      "chance": 0.45,
       "conditions": [],
       "output": {
         "tag": "forge:ores/copper"
       }
     },
     {
-      "chance": 0.3,
+      "chance": 0.05,
       "conditions": [],
       "output": {
         "tag": "forge:dusts/sulfur"
@@ -53,5 +58,5 @@
       }
     }
   ],
-  "weight": 20
+  "weight": 25
 }

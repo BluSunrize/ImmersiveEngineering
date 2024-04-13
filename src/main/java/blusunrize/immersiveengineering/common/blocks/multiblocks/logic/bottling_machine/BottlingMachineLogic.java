@@ -145,7 +145,7 @@ public class BottlingMachineLogic
 		if(recipe==null)
 		{
 			ItemStack inputItem = ItemHandlerHelper.copyStackWithSize(stacks[0], 1);
-			displayStacks = Utils.createNonNullItemStackListFromItemStack(stacks[0]);
+			displayStacks = Utils.createNonNullItemStackListFromItemStack(inputItem);
 			process = new BottlingProcess(inputItem, inputItem.copy(), state);
 		}
 		else

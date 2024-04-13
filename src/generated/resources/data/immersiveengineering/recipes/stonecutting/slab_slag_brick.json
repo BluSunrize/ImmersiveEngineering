@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "immersiveengineering:slag_brick"
+  },
+  "result": "immersiveengineering:slab_slag_brick"
+}

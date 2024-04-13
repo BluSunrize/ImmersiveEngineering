@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
 import javax.annotation.Nullable;
@@ -62,17 +63,18 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorMod
 	@Override
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context, @Nullable RenderType renderType)
 	{
-		if(renderType==null||renderType==RenderType.translucent())
-			addCoverToQuads(baseModel, context);
+		addCoverToQuads(baseModel, context, renderType);
 		return baseModel;
 	}
 
-	protected void addCoverToQuads(List<BakedQuad> baseModel, RenderContext<T> context)
+	protected void addCoverToQuads(List<BakedQuad> baseModel, RenderContext<T> context, @Nullable RenderType type)
 	{
-		Block b = context.getCover();
-		if(b==Blocks.AIR)
+		Block cover = context.getCover();
+		if(cover==Blocks.AIR)
 			return;
-		Function<Direction, TextureAtlasSprite> getSprite = makeTextureGetter(b);
+		Function<Direction, TextureAtlasSprite> getSprite = makeCoverTextureGetter(cover, type);
+		if(getSprite==null)
+			return;
 		Direction facing = context.getFacing();
 		ConveyorDirection conDir = context.getConveyorDirection();
 
@@ -107,10 +109,19 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorMod
 		}
 	}
 
-	protected static Function<Direction, TextureAtlasSprite> makeTextureGetter(Block b)
+	@Nullable
+	protected static Function<Direction, TextureAtlasSprite> makeCoverTextureGetter(
+			Block cover, @Nullable RenderType layer
+	)
 	{
-		BlockState state = b.defaultBlockState();
+		BlockState state = cover.defaultBlockState();
 		BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
+		if(layer!=null)
+		{
+			final ChunkRenderTypeSet modelLayers = model.getRenderTypes(state, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY);
+			if(modelLayers.isEmpty()||modelLayers.iterator().next()!=layer)
+				return null;
+		}
 		TextureAtlasSprite sprite = model.getParticleIcon(ModelData.EMPTY);
 		Map<Direction, TextureAtlasSprite> sprites = new EnumMap<>(Direction.class);
 

@@ -142,6 +142,6 @@ public class SawmillRecipeManager implements IRecipeManager<SawmillRecipe>
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, IIngredient input, int energy, IItemStack output, IItemStack[] outputSecondaries)
 	{
-		addRecipe(recipePath, input, energy, MCItemStack.EMPTY.get(), new IItemStack[0], output, outputSecondaries);
+		addRecipe(recipePath, input, energy, IItemStack.empty(), new IItemStack[0], output, outputSecondaries);
 	}
 }

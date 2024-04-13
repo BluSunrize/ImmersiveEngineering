@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data.recipes;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -161,6 +162,17 @@ public abstract class IERecipeProvider extends RecipeProvider
 				.pattern("bbb")
 				.unlockedBy("has_item", condition)
 				.save(out, toRL(toPath(output)));
+	}
+
+	protected void addWall(ItemLike block, RecipeOutput out)
+	{
+		ItemLike wall = IEBlocks.TO_WALL.get(BuiltInRegistries.ITEM.getKey(block.asItem()));
+		shapedMisc(wall, 6)
+				.define('s', block)
+				.pattern("sss")
+				.pattern("sss")
+				.unlockedBy("has_"+toPath(block), has(block))
+				.save(out, toRL(toPath(wall)));
 	}
 
 	protected void addStonecuttingRecipe(ItemLike input, ItemLike output, RecipeOutput out)

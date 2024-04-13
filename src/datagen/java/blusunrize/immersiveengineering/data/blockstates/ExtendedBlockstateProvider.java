@@ -8,9 +8,11 @@
 
 package blusunrize.immersiveengineering.data.blockstates;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEStairsBlock;
+import blusunrize.immersiveengineering.common.blocks.IEWallBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.data.DataGenUtils;
 import blusunrize.immersiveengineering.data.models.*;
@@ -30,10 +32,8 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.state.properties.Half;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.block.state.properties.SlabType;
-import net.minecraft.world.level.block.state.properties.StairsShape;
+import net.minecraft.world.level.block.WallBlock;
+import net.minecraft.world.level.block.state.properties.*;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import net.neoforged.neoforge.client.model.generators.loaders.ObjModelBuilder;
@@ -41,7 +41,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,6 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class ExtendedBlockstateProvider extends BlockStateProvider
@@ -295,6 +293,72 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 				}, StairBlock.WATERLOGGED);
 	}
 
+	protected void wallForMultiEight(Supplier<? extends Block> b, ResourceLocation bottomTexture, ResourceLocation sideTexture, ResourceLocation topTexture)
+	{
+		ResourceLocation[] bottomTextures = new ResourceLocation[8];
+		ResourceLocation[] sideTextures = new ResourceLocation[8];
+		ResourceLocation[] topTextures = new ResourceLocation[8];
+		for (int i=0;i<8;i++)
+		{
+			bottomTextures[i] = new ResourceLocation(bottomTexture.toString()+i);
+			sideTextures[i] = new ResourceLocation(sideTexture.toString()+i);
+			topTextures[i] = new ResourceLocation(topTexture.toString()+i);
+		}
+		wallForMultiMany(b, bottomTextures, sideTextures, topTextures);
+	}
+
+	protected void wallForMultiMany(Supplier<? extends Block> b, ResourceLocation[] bottomTextures, ResourceLocation[] sideTextures, ResourceLocation[] topTextures)
+	{
+		wallForMultiMany(b, null, bottomTextures, sideTextures, topTextures);
+	}
+
+	protected void wallForMultiMany(Supplier<? extends Block> full, @Nullable RenderType layer, ResourceLocation[] bottomTextures, ResourceLocation[] sideTextures, ResourceLocation[] topTextures)
+	{
+		final IEWallBlock b = IEBlocks.TO_WALL.get(BuiltInRegistries.BLOCK.getKey(full.get())).get();
+
+		final ModelBuilder<?>[] wallPost = new ModelBuilder<?>[bottomTextures.length];
+		final ModelBuilder<?>[] wallSide = new ModelBuilder<?>[bottomTextures.length];
+		final ModelBuilder<?>[] wallSideTall = new ModelBuilder<?>[bottomTextures.length];
+		for (int i=0;i<bottomTextures.length;i++)
+		{
+			wallPost[i]=wallModelTopped(name(b)+i+"_post", "wall_post_topped", bottomTextures[i], sideTextures[i], topTextures[i]);
+			wallSide[i]=wallModelTopped(name(b)+i+"_side", "wall_side_topped", bottomTextures[i], sideTextures[i], topTextures[i]);
+			wallSideTall[i]=wallModelTopped(name(b)+i+"_side_tall", "wall_side_tall_topped", bottomTextures[i], sideTextures[i], topTextures[i]);
+			setRenderType(layer, wallPost[i], wallSide[i], wallSideTall[i]);
+		}
+
+		wallBlock(b, wallPost, wallSide, wallSideTall);
+		itemModel(() -> b, wallModelToppedInventory(name(b), bottomTextures[0], sideTextures[0], topTextures[0]));
+	}
+
+	//Forge method does not allow random textures for walls, instead creating ConfiguredModel directly from input file
+	public void wallBlock(WallBlock block, ModelFile[] posts, ModelFile[] sides, ModelFile[] sidesTall) {
+		for (int i=0;i<posts.length;i++)
+		{
+			ModelFile side = sides[i];
+			ModelFile sideTall = sidesTall[i];
+			MultiPartBlockStateBuilder builder = getMultipartBuilder(block)
+					.part().modelFile(posts[i]).addModel()
+					.condition(WallBlock.UP, true).end();
+			WALL_PROPS.entrySet().stream()
+					.filter(e -> e.getKey().getAxis().isHorizontal())
+					.forEach(e -> {
+						wallSidePart(builder, side, e, WallSide.LOW);
+						wallSidePart(builder, sideTall, e, WallSide.TALL);
+					});
+		}
+	}
+
+	//This method is private in BlockStateProvider & we need access to it
+	private void wallSidePart(MultiPartBlockStateBuilder builder, ModelFile model, Map.Entry<Direction, Property<WallSide>> entry, WallSide height) {
+		builder.part()
+				.modelFile(model)
+				.rotationY((((int) entry.getKey().toYRot()) + 180) % 360)
+				.uvLock(true)
+				.addModel()
+				.condition(entry.getValue(), height);
+	}
+
 	protected void setRenderType(@Nullable RenderType type, ModelBuilder<?>... builders)
 	{
 		if(type!=null)
@@ -318,6 +382,22 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	protected void itemModel(Supplier<? extends Block> block, ModelFile model)
 	{
 		itemModels().getBuilder(name(block)).parent(model);
+	}
+
+	protected BlockModelBuilder wallModelTopped(String name, String type, ResourceLocation bottom, ResourceLocation side, ResourceLocation top)
+	{
+		return models().withExistingParent(name, ImmersiveEngineering.rl("block/"+type))
+				.texture("wall_bottom", bottom)
+				.texture("wall_side", side)
+				.texture("wall_top", top);
+	}
+
+	protected BlockModelBuilder wallModelToppedInventory(String name, ResourceLocation bottom, ResourceLocation side, ResourceLocation top)
+	{
+		return models().withExistingParent(name, ImmersiveEngineering.rl("block/wall_inventory_topped"))
+				.texture("wall_bottom", bottom)
+				.texture("wall_side", side)
+				.texture("wall_top", top);
 	}
 
 	protected NongeneratedModel innerObj(String loc, @Nullable RenderType layer)

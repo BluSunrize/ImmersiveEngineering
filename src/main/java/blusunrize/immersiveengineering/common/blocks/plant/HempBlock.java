@@ -32,7 +32,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.NeoForgeConfig.Common;
 
 import java.util.function.Supplier;
 
@@ -111,6 +110,8 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 	private boolean canGrowTop(LevelReader world, BlockPos pos, BlockState state)
 	{
 		if(state.getValue(TOP))
+			return false;
+		if(!world.isEmptyBlock(pos.above()))
 			return false;
 		return !world.getBlockState(pos.above()).getBlock().equals(this);
 	}

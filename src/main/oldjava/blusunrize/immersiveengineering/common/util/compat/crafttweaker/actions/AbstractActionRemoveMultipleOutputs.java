@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions;
 
+import blusunrize.immersiveengineering.api.Lib;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.MCItemStackMutable;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
@@ -24,6 +25,12 @@ public abstract class AbstractActionRemoveMultipleOutputs<T extends Recipe<?>> e
 	{
 		super(manager, output);
 		this.output = output;
+	}
+
+	@Override
+	public String systemName()
+	{
+		return Lib.MODID;
 	}
 
 	@Override

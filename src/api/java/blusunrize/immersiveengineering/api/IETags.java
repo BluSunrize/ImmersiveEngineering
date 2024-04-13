@@ -15,6 +15,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags.Blocks;
@@ -57,9 +58,11 @@ public class IETags
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final TagKey<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
 	public static final TagKey<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
-	public static final TagKey<Item> cutCopperBlocks = createItemWrapper(rl("cut_blocks/copper"));
-	public static final TagKey<Item> cutCopperStairs = createItemWrapper(rl("cut_stairs/copper"));
-	public static final TagKey<Item> cutCopperSlabs = createItemWrapper(rl("cut_slabs/copper"));
+	public static final TagKey<Block> copperBlocks = createBlockTag(rl("blocks/copper"));
+	public static final TagKey<Block> cutCopperBlocks = createBlockTag(rl("cut_blocks/copper"));
+
+	public static final TagKey<Block> cutCopperStairs = createBlockTag(rl("cut_stairs/copper"));
+	public static final TagKey<Block> cutCopperSlabs = createBlockTag(rl("cut_slabs/copper"));
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
@@ -80,7 +83,7 @@ public class IETags
 	public static final TagKey<Item> steelRod = createItemWrapper(getRod("steel"));
 	public static final TagKey<Item> metalRods = createItemWrapper(getRod("all_metal"));
 	public static final TagKey<Item> aluminumRod = createItemWrapper(getRod("aluminum"));
-	public static final TagKey<Item> seedsHemp = createItemWrapper(getRod("seeds/hemp"));
+	public static final TagKey<Item> seedsHemp = createItemWrapper(forgeLoc("seeds/hemp"));
 	public static final TagKey<Item> fiberHemp = createItemWrapper(forgeLoc("fiber_hemp"));
 	public static final TagKey<Item> fabricHemp = createItemWrapper(forgeLoc("fabric_hemp"));
 	public static final TagKey<Item> coalCoke = createItemWrapper(forgeLoc("coal_coke"));
@@ -147,6 +150,10 @@ public class IETags
 
 	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(rl("shaderbag/whitelist"));
 	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(rl("shaderbag/blacklist"));
+
+	public static final TagKey<Biome> is_swamp = createBiomeWrapper(forgeLoc("is_swamp"));
+	public static final TagKey<Biome> generateClaypan = createBiomeWrapper(rl("generate_hardened_clay_pan"));
+	public static final TagKey<Biome> generateSeabed = createBiomeWrapper(rl("generate_ancient_seabed"));
 
 	static
 	{

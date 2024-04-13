@@ -16,10 +16,8 @@ body:
 
         *If your version does not show up here, support for it has been ended.*
       options:
-        - '1.19.2'
-        - '1.19.3'
-        - '1.19.4'
         - '1.20.1'
+        - '1.20.4'
     validations:
       required: true
 

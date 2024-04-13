@@ -13,18 +13,21 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class MineralMix extends IESerializableRecipe
 {
@@ -36,18 +39,18 @@ public class MineralMix extends IESerializableRecipe
 	public final List<StackWithChance> spoils;
 	public final int weight;
 	public final float failChance;
-	public final ImmutableSet<ResourceKey<DimensionType>> dimensions;
+	public final ImmutableSet<BiomeTagPredicate> biomeTagPredicates;
 	public final Block background;
 
 	public MineralMix(List<StackWithChance> outputs, List<StackWithChance> spoils, int weight,
-					  float failChance, List<ResourceKey<DimensionType>> dimensions, Block background)
+					  float failChance, Collection<BiomeTagPredicate> biomeTagPredicates, Block background)
 	{
 		super(TagOutput.EMPTY, IERecipeTypes.MINERAL_MIX);
 		this.weight = weight;
 		this.failChance = failChance;
 		this.outputs = outputs;
 		this.spoils = spoils;
-		this.dimensions = ImmutableSet.copyOf(dimensions);
+		this.biomeTagPredicates = ImmutableSet.copyOf(biomeTagPredicates);
 		this.background = background;
 	}
 
@@ -100,10 +103,30 @@ public class MineralMix extends IESerializableRecipe
 		return ItemStack.EMPTY;
 	}
 
-	public boolean validDimension(ResourceKey<DimensionType> dim)
+	public boolean validBiome(Holder<Biome> biome)
 	{
-		if(dimensions!=null&&!dimensions.isEmpty())
-			return dimensions.contains(dim);
-		return true;
+		if(biomeTagPredicates.isEmpty())
+			return true;
+		return biomeTagPredicates.stream().allMatch(
+				predicate -> predicate.test(biome)
+		);
+	}
+
+	/**
+	 * A predicate for checking a biome against multiple tags.
+	 * Returns true if ANY of the tags match.
+	 */
+	public record BiomeTagPredicate(Set<TagKey<Biome>> tags) implements Predicate<Holder<Biome>>
+	{
+		public BiomeTagPredicate(TagKey<Biome> singular)
+		{
+			this(ImmutableSet.of(singular));
+		}
+
+		@Override
+		public boolean test(Holder<Biome> biomeHolder)
+		{
+			return this.tags().stream().anyMatch(biomeHolder::is);
+		}
 	}
 }

@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "count": 2,
+  "ingredient": {
+    "item": "immersiveengineering:clinker_brick"
+  },
+  "result": "immersiveengineering:slab_clinker_brick"
+}

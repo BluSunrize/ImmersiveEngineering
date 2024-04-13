@@ -84,7 +84,8 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);
 
-		tag(net.minecraft.tags.ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
+		tag(ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
+		tag(ItemTags.BOOKSHELF_BOOKS).add(Tools.MANUAL.get());
 		tag(Tags.Items.SEEDS).add(Misc.HEMP_SEEDS.get());
 		tag(IETags.seedsHemp).add(Misc.HEMP_SEEDS.get());
 		tag(Tags.Items.RODS_WOODEN).add(Ingredients.STICK_TREATED.get());
@@ -130,12 +131,6 @@ public class IEItemTags extends ItemTagsProvider
 				.addTag(ItemTags.TERRACOTTA)
 				.add(IEBlocks.StoneDecoration.DUROPLAST.asItem());
 		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
-		tag(IETags.cutCopperBlocks).add(Items.CUT_COPPER, Items.EXPOSED_CUT_COPPER, Items.WEATHERED_CUT_COPPER, Items.OXIDIZED_CUT_COPPER,
-				Items.WAXED_CUT_COPPER, Items.WAXED_EXPOSED_CUT_COPPER, Items.WAXED_WEATHERED_CUT_COPPER, Items.WAXED_OXIDIZED_CUT_COPPER);
-		tag(IETags.cutCopperStairs).add(Items.CUT_COPPER_STAIRS, Items.EXPOSED_CUT_COPPER_STAIRS, Items.WEATHERED_CUT_COPPER_STAIRS, Items.OXIDIZED_CUT_COPPER_STAIRS,
-				Items.WAXED_CUT_COPPER_STAIRS, Items.WAXED_EXPOSED_CUT_COPPER_STAIRS, Items.WAXED_WEATHERED_CUT_COPPER_STAIRS, Items.WAXED_OXIDIZED_CUT_COPPER_STAIRS);
-		tag(IETags.cutCopperSlabs).add(Items.CUT_COPPER_SLAB, Items.EXPOSED_CUT_COPPER_SLAB, Items.WEATHERED_CUT_COPPER_SLAB, Items.OXIDIZED_CUT_COPPER_SLAB,
-				Items.WAXED_CUT_COPPER_SLAB, Items.WAXED_EXPOSED_CUT_COPPER_SLAB, Items.WAXED_WEATHERED_CUT_COPPER_SLAB, Items.WAXED_OXIDIZED_CUT_COPPER_SLAB);
 
 		generateTagsForToolbox();
 		tag(IETags.tools)
@@ -148,6 +143,7 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.hoes).add(Tools.STEEL_HOE.get());
 		tag(IETags.axes).add(Tools.STEEL_AXE.get());
 		tag(IETags.swords).add(Tools.STEEL_SWORD.get());
+		tag(Tags.Items.TOOLS_SHIELDS).add(Misc.SHIELD.get());
 
 		for(var slot : ArmorItem.Type.values())
 		{

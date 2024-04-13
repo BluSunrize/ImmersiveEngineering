@@ -112,21 +112,22 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 					));
 			}
 		}
-		if(renderType==null||renderType==RenderType.translucent())
-			addCoverQuads(baseModel, context, walls);
+		addCoverQuads(baseModel, context, walls, renderType);
 		return baseModel;
 	}
 
-	private void addCoverQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context, boolean[] walls)
+	private void addCoverQuads(
+			List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context, boolean[] walls, RenderType type
+	)
 	{
-		Block b = context.getCover();
-		if(b==Blocks.AIR)
+		Block cover = context.getCover();
+		if(cover==Blocks.AIR)
 			return;
 		Direction facing = context.getFacing();
 		VerticalConveyor conveyor = context.instance();
 		BlockEntity blockEntity = conveyor!=null?conveyor.getBlockEntity(): null;
 		boolean renderBottom = conveyor!=null&&VerticalConveyor.renderBottomBelt(blockEntity, facing);
-		Function<Direction, TextureAtlasSprite> getSprite = makeTextureGetter(b);
+		Function<Direction, TextureAtlasSprite> getSprite = makeCoverTextureGetter(cover, type);
 		float[] colour = {1, 1, 1, 1};
 		Matrix4 matrix = new Matrix4(facing);
 
