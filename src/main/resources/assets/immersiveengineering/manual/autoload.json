@@ -18,6 +18,7 @@
       "storage_crates",
       "storage_barrels",
       "conveyor_belts",
+      "strip_curtains",
       "chutes",
       "item_router",
       "item_batcher",
@@ -30,7 +31,8 @@
   "construction": {
     "category_weight": 20,
     "entry_list": [
-      "concrete_and_hempcrete",
+      "concrete",
+      "hempcrete",
       "posts",
       "engineered_lighting",
       "balloon"

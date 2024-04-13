@@ -1,4 +1,4 @@
-Concrete and Hempcrete
+Concrete
 Fortress Material
 <&recipe>Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for crushed excess <link;industrial_byproducts;slag;slag> produced by making steel.
 <&brick>Concrete can be cut and assembled into various bricks and pillars using the §2Stonecutter§r.<br>
@@ -10,5 +10,3 @@ You can also use that machine to make slabs and stairs of concrete, as well as c
 Multiple buckets can be used to fill a larger area by placing it at key locations.
 Note that if it spreads too thin, the liquid will dry into slabs instead of full blocks.<br>
 If the concrete dries while a creature is standing in it, they will be trapped and unable to move. You can also fill a <link;chemical_thrower;Chemical Thrower> with liquid concrete in order to create improvised platforms or immobilize enemies.
-<&hempcrete>Hempcrete is a fibrous, weaker variant of concrete with higher insulation potential.<br>
-Hempcrete can be cut into the same kinds of bricks as <link;concrete_and_hempcrete;Concrete;brick> can, but cannot be cut into slices or other specialty constructs.
