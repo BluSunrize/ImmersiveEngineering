@@ -1,0 +1,13 @@
+Sulfur and Nitrate
+Explosions & Growth
+§lSulfur Dust§r is a powder found in certain ores and commonly in <link;minerals;Mineral Deposits>. It can be found occasionally by <link;crusher;crushing> §2Lapis Lazuli§r or §2Coal Ore§r blocks and more commonly in §2Nether Quartz Ore§r. It can also be extracted from §2Blaze Rods§r.
+
+§lNitrate Dust§r (also known as saltpeter) is mixture of alkali salts found by processing §2Sandstone§r in a <link;crusher;Crusher>.
+<&fertilizer>
+Sulfur, slag, and nitrate by themselves are a small boost to growing crops in the <link;garden_cloche;Garden Cloche>, but are not enough to be used on crops directly.
+
+§2Industrial Fertilizer§r will provide a major boost to the cloche, and is made from all three nutrients above plus water to mix them effectively.
+<&gunpowder>
+Mixing Nitrate, Sulfur and Charcoal allows for the creation of gunpowder, a far more industrial and consistent process than looting it from monsters.
+
+Gunpowder can also be made into Gunpowder Barrels, a more stable alternative to TNT.
