@@ -24,9 +24,7 @@
       "fluid_pipes",
       "fluid_pump",
       "fluid_outlet",
-      "fluid_router",
-      "silo",
-      "tank"
+      "fluid_router"
     ]
   },
   "construction": {
@@ -38,8 +36,21 @@
       "balloon"
     ]
   },
-  "electrical_grids": {
+  "workbenches_machinery": {
     "category_weight": 30,
+    "entry_list": [
+      "engineers_crafting_table",
+      "engineers_workbench",
+      "blueprints",
+      "turntable",
+      "external_heater",
+      "electromagnet",
+      "garden_cloche",
+      "charging_station"
+    ]
+  },
+  "electrical_grids": {
+    "category_weight": 40,
     "entry_list": [
       "basic_wiring",
       "transformers",
@@ -55,7 +66,7 @@
     ]
   },
   "explosives_weaponry": {
-    "category_weight": 40,
+    "category_weight": 50,
     "entry_list": [
       "heavy_plated_shield",
       "revolver",
@@ -68,7 +79,7 @@
     ]
   },
   "tools": {
-    "category_weight": 50,
+    "category_weight": 60,
     "entry_list": [
       "engineers_toolbox",
       "jerrycan",
@@ -82,19 +93,11 @@
       "shaders"
     ]
   },
-  "simple_machinery": {
-    "category_weight": 60,
-    "entry_list": [
-      "turntable",
-      "external_heater",
-      "electromagnet",
-      "garden_cloche",
-      "charging_station"
-    ]
-  },
-  "large_furnaces_ovens": {
+  "multiblock_constructions": {
     "category_weight": 70,
     "entry_list": [
+      "silo",
+      "tank",
       "coke_oven",
       "alloy_kiln",
       "crude_blast_furnace",
