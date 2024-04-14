@@ -7,9 +7,9 @@
     "type": "bottling",
     "recipes": [
       {
-        "item": "minecraft:potion",
+        "item": "immersiveengineering:bucket_potion",
         "nbt": {
-          "Potion": "minecraft:healing"
+          "Potion": "minecraft:awkward"
         }
       },
       {

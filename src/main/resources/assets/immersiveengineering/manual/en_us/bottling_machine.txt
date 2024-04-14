@@ -8,4 +8,4 @@ The machine will hold onto a container until it is completely full, or the machi
 This allows it to fill even larger containers, provided it receives a steady input of fluid.<br>
 This behavior can be disabled by sneaking and rightclicking it with an Engineer's Hammer.<np>
 <&potions>The machine can be used to bottle any potions that were brewed in the <link;mixer;Mixer>.<br>
-Additionally, it serves to create <link;resin_and_duroplast;duroplast items;duroplast_sheet> from resin and <link;redstone_acid;oxidize copper blocks;copper> with redstone acid.
+Additionally, it serves to create <link;resin_and_duroplast;duroplast items;duroplast_sheet> from resin and <link;industrial_fluids;oxidize copper blocks;redstone_acid> with redstone acid.

@@ -4,7 +4,7 @@ Outside of the comfortable compound of any engineer are others less fortified.<b
 Inside of the villages and towns of the world come a variety of inhabitants who farm and build. Among these come some engineers at the forefront of the field in their towns, pushing against the tide.<br>
 Common trades among those that ply designs and devices in the markets of the world are below.<np>
 <&engineer> The §lStructural Engineer§r deals in common construction materials such as treated wood, scaffolding, and concrete.<br>
-Once they're experienced enough to prospect, they may even sell you a treasure map to a nearby <link;minerals;Mineral Vein;start>...<br>
+Once they're experienced enough to prospect, they may even sell you a treasure map to a nearby <link;mineral_deposits;Mineral Vein;start>...<br>
 The workstation of the Structural Engineer is a §2Turntable§r.<np>
 <&machinist>The §lMachinist§r is an expert in metals, mechanics and tools.<br>
 They sell hammers, toolboxes and drill heads while buying raw materials such as steel.<br>

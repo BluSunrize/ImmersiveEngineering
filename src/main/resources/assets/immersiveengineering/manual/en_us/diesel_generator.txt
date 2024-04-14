@@ -1,7 +1,7 @@
 Diesel Generator
 Better than volume: More volume.
 High-Voltage architecture might be fascinating, but an electrical grid is very useful unless there is a generator which can provide it.<br>
-The Diesel Generator is the primary method of generating HV power. It will run off of <link;refinery;Biodiesel;diesel> or other heavy fuels, as detailed in the following pages. Due to its high output, it will consume fuel rapidly, so sufficient fuel production is a must.<np>
+The Diesel Generator is the primary method of generating HV power. It will run off of <link;industrial_fluids;Biodiesel;biodiesel> or other heavy fuels, as detailed in the following pages. Due to its high output, it will consume fuel rapidly, so sufficient fuel production is a must.<np>
 <&structure>The engine and generator are constructed from radiators, pipes, engineering blocks, and scaffolding as shown above and formed via activating the central generator with an Engineer's Hammer.<br>
 Fuel is to be input at the bottom corners of the generator, and energy will be output to up to three plugs on the bar above the generator.<br>
 The <config;i;machines.dieselGen_output>Flux/t the generator outputs will be split between all connected plugs. The generator will only run when at least one output can accept energy.<br>

@@ -10,7 +10,7 @@ Using this blueprint in an <link;engineers_workbench;Engineer's Workbench> will 
 Blueprints are necessary for more advanced components, as detailed on the following pages.<np>
 <&elec_components>§2Electronic Components§r are more complicated and less commonly used than their mechanical counterpart. They are however essential for any devices with an extended level of control such as the <link;item_batcher;Item Batcher> or <link;turrets;Turrets>.<np>
 <&light_bulbs>§2Incandescent Light Bulbs§r are made of a carbonized bamboo or paper filament which produce light and warmth when powered. They are primarily used to craft <link;engineered_lighting;lanterns;electric_lantern>.<np>
-<&tubes>Another, albeit less frequently used component are §2Vacuum Tubes§r. These expensive ingredients are used in <link;logic_circuits;logic circuits> and more complex electronic machinery.<np>
-<&pcb>The §2Circuit Backplane§r is an insulated copper board that can have a variety of components soldered to it in order to create <link;logic_circuits;Logic Circuits>.
+<&tubes>Another, albeit less frequently used component are §2Vacuum Tubes§r. These expensive ingredients are used in <link;engineers_circuit_workbench;Logic Circuits> and more complex electronic machinery.<np>
+<&pcb>The §2Circuit Backplane§r is an insulated copper board that can have a variety of components soldered to it in order to create <link;engineers_circuit_workbench;Logic Circuits>.
 
 

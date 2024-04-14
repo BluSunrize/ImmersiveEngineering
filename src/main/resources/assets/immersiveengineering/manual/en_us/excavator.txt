@@ -1,6 +1,6 @@
 Excavator
 Better than Dwarves
-<&full>The Excavator is one of the pinnacles of modern industry, able to dig up <link;minerals;minerals> from veins normally inaccessible.<np>
+<&full>The Excavator is one of the pinnacles of modern industry, able to dig up <link;mineral_deposits;minerals> from veins normally inaccessible.<np>
 Due to the intensive requirements of extracting sparse veins from the rock, the Excavator is a complex machine which requires <config;i;machines.excavator.consumption> Flux/t in order to operate.<br>
 Mining commences from the bottom tip of the bucket wheel, and materials are output from the rear of the engine bracket.<br>
 The three plugs for the engine take in power from the side, and the back features a redstone control panel.<br>

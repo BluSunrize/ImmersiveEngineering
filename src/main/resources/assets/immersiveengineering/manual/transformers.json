@@ -1,4 +1,13 @@
 {
+  "transformer_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        "crafting/transformer",
+        "crafting/transformer_hv"
+      ]
+    ]
+  },
   "images": {
     "type": "image",
     "offset": 1,
