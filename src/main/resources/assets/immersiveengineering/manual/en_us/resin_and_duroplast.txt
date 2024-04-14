@@ -1,6 +1,5 @@
 Resin and Duroplast
 It's fantastic!
-
 <&resin><link;industrial_fluids;Phenolic Resin;resin_acetaldehyde> is the first step to producing plastic products.<br>
 To produce this resin, the precursor <link;industrial_fluids;Acetaldehyde;resin_acetaldehyde> must be produced by oxidizing <link;industrial_fluids;Ethanol;plant_oil_ethanol> with a §2Silver Plate§r as the catalyst.<br>
 Then, this precursor must be combined with <link;industrial_fluids;Creosote Oil;creosote_oil>. Both of these processes happen in the <link;refinery;§o§nRefinery§r>.<np>

@@ -1,0 +1,112 @@
+{
+  "alloys": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/electrum_mix"
+        },
+        {
+          "recipe": "crafting/constantan_mix"
+        }
+      ],
+      [
+        [
+          {
+            "x": 24,
+            "y": 0,
+            "item": "minecraft:iron_ingot"
+          },
+          {
+            "x": 42,
+            "y": 0,
+            "item": "immersiveengineering:coal_coke"
+          },
+          {
+            "x": 78,
+            "y": 0,
+            "item": "immersiveengineering:ingot_steel"
+          }
+        ]
+      ]
+    ]
+  },
+  "plates": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/plate_silver_hammering"
+        },
+        {
+          "recipe": "crafting/plate_aluminum_hammering"
+        },
+        {
+          "recipe": "crafting/plate_constantan_hammering"
+        },
+        {
+          "recipe": "crafting/plate_copper_hammering"
+        },
+        {
+          "recipe": "crafting/plate_electrum_hammering"
+        },
+        {
+          "recipe": "crafting/plate_gold_hammering"
+        },
+        {
+          "recipe": "crafting/plate_iron_hammering"
+        },
+        {
+          "recipe": "crafting/plate_lead_hammering"
+        },
+        {
+          "recipe": "crafting/plate_nickel_hammering"
+        },
+        {
+          "recipe": "crafting/plate_steel_hammering"
+        },
+        {
+          "recipe": "crafting/plate_uranium_hammering"
+        }
+      ]
+    ]
+  },
+  "rods": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/stick_iron"
+        },
+        {
+          "recipe": "crafting/stick_steel"
+        },
+        {
+          "recipe": "crafting/stick_aluminum"
+        }
+      ]
+    ]
+  },
+  "wires": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/wire_copper"
+        },
+        {
+          "recipe": "crafting/wire_electrum"
+        },
+        {
+          "recipe": "crafting/wire_aluminium"
+        },
+        {
+           "recipe": "crafting/wire_steel"
+        },
+        {
+          "recipe": "crafting/wire_lead"
+        }
+      ]
+    ]
+  }
+}
