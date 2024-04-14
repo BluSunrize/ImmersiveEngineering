@@ -13,13 +13,13 @@
       "type": "crafting",
       "recipes": [
         "crafting/heavy_engineering",
-        "crafting/generator"
+        "crafting/radiator"
       ]
     },
     {
       "offset": 2,
       "type": "crafting",
-      "recipe": "crafting/radiator"
+      "recipe": "crafting/generator"
     }
   ]
 }

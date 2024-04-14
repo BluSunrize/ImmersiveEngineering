@@ -1,5 +1,11 @@
 {
   "autoload_priority": 1,
+  "updates_and_introduction": {
+    "category_weight": -2,
+    "entry_list": [
+      "introduction"
+    ]
+  },
   "resources": {
     "category_weight": 0,
     "entry_list": [
@@ -9,7 +15,8 @@
       "industrial_dyes",
       "crafting_components",
       "coke_and_graphite",
-      "resin_and_duroplast"
+      "resin_and_duroplast",
+      "other_engineers"
     ]
   },
   "storage_transport": {
@@ -17,6 +24,7 @@
     "entry_list": [
       "storage_crates",
       "storage_barrels",
+      "storage_minecarts",
       "conveyor_belts",
       "strip_curtains",
       "chutes",
@@ -48,6 +56,8 @@
       "engineers_crafting_table",
       "engineers_workbench",
       "blueprints",
+      "engineers_circuit_workbench",
+      "logic_unit",
       "turntable",
       "external_heater",
       "electromagnet",
@@ -81,12 +91,14 @@
       "chemical_thrower",
       "razor_wire",
       "tesla_coil",
-      "turrets"
+      "turrets",
+      "gunpowder_barrels"
     ]
   },
   "tools": {
     "category_weight": 60,
     "entry_list": [
+      "basic_tools",
       "engineers_toolbox",
       "jerrycan",
       "ear_defenders",
@@ -102,6 +114,7 @@
   "multiblock_constructions": {
     "category_weight": 70,
     "entry_list": [
+      "large_constructions",
       "silo",
       "tank",
       "coke_oven",
@@ -113,6 +126,7 @@
   "heavy_machinery": {
     "category_weight": 80,
     "entry_list": [
+      "machine_components",
       "metal_press",
       "crusher",
       "sawmill",

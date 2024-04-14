@@ -1,0 +1,6 @@
+Large Constructions
+What's a Thermal Expansion?
+<&items>Not all machinery can be bundled up into simple packages and shipped directly to consumer. For every charging station, there are two constructions behind it that need more space.<br>
+Large furnaces that need to bulk process, coking furnaces that need meters of insulation, all of these cannot fit within a simple meter by meter cube.<br>
+Multiblock constructions, large machines, are the answer to this: built and then assembled, rather than constructed on a bench.<br>
+When assembled from their constituent parts with the Engineer's Hammer, they provide the industrial backing any self-respecting engineer needs for their factories.

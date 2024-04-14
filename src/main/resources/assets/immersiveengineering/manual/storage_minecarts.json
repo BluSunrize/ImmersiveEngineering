@@ -1,0 +1,24 @@
+{
+  "item_storage": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:minecart_woodencrate"
+      },
+      {
+        "item": "immersiveengineering:minecart_reinforcedcrate"
+      }
+    ]
+  },
+  "fluid_storage": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:minecart_woodenbarrel"
+      },
+      {
+        "item": "immersiveengineering:minecart_metalbarrel"
+      }
+    ]
+  }
+}
