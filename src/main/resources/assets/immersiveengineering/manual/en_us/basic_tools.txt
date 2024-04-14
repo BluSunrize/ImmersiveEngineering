@@ -1,5 +1,5 @@
 Basic Tools
-???
+Hammer & Sickle
 <&engineers_hammer>Engineer's Hammers are one of the most important tools in the engineer's toolbox.<br>
 It can be used to configure and form machines, as well as crush ores.<np>
 <&wirecutters>§lEngineer's Wire Cutters§r are used to remove all the wires connected to a block by simply rightclicking it.<br>

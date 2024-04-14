@@ -1,5 +1,5 @@
 Feedthrough Insulators
-???
+Hole In The Wall Tavern
 <&feedthrough>Wires on their own cannot coexist with rock, or wood, or more industrial materials blocking their path.<br>
 With the careful application of terracotta insulation, a solid conduit can be constructed inside of these materials to conduct power.<br>
 The Feedthrough Insulator allows two connectors to be merged across one meter walls, and cannot connect more than one wire per connector.<br>

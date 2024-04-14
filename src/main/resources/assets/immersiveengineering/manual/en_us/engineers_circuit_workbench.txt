@@ -1,5 +1,5 @@
 Engineer's Circuit Workbench
-???
+Don't Breathe the Fumes
 Using the Circuit Workbench, complex redstone logic circuits can be compressed from several square meters onto just a single board.<br>
 §2Logic Circuits§r are made from <link;crafting_components;Vacuum Tubes;tubes> mounted to <link;crafting_components;backplanes;pcb> using solder such as §2Lead Wire§r or §2Copper Wire§r.<br>
 Due to the need to solder components to the board, power must be supplied to the plug on the back of the table.<br>

@@ -1,5 +1,5 @@
 Posts & Wallmounts
-???
+Put Your HV Out of Reach
 <&post_recipes>Posts can be made from several common structural materials, including Treated Wood, Steel, and Aluminium.<br>
 Unlike fence posts, these posts will not connect together, but instead can be used to hang wallmounts, <link;basic_wiring;wires> or <link;engineered_lighting;lamps>.<np>
 Posts are four blocks high and thus cannot be placed without the proper clearance.<br>

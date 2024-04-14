@@ -1,5 +1,5 @@
 Scaffolding & Ladders
-???
+Warning: Construction Site
 <&scaffolding_recipes>Scaffolding is a versatile arrangement of metal rods that can be used in construction.<br>
 Scaffolding can also be climbed like ladders along its sides.<np>
 <&ladder_recipes>Often, factories and machines have vertical drops that need to be traversed.<br>

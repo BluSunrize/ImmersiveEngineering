@@ -1,5 +1,5 @@
 Basic Metal Products
-???
+Shapes & Colors
 <&alloys>Alloys are specialty metals used in advanced applications, and can be created from grit or in alloying furnaces.<br>
 Steel is used for structural engineering and decoration, electrum for <link;basic_wiring;electrical engineering>, and constantan for <link;thermoelectric_generator;thermal engineering>.<np>
 <&plates>Metal plates are a crafting material required for the creation of most machines and components.<br>
