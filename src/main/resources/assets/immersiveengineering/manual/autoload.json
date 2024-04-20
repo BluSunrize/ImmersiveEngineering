@@ -1,11 +1,8 @@
 {
   "autoload_priority": 1,
-  "updates_and_introduction": {
-    "category_weight": -2,
-    "entry_list": [
-      "introduction"
-    ]
-  },
+  "entry_list": [
+    "introduction"
+  ],
   "resources": {
     "category_weight": 0,
     "entry_list": [

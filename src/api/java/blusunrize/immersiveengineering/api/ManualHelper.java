@@ -36,7 +36,7 @@ public class ManualHelper
 	public static String CAT_SIMPLE_MACHINERY = "simple_machinery";
 	public static String CAT_LARGE_FURNACES_OVENS = "large_furnaces_ovens";
 	public static String CAT_HEAVY_MACHINERY = "heavy_machinery";
-	public static String CAT_UPDATE = "updates_and_introduction";
+	public static String CAT_UPDATE = "updates";
 
 	/**
 	 * A map of keys (manual anchors) to suppliers that generate a table.

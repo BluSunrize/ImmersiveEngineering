@@ -1,5 +1,5 @@
 Kinetic Generators
-
+And The Generator Goes 'Round
 <&dynamo_recipe>The simplest form of power generation available is not solar or coal, but using natural forces to excite a generator.<br>
 The Kinetic Dynamo connects to integrated methods of producing shaft power and produces electrical power based on how fast they turn.<np>
 Windmills and waterwheels, detailed in the following pages, are the sources of shaft power the Kinetic Dynamo will accept, and must be assembled after the dynamo for them to connect.<br>

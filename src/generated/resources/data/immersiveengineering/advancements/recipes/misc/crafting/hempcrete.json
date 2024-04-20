@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_clay": {
+    "has_item": {
       "conditions": {
         "items": [
           {
-            "tag": "forge:clay"
+            "tag": "forge:fiber_hemp"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_clay"
+      "has_item"
     ]
   ],
   "rewards": {
