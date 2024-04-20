@@ -193,10 +193,10 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_bricks", has(Blocks.BRICKS))
 				.save(out, toRL(toPath(StoneDecoration.CLINKER_BRICK_SILL)));
 		addSandwich(StoneDecoration.HEMPCRETE, 6,
-			makeIngredient(IETags.clay),
-			makeIngredient(IETags.fiberHemp),
-			makeIngredient(IETags.clay),
-			has(IETags.fiberHemp), out);
+				makeIngredient(IETags.clay),
+				makeIngredient(IETags.fiberHemp),
+				makeIngredient(IETags.clay),
+				has(IETags.fiberHemp), out);
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.HEMPCRETE_BRICK, 4)
 				.pattern("hh")
 				.pattern("hh")
