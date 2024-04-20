@@ -1,5 +1,6 @@
 ##### Version 1.20.4-11.1.1-pre
 - Fix covered conveyors crashing the game (BluSunrize)
+- Fix multiblocks being broken by flowing water (BluSunrize)
 
 ##### Version 1.20.4-11.1.0-172
 - First release for 1.20.4
