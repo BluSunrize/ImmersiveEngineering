@@ -1,0 +1,21 @@
+{
+  "chute_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/chute_iron"
+        },
+        {
+          "recipe": "crafting/chute_copper"
+        },
+        {
+          "recipe": "crafting/chute_aluminum"
+        },
+        {
+          "recipe": "crafting/chute_steel"
+        }
+      ]
+    ]
+  }
+}

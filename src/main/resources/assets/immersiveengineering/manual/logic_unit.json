@@ -1,0 +1,6 @@
+{
+  "unit": {
+    "type": "crafting",
+    "recipe": "crafting/logic_unit"
+  }
+}

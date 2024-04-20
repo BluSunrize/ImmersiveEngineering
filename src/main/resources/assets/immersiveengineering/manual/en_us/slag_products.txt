@@ -1,0 +1,9 @@
+Slag Products
+Zero Waste!
+<&slag_gravel>§2Slag Gravel§r is slag that has been ground in the <link;crusher;Crusher> to a rough grit. As with other gravels, it can be crushed further into sand.<br>
+Additionally, slag gravel contains valuable nutrients for aquatic flora. Waterlogged plants placed on slag gravel grow faster than when grown on other blocks.<np>
+<&slag_glass>Remelting slag in a §2Furnace§r vitrifies it to a hard, darkened §2slag glass§r.<br>
+This glass reduces the strength of light passing through it and can be used as an insulator in <link;basic_wiring;high-voltage relays;connector_recipes>.
+<&slag_bricks>§2Slag Bricks§r are slag shaped into bricks similar in most respects to clay bricks.<br>
+The ceramic in slag bricks is tougher than that of standard clay bricks, able to withstand explosions more readily.<br>
+Slag Bricks can be formed into stairs, slabs, and walls, which have a small sill of baked brick on the top-most layer.

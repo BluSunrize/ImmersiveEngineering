@@ -1,0 +1,9 @@
+Coke and Graphite
+Coal stuff
+<&coke>Coal Coke is a purified form of carbon similar to charcoal. Coke is created from coal in the <link;coke_oven;Coke Oven>.<br>
+It is used in steelmaking of all forms, from the <link;crude_blast_furnace;simplest> to the <link;arc_furnace;most advanced>, and is a better furnace fuel than coal.
+<&graphite>Highly Ordered Pyrolytic (HOP) Graphite is a complex, allotrope of graphite used in special engineering constructs.<br>
+HOP Graphite Dust is created by compressing eight pieces of Coke Dust in the <link;squeezer;Industrial Squeezer>. That dust can then be smelted into an ingot.
+<&electrode>The most common use for HOP Graphite is the creation of electrodes to be used in the large <link;arc_furnace;Arc Furnace>.<br>
+These electrodes are created with an <link;blueprints;Engineer's Blueprint>, which you can find in certain chests or trade with a villager.<br>
+Electrodes can also be formed in the metal press, using the rod mold on 4 ingots, but will have half the lifetime.

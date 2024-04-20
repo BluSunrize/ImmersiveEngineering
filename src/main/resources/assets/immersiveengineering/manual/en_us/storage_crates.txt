@@ -1,0 +1,8 @@
+Storage Crates
+Move that gear up!
+<&crate>Wooden Storage Crates are similar to a chest in function, storing up to 27 stacks of material.<br>
+Unlike chests, all the material stored within a crate will be sealed inside before it can be picked up.<np>
+As with chests, crates will output a comparator signal based on the amount of items stored within.<br>
+Storage crates cannot be broken by pistons, unlike Shulker Boxes.<np>
+<&reinforced_crate>Reinforced Storage Crates are framed with steel, allowing them to resist the otherwise devastating dangers posed by explosions.<br>
+Due to this, they will not break or drop their items when explosions happen near enough to otherwise destroy them.

@@ -1,0 +1,5 @@
+Gunpowder Barrels
+Volatile, Yet Decorative
+<&recipe>Gunpowder can be made into TNT and other explosives, but these are hard to control and impractical for mining.<br>
+By containing black powder in a <link;storage_barrels;Wooden Barrel>, powder barrels allow for more bang for buck.<br>
+Gunpowder Barrels work as mining explosives with a more predictable explosion that do not destroy items.

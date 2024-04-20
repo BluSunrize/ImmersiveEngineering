@@ -1,119 +1,142 @@
 {
   "autoload_priority": 1,
-  "general": {
+  "entry_list": [
+    "introduction"
+  ],
+  "resources": {
     "category_weight": 0,
     "entry_list": [
-      "introduction",
       "ores",
-      "plates",
-      "alloys",
-      "hemp",
+      "industrial_hemp",
       "treated_wood",
-      "chemicals",
-      "dyes",
-      "redstone_acid",
-      "components",
-      "villagers",
-      "graphite",
-      "plastic",
-      "shader"
+      "basic_metal_products",
+      "industrial_fluids",
+      "industrial_dyes",
+      "industrial_byproducts",
+      "crafting_components",
+      "coke_and_graphite",
+      "resin_and_duroplast",
+      "other_engineers"
     ]
   },
-  "early_machines": {
+  "storage_transport": {
     "category_weight": 10,
     "entry_list": [
-      "craftingtable",
-      "workbench",
-      "blueprints",
-      "cokeoven",
-      "alloykiln",
-      "crude_blast_furnace",
-      "improved_blast_furnace",
-      "slag"
+      "storage_crates",
+      "storage_barrels",
+      "storage_minecarts",
+      "conveyor_belts",
+      "strip_curtains",
+      "chutes",
+      "item_router",
+      "item_batcher",
+      "fluid_pipes",
+      "fluid_pump",
+      "fluid_outlet",
+      "fluid_router"
     ]
   },
   "construction": {
     "category_weight": 20,
     "entry_list": [
-      "crate",
-      "barrel",
-      "balloon",
-      "metalconstruction",
-      "metal_barrel",
       "concrete",
+      "hempcrete",
       "clinker_brick",
-      "lighting",
-      "multiblocks",
-      "silo",
-      "tank"
+      "slag_products",
+      "posts_and_wallmounts",
+      "scaffolding_and_ladders",
+      "metal_constructions",
+      "engineered_lighting",
+      "balloon"
     ]
   },
-  "energy": {
+  "workbenches_machinery": {
     "category_weight": 30,
     "entry_list": [
-      "wiring",
+      "engineers_crafting_table",
+      "engineers_workbench",
+      "blueprints",
+      "engineers_circuit_workbench",
+      "logic_unit",
+      "turntable",
+      "external_heater",
+      "electromagnet",
+      "garden_cloche",
+      "charging_station"
+    ]
+  },
+  "electrical_grids": {
+    "category_weight": 40,
+    "entry_list": [
+      "basic_wiring",
+      "transformers",
+      "feedthrough_insulators",
       "accumulators",
-      "generator",
-      "breaker",
+      "circuit_breakers",
+      "redstone_wiring",
       "current_transformer",
-      "redstone_wire",
-      "logic_circuits",
-      "thermoelectric",
+      "kinetic_generators",
+      "thermoelectric_generator",
       "diesel_generator",
       "lightning_rod"
     ]
   },
-  "tools": {
-    "category_weight": 40,
-    "entry_list": [
-      "toolbox",
-      "jerrycan",
-      "ear_defenders",
-      "glider",
-      "maintenance_kit",
-      "mining_drill",
-      "buzzsaw",
-      "shield",
-      "powerpack",
-      "revolver",
-      "bullets",
-      "chemthrower",
-      "herbicide",
-      "railgun",
-      "skyhook"
-    ]
-  },
-  "machines": {
+  "explosives_weaponry": {
     "category_weight": 50,
     "entry_list": [
-      "conveyors",
-      "item_router",
-      "item_batcher",
-      "turntable",
-      "fluid_transport",
-      "fluid_router",
-      "external_heater",
-      "electromagnet",
-      "garden_cloche",
-      "charging_station",
+      "heavy_plated_shield",
+      "revolver",
+      "revolver_cartridges",
+      "railgun",
+      "chemical_thrower",
       "razor_wire",
       "tesla_coil",
-      "turrets"
+      "turrets",
+      "gunpowder_barrels"
     ]
   },
-  "heavymachines": {
+  "tools": {
     "category_weight": 60,
     "entry_list": [
+      "basic_tools",
+      "engineers_toolbox",
+      "jerrycan",
+      "ear_defenders",
+      "maintenance_kit",
+      "engineers_skyhook",
+      "mining_drill",
+      "buzzsaw",
+      "accumulator_backpack",
+      "collapsible_glider",
+      "shaders"
+    ]
+  },
+  "multiblock_constructions": {
+    "category_weight": 70,
+    "entry_list": [
+      "large_constructions",
+      "silo",
+      "tank",
+      "coke_oven",
+      "alloy_kiln",
+      "crude_blast_furnace",
+      "improved_blast_furnace"
+    ]
+  },
+  "heavy_machinery": {
+    "category_weight": 80,
+    "entry_list": [
+      "machine_components",
       "metal_press",
       "crusher",
       "sawmill",
-      "assembler",
-      "automated_workbench",
-      "squeezer",
-      "fermenter",
       "mixer",
-      "refinery",
       "bottling_machine",
+      "fermenter",
+      "squeezer",
+      "refinery",
+      "assembler",
+      "automated_engineers_workbench",
       "arc_furnace",
       "excavator"
     ]

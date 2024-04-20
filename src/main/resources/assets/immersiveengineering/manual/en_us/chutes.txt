@@ -1,0 +1,6 @@
+Chutes
+Clonk. Clonk. Clo-BONK!
+<&chute_recipes>Chutes are simple constructions made from sheetmetal that allow creatures and items that fit inside to drop straight down.<br>
+Chutes also insert into inventories below them and can be inserted into by conveyors or similar devices.<br>
+Items within them won't be picked up by players and should be immune to most forms of attraction, magnetic or otherwise.<br>
+Sneak + rightclick with an Engineer's Hammer to turn the chute into a corner piece that directs anything inside of it to the side and connects to other chutes.

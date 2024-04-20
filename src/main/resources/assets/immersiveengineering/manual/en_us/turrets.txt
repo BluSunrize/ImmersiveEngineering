@@ -4,7 +4,7 @@ Turrets are the next step is automated defense of your factory. They feature a c
 All turrets feature energy ports at their base, and require a redstone signal to be active, although this behavior can be inverted by sneaking and rightclicking it with an Engineer's Screwdriver.<np>
 Upon being placed, Turrets will remember their owner and will not allow other users to break or modify them. Rightclicking the turret brings up the GUI which features a list of names with an entry field, as well as multiple targeting options.
 By the default the list is a blacklist of targets that may not be attacked. This list utilizes creature names, so whitelisting animals is possible.<np>
-<&turret_chemthrower_recipe>The Chemthrower Turret utilizes the fluid propelling capabilities of the <link;chemthrower;eponymous tool;start> to cover targets in anything, ranging from water to douse flames, to diesel oil to start them.<np>
+<&turret_chemthrower_recipe>The Chemthrower Turret utilizes the fluid propelling capabilities of the <link;chemical_thrower;eponymous tool;start> to cover targets in anything, ranging from water to douse flames, to diesel oil to start them.<np>
 This Turret features a fluid port in the bottom and back of the base to allow pipes to connect to it. Additionally, the GUI has a button on the left which dis- or enables the pilot flame, igniting the dispensed fluid, provided that it is flammable.
 
 §oThe providers of this blueprint are not liable for any damage to user, neighbours or various farm animals that may incur.§r<np>

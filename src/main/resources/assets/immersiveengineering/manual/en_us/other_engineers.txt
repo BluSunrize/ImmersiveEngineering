@@ -1,0 +1,22 @@
+Other Engineers
+Testificate with a Degree
+Outside of the comfortable compound of any engineer are others less fortified.<br>
+Inside of the villages and towns of the world come a variety of inhabitants who farm and build. Among these come some engineers at the forefront of the field in their towns, pushing against the tide.<br>
+Common trades among those that ply designs and devices in the markets of the world are below.<np>
+<&engineer> The §lStructural Engineer§r deals in common construction materials such as treated wood, scaffolding, and concrete.<br>
+Once they're experienced enough to prospect, they may even sell you a treasure map to a nearby <link;mineral_deposits;Mineral Vein;start>...<br>
+The workstation of the Structural Engineer is a §2Turntable§r.<np>
+<&machinist>The §lMachinist§r is an expert in metals, mechanics and tools.<br>
+They sell hammers, toolboxes and drill heads while buying raw materials such as steel.<br>
+Highly experienced machinists can draw blueprints for <link;coke_and_graphite;graphite electrodes;electrode>.<br>
+The workstation of the Machinist is an §2Engineer's Crafting Table§r.<np>
+<&electrician> The §lElectrician§r offers wirecutters, coils of wire and pieces of a faraday suit.<br>
+More experienced engineers will sell complex components such as circuits. Some less reputable may also have a stash of experimental weapon upgrades...<br>
+The workstation of the Electrician is an §2Engineer's Circuit Table§r.<np>
+<&gunsmith>The §lGunsmith§r deals with the recently popular firearms, including blueprints.<br>
+Apart from buying and selling various kinds of ammunition, they also manufacture some rare pieces for the <link;revolver;Revolver;start> that influence its performance.<br>
+The workstation of the Gunsmith is an §2Engineer's Workbench§r.<np>
+<&outfitter> The §lOutfitter§r may not seem like a traditional engineer, although their field of work is no less precise!<br>
+Whereas others manufacture components, they instead design unique colour patterns known as <link;shaders;Shaders;start>.<br>
+While purchasing shader materials such as tough fabric, they sell shader grab bags, enabling you to randomly acquire pieces of their craft.<br>
+The workstation of the Outfitter is a §2Shader Banner§r, which is created by using a shader on a normal, placed banner.

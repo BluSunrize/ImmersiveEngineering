@@ -1,0 +1,15 @@
+Industrial Byproducts
+Backstuff Nightmare
+<&sulfur>§lSulfur Dust§r is a powder found commonly in <link;mineral_deposits;Mineral Deposits>.<br>
+It can be found occasionally by <link;crusher;crushing> §2Lapis Lazuli Ore§r or §2Coal Ore§r, and more commonly in §2Nether Quartz Ore§r and §2Blaze Rods§r.<br>
+It is most useful when combined into gunpowder or <link;industrial_byproducts;Industrial Fertilizer;fertilizer>.<np>
+<&nitrate>§lNitrate Dust§r (also known as saltpeter) is mixture of alkali salts found by processing §2Sandstone§r in a <link;crusher;Crusher>.<br>
+In a similar vein to sulfur, nitrate dust can be used in <link;industrial_byproducts;Industrial Fertilizer;fertilizer>. It can also be used to catalyze the production of <link;industrial_fluids;Biodiesel>.<np>
+<&slag>§lSlag§r is a mixture of metallic oxides and sulfides common from <link;crude_blast_furnace;steel production>.<br>
+Slag can be made into building blocks, including <link;concrete;concrete>, and can be used to create <link;industrial_byproducts;Industrial Fertilizer;fertilizer>.<np>
+<&fertilizer>
+Sulfur, slag, and nitrate by themselves are a small boost to growing crops in the <link;garden_cloche;Garden Cloche>, but are not enough to be used on crops directly.<br>
+§2Industrial Fertilizer§r will provide a major boost to the cloche, and is made from all three nutrients above plus water to mix them effectively.
+<&gunpowder>
+Mixing Nitrate, Sulfur and Charcoal allows for the creation of gunpowder, a far more industrial and consistent process than looting it from monsters.<br>
+Gunpowder can be used to make <link;revolver_cartridges;ammunition> and <link;gunpowder_barrels;explosives> quickly and cheaply.

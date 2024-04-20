@@ -1,0 +1,8 @@
+Fluid Pump
+The Pressure is On
+<&pump_recipe>Fluid Pumps are used to pressurize and move fluids, both within and without pipe systems.<br>
+Using the Engineer's Hammer on the bottom of the pump will change the face between input, output, and blocked.<br>
+When given a redstone signal, the fluid pump will extract from tanks at low power, moving fluid into the output for distribution.<br>
+Providing a fluid pump with flux will engage the high pressure pump and will output the fluid at a significant boost in transfer rate.<br>
+When placed against pools of fluid in the world, pumps will suck up the fluid into their internal tank from their inputs. Water can be pumped in the same way it can be picked up with a bucket.<br>
+Fluids that are picked up will be replaced with cobblestone to the amount of flowing fluids in the world. This behavior can be toggled off and on by using an Engineer's Hammer on the pump's top while sneaking.

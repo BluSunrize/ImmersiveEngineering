@@ -1,0 +1,10 @@
+{
+  "recipe": {
+    "type": "crafting",
+    "recipe": "crafting/cokebrick"
+  },
+  "multiblock": {
+    "type": "multiblock",
+    "name": "multiblocks/coke_oven"
+  }
+}

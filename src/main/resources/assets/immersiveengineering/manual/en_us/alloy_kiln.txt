@@ -1,0 +1,6 @@
+Alloy Kiln
+Mixin' Metals
+<&recipe>The Alloy Kiln is a simple furnace made out of heat resistant sandstone and bricks. Within it, temperatures are high enough to allow metals to be melted into a fluid state and mixed, creating an <link;basic_metal_products;alloy;alloys>.
+This allows the creation of important alloys like Electrum and Constantan without the tedious mixing of dusts.<np>
+<&multiblock>To form the Kiln, arrange 8 of the Kiln Bricks in a 2x2x2 cube, as shown above, and rightclick one of the sides' blocks with an Engineer's Hammer.<np>
+<&insulating_glass>The alloy kiln is also essential in the creation of §2insulating glass§r, a component used in the construction of <link;basic_wiring;high-voltage architecture;connector_recipes>.

@@ -1,0 +1,25 @@
+Conveyor Belts
+Who needs rails anyway?
+<&conveyor_recipes>Conveyor Belts are an easy, unpowered method of moving in-world things around.<br>
+Conveyor belts will move anything other creatures can push and several they cannot, with their primary design point being items. Other creatures such as cows and sheep can also be moved, but will not interact with some item-specific designs.<br>
+Items dropped onto conveyor belts will move along a belt, and items can be dropped onto belts from devices such as hoppers or pipes.<br>
+Should items be pushed against an inventory that has space, the items will be inserted into the inventory. Otherwise, they will back up outside of the inventory.<br>
+Backups of items that occur on belts can leave food to rot or other similar behaviors, and will be triggered by items left standing on belts with no space for new items to move<br>
+The Engineer's Hammer can be used to rotate the belts (rightclick) or adjust whether they should run up- or downwards (sneak + rightclick).<br>
+Rightclicking a conveyor with any dye will colour the walls of the conveyor for identification.<np>
+<&conveyor_redstone_recipe>Redstone Controlled Conveyor Belt are those that can be disabled with a redstone signal.<br>
+These conveyor belts will move without a redstone signal and cannot be changed with the Engineer's Screwdriver.<np>
+<&conveyor_dropper_recipe>Dropping Conveyor Belts have a hatch in the middle and allow items to drop downwards.<br>
+Items will be inserted into inventories below or simply dropped if there is empty space below the conveyor.<br>
+The hatch can be shut with a redstone signal.<np>
+<&conveyor_extract_recipe>Extracting Conveyor Belts extract items from an inventory in a similar fashion to hoppers.<br>
+Sneak + rightclick with an Engineer's Hammer to change its input side.<br>
+Use the Engineer's Screwdriver to adjust the extraction speed.<np>
+<&conveyor_vertical_recipe>Vertical Conveyor Belts can carry materials directly upwards, not only at angles. such as standard conveyor belts can.<br>
+Using the buckets attached to the belt, it will lift objects straight up. Despite the use of the term "bucket", it will not lift fluids.<br>
+This belt can insert into inventories above it or simply expel items over the edge at the top onto other conveyors.<np>
+<&conveyor_splitter_recipe>Splitting Conveyor Belts alternate between redirecting objects and creatures left and right.<br>
+It will not split stacks of items collected together, only direct stacks left or right as with other entities.<np>
+<&conveyor_covered_recipe>Covered Conveyor Belts works just like normal conveyors, but are covered by a piece of scaffolding, which prevents entities from picking up items from it.<br>
+You can rightclick it with other types of scaffold or glass to change the cover's appearance.<np>
+<&conveyor_other_covered_recipes>Similarly, the Dropping, Extracting, Splitting and Vertical Conveyors can also be covered in scaffolding to achieve the same benefits of "pickup-prevention" while still functioning as they normally do.

@@ -1,0 +1,15 @@
+Accumulator Backpack
+Do....Ray....Egon!
+Energy storage takes space and some heavyweight components. As such, storing large amounts of energy in each tool individually is inefficient and makes them awkward to wield.<br>
+The Accumulator Backpack acts as a compromise, offering a centralized storage of energy for any powered tools to tap into.<br>
+The carrying frame can be constructed with the recipe shown on the following page.<np>
+<&frame_recipe>Once the frame has been constructed, it must be modified in an <link;engineers_workbench;Engineer's Workbench;start> in order to place an <link;accumulators;Accumulator> inside it.<br>
+The backpack charges any tools in your hands, as well as any armor you are wearing. You can wear it like a piece of chest armor, or you may craft it with a chestpiece to attach it and gain the benefit of a power-supply as well as protection.<br>
+Note that you can not use the <link;charging_station;Charging Station> to charge the pack while it is attached to armor.<br>
+The following pages detail the possible upgrades you can attach to the Accumulator Backpack.<np>
+<&antenna>By attaching a §2Charging Antenna§r to the backpack, you can charge its accumulator on the go! Simply walk underneath an <link;basic_wiring;un-insulated powerline;images> to have the antenna connect to it.<br>
+While you remain close enough to the wire, the antenna will flex and stay connected, slowly charging the accumulator from the wire network.<np>
+<&induction>The §2Induction Charger§r allows the accumulator pack to charge all the items in your inventory instead of just those in your hands. Due to not using a direct wired connection however, this charging is much slower.<np>
+<&magnet>The §2Portable Electromagnet§r is a specialized version of the <link;electromagnet;larger block>, designed to attract nearby items to the user, allowing them to be easily picked up. Thanks to improved circuitry, this upgrade only consumes energy while items are being moved.<np>
+<&tesla>As its name may suggest, the §2Miniaturized Tesla Coil§r is much like its <link;tesla_coil;larger sister>, a device that delivers dangerous shocks to nearby targets. It does so in response to the wearer being attacked, thus substituting thorny armor for electricity.
+<br>Due to attaching at the top of the backpack, the coil can not be used at the same time as the Charging Antenna.

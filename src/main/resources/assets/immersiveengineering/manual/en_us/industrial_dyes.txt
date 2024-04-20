@@ -1,0 +1,9 @@
+Industrial Dyes
+Definitely Perfectly Harmless
+Metal compounds have many uses in industrial dyes, and the most useful of these is lead.<br>
+Lead compounds can be crafted into large quantities of red and white dye.<br>
+Yellow dye has not been produced in quantity from lead, as several ingredients cannot be found in quantity to make lead chromate.
+<&lead_white>By combining the carbon dioxide fumes from rotting material and the acetic acid from spoiled ethanol, lead metal can be crafted into §2Lead Carbonate§r, commonly known as Lead White.<br>
+Dye produced this way can be made without the need to farm copious numbers of skeletons to grind their bones.
+<&lead_red>By oxidizing lead metal nuggets in a §2Furnace§r at high temperature, lead metal can be converted into §2Lead Oxide§r, more commonly known as Red Lead.<br>
+This dye can be produced without the need for a flower farm or the cloche for copious amounts of red flowers.

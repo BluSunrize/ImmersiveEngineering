@@ -1,0 +1,10 @@
+Circuit Breakers
+Clap on - Clap off
+<&manual_breaker>Breaker Switches are simple switches that can stop the flow of power through wires.<br>
+They connect two wires of the same type and will only allow power to pass when activated. Due to the high risk, these switches cannot be connected to HV wiring.<br>
+This can be used to separate power-hungry machinery from the network or hook up an additional set of generators when needed.<br>
+They will also emit a redstone signal when they are switched on; this behaviour can be inverted by clicking the switch with an Engineer's Screwdriver.<br>
+Additionally they are an excellent way to control your <link;engineered_lighting;powered lights;electric_lantern>!
+<&rs_breaker>Redstone Breakers are an all-around improved version of the manual Breaker Switch, with improved wiring, throughput, and isolation.<br>
+Redstone Breakers are able to handle HV wiring, unlike their manual counterparts, but cannot be operated by hand due to the safety risk.<br>
+A redstone signal applied to any side of the device will break the connection. This behavior can be inverted with the Engineers' Screwdriver.

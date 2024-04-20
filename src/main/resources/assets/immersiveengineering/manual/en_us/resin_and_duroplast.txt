@@ -1,0 +1,13 @@
+Resin and Duroplast
+It's fantastic!
+<&resin><link;industrial_fluids;Phenolic Resin;resin_acetaldehyde> is the first step to producing plastic products.<br>
+To produce this resin, the precursor <link;industrial_fluids;Acetaldehyde;resin_acetaldehyde> must be produced by oxidizing <link;industrial_fluids;Ethanol;plant_oil_ethanol> with a §2Silver Plate§r as the catalyst.<br>
+Then, this precursor must be combined with <link;industrial_fluids;Creosote Oil;creosote_oil>. Both of these processes happen in the <link;refinery;§o§nRefinery§r>.<np>
+<&duroplast>
+Duroplast is a synthetic plastic created from <link;resin_and_duroplast;Phenolic Resin;resin>. This incredible new material is rigid, non-flammable and not conductive, making it an excellent insulator in electrical engineering.<br>
+The easy moldability of plastic resins also allows it to be formed into a variety of shapes, such as sheets and blocks.<np>
+<&duroplast_sheet>Duroplast items are created by filling appropriate <link;metal_press;molds;mold_recipes> with resin in the <link;bottling_machine;§o§nBottling §o§nMachine§r>. The machine is able to confer enough heat and pressure within these molds to trigger the resin to harden.<br>
+The resulting sheets are used in the creation of <link;crafting_components;Advanced Electronic Components;elec_components> and <link;crafting_components;Circuit Backplanes;pcb>, where they act as insulators.<np>
+<&duroplast_block>Solid blocks of duroplast can be used for construction and decorational purposes, though not everyone appreciates their colour. More importantly however, they serve to replace §2Terracotta§r when crafting <link;basic_wiring;wire connectors and relays;connector_recipes>, thus reducing the amount of clay required!<np>
+<&fiberboard>Fiberboard is made from compressed <link;sawmill;sawdust;sawdust>, mixed with resin to create a dense and compressed block. It shares its properties with wood and can be used as a replacement for planks in most recipes. An excellent way to recycle what would otherwise be waste!
+<&empty_shell> You can also use resin in the creation of empty shells for the <link;revolver_cartridges;Revolver's cartridges;empty>, making them cheaper and easier to mass produce.
