@@ -76,14 +76,15 @@ public class DieselGeneratorLogic
 					.map(Supplier::get)
 					.filter(Objects::nonNull)
 					.collect(Collectors.toList());
-			if(!presentOutputs.isEmpty()&&EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
-				state.consumeTick--;
-			if(state.consumeTick <= 0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
+			GeneratorFuel recipe = state.recipeGetter.apply(
+				context.getLevel().getRawLevel(), state.tank.getFluid().getFluid()
+			);
+			if(recipe != null &&
+			   !presentOutputs.isEmpty() && 
+			   EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
 			{
-				GeneratorFuel recipe = state.recipeGetter.apply(
-						context.getLevel().getRawLevel(), state.tank.getFluid().getFluid()
-				);
-				if(recipe!=null)
+				state.consumeTick--;
+				if(state.consumeTick <= 0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
 				{
 					int burnTime = recipe.getBurnTime();
 					int fluidConsumed = (10*FluidType.BUCKET_VOLUME)/burnTime;
