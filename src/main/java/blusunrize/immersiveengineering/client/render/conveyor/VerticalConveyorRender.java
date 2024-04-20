@@ -128,6 +128,8 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 		BlockEntity blockEntity = conveyor!=null?conveyor.getBlockEntity(): null;
 		boolean renderBottom = conveyor!=null&&VerticalConveyor.renderBottomBelt(blockEntity, facing);
 		Function<Direction, TextureAtlasSprite> getSprite = makeCoverTextureGetter(cover, type);
+		if(getSprite==null)
+			return;
 		float[] colour = {1, 1, 1, 1};
 		Matrix4 matrix = new Matrix4(facing);
 
