@@ -1,7 +1,10 @@
 {
   "autoload_priority": 1,
   "entry_list": [
-    "introduction"
+    {
+      "source": "introduction",
+      "weight": -1
+    }
   ],
   "resources": {
     "category_weight": 0,
