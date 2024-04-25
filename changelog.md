@@ -1,4 +1,9 @@
 ##### Version 1.20.4-11.1.1-pre
+- Overhaul the Engineering's Manual (voidsong-dragonfly)
+    - Splitting various long entries into multiple smaller ones (fluid transport, logic circuits, ...)
+    - Adding new pages for undocumented features (gunpower barrel, minecarts, ...)
+    - Sorting everything into a new list of more comprehensible categories
+    - As a result, all translations of the manual are deprecated and need to be updated by community input
 - Fix covered conveyors crashing the game (BluSunrize)
 - Fix multiblocks being broken by flowing water (BluSunrize)
 
