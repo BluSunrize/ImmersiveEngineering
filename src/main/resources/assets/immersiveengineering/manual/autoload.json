@@ -61,6 +61,7 @@
       "blueprints",
       "engineers_circuit_workbench",
       "logic_unit",
+      "machine_interface",
       "turntable",
       "external_heater",
       "electromagnet",
