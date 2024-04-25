@@ -221,7 +221,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		if(availableChecks==null)
 			graphics.blit(TEXTURE, guiLeft, guiTop+(ySize-74)/2, 112, 80, xSize, 106);
