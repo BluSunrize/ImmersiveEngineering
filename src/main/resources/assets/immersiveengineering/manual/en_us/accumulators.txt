@@ -2,6 +2,6 @@ Accumulators
 Power 2 Go
 <&recipes>§lAccumulators§r serve as energy storage units. Input and output power is limited to one connector of the voltage of the accumulator per side.
 
-Side configuration can be adjusted with the hammer Blue corresponds to input, orange corresponds to output, and no colour marking preventing any connection at all.
+Side configuration can be adjusted with the hammer: Blue corresponds to input, orange corresponds to output, and no colour marking preventing any connection at all.
 
 Sneaking while configuring a side will configure the side opposite to the one that was clicked.
