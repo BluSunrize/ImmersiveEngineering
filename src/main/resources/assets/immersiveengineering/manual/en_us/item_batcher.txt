@@ -3,7 +3,7 @@ Come together, right now
 <&recipe>The Item Batcher is designed to collect a set of items from an inputting conveyor before sending them onwards, in order to transfer optimized batch sizes to machinery.<np>
 In §2batched mode§r, incoming items will be accepted into the inventory directly below the filters, and the collected batch will only be output when all filters are satisfied.<br>
 Once the output mode of the device has been adjusted to §2single mode§r, any item that satisfies its filtered quantity will be output instead.<br>
-The connections below the filters of the buffer set the target color of <link;redstone_wiring;redstone wire> through attached <link;redstone_wire;Redstone Interface Connectors;bundled>.<br>
+The connections below the filters of the buffer set the target color of <link;redstone_wiring;redstone wire> through attached <link;redstone_wiring;Redstone Interface Connectors;bundled>.<br>
 When each individual filter is satisfied, a high signal on its configured color will be sent out through the connector.<br>
 Note that if multiple filters use the same colour, all must be satisfied for a signal to output.<br>
 These signals can be used to configure machinery, displays, or other contraptions to control entire factories.
