@@ -17,9 +17,12 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -129,6 +132,11 @@ public class MixerMenu extends IEContainerMenu implements IESlot.ICallbackContai
 
 	public record SlotProgress(int slot, float progress)
 	{
+		public static final StreamCodec<ByteBuf, SlotProgress> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.INT, SlotProgress::slot,
+				ByteBufCodecs.FLOAT, SlotProgress::progress,
+				SlotProgress::new
+		);
 		public SlotProgress(FriendlyByteBuf buf)
 		{
 			this(buf.readVarInt(), buf.readFloat());

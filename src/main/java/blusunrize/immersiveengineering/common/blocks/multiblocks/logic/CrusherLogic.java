@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -213,27 +214,27 @@ public class CrusherLogic implements
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("energy", energy.serializeNBT());
-			nbt.put("processor", processor.toNBT());
+			nbt.put("energy", energy.serializeNBT(provider));
+			nbt.put("processor", processor.toNBT(provider));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			energy.deserializeNBT(nbt.get("energy"));
-			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new);
+			energy.deserializeNBT(provider, nbt.get("energy"));
+			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new, provider);
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putBoolean("renderActive", renderAsActive);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			renderAsActive = nbt.getBoolean("renderActive");
 		}

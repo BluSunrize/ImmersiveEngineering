@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -88,10 +89,10 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
-		super.defineSynchedData();
-		this.entityData.define(SHOOTER_PARAMETER, Optional.empty());
+		super.defineSynchedData(builder);
+		builder.define(SHOOTER_PARAMETER, Optional.empty());
 	}
 
 	@Nonnull

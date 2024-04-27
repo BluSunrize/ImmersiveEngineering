@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEFluids.FluidEntry;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -33,7 +34,7 @@ public class IEFluidBlock extends LiquidBlock
 	private static FluidEntry entryStatic;
 	private final FluidEntry entry;
 	@Nullable
-	private MobEffect effect;
+	private Holder<MobEffect> effect;
 	private int duration;
 	private int level;
 
@@ -69,7 +70,7 @@ public class IEFluidBlock extends LiquidBlock
 		return oldState.setValue(prop, copyFrom.getValue(prop));
 	}
 
-	public void setEffect(@Nonnull MobEffect effect, int duration, int level)
+	public void setEffect(@Nonnull Holder<MobEffect> effect, int duration, int level)
 	{
 		this.effect = effect;
 		this.duration = duration;

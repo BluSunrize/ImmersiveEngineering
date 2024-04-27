@@ -10,46 +10,34 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
-import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 
-public class MessageContainerData implements IMessage
+public record MessageContainerData(List<Pair<Integer, DataPair<?>>> synced) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("container_data");
-	private final List<Pair<Integer, DataPair<?>>> synced;
-
-	public MessageContainerData(List<Pair<Integer, DataPair<?>>> synced)
-	{
-		this.synced = synced;
-	}
-
-	public MessageContainerData(FriendlyByteBuf buf)
-	{
-		this(PacketUtils.readList(buf, pb -> Pair.of(pb.readVarInt(), GenericDataSerializers.read(pb))));
-	}
+	public static final Type<MessageContainerData> ID = IMessage.createType("container_data");
+	private static final StreamCodec<RegistryFriendlyByteBuf, Pair<Integer, DataPair<?>>> PAIR_CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, Pair::getFirst,
+			DataPair.CODEC, Pair::getSecond,
+			Pair::new
+	);
+	public static final StreamCodec<RegistryFriendlyByteBuf, MessageContainerData> CODEC = PAIR_CODEC
+			.apply(ByteBufCodecs.list())
+			.map(MessageContainerData::new, MessageContainerData::synced);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		PacketUtils.writeList(buf, synced, (pair, b) -> {
-			b.writeVarInt(pair.getFirst());
-			pair.getSecond().write(b);
-		});
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			AbstractContainerMenu currentContainer = ImmersiveEngineering.proxy.getClientPlayer().containerMenu;
 			if(currentContainer instanceof IEContainerMenu ieContainer)
 				ieContainer.receiveSync(synced);
@@ -57,7 +45,7 @@ public class MessageContainerData implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

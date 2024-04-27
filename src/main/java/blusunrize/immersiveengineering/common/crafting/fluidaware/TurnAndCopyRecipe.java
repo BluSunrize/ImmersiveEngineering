@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRec
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +71,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer matrix, RegistryAccess access)
+	public ItemStack assemble(@Nonnull CraftingContainer matrix, Provider access)
 	{
 		ItemStack out = super.assemble(matrix, access);
 		CompoundTag tag = new CompoundTag();

@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,7 +54,7 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		int oldLength = totalLength, oldPos = slopePosition;
 		totalLength = nbt.getInt("totalLength");
@@ -74,7 +75,7 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putInt("totalLength", totalLength);
 		nbt.putInt("slopePosition", slopePosition);

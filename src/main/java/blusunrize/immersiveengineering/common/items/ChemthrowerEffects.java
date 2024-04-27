@@ -123,7 +123,7 @@ public class ChemthrowerEffects
 					shot.discard();
 				world.setBlockAndUpdate(pos, StoneDecoration.CONCRETE_SPRAYED.defaultBlockState());
 				for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, aabb))
-					living.addEffect(new MobEffectInstance(IEPotions.CONCRETE_FEET.value(), Integer.MAX_VALUE));
+					living.addEffect(new MobEffectInstance(IEPotions.CONCRETE_FEET, Integer.MAX_VALUE));
 			}
 		});
 
@@ -161,14 +161,14 @@ public class ChemthrowerEffects
 			}
 		});
 
-		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE.value(), 140, 0));
+		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE, 140, 0));
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
-		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE.value(), 140, 1));
+		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE, 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
 		ChemthrowerHandler.registerFlammable(fluidAcetaldehyde);
-		ChemthrowerHandler.registerEffect(fluidResin, new ChemthrowerEffect_Potion(null, 0, IEPotions.STICKY.value(), 140, 1));
-		ChemthrowerHandler.registerEffect(fluidRedstoneAcid, new ChemthrowerEffect_Potion(null, 0, IEPotions.CONDUCTIVE.value(), 140, 1)
+		ChemthrowerHandler.registerEffect(fluidResin, new ChemthrowerEffect_Potion(null, 0, IEPotions.STICKY, 140, 1));
+		ChemthrowerHandler.registerEffect(fluidRedstoneAcid, new ChemthrowerEffect_Potion(null, 0, IEPotions.CONDUCTIVE, 140, 1)
 		{
 			@Override
 			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)

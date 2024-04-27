@@ -31,6 +31,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -66,16 +67,16 @@ public class TransformerBlockEntity extends AbstractTransformerBlockEntity imple
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("dummy", dummy);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		dummy = nbt.getInt("dummy");
 	}
 

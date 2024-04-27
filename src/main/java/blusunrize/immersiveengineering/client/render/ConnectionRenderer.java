@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.GAME)
 public class ConnectionRenderer implements ResourceManagerReloadListener
 {
 	private static final LoadingCache<SectionKey, List<RenderedSegment>> SEGMENT_CACHE = CacheBuilder.newBuilder()
@@ -232,7 +232,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 						.uv(v.texU, v.texV)
 						.overlayCoords(overlay)
 						.uv2(v.lightForStart?lightStart: lightEnd)
-						.normal(transform.last().normal(), v.normalX, v.normalY, v.normalZ)
+						.normal(transform.last(), v.normalX, v.normalY, v.normalZ)
 						.endVertex();
 		}
 	}

@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -200,13 +201,13 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		diagonal = nbt.getBoolean("diagonal");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putBoolean("diagonal", diagonal);
 	}

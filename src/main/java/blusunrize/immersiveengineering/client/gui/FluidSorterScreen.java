@@ -17,12 +17,15 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -64,6 +67,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
 	{
 		super.mouseClicked(mouseX, mouseY, mouseButton);
+		final RegistryAccess registries = Minecraft.getInstance().level.registryAccess();
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
 			{
@@ -71,13 +75,13 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 				{
 					ItemStack stack = menu.getCarried();
 					if(stack.isEmpty())
-						setFluidInSlot(side, i, FluidStack.EMPTY);
+						setFluidInSlot(side, i, FluidStack.EMPTY, registries);
 					else
 					{
 						int finalSide = side;
 						int finalI = i;
 						FluidUtil.getFluidContained(stack)
-								.ifPresent(fs -> setFluidInSlot(finalSide, finalI, fs));
+								.ifPresent(fs -> setFluidInSlot(finalSide, finalI, fs, registries));
 					}
 					return true;
 				}
@@ -146,13 +150,13 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 		}
 	}
 
-	public void setFluidInSlot(int side, int slot, FluidStack fluid)
+	public void setFluidInSlot(int side, int slot, FluidStack fluid, Provider provider)
 	{
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
-			tag.put("filter", fluid.writeToNBT(new CompoundTag()));
+			tag.put("filter", fluid.save(provider));
 		sendUpdateToServer(tag);
 	}
 

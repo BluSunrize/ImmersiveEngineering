@@ -24,6 +24,7 @@ import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -316,7 +317,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		sideFilter = nbt.getIntArray("sideFilter");
 		if(!descPacket)
@@ -328,7 +329,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putIntArray("sideFilter", sideFilter);
 		if(!descPacket)
@@ -343,7 +344,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false);
+		writeCustomNBT(stack.getOrCreateTag(), false, );
 		drop.accept(stack);
 	}
 
@@ -352,7 +353,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false);
+			readCustomNBT(stack.getOrCreateTag(), false, );
 	}
 
 	private final EnumMap<Direction, IItemHandler> insertionHandlers = new EnumMap<>(Direction.class);

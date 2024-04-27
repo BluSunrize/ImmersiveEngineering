@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes.MultiblockCon
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -22,7 +23,7 @@ public record MultiblockGui<S extends IMultiblockState>(
 		MultiblockContainer<S, ?> menu) implements IMultiblockComponent<S>
 {
 	@Override
-	public InteractionResult click(
+	public ItemInteractionResult click(
 			IMultiblockContext<S> ctx,
 			BlockPos posInMultiblock,
 			Player player,

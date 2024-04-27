@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltBlockEnti
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -34,7 +35,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -244,7 +244,7 @@ public abstract class ConveyorBase implements IConveyorBelt
 		validCoveyorCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingAlu));
 		validCoveyorCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingSteel));
 		validCoveyorCovers.add(input -> input==WoodenDecoration.TREATED_SCAFFOLDING.get());
-		validCoveyorCovers.add(b -> b.defaultBlockState().is(Tags.Blocks.GLASS));
+		validCoveyorCovers.add(b -> b.defaultBlockState().is(Tags.Blocks.GLASS_BLOCKS));
 	}
 
 	public void dropCover(Player player)

@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ArmorItem;
@@ -73,7 +73,7 @@ public class EarmuffsRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(CraftingContainer inv, Provider access)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -161,7 +161,7 @@ public class EarmuffsRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return new ItemStack(Misc.EARMUFFS, 1);
 	}

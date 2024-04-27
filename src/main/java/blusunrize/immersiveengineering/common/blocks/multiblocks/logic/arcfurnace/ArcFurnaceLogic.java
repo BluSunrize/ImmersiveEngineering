@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -116,8 +117,12 @@ public class ArcFurnaceLogic
 			return;
 		if(tickedAny)
 			for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
-				if(state.inventory.getStackInSlot(i).hurt(1, ApiUtils.RANDOM_SOURCE, null))
-					state.inventory.setStackInSlot(i, ItemStack.EMPTY);
+			{
+				int finalI = i;
+				state.inventory.getStackInSlot(i).hurtAndBreak(
+						1, ApiUtils.RANDOM_SOURCE, null, () -> state.inventory.setStackInSlot(finalI, ItemStack.EMPTY)
+				);
+			}
 
 		if(state.processor.getQueueSize() < state.processor.getMaxQueueSize())
 			enqueueProcesses(state, level.getRawLevel());
@@ -247,7 +252,7 @@ public class ArcFurnaceLogic
 				final ItemStack nextStack = state.inventory.getStackInSlot(j);
 				if(nextStack.isEmpty())
 					continue;
-				ItemStack stack = ItemHandlerHelper.copyStackWithSize(nextStack, 1);
+				ItemStack stack = nextStack.copyWithCount(1);
 				stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
 				if(stack.isEmpty())
 					nextStack.shrink(1);
@@ -259,7 +264,7 @@ public class ArcFurnaceLogic
 		if(slagOutputHandler!=null)
 		{
 			int out = Math.min(slagStack.getCount(), 16);
-			ItemStack stack = ItemHandlerHelper.copyStackWithSize(slagStack, out);
+			ItemStack stack = slagStack.copyWithCount(out);
 			stack = ItemHandlerHelper.insertItem(slagOutputHandler, stack, false);
 			out -= stack.getCount();
 			slagStack.shrink(out);
@@ -365,23 +370,23 @@ public class ArcFurnaceLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("energy", energy.serializeNBT());
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("energy", energy.serializeNBT(provider));
+			nbt.put("inventory", inventory.serializeNBT(provider));
 			nbt.put("processor", processor.toNBT());
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			energy.deserializeNBT(nbt.get("energy"));
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
-			processor.fromNBT(nbt.get("processor"), ArcFurnaceProcess::new);
+			energy.deserializeNBT(provider, nbt.get("energy"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
+			processor.fromNBT(nbt.get("processor"), (getRecipe, data, provider) -> new ArcFurnaceProcess(getRecipe, data), );
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putByte("electrodeMask", electrodePresence);
 			nbt.putBoolean("active", active);
@@ -390,7 +395,7 @@ public class ArcFurnaceLogic
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			electrodePresence = nbt.getByte("electrodeMask");
 			active = nbt.getBoolean("active");

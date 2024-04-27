@@ -8,79 +8,40 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.LevelStageRenders;
 import com.mojang.datafixers.util.Pair;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class MessageObstructedConnection implements IMessage
+public record MessageObstructedConnection(
+		Collection<BlockPos> blocking, SyncedConnection connection
+) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("obstructed_connection");
-	private final Vec3 start, end;
-	private final BlockPos startB, endB;
-	private final Collection<BlockPos> blocking;
-	private final WireType wireType;
+	public static final Type<MessageObstructedConnection> ID = IMessage.createType("obstructed_connection");
+	public static final StreamCodec<ByteBuf, MessageObstructedConnection> CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC.apply(ByteBufCodecs.collection(ArrayList::new)), MessageObstructedConnection::blocking,
+			SyncedConnection.CODEC, MessageObstructedConnection::connection,
+			MessageObstructedConnection::new
+	);
 
-	public MessageObstructedConnection(Connection conn, Collection<BlockPos> blocking)
+	@Override
+	public void process(IPayloadContext context)
 	{
-		this.blocking = blocking;
-		start = conn.getEndAOffset();
-		end = conn.getEndBOffset();
-		startB = conn.getEndA().position();
-		endB = conn.getEndB().position();
-		wireType = conn.type;
-	}
-
-	public MessageObstructedConnection(FriendlyByteBuf buf)
-	{
-		start = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		end = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		startB = buf.readBlockPos();
-		endB = buf.readBlockPos();
-		int count = buf.readInt();
-		blocking = new ArrayList<>(count);
-		for(int i = 0; i < count; ++i)
-			blocking.add(buf.readBlockPos());
-		wireType = WireType.getValue(buf.readUtf(100));
+		context.enqueueWork(() -> LevelStageRenders.FAILED_CONNECTIONS.put(
+				connection.toConnection(), Pair.of(blocking, new MutableInt(200))
+		));
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
-	{
-		buf.writeDouble(start.x).writeDouble(start.y).writeDouble(start.z);
-		buf.writeDouble(end.x).writeDouble(end.y).writeDouble(end.z);
-		buf.writeBlockPos(startB);
-		buf.writeBlockPos(endB);
-		buf.writeInt(blocking.size());
-		for(BlockPos b : blocking)
-			buf.writeBlockPos(b);
-		buf.writeUtf(wireType.getUniqueName());
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
-			Connection conn = new Connection(
-					wireType, new ConnectionPoint(startB, 0), new ConnectionPoint(endB, 0), start, end
-			);
-			LevelStageRenders.FAILED_CONNECTIONS.put(conn, Pair.of(blocking, new MutableInt(200)));
-		});
-	}
-
-	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

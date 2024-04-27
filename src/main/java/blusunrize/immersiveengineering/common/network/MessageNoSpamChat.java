@@ -8,39 +8,31 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.mixin.accessors.client.ChatComponentAccess;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 import java.util.Objects;
 
 public record MessageNoSpamChat(Component message) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("no_spam_chat");
-
-	public MessageNoSpamChat(FriendlyByteBuf buffer)
-	{
-		this(buffer.readComponent());
-	}
+	public static final Type<MessageNoSpamChat> ID = IMessage.createType("no_spam_chat");
+	public static final StreamCodec<RegistryFriendlyByteBuf, MessageNoSpamChat> CODEC = ComponentSerialization.TRUSTED_STREAM_CODEC
+			.map(MessageNoSpamChat::new, MessageNoSpamChat::message);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeComponent(message);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			final ChatComponent chat = Minecraft.getInstance().gui.getChat();
 			final ChatComponentAccess chatAccess = ((ChatComponentAccess)chat);
 			final List<GuiMessage> allMessages = chatAccess.getAllMessages();
@@ -51,7 +43,7 @@ public record MessageNoSpamChat(Component message) implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.ContainerData;
@@ -164,15 +165,15 @@ public class AdvBlastFurnaceLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			innerState.writeSaveNBT(nbt);
+			innerState.writeSaveNBT(nbt, );
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			innerState.readSaveNBT(nbt);
+			innerState.readSaveNBT(nbt, );
 		}
 
 		@Override

@@ -8,36 +8,27 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteRedstoneData;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record MessageRedstoneLevel(VoltmeterItem.RemoteRedstoneData data) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("redstone_level");
+	public static final Type<MessageRedstoneLevel> ID = IMessage.createType("redstone_level");
+	public static final StreamCodec<ByteBuf, MessageRedstoneLevel> CODEC = RemoteRedstoneData.STREAM_CODEC
+			.map(MessageRedstoneLevel::new, MessageRedstoneLevel::data);
 
-	public MessageRedstoneLevel(FriendlyByteBuf in)
+	@Override
+	public void process(IPayloadContext context)
 	{
-		this(RemoteRedstoneData.read(in));
+		context.enqueueWork(() -> VoltmeterItem.lastRedstoneUpdate = data);
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
-	{
-		data.write(buf);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> VoltmeterItem.lastRedstoneUpdate = data);
-	}
-
-	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

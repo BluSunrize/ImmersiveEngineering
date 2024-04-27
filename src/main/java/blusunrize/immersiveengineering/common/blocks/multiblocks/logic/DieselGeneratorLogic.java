@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -217,29 +218,29 @@ public class DieselGeneratorLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("tank0", tank.writeToNBT(new CompoundTag()));
+			nbt.put("tank0", tank.writeToNBT(provider, new CompoundTag()));
 			nbt.putBoolean("active", active);
 			nbt.putInt("consumeTick", consumeTick);
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			tank.readFromNBT(nbt.getCompound("tank0"));
+			tank.readFromNBT(provider, nbt.getCompound("tank0"));
 			active = nbt.getBoolean("active");
 			consumeTick = nbt.getInt("consumeTick");
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putBoolean("active", active);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			final boolean oldActive = active;
 			active = nbt.getBoolean("active");

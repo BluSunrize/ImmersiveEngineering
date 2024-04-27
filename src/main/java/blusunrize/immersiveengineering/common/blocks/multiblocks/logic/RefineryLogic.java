@@ -35,10 +35,11 @@ import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraintGroup;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -153,13 +154,13 @@ public class RefineryLogic
 	}
 
 	@Override
-	public InteractionResult click(
+	public ItemInteractionResult click(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock,
 			Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient
 	)
 	{
 		if(isClient)
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		final State state = ctx.getState();
 		IFluidHandler tank = null;
 		if(FLUID_INPUTS.contains(posInMultiblock))
@@ -173,7 +174,7 @@ public class RefineryLogic
 		}
 		else
 			player.openMenu(IEMenuTypes.REFINERY.provide(ctx, posInMultiblock));
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -215,31 +216,35 @@ public class RefineryLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("energy", energy.serializeNBT());
-			nbt.put("tanks", tanks.toNBT());
-			nbt.put("processor", processor.toNBT());
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("energy", energy.serializeNBT(provider));
+			nbt.put("tanks", tanks.toNBT(provider));
+			nbt.put("processor", processor.toNBT(provider));
+			nbt.put("inventory", inventory.serializeNBT(provider));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			energy.deserializeNBT(nbt.get("energy"));
-			tanks.readNBT(nbt.getCompound("tanks"));
-			processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			energy.deserializeNBT(provider, nbt.get("energy"));
+			tanks.readNBT(provider, nbt.getCompound("tanks"));
+			processor.fromNBT(
+					nbt.get("processor"),
+					(getRecipe, data, p) -> new MultiblockProcessInMachine<>(getRecipe, data),
+					provider
+			);
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putBoolean("active", active);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			active = nbt.getBoolean("active");
 		}
@@ -272,20 +277,20 @@ public class RefineryLogic
 			this(new FluidTank(VOLUME), new FluidTank(VOLUME), new FluidTank(VOLUME));
 		}
 
-		public Tag toNBT()
+		public Tag toNBT(Provider provider)
 		{
 			CompoundTag tag = new CompoundTag();
-			tag.put("leftIn", leftInput.writeToNBT(new CompoundTag()));
-			tag.put("rightIn", rightInput.writeToNBT(new CompoundTag()));
-			tag.put("out", output.writeToNBT(new CompoundTag()));
+			tag.put("leftIn", leftInput.writeToNBT(provider, new CompoundTag()));
+			tag.put("rightIn", rightInput.writeToNBT(provider, new CompoundTag()));
+			tag.put("out", output.writeToNBT(provider, new CompoundTag()));
 			return tag;
 		}
 
-		public void readNBT(CompoundTag tag)
+		public void readNBT(Provider provider, CompoundTag tag)
 		{
-			leftInput.readFromNBT(tag.getCompound("leftIn"));
-			rightInput.readFromNBT(tag.getCompound("rightIn"));
-			output.readFromNBT(tag.getCompound("out"));
+			leftInput.readFromNBT(provider, tag.getCompound("leftIn"));
+			rightInput.readFromNBT(provider, tag.getCompound("rightIn"));
+			output.readFromNBT(provider, tag.getCompound("out"));
 		}
 	}
 }

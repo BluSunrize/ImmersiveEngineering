@@ -108,7 +108,7 @@ public class BasicClientProperties implements MultiblockManualData
 		List<BakedQuad> nullQuads = model.get().getNullQuads();
 		VertexConsumer buffer = bufferSource.getBuffer(IERenderTypes.TRANSLUCENT_FULLBRIGHT);
 		nullQuads.forEach(quad -> buffer.putBulkData(
-				transform.last(), quad, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY
+				transform.last(), quad, 1, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY
 		));
 		transform.popPose();
 	}

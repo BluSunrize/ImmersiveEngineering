@@ -10,44 +10,30 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageBirthdayParty implements IMessage
+public record MessageBirthdayParty(int entityID) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("birthday_party");
-	int entityId;
-
-	public MessageBirthdayParty(LivingEntity entity)
-	{
-		this.entityId = entity.getId();
-	}
-
-	public MessageBirthdayParty(FriendlyByteBuf buf)
-	{
-		entityId = buf.readInt();
-	}
+	public static final Type<MessageBirthdayParty> ID = IMessage.createType("birthday_party");
+	public static final StreamCodec<ByteBuf, MessageBirthdayParty> CODEC = ByteBufCodecs.INT
+			.map(MessageBirthdayParty::new, MessageBirthdayParty::entityID);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeInt(this.entityId);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{
-				Entity entity = world.getEntity(entityId);
+				Entity entity = world.getEntity(entityID);
 				if(entity!=null&&entity instanceof LivingEntity)
 				{
 					world.createFireworks(entity.getX(), entity.getY(), entity.getZ(), 0, 0, 0, Utils.getRandomFireworkExplosion(ApiUtils.RANDOM, 4));
@@ -58,7 +44,7 @@ public class MessageBirthdayParty implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

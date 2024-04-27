@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -143,7 +144,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		int[] sideCfgArray = nbt.getIntArray("sideConfig");
 		if(sideCfgArray.length < 2)
@@ -151,28 +152,28 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		sideConfig.clear();
 		for(int i = 0; i < sideCfgArray.length; ++i)
 			sideConfig.put(Direction.from3DDataValue(i), IOSideConfig.VALUES[sideCfgArray[i]]);
-		this.readTank(nbt);
+		this.readTank(provider, nbt);
 	}
 
-	public void readTank(CompoundTag nbt)
+	public void readTank(Provider provider, CompoundTag nbt)
 	{
-		tank.readFromNBT(nbt.getCompound("tank"));
+		tank.readFromNBT(provider, nbt.getCompound("tank"));
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		int[] sideCfgArray = new int[2];
 		sideCfgArray[0] = sideConfig.get(Direction.DOWN).ordinal();
 		sideCfgArray[1] = sideConfig.get(Direction.UP).ordinal();
 		nbt.putIntArray("sideConfig", sideCfgArray);
-		this.writeTank(nbt, false);
+		this.writeTank(provider, nbt, false);
 	}
 
-	public void writeTank(CompoundTag nbt, boolean toItem)
+	public void writeTank(Provider provider, CompoundTag nbt, boolean toItem)
 	{
 		boolean write = tank.getFluidAmount() > 0;
-		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
+		CompoundTag tankTag = tank.writeToNBT(provider, new CompoundTag());
 		if(!toItem||write)
 			nbt.put("tank", tankTag);
 	}

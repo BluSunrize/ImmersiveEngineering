@@ -13,15 +13,14 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.fx.*;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 
 public class IEParticles
 {
@@ -30,7 +29,7 @@ public class IEParticles
 	);
 
 	public static final DeferredHolder<ParticleType<?>, ParticleType<FluidSplashOptions>> FLUID_SPLASH = REGISTER.register(
-			"fluid_splash", () -> new IEParticleType<>(false, new FluidSplashOptions.DataDeserializer(), FluidSplashOptions.CODEC)
+			"fluid_splash", () -> new IEParticleType<>(false, FluidSplashOptions.STREAM_CODEC, FluidSplashOptions.CODEC)
 	);
 	public static final DeferredHolder<ParticleType<?>, ParticleType<FractalOptions>> FRACTAL = REGISTER.register(
 			"fractal", () -> new IEParticleType<>(false, new FractalOptions.DataDeserializer(), FractalOptions.CODEC)

@@ -142,7 +142,7 @@ public class ShaderManualElement extends SpecialManualElements
 					Component.literal(I18n.get("ie.manual.entry.shaderList.order")+" "+cost+"x   ").withStyle(ChatFormatting.BOLD),
 					btn -> {
 						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.getAbilities().instabuild)
-							PacketDistributor.SERVER.noArg().send(
+							PacketDistributor.sendToServer(
 									new MessageShaderManual(MessageType.SPAWN, shader.getName())
 							);
 						gui.fullInit();
@@ -157,7 +157,7 @@ public class ShaderManualElement extends SpecialManualElements
 						Component.translatable("ie.manual.entry.shaderList.unlock"),
 						btn -> {
 							UUID playerId = mc().player.getUUID();
-							PacketDistributor.SERVER.noArg().send(new MessageShaderManual(MessageType.UNLOCK, shader.getName()));
+							PacketDistributor.sendToServer(new MessageShaderManual(MessageType.UNLOCK, shader.getName()));
 							ShaderRegistry.receivedShaders.put(playerId, shader.getName());
 							gui.fullInit();
 						})

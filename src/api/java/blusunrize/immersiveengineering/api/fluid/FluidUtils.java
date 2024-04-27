@@ -8,8 +8,7 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
-import blusunrize.immersiveengineering.api.IEDataComponents;
-import net.minecraft.nbt.CompoundTag;
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +22,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.math.Fraction;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -51,7 +49,7 @@ public class FluidUtils
 	{
 		FluidStack fs = stack.copyWithAmount(amount);
 		if(stripPressure)
-			fs.remove(IEDataComponents.FLUID_PRESSURIZED);
+			fs.remove(IEApiDataComponents.FLUID_PRESSURIZED);
 		return fs;
 	}
 

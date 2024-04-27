@@ -10,45 +10,37 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.common.crafting.RevolverAssemblyRecipe;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class RevolverAssemblyRecipeSerializer implements RecipeSerializer<RevolverAssemblyRecipe>
 {
-	public static final Codec<RevolverAssemblyRecipe> CODEC = Codec.pair(
-			RecipeSerializer.SHAPED_RECIPE.codec(),
-			ExtraCodecs.strictOptionalField(Codec.INT.listOf(), "copyNBT", List.of()).codec()
-	).xmap(
-			p -> new RevolverAssemblyRecipe(p.getFirst(), p.getSecond()),
-			r -> Pair.of(r.toVanilla(), r.getCopyTargets())
+	public static final MapCodec<RevolverAssemblyRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+			RecipeSerializer.SHAPED_RECIPE.codec().forGetter(RevolverAssemblyRecipe::toVanilla),
+			Codec.INT.listOf().optionalFieldOf("copyNBT", List.of()).forGetter(RevolverAssemblyRecipe::getCopyTargets)
+	).apply(inst, RevolverAssemblyRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, RevolverAssemblyRecipe> STREAM_CODEC = StreamCodec.composite(
+			RecipeSerializer.SHAPED_RECIPE.streamCodec(), RevolverAssemblyRecipe::toVanilla,
+			ByteBufCodecs.INT.apply(ByteBufCodecs.list()), RevolverAssemblyRecipe::getCopyTargets,
+			RevolverAssemblyRecipe::new
 	);
 
 	@Override
-	public Codec<RevolverAssemblyRecipe> codec()
+	public MapCodec<RevolverAssemblyRecipe> codec()
 	{
 		return CODEC;
 	}
 
-	@Nonnull
 	@Override
-	public RevolverAssemblyRecipe fromNetwork(@Nonnull FriendlyByteBuf buffer)
+	public StreamCodec<RegistryFriendlyByteBuf, RevolverAssemblyRecipe> streamCodec()
 	{
-		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(buffer);
-		List<Integer> copySlots = buffer.readList(FriendlyByteBuf::readVarInt);
-		return new RevolverAssemblyRecipe(basic, copySlots);
-	}
-
-	@Override
-	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RevolverAssemblyRecipe recipe)
-	{
-		RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.toVanilla());
-		buffer.writeCollection(recipe.getCopyTargets(), FriendlyByteBuf::writeVarInt);
+		return STREAM_CODEC;
 	}
 }

@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ByteTag;
@@ -55,15 +56,15 @@ public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInv
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		ContainerHelper.loadAllItems(nbt, inventory);
+		ContainerHelper.loadAllItems(nbt, inventory, provider);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		ContainerHelper.saveAllItems(nbt, inventory);
+		ContainerHelper.saveAllItems(nbt, inventory, provider);
 	}
 
 	public AABB renderAABB;

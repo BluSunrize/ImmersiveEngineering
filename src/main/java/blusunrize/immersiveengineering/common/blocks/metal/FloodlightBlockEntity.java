@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Comp
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -297,9 +298,9 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		energyStorage = nbt.getInt("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
 		facing = Direction.from3DDataValue(nbt.getInt("facing"));
@@ -327,9 +328,9 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("energyStorage", energyStorage);
 		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
 		nbt.putInt("facing", facing.ordinal());

@@ -9,47 +9,32 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageSpeedloaderSync implements IMessage
+public record MessageSpeedloaderSync(int slot, InteractionHand hand) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("speedloader_sync");
-	private final int slot;
-	private final InteractionHand hand;
-
-	public MessageSpeedloaderSync(int slot, InteractionHand hand)
-	{
-		this.slot = slot;
-		this.hand = hand;
-	}
-
-	public MessageSpeedloaderSync(FriendlyByteBuf buf)
-	{
-		slot = buf.readByte();
-		hand = InteractionHand.values()[buf.readByte()];
-	}
+	public static final Type<MessageSpeedloaderSync> ID = IMessage.createType("speedloader_sync");
+	public static final StreamCodec<ByteBuf, MessageSpeedloaderSync> CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, MessageSpeedloaderSync::slot,
+			ByteBufCodecs.idMapper(i -> InteractionHand.values()[i], InteractionHand::ordinal), MessageSpeedloaderSync::hand,
+			MessageSpeedloaderSync::new
+	);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeByte(slot);
-		buf.writeByte(hand.ordinal());
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			Player player = ImmersiveEngineering.proxy.getClientPlayer();
 			if(player!=null)
 			{
@@ -64,7 +49,7 @@ public class MessageSpeedloaderSync implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

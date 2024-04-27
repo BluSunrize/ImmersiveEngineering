@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -51,7 +52,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -350,43 +350,43 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			ListTag tanks = new ListTag();
 			for(FluidTank tank : this.tanks)
-				tanks.add(tank.writeToNBT(new CompoundTag()));
+				tanks.add(tank.writeToNBT(provider, new CompoundTag()));
 			ListTag patterns = new ListTag();
 			for(CrafterPatternInventory pattern : this.patterns)
-				patterns.add(pattern.writeToNBT());
+				patterns.add(pattern.writeToNBT(provider));
 			nbt.put("tanks", tanks);
 			nbt.put("patterns", patterns);
 			nbt.putBoolean("recursiveIngredients", recursiveIngredients);
 			nbt.put("inventory", inventory.serializeNBT());
-			nbt.put("energy", energy.serializeNBT());
+			nbt.put("energy", energy.serializeNBT(provider));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			ListTag tanks = nbt.getList("tanks", Tag.TAG_COMPOUND);
 			for(int i = 0; i < NUM_TANKS; ++i)
-				this.tanks[i].readFromNBT(tanks.getCompound(i));
+				this.tanks[i].readFromNBT(provider, tanks.getCompound(i));
 			ListTag patterns = nbt.getList("patterns", Tag.TAG_LIST);
 			for(int i = 0; i < NUM_PATTERNS; ++i)
-				this.patterns[i].readFromNBT(patterns.getList(i));
+				this.patterns[i].readFromNBT(patterns.getList(i), provider);
 			recursiveIngredients = nbt.getBoolean("recursiveIngredients");
 			inventory.deserializeNBT(nbt.getCompound("inventory"));
-			energy.deserializeNBT(nbt.get("energy"));
+			energy.deserializeNBT(provider, nbt.get("energy"));
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putBoolean("shouldPlaySound", shouldPlaySound);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			shouldPlaySound = nbt.getBoolean("shouldPlaySound");
 		}

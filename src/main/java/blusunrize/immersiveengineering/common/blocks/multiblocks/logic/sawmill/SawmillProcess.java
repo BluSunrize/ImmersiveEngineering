@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill;
 
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -113,10 +114,10 @@ public class SawmillProcess
 		return getRelativeProcessStep(level) > .5375&&!this.sawed;
 	}
 
-	public CompoundTag writeToNBT()
+	public CompoundTag writeToNBT(Provider provider)
 	{
 		CompoundTag nbt = new CompoundTag();
-		nbt.put("input", this.input.save(new CompoundTag()));
+		nbt.put("input", this.input.save(provider));
 		nbt.putInt("processTick", this.processTick);
 		nbt.putBoolean("stripped", this.stripped);
 		nbt.putBoolean("sawed", this.sawed);
@@ -133,9 +134,9 @@ public class SawmillProcess
 		return input;
 	}
 
-	public static SawmillProcess readFromNBT(CompoundTag nbt)
+	public static SawmillProcess readFromNBT(CompoundTag nbt, Provider provider)
 	{
-		ItemStack input = ItemStack.of(nbt.getCompound("input"));
+		ItemStack input = ItemStack.parseOptional(provider, nbt.getCompound("input"));
 		SawmillProcess process = new SawmillProcess(input);
 		process.processTick = nbt.getInt("processTick");
 		process.stripped = nbt.getBoolean("stripped");

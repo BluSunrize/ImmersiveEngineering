@@ -9,18 +9,18 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,13 +38,16 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	private static final Codec<IngredientWithSize> SINGLE_CODEC = Ingredient.CODEC.xmap(
 			IngredientWithSize::new, IngredientWithSize::getBaseIngredient
 	);
-	public static final Codec<IngredientWithSize> CODEC = Codec.either(COUNT_CODEC, SINGLE_CODEC)
-			.xmap(
-					e -> e.map(Function.identity(), Function.identity()),
-					iws -> iws.count==1?Either.right(iws): Either.left(iws)
-			);
+	public static final Codec<IngredientWithSize> CODEC = Codec.either(COUNT_CODEC, SINGLE_CODEC).xmap(
+			e -> e.map(Function.identity(), Function.identity()),
+			iws -> iws.count==1?Either.right(iws): Either.left(iws)
+	);
+	public static final StreamCodec<RegistryFriendlyByteBuf, IngredientWithSize> STREAM_CODEC = StreamCodec.composite(
+			Ingredient.CONTENTS_STREAM_CODEC, i -> i.basePredicate,
+			ByteBufCodecs.INT, i -> i.count,
+			IngredientWithSize::new
+	);
 
-	public static final SetRestrictedField<IIngredientWithSizeSerializer> SERIALIZER = SetRestrictedField.common();
 	protected final Ingredient basePredicate;
 	protected final int count;
 
@@ -69,11 +72,6 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		this(basePredicate, 1);
 	}
 
-	public static IngredientWithSize read(FriendlyByteBuf input)
-	{
-		return SERIALIZER.get().parse(input);
-	}
-
 	@Override
 	public boolean test(@Nullable ItemStack itemStack)
 	{
@@ -88,7 +86,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		ItemStack[] baseStacks = basePredicate.getItems();
 		ItemStack[] ret = new ItemStack[baseStacks.length];
 		for(int i = 0; i < baseStacks.length; ++i)
-			ret[i] = ItemHandlerHelper.copyStackWithSize(baseStacks[i], this.count);
+			ret[i] = baseStacks[i].copyWithCount(this.count);
 		return ret;
 	}
 
@@ -141,10 +139,5 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	public boolean testIgnoringSize(ItemStack itemstack)
 	{
 		return basePredicate.test(itemstack);
-	}
-
-	public void write(FriendlyByteBuf out)
-	{
-		SERIALIZER.get().write(out, this);
 	}
 }

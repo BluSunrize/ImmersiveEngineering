@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.IListRecipe;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -100,7 +100,7 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return ItemStack.EMPTY;
 	}

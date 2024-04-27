@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -35,14 +35,14 @@ public interface IMultiblockComponent<State>
 	{
 	}
 
-	default InteractionResult click(
+	default ItemInteractionResult click(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock, Player player,
 			InteractionHand hand,
 			BlockHitResult absoluteHit,
 			boolean isClient
 	)
 	{
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	/**

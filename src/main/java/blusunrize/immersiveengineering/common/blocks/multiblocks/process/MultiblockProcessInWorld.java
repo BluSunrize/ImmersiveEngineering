@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -52,12 +53,12 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe>
 	}
 
 	public MultiblockProcessInWorld(
-			BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data
+			BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data, Provider provider
 	)
 	{
 		super(getRecipe, data);
 		this.inputItems = NonNullList.withSize(data.getInt("numInputs"), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(data, this.inputItems);
+		ContainerHelper.loadAllItems(data, this.inputItems, provider);
 		this.transformationPoint = data.getFloat("process_transformationPoint");
 	}
 
@@ -79,9 +80,9 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe>
 	}
 
 	@Override
-	public void writeExtraDataToNBT(CompoundTag nbt)
+	public void writeExtraDataToNBT(CompoundTag nbt, Provider provider)
 	{
-		ContainerHelper.saveAllItems(nbt, inputItems);
+		ContainerHelper.saveAllItems(nbt, inputItems, provider);
 		nbt.putInt("numInputs", inputItems.size());
 		nbt.putFloat("process_transformationPoint", transformationPoint);
 	}

@@ -25,10 +25,11 @@ import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -112,7 +113,7 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 	}
 
 	@Override
-	public InteractionResult click(
+	public ItemInteractionResult click(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock,
 			Player player, InteractionHand hand, BlockHitResult absoluteHit,
 			boolean isClient
@@ -121,10 +122,10 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		if(FluidUtils.interactWithFluidHandler(player, hand, ctx.getState().tank))
 		{
 			ctx.markDirtyAndSync();
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		else
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	public static class State implements IMultiblockState
@@ -156,27 +157,27 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			tank.readFromNBT(nbt.getCompound("tank"));
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			writeSaveNBT(nbt);
+			writeSaveNBT(nbt, provider);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			readSaveNBT(nbt);
+			readSaveNBT(nbt, provider);
 		}
 	}
 }

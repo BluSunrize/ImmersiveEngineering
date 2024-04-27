@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
@@ -34,6 +35,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -73,7 +75,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
 public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPipe, IColouredBE, IPlayerInteraction,
 		IHammerInteraction, IPlacementInteraction, ISelectionBounds, ICollisionBounds, IAdditionalDrops
 {
@@ -202,7 +204,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		int[] config = nbt.getIntArray("sideConfig");
 		for(int i = 0; i < 6; ++i)
@@ -240,7 +242,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		int[] config = new int[6];
 		for(int i = 0; i < 6; ++i)
@@ -434,8 +436,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				return pressurizedOutput.getMaxAcceptedFluidAmount(resource);
 
 			return IFluidPipe.getTransferableAmount(
-					(resource.hasTag()&&resource.getOrCreateTag().contains(IFluidPipe.NBT_PRESSURIZED))
-							||pipe.canOutputPressurized(target, false)
+					resource.has(IEApiDataComponents.FLUID_PRESSURIZED)||pipe.canOutputPressurized(target, false)
 			);
 		}
 

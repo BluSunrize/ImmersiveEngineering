@@ -13,13 +13,12 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 
 import java.util.Set;
-import java.util.Map;
 import java.util.function.Predicate;
 
 public class SawbladeItem extends IEBaseItem
@@ -88,8 +87,9 @@ public class SawbladeItem extends IEBaseItem
 		return true;
 	}
 
-	public void modifyEnchants(Map<Enchantment, Integer> baseEnchants)
+	public ItemEnchantments modifyEnchants(ItemEnchantments baseEnchants)
 	{
+		return baseEnchants;
 	}
 
 	public Predicate<BlockState> getSawbladeMaterials()

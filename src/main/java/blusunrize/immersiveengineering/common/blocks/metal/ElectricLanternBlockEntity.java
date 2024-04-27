@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -96,16 +97,16 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		energyStorage = nbt.getInt("energyStorage");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("energyStorage", energyStorage);
 	}
 

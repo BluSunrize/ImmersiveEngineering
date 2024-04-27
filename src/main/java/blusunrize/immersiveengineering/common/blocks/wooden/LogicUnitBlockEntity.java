@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
@@ -83,16 +84,16 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		ContainerHelper.loadAllItems(nbt, inventory);
+		ContainerHelper.loadAllItems(nbt, inventory, provider);
 		updateOutputs();
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		ContainerHelper.saveAllItems(nbt, inventory);
+		ContainerHelper.saveAllItems(nbt, inventory, provider);
 	}
 
 	@Override
@@ -111,7 +112,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false);
+			readCustomNBT(stack.getOrCreateTag(), false, );
 	}
 
 	@Override

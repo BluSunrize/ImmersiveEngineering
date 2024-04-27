@@ -8,53 +8,38 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageMaintenanceKit implements IMessage
+public record MessageMaintenanceKit(EquipmentSlot slot, CompoundTag nbt) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("maintenance_kit");
-	EquipmentSlot slot;
-	CompoundTag nbt;
-
-	public MessageMaintenanceKit(EquipmentSlot slot, CompoundTag nbt)
-	{
-		this.slot = slot;
-		this.nbt = nbt;
-	}
-
-	public MessageMaintenanceKit(FriendlyByteBuf buf)
-	{
-		this.slot = EquipmentSlot.byName(buf.readUtf(100));
-		this.nbt = buf.readNbt();
-	}
+	public static final Type<MessageMaintenanceKit> ID = IMessage.createType("maintenance_kit");
+	public static final StreamCodec<ByteBuf, MessageMaintenanceKit> CODEC = StreamCodec.composite(
+			ByteBufCodecs.idMapper(i -> EquipmentSlot.values()[i], EquipmentSlot::ordinal), MessageMaintenanceKit::slot,
+			ByteBufCodecs.COMPOUND_TAG, MessageMaintenanceKit::nbt,
+			MessageMaintenanceKit::new
+	);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeUtf(this.slot.getName());
-		buf.writeNbt(this.nbt);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		Player player = context.player().orElseThrow();
-		context.workHandler().execute(() -> {
+		Player player = context.player();
+		context.enqueueWork(() -> {
 			if(player.containerMenu instanceof MaintenanceKitContainer)
 				ModWorkbenchBlockEntity.applyConfigTo(player.containerMenu.slots.get(0).getItem(), nbt);
 		});
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

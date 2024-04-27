@@ -16,6 +16,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,10 +54,10 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
-		super.defineSynchedData();
-		this.entityData.define(dataMarker_colour, -1);
+		super.defineSynchedData(builder);
+		builder.define(dataMarker_colour, -1);
 	}
 
 	public void setColourSynced()

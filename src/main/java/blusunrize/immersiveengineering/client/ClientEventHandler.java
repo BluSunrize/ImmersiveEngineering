@@ -95,15 +95,12 @@ import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
-import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
@@ -146,7 +143,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						{
 							if(((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
 									((IEShieldItem)held.getItem()).getUpgrades(held).contains("prevSlot"))
-								PacketDistributor.SERVER.noArg().send(new MessageMagnetEquip(-1));
+								PacketDistributor.sendToServer(new MessageMagnetEquip(-1));
 						}
 						else
 						{
@@ -154,7 +151,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 							{
 								ItemStack s = player.getInventory().items.get(i);
 								if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-									PacketDistributor.SERVER.noArg().send(new MessageMagnetEquip(i));
+									PacketDistributor.sendToServer(new MessageMagnetEquip(i));
 							}
 						}
 					}
@@ -166,7 +163,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				{
 					ItemStack held = event.player.getItemInHand(InteractionHand.MAIN_HAND);
 					if(held.getItem() instanceof IScrollwheel)
-						PacketDistributor.SERVER.noArg().send(new MessageScrollwheelItem(true));
+						PacketDistributor.sendToServer(new MessageScrollwheelItem(true));
 				}
 
 				if(!IEKeybinds.keybind_railgunZoom.isUnbound()&&IEKeybinds.keybind_railgunZoom.consumeClick())
@@ -552,7 +549,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		boolean matches = VoltmeterItem.lastEnergyUpdate.pos().equals(pos);
 		long sinceLast = player.level().getGameTime()-VoltmeterItem.lastEnergyUpdate.measuredInTick();
 		if(!matches||sinceLast > 20)
-			PacketDistributor.SERVER.noArg().send(new MessageRequestEnergyUpdate(pos));
+			PacketDistributor.sendToServer(new MessageRequestEnergyUpdate(pos));
 
 		if(VoltmeterItem.lastEnergyUpdate.isValid()&&matches)
 		{
@@ -569,7 +566,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			matches = VoltmeterItem.lastRedstoneUpdate.pos().equals(pos.leftNonnull());
 			sinceLast = player.level().getGameTime()-VoltmeterItem.lastRedstoneUpdate.measuredInTick();
 			if(!matches||sinceLast > 20)
-				PacketDistributor.SERVER.noArg().send(new MessageRequestRedstoneUpdate(pos.leftNonnull()));
+				PacketDistributor.sendToServer(new MessageRequestRedstoneUpdate(pos.leftNonnull()));
 
 			if(VoltmeterItem.lastRedstoneUpdate.isSignalSource()&&matches)
 			{
@@ -602,9 +599,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onFogUpdate(ViewportEvent.RenderFog event)
 	{
-		if(event.getCamera().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED.value()))
+		if(event.getCamera().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED))
 		{
-			MobEffectInstance effect = living.getEffect(IEPotions.FLASHED.value());
+			MobEffectInstance effect = living.getEffect(IEPotions.FLASHED);
 			int timeLeft = effect.getDuration();
 			float saturation = Math.max(0.25f, 1-timeLeft/(float)(80+40*effect.getAmplifier()));//Total Time =  4s + 2s per amplifier
 
@@ -621,7 +618,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onFogColourUpdate(ViewportEvent.ComputeFogColor event)
 	{
 		Entity e = event.getCamera().getEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.FLASHED.value()))
+		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.FLASHED))
 		{
 			event.setRed(1);
 			event.setGreen(1);
@@ -647,7 +644,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
-		if(player.getEffect(IEPotions.CONCRETE_FEET.value())!=null)
+		if(player.getEffect(IEPotions.CONCRETE_FEET)!=null)
 			event.setNewFovModifier(1);
 	}
 
@@ -677,12 +674,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			{
 				if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
-					PacketDistributor.SERVER.noArg().send(new MessageScrollwheelItem(event.getScrollDeltaY() < 0));
+					PacketDistributor.sendToServer(new MessageScrollwheelItem(event.getScrollDeltaY() < 0));
 					event.setCanceled(true);
 				}
 				if(equipped.getItem() instanceof RevolverItem)
 				{
-					PacketDistributor.SERVER.noArg().send(new MessageRevolverRotate(event.getScrollDeltaY() < 0));
+					PacketDistributor.sendToServer(new MessageRevolverRotate(event.getScrollDeltaY() < 0));
 					event.setCanceled(true);
 				}
 			}
@@ -744,24 +741,23 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 
 				float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-eps: targetedBB.maxY+eps);
 				Matrix4f mat = transform.last().pose();
-				Matrix3f matN = transform.last().normal();
 				VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
 				float sqrt2Half = (float)(Math.sqrt(2)/2);
 				lineBuilder.vertex(mat, 0-eps, y, 0-eps)
 						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, sqrt2Half)
+						.normal(transform.last(), sqrt2Half, 0, sqrt2Half)
 						.endVertex();
 				lineBuilder.vertex(mat, 1+eps, y, 1+eps)
 						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, sqrt2Half)
+						.normal(transform.last(), sqrt2Half, 0, sqrt2Half)
 						.endVertex();
 				lineBuilder.vertex(mat, 0-eps, y, 1+eps)
 						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, -sqrt2Half)
+						.normal(transform.last(), sqrt2Half, 0, -sqrt2Half)
 						.endVertex();
 				lineBuilder.vertex(mat, 1+eps, y, 0-eps)
 						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, -sqrt2Half)
+						.normal(transform.last(), sqrt2Half, 0, -sqrt2Half)
 						.endVertex();
 
 				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getLocation().x-pos.getX()-.5f;
@@ -820,6 +816,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
 		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart)
-			PacketDistributor.SERVER.noArg().send(new MessageMinecartShaderSync(event.getEntity()));
+			PacketDistributor.sendToServer(new MessageMinecartShaderSync(event.getEntity()));
 	}
 }

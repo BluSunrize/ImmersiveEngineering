@@ -19,6 +19,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.regex.Pattern;
 
+@Deprecated(forRemoval = true)
 public class ItemNBTHelper
 {
 	public static boolean hasTag(ItemStack stack)
@@ -177,7 +178,8 @@ public class ItemNBTHelper
 						case Tag.TAG_LONG -> target.putLong(key, (target.getLong(key)+add.getLong(key)));
 						case Tag.TAG_FLOAT -> target.putFloat(key, (target.getFloat(key)+add.getFloat(key)));
 						case Tag.TAG_DOUBLE -> target.putDouble(key, (target.getDouble(key)+add.getDouble(key)));
-						case Tag.TAG_BYTE_ARRAY -> {
+						case Tag.TAG_BYTE_ARRAY ->
+						{
 							byte[] bytesTarget = target.getByteArray(key);
 							byte[] bytesAdd = add.getByteArray(key);
 							byte[] bytes = new byte[bytesTarget.length+bytesAdd.length];
@@ -186,14 +188,16 @@ public class ItemNBTHelper
 							target.putByteArray(key, bytes);
 						}
 						case Tag.TAG_STRING -> target.putString(key, (target.getString(key)+add.getString(key)));
-						case Tag.TAG_LIST -> {
+						case Tag.TAG_LIST ->
+						{
 							ListTag listTarget = (ListTag)target.get(key);
 							ListTag listAdd = (ListTag)add.get(key);
 							listTarget.addAll(listAdd);
 							target.put(key, listTarget);
 						}
 						case Tag.TAG_COMPOUND -> combineTags(target.getCompound(key), add.getCompound(key), null);
-						case Tag.TAG_INT_ARRAY -> {
+						case Tag.TAG_INT_ARRAY ->
+						{
 							int[] intsTarget = target.getIntArray(key);
 							int[] intsAdd = add.getIntArray(key);
 							int[] ints = new int[intsTarget.length+intsAdd.length];

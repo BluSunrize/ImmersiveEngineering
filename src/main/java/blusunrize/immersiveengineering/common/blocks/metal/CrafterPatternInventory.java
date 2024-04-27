@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -40,7 +41,7 @@ public class CrafterPatternInventory
 		this.inv.set(9, recipe!=null?recipe.assemble(invC, level.registryAccess()): ItemStack.EMPTY);
 	}
 
-	public ListTag writeToNBT()
+	public ListTag writeToNBT(Provider provider)
 	{
 		ListTag list = new ListTag();
 		for(int i = 0; i < this.inv.size(); i++)
@@ -48,13 +49,13 @@ public class CrafterPatternInventory
 			{
 				CompoundTag itemTag = new CompoundTag();
 				itemTag.putByte("Slot", (byte)i);
-				this.inv.get(i).save(itemTag);
+				this.inv.get(i).save(provider, itemTag);
 				list.add(itemTag);
 			}
 		return list;
 	}
 
-	public void readFromNBT(ListTag list)
+	public void readFromNBT(ListTag list, Provider provider)
 	{
 		Collections.fill(this.inv, ItemStack.EMPTY);
 		for(int i = 0; i < list.size(); i++)
@@ -62,7 +63,7 @@ public class CrafterPatternInventory
 			CompoundTag itemTag = list.getCompound(i);
 			int slot = itemTag.getByte("Slot")&255;
 			if(slot < NUM_SLOTS)
-				this.inv.set(slot, ItemStack.of(itemTag));
+				this.inv.set(slot, ItemStack.parseOptional(provider, itemTag));
 		}
 	}
 

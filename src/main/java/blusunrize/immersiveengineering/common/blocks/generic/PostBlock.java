@@ -21,6 +21,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -104,7 +105,7 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 			BlockPos pos = startingPos.above(hh);
 			BlockPlaceContext dummyContext = BlockPlaceContext.at(context, pos, context.getClickedFace());
 			BlockState oldState = level.getBlockState(pos);
-			if(level.isOutsideBuildHeight(pos)||!oldState.getBlock().canBeReplaced(oldState, dummyContext))
+			if(level.isOutsideBuildHeight(pos)||!oldState.canBeReplaced(dummyContext))
 				return false;
 		}
 		return true;
@@ -143,7 +144,7 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 	}
 
 	@Override
-	public InteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level world, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level world, BlockPos pos, BlockHitResult hit)
 	{
 		BlockState state = world.getBlockState(pos);
 		int dummy = state.getValue(POST_SLAVE);

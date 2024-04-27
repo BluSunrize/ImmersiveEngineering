@@ -8,40 +8,32 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteRedstoneData;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("request_rs_update");
-	public MessageRequestRedstoneUpdate(FriendlyByteBuf buf)
-	{
-		this(readPos(buf));
-	}
+	public static final Type<MessageRequestRedstoneUpdate> ID = IMessage.createType("request_rs_update");
+	public static final StreamCodec<ByteBuf, MessageRequestRedstoneUpdate> CODEC = BlockPos.STREAM_CODEC
+			.map(MessageRequestRedstoneUpdate::new, MessageRequestRedstoneUpdate::pos);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		writePos(buf, pos);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
-			Level level = context.player().orElseThrow().level();
+		context.enqueueWork(() -> {
+			Level level = context.player().level();
 			BlockState blockState = level.getBlockState(pos);
 			RemoteRedstoneData data = new RemoteRedstoneData(pos, level.getGameTime(), blockState.isSignalSource(), redstoneLevel(level, pos));
-			PacketDistributor.PLAYER.with(serverPlayer(context)).send(new MessageRedstoneLevel(data));
+			PacketDistributor.sendToPlayer(IMessage.serverPlayer(context), new MessageRedstoneLevel(data));
 		});
 	}
 
@@ -63,18 +55,8 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 		return redstoneLevel;
 	}
 
-	public static BlockPos readPos(FriendlyByteBuf buf)
-	{
-		return buf.readBlockPos();
-	}
-
-	public static void writePos(FriendlyByteBuf out, BlockPos pos)
-	{
-		out.writeBlockPos(pos);
-	}
-
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

@@ -11,15 +11,14 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -87,7 +86,7 @@ public class SpeedloaderLoadRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(CraftingContainer inv, Provider access)
 	{
 		ItemStack speedloader = null;
 		int speedloaderX = -1;
@@ -118,7 +117,7 @@ public class SpeedloaderLoadRecipe extends CustomRecipe
 				continue;
 			ItemStack curBullet = inv.getItem(width*curY+curX);
 			if(!curBullet.isEmpty())
-				fill.set(i, ItemHandlerHelper.copyStackWithSize(curBullet, 1));
+				fill.set(i, curBullet.copyWithCount(1));
 		}
 		((SpeedloaderItem)out.getItem()).setContainedItems(out, fill);
 		return out;

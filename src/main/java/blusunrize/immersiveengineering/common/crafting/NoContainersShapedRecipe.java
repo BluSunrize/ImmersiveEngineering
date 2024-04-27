@@ -22,14 +22,14 @@ public class NoContainersShapedRecipe<T extends CraftingRecipe & IShapedRecipe<C
 	}
 
 	@Override
-	public int getRecipeWidth()
+	public int getWidth()
 	{
-		return baseRecipe.getRecipeWidth();
+		return baseRecipe.getWidth();
 	}
 
 	@Override
-	public int getRecipeHeight()
+	public int getHeight()
 	{
-		return baseRecipe.getRecipeHeight();
+		return baseRecipe.getHeight();
 	}
 }

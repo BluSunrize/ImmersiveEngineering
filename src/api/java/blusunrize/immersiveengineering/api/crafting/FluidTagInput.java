@@ -19,18 +19,18 @@ import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -55,6 +55,13 @@ public class FluidTagInput implements Predicate<FluidStack>
 			Codec.INT.fieldOf("amount").forGetter(t -> t.amount),
 			CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(t -> Optional.ofNullable(t.nbtTag))
 	).apply(inst, (tag, amount, nbt) -> new FluidTagInput(tag, amount, nbt.orElse(null))));
+	public static final StreamCodec<RegistryFriendlyByteBuf, FluidTagInput> STREAM_CODEC = StreamCodec.composite(
+			ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), FluidTagInput::getMatchingFluidNames,
+			ByteBufCodecs.INT, t -> t.amount,
+			// TODO this is probably broken, but has to be replaced anyway
+			ByteBufCodecs.COMPOUND_TAG, t -> t.nbtTag,
+			(names, amount, tag) -> new FluidTagInput(Either.right(names), amount, tag)
+	);
 
 	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;
@@ -179,14 +186,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 
 	public void write(FriendlyByteBuf out)
 	{
-		List<ResourceLocation> matching = fluidTag.map(
-				f -> TagUtils.holderStream(BuiltInRegistries.FLUID, f)
-						.map(Holder::unwrapKey)
-						.map(Optional::orElseThrow)
-						.map(ResourceKey::location)
-						.collect(Collectors.toList()),
-				l -> l
-		);
+		List<ResourceLocation> matching = getMatchingFluidNames();
 		out.writeVarInt(matching.size());
 		for(ResourceLocation rl : matching)
 			out.writeResourceLocation(rl);
@@ -194,6 +194,18 @@ public class FluidTagInput implements Predicate<FluidStack>
 		out.writeBoolean(this.nbtTag!=null);
 		if(this.nbtTag!=null)
 			out.writeNbt(this.nbtTag);
+	}
+
+	private List<ResourceLocation> getMatchingFluidNames()
+	{
+		return fluidTag.map(
+				f -> TagUtils.holderStream(BuiltInRegistries.FLUID, f)
+						.map(Holder::unwrapKey)
+						.map(Optional::orElseThrow)
+						.map(ResourceKey::location)
+						.collect(Collectors.toList()),
+				l -> l
+		);
 	}
 
 	public boolean extractFrom(IFluidHandler handler, FluidAction action)

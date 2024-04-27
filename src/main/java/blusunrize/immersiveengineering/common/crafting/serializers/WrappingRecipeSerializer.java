@@ -9,54 +9,39 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public class WrappingRecipeSerializer<WrappingType extends Recipe<?>, WrappedType extends Recipe<?>>
 		implements RecipeSerializer<WrappingType>
 {
-	private final RecipeSerializer<WrappedType> inner;
-	private final Function<WrappingType, WrappedType> unwrap;
-	private final Function<WrappedType, WrappingType> wrap;
-	private final Codec<WrappingType> codec;
+	private final MapCodec<WrappingType> codec;
+	private final StreamCodec<RegistryFriendlyByteBuf, WrappingType> streamCodec;
 
 	public WrappingRecipeSerializer(
-			RecipeSerializer<WrappedType> inner, Function<WrappingType, WrappedType> unwrap,
+			RecipeSerializer<WrappedType> inner,
+			Function<WrappingType, WrappedType> unwrap,
 			Function<WrappedType, WrappingType> wrap
 	)
 	{
-		this.inner = inner;
-		this.unwrap = unwrap;
-		this.wrap = wrap;
 		this.codec = inner.codec().xmap(wrap, unwrap);
+		this.streamCodec = inner.streamCodec().map(wrap, unwrap);
 	}
 
 	@Override
-	public Codec<WrappingType> codec()
+	public MapCodec<WrappingType> codec()
 	{
 		return codec;
 	}
 
-	@Nullable
 	@Override
-	public WrappingType fromNetwork(@Nonnull FriendlyByteBuf buffer)
+	public StreamCodec<RegistryFriendlyByteBuf, WrappingType> streamCodec()
 	{
-		WrappedType vanilla = inner.fromNetwork(buffer);
-		if(vanilla!=null)
-			return wrap.apply(vanilla);
-		else
-			return null;
-	}
-
-	@Override
-	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull WrappingType recipe)
-	{
-		inner.toNetwork(buffer, unwrap.apply(recipe));
+		return streamCodec;
 	}
 }

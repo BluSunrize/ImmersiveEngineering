@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -21,7 +21,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 import java.util.Optional;
 
 // A modified version of RepairItemRecipe that works correctly with items with container items
@@ -41,7 +40,7 @@ public class IERepairItemRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(@Nonnull CraftingContainer inv, Provider access)
 	{
 		return findInputSlots(inv)
 				.map(p -> combineStacks(p.getFirst(), p.getSecond()))

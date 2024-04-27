@@ -61,7 +61,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
 public class DrillItem extends DieselToolItem
 {
 	public DrillItem()

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -24,7 +25,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -65,7 +65,7 @@ public class PowerpackRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(CraftingContainer inv, Provider access)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
@@ -82,7 +82,7 @@ public class PowerpackRecipe implements CraftingRecipe
 		if(!powerpack.isEmpty()&&!armor.isEmpty()&&!ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, ItemHandlerHelper.copyStackWithSize(powerpack, 1));
+			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, powerpack.copyWithCount(1));
 			return output;
 		}
 		else if(!armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))

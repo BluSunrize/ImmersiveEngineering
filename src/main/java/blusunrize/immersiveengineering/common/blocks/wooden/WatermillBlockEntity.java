@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -231,7 +232,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
@@ -242,7 +243,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putIntArray("offset", offset);
 		nbt.putFloat("rotation", rotation);

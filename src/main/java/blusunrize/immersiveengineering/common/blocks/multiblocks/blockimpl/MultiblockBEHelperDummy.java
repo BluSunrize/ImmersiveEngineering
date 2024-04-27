@@ -69,7 +69,7 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 	public void load(CompoundTag tag)
 	{
 		final String key = tag.contains("posInMultiblock", Tag.TAG_COMPOUND)?"posInMultiblock": "posInMB";
-		this.positionInMB = NbtUtils.readBlockPos(tag.getCompound(key));
+		this.positionInMB = NbtUtils.readBlockPos(tag, key).orElseThrow();
 	}
 
 	@Override

@@ -15,7 +15,10 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnac
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -92,6 +95,12 @@ public class ArcFurnaceMenu extends IEContainerMenu
 
 	public record ProcessSlot(int slot, int processStep)
 	{
+		public static final StreamCodec<ByteBuf, ProcessSlot> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.INT, ProcessSlot::slot,
+				ByteBufCodecs.INT, ProcessSlot::processStep,
+				ProcessSlot::new
+		);
+
 		public static ProcessSlot fromCtx(ArcFurnaceProcess process, Level level)
 		{
 			float mod = process.processTick/(float)process.getMaxTicks(level);

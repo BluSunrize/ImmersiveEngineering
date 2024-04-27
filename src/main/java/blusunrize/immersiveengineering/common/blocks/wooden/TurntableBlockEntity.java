@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,7 +42,7 @@ public class TurntableBlockEntity extends IEBaseBlockEntity implements IStateBas
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		byte redstoneByte = nbt.getByte("redstone");
 		byte rotationMapValue = nbt.getByte("rotationMapping");
@@ -53,7 +54,7 @@ public class TurntableBlockEntity extends IEBaseBlockEntity implements IStateBas
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		byte rotationMapValue = 0;
 		byte redstoneByte = 0;

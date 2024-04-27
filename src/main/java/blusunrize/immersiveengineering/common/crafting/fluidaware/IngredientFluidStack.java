@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.common.register.IEIngredients;
 import com.mojang.serialization.Codec;
 import net.minecraft.tags.TagKey;
@@ -18,11 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
-import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,7 +93,7 @@ public class IngredientFluidStack extends Ingredient
 
 	public ItemStack getExtractedStack(ItemStack input)
 	{
-		IFluidHandlerItem handler = ItemHandlerHelper.copyStackWithSize(input, 1).getCapability(FluidHandler.ITEM);
+		IFluidHandlerItem handler = input.copyWithCount(1).getCapability(FluidHandler.ITEM);
 		if(handler!=null)
 		{
 			fluidTagInput.extractFrom(handler, FluidAction.EXECUTE);

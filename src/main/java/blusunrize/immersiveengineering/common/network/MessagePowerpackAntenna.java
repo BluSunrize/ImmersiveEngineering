@@ -9,67 +9,47 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class MessagePowerpackAntenna implements IMessage
+public record MessagePowerpackAntenna(UUID player, boolean remove, BlockPos from, BlockPos to) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("powerpack_antenna");
-	UUID player;
-	boolean remove = false;
-	BlockPos from;
-	BlockPos to;
+	public static final Type<MessagePowerpackAntenna> ID = IMessage.createType("powerpack_antenna");
+	public static final StreamCodec<ByteBuf, MessagePowerpackAntenna> CODEC = StreamCodec.composite(
+			UUIDUtil.STREAM_CODEC, MessagePowerpackAntenna::player,
+			ByteBufCodecs.BOOL, MessagePowerpackAntenna::remove,
+			BlockPos.STREAM_CODEC, MessagePowerpackAntenna::from,
+			BlockPos.STREAM_CODEC, MessagePowerpackAntenna::to,
+			MessagePowerpackAntenna::new
+	);
 
-	public MessagePowerpackAntenna(Player player, @Nullable Connection connection)
+	public static MessagePowerpackAntenna create(Player player, @Nullable Connection connection)
 	{
-		this.player = player.getUUID();
 		if(connection==null)
-			this.remove = true;
+			return new MessagePowerpackAntenna(player.getUUID(), true, BlockPos.ZERO, BlockPos.ZERO);
 		else
-		{
-			this.from = connection.getEndA().position();
-			this.to = connection.getEndB().position();
-		}
-	}
-
-	public MessagePowerpackAntenna(FriendlyByteBuf buf)
-	{
-		this.player = buf.readUUID();
-		this.remove = buf.readBoolean();
-		if(!this.remove)
-		{
-			this.from = buf.readBlockPos();
-			this.to = buf.readBlockPos();
-		}
+			return new MessagePowerpackAntenna(
+					player.getUUID(), true, connection.getEndA().position(), connection.getEndB().position()
+			);
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeUUID(this.player);
-		buf.writeBoolean(this.remove);
-		if(!this.remove)
-		{
-			buf.writeBlockPos(this.from);
-			buf.writeBlockPos(this.to);
-		}
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{
@@ -92,7 +72,7 @@ public class MessagePowerpackAntenna implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

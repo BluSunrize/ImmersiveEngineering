@@ -31,10 +31,9 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.locale.Language;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -43,6 +42,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.item.component.MapDecorations;
+import net.minecraft.world.item.component.MapDecorations.Entry;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.AABB;
@@ -55,6 +56,7 @@ import org.joml.Quaternionf;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
 public class BlockOverlayUtils
 {
@@ -191,7 +193,7 @@ public class BlockOverlayUtils
 				for(Vec2 v : ImmutableList.of(here, next))
 					builder.vertex(mat, v.x, 0, v.y)
 							.color(0, 0, 0, 0.4F)
-							.normal(transform.last().normal(), diff.x, 0, diff.y)
+							.normal(transform.last(), diff.x, 0, diff.y)
 							.endVertex();
 			}
 			transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.PI, 0));
@@ -263,7 +265,7 @@ public class BlockOverlayUtils
 			for(Vec3 p : ImmutableList.of(point, next))
 				lineBuilder.vertex(transform.pose(), (float)p.x, (float)p.y, (float)p.z)
 						.color(0, 0, 0, 0.4F)
-						.normal(transform.normal(), (float)diff.x, (float)diff.y, (float)diff.z)
+						.normal(transform, (float)diff.x, (float)diff.y, (float)diff.z)
 						.endVertex();
 		}
 	}
@@ -358,38 +360,39 @@ public class BlockOverlayUtils
 
 				ListTag minerals = null;
 				double lastDist = Double.MAX_VALUE;
-				ListTag nbttaglist = frameItem.getTag().getList("Decorations", 10);
-				for(Tag inbt : nbttaglist)
+				MapDecorations decorations = frameItem.get(DataComponents.MAP_DECORATIONS);
+				for(Map.Entry<String, Entry> decoration : decorations.decorations().entrySet())
 				{
-					CompoundTag tagCompound = (CompoundTag)inbt;
-					String id = tagCompound.getString("id");
-					if(id.startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
-					{
-						double sampleX = tagCompound.getDouble("x");
-						double sampleZ = tagCompound.getDouble("z");
-						// Map coordinates require some pretty funky maths. I tried to simplify this,
-						// and ran into issues that made highlighting fail on certain markers.
-						// This implementation works, so I just won't touch it again.
-						float f = (float)(sampleX-(double)mapData.centerX)/(float)mapScale;
-						float f1 = (float)(sampleZ-(double)mapData.centerZ)/(float)mapScale;
-						byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
-						byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
-						// Make it a vector, rotate it around the map center
-						Vec3 mapPos = new Vec3(0, b1, b0);
-						mapPos = mapPos.xRot(mapRotation);
-						// Turn it into a 0.0 to 128.0 offset
-						double offsetH = (mapPos.z/2.0F+64.0F);
-						double offsetV = (mapPos.y/2.0F+64.0F);
-						// Get cursor distance
-						double dH = cursorH-offsetH;
-						double dV = cursorV-offsetV;
-						double dist = dH*dH+dV*dV;
-						if(dist < 10&&dist < lastDist)
-						{
-							lastDist = dist;
-							minerals = tagCompound.getList("minerals", Tag.TAG_STRING);
-						}
-					}
+					// This needs to be redone, probably as a new type of component. We cannot add arbitrary data to
+					// vanilla components.
+					throw new UnsupportedOperationException();
+					//if(decoration.getKey().startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
+					//{
+					//	double sampleX = tagCompound.getDouble("x");
+					//	double sampleZ = tagCompound.getDouble("z");
+					//	// Map coordinates require some pretty funky maths. I tried to simplify this,
+					//	// and ran into issues that made highlighting fail on certain markers.
+					//	// This implementation works, so I just won't touch it again.
+					//	float f = (float)(sampleX-(double)mapData.centerX)/(float)mapScale;
+					//	float f1 = (float)(sampleZ-(double)mapData.centerZ)/(float)mapScale;
+					//	byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
+					//	byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
+					//	// Make it a vector, rotate it around the map center
+					//	Vec3 mapPos = new Vec3(0, b1, b0);
+					//	mapPos = mapPos.xRot(mapRotation);
+					//	// Turn it into a 0.0 to 128.0 offset
+					//	double offsetH = (mapPos.z/2.0F+64.0F);
+					//	double offsetV = (mapPos.y/2.0F+64.0F);
+					//	// Get cursor distance
+					//	double dH = cursorH-offsetH;
+					//	double dV = cursorV-offsetV;
+					//	double dist = dH*dH+dV*dV;
+					//	if(dist < 10&&dist < lastDist)
+					//	{
+					//		lastDist = dist;
+					//		minerals = tagCompound.getList("minerals", Tag.TAG_STRING);
+					//	}
+					//}
 				}
 				if(minerals!=null)
 					for(int i = 0; i < minerals.size(); i++)

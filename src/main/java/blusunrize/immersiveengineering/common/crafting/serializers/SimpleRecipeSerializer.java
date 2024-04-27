@@ -8,30 +8,37 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.network.FriendlyByteBuf;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public record SimpleRecipeSerializer<R extends Recipe<?>>(Supplier<R> create) implements RecipeSerializer<R>
 {
 	@Override
-	public Codec<R> codec()
+	public MapCodec<R> codec()
 	{
-		return Codec.unit(create);
+		return MapCodec.unit(create);
 	}
 
 	@Override
-	public @Nullable R fromNetwork(FriendlyByteBuf pBuffer)
+	public StreamCodec<RegistryFriendlyByteBuf, R> streamCodec()
 	{
-		return create.get();
-	}
+		return new StreamCodec<>()
+		{
+			@Override
+			public R decode(RegistryFriendlyByteBuf p_320376_)
+			{
+				return create.get();
+			}
 
-	@Override
-	public void toNetwork(FriendlyByteBuf pBuffer, R pRecipe)
-	{
+			@Override
+			public void encode(RegistryFriendlyByteBuf p_320158_, R p_320396_)
+			{
+			}
+		};
 	}
 }

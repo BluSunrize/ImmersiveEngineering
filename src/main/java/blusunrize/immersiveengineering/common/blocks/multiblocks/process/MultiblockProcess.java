@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -158,7 +159,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 		this.clearProcess = true;
 	}
 
-	public abstract void writeExtraDataToNBT(CompoundTag nbt);
+	public abstract void writeExtraDataToNBT(CompoundTag nbt, Provider provider);
 
 	protected abstract boolean canOutputItem(CTX context, ItemStack output);
 

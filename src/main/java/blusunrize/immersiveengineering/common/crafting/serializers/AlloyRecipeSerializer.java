@@ -14,22 +14,28 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 {
-	private static final Codec<AlloyRecipe> CODEC = RecordCodecBuilder.create(
-			inst -> inst.group(
-					TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
-					IngredientWithSize.CODEC.fieldOf("input0").forGetter(r -> r.input0),
-					IngredientWithSize.CODEC.fieldOf("input1").forGetter(r -> r.input1),
-					ExtraCodecs.strictOptionalField(Codec.INT, "time", 200).forGetter(r -> r.time)
-			).apply(inst, AlloyRecipe::new)
+	private static final MapCodec<AlloyRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
+			IngredientWithSize.CODEC.fieldOf("input0").forGetter(r -> r.input0),
+			IngredientWithSize.CODEC.fieldOf("input1").forGetter(r -> r.input1),
+			Codec.INT.optionalFieldOf("time", 200).forGetter(r -> r.time)
+	).apply(inst, AlloyRecipe::new));
+
+	private static final StreamCodec<RegistryFriendlyByteBuf, AlloyRecipe> STREAM_CODEC = StreamCodec.composite(
+			TagOutput.STREAM_CODEC, r -> r.output,
+			IngredientWithSize.STREAM_CODEC, r -> r.input0,
+			IngredientWithSize.STREAM_CODEC, r -> r.input1,
+			ByteBufCodecs.INT, r -> r.time,
+			AlloyRecipe::new
 	);
 
 	@Override
@@ -39,28 +45,14 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	}
 
 	@Override
-	public Codec<AlloyRecipe> codec()
+	public MapCodec<AlloyRecipe> codec()
 	{
 		return CODEC;
 	}
 
-	@Nullable
 	@Override
-	public AlloyRecipe fromNetwork(FriendlyByteBuf buffer)
+	public StreamCodec<RegistryFriendlyByteBuf, AlloyRecipe> streamCodec()
 	{
-		TagOutput output = readLazyStack(buffer);
-		IngredientWithSize input0 = IngredientWithSize.read(buffer);
-		IngredientWithSize input1 = IngredientWithSize.read(buffer);
-		int time = buffer.readInt();
-		return new AlloyRecipe(output, input0, input1, time);
-	}
-
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, AlloyRecipe recipe)
-	{
-		writeLazyStack(buffer, recipe.output);
-		recipe.input0.write(buffer);
-		recipe.input1.write(buffer);
-		buffer.writeInt(recipe.time);
+		return STREAM_CODEC;
 	}
 }

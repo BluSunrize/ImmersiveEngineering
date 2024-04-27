@@ -10,28 +10,24 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
-import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class ThermoelectricSourceSerializer extends IERecipeSerializer<ThermoelectricSource>
 {
-	public static final Codec<ThermoelectricSource> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<ThermoelectricSource> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			Codec.INT.fieldOf("tempKelvin").forGetter(r -> r.temperature),
-			ExtraCodecs.strictOptionalField(TagKey.codec(Registries.BLOCK), "blockTag").forGetter(r -> r.blocks.leftOptional()),
+			TagKey.codec(Registries.BLOCK).optionalFieldOf("blockTag").forGetter(r -> r.blocks.leftOptional()),
 			maybeListOrSingle(BuiltInRegistries.BLOCK.byNameCodec(), "singleBlock").forGetter(r -> r.blocks.rightOptional())
 	).apply(inst, (temperature, tag, fixedBlocks) -> {
 		Preconditions.checkState(tag.isPresent()!=fixedBlocks.isPresent());
@@ -40,38 +36,27 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 		else
 			return new ThermoelectricSource(fixedBlocks.get(), temperature);
 	}));
+	public static final StreamCodec<RegistryFriendlyByteBuf, ThermoelectricSource> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.registry(Registries.BLOCK).apply(ByteBufCodecs.list()), ThermoelectricSource::getMatchingBlocks,
+			ByteBufCodecs.INT, r -> r.temperature,
+			ThermoelectricSource::new
+	);
 
 	@Override
-	public Codec<ThermoelectricSource> codec()
+	public MapCodec<ThermoelectricSource> codec()
 	{
 		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, ThermoelectricSource> streamCodec()
+	{
+		return STREAM_CODEC;
 	}
 
 	@Override
 	public ItemStack getIcon()
 	{
 		return new ItemStack(MetalDevices.THERMOELECTRIC_GEN);
-	}
-
-	@Nullable
-	@Override
-	public ThermoelectricSource fromNetwork(@Nonnull FriendlyByteBuf buffer)
-	{
-		List<Block> blocks = PacketUtils.readList(
-				buffer, buf -> PacketUtils.readRegistryElement(buffer, BuiltInRegistries.BLOCK)
-		);
-		int temperature = buffer.readInt();
-		return new ThermoelectricSource(blocks, temperature);
-	}
-
-	@Override
-	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull ThermoelectricSource recipe)
-	{
-		PacketUtils.writeList(
-				buffer,
-				recipe.getMatchingBlocks(),
-				(b, buf) -> PacketUtils.writeRegistryElement(buf, BuiltInRegistries.BLOCK, b)
-		);
-		buffer.writeInt(recipe.getTemperature());
 	}
 }

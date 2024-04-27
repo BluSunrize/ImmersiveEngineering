@@ -35,12 +35,13 @@ import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes.
 import blusunrize.immersiveengineering.common.util.DroppingMultiblockOutput;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -53,7 +54,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -144,7 +144,7 @@ public class MetalPressLogic
 	}
 
 	@Override
-	public InteractionResult click(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient)
+	public ItemInteractionResult click(IMultiblockContext<State> ctx, BlockPos posInMultiblock, Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient)
 	{
 		final State state = ctx.getState();
 		final Level level = ctx.getLevel().getRawLevel();
@@ -155,10 +155,10 @@ public class MetalPressLogic
 		else if(MetalPressRecipe.isValidMold(level, heldItem))
 			newMold = heldItem;
 		if(newMold==null)
-			return InteractionResult.FAIL;
+			return ItemInteractionResult.FAIL;
 
 		ItemStack oldMold = state.mold;
-		state.mold = ItemHandlerHelper.copyStackWithSize(newMold, 1);
+		state.mold = newMold.copyWithCount(1);
 		newMold.shrink(1);
 		if(!oldMold.isEmpty())
 		{
@@ -169,7 +169,7 @@ public class MetalPressLogic
 		}
 		ctx.markMasterDirty();
 		ctx.requestMasterBESync();
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -245,45 +245,45 @@ public class MetalPressLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			writeCommonNBT(nbt);
-			energy.deserializeNBT(nbt.get("energy"));
+			writeCommonNBT(provider, nbt);
+			energy.deserializeNBT(provider, nbt.get("energy"));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			readCommonNBT(nbt);
-			nbt.put("energy", energy.serializeNBT());
+			readCommonNBT(provider, nbt);
+			nbt.put("energy", energy.serializeNBT(provider));
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			writeCommonNBT(nbt);
+			writeCommonNBT(provider, nbt);
 			nbt.putBoolean("active", renderAsActive);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			readCommonNBT(nbt);
+			readCommonNBT(provider, nbt);
 			renderAsActive = nbt.getBoolean("active");
 		}
 
-		private void writeCommonNBT(CompoundTag nbt)
+		private void writeCommonNBT(Provider provider, CompoundTag nbt)
 		{
 			if(!mold.isEmpty())
-				nbt.put("mold", mold.save(new CompoundTag()));
+				nbt.put("mold", mold.save(provider, new CompoundTag()));
 			// TODO write a bit less than this?
-			nbt.put("processor", processor.toNBT());
+			nbt.put("processor", processor.toNBT(provider));
 		}
 
-		private void readCommonNBT(CompoundTag nbt)
+		private void readCommonNBT(Provider provider, CompoundTag nbt)
 		{
-			mold = ItemStack.of(nbt.getCompound("mold"));
-			processor.fromNBT(nbt.get("processor"), State::loadProcess);
+			mold = ItemStack.parseOptional(provider, nbt.getCompound("mold"));
+			processor.fromNBT(nbt.get("processor"), State::loadProcess, provider);
 		}
 
 		@Override
@@ -299,15 +299,15 @@ public class MetalPressLogic
 		}
 
 		public static MultiblockProcessInWorld<MetalPressRecipe> loadProcess(
-				BiFunction<Level, ResourceLocation, MetalPressRecipe> getRecipe, CompoundTag tag
+				BiFunction<Level, ResourceLocation, MetalPressRecipe> getRecipe, CompoundTag tag, Provider provider
 		)
 		{
 			if(tag.contains("baseRecipe", Tag.TAG_STRING))
 				return new SpecialMetalPressProcess(
-						tag, new ResourceLocation(tag.getString("baseRecipe"))
+						tag, new ResourceLocation(tag.getString("baseRecipe")), provider
 				);
 			else
-				return new MultiblockProcessInWorld<>(getRecipe, tag);
+				return new MultiblockProcessInWorld<>(getRecipe, tag, provider);
 		}
 	}
 
@@ -315,17 +315,19 @@ public class MetalPressLogic
 	{
 		private final ResourceLocation baseRecipeLocation;
 
-		public SpecialMetalPressProcess(CompoundTag data, ResourceLocation baseRecipeLocation)
+		public SpecialMetalPressProcess(CompoundTag data, ResourceLocation baseRecipeLocation, Provider provider)
 		{
 			super((level, name) -> {
-				CraftingRecipe baseRecipe = MetalPressPackingRecipes.CRAFTING_RECIPE_MAP.getById(level, baseRecipeLocation);
+				CraftingRecipe baseRecipe = MetalPressPackingRecipes.CRAFTING_RECIPE_MAP.getById(
+						level, baseRecipeLocation
+				);
 				if(baseRecipe!=null)
 					return MetalPressPackingRecipes.getRecipeDelegate(
 							new RecipeHolder<>(baseRecipeLocation, baseRecipe), name, level.registryAccess()
 					).value();
 				else
 					return null;
-			}, data);
+			}, data, provider);
 			this.baseRecipeLocation = baseRecipeLocation;
 		}
 
@@ -336,9 +338,9 @@ public class MetalPressLogic
 		}
 
 		@Override
-		public void writeExtraDataToNBT(CompoundTag nbt)
+		public void writeExtraDataToNBT(CompoundTag nbt, Provider provider)
 		{
-			super.writeExtraDataToNBT(nbt);
+			super.writeExtraDataToNBT(nbt, provider);
 			nbt.putString("baseRecipe", baseRecipeLocation.toString());
 		}
 	}

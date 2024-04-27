@@ -19,6 +19,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -136,17 +137,17 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("redstoneChannelSending", redstoneChannelSending.getId());
 		nbt.putInt("outputThreshold", outputThreshold);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		redstoneChannelSending = DyeColor.byId(nbt.getInt("redstoneChannelSending"));
 		outputThreshold = nbt.getInt("outputThreshold");
 	}

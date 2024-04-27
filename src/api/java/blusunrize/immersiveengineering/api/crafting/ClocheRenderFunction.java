@@ -15,7 +15,9 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,6 +63,11 @@ public interface ClocheRenderFunction
 
 	Codec<ClocheRenderFunction> CODEC = ResourceLocation.CODEC.dispatch(
 			f -> RENDER_FUNCTION_FACTORIES.inverse().get(f.codec()), RENDER_FUNCTION_FACTORIES::get
+	);
+
+	StreamCodec<ByteBuf, ClocheRenderFunction> STREAM_CODEC = ResourceLocation.STREAM_CODEC.map(
+			key -> (ClocheRenderFunction)RENDER_FUNCTION_FACTORIES.get(key),
+			f -> RENDER_FUNCTION_FACTORIES.inverse().get(f.codec())
 	);
 
 	static void write(FriendlyByteBuf buffer, ClocheRenderFunction f)

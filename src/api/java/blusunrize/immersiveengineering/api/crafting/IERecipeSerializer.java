@@ -12,9 +12,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,7 +27,7 @@ import java.util.function.Function;
 
 public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeSerializer<R>
 {
-	public static final Codec<List<StackWithChance>> CHANCE_LIST = makeChanceOutputCodec();
+	public static final Codec<List<StackWithChance>> CHANCE_LIST_CODEC = makeChanceOutputCodec();
 
 	public static MapCodec<TagOutput> optionalItemOutput(String name)
 	{

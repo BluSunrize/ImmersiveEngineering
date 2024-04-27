@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -57,51 +58,50 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	}
 
 	@Override
-	public void load(CompoundTag nbtIn)
+	public void loadAdditional(CompoundTag nbtIn, Provider provider)
 	{
-		super.load(nbtIn);
-		this.readCustomNBT(nbtIn, false);
+		super.loadAdditional(nbtIn, provider);
+		this.readCustomNBT(nbtIn, false, provider);
 	}
 
-	public abstract void readCustomNBT(CompoundTag nbt, boolean descPacket);
+	public abstract void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider);
 
 	@Override
-	protected void saveAdditional(CompoundTag nbt)
+	protected void saveAdditional(CompoundTag nbt, Provider provider)
 	{
-		super.saveAdditional(nbt);
-		this.writeCustomNBT(nbt, false);
+		super.saveAdditional(nbt, provider);
+		this.writeCustomNBT(nbt, false, provider);
 	}
 
-	public abstract void writeCustomNBT(CompoundTag nbt, boolean descPacket);
+	public abstract void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider);
 
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
-		return ClientboundBlockEntityDataPacket.create(this, be -> {
+		return ClientboundBlockEntityDataPacket.create(this, (be, access) -> {
 			CompoundTag nbttagcompound = new CompoundTag();
-			this.writeCustomNBT(nbttagcompound, true);
+			this.writeCustomNBT(nbttagcompound, true, access);
 			return nbttagcompound;
 		});
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, Provider provider)
 	{
-		CompoundTag nonNullTag = pkt.getTag()!=null?pkt.getTag(): new CompoundTag();
-		this.readCustomNBT(nonNullTag, true);
+		this.readCustomNBT(pkt.getTag(), true, provider);
 	}
 
 	@Override
-	public void handleUpdateTag(CompoundTag tag)
+	public void handleUpdateTag(CompoundTag tag, Provider provider)
 	{
-		this.readCustomNBT(tag, true);
+		this.readCustomNBT(tag, true, provider);
 	}
 
 	@Override
-	public CompoundTag getUpdateTag()
+	public CompoundTag getUpdateTag(Provider provider)
 	{
-		CompoundTag nbt = super.getUpdateTag();
-		writeCustomNBT(nbt, true);
+		CompoundTag nbt = super.getUpdateTag(provider);
+		writeCustomNBT(nbt, true, provider);
 		return nbt;
 	}
 

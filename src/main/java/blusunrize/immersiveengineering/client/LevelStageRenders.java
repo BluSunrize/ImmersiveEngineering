@@ -42,7 +42,6 @@ import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -50,7 +49,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.GAME)
 public class LevelStageRenders
 {
 	public static final Map<Connection, Pair<Collection<BlockPos>, MutableInt>> FAILED_CONNECTIONS = new HashMap<>();
@@ -145,9 +144,8 @@ public class LevelStageRenders
 				transform.translate(pos.x(), 0, pos.z());
 				VertexConsumer bufferBuilder = context.getSecond().getBuffer(IERenderTypes.CHUNK_MARKER);
 				Matrix4f mat = transform.last().pose();
-				Matrix3f matN = transform.last().normal();
-				bufferBuilder.vertex(mat, 0, minHeight, 0).color(r, g, b, .75f).normal(matN, 0, 1, 0).endVertex();
-				bufferBuilder.vertex(mat, 0, maxHeight, 0).color(r, g, b, .75f).normal(matN, 0, 1, 0).endVertex();
+				bufferBuilder.vertex(mat, 0, minHeight, 0).color(r, g, b, .75f).normal(transform.last(), 0, 1, 0).endVertex();
+				bufferBuilder.vertex(mat, 0, maxHeight, 0).color(r, g, b, .75f).normal(transform.last(), 0, 1, 0).endVertex();
 				int radius = vein.getRadius();
 				List<Vector3f> positions = new ArrayList<>();
 				for(int p = 0; p < 12; p++)
@@ -168,7 +166,7 @@ public class LevelStageRenders
 						bufferBuilder.vertex(mat, point.x(), point.y(), point.z())
 								.color(r, g, b, .75f)
 								//Not actually a normal, just the direction of the line
-								.normal(matN, diff.x(), diff.y(), diff.z())
+								.normal(transform.last(), diff.x(), diff.y(), diff.z())
 								.endVertex();
 				}
 				transform.popPose();
@@ -188,7 +186,6 @@ public class LevelStageRenders
 			transform.pushPose();
 			transform.translate(conn.getEndA().getX(), conn.getEndA().getY(), conn.getEndA().getZ());
 			Matrix4f mat = transform.last().pose();
-			Matrix3f matN = transform.last().normal();
 			int time = entry.getValue().getSecond().intValue();
 			float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
 			Vec3 prev = conn.getPoint(0, conn.getEndA());
@@ -198,12 +195,12 @@ public class LevelStageRenders
 				Vec3 diff = next.subtract(prev).normalize();
 				builder.vertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
 						.color(1, 0, 0, alpha)
-						.normal(matN, (float)diff.x, (float)diff.y, (float)diff.z)
+						.normal(transform.last(), (float)diff.x, (float)diff.y, (float)diff.z)
 						.endVertex();
 				alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
 				builder.vertex(mat, (float)next.x, (float)next.y, (float)next.z)
 						.color(1, 0, 0, alpha)
-						.normal(matN, (float)diff.x, (float)diff.y, (float)diff.z)
+						.normal(transform.last(), (float)diff.x, (float)diff.y, (float)diff.z)
 						.endVertex();
 				prev = next;
 			}

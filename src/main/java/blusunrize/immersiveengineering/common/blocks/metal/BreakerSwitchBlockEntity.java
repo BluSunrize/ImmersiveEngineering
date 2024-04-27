@@ -29,6 +29,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -119,18 +120,18 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("rotation", rotation);
 		nbt.putInt("wires", wires);
 		nbt.putBoolean("inverted", inverted);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		rotation = nbt.getInt("rotation");
 		wires = nbt.getInt("wires");
 		inverted = nbt.getBoolean("inverted");

@@ -25,7 +25,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.EntityModel;
@@ -44,8 +43,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -57,8 +56,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.AbstractBannerBlock;
-import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPatternLayers.Layer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.ClientHooks;
 import org.joml.Matrix4f;
@@ -265,21 +264,20 @@ public class ModelPowerpack
 		DyeColor baseCol = DyeColor.WHITE;
 		if(banner.getItem() instanceof BlockItem&&((BlockItem)banner.getItem()).getBlock() instanceof AbstractBannerBlock bannerBlock)
 			baseCol = bannerBlock.getColor();
-		ListTag patternList = BannerBlockEntity.getItemPatterns(banner);
+		List<Layer> patternList = banner.get(DataComponents.BANNER_PATTERNS).layers();
 		BannerKey key = new BannerKey(baseCol, patternList!=null?patternList.toString(): "");
 		List<BannerLayer> cached = bannerCache.getIfPresent(key);
 		if(cached!=null)
 			return cached;
 
-		List<Pair<Holder<BannerPattern>, DyeColor>> list = BannerBlockEntity.createPatterns(baseCol, patternList);
 		List<BakedQuad> quads = bakedModel.getQuads(null, null, ApiUtils.RANDOM_SOURCE);
-		cached = new ArrayList<>(quads.size()*list.size());
-		for(int i = 0; i < 17&&i < list.size(); ++i)
+		cached = new ArrayList<>(quads.size()*patternList.size());
+		for(int i = 0; i < 17&&i < patternList.size(); ++i)
 		{
-			Pair<Holder<BannerPattern>, DyeColor> pair = list.get(i);
-			Holder<BannerPattern> bannerpattern = pair.getFirst();
-			Material material = Sheets.getShieldMaterial(bannerpattern.unwrapKey().orElseThrow());
-			float[] colour = pair.getSecond().getTextureDiffuseColors();
+			Layer layer = patternList.get(i);
+			Holder<BannerPattern> bannerpattern = layer.pattern();
+			Material material = Sheets.getShieldMaterial(bannerpattern);
+			float[] colour = layer.color().getTextureDiffuseColors();
 			cached.add(new BannerLayer(
 					mbs -> material.buffer(mbs, RenderType::entityCutoutNoCullZOffset),
 					colour[0], colour[1], colour[2],

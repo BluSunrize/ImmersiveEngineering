@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -53,20 +53,20 @@ public class ClocheRenderFunctions
 		register("chorus", RenderFunctionChorus.CODEC);
 	}
 
-	private static void register(String path, Codec<? extends ClocheRenderFunction> codec)
+	private static void register(String path, MapCodec<? extends ClocheRenderFunction> codec)
 	{
 		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put(IEApi.ieLoc(path), codec);
 	}
 
 	private static <F extends ClocheRenderFunction>
-	Codec<F> byBlockCodec(Function<F, Block> getBlock, Function<Block, F> make)
+	MapCodec<F> byBlockCodec(Function<F, Block> getBlock, Function<Block, F> make)
 	{
-		return BuiltInRegistries.BLOCK.byNameCodec().xmap(make, getBlock);
+		return BuiltInRegistries.BLOCK.byNameCodec().xmap(make, getBlock).fieldOf("block");
 	}
 
 	public static class RenderFunctionCrop implements ClocheRenderFunction
 	{
-		public static final Codec<RenderFunctionCrop> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionCrop::new);
+		public static final MapCodec<RenderFunctionCrop> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionCrop::new);
 
 		final Block cropBlock;
 		int maxAge;
@@ -120,7 +120,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Codec<? extends ClocheRenderFunction> codec()
+		public MapCodec<? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -128,7 +128,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionStacking implements ClocheRenderFunction
 	{
-		public static final Codec<RenderFunctionStacking> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionStacking::new);
+		public static final MapCodec<RenderFunctionStacking> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionStacking::new);
 
 		final Block cropBlock;
 
@@ -154,7 +154,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Codec<? extends ClocheRenderFunction> codec()
+		public MapCodec<? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -164,7 +164,7 @@ public class ClocheRenderFunctions
 			Block cropBlock, Block stemBlock, Block attachedStemBlock
 	) implements ClocheRenderFunction
 	{
-		public static final Codec<RenderFunctionStem> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+		public static final MapCodec<RenderFunctionStem> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("crop").forGetter(f -> f.cropBlock),
 				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("stem").forGetter(f -> f.stemBlock),
 				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("attachedStem").forGetter(f -> f.attachedStemBlock)
@@ -205,7 +205,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Codec<? extends ClocheRenderFunction> codec()
+		public MapCodec<? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -213,7 +213,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionGeneric implements ClocheRenderFunction
 	{
-		public static final Codec<RenderFunctionGeneric> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionGeneric::new);
+		public static final MapCodec<RenderFunctionGeneric> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionGeneric::new);
 
 		final Block cropBlock;
 
@@ -237,7 +237,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Codec<? extends ClocheRenderFunction> codec()
+		public MapCodec<? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -245,7 +245,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionChorus implements ClocheRenderFunction
 	{
-		public static final Codec<RenderFunctionChorus> CODEC = Codec.unit(new RenderFunctionChorus());
+		public static final MapCodec<RenderFunctionChorus> CODEC = MapCodec.unit(new RenderFunctionChorus());
 
 		@Override
 		public float getScale(ItemStack seed, float growth)
@@ -268,7 +268,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Codec<? extends ClocheRenderFunction> codec()
+		public MapCodec<? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -276,7 +276,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionHemp implements ClocheRenderFunction
 	{
-		public static final Codec<RenderFunctionHemp> CODEC = Codec.unit(new RenderFunctionHemp());
+		public static final MapCodec<RenderFunctionHemp> CODEC = MapCodec.unit(new RenderFunctionHemp());
 
 		@Override
 		public float getScale(ItemStack seed, float growth)
@@ -300,7 +300,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Codec<? extends ClocheRenderFunction> codec()
+		public MapCodec<? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}

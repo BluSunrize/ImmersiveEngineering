@@ -59,7 +59,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 			public void render(VertexConsumer builder, PoseStack transform, int light, int overlay)
 			{
 				for(BakedQuad quad : quads.get())
-					builder.putBulkData(transform.last(), quad, 1, 1, 1, light, overlay);
+					builder.putBulkData(transform.last(), quad, 1, 1, 1, 1, light, overlay);
 			}
 
 			@Override

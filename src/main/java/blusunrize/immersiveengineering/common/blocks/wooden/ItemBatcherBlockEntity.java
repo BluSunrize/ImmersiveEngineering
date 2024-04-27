@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
@@ -108,7 +109,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 					{
 						ItemStack outStack = buffers.get(slot);
 						int outSize = filterStack.getCount();
-						ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outSize);
+						ItemStack stack = outStack.copyWithCount(outSize);
 						stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
 						if(!stack.isEmpty())
 							outSize -= stack.getCount();
@@ -149,12 +150,12 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		if(!descPacket)
 		{
 			NonNullList<ItemStack> merged = NonNullList.withSize(2*NUM_SLOTS, ItemStack.EMPTY);
-			ContainerHelper.loadAllItems(nbt, merged);
+			ContainerHelper.loadAllItems(nbt, merged, provider);
 			for(int i = 0; i < NUM_SLOTS; ++i)
 			{
 				this.buffers.set(i, merged.get(i+NUM_SLOTS));
@@ -169,7 +170,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		if(!descPacket)
 		{
@@ -179,7 +180,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 				merged.set(i+NUM_SLOTS, this.buffers.get(i));
 				merged.set(i, this.filters.get(i));
 			}
-			ContainerHelper.saveAllItems(nbt, merged);
+			ContainerHelper.saveAllItems(nbt, merged, provider);
 		}
 		nbt.putByte("batchMode", (byte)this.batchMode.ordinal());
 		int[] redstoneConfig = new int[NUM_SLOTS];

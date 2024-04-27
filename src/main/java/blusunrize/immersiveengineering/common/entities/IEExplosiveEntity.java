@@ -19,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -88,11 +89,11 @@ public class IEExplosiveEntity extends PrimedTnt
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
-		super.defineSynchedData();
-		this.entityData.define(dataMarker_block, Blocks.AIR.defaultBlockState());
-		this.entityData.define(dataMarker_fuse, 0);
+		super.defineSynchedData(builder);
+		builder.define(dataMarker_block, Blocks.AIR.defaultBlockState());
+		builder.define(dataMarker_fuse, 0);
 	}
 
 	private void setBlockSynced()

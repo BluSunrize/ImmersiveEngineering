@@ -38,6 +38,7 @@ import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
@@ -218,38 +219,38 @@ public class AutoWorkbenchLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.put("inventory", inventory.serializeNBT());
 			nbt.putInt("selectedRecipe", selectedRecipe);
-			nbt.put("processor", processor.toNBT());
-			nbt.put("energy", energy.serializeNBT());
+			nbt.put("processor", processor.toNBT(provider));
+			nbt.put("energy", energy.serializeNBT(provider));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			inventory.deserializeNBT(nbt.getCompound("inventory"));
 			selectedRecipe = nbt.getInt("selectedRecipe");
-			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new);
-			energy.deserializeNBT(nbt.get("energy"));
+			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new, provider);
+			energy.deserializeNBT(provider, nbt.get("energy"));
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("processor", processor.toNBT());
+			nbt.put("processor", processor.toNBT(provider));
 			nbt.putBoolean("active", active);
-			nbt.put("blueprint", inventory.getStackInSlot(BLUEPRINT_SLOT).save(new CompoundTag()));
+			nbt.put("blueprint", inventory.getStackInSlot(BLUEPRINT_SLOT).save(provider, new CompoundTag()));
 			nbt.putInt("selectedRecipe", selectedRecipe);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new);
+			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new, provider);
 			active = nbt.getBoolean("active");
-			inventory.setStackInSlot(BLUEPRINT_SLOT, ItemStack.of(nbt.getCompound("blueprint")));
+			inventory.setStackInSlot(BLUEPRINT_SLOT, ItemStack.parseOptional(provider, nbt.getCompound("blueprint")));
 			selectedRecipe = nbt.getInt("selectedRecipe");
 		}
 

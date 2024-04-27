@@ -176,7 +176,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 						Component.literal(sIndent.toString()+req.getCount()+"x "), ChatFormatting.GRAY
 				));
 				if(!req.isEmpty())
-					s.append(applyFormat(req.getHoverName().copy(), req.getRarity().color));
+					s.append(applyFormat(req.getHoverName().copy(), req.getRarity().color()));
 				else
 					s.append("???");
 				componentTooltip.add(s);

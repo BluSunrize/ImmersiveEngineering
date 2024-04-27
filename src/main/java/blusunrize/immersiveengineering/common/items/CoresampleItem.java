@@ -58,12 +58,12 @@ public class CoresampleItem extends IEBaseItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
-		getCoresampleInfo(stack, list, ChatFormatting.GRAY, world, true, true);
+		getCoresampleInfo(stack, list, ChatFormatting.GRAY, ctx, true, true);
 	}
 
-	public static void getCoresampleInfo(ItemStack coresample, List<Component> list, ChatFormatting baseColor, @Nullable Level world, boolean showYield, boolean showTimestamp)
+	public static void getCoresampleInfo(ItemStack coresample, List<Component> list, ChatFormatting baseColor, TooltipContext ctx, boolean showYield, boolean showTimestamp)
 	{
 		if(coresample.getOrCreateTag().contains("coords"))
 			list.add(Component.translatable(Lib.DESC_INFO+"coresample.outdated"));
@@ -71,7 +71,7 @@ public class CoresampleItem extends IEBaseItem
 		ColumnPos coords = getCoords(coresample);
 		if(coords!=null)
 		{
-			List<VeinSampleData> veins = getVeins(world, coresample);
+			List<VeinSampleData> veins = getVeins(ctx, coresample);
 			if(!veins.isEmpty())
 				veins.forEach(data -> {
 					MutableComponent component = Component.literal(

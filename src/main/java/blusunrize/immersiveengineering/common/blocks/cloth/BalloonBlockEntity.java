@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -39,7 +40,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -59,9 +59,9 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		final int oldStyle = style;
 		final DyeColor oldC0 = colour0;
 		final DyeColor oldC1 = colour1;
@@ -73,18 +73,18 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		if(oldStyle!=style||oldC0!=colour0||oldC1!=colour1)
 			requestModelDataUpdate();
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
-			shader = ShaderWrapper_Direct.SERIALIZER.read(this, nbt.getCompound("shader"));
+			shader = ShaderWrapper_Direct.SERIALIZER.read(this, nbt.getCompound("shader"), provider);
 		markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public void writeCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("style", style);
 		nbt.putInt("colour0", colour0!=null?colour0.getId(): -1);
 		nbt.putInt("colour1", colour1!=null?colour1.getId(): -1);
-		nbt.put("shader", ShaderWrapper_Direct.SERIALIZER.write(shader));
+		nbt.put("shader", ShaderWrapper_Direct.SERIALIZER.write(shader, provider));
 	}
 
 	@Nonnull
@@ -152,7 +152,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		}
 		else if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
 		{
-			this.shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(heldItem, 1));
+			this.shader.setShaderItem(heldItem.copyWithCount(1));
 			markContainingBlockForUpdate(null);
 			return true;
 		}

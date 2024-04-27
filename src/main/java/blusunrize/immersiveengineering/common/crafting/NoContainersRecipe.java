@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -36,7 +36,7 @@ public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRec
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer pContainer, RegistryAccess access)
+	public ItemStack assemble(@Nonnull CraftingContainer pContainer, Provider access)
 	{
 		return baseRecipe.assemble(pContainer, access);
 	}
@@ -49,7 +49,7 @@ public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRec
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return baseRecipe.getResultItem(access);
 	}

@@ -14,14 +14,13 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -59,7 +58,7 @@ public class FlareBulletColorRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(CraftingContainer inv, Provider access)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
@@ -98,7 +97,7 @@ public class FlareBulletColorRecipe extends CustomRecipe
 		}
 		if(!bullet.isEmpty())
 		{
-			ItemStack newBullet = ItemHandlerHelper.copyStackWithSize(bullet, 1);
+			ItemStack newBullet = bullet.copyWithCount(1);
 
 			int r = colourArray[0]/totalColourSets;
 			int g = colourArray[1]/totalColourSets;

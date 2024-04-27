@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -45,7 +46,6 @@ import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -222,18 +222,18 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 			nbt.putInt("process", process);
 			nbt.putInt("processMax", processMax);
 			nbt.put("inventory", inventory.serializeNBT());
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			tank.readFromNBT(nbt.getCompound("tank"));
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
 			process = nbt.getInt("process");
 			processMax = nbt.getInt("processMax");
 			inventory.deserializeNBT(nbt.getCompound("inventory"));

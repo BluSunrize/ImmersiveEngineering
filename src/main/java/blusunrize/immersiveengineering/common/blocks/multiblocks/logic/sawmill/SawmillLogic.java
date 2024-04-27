@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +46,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -60,7 +61,6 @@ import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -99,8 +99,12 @@ public class SawmillLogic
 			{
 				state.output.insertOrDrop(process.getCurrentStack(rawLevel, !state.sawblade.isEmpty()).copy(), level);
 				processIterator.remove();
-				if(state.sawblade.hurt(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), ApiUtils.RANDOM_SOURCE, null))
-					state.sawblade = ItemStack.EMPTY;
+				state.sawblade.hurtAndBreak(
+						IEServerConfig.MACHINES.sawmill_bladeDamage.get(),
+						ApiUtils.RANDOM_SOURCE,
+						null,
+						() -> state.sawblade = ItemStack.EMPTY
+				);
 				context.markDirtyAndSync();
 			}
 		}
@@ -217,7 +221,7 @@ public class SawmillLogic
 	}
 
 	@Override
-	public InteractionResult click(
+	public ItemInteractionResult click(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock,
 			Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient
 	)
@@ -228,19 +232,19 @@ public class SawmillLogic
 		{
 			if(!isClient&&player.isShiftKeyDown()&&heldItem.isEmpty())
 				hurtEntity(player, ctx);
-			return InteractionResult.FAIL;
+			return ItemInteractionResult.FAIL;
 		}
 		if(player.isShiftKeyDown()&&!state.sawblade.isEmpty()&&heldItem.isEmpty())
 		{
 			player.setItemInHand(hand, state.sawblade.copy());
 			state.sawblade = ItemStack.EMPTY;
 			ctx.markDirtyAndSync();
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		else if(heldItem.is(IETags.sawblades))
 		{
 			ItemStack tempBlade = !state.sawblade.isEmpty()?state.sawblade.copy(): ItemStack.EMPTY;
-			state.sawblade = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
+			state.sawblade = heldItem.copyWithCount(1);
 			heldItem.shrink(1);
 			player.setItemInHand(hand, heldItem);
 			if(!tempBlade.isEmpty())
@@ -251,9 +255,9 @@ public class SawmillLogic
 					player.spawnAtLocation(tempBlade, 0);
 			}
 			ctx.markDirtyAndSync();
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	private void hurtEntity(Entity toHurt, IMultiblockContext<State> ctx)
@@ -302,7 +306,7 @@ public class SawmillLogic
 			return false;
 		if(!simulate)
 		{
-			p = new SawmillProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
+			p = new SawmillProcess(stack.copyWithCount(1));
 			state.sawmillProcessQueue.add(p);
 			state.combinedLogs++;
 		}
@@ -387,51 +391,51 @@ public class SawmillLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			writeCommonNBT(nbt);
-			nbt.put("energy", energy.serializeNBT());
+			writeCommonNBT(nbt, provider);
+			nbt.put("energy", energy.serializeNBT(provider));
 			nbt.putInt("combinedLogs", combinedLogs);
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			energy.deserializeNBT(nbt.get("energy"));
-			readCommonNBT(nbt);
+			energy.deserializeNBT(provider, nbt.get("energy"));
+			readCommonNBT(nbt, provider);
 			combinedLogs = nbt.getInt("combinedLogs");
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			writeCommonNBT(nbt);
+			writeCommonNBT(nbt, provider);
 			nbt.putInt("active", active.ordinal());
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			readCommonNBT(nbt);
+			readCommonNBT(nbt, provider);
 			active = ActiveState.values()[nbt.getInt("active")];
 		}
 
-		private void writeCommonNBT(CompoundTag nbt)
+		private void writeCommonNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("sawblade", sawblade.save(new CompoundTag()));
+			nbt.put("sawblade", sawblade.save(provider));
 			ListTag processes = new ListTag();
 			for(final SawmillProcess process : sawmillProcessQueue)
-				processes.add(process.writeToNBT());
+				processes.add(process.writeToNBT(provider));
 			nbt.put("processes", processes);
 		}
 
-		private void readCommonNBT(CompoundTag nbt)
+		private void readCommonNBT(CompoundTag nbt, Provider provider)
 		{
-			sawblade = ItemStack.of(nbt.getCompound("sawblade"));
+			sawblade = ItemStack.parseOptional(provider, nbt.getCompound("sawblade"));
 			ListTag processes = nbt.getList("processes", Tag.TAG_COMPOUND);
 			sawmillProcessQueue.clear();
 			for(int i = 0; i < processes.size(); ++i)
-				sawmillProcessQueue.add(SawmillProcess.readFromNBT(processes.getCompound(i)));
+				sawmillProcessQueue.add(SawmillProcess.readFromNBT(processes.getCompound(i), provider));
 		}
 
 		public IEnergyStorage getEnergy()

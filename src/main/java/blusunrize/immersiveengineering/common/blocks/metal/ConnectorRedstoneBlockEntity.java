@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -216,18 +217,18 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("ioMode", ioMode.ordinal());
 		nbt.putInt("redstoneChannel", redstoneChannel.getId());
 		nbt.putInt("output", output);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		ioMode = IOSideConfig.VALUES[nbt.getInt("ioMode")];
 		redstoneChannel = DyeColor.byId(nbt.getInt("redstoneChannel"));
 		output = nbt.getInt("output");

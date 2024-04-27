@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
@@ -20,7 +20,6 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -62,7 +61,7 @@ public class PotionBulletFillRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(CraftingContainer inv, Provider access)
 	{
 		ItemStack bullet = ItemStack.EMPTY;
 		ItemStack potion = ItemStack.EMPTY;
@@ -75,7 +74,7 @@ public class PotionBulletFillRecipe extends CustomRecipe
 				else if(potion.isEmpty()&&stackInSlot.getItem() instanceof PotionItem)
 					potion = stackInSlot;
 		}
-		ItemStack newBullet = ItemHandlerHelper.copyStackWithSize(bullet, 1);
+		ItemStack newBullet = bullet.copyWithCount(1);
 		ItemNBTHelper.setItemStack(newBullet, "potion", potion.copy());
 		return newBullet;
 	}

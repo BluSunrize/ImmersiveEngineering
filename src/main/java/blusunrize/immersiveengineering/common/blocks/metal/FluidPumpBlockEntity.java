@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
@@ -32,8 +33,10 @@ import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.datafixers.util.Unit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -271,7 +274,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					BlockEntity tile = getLevelNonnull().getBlockEntity(worldPosition.relative(f));
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
-						insertResource.getOrCreateTag().putBoolean(IFluidPipe.NBT_PRESSURIZED, true);
+						insertResource.set(IEApiDataComponents.FLUID_PRESSURIZED, Unit.INSTANCE);
 					int temp = handler.fill(insertResource, FluidAction.SIMULATE);
 					if(temp > 0)
 					{
@@ -294,7 +297,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 				if(output.containingTile() instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower, false);
-					insertResource.getOrCreateTag().putBoolean(IFluidPipe.NBT_PRESSURIZED, true);
+					insertResource.set(IEApiDataComponents.FLUID_PRESSURIZED, Unit.INSTANCE);
 				}
 				int r = output.output().fill(insertResource, action);
 				f += r;
@@ -309,28 +312,28 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		int[] sideConfigArray = nbt.getIntArray("sideConfig");
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigArray[d.ordinal()]]);
 		if(nbt.contains("placeCobble", Tag.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
-		tank.readFromNBT(nbt.getCompound("tank"));
+		tank.readFromNBT(provider, nbt.getCompound("tank"));
 		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		int[] sideConfigArray = new int[6];
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfigArray[d.ordinal()] = sideConfig.get(d).ordinal();
 		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);
-		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+		nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 		EnergyHelper.serializeTo(energyStorage, nbt);
 	}
 

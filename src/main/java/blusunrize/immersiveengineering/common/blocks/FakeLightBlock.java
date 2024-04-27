@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -116,16 +117,16 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		}
 
 		@Override
-		public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+		public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 		{
 			if(nbt.contains("floodlightCoords", Tag.TAG_COMPOUND))
-				floodlightCoords = NbtUtils.readBlockPos(nbt.getCompound("floodlightCoords"));
+				floodlightCoords = NbtUtils.readBlockPos(nbt, "floodlightCoords").orElseThrow();
 			else
 				floodlightCoords = null;
 		}
 
 		@Override
-		public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+		public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 		{
 			if(floodlightCoords!=null)
 				nbt.put("floodlightCoords", NbtUtils.writeBlockPos(floodlightCoords));

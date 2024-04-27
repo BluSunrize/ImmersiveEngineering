@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
@@ -60,21 +59,21 @@ public class BlockItemIE extends BlockItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag advanced)
 	{
 		if(getBlock() instanceof IIEBlock ieBlock&&ieBlock.hasFlavour())
 		{
 			String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
 			tooltip.add(TextUtils.applyFormat(Component.translatable(flavourKey), ChatFormatting.GRAY));
 		}
-		super.appendHoverText(stack, world, tooltip, advanced);
+		super.appendHoverText(stack, ctx, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, EnergyHelper.ENERGY_KEY))
 			tooltip.add(TextUtils.applyFormat(Component.translatable(Lib.DESC_INFO+"energyStored",
 							ItemNBTHelper.getInt(stack,  EnergyHelper.ENERGY_KEY)),
 					ChatFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
-			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
+			var fs = FluidStack.parse(ctx.registries(), ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
 				tooltip.add(TextUtils.applyFormat(
 						Component.translatable(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),

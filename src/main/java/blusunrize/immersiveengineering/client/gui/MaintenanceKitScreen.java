@@ -32,7 +32,7 @@ public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitC
 	@Override
 	protected void sendMessage(CompoundTag data)
 	{
-		PacketDistributor.SERVER.noArg().send(new MessageMaintenanceKit(menu.getEquipmentSlot(), data));
+		PacketDistributor.sendToServer(new MessageMaintenanceKit(menu.getEquipmentSlot(), data));
 	}
 
 	@Override

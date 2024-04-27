@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.fluid.FluidUtils;
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
@@ -148,7 +149,8 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		if(fluidStack==null || fluidStack.isEmpty())
 			return new Direction[2][0];
 		// Strip pressure tag, since it confuses the sorting
-		fluidStack = FluidUtils.copyFluidStackWithAmount(fluidStack, 1, true);
+		fluidStack = fluidStack.copyWithAmount(1);
+		fluidStack.remove(IEApiDataComponents.FLUID_PRESSURIZED);
 
 		ArrayList<Direction> validFilteredInvOuts = new ArrayList<>(6);
 		ArrayList<Direction> validUnfilteredInvOuts = new ArrayList<>(6);
@@ -165,7 +167,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 							unmapped = false;
 							boolean b = filterStack.getFluid()==fluidStack.getFluid();
 							if(doNBT(side.ordinal()))
-								b &= FluidStack.areFluidStackTagsEqual(filterStack, fluidStack);
+								b &= filterStack.getComponents().equals(fluidStack.getComponents());
 							if(b)
 							{
 								allowed = true;
@@ -185,19 +187,19 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		sortWithNBT = nbt.getByteArray("sortWithNBT");
 		for(int side = 0; side < 6; side++)
 		{
 			ListTag filterList = nbt.getList("filter_"+side, 10);
 			for(int i = 0; i < filterList.size(); i++)
-				filters[side][i] = FluidStack.loadFluidStackFromNBT(filterList.getCompound(i));
+				filters[side][i] = FluidStack.parseOptional(provider, filterList.getCompound(i));
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putByteArray("sortWithNBT", sortWithNBT);
 		for(int side = 0; side < 6; side++)
@@ -207,7 +209,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 			{
 				CompoundTag tag = new CompoundTag();
 				if(filters[side][i]!=null)
-					filters[side][i].writeToNBT(tag);
+					filters[side][i].save(provider, tag);
 				filterList.add(tag);
 			}
 			nbt.put("filter_"+side, filterList);
@@ -218,7 +220,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false);
+		writeCustomNBT(stack.getOrCreateTag(), false, );
 		drop.accept(stack);
 	}
 
@@ -227,7 +229,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false);
+			readCustomNBT(stack.getOrCreateTag(), false, );
 	}
 
 

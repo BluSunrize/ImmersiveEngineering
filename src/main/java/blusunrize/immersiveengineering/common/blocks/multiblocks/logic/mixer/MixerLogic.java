@@ -39,6 +39,7 @@ import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -270,7 +271,7 @@ public class MixerLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 			nbt.put("inventory", inventory.serializeNBT());
@@ -279,16 +280,16 @@ public class MixerLogic
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			tank.readFromNBT(nbt.getCompound("tank"));
 			inventory.deserializeNBT(nbt.getCompound("inventory"));
 			outputAll = nbt.getBoolean("outputAll");
-			processor.fromNBT(nbt.get("processor"), (getRecipe, data) -> new MixingProcess(getRecipe, data, tank));
+			processor.fromNBT(nbt.get("processor"), (getRecipe, data, provider) -> new MixingProcess(getRecipe, data, tank), );
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 			nbt.putBoolean("isActive", isActive);
@@ -296,7 +297,7 @@ public class MixerLogic
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			tank.readFromNBT(nbt.getCompound("tank"));
 			isActive = nbt.getBoolean("isActive");

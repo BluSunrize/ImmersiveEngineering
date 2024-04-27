@@ -25,6 +25,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -73,9 +74,9 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putString(WIRE, reference.getUniqueName());
 		nbt.putInt(OFFSET, offset);
 		CompoundTag stateNbt = NbtUtils.writeBlockState(stateForMiddle);
@@ -83,9 +84,9 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		reference = WireType.getValue(nbt.getString(WIRE));
 		offset = nbt.getInt(OFFSET);
 		HolderGetter<Block> lookup = this.level != null ?

@@ -18,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -104,13 +105,13 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
-		entityData.define(dataMarker_r, 1F);
-		entityData.define(dataMarker_g, 1F);
-		entityData.define(dataMarker_b, 1F);
-		entityData.define(dataMarker_active, false);
-		entityData.define(dataMarker_angleHorizontal, 0F);
+		builder.define(dataMarker_r, 1F);
+		builder.define(dataMarker_g, 1F);
+		builder.define(dataMarker_b, 1F);
+		builder.define(dataMarker_active, false);
+		builder.define(dataMarker_angleHorizontal, 0F);
 	}
 
 	@Override

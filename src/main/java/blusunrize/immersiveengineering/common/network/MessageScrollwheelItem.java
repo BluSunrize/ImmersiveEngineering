@@ -8,41 +8,27 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageScrollwheelItem implements IMessage
+public record MessageScrollwheelItem(boolean forward) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("scrollwheel_item");
-	private final boolean forward;
-
-	public MessageScrollwheelItem(boolean forward)
-	{
-		this.forward = forward;
-	}
-
-	public MessageScrollwheelItem(FriendlyByteBuf buf)
-	{
-		this.forward = buf.readBoolean();
-	}
+	public static final Type<MessageScrollwheelItem> ID = IMessage.createType("scrollwheel_item");
+	public static final StreamCodec<ByteBuf, MessageScrollwheelItem> CODEC = ByteBufCodecs.BOOL
+			.map(MessageScrollwheelItem::new, MessageScrollwheelItem::forward);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeBoolean(this.forward);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		Player player = context.player().orElseThrow();
-		context.workHandler().execute(() -> {
+		Player player = context.player();
+		context.enqueueWork(() -> {
 			ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
 			if(equipped.getItem() instanceof IScrollwheel)
 				((IScrollwheel)equipped.getItem()).onScrollwheel(equipped, player, forward);
@@ -50,7 +36,7 @@ public class MessageScrollwheelItem implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

@@ -130,6 +130,6 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 
 	protected void sendUpdateToServer(CompoundTag message)
 	{
-		PacketDistributor.SERVER.noArg().send(new MessageContainerUpdate(menu.containerId, message));
+		PacketDistributor.sendToServer(new MessageContainerUpdate(menu.containerId, message));
 	}
 }

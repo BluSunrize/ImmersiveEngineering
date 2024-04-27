@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.api.utils;
 
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Either;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -25,6 +26,11 @@ public class FastEither<L, R>
 		Preconditions.checkState((left!=null)^(right!=null));
 		this.left = left;
 		this.right = right;
+	}
+
+	public static <L, R> FastEither<L, R> fromDFU(Either<L, R> l)
+	{
+		return l.map(FastEither::left, FastEither::right);
 	}
 
 	public static <L, R> FastEither<L, R> left(L l)
@@ -88,5 +94,10 @@ public class FastEither<L, R>
 	public int hashCode()
 	{
 		return Objects.hash(left, right);
+	}
+
+	public Either<L, R> toDFU()
+	{
+		return map(Either::left, Either::right);
 	}
 }

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.common.gui.IESlot.ItemHandlerGhost;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
@@ -81,7 +80,7 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 		{
 			Int2ObjectMap<ItemStack> change = new Int2ObjectOpenHashMap<>();
 			change.put(((Slot)slot).index, ingredient);
-			PacketDistributor.SERVER.noArg().send(new MessageSetGhostSlots(change));
+			PacketDistributor.sendToServer(new MessageSetGhostSlots(change));
 		}
 	}
 }

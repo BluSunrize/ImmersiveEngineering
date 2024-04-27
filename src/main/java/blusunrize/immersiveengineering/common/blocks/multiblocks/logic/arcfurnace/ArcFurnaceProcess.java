@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -42,9 +43,9 @@ public class ArcFurnaceProcess extends MultiblockProcessInMachine<ArcFurnaceReci
 	}
 
 	@Override
-	public void writeExtraDataToNBT(CompoundTag nbt)
+	public void writeExtraDataToNBT(CompoundTag nbt, Provider provider)
 	{
-		super.writeExtraDataToNBT(nbt);
+		super.writeExtraDataToNBT(nbt, provider);
 		nbt.putLong("seed", seed);
 	}
 

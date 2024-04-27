@@ -10,49 +10,34 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.mixin.accessors.PaletteAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.IdMapper;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.Palette;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
-import net.neoforged.neoforge.registries.GameData;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
-import java.util.Objects;
 
-public class MessageMultiblockSync implements IMessage
+public record MessageMultiblockSync(List<SyncedTemplate> templates) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("multiblock_sync");
-	private final List<SyncedTemplate> templates;
-
-	public MessageMultiblockSync(List<SyncedTemplate> templatesToSync)
-	{
-		this.templates = templatesToSync;
-	}
-
-	public MessageMultiblockSync(FriendlyByteBuf buf)
-	{
-		templates = PacketUtils.readList(buf, SyncedTemplate::new);
-	}
+	public static final Type<MessageMultiblockSync> ID = IMessage.createType("multiblock_sync");
+	public static final StreamCodec<RegistryFriendlyByteBuf, MessageMultiblockSync> CODEC = SyncedTemplate.CODEC
+			.apply(ByteBufCodecs.list())
+			.map(MessageMultiblockSync::new, MessageMultiblockSync::templates);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		PacketUtils.writeList(buf, templates, SyncedTemplate::writeTo);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			for(SyncedTemplate synced : templates)
 			{
 				StructureTemplate template = new StructureTemplate();
@@ -65,53 +50,33 @@ public class MessageMultiblockSync implements IMessage
 		});
 	}
 
-	public static class SyncedTemplate
+	public record SyncedTemplate(BlockPos size, ResourceLocation name, StructureTemplate.Palette parts)
 	{
-		private final BlockPos size;
-		private final ResourceLocation name;
-		private final StructureTemplate.Palette parts;
+		private static final StreamCodec<RegistryFriendlyByteBuf, StructureBlockInfo> BLOCK_CODEC = StreamCodec.composite(
+				BlockPos.STREAM_CODEC, StructureBlockInfo::pos,
+				ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY), StructureBlockInfo::state,
+				ByteBufCodecs.COMPOUND_TAG, StructureBlockInfo::nbt,
+				StructureBlockInfo::new
+		);
+		private static final StreamCodec<RegistryFriendlyByteBuf, StructureTemplate.Palette> PALETTE_CODEC = BLOCK_CODEC
+				.apply(ByteBufCodecs.list())
+				.map(PaletteAccess::construct, Palette::blocks);
+		public static final StreamCodec<RegistryFriendlyByteBuf, SyncedTemplate> CODEC = StreamCodec.composite(
+				BlockPos.STREAM_CODEC, SyncedTemplate::size,
+				ResourceLocation.STREAM_CODEC, SyncedTemplate::name,
+				PALETTE_CODEC, SyncedTemplate::parts,
+				SyncedTemplate::new
+		);
+
 
 		public SyncedTemplate(StructureTemplate template, ResourceLocation name)
 		{
-			this.size = new BlockPos(template.getSize());
-			this.parts = ((TemplateAccess)template).getPalettes().get(0);
-			this.name = name;
-		}
-
-		public SyncedTemplate(FriendlyByteBuf buffer)
-		{
-			this.size = buffer.readBlockPos();
-			this.name = buffer.readResourceLocation();
-			this.parts = PaletteAccess.construct(PacketUtils.readList(buffer, SyncedTemplate::readPart));
-		}
-
-		public void writeTo(FriendlyByteBuf buffer)
-		{
-			buffer.writeBlockPos(size);
-			buffer.writeResourceLocation(name);
-			PacketUtils.writeList(buffer, parts.blocks(), SyncedTemplate::writePart);
-		}
-
-		private static StructureBlockInfo readPart(FriendlyByteBuf buffer)
-		{
-			IdMapper<BlockState> stateIds = GameData.getBlockStateIDMap();
-			BlockState state = stateIds.byId(buffer.readVarInt());
-			BlockPos pos = buffer.readBlockPos();
-			CompoundTag nbt = buffer.readNbt();
-			return new StructureBlockInfo(pos, Objects.requireNonNull(state), nbt);
-		}
-
-		private static void writePart(StructureBlockInfo info, FriendlyByteBuf buffer)
-		{
-			IdMapper<BlockState> stateIds = GameData.getBlockStateIDMap();
-			buffer.writeVarInt(stateIds.getId(info.state()));
-			buffer.writeBlockPos(info.pos());
-			buffer.writeNbt(info.nbt());
+			this(new BlockPos(template.getSize()), name, ((TemplateAccess)template).getPalettes().get(0));
 		}
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

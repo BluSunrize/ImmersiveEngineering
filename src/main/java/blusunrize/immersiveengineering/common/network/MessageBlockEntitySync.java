@@ -9,51 +9,34 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public class MessageBlockEntitySync implements IMessage
+public record MessageBlockEntitySync(BlockPos pos, CompoundTag nbt) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("be_sync");
-
-	private final BlockPos pos;
-	private final CompoundTag nbt;
-
-	//TODO get rid of NBT in packets
-	public MessageBlockEntitySync(IEBaseBlockEntity tile, CompoundTag nbt)
-	{
-		this.pos = tile.getBlockPos();
-		this.nbt = nbt;
-	}
-
-	public MessageBlockEntitySync(FriendlyByteBuf buf)
-	{
-		this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		this.nbt = buf.readNbt();
-	}
+	public static final Type<MessageBlockEntitySync> ID = IMessage.createType("be_sync");
+	public static final StreamCodec<ByteBuf, MessageBlockEntitySync> CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, MessageBlockEntitySync::pos,
+			ByteBufCodecs.COMPOUND_TAG, MessageBlockEntitySync::nbt,
+			MessageBlockEntitySync::new
+	);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
-	{
-		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
-		buf.writeNbt(this.nbt);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
+	public void process(IPayloadContext context)
 	{
 		if(context.flow().getReceptionSide()==LogicalSide.SERVER)
-			context.workHandler().execute(() -> {
-				Level world = context.player().orElseThrow().level();
+			context.enqueueWork(() -> {
+				Level world = context.player().level();
 				if(world.isAreaLoaded(pos, 1))
 				{
 					BlockEntity tile = world.getBlockEntity(pos);
@@ -62,7 +45,7 @@ public class MessageBlockEntitySync implements IMessage
 				}
 			});
 		else
-			context.workHandler().execute(() -> {
+			context.enqueueWork(() -> {
 				Level world = ImmersiveEngineering.proxy.getClientWorld();
 				if(world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
@@ -75,7 +58,7 @@ public class MessageBlockEntitySync implements IMessage
 
 	@Override
 	@NotNull
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

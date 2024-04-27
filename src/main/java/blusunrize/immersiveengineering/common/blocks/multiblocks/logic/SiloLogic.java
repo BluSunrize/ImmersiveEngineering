@@ -23,12 +23,12 @@ import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -56,7 +56,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 			return;
 		for(Supplier<@Nullable IItemHandler> output : state.outputs)
 		{
-			ItemStack stack = ItemHandlerHelper.copyStackWithSize(state.identStack, 1);
+			ItemStack stack = state.identStack.copyWithCount(1);
 			stack = Utils.insertStackIntoInventory(output, stack, false);
 			if(stack.isEmpty())
 			{
@@ -123,29 +123,29 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("identStack", identStack.save(new CompoundTag()));
+			nbt.put("identStack", identStack.save(provider));
 			nbt.putInt("count", storageAmount);
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			identStack = ItemStack.of(nbt.getCompound("identStack"));
+			identStack = ItemStack.parseOptional(provider, nbt.getCompound("identStack"));
 			storageAmount = nbt.getInt("count");
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			writeSaveNBT(nbt);
+			writeSaveNBT(nbt, provider);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			readSaveNBT(nbt);
+			readSaveNBT(nbt, provider);
 		}
 	}
 
@@ -164,7 +164,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 			if(slot==0)
 				return ItemStack.EMPTY;
 			else
-				return ItemHandlerHelper.copyStackWithSize(state.identStack, state.storageAmount);
+				return state.identStack.copyWithCount(state.storageAmount);
 		}
 
 		@Override
@@ -192,7 +192,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 			if(slot!=1||state.storageAmount < 1||amount < 1||state.identStack.isEmpty())
 				return ItemStack.EMPTY;
 			int returned = Math.min(Math.min(state.storageAmount, amount), state.identStack.getMaxStackSize());
-			ItemStack out = ItemHandlerHelper.copyStackWithSize(state.identStack, returned);
+			ItemStack out = state.identStack.copyWithCount(returned);
 			if(!simulate)
 			{
 				state.storageAmount -= out.getCount();

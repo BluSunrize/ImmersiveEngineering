@@ -14,12 +14,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -129,7 +129,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 				lightmap.ifPresent(lightmap -> base.uv2(lightmap.x, lightmap.y));
 			else if(element==ELEMENT_NORMAL)
 				normal.ifPresent(
-						normal -> base.normal(transform.last().normal(), normal.x(), normal.y(), normal.z())
+						normal -> base.normal(transform.last(), normal.x(), normal.y(), normal.z())
 				);
 		}
 		base.endVertex();

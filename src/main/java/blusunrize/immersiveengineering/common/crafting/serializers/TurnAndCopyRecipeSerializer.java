@@ -9,28 +9,39 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
+import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 
 public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopyRecipe>
 {
-	private record AdditionalData(
-			List<Integer> copySlots,
-			boolean quarter,
-			boolean eights,
-			Optional<String> predicate
-	)
+	private record AdditionalData(List<Integer> copySlots, boolean quarter, boolean eights, Optional<String> predicate)
 	{
+		private static final MapCodec<AdditionalData> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+				Codec.INT.listOf().optionalFieldOf("copyNBT", List.of()).forGetter(AdditionalData::copySlots),
+				Codec.BOOL.optionalFieldOf("quarter_turn", false).forGetter(AdditionalData::quarter),
+				Codec.BOOL.optionalFieldOf("eight_turn", false).forGetter(AdditionalData::eights),
+				Codec.STRING.optionalFieldOf("copy_nbt_predicate").forGetter(AdditionalData::predicate)
+		).apply(inst, AdditionalData::new));
+		private static final StreamCodec<ByteBuf, AdditionalData> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.INT.apply(ByteBufCodecs.list()), AdditionalData::copySlots,
+				ByteBufCodecs.BOOL, AdditionalData::quarter,
+				ByteBufCodecs.BOOL, AdditionalData::eights,
+				ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(512)), AdditionalData::predicate,
+				AdditionalData::new
+		);
+
 		public AdditionalData(TurnAndCopyRecipe recipe)
 		{
 			this(
@@ -40,66 +51,40 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 					Optional.ofNullable(recipe.getBufferPredicate())
 			);
 		}
+
+		public TurnAndCopyRecipe apply(ShapedRecipe base)
+		{
+			TurnAndCopyRecipe result = new TurnAndCopyRecipe(base, copySlots());
+			if(quarter())
+				result.allowQuarterTurn();
+			if(eights())
+				result.allowEighthTurn();
+			if(predicate().isPresent())
+				result.setNBTCopyPredicate(predicate().get());
+			return result;
+		}
 	}
 
-	private static final Codec<AdditionalData> ADDITIONAL_CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			ExtraCodecs.strictOptionalField(Codec.INT.listOf(), "copyNBT", List.of()).forGetter(AdditionalData::copySlots),
-			ExtraCodecs.strictOptionalField(Codec.BOOL, "quarter_turn", false).forGetter(AdditionalData::quarter),
-			ExtraCodecs.strictOptionalField(Codec.BOOL, "eight_turn", false).forGetter(AdditionalData::eights),
-			ExtraCodecs.strictOptionalField(Codec.STRING, "copy_nbt_predicate").forGetter(AdditionalData::predicate)
-	).apply(inst, AdditionalData::new));
+	public static final MapCodec<TurnAndCopyRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+			AdditionalData.CODEC.forGetter(AdditionalData::new),
+			RecipeSerializer.SHAPED_RECIPE.codec().forGetter(AbstractShapedRecipe::toVanilla)
+	).apply(inst, AdditionalData::apply));
 
-	public static final Codec<TurnAndCopyRecipe> CODEC = Codec.pair(
-			RecipeSerializer.SHAPED_RECIPE.codec(), ADDITIONAL_CODEC
-	).xmap(
-			p -> {
-				AdditionalData extra = p.getSecond();
-				TurnAndCopyRecipe result = new TurnAndCopyRecipe(p.getFirst(), extra.copySlots());
-				if(extra.quarter())
-					result.allowQuarterTurn();
-				if(extra.eights())
-					result.allowEighthTurn();
-				if(extra.predicate().isPresent())
-					result.setNBTCopyPredicate(extra.predicate().get());
-				return result;
-			},
-			r -> Pair.of(r.toVanilla(), new AdditionalData(r))
+	public static final StreamCodec<RegistryFriendlyByteBuf, TurnAndCopyRecipe> STREAM_CODEC = StreamCodec.composite(
+			AdditionalData.STREAM_CODEC, AdditionalData::new,
+			RecipeSerializer.SHAPED_RECIPE.streamCodec(), AbstractShapedRecipe::toVanilla,
+			AdditionalData::apply
 	);
 
 	@Override
-	public Codec<TurnAndCopyRecipe> codec()
+	public MapCodec<TurnAndCopyRecipe> codec()
 	{
 		return CODEC;
 	}
 
 	@Override
-	public TurnAndCopyRecipe fromNetwork(@Nonnull FriendlyByteBuf buffer)
+	public StreamCodec<RegistryFriendlyByteBuf, TurnAndCopyRecipe> streamCodec()
 	{
-		ShapedRecipe basic = RecipeSerializer.SHAPED_RECIPE.fromNetwork(buffer);
-		List<Integer> copySlots = buffer.readList(FriendlyByteBuf::readVarInt);
-		TurnAndCopyRecipe recipe = new TurnAndCopyRecipe(basic, copySlots);
-		if(buffer.readBoolean())
-			recipe.setNBTCopyPredicate(buffer.readUtf(512));
-		if(buffer.readBoolean())
-			recipe.allowQuarterTurn();
-		if(buffer.readBoolean())
-			recipe.allowEighthTurn();
-		return recipe;
-	}
-
-	@Override
-	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull TurnAndCopyRecipe recipe)
-	{
-		RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.toVanilla());
-		buffer.writeCollection(recipe.getCopyTargets(), FriendlyByteBuf::writeVarInt);
-		if(recipe.hasCopyPredicate())
-		{
-			buffer.writeBoolean(true);
-			buffer.writeUtf(recipe.getBufferPredicate());
-		}
-		else
-			buffer.writeBoolean(false);
-		buffer.writeBoolean(recipe.isQuarterTurn());
-		buffer.writeBoolean(recipe.isEightTurn());
+		return STREAM_CODEC;
 	}
 }

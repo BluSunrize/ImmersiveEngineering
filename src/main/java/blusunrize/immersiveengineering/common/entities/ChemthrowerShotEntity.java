@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.register.IEEntityDataSerializers;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
@@ -63,10 +64,10 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
-		super.defineSynchedData();
-		this.entityData.define(dataMarker_fluid, FluidStack.EMPTY);
+		super.defineSynchedData(builder);
+		builder.define(dataMarker_fluid, FluidStack.EMPTY);
 	}
 
 	public void setFluidSynced()

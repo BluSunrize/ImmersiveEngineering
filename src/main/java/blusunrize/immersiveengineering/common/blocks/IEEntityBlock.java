@@ -22,6 +22,7 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -210,7 +211,7 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	}
 
 	@Override
-	public InteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
 		BlockEntity tile = w.getBlockEntity(pos);
 		if(tile instanceof IHammerInteraction)
@@ -225,7 +226,7 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	}
 
 	@Override
-	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
 		BlockEntity tile = w.getBlockEntity(pos);
 		if(tile instanceof IScrewdriverInteraction)

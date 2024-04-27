@@ -39,8 +39,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import net.minecraft.Util;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.*;
@@ -59,8 +61,8 @@ import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.InputStreamReader;
@@ -197,61 +199,66 @@ public class ImmersiveEngineering
 		MetalPressPackingRecipes.init();
 	}
 
-	private void setupNetwork(RegisterPayloadHandlerEvent ev)
+	private void setupNetwork(RegisterPayloadHandlersEvent ev)
 	{
-		final IPayloadRegistrar registrar = ev.registrar(MODID);
-		registerMessage(registrar, MessageBlockEntitySync.ID, MessageBlockEntitySync::new);
-		registerMessage(registrar, MessageContainerUpdate.ID, MessageContainerUpdate::new, SERVERBOUND);
-		registerMessage(registrar, MessageSpeedloaderSync.ID, MessageSpeedloaderSync::new, CLIENTBOUND);
-		registerMessage(registrar, MessageSkyhookSync.ID, MessageSkyhookSync::new, CLIENTBOUND);
-		registerMessage(registrar, MessageMinecartShaderSync.ID, MessageMinecartShaderSync::new);
-		registerMessage(registrar, MessageRequestEnergyUpdate.ID, MessageRequestEnergyUpdate::new, SERVERBOUND);
-		registerMessage(registrar, MessageStoredEnergy.ID, MessageStoredEnergy::new, CLIENTBOUND);
-		registerMessage(registrar, MessageRequestRedstoneUpdate.ID, MessageRequestRedstoneUpdate::new, SERVERBOUND);
-		registerMessage(registrar, MessageRedstoneLevel.ID, MessageRedstoneLevel::new, CLIENTBOUND);
-		registerMessage(registrar, MessageShaderManual.ID, MessageShaderManual::new);
-		registerMessage(registrar, MessageBirthdayParty.ID, MessageBirthdayParty::new, CLIENTBOUND);
-		registerMessage(registrar, MessageMagnetEquip.ID, MessageMagnetEquip::new, SERVERBOUND);
-		registerMessage(registrar, MessageScrollwheelItem.ID, MessageScrollwheelItem::new, SERVERBOUND);
-		registerMessage(registrar, MessageObstructedConnection.ID, MessageObstructedConnection::new, CLIENTBOUND);
-		registerMessage(registrar, MessageSetGhostSlots.ID, MessageSetGhostSlots::new, SERVERBOUND);
-		registerMessage(registrar, MessageWireSync.ID, MessageWireSync::new, CLIENTBOUND);
-		registerMessage(registrar, MessageMaintenanceKit.ID, MessageMaintenanceKit::new, SERVERBOUND);
-		registerMessage(registrar, MessageRevolverRotate.ID, MessageRevolverRotate::new, SERVERBOUND);
-		registerMessage(registrar, MessageMultiblockSync.ID, MessageMultiblockSync::new, CLIENTBOUND);
-		registerMessage(registrar, MessageContainerData.ID, MessageContainerData::new, CLIENTBOUND);
-		registerMessage(registrar, MessageNoSpamChat.ID, MessageNoSpamChat::new, CLIENTBOUND);
-		registerMessage(registrar, MessageOpenManual.ID, MessageOpenManual::new, CLIENTBOUND);
-		registerMessage(registrar, MessagePowerpackAntenna.ID, MessagePowerpackAntenna::new, CLIENTBOUND);
+		final PayloadRegistrar registrar = ev.registrar(MODID);
+		registerMessage(registrar, MessageBlockEntitySync.ID, MessageBlockEntitySync.CODEC);
+		registerMessage(registrar, MessageContainerUpdate.ID, MessageContainerUpdate.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageSpeedloaderSync.ID, MessageSpeedloaderSync.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageSkyhookSync.ID, MessageSkyhookSync.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageMinecartShaderSync.ID, MessageMinecartShaderSync.CODEC);
+		registerMessage(registrar, MessageRequestEnergyUpdate.ID, MessageRequestEnergyUpdate.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageStoredEnergy.ID, MessageStoredEnergy.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageRequestRedstoneUpdate.ID, MessageRequestRedstoneUpdate.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageRedstoneLevel.ID, MessageRedstoneLevel.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageShaderManual.ID, MessageShaderManual.CODEC);
+		registerMessage(registrar, MessageBirthdayParty.ID, MessageBirthdayParty.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageMagnetEquip.ID, MessageMagnetEquip.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageScrollwheelItem.ID, MessageScrollwheelItem.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageObstructedConnection.ID, MessageObstructedConnection.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageSetGhostSlots.ID, MessageSetGhostSlots.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageWireSync.ID, MessageWireSync.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageMaintenanceKit.ID, MessageMaintenanceKit.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageRevolverRotate.ID, MessageRevolverRotate.CODEC, SERVERBOUND);
+		registerMessage(registrar, MessageMultiblockSync.ID, MessageMultiblockSync.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageContainerData.ID, MessageContainerData.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageNoSpamChat.ID, MessageNoSpamChat.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessageOpenManual.ID, MessageOpenManual.CODEC, CLIENTBOUND);
+		registerMessage(registrar, MessagePowerpackAntenna.ID, MessagePowerpackAntenna.CODEC, CLIENTBOUND);
 	}
 
 	private <T extends IMessage> void registerMessage(
-			IPayloadRegistrar registrar, ResourceLocation id, FriendlyByteBuf.Reader<T> reader
+			PayloadRegistrar registrar,
+			CustomPacketPayload.Type<T> id,
+			StreamCodec<? super RegistryFriendlyByteBuf, T> codec
 	)
 	{
-		registerMessage(registrar, id, reader, Optional.empty());
+		registerMessage(registrar, id, codec, Optional.empty());
 	}
 
 	private <T extends IMessage> void registerMessage(
-			IPayloadRegistrar registrar, ResourceLocation id, FriendlyByteBuf.Reader<T> reader, PacketFlow direction
+			PayloadRegistrar registrar,
+			CustomPacketPayload.Type<T> id,
+			StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
+			PacketFlow direction
 	)
 	{
-		registerMessage(registrar, id, reader, Optional.of(direction));
+		registerMessage(registrar, id, codec, Optional.of(direction));
 	}
 
 	private <T extends IMessage> void registerMessage(
-			IPayloadRegistrar registrar, ResourceLocation id, FriendlyByteBuf.Reader<T> reader, Optional<PacketFlow> direction
+			PayloadRegistrar registrar,
+			CustomPacketPayload.Type<T> id,
+			StreamCodec<? super RegistryFriendlyByteBuf, T> codec,
+			Optional<PacketFlow> direction
 	)
 	{
-		if(direction.isPresent())
-			registrar.play(id, reader, builder -> {
-				if(direction.get()==CLIENTBOUND)
-					builder.client(T::process);
-				else
-					builder.server(T::process);
-			});
-		else
-			registrar.play(id, reader, T::process);
+		if(direction.isEmpty())
+			registrar.playBidirectional(id, codec, T::process);
+		else if(direction.get()==CLIENTBOUND)
+			registrar.playToClient(id, codec, T::process);
+		else if(direction.get()==SERVERBOUND)
+			registrar.playToServer(id, codec, T::process);
 	}
 
 	public void enqueueIMCs(InterModEnqueueEvent event)

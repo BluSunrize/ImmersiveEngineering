@@ -271,7 +271,7 @@ public class IEManualInstance extends ManualInstance
 	public void openEntry(ManualEntry entry)
 	{
 		if(SHADER_ENTRY.equals(entry.getLocation()))
-			PacketDistributor.SERVER.noArg().send(new MessageShaderManual(MessageType.SYNC));
+			PacketDistributor.sendToServer(new MessageShaderManual(MessageType.SYNC));
 	}
 
 	@Override

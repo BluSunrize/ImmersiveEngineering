@@ -35,10 +35,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -48,6 +50,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -123,7 +126,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 						if(energyStorage.extractEnergy(energyDrain, true)==energyDrain)
 						{
 							energyStorage.extractEnergy(energyDrain, false);
-							target.addEffect(new MobEffectInstance(IEPotions.STUNNED.value(), 128));
+							target.addEffect(new MobEffectInstance(IEPotions.STUNNED, 128));
 							if(dmgsrc.apply(target))
 							{
 								int prevFire = target.getRemainingFireTicks();
@@ -236,7 +239,9 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("targetEntity", target.getId());
-		PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(worldPosition)).send(new MessageBlockEntitySync(this, tag));
+		PacketDistributor.sendToPlayersTrackingChunk(
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, tag)
+		);
 	}
 
 	protected void sendFreePacket(double tL, double tH, double tV)
@@ -245,7 +250,9 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 		tag.putDouble("tL", tL);
 		tag.putDouble("tV", tV);
 		tag.putDouble("tH", tH);
-		PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(worldPosition)).send(new MessageBlockEntitySync(this, tag));
+		PacketDistributor.sendToPlayersTrackingChunk(
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, tag)
+		);
 	}
 
 	@Override
@@ -354,7 +361,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
@@ -362,7 +369,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.putBoolean("lowPower", lowPower);

@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -50,10 +51,10 @@ public class RailgunShotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
-		super.defineSynchedData();
-		this.entityData.define(dataMarker_ammo, ItemStack.EMPTY);
+		super.defineSynchedData(builder);
+		builder.define(dataMarker_ammo, ItemStack.EMPTY);
 	}
 
 	@Nonnull

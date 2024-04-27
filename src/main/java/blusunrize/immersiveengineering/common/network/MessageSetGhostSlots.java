@@ -8,62 +8,41 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.gui.IESlot.ItemHandlerGhost;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageSetGhostSlots implements IMessage
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+public record MessageSetGhostSlots(Map<Integer, ItemStack> stacksToSet) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("set_ghost_slot");
-	private final Int2ObjectMap<ItemStack> stacksToSet;
-
-	public MessageSetGhostSlots(Int2ObjectMap<ItemStack> stacksToSet)
-	{
-		this.stacksToSet = stacksToSet;
-	}
-
-	public MessageSetGhostSlots(FriendlyByteBuf buf)
-	{
-		int size = buf.readInt();
-		stacksToSet = new Int2ObjectOpenHashMap<>(size);
-		for(int i = 0; i < size; i++)
-		{
-			int slot = buf.readInt();
-			stacksToSet.put(slot, buf.readItem());
-		}
-	}
+	public static final Type<MessageSetGhostSlots> ID = IMessage.createType("set_ghost_slot");
+	private static final StreamCodec<RegistryFriendlyByteBuf, Map<Integer, ItemStack>> MAP_CODEC = ByteBufCodecs.map(
+			HashMap::new, ByteBufCodecs.INT, ItemStack.STREAM_CODEC
+	);
+	public static final StreamCodec<RegistryFriendlyByteBuf, MessageSetGhostSlots> CODEC = MAP_CODEC
+			.map(MessageSetGhostSlots::new, MessageSetGhostSlots::stacksToSet);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeInt(stacksToSet.size());
-		for(Entry<ItemStack> e : stacksToSet.int2ObjectEntrySet())
-		{
-			buf.writeInt(e.getIntKey());
-			buf.writeItem(e.getValue());
-		}
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		Player player = context.player().orElseThrow();
-		context.workHandler().execute(() -> {
+		Player player = context.player();
+		context.enqueueWork(() -> {
 			AbstractContainerMenu container = player.containerMenu;
 			if(container!=null)
-				for(Entry<ItemStack> e : stacksToSet.int2ObjectEntrySet())
+				for(Entry<Integer, ItemStack> e : stacksToSet.entrySet())
 				{
-					int slot = e.getIntKey();
+					int slot = e.getKey();
 					if(slot >= 0&&slot < container.slots.size())
 					{
 						Slot target = container.slots.get(slot);
@@ -81,7 +60,7 @@ public class MessageSetGhostSlots implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

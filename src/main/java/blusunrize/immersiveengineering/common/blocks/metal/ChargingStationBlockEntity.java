@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -157,20 +158,20 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		EnergyHelper.deserializeFrom(energyStorage, nbt);
-		inventory.set(0, ItemStack.of(nbt.getCompound("inventory")));
+		inventory.set(0, ItemStack.parseOptional(provider, nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		EnergyHelper.serializeTo(energyStorage, nbt);
 		nbt.putBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
-			nbt.put("inventory", inventory.get(0).save(new CompoundTag()));
+			nbt.put("inventory", inventory.get(0).save(provider, new CompoundTag()));
 	}
 
 	@Override

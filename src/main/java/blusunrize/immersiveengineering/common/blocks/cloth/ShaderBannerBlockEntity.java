@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -30,16 +31,16 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
-			shader = ShaderWrapper_Direct.SERIALIZER.read(this, nbt.getCompound("shader"));
+			shader = ShaderWrapper_Direct.SERIALIZER.read(this, nbt.getCompound("shader"), provider);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		nbt.put("shader", ShaderWrapper_Direct.SERIALIZER.write(shader));
+		nbt.put("shader", ShaderWrapper_Direct.SERIALIZER.write(shader, provider));
 	}
 
 	@Override

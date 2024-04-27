@@ -37,12 +37,13 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -60,7 +61,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -144,7 +144,7 @@ public class BottlingMachineLogic
 		NonNullList<ItemStack> displayStacks;
 		if(recipe==null)
 		{
-			ItemStack inputItem = ItemHandlerHelper.copyStackWithSize(stacks[0], 1);
+			ItemStack inputItem = stacks[0].copyWithCount(1);
 			displayStacks = Utils.createNonNullItemStackListFromItemStack(inputItem);
 			process = new BottlingProcess(inputItem, inputItem.copy(), state);
 		}
@@ -157,7 +157,7 @@ public class BottlingMachineLogic
 		if(state.processor.addProcessToQueue(process, level, false))
 			for(ItemStack stack : displayStacks)
 				itemsOnConveyor.stream()
-						.filter(t -> ItemStack.isSameItemSameTags(t.getSecond(), stack))
+						.filter(t -> ItemStack.isSameItemSameComponents(t.getSecond(), stack))
 						.findFirst()
 						.ifPresent(t -> {
 							ItemStack remaining = t.getSecond().copy();
@@ -169,13 +169,13 @@ public class BottlingMachineLogic
 	}
 
 	@Override
-	public InteractionResult click(
+	public ItemInteractionResult click(
 			IMultiblockContext<State> ctx, BlockPos posInMultiblock,
 			Player player, InteractionHand hand, BlockHitResult absoluteHit, boolean isClient
 	)
 	{
 		if(!player.getItemInHand(hand).is(IETags.hammers))
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		if(!isClient)
 		{
 			final State state = ctx.getState();
@@ -184,7 +184,7 @@ public class BottlingMachineLogic
 					Lib.CHAT_INFO+"bottling_machine."+(state.allowPartialFill?"partialFill": "completeFill")
 			), true);
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -264,36 +264,36 @@ public class BottlingMachineLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("processor", processor.toNBT());
-			nbt.put("energy", energy.serializeNBT());
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.put("processor", processor.toNBT(provider));
+			nbt.put("energy", energy.serializeNBT(provider));
+			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 			nbt.putBoolean("allowPartialFill", allowPartialFill);
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			processor.fromNBT(nbt.get("processor"), BottlingProcess.loader(this));
-			energy.deserializeNBT(nbt.get("energy"));
-			tank.readFromNBT(nbt.getCompound("tank"));
+			processor.fromNBT(nbt.get("processor"), BottlingProcess.loader(this), provider);
+			energy.deserializeNBT(provider, nbt.get("energy"));
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
 			allowPartialFill = nbt.getBoolean("allowPartialFill");
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("processor", processor.toNBT());
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.put("processor", processor.toNBT(provider));
+			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 			nbt.putBoolean("active", active);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			processor.fromNBT(nbt.get("processor"), BottlingProcess.loader(this));
-			tank.readFromNBT(nbt.getCompound("tank"));
+			processor.fromNBT(nbt.get("processor"), BottlingProcess.loader(this), provider);
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
 			active = nbt.getBoolean("active");
 		}
 

@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +49,7 @@ public class WindmillBiome extends IESerializableRecipe
 		this(FastEither.right(biomes), modifier);
 	}
 
-	private WindmillBiome(FastEither<TagKey<Biome>, List<ResourceKey<Biome>>> biomes, float modifier)
+	public WindmillBiome(FastEither<TagKey<Biome>, List<ResourceKey<Biome>>> biomes, float modifier)
 	{
 		super(TagOutput.EMPTY, IERecipeTypes.WINDMILL_BIOME);
 		this.biomes = biomes;

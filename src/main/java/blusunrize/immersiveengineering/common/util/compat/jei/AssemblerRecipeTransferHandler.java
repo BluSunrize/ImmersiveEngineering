@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.AssemblerMenu;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
@@ -94,7 +93,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 					Int2ObjectMap<ItemStack> changes = new Int2ObjectOpenHashMap<>();
 					for(int slot = 0; slot < Math.min(convertedInput.size(), 9); slot++)
 						changes.put(i*10+slot, convertedInput.get(slot));
-					PacketDistributor.SERVER.noArg().send(new MessageSetGhostSlots(changes));
+					PacketDistributor.sendToServer(new MessageSetGhostSlots(changes));
 				}
 				return null;
 			}

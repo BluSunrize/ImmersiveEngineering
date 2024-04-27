@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
 import blusunrize.immersiveengineering.common.util.sound.MultiblockSound;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -159,7 +160,7 @@ public class FermenterLogic
 		IItemHandler outputHandler = state.itemOutput.get();
 		if(outputHandler==null)
 			return false;
-		ItemStack stack = ItemHandlerHelper.copyStackWithSize(outputStack, 1);
+		ItemStack stack = outputStack.copyWithCount(1);
 		stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
 		if(stack.isEmpty())
 		{
@@ -254,31 +255,35 @@ public class FermenterLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("energy", energy.serializeNBT());
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-			nbt.put("inventory", inventory.serializeNBT());
-			nbt.put("processor", processor.toNBT());
+			nbt.put("energy", energy.serializeNBT(provider));
+			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
+			nbt.put("inventory", inventory.serializeNBT(provider));
+			nbt.put("processor", processor.toNBT(provider));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			energy.deserializeNBT(nbt.get("energy"));
-			tank.readFromNBT(nbt.getCompound("tank"));
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
-			processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
+			energy.deserializeNBT(provider, nbt.get("energy"));
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
+			processor.fromNBT(
+					nbt.get("processor"),
+					(getRecipe, data, p) -> new MultiblockProcessInMachine<>(getRecipe, data),
+					provider
+			);
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putBoolean("active", active);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			active = nbt.getBoolean("active");
 		}

@@ -8,38 +8,33 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteEnergyData;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("request_energy_update");
-	public MessageRequestEnergyUpdate(FriendlyByteBuf buf)
-	{
-		this(readPos(buf));
-	}
+	public static final Type<MessageRequestEnergyUpdate> ID = IMessage.createType("request_energy_update");
+	public static final StreamCodec<ByteBuf, MessageRequestEnergyUpdate> CODEC = ByteBufCodecs.either(
+			BlockPos.STREAM_CODEC, ByteBufCodecs.INT
+	).map(e -> new MessageRequestEnergyUpdate(FastEither.fromDFU(e)), m -> m.pos.toDFU());
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		writePos(buf, pos);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
-			Level level = context.player().orElseThrow().level();
+		context.enqueueWork(() -> {
+			Level level = context.player().level();
 			IEnergyStorage storage;
 			if(pos.isLeft())
 				storage = level.getCapability(EnergyStorage.BLOCK, pos.leftNonnull(), null);
@@ -58,7 +53,7 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 				);
 			if(data==null)
 				data = new RemoteEnergyData(pos, level.getGameTime(), false, 0, 0);
-			PacketDistributor.PLAYER.with(serverPlayer(context)).send(new MessageStoredEnergy(data));
+			PacketDistributor.sendToPlayer(IMessage.serverPlayer(context), new MessageStoredEnergy(data));
 		});
 	}
 
@@ -80,7 +75,7 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

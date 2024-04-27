@@ -9,14 +9,13 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.IEStreamCodecs;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -35,9 +34,10 @@ public record StackWithChance(TagOutput stack, float chance, List<ICondition> co
 	);
 	public static final StreamCodec<RegistryFriendlyByteBuf, StackWithChance> STREAM_CODEC = StreamCodec.composite(
 			TagOutput.STREAM_CODEC, StackWithChance::stack,
-			IEStreamCodecs.FLOAT, StackWithChance::chance,
+			ByteBufCodecs.FLOAT, StackWithChance::chance,
 			StackWithChance::new
 	);
+	public static final StreamCodec<RegistryFriendlyByteBuf, List<StackWithChance>> STREAM_LIST = STREAM_CODEC.apply(ByteBufCodecs.list());
 
 	public StackWithChance
 	{

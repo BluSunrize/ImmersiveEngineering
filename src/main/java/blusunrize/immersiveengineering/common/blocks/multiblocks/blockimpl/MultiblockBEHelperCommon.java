@@ -24,7 +24,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -94,14 +93,14 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	{
 		final MultiblockBEHelperMaster<State> helper = getMasterHelper();
 		if(helper==null)
-			return InteractionResult.FAIL;
+			return ItemInteractionResult.FAIL;
 		final MultiblockContext<State> ctx = helper.getContext();
 		for(final ComponentInstance<?> component : helper.getComponentInstances())
 		{
-			final InteractionResult componentResult = component.click(
+			final ItemInteractionResult componentResult = component.click(
 					getPositionInMB(), player, hand, hit, player.level().isClientSide
 			);
-			if(componentResult!=InteractionResult.PASS)
+			if(componentResult!=ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION)
 				return componentResult;
 		}
 		return multiblock.logic().click(ctx, getPositionInMB(), player, hand, hit, player.level().isClientSide);

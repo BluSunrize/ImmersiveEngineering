@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -151,25 +152,25 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		EnergyHelper.serializeTo(energyStorage, nbt);
 		nbt.putInt("dummy", dummy);
 		nbt.putInt("process", process);
 		nbt.putBoolean("isRunning", isRunning);
 		if(!sample.isEmpty())
-			nbt.put("sample", sample.save(new CompoundTag()));
+			nbt.put("sample", sample.save(provider, new CompoundTag()));
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		dummy = nbt.getInt("dummy");
 		process = nbt.getInt("process");
 		isRunning = nbt.getBoolean("isRunning");
 		if(nbt.contains("sample", Tag.TAG_COMPOUND))
-			sample = ItemStack.of(nbt.getCompound("sample"));
+			sample = ItemStack.parseOptional(provider, nbt.getCompound("sample"));
 		else
 			sample = ItemStack.EMPTY;
 	}

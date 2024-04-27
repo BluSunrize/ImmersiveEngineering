@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +20,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -59,7 +58,7 @@ public class RGBColourationRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(CraftingContainer inv, Provider access)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
@@ -101,7 +100,7 @@ public class RGBColourationRecipe implements CraftingRecipe
 		}
 		if(!itemToColour.isEmpty())
 		{
-			ItemStack newItem = ItemHandlerHelper.copyStackWithSize(itemToColour, 1);
+			ItemStack newItem = itemToColour.copyWithCount(1);
 			int r = colourArray[0]/totalColourSets;
 			int g = colourArray[1]/totalColourSets;
 			int b = colourArray[2]/totalColourSets;
@@ -126,7 +125,7 @@ public class RGBColourationRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return ItemStack.EMPTY;
 	}

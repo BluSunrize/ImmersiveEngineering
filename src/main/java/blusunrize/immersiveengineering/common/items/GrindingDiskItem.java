@@ -15,13 +15,12 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -59,7 +58,7 @@ public class GrindingDiskItem extends SawbladeItem
 	}
 
 	@Override
-	public void modifyEnchants(Map<Enchantment, Integer> baseEnchants)
+	public ItemEnchantments modifyEnchants(ItemEnchantments baseEnchants)
 	{
 		baseEnchants.put(Enchantments.SILK_TOUCH, 1);
 	}

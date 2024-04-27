@@ -30,6 +30,7 @@ import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -158,7 +159,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		for(Direction f : DirectionUtils.VALUES)
 			nbt.putInt("sideConfig_"+f.ordinal(), sideConfig.get(f).ordinal());
@@ -167,7 +168,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		for(Direction f : DirectionUtils.VALUES)
 			sideConfig.put(f, IOSideConfig.values()[nbt.getInt("sideConfig_"+f.ordinal())]);
@@ -211,7 +212,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false);
+		writeCustomNBT(stack.getOrCreateTag(), false, );
 		drop.accept(stack);
 	}
 
@@ -220,7 +221,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false);
+			readCustomNBT(stack.getOrCreateTag(), false, );
 	}
 
 	protected IEnergyStorage makeMainEnergyStorage()

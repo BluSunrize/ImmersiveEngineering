@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -122,23 +123,23 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		if(!descPacket)
 		{
-			tank.readFromNBT(nbt.getCompound("tank"));
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
 			ignite = nbt.getBoolean("ignite");
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		if(!descPacket)
 		{
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 			nbt.putBoolean("ignite", ignite);
 		}
 	}

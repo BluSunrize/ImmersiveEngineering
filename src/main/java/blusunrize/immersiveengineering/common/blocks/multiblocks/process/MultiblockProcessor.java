@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLev
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -96,7 +97,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		return tickedAny;
 	}
 
-	public Tag toNBT()
+	public Tag toNBT(Provider provider)
 	{
 		ListTag processList = new ListTag();
 		for(final MultiblockProcess<R, CTX> process : processQueue)
@@ -104,13 +105,13 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 			CompoundTag tag = new CompoundTag();
 			tag.putString("recipe", process.getRecipeId().toString());
 			tag.putInt("process_processTick", process.processTick);
-			process.writeExtraDataToNBT(tag);
+			process.writeExtraDataToNBT(tag, provider);
 			processList.add(tag);
 		}
 		return processList;
 	}
 
-	public void fromNBT(Tag nbt, ProcessLoader<R, CTX> loader)
+	public void fromNBT(Tag nbt, ProcessLoader<R, CTX> loader, Provider provider)
 	{
 		if(!(nbt instanceof ListTag list))
 			return;
@@ -118,7 +119,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		for(final Tag tag : list)
 			if(tag instanceof CompoundTag processTag)
 			{
-				final MultiblockProcess<R, CTX> loadedProcess = loader.fromNBT(getRecipeFromID, processTag);
+				final MultiblockProcess<R, CTX> loadedProcess = loader.fromNBT(getRecipeFromID, processTag, provider);
 				if(loadedProcess!=null)
 					this.processQueue.add(loadedProcess);
 			}
@@ -220,7 +221,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 
 	public interface ProcessLoader<R extends MultiblockRecipe, CTX extends ProcessContext<R>>
 	{
-		MultiblockProcess<R, CTX> fromNBT(BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data);
+		MultiblockProcess<R, CTX> fromNBT(BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data, Provider provider);
 	}
 
 	// Convenience classes to deal with the lack of typedefs

@@ -86,7 +86,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
@@ -116,7 +115,7 @@ public class EventHandler
 			final ShaderWrapper wrapper = cart.getData(IEDataAttachments.MINECART_SHADER);
 			if(wrapper!=null&&!event.getLevel().isClientSide)
 			{
-				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));
+				wrapper.setShaderItem(stack.copyWithCount(1));
 				PacketDistributor.TRACKING_ENTITY.with(cart).send(new MessageMinecartShaderSync(cart, wrapper));
 			}
 			event.setCanceled(true);

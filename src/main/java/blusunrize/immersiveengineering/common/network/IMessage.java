@@ -9,16 +9,22 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public interface IMessage extends CustomPacketPayload
 {
-	void process(PlayPayloadContext context);
+	void process(IPayloadContext context);
 
-	default ServerPlayer serverPlayer(PlayPayloadContext ctx)
+	static ServerPlayer serverPlayer(IPayloadContext ctx)
 	{
-		return (ServerPlayer)ctx.player().orElseThrow();
+		return (ServerPlayer)ctx.player();
+	}
+
+	static <T extends CustomPacketPayload> Type<T> createType(String path)
+	{
+		return new Type<>(IEApi.ieLoc(path));
 	}
 }

@@ -10,16 +10,17 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks.component;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IMultiblockComponent.StateWrapper;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl.RSState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.utils.ComputerControlState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
@@ -61,7 +62,7 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 	}
 
 	@Override
-	public InteractionResult click(
+	public ItemInteractionResult click(
 			IMultiblockContext<RSState> ctx,
 			BlockPos posInMultiblock,
 			Player player,
@@ -72,7 +73,7 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 	{
 		final ItemStack held = player.getItemInHand(hand);
 		if(!held.is(IETags.screwdrivers)||!positions.contains(posInMultiblock))
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		if(!isClient)
 		{
 			final boolean inverted = !ctx.getState().rsEnablesMachine;
@@ -82,7 +83,7 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 			);
 			ctx.markMasterDirty();
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	public static class RSState implements IMultiblockState
@@ -117,13 +118,13 @@ public class RedstoneControl<S> implements IMultiblockComponent<RSState>, StateW
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putBoolean("rsEnablesMachine", rsEnablesMachine);
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			rsEnablesMachine = nbt.getBoolean("rsEnablesMachine");
 		}

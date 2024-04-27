@@ -206,7 +206,7 @@ public class RenderUtils
 			blue = (color&255)/255F;
 		}
 		for(BakedQuad quad : quads)
-			renderer.putBulkData(transform.last(), quad, red, green, blue, light, overlay);
+			renderer.putBulkData(transform.last(), quad, red, green, blue, 1, light, overlay);
 	}
 
 	//Cheers boni =P
@@ -222,7 +222,7 @@ public class RenderUtils
 			matrix.pushPose();
 			matrix.translate(blockpos.getX(), blockpos.getY(), blockpos.getZ());
 			VertexConsumer worldRendererIn = buffers.getBuffer(ModelBakery.DESTROY_TYPES.get(progress));
-			worldRendererIn = new SheetedDecalTextureGenerator(worldRendererIn, matrix.last().pose(), matrix.last().normal(), 1);
+			worldRendererIn = new SheetedDecalTextureGenerator(worldRendererIn, matrix.last(), 1);
 			Block block = world.getBlockState(blockpos).getBlock();
 			boolean hasBreak = block instanceof ChestBlock||block instanceof EnderChestBlock
 					||block instanceof SignBlock||block instanceof SkullBlock;
@@ -340,7 +340,7 @@ public class RenderUtils
 				.uv(u, v)
 				.overlayCoords(OverlayTexture.NO_OVERLAY)
 				.uv2(light)
-				.normal(mat.last().normal(), nX, nY, nZ)
+				.normal(mat.last(), nX, nY, nZ)
 				.endVertex();
 	}
 }

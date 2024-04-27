@@ -102,13 +102,13 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	@Override
 	public void load(CompoundTag tag)
 	{
-		load(tag, IMultiblockState::readSaveNBT);
+		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSaveNBT(nbt, ));
 	}
 
 	@Override
 	public void saveAdditional(CompoundTag tag)
 	{
-		save(tag, IMultiblockState::writeSaveNBT);
+		save(tag, (iMultiblockState, nbt) -> iMultiblockState.writeSaveNBT(nbt, ));
 	}
 
 	private void save(CompoundTag out, BiConsumer<IMultiblockState, CompoundTag> saveSingle)
@@ -145,7 +145,7 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	public CompoundTag getUpdateTag()
 	{
 		CompoundTag result = new CompoundTag();
-		save(result, IMultiblockState::writeSyncNBT);
+		save(result, (iMultiblockState, nbt) -> iMultiblockState.writeSyncNBT(nbt, ));
 		return result;
 	}
 
@@ -158,13 +158,13 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	@Override
 	public void handleUpdateTag(CompoundTag tag)
 	{
-		load(tag, IMultiblockState::readSyncNBT);
+		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSyncNBT(nbt, ));
 	}
 
 	@Override
 	public void onDataPacket(CompoundTag tag)
 	{
-		load(tag, IMultiblockState::readSyncNBT);
+		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSyncNBT(nbt, ));
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerT
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public record ComponentInstance<S>(IMultiblockComponent<S> component, IMultibloc
 		component.onEntityCollision(wrappedContext, positionInMB, collided);
 	}
 
-	public InteractionResult click(
+	public ItemInteractionResult click(
 			BlockPos positionInMB, Player player, InteractionHand hand, BlockHitResult hit, boolean isClientSide
 	)
 	{

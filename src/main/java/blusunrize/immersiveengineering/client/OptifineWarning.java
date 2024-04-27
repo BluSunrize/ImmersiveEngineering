@@ -13,7 +13,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.ModLoadingStage;
 import net.neoforged.fml.ModLoadingWarning;
 import net.neoforged.neoforgespi.language.IModInfo;
 
@@ -29,10 +28,8 @@ public class OptifineWarning
 		if(detectBadOptifine())
 		{
 			final IModInfo modInfo = ModLoadingContext.get().getActiveContainer().getModInfo();
-			ModLoadingWarning warning = new ModLoadingWarning(
-					modInfo, ModLoadingStage.CONSTRUCT, "immersiveengineering.optifinePoseStackWarning"
-			);
-			ModLoader.get().addWarning(warning);
+			ModLoadingWarning warning = new ModLoadingWarning(modInfo, "immersiveengineering.optifinePoseStackWarning");
+			ModLoader.addWarning(warning);
 		}
 	}
 

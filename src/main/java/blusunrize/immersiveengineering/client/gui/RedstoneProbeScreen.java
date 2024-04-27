@@ -71,7 +71,7 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 	{
 		CompoundTag message = new CompoundTag();
 		message.putInt(key, value);
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

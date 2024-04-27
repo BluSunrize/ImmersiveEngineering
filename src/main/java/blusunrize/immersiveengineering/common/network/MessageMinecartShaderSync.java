@@ -9,69 +9,50 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
 import blusunrize.immersiveengineering.common.register.IEDataAttachments;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageMinecartShaderSync implements IMessage
+public record MessageMinecartShaderSync(int entityID, ItemStack shader) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("minecart_shader_sync");
-	private final int entityID;
-	private final ItemStack shader;
-
-	public MessageMinecartShaderSync(Entity entity, ShaderWrapper wrapper)
-	{
-		this.entityID = entity.getId();
-		this.shader = wrapper.getShaderItem();
-	}
-
-	public MessageMinecartShaderSync(Entity entity)
-	{
-		this.entityID = entity.getId();
-		this.shader = ItemStack.EMPTY;
-	}
-
-	public MessageMinecartShaderSync(FriendlyByteBuf buf)
-	{
-		this.entityID = buf.readInt();
-		this.shader = buf.readItem();
-	}
+	public static final Type<MessageMinecartShaderSync> ID = IMessage.createType("minecart_shader_sync");
+	public static final StreamCodec<RegistryFriendlyByteBuf, MessageMinecartShaderSync> CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, MessageMinecartShaderSync::entityID,
+			ItemStack.STREAM_CODEC, MessageMinecartShaderSync::shader,
+			MessageMinecartShaderSync::new
+	);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
-	{
-		buf.writeInt(this.entityID);
-		buf.writeItem(this.shader);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
+	public void process(IPayloadContext context)
 	{
 		if(context.flow().getReceptionSide()==LogicalSide.SERVER)
 		{
-			Level world = context.player().orElseThrow().level();
-			context.workHandler().execute(() -> {
+			Level world = context.player().level();
+			context.enqueueWork(() -> {
 				Entity entity = world.getEntity(entityID);
 				if(!(entity instanceof AbstractMinecart))
 					return;
 				ShaderWrapper cap = entity.getData(IEDataAttachments.MINECART_SHADER);
 				if(cap!=null)
-					PacketDistributor.DIMENSION.with(world.dimension())
-							.send(new MessageMinecartShaderSync(entity, cap));
+					PacketDistributor.sendToPlayersInDimension(
+							(ServerLevel)world, new MessageMinecartShaderSync(entity.getId(), cap.getShaderItem())
+					);
 			});
 		}
 		else
-			context.workHandler().execute(() -> {
+			context.enqueueWork(() -> {
 				Level world = ImmersiveEngineering.proxy.getClientWorld();
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
@@ -83,7 +64,7 @@ public class MessageMinecartShaderSync implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

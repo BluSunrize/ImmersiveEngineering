@@ -9,36 +9,24 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageOpenManual implements IMessage
+public record MessageOpenManual() implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("open_manual");
+	public static final Type<MessageOpenManual> ID = IMessage.createType("open_manual");
+	public static final StreamCodec<ByteBuf, MessageOpenManual> CODEC = StreamCodec.unit(new MessageOpenManual());
 
-	public MessageOpenManual()
+	@Override
+	public void process(IPayloadContext context)
 	{
-	}
-
-	public MessageOpenManual(FriendlyByteBuf buf)
-	{
+		context.enqueueWork(ImmersiveEngineering.proxy::openManual);
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
-	{
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(ImmersiveEngineering.proxy::openManual);
-	}
-
-	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

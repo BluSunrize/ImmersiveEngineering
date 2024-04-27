@@ -21,15 +21,18 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -150,8 +153,9 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	{
 		CompoundTag tag = new CompoundTag();
 		tag.putBoolean("cycle", true);
-		PacketDistributor.TRACKING_CHUNK.with(getLevelNonnull().getChunkAt(worldPosition))
-				.send(new MessageBlockEntitySync(this, tag));
+		PacketDistributor.sendToPlayersTrackingChunk(
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, tag)
+		);
 	}
 
 	RevolvershotEntity getBulletEntity(Level world, Vec3 vecDir, IBullet type)
@@ -193,24 +197,24 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		if(!descPacket)
 		{
 			expelCasings = nbt.getBoolean("expelCasings");
-			ContainerHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory, provider);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		if(!descPacket)
 		{
 			nbt.putBoolean("expelCasings", expelCasings);
-			ContainerHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory, provider);
 		}
 	}
 

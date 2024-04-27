@@ -65,13 +65,13 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	@SuppressWarnings("deprecation")
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos)
 	{
-		return Math.min(base.get().getLightBlock(state, worldIn, pos), super.getLightBlock(state, worldIn, pos));
+		return Math.min(base.get().defaultBlockState().getLightBlock(worldIn, pos), super.getLightBlock(state, worldIn, pos));
 	}
 
 	@Override
 	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
 	{
-		return super.propagatesSkylightDown(state, reader, pos)||base.get().propagatesSkylightDown(state, reader, pos);
+		return super.propagatesSkylightDown(state, reader, pos)||base.get().defaultBlockState().propagatesSkylightDown(reader, pos);
 	}
 
 	public static BlockBehaviour.StatePredicate causesSuffocation(Supplier<? extends Block> base)

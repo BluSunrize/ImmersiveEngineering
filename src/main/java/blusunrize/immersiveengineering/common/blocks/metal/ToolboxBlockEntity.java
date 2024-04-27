@@ -23,7 +23,9 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -62,25 +64,25 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		if(nbt.contains("name", Tag.TAG_STRING))
-			this.name = Component.Serializer.fromJson(nbt.getString("name"));
+			this.name = Component.Serializer.fromJson(nbt.getString("name"), provider);
 		if(nbt.contains("enchantments", Tag.TAG_LIST))
 			this.enchantments = nbt.getList("enchantments", Tag.TAG_COMPOUND);
 		if(!descPacket)
-			ContainerHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory, provider);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		if(this.name!=null)
-			nbt.putString("name", Component.Serializer.toJson(this.name));
+			nbt.putString("name", Component.Serializer.toJson(this.name, provider));
 		if(this.enchantments!=null)
 			nbt.put("enchantments", this.enchantments);
 		if(!descPacket)
-			ContainerHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory, provider);
 	}
 
 	@Override
@@ -157,9 +159,10 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 		ItemStack stack = new ItemStack(Tools.TOOLBOX);
 		Tools.TOOLBOX.get().setContainedItems(stack, inventory);
 		if(this.name!=null)
-			stack.setHoverName(this.name);
-		if(enchantments!=null)
-			stack.getOrCreateTag().put("ench", enchantments);
+			stack.set(DataComponents.CUSTOM_NAME, this.name);
+		if(true) throw new IllegalStateException();
+		//if(enchantments!=null)
+		//	stack.set(DataComponents.ENCHANTMENTS, enchantments);
 		drop.accept(stack);
 	}
 
@@ -176,9 +179,10 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 					inventory.set(i, inv.getStackInSlot(i));
 			}
 
-			if(stack.hasCustomHoverName())
-				this.name = stack.getHoverName();
-			enchantments = stack.getEnchantmentTags();
+			if(true) throw new IllegalStateException();
+			//if(stack.hasCustomHoverName())
+			//	this.name = stack.getHoverName();
+			//enchantments = stack.getEnchantmentTags();
 		}
 	}
 

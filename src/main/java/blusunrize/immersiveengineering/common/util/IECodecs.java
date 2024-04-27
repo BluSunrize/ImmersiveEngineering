@@ -9,29 +9,28 @@
 package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Function;
 
+import static net.minecraft.network.codec.ByteBufCodecs.collection;
+
 public class IECodecs
 {
-	public static Codec<float[]> COLOR4 = RecordCodecBuilder.create(
-			instance -> instance.group(
-					Codec.FLOAT.fieldOf("r").forGetter(a -> a[0]),
-					Codec.FLOAT.fieldOf("g").forGetter(a -> a[1]),
-					Codec.FLOAT.fieldOf("b").forGetter(a -> a[2]),
-					Codec.FLOAT.fieldOf("a").forGetter(a -> a[3])
-			).apply(instance, (r, g, b, a) -> new float[]{r, g, b, a})
-	);
-	public static Codec<Vec3> VECTOR3D = RecordCodecBuilder.create(
-			instance -> instance.group(
-					Codec.DOUBLE.fieldOf("x").forGetter(Vec3::x),
-					Codec.DOUBLE.fieldOf("y").forGetter(Vec3::y),
-					Codec.DOUBLE.fieldOf("z").forGetter(Vec3::z)
-			).apply(instance, Vec3::new)
+	public static StreamCodec<ByteBuf, Vec3> VEC3_STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.DOUBLE, Vec3::x,
+			ByteBufCodecs.DOUBLE, Vec3::y,
+			ByteBufCodecs.DOUBLE, Vec3::z,
+			Vec3::new
 	);
 
 	public static final Codec<NonNullList<Ingredient>> NONNULL_INGREDIENTS = Ingredient.LIST_CODEC.xmap(
@@ -42,4 +41,14 @@ public class IECodecs
 			},
 			Function.identity()
 	);
+
+	public static <B extends ByteBuf, V> StreamCodec.CodecOperation<B, V, NonNullList<V>> nonNullList()
+	{
+		return p_320272_ -> collection($ -> NonNullList.create(), p_320272_);
+	}
+
+	public static <T> StreamCodec<ByteBuf, TagKey<T>> tagCodec(ResourceKey<Registry<T>> key)
+	{
+		return ResourceLocation.STREAM_CODEC.map(rl -> TagKey.create(key, rl), TagKey::location);
+	}
 }

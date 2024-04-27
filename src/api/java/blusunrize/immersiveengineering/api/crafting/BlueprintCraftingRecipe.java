@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.IEDataComponents;
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
@@ -19,7 +19,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.*;
@@ -67,7 +66,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static ItemStack getTypedBlueprint(String type)
 	{
 		ItemStack stack = new ItemStack(blueprintItem.get());
-		stack.set(IEDataComponents.BLUEPRINT_TYPE, type);
+		stack.set(IEApiDataComponents.BLUEPRINT_TYPE, type);
 		return stack;
 	}
 

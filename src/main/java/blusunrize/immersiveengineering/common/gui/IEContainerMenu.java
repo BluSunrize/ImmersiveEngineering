@@ -34,14 +34,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
 public abstract class IEContainerMenu extends AbstractContainerMenu
 {
 	private final List<GenericContainerData<?>> genericData = new ArrayList<>();
@@ -108,7 +107,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 			if(stackSlot.isEmpty())
 			{
 				if(!stackHeld.isEmpty()&&slot.mayPlace(stackHeld))
-					slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
+					slot.set(stackHeld.copyWithCount(amount));
 			}
 			else if(stackHeld.isEmpty())
 				slot.set(ItemStack.EMPTY);
@@ -117,7 +116,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 				if(ItemStack.isSameItem(stackSlot, stackHeld))
 					stackSlot.grow(amount);
 				else
-					slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
+					slot.set(stackHeld.copyWithCount(amount));
 			}
 			if(stackSlot.getCount() > slot.getMaxStackSize())
 				stackSlot.setCount(slot.getMaxStackSize());
@@ -127,7 +126,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 			ItemStack stackHeld = getCarried();
 			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
 			if(!slot.hasItem())
-				slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
+				slot.set(stackHeld.copyWithCount(amount));
 		}
 	}
 

@@ -65,8 +65,8 @@ public class FluidInfoArea extends InfoArea
 
 		if(!fluid.isEmpty())
 			tooltip.accept(applyFormat(
-					fluid.getDisplayName(),
-					fluid.getFluid().getFluidType().getRarity(fluid).color
+					fluid.getHoverName(),
+					fluid.getFluid().getFluidType().getRarity(fluid).color()
 			));
 		else
 			tooltip.accept(Component.translatable("gui.immersiveengineering.empty"));
@@ -84,7 +84,6 @@ public class FluidInfoArea extends InfoArea
 				tooltip.accept(applyFormat(Component.literal("Density: "+fluid.getFluid().getFluidType().getDensity(fluid)), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Temperature: "+fluid.getFluid().getFluidType().getTemperature(fluid)), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Viscosity: "+fluid.getFluid().getFluidType().getViscosity(fluid)), ChatFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(Component.literal("NBT Data: "+fluid.getTag()), ChatFormatting.DARK_GRAY));
 			}
 		}
 

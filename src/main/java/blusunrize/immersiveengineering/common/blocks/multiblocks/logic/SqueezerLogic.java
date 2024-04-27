@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.WrappingItemHandler.IntRange;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -48,7 +49,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -123,7 +123,7 @@ public class SqueezerLogic
 		final ItemStack fullOutputStack = state.inventory.getStackInSlot(OUTPUT_SLOT);
 		if(fullOutputStack.isEmpty())
 			return;
-		ItemStack stack = ItemHandlerHelper.copyStackWithSize(fullOutputStack, 1);
+		ItemStack stack = fullOutputStack.copyWithCount(1);
 		final ItemStack remaining = Utils.insertStackIntoInventory(state.itemOutput, stack, false);
 		if(remaining.isEmpty())
 		{
@@ -235,31 +235,35 @@ public class SqueezerLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("energy", energy.serializeNBT());
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-			nbt.put("inventory", inventory.serializeNBT());
-			nbt.put("processor", processor.toNBT());
+			nbt.put("energy", energy.serializeNBT(provider));
+			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
+			nbt.put("inventory", inventory.serializeNBT(provider));
+			nbt.put("processor", processor.toNBT(provider));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			energy.deserializeNBT(nbt.get("energy"));
-			tank.readFromNBT(nbt.getCompound("tank"));
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
-			processor.fromNBT(nbt.get("processor"), MultiblockProcessInMachine::new);
+			energy.deserializeNBT(provider, nbt.get("energy"));
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
+			processor.fromNBT(
+					nbt.get("processor"),
+					(getRecipe, data, p) -> new MultiblockProcessInMachine<>(getRecipe, data),
+					provider
+			);
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putBoolean("active", active);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			active = nbt.getBoolean("active");
 		}

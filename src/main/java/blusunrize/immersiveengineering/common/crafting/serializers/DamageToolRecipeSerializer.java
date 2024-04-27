@@ -12,54 +12,41 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.common.crafting.DamageToolRecipe;
 import blusunrize.immersiveengineering.common.util.IECodecs;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-import javax.annotation.Nonnull;
-
 public class DamageToolRecipeSerializer implements RecipeSerializer<DamageToolRecipe>
 {
-	public static final Codec<DamageToolRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<DamageToolRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			Codec.STRING.fieldOf("group").forGetter(ShapelessRecipe::getGroup),
-			ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.getResultItem(null)),
+			ItemStack.CODEC.fieldOf("result").forGetter(r -> r.getResultItem(null)),
 			Ingredient.CODEC.fieldOf("tool").forGetter(DamageToolRecipe::getTool),
 			IECodecs.NONNULL_INGREDIENTS.fieldOf("ingredients").forGetter(ShapelessRecipe::getIngredients)
 	).apply(inst, DamageToolRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, DamageToolRecipe> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.stringUtf8(512), ShapelessRecipe::getGroup,
+			ItemStack.STREAM_CODEC, r -> r.getResultItem(null),
+			Ingredient.CONTENTS_STREAM_CODEC, DamageToolRecipe::getTool,
+			Ingredient.CONTENTS_STREAM_CODEC.apply(IECodecs.nonNullList()), ShapelessRecipe::getIngredients,
+			DamageToolRecipe::new
+	);
 
 	@Override
-	public Codec<DamageToolRecipe> codec()
+	public MapCodec<DamageToolRecipe> codec()
 	{
 		return CODEC;
 	}
 
-	@Nonnull
 	@Override
-	public DamageToolRecipe fromNetwork(@Nonnull FriendlyByteBuf buffer)
+	public StreamCodec<RegistryFriendlyByteBuf, DamageToolRecipe> streamCodec()
 	{
-		int stdCount = buffer.readInt();
-		NonNullList<Ingredient> stdIngr = NonNullList.create();
-		for(int i = 0; i < stdCount; ++i)
-			stdIngr.add(Ingredient.fromNetwork(buffer));
-		Ingredient tool = Ingredient.fromNetwork(buffer);
-		String group = buffer.readUtf(512);
-		ItemStack output = buffer.readItem();
-		return new DamageToolRecipe(group, output, tool, stdIngr);
-	}
-
-	@Override
-	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull DamageToolRecipe recipe)
-	{
-		int standardCount = recipe.getIngredients().size()-1;
-		buffer.writeInt(standardCount);
-		for(int i = 0; i < standardCount; ++i)
-			recipe.getIngredients().get(i).toNetwork(buffer);
-		recipe.getTool().toNetwork(buffer);
-		buffer.writeUtf(recipe.getGroup());
-		buffer.writeItem(recipe.getResultItem(null));
+		return STREAM_CODEC;
 	}
 }

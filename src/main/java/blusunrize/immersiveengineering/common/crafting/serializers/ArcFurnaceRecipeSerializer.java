@@ -9,37 +9,50 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
-import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRecipe>
 {
-	public static final Codec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			TagOutputList.CODEC.fieldOf("results").forGetter(r -> r.output),
-			ExtraCodecs.strictOptionalField(TagOutput.CODEC, "slag", TagOutput.EMPTY).forGetter(r -> r.slag),
-			ExtraCodecs.strictOptionalField(CHANCE_LIST, "secondaries", List.of()).forGetter(r -> r.secondaryOutputs),
+			TagOutput.CODEC.optionalFieldOf("slag", TagOutput.EMPTY).forGetter(r -> r.slag),
+			CHANCE_LIST_CODEC.optionalFieldOf("secondaries", List.of()).forGetter(r -> r.secondaryOutputs),
 			Codec.INT.fieldOf("time").forGetter(MultiblockRecipe::getBaseTime),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
 			IngredientWithSize.CODEC.listOf().fieldOf("additives").forGetter(r -> r.additives)
 	).apply(inst, ArcFurnaceRecipe::new));
 
+	public static final StreamCodec<RegistryFriendlyByteBuf, ArcFurnaceRecipe> STREAM_CODEC = StreamCodec.composite(
+			Output.STREAM_CODEC, Output::new,
+			ByteBufCodecs.INT, MultiblockRecipe::getBaseTime,
+			ByteBufCodecs.INT, MultiblockRecipe::getBaseEnergy,
+			IngredientWithSize.STREAM_CODEC, r -> r.input,
+			IngredientWithSize.STREAM_CODEC.apply(ByteBufCodecs.list()), r -> r.additives,
+			(output, time, energy, input, add) -> new ArcFurnaceRecipe(
+					output.output, output.slag, output.secondaryOutputs, time, energy, input, add
+			)
+	);
+
 	@Override
-	public Codec<ArcFurnaceRecipe> codec()
+	public MapCodec<ArcFurnaceRecipe> codec()
 	{
 		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, ArcFurnaceRecipe> streamCodec()
+	{
+		return STREAM_CODEC;
 	}
 
 	@Override
@@ -48,51 +61,18 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		return IEMultiblockLogic.ARC_FURNACE.iconStack();
 	}
 
-	@Nullable
-	@Override
-	public ArcFurnaceRecipe fromNetwork(FriendlyByteBuf buffer)
+	private record Output(TagOutputList output, List<StackWithChance> secondaryOutputs, TagOutput slag)
 	{
-		TagOutputList outputs = new TagOutputList(PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack));
-		List<StackWithChance> secondaries = PacketUtils.readList(buffer, StackWithChance::read);
-		IngredientWithSize input = IngredientWithSize.read(buffer);
-		List<IngredientWithSize> additives = PacketUtils.readList(buffer, IngredientWithSize::read);
-		TagOutput slag = readLazyStack(buffer);
-		int time = buffer.readInt();
-		int energy = buffer.readInt();
-		if(!buffer.readBoolean())
-			return new ArcFurnaceRecipe(outputs, slag, secondaries, time, energy, input, additives);
-		else
-		{
-			final int numOutputs = buffer.readVarInt();
-			List<Pair<TagOutput, Double>> recyclingOutputs = new ArrayList<>(numOutputs);
-			for(int i = 0; i < numOutputs; ++i)
-				recyclingOutputs.add(Pair.of(readLazyStack(buffer), buffer.readDouble()));
-			return new ArcRecyclingRecipe(
-					() -> Minecraft.getInstance().getConnection().registryAccess(), recyclingOutputs, input, time, energy
-			);
-		}
-	}
+		private static final StreamCodec<RegistryFriendlyByteBuf, Output> STREAM_CODEC = StreamCodec.composite(
+				TagOutputList.STREAM_CODEC, r -> r.output,
+				StackWithChance.STREAM_CODEC.apply(ByteBufCodecs.list()), r -> r.secondaryOutputs,
+				TagOutput.STREAM_CODEC, r -> r.slag,
+				Output::new
+		);
 
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, ArcFurnaceRecipe recipe)
-	{
-		PacketUtils.writeListReverse(buffer, recipe.output.get(), FriendlyByteBuf::writeItem);
-		PacketUtils.writeList(buffer, recipe.secondaryOutputs, StackWithChance::write);
-		recipe.input.write(buffer);
-		PacketUtils.writeList(buffer, recipe.additives, IngredientWithSize::write);
-		buffer.writeItem(recipe.slag.get());
-		buffer.writeInt(recipe.getTotalProcessTime());
-		buffer.writeInt(recipe.getTotalProcessEnergy());
-		buffer.writeBoolean(recipe instanceof ArcRecyclingRecipe);
-		if(recipe instanceof ArcRecyclingRecipe recyclingRecipe)
+		private Output(ArcFurnaceRecipe r)
 		{
-			List<Pair<TagOutput, Double>> outputs = recyclingRecipe.getOutputs();
-			buffer.writeVarInt(outputs.size());
-			for(Pair<TagOutput, Double> e : outputs)
-			{
-				buffer.writeItem(e.getFirst().get());
-				buffer.writeDouble(e.getSecond());
-			}
+			this(r.output, r.secondaryOutputs, r.slag);
 		}
 	}
 }

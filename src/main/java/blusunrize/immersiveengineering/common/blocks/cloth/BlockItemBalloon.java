@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
@@ -86,25 +86,22 @@ public class BlockItemBalloon extends BlockItemIE
 	public Component getName(ItemStack stack)
 	{
 		MutableComponent ret = super.getName(stack).copy();
-		CompoundTag nbt = stack.getOrCreateTag();
-		if(nbt.getByte("offset")!=0)
-			ret.append(" (+"+nbt.getByte("offset")+")");
+		int offset = getOffset(stack);
+		if(offset!=0)
+			ret.append(" (+"+offset+")");
 		return ret;
 	}
 
 	private InteractionResultHolder<ItemStack> increaseOffset(Player player, InteractionHand hand)
 	{
 		final ItemStack newStack = player.getItemInHand(hand).copy();
-		CompoundTag tag = newStack.getOrCreateTag();
-		tag.putByte("offset", (byte)((getOffset(newStack)+1)%5));
+		int newOffset = ((getOffset(newStack)+1)%5);
+		newStack.set(IEDataComponents.BALLOON_OFFSET, newOffset);
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, newStack);
 	}
 
-	private byte getOffset(ItemStack stack)
+	private int getOffset(ItemStack stack)
 	{
-		if(stack.hasTag())
-			return stack.getOrCreateTag().getByte("offset");
-		else
-			return 0;
+		return stack.getOrDefault(IEDataComponents.BALLOON_OFFSET, 0);
 	}
 }

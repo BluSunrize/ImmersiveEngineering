@@ -30,7 +30,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -132,7 +131,7 @@ public class MetalPressPackingRecipes
 				return null;
 			}
 
-			RecipeHolder<MetalPressRecipe> delegate = RecipeDelegate.getPacking(out, ItemHandlerHelper.copyStackWithSize(input, totalSize), size==3);
+			RecipeHolder<MetalPressRecipe> delegate = RecipeDelegate.getPacking(out, input.copyWithCount(totalSize), size==3);
 			PACKING_CACHE.put(comp, delegate);
 			return delegate;
 		}
@@ -153,7 +152,7 @@ public class MetalPressPackingRecipes
 		)
 		{
 			ItemStack output = originalRecipe.getSecond();
-			input = ItemHandlerHelper.copyStackWithSize(input, big?9: 4);
+			input = input.copyWithCount(big?9: 4);
 			return new RecipeHolder<>(
 					big?PACK9_ID: PACK4_ID,
 					new RecipeDelegate(
@@ -240,7 +239,7 @@ public class MetalPressPackingRecipes
 		}
 
 		Pair<RecipeHolder<CraftingRecipe>, ItemStack> rePacked = getPackedOutput(count==4?2: 3, outStack, world);
-		ItemStack singleInput = ItemHandlerHelper.copyStackWithSize(input, 1);
+		ItemStack singleInput = input.copyWithCount(1);
 		if(rePacked==null||rePacked.getSecond().isEmpty()||!ItemStack.matches(singleInput, rePacked.getSecond()))
 		{
 			UNPACKING_CACHE.put(comp, null);

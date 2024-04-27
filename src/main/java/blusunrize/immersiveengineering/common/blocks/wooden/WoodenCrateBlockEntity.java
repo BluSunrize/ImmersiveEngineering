@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -53,13 +54,13 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	}
 
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, Provider provider)
 	{
-		super.load(nbt);
-		loadIEData(nbt);
+		super.loadAdditional(nbt, provider);
+		loadIEData(nbt, provider);
 	}
 
-	private void loadIEData(CompoundTag nbt)
+	private void loadIEData(CompoundTag nbt, Provider provider)
 	{
 		if(nbt.contains("enchantments", Tag.TAG_LIST))
 			this.enchantments = nbt.getList("enchantments", Tag.TAG_COMPOUND);
@@ -67,17 +68,17 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		if(nbt.contains("lootTable", Tag.TAG_STRING)&&!nbt.contains("LootTable"))
 			nbt.putString("LootTable", nbt.getString("lootTable"));
 		if(!tryLoadLootTable(nbt))
-			ContainerHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory, provider);
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag nbt)
+	protected void saveAdditional(CompoundTag nbt, Provider provider)
 	{
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, provider);
 		if(this.enchantments!=null&&this.enchantments.size() > 0)
 			nbt.put("enchantments", this.enchantments);
 		if(!trySaveLootTable(nbt))
-			ContainerHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory, provider);
 	}
 
 	@Override

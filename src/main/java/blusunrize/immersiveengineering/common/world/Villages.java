@@ -32,8 +32,10 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -61,16 +63,14 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool.
 import net.minecraft.world.level.saveddata.maps.MapDecoration.Type;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -86,7 +86,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.register.IEItems.Misc.TOOL_UPGRADES;
 import static blusunrize.immersiveengineering.common.register.IEItems.Misc.WIRE_COILS;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
 public class Villages
 {
 	public static final ResourceLocation ENGINEER = rl("engineer");
@@ -203,7 +203,7 @@ public class Villages
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.FORGE)
+	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.GAME)
 	public static class Events
 	{
 		@SubscribeEvent

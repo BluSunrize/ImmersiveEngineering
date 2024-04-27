@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +25,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
@@ -57,10 +56,10 @@ public class JerrycanRefillRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv, RegistryAccess access)
+	public ItemStack assemble(@Nonnull CraftingContainer inv, Provider access)
 	{
 		ItemStack[] components = getComponents(inv);
-		ItemStack newContainer = ItemHandlerHelper.copyStackWithSize(components[containerIndex], 1);
+		ItemStack newContainer = components[containerIndex].copyWithCount(1);
 		IFluidHandlerItem handler = FluidUtil.getFluidHandler(newContainer).orElseThrow(RuntimeException::new);
 		FluidUtil.getFluidContained(components[jerrycanIndex]).ifPresent(fs -> {
 			ItemNBTHelper.putInt(components[jerrycanIndex], "jerrycanDrain", handler.fill(fs, FluidAction.EXECUTE));

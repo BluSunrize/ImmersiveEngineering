@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -198,26 +199,26 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		CompoundTag sideConfigNBT = nbt.getCompound("sideConfig");
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getSerializedName())]);
-		tank.readFromNBT(nbt.getCompound("tank"));
+		tank.readFromNBT(provider, nbt.getCompound("tank"));
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		CompoundTag sideConfigNBT = new CompoundTag();
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfigNBT.putInt(d.getSerializedName(), sideConfig.get(d).ordinal());
 		nbt.put("sideConfig", sideConfigNBT);
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
-		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+		nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 	}
 
 	@Override

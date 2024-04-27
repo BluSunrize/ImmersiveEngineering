@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -176,7 +177,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		sails = nbt.getInt("sails");
 		rotation = nbt.getFloat("rotation");
@@ -184,7 +185,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putInt("sails", sails);
 		nbt.putFloat("rotation", rotation);

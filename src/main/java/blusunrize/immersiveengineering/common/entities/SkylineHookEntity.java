@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -114,7 +115,7 @@ public class SkylineHookEntity extends Entity
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
 	}
 
@@ -287,7 +288,7 @@ public class SkylineHookEntity extends Entity
 	private void sendUpdatePacketTo(Player player)
 	{
 		if(player instanceof ServerPlayer)
-			PacketDistributor.PLAYER.with((ServerPlayer)player).send(new MessageSkyhookSync(this));
+			PacketDistributor.sendToPlayer((ServerPlayer)player, new MessageSkyhookSync(this));
 	}
 
 	public void switchConnection(ConnectionPoint posForSwitch, Player player, double lastHorSpeed)

@@ -8,12 +8,11 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.core.component.DataComponentType;
 
-public class IEDataComponents
+public class IEApiDataComponents
 {
 	static {
 		if (true)

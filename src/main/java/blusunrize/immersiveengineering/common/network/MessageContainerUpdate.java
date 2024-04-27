@@ -8,46 +8,29 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageContainerUpdate implements IMessage
+public record MessageContainerUpdate(int windowId, CompoundTag nbt) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("container_update");
-	private int windowId;
-	private CompoundTag nbt;
-
-	//TODO get rid of NBT in packets (maybe?)
-	public MessageContainerUpdate(int windowId, CompoundTag nbt)
-	{
-		this.windowId = windowId;
-		this.nbt = nbt;
-	}
-
-	public MessageContainerUpdate(FriendlyByteBuf buf)
-	{
-		this.windowId = buf.readByte();
-		this.nbt = buf.readNbt();
-	}
+	public static final Type<MessageContainerUpdate> ID = IMessage.createType("container_update");
+	public static final StreamCodec<ByteBuf, MessageContainerUpdate> CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, MessageContainerUpdate::windowId,
+			ByteBufCodecs.COMPOUND_TAG, MessageContainerUpdate::nbt,
+			MessageContainerUpdate::new
+	);
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeByte(this.windowId);
-		buf.writeNbt(this.nbt);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		ServerPlayer player = (ServerPlayer)context.player().get();
-		assert player!=null;
-		context.workHandler().execute(() -> {
+		ServerPlayer player = IMessage.serverPlayer(context);
+		context.enqueueWork(() -> {
 			player.resetLastActionTime();
 			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IEContainerMenu ieMenu)
 				ieMenu.receiveMessageFromScreen(nbt);
@@ -55,7 +38,7 @@ public class MessageContainerUpdate implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

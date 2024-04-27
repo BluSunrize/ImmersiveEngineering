@@ -9,71 +9,61 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageSkyhookSync implements IMessage
+public record MessageSkyhookSync(
+		SyncedConnection connection,
+		int entityID,
+		ConnectionPoint start,
+		double linePos,
+		double speed
+) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("skyhook_sync");
-	private int entityID;
-	private Connection connection;
-	private ConnectionPoint start;
-	private double linePos;
-	private double speed;
+	public static final Type<MessageSkyhookSync> ID = IMessage.createType("skyhook_sync");
+	public static final StreamCodec<ByteBuf, MessageSkyhookSync> CODEC = StreamCodec.composite(
+			SyncedConnection.CODEC, MessageSkyhookSync::connection,
+			ByteBufCodecs.INT, MessageSkyhookSync::entityID,
+			ConnectionPoint.STREAM_CODEC, MessageSkyhookSync::start,
+			ByteBufCodecs.DOUBLE, MessageSkyhookSync::linePos,
+			ByteBufCodecs.DOUBLE, MessageSkyhookSync::speed,
+			MessageSkyhookSync::new
+	);
 
 	public MessageSkyhookSync(SkylineHookEntity entity)
 	{
-		entityID = entity.getId();
-		connection = entity.getConnection();
-		linePos = entity.linePos;
-		start = entity.start;
-		speed = entity.horizontalSpeed;
-	}
-
-	public MessageSkyhookSync(FriendlyByteBuf buf)
-	{
-		entityID = buf.readInt();
-		CompoundTag tag = buf.readNbt();
-		connection = new Connection(tag);
-		linePos = buf.readDouble();
-		speed = buf.readDouble();
-		start = new ConnectionPoint(buf.readNbt());
+		this(
+				new SyncedConnection(entity.getConnection()),
+				entity.getId(),
+				entity.start,
+				entity.linePos,
+				entity.horizontalSpeed
+		);
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeInt(entityID);
-		buf.writeNbt(connection.toNBT());
-		buf.writeDouble(linePos);
-		buf.writeDouble(speed);
-		buf.writeNbt(start.createTag());
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
 			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null)
 			{
 				Entity ent = world.getEntity(entityID);
 				if(ent instanceof SkylineHookEntity hook)
-					hook.setConnectionAndPos(connection, start, linePos, speed);
+					hook.setConnectionAndPos(connection.toConnection(), start, linePos, speed);
 			}
 		});
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

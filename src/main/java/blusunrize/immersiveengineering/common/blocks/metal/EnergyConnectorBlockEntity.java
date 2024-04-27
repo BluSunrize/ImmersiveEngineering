@@ -34,6 +34,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -169,9 +170,9 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		CompoundTag toNet = new CompoundTag();
 		EnergyHelper.serializeTo(storageToNet, toNet);
 		nbt.put("toNet", toNet);
@@ -181,9 +182,9 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		CompoundTag toMachine = nbt.getCompound("toMachine");
 		EnergyHelper.deserializeFrom(storageToMachine, toMachine);
 		CompoundTag toNet = nbt.getCompound("toNet");

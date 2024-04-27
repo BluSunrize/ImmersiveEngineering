@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -85,7 +86,9 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 		if(menu.inv.getStackInSlot(18+i).isEmpty()&&!recipeOutput.isEmpty())
 		{
 			tooltip.add(menu.patterns.get(i).getStackInSlot(9).getHoverName());
-			recipeOutput.getItem().appendHoverText(recipeOutput, ClientUtils.mc().level, tooltip, Default.NORMAL);
+			recipeOutput.getItem().appendHoverText(
+					recipeOutput, TooltipContext.of(ClientUtils.mc().level), tooltip, Default.NORMAL
+			);
 		}
 	}
 

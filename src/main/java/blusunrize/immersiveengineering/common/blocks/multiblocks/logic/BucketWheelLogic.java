@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.BucketWhe
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.BucketWheelShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -72,12 +73,12 @@ public class BucketWheelLogic
 		public boolean outputLeft = false;
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putFloat("rotation", rotation);
 			ListTag stacksNBT = new ListTag();
 			for(final ItemStack stack : digStacks)
-				stacksNBT.add(stack.save(new CompoundTag()));
+				stacksNBT.add(stack.save(provider));
 			nbt.put("stacks", stacksNBT);
 			nbt.putBoolean("active", active);
 			nbt.putBoolean("renderReverse", reverseRotation);
@@ -85,27 +86,27 @@ public class BucketWheelLogic
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			rotation = nbt.getFloat("rotation");
 			final ListTag stacksNBT = nbt.getList("stacks", Tag.TAG_COMPOUND);
 			for(int i = 0; i < stacksNBT.size(); ++i)
-				digStacks.set(i, ItemStack.of(stacksNBT.getCompound(i)));
+				digStacks.set(i, ItemStack.parseOptional(provider, stacksNBT.getCompound(i)));
 			active = nbt.getBoolean("active");
 			reverseRotation = nbt.getBoolean("renderReverse");
 			outputLeft = nbt.getBoolean("outputLeft");
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			writeSaveNBT(nbt);
+			writeSaveNBT(nbt, provider);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			readSaveNBT(nbt);
+			readSaveNBT(nbt, provider);
 		}
 	}
 }

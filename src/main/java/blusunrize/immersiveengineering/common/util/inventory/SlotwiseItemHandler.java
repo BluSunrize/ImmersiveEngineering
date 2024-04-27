@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.util.inventory;
 
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -114,14 +115,14 @@ public class SlotwiseItemHandler implements IItemHandlerModifiable, Iterable<Ite
 		rawHandler.setStackInSlot(slot, stack);
 	}
 
-	public Tag serializeNBT()
+	public Tag serializeNBT(Provider provider)
 	{
-		return rawHandler.serializeNBT();
+		return rawHandler.serializeNBT(provider);
 	}
 
-	public void deserializeNBT(CompoundTag nbt)
+	public void deserializeNBT(Provider provider, CompoundTag nbt)
 	{
-		rawHandler.deserializeNBT(nbt);
+		rawHandler.deserializeNBT(provider, nbt);
 	}
 
 	public ItemStackHandler getRawHandler()

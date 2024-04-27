@@ -8,27 +8,37 @@
 
 package blusunrize.immersiveengineering.client.fx;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
-
-import javax.annotation.Nonnull;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 public class IEParticleType<T extends ParticleOptions> extends ParticleType<T>
 {
-	private final Codec<T> codec;
+	private final MapCodec<T> codec;
+	private final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec;
 
-	public IEParticleType(boolean alwaysShow, Deserializer<T> deserializer, Codec<T> codec)
+	public IEParticleType(
+			boolean alwaysShow,
+			MapCodec<T> codec,
+			StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec
+	)
 	{
-		super(alwaysShow, deserializer);
+		super(alwaysShow);
 		this.codec = codec;
+		this.streamCodec = streamCodec;
 	}
 
-	@Nonnull
 	@Override
-	public Codec<T> codec()
+	public MapCodec<T> codec()
 	{
 		return codec;
+	}
+
+	@Override
+	public StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec()
+	{
+		return streamCodec;
 	}
 }

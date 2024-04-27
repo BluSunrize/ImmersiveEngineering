@@ -41,6 +41,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -202,7 +203,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack)
+	public ItemEnchantments getAllEnchantments(ItemStack stack)
 	{
 		ItemStack sawblade = getSawblade(stack, 0);
 		var superEnchants = super.getAllEnchantments(stack);
@@ -212,7 +213,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getHead(stack).isEmpty())
@@ -233,12 +234,6 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 							status
 					)));
 		}
-	}
-
-	@Override
-	public Rarity getRarity(ItemStack stack)
-	{
-		return Rarity.COMMON;
 	}
 
 	@Override

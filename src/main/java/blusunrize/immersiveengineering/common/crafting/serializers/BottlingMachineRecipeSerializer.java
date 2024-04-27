@@ -9,52 +9,43 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class BottlingMachineRecipeSerializer extends IERecipeSerializer<BottlingMachineRecipe>
 {
-	public static final Codec<BottlingMachineRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<BottlingMachineRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			TagOutputList.CODEC.fieldOf("results").forGetter(r -> r.output),
 			listOrSingle(IngredientWithSize.CODEC, "input", "inputs").forGetter(r -> r.inputs),
-					FluidTagInput.CODEC.fieldOf("fluid").forGetter(r -> r.fluidInput)
-			).apply(inst, BottlingMachineRecipe::new)
+			FluidTagInput.CODEC.fieldOf("fluid").forGetter(r -> r.fluidInput)
+	).apply(inst, BottlingMachineRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, BottlingMachineRecipe> STREAM_CODEC = StreamCodec.composite(
+			TagOutputList.STREAM_CODEC, r -> r.output,
+			IngredientWithSize.STREAM_CODEC.apply(ByteBufCodecs.list()), r -> r.inputs,
+			FluidTagInput.STREAM_CODEC, r -> r.fluidInput,
+			BottlingMachineRecipe::new
 	);
 
 	@Override
-	public Codec<BottlingMachineRecipe> codec()
+	public MapCodec<BottlingMachineRecipe> codec()
 	{
 		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, BottlingMachineRecipe> streamCodec()
+	{
+		return STREAM_CODEC;
 	}
 
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.BOTTLING_MACHINE.iconStack();
-	}
-
-	@Nullable
-	@Override
-	public BottlingMachineRecipe fromNetwork(FriendlyByteBuf buffer)
-	{
-		List<TagOutput> outputs = PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack);
-		List<IngredientWithSize> ingredients = PacketUtils.readList(buffer, IngredientWithSize::read);
-		FluidTagInput fluidInput = FluidTagInput.read(buffer);
-		return new BottlingMachineRecipe(new TagOutputList(outputs), ingredients, fluidInput);
-	}
-
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, BottlingMachineRecipe recipe)
-	{
-		PacketUtils.writeListReverse(buffer, recipe.output.get(), FriendlyByteBuf::writeItem);
-		PacketUtils.writeList(buffer, recipe.inputs, IngredientWithSize::write);
-		recipe.fluidInput.write(buffer);
 	}
 }

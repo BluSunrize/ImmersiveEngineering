@@ -15,7 +15,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -196,16 +197,9 @@ public class IEFluid extends FlowingFluid
 	public static class EntityFluidSerializer implements EntityDataSerializer<FluidStack>
 	{
 		@Override
-		public void write(FriendlyByteBuf buf, @Nonnull FluidStack value)
+		public StreamCodec<? super RegistryFriendlyByteBuf, FluidStack> codec()
 		{
-			buf.writeFluidStack(value);
-		}
-
-		@Nonnull
-		@Override
-		public FluidStack read(FriendlyByteBuf buf)
-		{
-			return buf.readFluidStack();
+			return FluidStack.STREAM_CODEC;
 		}
 
 		@Nonnull

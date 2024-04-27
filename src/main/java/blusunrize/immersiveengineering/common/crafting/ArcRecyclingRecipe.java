@@ -99,7 +99,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 			{
 				ItemStack nuggets = IEApi.getPreferredTagStack(tags.get(), TagUtils.createItemWrapper(IETags.getNugget(type[1])));
 				if(!nuggets.isEmpty())
-					outs.add(ItemHandlerHelper.copyStackWithSize(nuggets, nuggetOut));
+					outs.add(nuggets.copyWithCount(nuggetOut));
 			}
 		}
 	}

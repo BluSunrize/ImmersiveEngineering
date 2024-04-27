@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -73,12 +74,12 @@ public abstract class ImmersiveConnectableBlockEntity extends IEBaseBlockEntity 
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 	}
 
 	@Override
-	public void writeCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 	}
 

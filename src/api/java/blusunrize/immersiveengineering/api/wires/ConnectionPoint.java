@@ -8,14 +8,23 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import javax.annotation.Nonnull;
 
 public record ConnectionPoint(@Nonnull BlockPos position, int index) implements Comparable<ConnectionPoint>
 {
+	public static final StreamCodec<ByteBuf, ConnectionPoint> STREAM_CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, ConnectionPoint::position,
+			ByteBufCodecs.INT, ConnectionPoint::index,
+			ConnectionPoint::new
+	);
+
 	public ConnectionPoint(CompoundTag nbt)
 	{
 		this(NbtUtils.readBlockPos(nbt, "position").orElseThrow(), nbt.getInt("index"));

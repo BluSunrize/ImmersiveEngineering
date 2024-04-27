@@ -9,80 +9,45 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.SectionPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Set;
 
 import static blusunrize.immersiveengineering.common.network.MessageWireSync.Operation.ADD;
 import static blusunrize.immersiveengineering.common.network.MessageWireSync.Operation.REMOVE;
 
-public class MessageWireSync implements IMessage
+public record MessageWireSync(SyncedConnection connection, Operation operation) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("wire_sync");
-	private final ConnectionPoint start;
-	private final ConnectionPoint end;
-	private final WireType type;
-	private final Operation operation;
-	private final Vec3 offsetStart;
-	private final Vec3 offsetEnd;
+	public static final Type<MessageWireSync> ID = IMessage.createType("wire_sync");
+	public static final StreamCodec<ByteBuf, MessageWireSync> CODEC = StreamCodec.composite(
+			SyncedConnection.CODEC, MessageWireSync::connection,
+			ByteBufCodecs.idMapper(i -> Operation.VALUES[i], Operation::ordinal), MessageWireSync::operation,
+			MessageWireSync::new
+	);
 
 	public MessageWireSync(Connection conn, Operation operation)
 	{
-		this.start = conn.getEndA();
-		this.end = conn.getEndB();
-		this.type = conn.type;
-		this.operation = operation;
-		this.offsetStart = conn.getEndAOffset();
-		this.offsetEnd = conn.getEndBOffset();
-	}
-
-	public MessageWireSync(FriendlyByteBuf buf)
-	{
-		operation = Operation.VALUES[buf.readByte()];
-		start = readConnPoint(buf);
-		end = readConnPoint(buf);
-		type = WireType.getValue(buf.readUtf(128));
-		offsetStart = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		offsetEnd = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-	}
-
-	private ConnectionPoint readConnPoint(FriendlyByteBuf buf)
-	{
-		return new ConnectionPoint(buf.readBlockPos(), buf.readInt());
-	}
-
-	private void writeConnPoint(ConnectionPoint cp, FriendlyByteBuf buf)
-	{
-		buf.writeBlockPos(cp.position());
-		buf.writeInt(cp.index());
+		this(new SyncedConnection(conn), operation);
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
+	public void process(IPayloadContext context)
 	{
-		buf.writeByte(operation.ordinal());
-		writeConnPoint(start, buf);
-		writeConnPoint(end, buf);
-		buf.writeUtf(type.getUniqueName());
-		buf.writeDouble(offsetStart.x).writeDouble(offsetStart.y).writeDouble(offsetStart.z);
-		buf.writeDouble(offsetEnd.x).writeDouble(offsetEnd.y).writeDouble(offsetEnd.z);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
-	{
-		context.workHandler().execute(() -> {
+		context.enqueueWork(() -> {
+			ConnectionPoint start = this.connection.start();
+			ConnectionPoint end = this.connection.end();
+			WireType type = this.connection.type();
 			WireLogger.logger.debug(
 					"Processing sync for connection from {} to {}, type {}, op {}",
 					start, end, type, operation.name()
@@ -91,7 +56,7 @@ public class MessageWireSync implements IMessage
 			Level w = player.level();
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
-			Connection connection = new Connection(type, start, end, offsetStart, offsetEnd);
+			Connection connection = this.connection.toConnection();
 			if(operation!=ADD&&globalNet.getNullableLocalNet(start)!=null&&globalNet.getNullableLocalNet(end)!=null)
 			{
 				globalNet.removeConnection(connection);
@@ -123,7 +88,7 @@ public class MessageWireSync implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

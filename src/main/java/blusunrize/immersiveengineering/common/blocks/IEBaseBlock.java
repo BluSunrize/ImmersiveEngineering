@@ -15,7 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -168,29 +168,31 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-								 BlockHitResult hit)
+	public ItemInteractionResult useItemOn(
+			ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+			BlockHitResult hit
+	)
 	{
 		ItemStack activeStack = player.getItemInHand(hand);
 		if(activeStack.is(IETags.hammers))
 			return hammerUseSide(hit.getDirection(), player, hand, world, pos, hit);
 		if(activeStack.is(IETags.screwdrivers))
 			return screwdriverUseSide(hit.getDirection(), player, hand, world, pos, hit);
-		return super.use(state, world, pos, player, hand, hit);
+		return super.useItemOn(stack, state, world, pos, player, hand, hit);
 	}
 
-	public InteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
-	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type)
+	protected boolean isPathfindable(BlockState p_60475_, PathComputationType p_60478_)
 	{
 		return false;
 	}

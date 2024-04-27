@@ -81,7 +81,7 @@ public class ConcreteFluid extends IEFluid
 				solidBlock = StoneDecoration.CONCRETE;
 			world.setBlockAndUpdate(pos, solidBlock.get().defaultBlockState());
 			for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, new AABB(Vec3.ZERO, new Vec3(1, 1, 1)).move(pos)))
-				living.addEffect(new MobEffectInstance(IEPotions.CONCRETE_FEET.value(), Integer.MAX_VALUE));
+				living.addEffect(new MobEffectInstance(IEPotions.CONCRETE_FEET, Integer.MAX_VALUE));
 		}
 		else if(world.getBlockState(pos).getBlock()==entry.getBlock())
 		{

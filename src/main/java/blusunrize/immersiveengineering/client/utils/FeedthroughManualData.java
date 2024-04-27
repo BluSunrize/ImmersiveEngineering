@@ -12,8 +12,10 @@ import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.FeedthroughMultiblock;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -26,7 +28,7 @@ public class FeedthroughManualData implements MultiblockManualData
 	private final Supplier<NonNullList<ItemStack>> materials = Suppliers.memoize(() -> NonNullList.of(
 			ItemStack.EMPTY,
 			new ItemStack(FeedthroughMultiblock.getDemoConnector(), 2),
-			new ItemStack(Blocks.BOOKSHELF, 1).setHoverName(ARBITRARY_SOLID)
+			Util.make(new ItemStack(Blocks.BOOKSHELF, 1), s -> s.set(DataComponents.CUSTOM_NAME, ARBITRARY_SOLID))
 	));
 
 	@Override

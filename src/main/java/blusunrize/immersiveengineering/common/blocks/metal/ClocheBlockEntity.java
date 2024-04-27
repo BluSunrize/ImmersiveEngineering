@@ -35,16 +35,19 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -266,7 +269,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 					if(!outStack.isEmpty())
 					{
 						int outCount = Math.min(outStack.getCount(), 16);
-						ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outCount);
+						ItemStack stack = outStack.copyWithCount(outCount);
 						stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
 						if(!stack.isEmpty())
 							outCount -= stack.getCount();
@@ -293,8 +296,9 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("growth", growth);
 		nbt.putBoolean("renderActive", renderActive);
-		PacketDistributor.TRACKING_CHUNK.with(level.getChunkAt(worldPosition))
-				.send(new MessageBlockEntitySync(this, nbt));
+		PacketDistributor.sendToPlayersTrackingChunk(
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, nbt)
+		);
 	}
 
 	@Override
@@ -305,19 +309,19 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		final ItemStack oldSoil = inventory.get(SLOT_SOIL);
 		dummy = nbt.getInt("dummy");
 		// loadAllItems skips empty items, so if a slot was emptied it won't be properly synced without the fill call
 		Collections.fill(inventory, ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(nbt, inventory);
+		ContainerHelper.loadAllItems(nbt, inventory, provider);
 		fertilizerAmount = nbt.getInt("fertilizerAmount");
 		fertilizerMod = nbt.getFloat("fertilizerMod");
 		if(!descPacket)
 		{
 			EnergyHelper.deserializeFrom(energyStorage, nbt);
-			tank.readFromNBT(nbt.getCompound("tank"));
+			tank.readFromNBT(provider, nbt.getCompound("tank"));
 			growth = nbt.getFloat("growth");
 		}
 		renderBB = null;
@@ -326,16 +330,16 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putInt("dummy", dummy);
-		ContainerHelper.saveAllItems(nbt, inventory);
+		ContainerHelper.saveAllItems(nbt, inventory, provider);
 		nbt.putInt("fertilizerAmount", fertilizerAmount);
 		nbt.putFloat("fertilizerMod", fertilizerMod);
 		if(!descPacket)
 		{
 			EnergyHelper.serializeTo(energyStorage, nbt);
-			CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
+			CompoundTag tankTag = tank.writeToNBT(provider, new CompoundTag());
 			nbt.put("tank", tankTag);
 			nbt.putFloat("growth", growth);
 		}

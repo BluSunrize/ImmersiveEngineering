@@ -45,7 +45,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	protected void sendMessage(CompoundTag data)
 	{
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(this.workbench, data));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(this.workbench, data));
 	}
 
 	@Nonnull

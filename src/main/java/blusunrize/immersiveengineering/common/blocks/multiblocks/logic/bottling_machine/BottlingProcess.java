@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InWorldProcessLoader;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -53,7 +54,10 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	private final BooleanSupplier allowPartialFill;
 
 	public BottlingProcess(
-			BiFunction<Level, ResourceLocation, BottlingMachineRecipe> getRecipe, CompoundTag nbt, State state
+			BiFunction<Level, ResourceLocation, BottlingMachineRecipe> getRecipe,
+			Provider provider,
+			CompoundTag nbt,
+			State state
 	)
 	{
 		super(nbt.getBoolean("isFilling")?($, $1) -> DUMMY_RECIPE.value(): getRecipe, nbt);
@@ -63,7 +67,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 		final ListTag filledNBT = nbt.getList("filledContainer", CompoundTag.TAG_COMPOUND);
 		this.filledContainer = new ArrayList<>();
 		for(int i = 0; i < filledNBT.size(); i++)
-			this.filledContainer.add(ItemStack.of(filledNBT.getCompound(i)));
+			this.filledContainer.add(ItemStack.parseOptional(provider, filledNBT.getCompound(i)));
 	}
 
 	public BottlingProcess(RecipeHolder<BottlingMachineRecipe> recipe, NonNullList<ItemStack> inputItem, State state)
@@ -87,10 +91,10 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 
 	public static InWorldProcessLoader<BottlingMachineRecipe> loader(State state)
 	{
-		return (getRecipe, tag) -> {
+		return (getRecipe, tag, provider) -> {
 			if(tag.getBoolean("isFilling"))
-				return new BottlingProcess((level, resourceLocation) -> DUMMY_RECIPE.value(), tag, state);
-			return new BottlingProcess(getRecipe, tag, state);
+				return new BottlingProcess((level, resourceLocation) -> DUMMY_RECIPE.value(), provider, tag, state);
+			return new BottlingProcess(getRecipe, provider, tag, state);
 		};
 	}
 
@@ -140,13 +144,13 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 	}
 
 	@Override
-	public void writeExtraDataToNBT(CompoundTag nbt)
+	public void writeExtraDataToNBT(CompoundTag nbt, Provider provider)
 	{
-		super.writeExtraDataToNBT(nbt);
+		super.writeExtraDataToNBT(nbt, provider);
 		nbt.putBoolean("isFilling", isFilling);
 		final ListTag filledNBT = new ListTag();
 		for(ItemStack stack : this.filledContainer)
-			filledNBT.add(stack.save(new CompoundTag()));
+			filledNBT.add(stack.save(provider, new CompoundTag()));
 		nbt.put("filledContainer", filledNBT);
 	}
 }

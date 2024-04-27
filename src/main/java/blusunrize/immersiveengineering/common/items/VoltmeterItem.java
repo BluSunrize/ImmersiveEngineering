@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
@@ -20,13 +19,15 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
-import blusunrize.immersiveengineering.common.network.MessageRequestEnergyUpdate;
 import blusunrize.immersiveengineering.common.network.MessageRequestRedstoneUpdate;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.datafixers.util.Either;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -147,57 +148,30 @@ public class VoltmeterItem extends IEBaseItem
 		return InteractionResult.PASS;
 	}
 
-	public static record RemoteEnergyData(
-			FastEither<BlockPos, Integer> pos, long measuredInTick, boolean isValid, int stored, int capacity
+	public record RemoteEnergyData(
+			Either<BlockPos, Integer> pos, long measuredInTick, boolean isValid, int stored, int capacity
 	)
 	{
-		public static RemoteEnergyData read(FriendlyByteBuf in)
-		{
-			FastEither<BlockPos, Integer> pos = MessageRequestEnergyUpdate.readPos(in);
-			long measuredInTick = in.readVarLong();
-			boolean isValid = in.readBoolean();
-			final int stored;
-			final int capacity;
-			if(isValid)
-			{
-				stored = in.readVarInt();
-				capacity = in.readVarInt();
-			}
-			else
-				stored = capacity = 0;
-			return new RemoteEnergyData(pos, measuredInTick, isValid, stored, capacity);
-		}
-
-		public void write(FriendlyByteBuf out)
-		{
-			MessageRequestEnergyUpdate.writePos(out, pos);
-			out.writeVarLong(measuredInTick)
-					.writeBoolean(isValid);
-			if(isValid)
-				out.writeVarInt(stored).writeVarInt(capacity);
-		}
+		public static final StreamCodec<ByteBuf, RemoteEnergyData> CODEC = StreamCodec.composite(
+				ByteBufCodecs.either(BlockPos.STREAM_CODEC, ByteBufCodecs.INT), RemoteEnergyData::pos,
+				ByteBufCodecs.VAR_LONG, RemoteEnergyData::measuredInTick,
+				ByteBufCodecs.BOOL, RemoteEnergyData::isValid,
+				ByteBufCodecs.INT, RemoteEnergyData::stored,
+				ByteBufCodecs.INT, RemoteEnergyData::capacity,
+				RemoteEnergyData::new
+		);
 	}
 
-	public static record RemoteRedstoneData(
+	public record RemoteRedstoneData(
 			BlockPos pos, long measuredInTick, boolean isSignalSource, byte rsLevel
 	)
 	{
-		public static RemoteRedstoneData read(FriendlyByteBuf in)
-		{
-			BlockPos pos = in.readBlockPos();
-			long measuredInTick = in.readVarLong();
-			boolean isSignalSource = in.readBoolean();
-			final byte rsLevel;
-			rsLevel = in.readByte();
-			return new RemoteRedstoneData(pos, measuredInTick, isSignalSource, rsLevel);
-		}
-
-		public void write(FriendlyByteBuf out)
-		{
-			out.writeBlockPos(pos);
-			out.writeVarLong(measuredInTick)
-					.writeBoolean(isSignalSource);
-			out.writeByte(rsLevel);
-		}
+		public static final StreamCodec<ByteBuf, RemoteRedstoneData> STREAM_CODEC = StreamCodec.composite(
+				BlockPos.STREAM_CODEC, RemoteRedstoneData::pos,
+				ByteBufCodecs.VAR_LONG, RemoteRedstoneData::measuredInTick,
+				ByteBufCodecs.BOOL, RemoteRedstoneData::isSignalSource,
+				ByteBufCodecs.BYTE, RemoteRedstoneData::rsLevel,
+				RemoteRedstoneData::new
+		);
 	}
 }

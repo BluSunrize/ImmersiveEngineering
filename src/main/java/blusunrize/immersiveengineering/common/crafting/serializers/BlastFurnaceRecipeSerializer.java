@@ -14,55 +14,44 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnaceRecipe>
 {
-	public static final Codec<BlastFurnaceRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<BlastFurnaceRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
 			IngredientWithSize.CODEC.fieldOf("input").forGetter(r -> r.input),
-			ExtraCodecs.strictOptionalField(Codec.INT, "time", 200).forGetter(r -> r.time),
+			Codec.INT.optionalFieldOf("time", 200).forGetter(r -> r.time),
 			optionalItemOutput("slag").forGetter(r -> r.slag)
 	).apply(inst, BlastFurnaceRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, BlastFurnaceRecipe> STREAM_CODEC = StreamCodec.composite(
+			TagOutput.STREAM_CODEC, r -> r.output,
+			IngredientWithSize.STREAM_CODEC, r -> r.input,
+			ByteBufCodecs.INT, r -> r.time,
+			TagOutput.STREAM_CODEC, r -> r.slag,
+			BlastFurnaceRecipe::new
+	);
 
 	@Override
-	public Codec<BlastFurnaceRecipe> codec()
+	public MapCodec<BlastFurnaceRecipe> codec()
 	{
 		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, BlastFurnaceRecipe> streamCodec()
+	{
+		return STREAM_CODEC;
 	}
 
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.BLAST_FURNACE.iconStack();
-	}
-
-	@Nullable
-	@Override
-	public BlastFurnaceRecipe fromNetwork(FriendlyByteBuf buffer)
-	{
-		TagOutput output = readLazyStack(buffer);
-		IngredientWithSize input = IngredientWithSize.read(buffer);
-		int time = buffer.readInt();
-		TagOutput slag = TagOutput.EMPTY;
-		if(buffer.readBoolean())
-			slag = readLazyStack(buffer);
-		return new BlastFurnaceRecipe(output, input, time, slag);
-	}
-
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, BlastFurnaceRecipe recipe)
-	{
-		writeLazyStack(buffer, recipe.output);
-		recipe.input.write(buffer);
-		buffer.writeInt(recipe.time);
-		buffer.writeBoolean(!recipe.slag.get().isEmpty());
-		if(!recipe.slag.get().isEmpty())
-			buffer.writeItem(recipe.slag.get());
 	}
 }

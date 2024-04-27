@@ -14,63 +14,50 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 {
-	public static final Codec<RefineryRecipe> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<RefineryRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.output),
 			FluidTagInput.CODEC.fieldOf("input0").forGetter(r -> r.input0),
-			ExtraCodecs.strictOptionalField(FluidTagInput.CODEC, "input1").forGetter(r -> Optional.ofNullable(r.input1)),
-			ExtraCodecs.strictOptionalField(Ingredient.CODEC, "catalyst", Ingredient.EMPTY).forGetter(r -> r.catalyst),
+			FluidTagInput.CODEC.optionalFieldOf("input1").forGetter(r -> Optional.ofNullable(r.input1)),
+			Ingredient.CODEC.optionalFieldOf("catalyst", Ingredient.EMPTY).forGetter(r -> r.catalyst),
 			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy)
 	).apply(inst, RefineryRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, RefineryRecipe> STREAM_CODEC = StreamCodec.composite(
+			FluidStack.STREAM_CODEC, r -> r.output,
+			FluidTagInput.STREAM_CODEC, r -> r.input0,
+			ByteBufCodecs.optional(FluidTagInput.STREAM_CODEC), r -> Optional.ofNullable(r.input1),
+			Ingredient.CONTENTS_STREAM_CODEC, r -> r.catalyst,
+			ByteBufCodecs.INT, MultiblockRecipe::getBaseEnergy,
+			RefineryRecipe::new
+	);
 
 	@Override
-	public Codec<RefineryRecipe> codec()
+	public MapCodec<RefineryRecipe> codec()
 	{
 		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, RefineryRecipe> streamCodec()
+	{
+		return STREAM_CODEC;
 	}
 
 	@Override
 	public ItemStack getIcon()
 	{
 		return IEMultiblockLogic.REFINERY.iconStack();
-	}
-
-	@Nullable
-	@Override
-	public RefineryRecipe fromNetwork(FriendlyByteBuf buffer)
-	{
-		FluidStack output = buffer.readFluidStack();
-		FluidTagInput input0 = FluidTagInput.read(buffer);
-		FluidTagInput input1 = buffer.readBoolean()?FluidTagInput.read(buffer): null;
-		Ingredient catalyst = Ingredient.fromNetwork(buffer);
-		int energy = buffer.readInt();
-		return new RefineryRecipe(output, input0, input1, catalyst, energy);
-	}
-
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, RefineryRecipe recipe)
-	{
-		buffer.writeFluidStack(recipe.output);
-		recipe.input0.write(buffer);
-		if(recipe.input1!=null)
-		{
-			buffer.writeBoolean(true);
-			recipe.input1.write(buffer);
-		}
-		else
-			buffer.writeBoolean(false);
-		recipe.catalyst.toNetwork(buffer);
-		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

@@ -12,45 +12,41 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
-import javax.annotation.Nullable;
-
 public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceFuel>
 {
-	public static final Codec<BlastFurnaceFuel> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<BlastFurnaceFuel> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			Ingredient.CODEC.fieldOf("input").forGetter(f -> f.input),
 			Codec.INT.fieldOf("time").forGetter(f -> f.burnTime)
 	).apply(inst, BlastFurnaceFuel::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, BlastFurnaceFuel> STREAM_CODEC = StreamCodec.composite(
+			Ingredient.CONTENTS_STREAM_CODEC, f -> f.input,
+			ByteBufCodecs.INT, f -> f.burnTime,
+			BlastFurnaceFuel::new
+	);
 
 	@Override
-	public Codec<BlastFurnaceFuel> codec()
+	public MapCodec<BlastFurnaceFuel> codec()
 	{
 		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, BlastFurnaceFuel> streamCodec()
+	{
+		return STREAM_CODEC;
 	}
 
 	@Override
 	public ItemStack getIcon()
 	{
 		return new ItemStack(IEItems.Ingredients.COAL_COKE);
-	}
-
-	@Nullable
-	@Override
-	public BlastFurnaceFuel fromNetwork(FriendlyByteBuf buffer)
-	{
-		Ingredient input = Ingredient.fromNetwork(buffer);
-		int time = buffer.readInt();
-		return new BlastFurnaceFuel(input, time);
-	}
-
-	@Override
-	public void toNetwork(FriendlyByteBuf buffer, BlastFurnaceFuel recipe)
-	{
-		recipe.input.toNetwork(buffer);
-		buffer.writeInt(recipe.burnTime);
 	}
 }

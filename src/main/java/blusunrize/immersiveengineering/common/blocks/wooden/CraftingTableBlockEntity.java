@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
 import com.google.common.collect.Streams;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -51,12 +52,12 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		if(!descPacket)
 		{
 			NonNullList<ItemStack> totalInv = NonNullList.withSize(inventory.size()+craftingInv.size(), ItemStack.EMPTY);
-			ContainerHelper.loadAllItems(nbt, totalInv);
+			ContainerHelper.loadAllItems(nbt, totalInv, provider);
 			for(int i = 0; i < inventory.size(); ++i)
 				inventory.set(i, totalInv.get(i));
 			for(int i = 0; i < craftingInv.size(); ++i)
@@ -65,7 +66,7 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		if(!descPacket)
 		{
@@ -74,7 +75,7 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity
 				totalInv.set(i, inventory.get(i));
 			for(int i = 0; i < craftingInv.size(); ++i)
 				totalInv.set(inventory.size()+i, craftingInv.get(i));
-			ContainerHelper.saveAllItems(nbt, totalInv);
+			ContainerHelper.saveAllItems(nbt, totalInv, provider);
 		}
 	}
 

@@ -39,8 +39,7 @@ public class ManualElementBottling extends ManualElementIECrafting
 
 				FluidStack fs = recipe.fluidInput.getRandomizedExampleStack(0);
 				ItemStack bucket = fs.getFluid().getBucket().getDefaultInstance();
-				if(fs.hasTag())
-					bucket.setTag(fs.getTag());
+				bucket.applyComponents(fs.getComponents());
 				String bucketFraction = FluidUtils.getBucketFraction(recipe.fluidInput.getAmount());
 
 				int inputSize = recipe.inputs.size();

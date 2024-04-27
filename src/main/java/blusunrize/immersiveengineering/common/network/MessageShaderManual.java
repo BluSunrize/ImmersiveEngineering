@@ -9,11 +9,12 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -21,44 +22,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
-public class MessageShaderManual implements IMessage
+public record MessageShaderManual(MessageType key, List<ResourceLocation> args) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("shader_manual");
-	private MessageType key;
-	private ResourceLocation[] args;
+	public static final Type<MessageShaderManual> ID = IMessage.createType("shader_manual");
+	public static final StreamCodec<ByteBuf, MessageShaderManual> CODEC = StreamCodec.composite(
+			ByteBufCodecs.idMapper(i -> MessageType.values()[i], MessageType::ordinal), MessageShaderManual::key,
+			ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), MessageShaderManual::args,
+			MessageShaderManual::new
+	);
 
 	public MessageShaderManual(MessageType key, ResourceLocation... args)
 	{
-		this.key = key;
-		this.args = args;
-	}
-
-	public MessageShaderManual(FriendlyByteBuf buf)
-	{
-		this.key = MessageType.values()[buf.readInt()];
-		int l = buf.readInt();
-		args = new ResourceLocation[l];
-		for(int i = 0; i < l; i++)
-			args[i] = new ResourceLocation(buf.readUtf(1000));
-	}
-
-	@Override
-	public void write(FriendlyByteBuf buf)
-	{
-		buf.writeInt(this.key.ordinal());
-		if(args!=null)
-		{
-			buf.writeInt(this.args.length);
-			for(ResourceLocation rl : args)
-				buf.writeUtf(rl.toString());
-		}
-		else
-			buf.writeInt(0);
+		this(key, Arrays.asList(args));
 	}
 
 	public enum MessageType
@@ -69,29 +51,29 @@ public class MessageShaderManual implements IMessage
 	}
 
 	@Override
-	public void process(PlayPayloadContext context)
+	public void process(IPayloadContext context)
 	{
 		if(context.flow().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerPlayer player = serverPlayer(context);
+			ServerPlayer player = IMessage.serverPlayer(context);
 			UUID playerId = player.getUUID();
-			context.workHandler().execute(() -> {
+			context.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
 					Collection<ResourceLocation> received = ShaderRegistry.receivedShaders.get(playerId);
 					ResourceLocation[] ss = received.toArray(new ResourceLocation[0]);
-					PacketDistributor.PLAYER.with(player).send(new MessageShaderManual(MessageType.SYNC, ss));
+					PacketDistributor.sendToPlayer(player, new MessageShaderManual(MessageType.SYNC, ss));
 				}
-				else if(key==MessageType.UNLOCK&&args.length > 0)
+				else if(key==MessageType.UNLOCK&&!args.isEmpty())
 				{
-					ShaderRegistry.receivedShaders.put(playerId, args[0]);
+					ShaderRegistry.receivedShaders.put(playerId, args.get(0));
 				}
-				else if(key==MessageType.SPAWN&&args.length > 0)
+				else if(key==MessageType.SPAWN&&!args.isEmpty())
 				{
 					if(!player.getAbilities().instabuild)
-						IngredientUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args[0]).replicationCost.get());
+						IngredientUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args.get(0)).replicationCost.get());
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
-					ItemNBTHelper.putString(shaderStack, "shader_name", args[0].toString());
+					ItemNBTHelper.putString(shaderStack, "shader_name", args.get(0).toString());
 					ItemEntity entityitem = player.drop(shaderStack, false);
 					if(entityitem!=null)
 					{
@@ -102,7 +84,7 @@ public class MessageShaderManual implements IMessage
 			});
 		}
 		else
-			context.workHandler().execute(() -> {
+			context.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
 					Player player = ImmersiveEngineering.proxy.getClientPlayer();
@@ -118,7 +100,7 @@ public class MessageShaderManual implements IMessage
 	}
 
 	@Override
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

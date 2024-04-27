@@ -32,7 +32,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -187,7 +186,7 @@ public class ArcRecyclingCalculator
 			// Check if recipe output is among the items that have fixed returns
 			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(tags, stack);
 			if(brokenDown!=null&&ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getFirst())&&brokenDown.getSecond() > 0)
-				return new RecyclingCalculation(recipe.value(), ItemHandlerHelper.copyStackWithSize(stack, 1),
+				return new RecyclingCalculation(recipe.value(), stack.copyWithCount(1),
 						ImmutableMap.of(brokenDown.getFirst(), brokenDown.getSecond()));
 
 			// Else check recipe inputs
@@ -222,7 +221,7 @@ public class ArcRecyclingCalculator
 										b = true;
 									}
 								if(!b)
-									missingSub.put(ItemHandlerHelper.copyStackWithSize(inputStack, 1), inputStack.getCount());
+									missingSub.put(inputStack.copyWithCount(1), inputStack.getCount());
 							}
 							continue;
 						}
@@ -239,7 +238,7 @@ public class ArcRecyclingCalculator
 										b = true;
 									}
 								if(!b)
-									outputs.put(ItemHandlerHelper.copyStackWithSize(brokenDown.getFirst(), 1), brokenDown.getSecond());
+									outputs.put(brokenDown.getFirst().copyWithCount(1), brokenDown.getSecond());
 							}
 						}
 					}
@@ -248,7 +247,7 @@ public class ArcRecyclingCalculator
 					outputScaled.put(e.getKey(), e.getValue()/resultCount);
 				if(!outputs.isEmpty()||!missingSub.isEmpty())
 				{
-					ItemStack in = ItemHandlerHelper.copyStackWithSize(stack, 1);
+					ItemStack in = stack.copyWithCount(1);
 					RecyclingCalculation calc = new RecyclingCalculation(recipe.value(), in, outputScaled);
 					if(!missingSub.isEmpty())
 						for(ItemStack s : missingSub.keySet())

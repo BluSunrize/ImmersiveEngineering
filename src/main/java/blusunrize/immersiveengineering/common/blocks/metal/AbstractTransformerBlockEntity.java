@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
@@ -143,9 +144,9 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 				};
 	}
 
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		if(leftType!=null)
 			nbt.putString("leftType", leftType.getUniqueName());
 		if(rightType!=null)
@@ -153,9 +154,9 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		if(nbt.contains("leftType"))
 			leftType = WireUtils.getWireTypeFromNBT(nbt, "leftType");
 		else
