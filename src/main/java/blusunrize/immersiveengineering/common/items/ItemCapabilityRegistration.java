@@ -20,8 +20,8 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.ItemEnergyStorag
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;

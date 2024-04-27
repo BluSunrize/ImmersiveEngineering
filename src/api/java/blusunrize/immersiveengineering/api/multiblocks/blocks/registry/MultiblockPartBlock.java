@@ -20,6 +20,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -177,7 +178,8 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 
 	@Nonnull
 	@Override
-	public InteractionResult use(
+	public ItemInteractionResult useItemOn(
+			@Nonnull ItemStack stack,
 			@Nonnull BlockState state,
 			@Nonnull Level level,
 			@Nonnull BlockPos pos,
@@ -190,7 +192,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 		if(bEntity instanceof IMultiblockBE<?> multiblockBE)
 			return multiblockBE.getHelper().click(player, hand, hit);
 		else
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

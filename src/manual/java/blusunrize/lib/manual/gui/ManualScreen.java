@@ -28,15 +28,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = "immersiveengineering", bus = Bus.FORGE)
+@EventBusSubscriber(value = Dist.CLIENT, modid = "immersiveengineering", bus = Bus.GAME)
 public class ManualScreen extends Screen
 {
 	private Minecraft mc = Minecraft.getInstance();

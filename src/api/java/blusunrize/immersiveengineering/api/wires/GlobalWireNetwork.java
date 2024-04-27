@@ -24,6 +24,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -39,7 +40,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -236,7 +237,7 @@ public class GlobalWireNetwork extends SavedData implements IWorldTickable
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag savedNBT)
+	public CompoundTag save(CompoundTag savedNBT, Provider provider)
 	{
 		ListTag locals = new ListTag();
 		for(LocalWireNetwork local : localNetSet)

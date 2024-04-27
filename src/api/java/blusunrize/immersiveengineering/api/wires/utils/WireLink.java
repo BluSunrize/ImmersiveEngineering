@@ -8,9 +8,11 @@
 
 package blusunrize.immersiveengineering.api.wires.utils;
 
+import blusunrize.immersiveengineering.api.IEDataComponents;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -19,19 +21,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class WireLink
+public record WireLink(
+		ConnectionPoint cp, ResourceKey<Level> dimension, BlockPos offset, TargetingInfo target
+)
 {
-	public final ConnectionPoint cp;
-	public final ResourceKey<Level> dimension;
-	public final BlockPos offset;
-	public final TargetingInfo target;
-
-	public WireLink(ConnectionPoint cp, ResourceKey<Level> dimension, BlockPos offset, TargetingInfo info)
+	public WireLink
 	{
-		this.cp = cp;
-		this.dimension = dimension;
-		this.offset = offset.immutable();
-		this.target = info;
+		offset = offset.immutable();
 	}
 
 	public static WireLink create(ConnectionPoint cp, Level world, BlockPos offset, TargetingInfo info)
@@ -39,24 +35,15 @@ public class WireLink
 		return new WireLink(cp, world.dimension(), offset, info);
 	}
 
+	@Deprecated(forRemoval = true)
 	public void writeToItem(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getOrCreateTag();
-		nbt.putString("linkingDim", dimension.location().toString());
-		nbt.put("linkingPos", cp.createTag());
-		nbt.put("linkingOffset", NbtUtils.writeBlockPos(offset));
-		CompoundTag targetNBT = new CompoundTag();
-		target.writeToNBT(targetNBT);
-		nbt.put("linkingTarget", targetNBT);
+		stack.set(IEDataComponents.WIRE_LINK, this);
 	}
 
+	@Deprecated(forRemoval = true)
 	public static WireLink readFromItem(ItemStack stack)
 	{
-		CompoundTag nbt = stack.hasTag()?stack.getOrCreateTag(): new CompoundTag();
-		ConnectionPoint cp = new ConnectionPoint(nbt.getCompound("linkingPos"));
-		ResourceLocation dim = new ResourceLocation(nbt.getString("linkingDim"));
-		BlockPos offset = NbtUtils.readBlockPos(nbt.getCompound("linkingOffset"));
-		TargetingInfo info = TargetingInfo.readFromNBT(nbt.getCompound("linkingTarget"));
-		return new WireLink(cp, ResourceKey.create(Registries.DIMENSION, dim), offset, info);
+		return stack.get(IEDataComponents.WIRE_LINK);
 	}
 }

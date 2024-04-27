@@ -160,7 +160,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 		final boolean canOutputItem;
 		if(currentOutputStack.isEmpty())
 			canOutputItem = true;
-		else if(!ItemHandlerHelper.canItemStacksStack(currentOutputStack, recipe.output.get()))
+		else if(!ItemStack.isSameItemSameComponents(currentOutputStack, recipe.output.get()))
 			canOutputItem = false;
 		else
 			canOutputItem = currentOutputStack.getCount()+recipe.output.get().getCount() <= 64;

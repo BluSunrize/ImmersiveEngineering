@@ -47,18 +47,13 @@ import java.util.stream.Collectors;
 
 public class FluidTagInput implements Predicate<FluidStack>
 {
-	private static <S> JsonObject toJson(Dynamic<S> in)
-	{
-		return in.getOps().convertTo(JsonOps.INSTANCE, in.getValue()).getAsJsonObject();
-	}
-
 	public static final Codec<FluidTagInput> CODEC = RecordCodecBuilder.create(inst -> inst.group(
 			Codec.mapEither(
 					TagKey.codec(Registries.FLUID).fieldOf("tag"),
 					ResourceLocation.CODEC.listOf().fieldOf("fluids")
 			).forGetter(t -> t.fluidTag),
 			Codec.INT.fieldOf("amount").forGetter(t -> t.amount),
-			ExtraCodecs.strictOptionalField(CompoundTag.CODEC, "nbt").forGetter(t -> Optional.ofNullable(t.nbtTag))
+			CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(t -> Optional.ofNullable(t.nbtTag))
 	).apply(inst, (tag, amount, nbt) -> new FluidTagInput(tag, amount, nbt.orElse(null))));
 
 	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;
@@ -130,20 +125,22 @@ public class FluidTagInput implements Predicate<FluidStack>
 		))
 			return false;
 		if(this.nbtTag!=null)
-			return fluidStack.hasTag()&&fluidStack.getTag().equals(this.nbtTag);
+			throw new UnsupportedOperationException();
+			//return fluidStack.hasTag()&&fluidStack.getTag().equals(this.nbtTag);
 		return true;
 	}
 
 	@Nonnull
 	public List<FluidStack> getMatchingFluidStacks()
 	{
-		return fluidTag.map(
-				// TODO less global?
-				t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t),
-				l -> l.stream().map(BuiltInRegistries.FLUID::get)
-		)
-				.map(fluid -> new FluidStack(fluid, FluidTagInput.this.amount, FluidTagInput.this.nbtTag))
-				.collect(Collectors.toList());
+		throw new UnsupportedOperationException();
+		//return fluidTag.map(
+		//		// TODO less global?
+		//		t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t),
+		//		l -> l.stream().map(BuiltInRegistries.FLUID::get)
+		//)
+		//		.map(fluid -> new FluidStack(fluid, FluidTagInput.this.amount, FluidTagInput.this.nbtTag))
+		//		.collect(Collectors.toList());
 	}
 
 	@Nonnull

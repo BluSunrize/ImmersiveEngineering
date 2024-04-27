@@ -24,8 +24,8 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.Holder;
 

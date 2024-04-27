@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.wires.utils;
 
+import blusunrize.immersiveengineering.api.IEDataComponents;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
@@ -32,17 +33,16 @@ public class WirecoilUtils
 		return COIL_USE.get().doCoilUse(coil, player, world, pos, hand, side, hitX, hitY, hitZ);
 	}
 
+	@Deprecated(forRemoval = true)
 	public static void clearWireLink(ItemStack stack)
 	{
-		ItemUtils.removeTag(stack, "linkingDim");
-		ItemUtils.removeTag(stack, "linkingPos");
-		ItemUtils.removeTag(stack, "linkingOffset");
-		ItemUtils.removeTag(stack, "linkingTarget");
+		stack.remove(IEDataComponents.WIRE_LINK);
 	}
 
+	@Deprecated(forRemoval = true)
 	public static boolean hasWireLink(ItemStack stack)
 	{
-		return ItemUtils.hasTag(stack, "linkingDim", Tag.TAG_STRING);
+		return stack.has(IEDataComponents.WIRE_LINK);
 	}
 
 	public interface UseCallback

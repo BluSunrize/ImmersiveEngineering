@@ -20,11 +20,7 @@ public class ItemStackHashStrategy implements Hash.Strategy<ItemStack>
 	@Override
 	public int hashCode(ItemStack stack)
 	{
-		if(stack.isEmpty())
-			return 0;
-		int ret = System.identityHashCode(stack.getItem());
-		ret = ret*31+Objects.hashCode(stack.getTag());
-		return ret;
+		return ItemStack.hashItemAndComponents(stack);
 	}
 
 	@Override
@@ -34,6 +30,7 @@ public class ItemStackHashStrategy implements Hash.Strategy<ItemStack>
 			return b == null;
 		else if (b == null)
 			return false;
-		return a.getItem()==b.getItem()&&Objects.equals(a.getTag(), b.getTag());
+		else
+			return ItemStack.isSameItemSameComponents(a, b);
 	}
 }

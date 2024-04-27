@@ -160,7 +160,7 @@ public interface IConveyorBelt
 			final double conveyorHeight = 2/16.;
 			final Vec3i directionVector = facing.getNormal();
 			final double centerOffsetInDirection = centerRelative.dot(new Vec3(directionVector.getX(), directionVector.getY(), directionVector.getZ()));
-			final double radius = entity.getDimensions(entity.getPose()).width/2;
+			final double radius = entity.getDimensions(entity.getPose()).width()/2;
 			final double maxEntityPos = centerOffsetInDirection+radius;
 			double maxCenterHeightUnderEntity = maxEntityPos+conveyorHeight;
 			if(conveyorDirection==ConveyorDirection.DOWN)

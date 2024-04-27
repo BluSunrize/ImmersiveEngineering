@@ -19,8 +19,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -176,7 +176,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 							for(int j = 3; j < 7; j++)
 							{
 								ItemStack existing = inventory.get(j);
-								if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize()))
+								if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemStack.isSameItemSameComponents(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize()))
 								{
 									canFit++;
 									if(existing.isEmpty())
@@ -195,7 +195,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 									inventory.set(j, output.copy());
 									break;
 								}
-								else if(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize())
+								else if(ItemStack.isSameItemSameComponents(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize())
 								{
 									existing.grow(output.getCount());
 									break;

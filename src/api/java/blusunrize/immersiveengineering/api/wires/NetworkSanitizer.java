@@ -16,7 +16,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.*;
 

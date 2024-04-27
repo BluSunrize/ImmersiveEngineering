@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEH
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -46,34 +47,34 @@ public class MultiblockBlockEntityDummy<State extends IMultiblockState>
 	}
 
 	@Override
-	public void load(@Nonnull CompoundTag tag)
+	protected void loadAdditional(CompoundTag tag, Provider provider)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, provider);
 		helper.load(tag);
 	}
 
 	@Override
-	protected void saveAdditional(@Nonnull CompoundTag tag)
+	protected void saveAdditional(@Nonnull CompoundTag tag, Provider provider)
 	{
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, provider);
 		helper.saveAdditional(tag);
 	}
 
 	@Nonnull
 	@Override
-	public CompoundTag getUpdateTag()
+	public CompoundTag getUpdateTag(Provider provider)
 	{
 		return helper.getUpdateTag();
 	}
 
 	@Override
-	public void handleUpdateTag(CompoundTag tag)
+	public void handleUpdateTag(CompoundTag tag, Provider provider)
 	{
 		helper.handleUpdateTag(tag);
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, Provider provider)
 	{
 		helper.onDataPacket(pkt.getTag());
 	}

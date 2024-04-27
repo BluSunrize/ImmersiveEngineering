@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
+import blusunrize.immersiveengineering.api.IEDataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -39,23 +40,18 @@ import java.util.function.IntFunction;
 
 public class FluidUtils
 {
+	@Deprecated(forRemoval = true)
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount)
 	{
 		return copyFluidStackWithAmount(stack, amount, false);
 	}
 
+	@Deprecated(forRemoval = true)
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
-		if(stack==null)
-			return null;
-		FluidStack fs = new FluidStack(stack, amount);
-		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains(IFluidPipe.NBT_PRESSURIZED))
-		{
-			CompoundTag tag = fs.getOrCreateTag();
-			tag.remove(IFluidPipe.NBT_PRESSURIZED);
-			if(tag.isEmpty())
-				fs.setTag(null);
-		}
+		FluidStack fs = stack.copyWithAmount(amount);
+		if(stripPressure)
+			fs.remove(IEDataComponents.FLUID_PRESSURIZED);
 		return fs;
 	}
 
@@ -75,7 +71,7 @@ public class FluidUtils
 			@Nonnull ItemStack container, IFluidHandler fluidDestination, int maxAmount, FluidAction doDrain
 	)
 	{
-		ItemStack containerCopy = ItemHandlerHelper.copyStackWithSize(container, 1);
+		ItemStack containerCopy = container.copyWithCount(1);
 		IFluidHandlerItem handler = containerCopy.getCapability(FluidHandler.ITEM);
 		if(handler==null)
 			return FluidActionResult.FAILURE;
@@ -125,7 +121,7 @@ public class FluidUtils
 				inv.setStackInSlot(slotIn, filledContainer.copy());
 			else
 			{
-				if(!inv.getStackInSlot(slotOut).isEmpty()&&ItemHandlerHelper.canItemStacksStack(filledContainer, inv.getStackInSlot(slotOut)))
+				if(!inv.getStackInSlot(slotOut).isEmpty()&&ItemStack.isSameItemSameComponents(filledContainer, inv.getStackInSlot(slotOut)))
 					inv.getStackInSlot(slotOut).grow(filledContainer.getCount());
 				else
 					inv.setStackInSlot(slotOut, filledContainer);
@@ -148,7 +144,7 @@ public class FluidUtils
 				invSet.accept(slotIn, filledContainer.copy());
 			else
 			{
-				if(!invGet.apply(slotOut).isEmpty()&&ItemHandlerHelper.canItemStacksStack(filledContainer, invGet.apply(slotOut)))
+				if(!invGet.apply(slotOut).isEmpty()&&ItemStack.isSameItemSameComponents(filledContainer, invGet.apply(slotOut)))
 					invGet.apply(slotOut).grow(filledContainer.getCount());
 				else
 					invSet.accept(slotOut, filledContainer);
@@ -170,7 +166,7 @@ public class FluidUtils
 		if(result.isSuccess())
 		{
 			final ItemStack full = result.getResult();
-			if((containerOut.isEmpty()||ItemHandlerHelper.canItemStacksStack(containerOut, full)))
+			if((containerOut.isEmpty()||ItemStack.isSameItemSameComponents(containerOut, full)))
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+full.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;
@@ -208,7 +204,7 @@ public class FluidUtils
 				int result = handler.fill(resource, FluidAction.SIMULATE);
 				if(action==FluidAction.EXECUTE)
 				{
-					lastNonSimulated.setValue(new FluidStack(resource, result));
+					lastNonSimulated.setValue(resource.copyWithAmount(result));
 					isInsert.setTrue();
 				}
 				return result;

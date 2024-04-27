@@ -42,18 +42,18 @@ public class BlueprintOutputArea extends InfoArea
 		BlueprintCraftingRecipe recipe = slot.recipe;
 		if(recipe.output.get().isEmpty()||slot.hasItem())
 			return;
-		tooltip.add(TextUtils.applyFormat(
-				recipe.output.get().getHoverName().copy(), recipe.output.get().getRarity().color
+		tooltip.add(recipe.output.get().getHoverName().copy().withStyle(
+				recipe.output.get().getRarity().getStyleModifier()
 		));
 		List<ItemStack> inputs = new ArrayList<>();
 		for(IngredientWithSize stack : recipe.inputs)
 		{
-			ItemStack toAdd = ItemHandlerHelper.copyStackWithSize(stack.getRandomizedExampleStack(mc().player.tickCount), stack.getCount());
+			ItemStack toAdd = stack.getRandomizedExampleStack(mc().player.tickCount).copyWithCount(stack.getCount());
 			if(toAdd.isEmpty())
 				continue;
 			boolean isNew = true;
 			for(ItemStack ss : inputs)
-				if(ItemHandlerHelper.canItemStacksStack(ss, toAdd))
+				if(ItemStack.isSameItemSameComponents(ss, toAdd))
 				{
 					ss.grow(toAdd.getCount());
 					isNew = false;

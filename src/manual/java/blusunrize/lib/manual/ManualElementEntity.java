@@ -44,9 +44,9 @@ public class ManualElementEntity extends SpecialManualElements
 		float yOff = renderData.get().ySize-4;
 		float scale = renderData.get().scale;
 
-		PoseStack modelViewStack = RenderSystem.getModelViewStack();
-		modelViewStack.pushPose();
-		modelViewStack.mulPoseMatrix(graphics.pose().last().pose());
+		var modelViewStack = RenderSystem.getModelViewStack();
+		modelViewStack.pushMatrix();
+		modelViewStack.mul(graphics.pose().last().pose());
 		modelViewStack.translate(x+60, y+yOff, 50);
 		modelViewStack.scale(-scale, scale, scale);
 
@@ -79,7 +79,7 @@ public class ManualElementEntity extends SpecialManualElements
 		});
 		bufferSource.endBatch();
 		entityRenderDispatcher.setRenderShadow(true);
-		modelViewStack.popPose();
+		modelViewStack.popMatrix();
 		RenderSystem.applyModelViewMatrix();
 	}
 

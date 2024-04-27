@@ -19,7 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +63,7 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 
 	BlockPos getPositionInMB();
 
-	InteractionResult click(Player player, InteractionHand hand, BlockHitResult hit);
+	ItemInteractionResult click(Player player, InteractionHand hand, BlockHitResult hit);
 
 	void onEntityCollided(Entity collided);
 

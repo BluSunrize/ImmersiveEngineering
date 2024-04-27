@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -121,7 +122,7 @@ public class ChemthrowerHandler
 				{
 					target.invulnerableTime = (int)(target.invulnerableTime*.75);
 					if(source.is(DamageTypeTags.IS_FIRE)&&!target.fireImmune())
-						target.setSecondsOnFire(fluid.is(Tags.Fluids.GASEOUS)?2: 5);
+						target.igniteForSeconds(fluid.is(Tags.Fluids.GASEOUS)?2: 5);
 				}
 			}
 		}
@@ -145,7 +146,7 @@ public class ChemthrowerHandler
 			Arrays.fill(this.effectChances, 1);
 		}
 
-		public ChemthrowerEffect_Potion(DamageSource source, float damage, MobEffect potion, int duration, int amplifier)
+		public ChemthrowerEffect_Potion(DamageSource source, float damage, Holder<MobEffect> potion, int duration, int amplifier)
 		{
 			this(source, damage, new MobEffectInstance(potion, duration, amplifier));
 		}

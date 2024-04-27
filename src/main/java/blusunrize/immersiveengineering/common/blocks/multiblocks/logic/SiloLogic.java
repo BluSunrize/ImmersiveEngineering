@@ -171,7 +171,7 @@ public class SiloLogic implements IMultiblockLogic<State>, IServerTickableCompon
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			int space = MAX_STORAGE-state.storageAmount;
-			if(slot!=0||space < 1||stack.isEmpty()||(!state.identStack.isEmpty()&&!ItemHandlerHelper.canItemStacksStack(state.identStack, stack)))
+			if(slot!=0||space < 1||stack.isEmpty()||(!state.identStack.isEmpty()&&!ItemStack.isSameItemSameComponents(state.identStack, stack)))
 				return stack;
 			int accepted = Math.min(space, stack.getCount());
 			if(!simulate)

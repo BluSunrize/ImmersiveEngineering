@@ -13,6 +13,8 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -41,16 +43,6 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 	}
 
 	public abstract ItemStack getIcon();
-
-	protected static TagOutput readLazyStack(FriendlyByteBuf buf)
-	{
-		return new TagOutput(buf.readItem());
-	}
-
-	protected static void writeLazyStack(FriendlyByteBuf buf, TagOutput stack)
-	{
-		buf.writeItem(stack.get());
-	}
 
 	protected static <T> MapCodec<Optional<List<T>>> maybeListOrSingle(Codec<T> singleCodec, String key)
 	{

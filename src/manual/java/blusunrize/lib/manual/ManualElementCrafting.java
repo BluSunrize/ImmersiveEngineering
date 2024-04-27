@@ -76,8 +76,8 @@ public class ManualElementCrafting extends SpecialManualElements
 		int recipeHeight;
 		if(rec instanceof IShapedRecipe<?> shaped)
 		{
-			recipeWidth = shaped.getRecipeWidth();
-			recipeHeight = shaped.getRecipeHeight();
+			recipeWidth = shaped.getWidth();
+			recipeHeight = shaped.getHeight();
 		}
 		else
 		{

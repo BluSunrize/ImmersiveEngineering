@@ -80,7 +80,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.ParallelDispatchEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;

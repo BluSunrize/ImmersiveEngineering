@@ -17,7 +17,7 @@ import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 @EventBusSubscriber(modid = Lib.MODID, value = Dist.CLIENT)
 public class ClientCommands

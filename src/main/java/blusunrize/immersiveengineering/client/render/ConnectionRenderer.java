@@ -37,8 +37,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.client.event.AddSectionGeometryEvent;
 import net.neoforged.neoforge.client.event.AddSectionGeometryEvent.SectionRenderingContext;
 

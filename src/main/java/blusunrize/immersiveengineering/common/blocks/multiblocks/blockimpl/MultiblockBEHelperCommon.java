@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -89,7 +90,7 @@ public abstract class MultiblockBEHelperCommon<State extends IMultiblockState> i
 	}
 
 	@Override
-	public InteractionResult click(Player player, InteractionHand hand, BlockHitResult hit)
+	public ItemInteractionResult click(Player player, InteractionHand hand, BlockHitResult hit)
 	{
 		final MultiblockBEHelperMaster<State> helper = getMasterHelper();
 		if(helper==null)

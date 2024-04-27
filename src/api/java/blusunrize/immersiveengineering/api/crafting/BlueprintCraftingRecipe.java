@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.IEDataComponents;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
@@ -66,7 +67,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static ItemStack getTypedBlueprint(String type)
 	{
 		ItemStack stack = new ItemStack(blueprintItem.get());
-		stack.getOrCreateTag().putString("blueprint", type);
+		stack.set(IEDataComponents.BLUEPRINT_TYPE, type);
 		return stack;
 	}
 
@@ -83,7 +84,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 			{
 				boolean inc = false;
 				for(ItemStack key : queryAmount.keySet())
-					if(ItemHandlerHelper.canItemStacksStack(q, key))
+					if(ItemStack.isSameItemSameComponents(q, key))
 					{
 						queryAmount.put(key, queryAmount.get(key)+q.getCount());
 						inc = true;
@@ -137,7 +138,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 				if(!queryStack.isEmpty()&&ingr.testIgnoringSize(queryStack))
 				{
 					int taken = Math.min(queryStack.getCount(), inputSize);
-					consumed.add(ItemHandlerHelper.copyStackWithSize(queryStack, taken));
+					consumed.add(queryStack.copyWithCount(taken));
 					if(taken >= queryStack.getCount()&&queryStack.getItem().hasCraftingRemainingItem(queryStack))
 						query.set(i, queryStack.getItem().getCraftingRemainingItem(queryStack));
 					else

@@ -60,7 +60,7 @@ public class ManualUtils
 {
 	public static boolean stackMatchesObject(ItemStack stack, ItemStack o)
 	{
-		return ItemStack.isSameItemSameTags(stack, o);
+		return ItemStack.isSameItemSameComponents(stack, o);
 	}
 
 	public static String getTitleForNode(AbstractNode<ResourceLocation, ManualEntry> node, ManualInstance inst)
@@ -398,6 +398,6 @@ public class ManualUtils
 
 	private static ItemStack readItemStack(JsonObject json)
 	{
-		return ItemStack.ITEM_WITH_COUNT_CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
+		return ItemStack.CODEC.decode(JsonOps.INSTANCE, json).result().get().getFirst();
 	}
 }

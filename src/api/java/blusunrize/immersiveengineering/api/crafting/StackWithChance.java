@@ -9,11 +9,15 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.utils.IEStreamCodecs;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.conditions.ICondition;
 
@@ -28,6 +32,11 @@ public record StackWithChance(TagOutput stack, float chance, List<ICondition> co
 					Codec.FLOAT.fieldOf("chance").forGetter(StackWithChance::chance),
 					ICondition.LIST_CODEC.fieldOf("conditions").forGetter(StackWithChance::conditions)
 			).apply(inst, StackWithChance::new)
+	);
+	public static final StreamCodec<RegistryFriendlyByteBuf, StackWithChance> STREAM_CODEC = StreamCodec.composite(
+			TagOutput.STREAM_CODEC, StackWithChance::stack,
+			IEStreamCodecs.FLOAT, StackWithChance::chance,
+			StackWithChance::new
 	);
 
 	public StackWithChance
@@ -45,33 +54,22 @@ public record StackWithChance(TagOutput stack, float chance, List<ICondition> co
 		this(stack, chance, Arrays.asList(conditions));
 	}
 
-	public CompoundTag writeToNBT()
+	public CompoundTag writeToNBT(HolderLookup.Provider provider)
 	{
 		CompoundTag compoundNBT = new CompoundTag();
-		compoundNBT.put("stack", stack.get().save(new CompoundTag()));
+		compoundNBT.put("stack", stack.get().save(provider));
 		compoundNBT.putFloat("chance", chance);
 		return compoundNBT;
 	}
 
-	public static StackWithChance readFromNBT(CompoundTag compoundNBT)
+	public static StackWithChance readFromNBT(HolderLookup.Provider provider, CompoundTag compoundNBT)
 	{
 		Preconditions.checkNotNull(compoundNBT);
 		Preconditions.checkArgument(compoundNBT.contains("chance"));
 		Preconditions.checkArgument(compoundNBT.contains("stack"));
-		final ItemStack stack = ItemStack.of(compoundNBT.getCompound("stack"));
+		final ItemStack stack = ItemStack.parse(provider, compoundNBT.getCompound("stack")).orElseThrow();
 		final float chance = compoundNBT.getFloat("chance");
 		return new StackWithChance(stack, chance);
-	}
-
-	public void write(FriendlyByteBuf buffer)
-	{
-		buffer.writeItem(this.stack.get());
-		buffer.writeFloat(this.chance);
-	}
-
-	public static StackWithChance read(FriendlyByteBuf buffer)
-	{
-		return new StackWithChance(buffer.readItem(), buffer.readFloat());
 	}
 
 	public StackWithChance recalculate(double totalChance)

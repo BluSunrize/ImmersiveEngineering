@@ -12,11 +12,15 @@ package blusunrize.immersiveengineering.api;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ToolAction;
+
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class Lib
 {
@@ -111,7 +115,7 @@ public class Lib
 
 	private static ResourceKey<DamageType> ieDamage(String path)
 	{
-		return ResourceKey.create(Registries.DAMAGE_TYPE, IEApi.ieLoc(path));
+		return ResourceKey.create(Registries.DAMAGE_TYPE, ieLoc(path));
 	}
 
 	public record TurretDamageType(ResourceKey<DamageType> playerType, ResourceKey<DamageType> turretType)
@@ -143,9 +147,9 @@ public class Lib
 		}
 
 		@Override
-		public int getLevel()
+		public TagKey<Block> getIncorrectBlocksForDrops()
 		{
-			return 2;
+			throw new UnsupportedOperationException("TODO implement");
 		}
 
 		@Override
@@ -160,7 +164,7 @@ public class Lib
 			return Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot);
 		}
 	};
-	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", ChatFormatting.GOLD);
+	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", ieLoc("masterwork"), ChatFormatting.GOLD);
 
 	public static final ToolAction WIRECUTTER_DIG = ToolAction.get("wirecutter_dig");
 }

@@ -19,7 +19,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 

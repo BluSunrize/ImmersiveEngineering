@@ -14,6 +14,7 @@ import com.google.common.collect.HashBiMap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +47,7 @@ public interface ClocheRenderFunction
 
 	}
 
-	Codec<? extends ClocheRenderFunction> codec();
+	MapCodec<? extends ClocheRenderFunction> codec();
 
 	/**
 	 * A map of factories for render functions, used to display blocks inside the cloche.
@@ -56,7 +57,7 @@ public interface ClocheRenderFunction
 	 * "stem", builds a render function for stem-grown plants like melon or pumpkin
 	 * "generic", builds a render function for any block, making it grow in size, like mushrooms
 	 */
-	BiMap<ResourceLocation, Codec<? extends ClocheRenderFunction>> RENDER_FUNCTION_FACTORIES = HashBiMap.create();
+	BiMap<ResourceLocation, MapCodec<? extends ClocheRenderFunction>> RENDER_FUNCTION_FACTORIES = HashBiMap.create();
 
 	Codec<ClocheRenderFunction> CODEC = ResourceLocation.CODEC.dispatch(
 			f -> RENDER_FUNCTION_FACTORIES.inverse().get(f.codec()), RENDER_FUNCTION_FACTORIES::get

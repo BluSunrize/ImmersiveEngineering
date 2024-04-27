@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +44,7 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		NonNullList<ItemStack> outputs = getItemOutputs();
 		if(outputs!=null&&outputs.size() > 0)

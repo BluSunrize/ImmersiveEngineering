@@ -18,8 +18,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterLayerDefinitions;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD, value = Dist.CLIENT)
 public class IEModelLayers

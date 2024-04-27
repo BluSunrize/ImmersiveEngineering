@@ -107,7 +107,7 @@ public class IICProxy implements IImmersiveConnectable
 		List<ConnectionPoint> points = new ArrayList<>();
 		for(Tag c : pointNBT)
 			points.add(new ConnectionPoint((CompoundTag)c));
-		return new IICProxy(world, NbtUtils.readBlockPos(nbt.getCompound("pos")), internal, points);
+		return new IICProxy(world, NbtUtils.readBlockPos(nbt, "pos").orElseThrow(), internal, points);
 	}
 
 	public CompoundTag writeToNBT()

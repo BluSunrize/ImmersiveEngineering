@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -51,7 +52,7 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return output.get();
 	}

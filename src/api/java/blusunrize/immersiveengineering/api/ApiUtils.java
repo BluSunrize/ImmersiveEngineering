@@ -46,24 +46,6 @@ public class ApiUtils
 
 	public static final RandomSource RANDOM_SOURCE = RandomSource.createNewThreadLocalInstance();
 
-	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
-	{
-		if(fluidStack==null)
-			return JsonNull.INSTANCE;
-		return FluidStack.CODEC.encodeStart(JsonOps.INSTANCE, fluidStack).getOrThrow(false, s -> {
-		});
-	}
-
-	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject)
-	{
-		Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(GsonHelper.getAsString(jsonObject, "fluid")));
-		int amount = GsonHelper.getAsInt(jsonObject, "amount");
-		FluidStack fluidStack = new FluidStack(fluid, amount);
-		if(GsonHelper.isValidNode(jsonObject, "tag"))
-			fluidStack.setTag(JsonUtils.readNBT(jsonObject, "tag"));
-		return fluidStack;
-	}
-
 	public static Pair<ItemStack, Double> breakStackIntoPreciseIngots(RegistryAccess tags, ItemStack stack)
 	{
 		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);

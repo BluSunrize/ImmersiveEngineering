@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -89,7 +90,7 @@ public class GeneratorFuel extends IESerializableRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return ItemStack.EMPTY;
 	}

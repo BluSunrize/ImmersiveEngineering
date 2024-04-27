@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -71,7 +72,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	}
 
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return this.outputs.getLazyList().get(0).get();
 	}

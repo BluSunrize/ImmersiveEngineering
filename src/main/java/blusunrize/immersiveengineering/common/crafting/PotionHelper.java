@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
 import blusunrize.immersiveengineering.mixin.accessors.PotionMixAccessor;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
@@ -46,10 +47,10 @@ public class PotionHelper
 	{
 		// Vanilla
 		for(Mix<Potion> mixPredicate : PotionBrewingAccess.getConversions())
-			if(mixPredicate.to!=Potions.MUNDANE&&mixPredicate.to!=Potions.THICK)
+			if(mixPredicate.to()!=Potions.MUNDANE&&mixPredicate.to()!=Potions.THICK)
 				out.apply(
-						mixPredicate.to, mixPredicate.from,
-						new IngredientWithSize(((PotionMixAccessor)mixPredicate).getIngredient())
+						mixPredicate.to(), mixPredicate.from(),
+						new IngredientWithSize(mixPredicate.ingredient())
 				);
 
 		// Modded
@@ -67,6 +68,6 @@ public class PotionHelper
 
 	public interface PotionRecipeProcessor
 	{
-		void apply(Potion output, Potion input, IngredientWithSize reagent);
+		void apply(Holder<Potion> output, Holder<Potion> input, IngredientWithSize reagent);
 	}
 }

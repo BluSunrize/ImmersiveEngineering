@@ -282,7 +282,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 		final ItemStack existing = state.inventory.getStackInSlot(slot);
 		if(existing.isEmpty())
 			return true;
-		else if(!ItemHandlerHelper.canItemStacksStack(output, existing))
+		else if(!ItemStack.isSameItemSameComponents(output, existing))
 			return false;
 		else
 			return existing.getCount()+output.getCount() <= existing.getMaxStackSize();

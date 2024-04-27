@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -16,7 +17,7 @@ import java.util.Objects;
 public class ComparableItemStack
 {
 	public ItemStack stack;
-	public boolean useNBT;
+	public boolean compareComponents;
 
 	public ComparableItemStack(ItemStack stack)
 	{
@@ -34,13 +35,13 @@ public class ComparableItemStack
 
 	public static ComparableItemStack create(ItemStack stack, boolean copy)
 	{
-		return create(stack, copy, stack.hasTag()&&!stack.getOrCreateTag().isEmpty());
+		return create(stack, copy, !stack.getComponents().isEmpty());
 	}
 
 	public static ComparableItemStack create(ItemStack stack, boolean copy, boolean useNbt)
 	{
 		ComparableItemStack comp = new ComparableItemStack(stack, copy);
-		comp.setUseNBT(useNbt);
+		comp.setCompareComponents(useNbt);
 		return comp;
 	}
 
@@ -49,25 +50,22 @@ public class ComparableItemStack
 		stack = stack.copy();
 	}
 
-	public ComparableItemStack setUseNBT(boolean useNBT)
+	public ComparableItemStack setCompareComponents(boolean compareComponents)
 	{
-		this.useNBT = useNBT;
+		this.compareComponents = compareComponents;
 		return this;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "ComparableStack: {"+this.stack.toString()+"}; checkNBT: "+this.useNBT;
+		return "ComparableStack: {"+this.stack.toString()+"}; checkNBT: "+this.compareComponents;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		int hash = stack.getItem().hashCode();
-		if(this.useNBT&&stack.hasTag())
-			hash += stack.getOrCreateTag().hashCode()*31;
-		return hash;
+		return ItemStack.hashItemAndComponents(this.stack);
 	}
 
 	@Override
@@ -79,22 +77,24 @@ public class ComparableItemStack
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
 		if(!ItemStack.isSameItem(stack, otherStack))
 			return false;
-		if(this.useNBT)
-			return Objects.equals(stack.getTag(), otherStack.getTag())&&stack.areAttachmentsCompatible(otherStack);
+		if(this.compareComponents)
+			return Objects.equals(stack.getComponents(), otherStack.getComponents());
 		return true;
 	}
 
-	public CompoundTag writeToNBT(CompoundTag nbt)
+	public CompoundTag writeToNBT(HolderLookup.Provider provider, CompoundTag nbt)
 	{
-		nbt.put("stack", stack.save(new CompoundTag()));
-		nbt.putBoolean("useNBT", useNBT);
+		nbt.put("stack", stack.save(provider));
+		nbt.putBoolean("useNBT", compareComponents);
 		return nbt;
 	}
 
-	public static ComparableItemStack readFromNBT(CompoundTag nbt)
+	public static ComparableItemStack readFromNBT(HolderLookup.Provider provider, CompoundTag nbt)
 	{
-		ComparableItemStack comp = new ComparableItemStack(ItemStack.of(nbt.getCompound("stack")), false);
-		comp.useNBT = nbt.getBoolean("useNBT");
+		ComparableItemStack comp = new ComparableItemStack(
+				ItemStack.parse(provider, nbt.getCompound("stack")).orElseThrow(), false
+		);
+		comp.compareComponents = nbt.getBoolean("useNBT");
 		return comp;
 	}
 }

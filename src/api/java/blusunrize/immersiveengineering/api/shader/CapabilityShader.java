@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -89,27 +90,29 @@ public class CapabilityShader
 		@Override
 		public void setShaderItem(@NotNull ItemStack shader)
 		{
-			if(!container.hasTag())
-				container.setTag(new CompoundTag());
-			if(!shader.isEmpty())
-			{
-				CompoundTag shaderTag = shader.save(new CompoundTag());
-				container.getOrCreateTag().put(SHADER_NBT_KEY, shaderTag);
-			}
-			else
-				container.getOrCreateTag().remove(SHADER_NBT_KEY);
+			throw new UnsupportedOperationException();
+			//if(!container.hasTag())
+			//	container.setTag(new CompoundTag());
+			//if(!shader.isEmpty())
+			//{
+			//	CompoundTag shaderTag = shader.save(new CompoundTag());
+			//	container.getOrCreateTag().put(SHADER_NBT_KEY, shaderTag);
+			//}
+			//else
+			//	container.getOrCreateTag().remove(SHADER_NBT_KEY);
 		}
 
 		@Override
 		@Nonnull
 		public ItemStack getShaderItem()
 		{
-			if(!container.hasTag())
-				return ItemStack.EMPTY;
-			CompoundTag tagCompound = container.getOrCreateTag();
-			if(!tagCompound.contains(SHADER_NBT_KEY, Tag.TAG_COMPOUND))
-				return ItemStack.EMPTY;
-			return ItemStack.of(tagCompound.getCompound(SHADER_NBT_KEY));
+			throw new UnsupportedOperationException();
+			//if(!container.hasTag())
+			//	return ItemStack.EMPTY;
+			//CompoundTag tagCompound = container.getOrCreateTag();
+			//if(!tagCompound.contains(SHADER_NBT_KEY, Tag.TAG_COMPOUND))
+			//	return ItemStack.EMPTY;
+			//return ItemStack.of(tagCompound.getCompound(SHADER_NBT_KEY));
 		}
 	}
 
@@ -148,12 +151,12 @@ public class CapabilityShader
 	public static final class WrapperSerializer implements IAttachmentSerializer<CompoundTag, ShaderWrapper_Direct>
 	{
 		@Override
-		public CompoundTag write(ShaderWrapper_Direct attachment)
+		public CompoundTag write(ShaderWrapper_Direct attachment, Provider provider)
 		{
 			CompoundTag nbt = new CompoundTag();
 			ItemStack shader = attachment.getShaderItem();
 			if(!shader.isEmpty())
-				shader.save(nbt);
+				shader.save(provider, nbt);
 			else
 				nbt.putString("IE:NoShader", "");
 			nbt.putString("IE:ShaderType", attachment.getShaderType().toString());
@@ -161,11 +164,11 @@ public class CapabilityShader
 		}
 
 		@Override
-		public ShaderWrapper_Direct read(IAttachmentHolder holder, CompoundTag tag)
+		public ShaderWrapper_Direct read(IAttachmentHolder holder, CompoundTag tag, Provider provider)
 		{
 			ShaderWrapper_Direct wrapper = new ShaderWrapper_Direct(new ResourceLocation(tag.getString("IE:ShaderType")));
 			if(!tag.contains("IE:NoShader"))
-				wrapper.setShaderItem(ItemStack.of(tag));
+				wrapper.setShaderItem(ItemStack.parseOptional(provider, tag));
 			return wrapper;
 		}
 	}

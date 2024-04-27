@@ -23,7 +23,7 @@ public class ItemStackRecipeQuery extends RecipeQuery
 	@Override
 	public boolean matchesIgnoringSize(ItemStack stack)
 	{
-		return ItemStack.isSameItemSameTags(this.stack, stack);
+		return ItemStack.isSameItemSameComponents(this.stack, stack);
 	}
 
 	@Override

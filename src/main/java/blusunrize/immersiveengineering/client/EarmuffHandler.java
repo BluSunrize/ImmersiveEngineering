@@ -19,8 +19,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 
@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.GAME)
 public class EarmuffHandler
 {
 	private static final Map<SoundSource, Float> LAST_MULTIPLIERS = makeDefaultMultipliers();

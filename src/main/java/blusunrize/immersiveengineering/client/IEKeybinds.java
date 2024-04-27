@@ -17,8 +17,8 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import org.lwjgl.glfw.GLFW;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;

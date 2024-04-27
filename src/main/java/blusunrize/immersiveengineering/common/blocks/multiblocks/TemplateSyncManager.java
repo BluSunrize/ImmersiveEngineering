@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 

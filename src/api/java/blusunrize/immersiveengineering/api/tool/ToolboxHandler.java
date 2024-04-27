@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.IETags;
 import com.google.common.collect.Sets;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
@@ -73,7 +75,7 @@ public class ToolboxHandler
 					return true;
 			return false;
 		});
-		foods.add((s) -> (s.getItem().isEdible()));
+		foods.add((s) -> s.has(DataComponents.FOOD));
 		foods.add((s) -> s.is(IETags.toolboxFood));
 		wiring.add((s) -> s.is(IETags.toolboxWiring));
 	}

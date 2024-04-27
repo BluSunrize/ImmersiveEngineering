@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.crafting.TagOutput;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -64,7 +65,7 @@ public class WindmillBiome extends IESerializableRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return ItemStack.EMPTY;
 	}

@@ -471,7 +471,7 @@ public class ArcFurnaceLogic
 			final ItemStack slag = this.inventory.getStackInSlot(SLAG_SLOT);
 			if(slag.isEmpty())
 				return true;
-			return ItemHandlerHelper.canItemStacksStack(slag, recipe.slag.get())&&slag.getCount()+recipe.slag.get().getCount() <= 64;
+			return ItemStack.isSameItemSameComponents(slag, recipe.slag.get())&&slag.getCount()+recipe.slag.get().getCount() <= 64;
 		}
 
 		@Override
@@ -483,7 +483,7 @@ public class ArcFurnaceLogic
 			final ItemStack slag = this.inventory.getStackInSlot(SLAG_SLOT);
 			if(slag.isEmpty())
 				this.inventory.setStackInSlot(SLAG_SLOT, recipe.slag.get().copy());
-			else if(ItemHandlerHelper.canItemStacksStack(slag, recipe.slag.get()))
+			else if(ItemStack.isSameItemSameComponents(slag, recipe.slag.get()))
 				slag.grow(recipe.slag.get().getCount());
 		}
 	}

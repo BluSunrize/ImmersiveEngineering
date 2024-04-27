@@ -12,7 +12,7 @@ version = "${version_minecraft}-${buildVersionString()}"
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ImmersiveEngineering'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 jar.enabled = false
 
 sourceSets {

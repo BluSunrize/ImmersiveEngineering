@@ -106,7 +106,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 		}
 		else
 		{
-			if(!ItemHandlerHelper.canItemStacksStack(stack, currentStack))
+			if(!ItemStack.isSameItemSameComponents(stack, currentStack))
 				return stack;
 
 			int accepted = Math.min(stack.getMaxStackSize(), inv.getSlotLimit(offsetSlot))-currentStack.getCount();

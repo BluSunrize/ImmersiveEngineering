@@ -50,22 +50,6 @@ public class ItemUtils
 		return handside;
 	}
 
-	public static void removeTag(ItemStack stack, String key)
-	{
-		if(stack.hasTag())
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			tag.remove(key);
-			if(tag.isEmpty())
-				stack.setTag(null);
-		}
-	}
-
-	public static boolean hasTag(ItemStack stack, String key, int type)
-	{
-		return stack.hasTag()&&stack.getOrCreateTag().contains(key, type);
-	}
-
 	public static void tryInsertEntity(Level level, BlockPos pos, Direction side, ItemEntity toInsert)
 	{
 		IItemHandler itemHandler = CapabilityUtils.findItemHandlerAtPos(level, pos, side, true);

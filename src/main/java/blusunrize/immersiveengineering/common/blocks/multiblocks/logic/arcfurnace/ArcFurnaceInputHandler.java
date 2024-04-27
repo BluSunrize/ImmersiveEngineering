@@ -48,7 +48,7 @@ public class ArcFurnaceInputHandler extends InsertOnlyInventory
 				onChanged.run();
 				return ItemStack.EMPTY;
 			}
-			else if(ItemHandlerHelper.canItemStacksStack(stack, here)&&here.getCount() < here.getMaxStackSize())
+			else if(ItemStack.isSameItemSameComponents(stack, here)&&here.getCount() < here.getMaxStackSize())
 				possibleSlots.add(i);
 		}
 		possibleSlots.sort(Comparator.comparingInt(a -> wrapped.getStackInSlot(a).getCount()));

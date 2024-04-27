@@ -18,12 +18,13 @@ public record ConnectionPoint(@Nonnull BlockPos position, int index) implements 
 {
 	public ConnectionPoint(CompoundTag nbt)
 	{
-		this(NbtUtils.readBlockPos(nbt), nbt.getInt("index"));
+		this(NbtUtils.readBlockPos(nbt, "position").orElseThrow(), nbt.getInt("index"));
 	}
 
 	public CompoundTag createTag()
 	{
-		CompoundTag ret = NbtUtils.writeBlockPos(position);
+		CompoundTag ret = new CompoundTag();
+		ret.put("position", NbtUtils.writeBlockPos(position));
 		ret.putInt("index", index);
 		return ret;
 	}

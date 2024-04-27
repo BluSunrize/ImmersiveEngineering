@@ -624,7 +624,7 @@ public class Utils
 		if(result.isSuccess())
 		{
 			ItemStack empty = result.getResult();
-			if((containerOut.isEmpty()||ItemHandlerHelper.canItemStacksStack(containerOut, empty)))
+			if((containerOut.isEmpty()||ItemStack.isSameItemSameComponents(containerOut, empty)))
 			{
 				if(!containerOut.isEmpty()&&containerOut.getCount()+empty.getCount() > containerOut.getMaxStackSize())
 					return ItemStack.EMPTY;

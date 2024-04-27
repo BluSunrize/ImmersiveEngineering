@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -81,7 +82,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getResultItem(RegistryAccess access)
+	public ItemStack getResultItem(Provider access)
 	{
 		return ItemStack.EMPTY;
 	}
@@ -144,7 +145,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 		for(Fluid f : fluidsToShow)
 		{
 			FluidStack fs = new FluidStack(f, FluidType.BUCKET_VOLUME);
-			existingMap.put(fs.getDisplayName(), f.getFluidType().getTemperature(fs));
+			existingMap.put(fs.getHoverName(), f.getFluidType().getTemperature(fs));
 		}
 		return existingMap;
 	}

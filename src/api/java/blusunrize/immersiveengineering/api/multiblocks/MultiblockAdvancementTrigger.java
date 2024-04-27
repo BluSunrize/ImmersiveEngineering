@@ -104,7 +104,7 @@ public class MultiblockAdvancementTrigger implements CriterionTrigger<Multiblock
 
 		public boolean test(IMultiblock multiblock, ItemStack hammer)
 		{
-			return this.multiblock.equals(multiblock.getUniqueName())&&this.hammer.matches(hammer);
+			return this.multiblock.equals(multiblock.getUniqueName())&&this.hammer.test(hammer);
 		}
 
 		@Override

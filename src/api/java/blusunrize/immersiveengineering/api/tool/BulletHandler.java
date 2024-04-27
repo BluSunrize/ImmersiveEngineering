@@ -219,7 +219,7 @@ public class BulletHandler
 					if(resetHurt)
 						hitEntity.invulnerableTime = 0;
 					if(setFire)
-						hitEntity.setSecondsOnFire(3);
+						hitEntity.igniteForSeconds(3);
 				}
 			}
 		}

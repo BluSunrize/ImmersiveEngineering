@@ -98,7 +98,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 				continue;
 			ItemStack remaining = secondary.stack().get();
 			for(ItemStack existing : actualOutput)
-				if(ItemHandlerHelper.canItemStacksStack(remaining, existing))
+				if(ItemStack.isSameItemSameComponents(remaining, existing))
 				{
 					existing.grow(remaining.getCount());
 					remaining = ItemStack.EMPTY;

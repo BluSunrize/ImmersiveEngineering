@@ -109,7 +109,7 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 			ItemStack s = inv.getStackInSlot(iOutputSlot);
 			if(s.isEmpty())
 				return true;
-			final boolean match = ItemHandlerHelper.canItemStacksStack(s, output);
+			final boolean match = ItemStack.isSameItemSameComponents(s, output);
 			if(match&&s.getCount()+output.getCount() <= inv.getSlotLimit(iOutputSlot))
 				return true;
 		}
@@ -153,7 +153,7 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe>
 				inv.setStackInSlot(iOutputSlot, output.copy());
 				break;
 			}
-			else if(ItemHandlerHelper.canItemStacksStack(s, output)&&s.getCount()+output.getCount() <= inv.getSlotLimit(iOutputSlot))
+			else if(ItemStack.isSameItemSameComponents(s, output)&&s.getCount()+output.getCount() <= inv.getSlotLimit(iOutputSlot))
 			{
 				s.grow(output.getCount());
 				break;
