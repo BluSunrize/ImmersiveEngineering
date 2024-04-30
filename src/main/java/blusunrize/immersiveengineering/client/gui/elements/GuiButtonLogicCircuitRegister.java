@@ -101,6 +101,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 			if(number>=0 && number<8)
 			{
 				this.state.setValue(number+16); // plus 16 colors
+				this.state.decrement();
 				this.onPress.onPress(this);
 				return true;
 			}
@@ -112,6 +113,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 			{
 				int next = (options.indexOf(this.getStateAsInt())+1)%options.size();
 				this.state.setValue(options.get(next));
+				this.state.decrement();
 				this.onPress.onPress(this);
 				return true;
 			}
