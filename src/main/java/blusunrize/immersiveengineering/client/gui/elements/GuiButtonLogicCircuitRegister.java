@@ -95,9 +95,9 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 		if(Character.isDigit(codePoint))
 		{
 			int number = Character.digit(codePoint, 10);
-			if(number>=0 && number<8)
+			if(number >= 0&&number < 8)
 			{
-				this.state.setValue(number+16); // plus 16 colors
+				this.state.setValue(number+15); // plus 15 colors, the final increment is done by onPress
 				this.onPress.onPress(this);
 				return true;
 			}
@@ -108,7 +108,9 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 			if(!options.isEmpty())
 			{
 				int next = (options.indexOf(this.getStateAsInt())+1)%options.size();
-				this.state.setValue(options.get(next));
+				// subtract one because final increment is done by onPress
+				int stateIdx = Math.floorMod(options.get(next)-1, states.length);
+				this.state.setValue(stateIdx);
 				this.onPress.onPress(this);
 				return true;
 			}

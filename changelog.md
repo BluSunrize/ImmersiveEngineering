@@ -8,6 +8,7 @@
 - Change recipe for hempcrete to make it cheaper to mass produce (voidsong-dragonfly)
 - Fix covered conveyors crashing the game (BluSunrize)
 - Fix multiblocks being broken by flowing water (BluSunrize)
+- Fix buttons in the circuit table not behaving correctly with keyboard inputs (BluSunrize)
 
 ##### Version 1.20.4-11.1.0-172
 - First release for 1.20.4

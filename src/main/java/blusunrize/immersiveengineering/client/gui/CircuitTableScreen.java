@@ -162,6 +162,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 		{
 			int inputCount = operator.getArgumentCount();
 			int inputStart = 130-(inputCount*10-1);
+			this.inputButtons.forEach(this::removeWidget);
 			this.inputButtons.clear();
 			for(int i = 0; i < inputCount; i++)
 				this.inputButtons.add(this.addRenderableWidget(GuiButtonLogicCircuitRegister.create(
