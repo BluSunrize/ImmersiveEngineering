@@ -4,6 +4,7 @@
     - Adding new pages for undocumented features (gunpower barrel, minecarts, ...)
     - Sorting everything into a new list of more comprehensible categories
     - As a result, all translations of the manual are deprecated and need to be updated by community input
+- Add the Machine Interfact, a block designed to read a variety of data from multiblock machines (BluSunrize)
 - Change recipe for hempcrete to make it cheaper to mass produce (voidsong-dragonfly)
 - Fix covered conveyors crashing the game (BluSunrize)
 - Fix multiblocks being broken by flowing water (BluSunrize)
