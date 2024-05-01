@@ -25,6 +25,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.bottling_machine.BottlingMachineLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -63,6 +66,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -198,6 +202,7 @@ public class BottlingMachineLogic
 				return null;
 		});
 		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_INPUT_POS, state -> state.energy);
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -244,6 +249,7 @@ public class BottlingMachineLogic
 		private final DroppingMultiblockOutput output;
 		private final IItemHandler itemInput;
 		private final IFluidHandler fluidInput;
+		private final IMachineInterfaceConnection mifHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -261,6 +267,11 @@ public class BottlingMachineLogic
 				// TODO hack, see TODO comment in tickServer
 				sync.run();
 			});
+			mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(fluidInput, MachineInterfaceHandler.BASIC_FLUID_IN),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+			};
 		}
 
 		@Override

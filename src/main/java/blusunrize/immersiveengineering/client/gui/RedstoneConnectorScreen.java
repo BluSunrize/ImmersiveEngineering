@@ -77,12 +77,6 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
-	{
-
-	}
-
-	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		ArrayList<Component> tooltip = new ArrayList<>();

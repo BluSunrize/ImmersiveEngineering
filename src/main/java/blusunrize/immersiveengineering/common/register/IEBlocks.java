@@ -409,6 +409,9 @@ public final class IEBlocks
 		public static final BlockEntry<HorizontalFacingEntityBlock<LogicUnitBlockEntity>> LOGIC_UNIT = new BlockEntry<>(
 				"logic_unit", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.LOGIC_UNIT, p)
 		);
+		public static final BlockEntry<HorizontalFacingEntityBlock<MachineInterfaceBlockEntity>> MACHINE_INTERFACE = new BlockEntry<>(
+				"machine_interface", STANDARD_WOOD_PROPERTIES, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.MACHINE_INTERFACE, p)
+		);
 
 		private static void init()
 		{

@@ -93,7 +93,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherMenu>
 		));
 	}
 
-	private static void gatherRedstoneTooltip(List<Component> out, DyeColor color) {
+	public static void gatherRedstoneTooltip(List<Component> out, DyeColor color) {
 		out.add(Component.translatable(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
 		out.add(TextUtils.applyFormat(
 				Component.translatable("color.minecraft."+color.getName()),

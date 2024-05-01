@@ -139,6 +139,15 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('c', Ingredients.CIRCUIT_BOARD)
 				.unlockedBy("has_"+toPath(Ingredients.CIRCUIT_BOARD), has(Ingredients.CIRCUIT_BOARD))
 				.save(out, toRL(toPath(WoodenDevices.LOGIC_UNIT)));
+		shapedMisc(WoodenDevices.MACHINE_INTERFACE)
+				.pattern("aea")
+				.pattern("wcw")
+				.define('w', IETags.getItemTag(IETags.treatedWood))
+				.define('a', IETags.aluminumWire)
+				.define('c', Ingredients.CIRCUIT_BOARD)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
+				.unlockedBy("has_"+toPath(Ingredients.CIRCUIT_BOARD), has(Ingredients.CIRCUIT_BOARD))
+				.save(out, toRL(toPath(WoodenDevices.MACHINE_INTERFACE)));
 
 		shapedMisc(WoodenDevices.TURNTABLE)
 				.pattern("iwi")

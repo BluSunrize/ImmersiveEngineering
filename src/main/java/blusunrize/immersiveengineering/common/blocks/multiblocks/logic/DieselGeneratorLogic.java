@@ -21,6 +21,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.DieselGeneratorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -80,7 +83,7 @@ public class DieselGeneratorLogic
 				context.getLevel().getRawLevel(), state.tank.getFluid().getFluid()
 			);
 			if(recipe != null &&
-			   !presentOutputs.isEmpty() && 
+			   !presentOutputs.isEmpty() &&
 			   EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
 			{
 				state.consumeTick--;
@@ -179,6 +182,7 @@ public class DieselGeneratorLogic
 			else
 				return null;
 		});
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -208,6 +212,7 @@ public class DieselGeneratorLogic
 		// Utils
 		private final BiFunction<Level, Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
 		private final List<Supplier<@Nullable IEnergyStorage>> energyOutputs;
+		private final IMachineInterfaceConnection mifHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -215,6 +220,10 @@ public class DieselGeneratorLogic
 			for(BlockPos pos : ENERGY_OUTPUTS)
 				outputs.add(ctx.getCapabilityAt(EnergyStorage.BLOCK, pos, RelativeBlockFace.DOWN));
 			this.energyOutputs = outputs.build();
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(tank, MachineInterfaceHandler.BASIC_FLUID_IN),
+			};
 		}
 
 		@Override

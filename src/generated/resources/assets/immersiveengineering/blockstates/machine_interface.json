@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:block/machine_interface",
+      "x": -90,
+      "y": 270
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/machine_interface",
+      "x": -90,
+      "y": 180
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/machine_interface",
+      "x": -90
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/machine_interface",
+      "x": -90,
+      "y": 90
+    }
+  }
+}

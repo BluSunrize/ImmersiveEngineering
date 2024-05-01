@@ -75,12 +75,6 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
-	{
-
-	}
-
-	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		graphics.drawString(this.font, Component.translatable(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop+18, DyeColor.WHITE.getTextColor());
