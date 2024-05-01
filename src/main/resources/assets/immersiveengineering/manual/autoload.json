@@ -35,8 +35,8 @@
       "item_batcher",
       "fluid_pipes",
       "fluid_pump",
-      "fluid_outlet",
-      "fluid_router"
+      "fluid_router",
+      "fluid_outlet"
     ]
   },
   "construction": {
@@ -59,14 +59,14 @@
       "engineers_crafting_table",
       "engineers_workbench",
       "blueprints",
+      "external_heater",
+      "turntable",
+      "garden_cloche",
+      "charging_station",
+      "electromagnet",
       "engineers_circuit_workbench",
       "logic_unit",
-      "machine_interface",
-      "turntable",
-      "external_heater",
-      "electromagnet",
-      "garden_cloche",
-      "charging_station"
+      "machine_interface"
     ]
   },
   "electrical_grids": {
