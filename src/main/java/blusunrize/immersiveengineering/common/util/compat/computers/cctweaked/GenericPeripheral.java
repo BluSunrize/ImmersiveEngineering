@@ -63,6 +63,13 @@ public class GenericPeripheral<T extends BlockEntity> implements IDynamicPeriphe
 		return creator.getName();
 	}
 
+	@Nullable
+	@Override
+	public Object getTarget()
+	{
+		return object;
+	}
+
 	@Override
 	public boolean equals(@Nullable IPeripheral other)
 	{

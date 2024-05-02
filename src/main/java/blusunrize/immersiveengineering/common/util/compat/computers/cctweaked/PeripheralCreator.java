@@ -73,7 +73,10 @@ public class PeripheralCreator<T extends BlockEntity>
 				return MethodResult.of(result);
 		}
 		else
-			return TaskCallback.make(ctx, () -> callInner(callback, otherArgs, mainArgument));
+		{
+			otherArgs.escapes();
+			return ctx.executeMainThreadTask(() -> callInner(callback, otherArgs, mainArgument));
+		}
 	}
 
 	private Object[] callInner(

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
 import mcjty.theoneprobe.TheOneProbe;
@@ -30,6 +31,7 @@ public final class IECompatModules
 
 	static
 	{
+		STANDARD_MODULE_CLASSES.put(ComputerCraftAPI.MOD_ID, ComputerCraftCompatModule.class);
 		STANDARD_MODULE_CLASSES.put(TheOneProbe.MODID, OneProbeCompatModule.class);
 	}
 

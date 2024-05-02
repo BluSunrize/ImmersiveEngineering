@@ -9,14 +9,12 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.LuaTypeConverter;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import dan200.computercraft.api.detail.ForgeDetailRegistries;
+import dan200.computercraft.api.detail.VanillaDetailRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 
 public class CCLuaTypeConverter extends LuaTypeConverter
@@ -37,30 +35,11 @@ public class CCLuaTypeConverter extends LuaTypeConverter
 
 	public Object serialize(ItemStack stack)
 	{
-		Map<String, Object> result = new HashMap<>();
-		result.put("name", getNameOrNull(stack.getItem(), BuiltInRegistries.ITEM));
-		result.put("count", stack.getCount());
-		result.put("damage", stack.getDamageValue());
-		result.put("maxDamage", stack.getMaxDamage());
-		return result;
+		return VanillaDetailRegistries.ITEM_STACK.getDetails(stack);
 	}
 
 	public Object serialize(FluidStack stack)
 	{
-		Map<String, Object> result = new HashMap<>();
-		result.put("name", getNameOrNull(stack.getFluid(), BuiltInRegistries.FLUID));
-		result.put("amount", stack.getAmount());
-		return result;
-	}
-
-	@Nullable
-	private <T>
-	String getNameOrNull(T entry, Registry<T> registry)
-	{
-		ResourceLocation name = registry.getKey(entry);
-		if(name!=null)
-			return name.toString();
-		else
-			return null;
+		return ForgeDetailRegistries.FLUID_STACK.getDetails(stack);
 	}
 }
