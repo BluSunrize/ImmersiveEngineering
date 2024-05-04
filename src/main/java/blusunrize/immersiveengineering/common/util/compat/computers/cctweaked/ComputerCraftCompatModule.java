@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModules.StandardIECompatModule;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModules.EarlyIECompatModule;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callbacks;
 import dan200.computercraft.api.ComputerCraftAPI;
@@ -20,13 +20,21 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.util.Map.Entry;
 import java.util.Objects;
 
-public class ComputerCraftCompatModule extends StandardIECompatModule
+public class ComputerCraftCompatModule extends EarlyIECompatModule
 {
+	private final IEventBus modBus;
+
+	public ComputerCraftCompatModule(IEventBus modBus)
+	{
+		this.modBus = modBus;
+	}
+
 	@Override
 	public void init()
 	{
@@ -57,7 +65,7 @@ public class ComputerCraftCompatModule extends StandardIECompatModule
 			return channelValues;
 		});
 
-		// TODO: modBus.addListener(ComputerCraftCompatModule::registerCapabilities);
+		this.modBus.addListener(ComputerCraftCompatModule::registerCapabilities);
 	}
 
 	private static void registerCapabilities(RegisterCapabilitiesEvent event)
