@@ -35,44 +35,47 @@ public final class IECompatModules
 		STANDARD_MODULE_CLASSES.put(TheOneProbe.MODID, OneProbeCompatModule.class);
 	}
 
-	public static void onModConstruction()
+	public static void onModConstruction(IEventBus modBus)
 	{
-		constructModules(EARLY_MODULE_CLASSES, $ -> true);
+		try(final var ignored = new EarlyConfigLoader(IECommonConfig.CONFIG_SPEC, Type.COMMON))
+		{
+			constructModules(EARLY_MODULE_CLASSES, modBus);
+		}
 	}
 
 	private static <T extends IECompatModule>
-	void constructModules(Map<String, Class<? extends T>> modules, Predicate<BooleanValue> shouldLoad)
+	void constructModules(Map<String, Class<? extends T>> modules, @Nullable IEventBus modBus)
 	{
 		for(Entry<String, Class<? extends T>> e : modules.entrySet())
 			if(ModList.get().isLoaded(e.getKey()))
 				try
 				{
 					BooleanValue enabled = Objects.requireNonNull(IECommonConfig.compat.get(e.getKey()));
-					if(!shouldLoad.test(enabled))
+					if(!enabled.getAsBoolean())
 						continue;
 					IECompatModule module;
-					Constructor<? extends T> configConstructor = getConstructorIfExists(e.getValue(), BooleanValue.class);
-					if(configConstructor!=null)
-						module = configConstructor.newInstance(enabled);
+					Constructor<? extends T> configConstructor = getConstructorIfExists(e.getValue(), IEventBus.class);
+					if(modBus!=null&&configConstructor!=null)
+						module = configConstructor.newInstance(modBus);
 					else
 						module = e.getValue().getConstructor().newInstance();
 					LOADED_MODULES.add(module);
 				} catch(Exception exception)
 				{
-					IELogger.logger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this and include the error message below!", exception);
+					IELogger.logger.error("Compat module for {} could not be preInitialized. Report this and include the error message below!", e.getKey(), exception);
 				}
 	}
 
 	public static void onCommonSetup()
 	{
-		constructModules(STANDARD_MODULE_CLASSES, BooleanValue::get);
+		constructModules(STANDARD_MODULE_CLASSES, null);
 		for(IECompatModule compat : LOADED_MODULES)
 			try
 			{
 				compat.init();
 			} catch(Exception exception)
 			{
-				IELogger.logger.error("Compat module for "+compat+" could not be initialized. Report this and include the error message below!", exception);
+				IELogger.logger.error("Compat module for {} could not be initialized. Report this and include the error message below!", compat, exception);
 			}
 	}
 
@@ -84,7 +87,7 @@ public final class IECompatModules
 				compat.sendIMCs();
 			} catch(Exception exception)
 			{
-				IELogger.logger.error("Compat module for "+compat+" could not send IMCs. Report this and include the error message below!", exception);
+				IELogger.logger.error("Compat module for {} could not send IMCs. Report this and include the error message below!", compat, exception);
 			}
 	}
 
@@ -116,8 +119,7 @@ public final class IECompatModules
 		}
 	}
 
-	// Created during mod construction even if the relevant config option is disabled (since the config is not loaded
-	// at that point)
+	// Created during mod construction, only if the relevant config option is enabled
 	public static abstract non-sealed class EarlyIECompatModule extends IECompatModule
 	{
 	}

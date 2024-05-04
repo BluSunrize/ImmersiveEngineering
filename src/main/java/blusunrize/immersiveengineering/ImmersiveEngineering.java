@@ -105,7 +105,7 @@ public class ImmersiveEngineering
 			ClientProxy.modConstruction();
 
 		IEWorldGen.init(modBus);
-		IECompatModules.onModConstruction();
+		IECompatModules.onModConstruction(modBus);
 	}
 
 	public void setup(FMLCommonSetupEvent event)
