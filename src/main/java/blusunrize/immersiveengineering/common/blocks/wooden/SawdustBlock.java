@@ -69,7 +69,7 @@ public class SawdustBlock extends IEBaseBlock
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type)
+	public boolean isPathfindable(BlockState state, PathComputationType type)
 	{
 		if(type==PathComputationType.LAND)
 			return state.getValue(LAYERS) < 5;

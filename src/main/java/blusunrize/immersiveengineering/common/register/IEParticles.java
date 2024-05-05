@@ -29,10 +29,10 @@ public class IEParticles
 	);
 
 	public static final DeferredHolder<ParticleType<?>, ParticleType<FluidSplashOptions>> FLUID_SPLASH = REGISTER.register(
-			"fluid_splash", () -> new IEParticleType<>(false, FluidSplashOptions.STREAM_CODEC, FluidSplashOptions.CODEC)
+			"fluid_splash", () -> new IEParticleType<>(false, FluidSplashOptions.CODEC, FluidSplashOptions.STREAM_CODEC)
 	);
 	public static final DeferredHolder<ParticleType<?>, ParticleType<FractalOptions>> FRACTAL = REGISTER.register(
-			"fractal", () -> new IEParticleType<>(false, new FractalOptions.DataDeserializer(), FractalOptions.CODEC)
+			"fractal", () -> new IEParticleType<>(false, FractalOptions.CODEC, FractalOptions.STREAM_CODEC)
 	);
 	public static final DeferredHolder<ParticleType<?>, SimpleParticleType> IE_BUBBLE = REGISTER.register(
 			"ie_bubble", () -> new SimpleParticleType(false)

@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,7 +27,7 @@ import java.util.function.Consumer;
 
 public class BEDropLootEntry extends LootPoolSingletonContainer
 {
-	public static final Codec<BEDropLootEntry> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<BEDropLootEntry> CODEC = RecordCodecBuilder.mapCodec(
 			inst -> singletonFields(inst).apply(inst, BEDropLootEntry::new)
 	);
 

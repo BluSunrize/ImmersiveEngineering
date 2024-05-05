@@ -45,6 +45,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -240,7 +241,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("targetEntity", target.getId());
 		PacketDistributor.sendToPlayersTrackingChunk(
-				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, tag)
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(getBlockPos(), tag)
 		);
 	}
 
@@ -251,7 +252,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 		tag.putDouble("tV", tV);
 		tag.putDouble("tH", tH);
 		PacketDistributor.sendToPlayersTrackingChunk(
-				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, tag)
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(getBlockPos(), tag)
 		);
 	}
 
@@ -402,7 +403,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public AABB renderBB;
 
 	@Override
-	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
+	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(isDummy())
 		{

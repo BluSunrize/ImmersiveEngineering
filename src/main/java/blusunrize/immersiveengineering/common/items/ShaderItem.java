@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
@@ -117,7 +116,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		//TODO proper translation
 		list.add(Component.translatable(Lib.DESC_INFO+"shader.level")

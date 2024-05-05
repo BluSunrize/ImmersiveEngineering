@@ -324,7 +324,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		{
 			ListTag filterList = nbt.getList("filter", 10);
 			filter = new SorterInventory();
-			filter.readFromNBT(filterList);
+			filter.readFromNBT(provider, filterList);
 		}
 	}
 
@@ -335,7 +335,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		if(!descPacket)
 		{
 			ListTag filterList = new ListTag();
-			filter.writeToNBT(filterList);
+			filter.writeToNBT(provider, filterList);
 			nbt.put("filter", filterList);
 		}
 	}
@@ -344,7 +344,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false, );
+		writeCustomNBT(stack.getOrCreateTag(), false, context.getLevel().registryAccess());
 		drop.accept(stack);
 	}
 
@@ -353,7 +353,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false, );
+			readCustomNBT(stack.getOrCreateTag(), false, ctx.getLevel().registryAccess());
 	}
 
 	private final EnumMap<Direction, IItemHandler> insertionHandlers = new EnumMap<>(Direction.class);
@@ -457,7 +457,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			);
 		}
 
-		public void writeToNBT(ListTag list)
+		public void writeToNBT(Provider provider, ListTag list)
 		{
 			for(int i = 0; i < getSlots(); ++i)
 			{
@@ -466,20 +466,20 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 				{
 					CompoundTag itemTag = new CompoundTag();
 					itemTag.putByte("Slot", (byte)i);
-					slot.save(itemTag);
+					slot.save(provider, itemTag);
 					list.add(itemTag);
 				}
 			}
 		}
 
-		public void readFromNBT(ListTag list)
+		public void readFromNBT(Provider provider, ListTag list)
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
 				CompoundTag itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
 				if(slot < getSlots())
-					setStackInSlot(slot, ItemStack.of(itemTag));
+					setStackInSlot(slot, ItemStack.parseOptional(provider, itemTag));
 			}
 		}
 	}

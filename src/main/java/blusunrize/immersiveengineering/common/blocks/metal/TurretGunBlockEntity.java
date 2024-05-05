@@ -154,7 +154,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 		CompoundTag tag = new CompoundTag();
 		tag.putBoolean("cycle", true);
 		PacketDistributor.sendToPlayersTrackingChunk(
-				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, tag)
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(getBlockPos(), tag)
 		);
 	}
 

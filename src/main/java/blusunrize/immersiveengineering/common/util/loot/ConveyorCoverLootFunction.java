@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.common.util.loot;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ConveyorCoverLootFunction extends LootItemConditionalFunction
 {
-	public static final Codec<ConveyorCoverLootFunction> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<ConveyorCoverLootFunction> CODEC = RecordCodecBuilder.mapCodec(
 			inst -> commonFields(inst).apply(inst, ConveyorCoverLootFunction::new)
 	);
 

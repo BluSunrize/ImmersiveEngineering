@@ -227,7 +227,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 			nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
 			nbt.putInt("process", process);
 			nbt.putInt("processMax", processMax);
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("inventory", inventory.serializeNBT(provider));
 		}
 
 		@Override
@@ -236,7 +236,7 @@ public class CokeOvenLogic implements IMultiblockLogic<State>, IServerTickableCo
 			tank.readFromNBT(provider, nbt.getCompound("tank"));
 			process = nbt.getInt("process");
 			processMax = nbt.getInt("processMax");
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 		}
 
 		@Override

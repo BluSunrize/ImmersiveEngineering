@@ -29,6 +29,6 @@ public class ChatUtils
 	{
 		if(!(player instanceof ServerPlayer serverPlayer))
 			return;
-		PacketDistributor.PLAYER.with(serverPlayer).send(new MessageNoSpamChat(message));
+		PacketDistributor.sendToPlayer(serverPlayer, new MessageNoSpamChat(message));
 	}
 }

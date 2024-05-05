@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,11 +31,11 @@ import java.util.Arrays;
 
 public class AddDropModifier extends LootModifier
 {
-	private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> REGISTER = DeferredRegister.create(
+	private static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> REGISTER = DeferredRegister.create(
 			Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, ImmersiveEngineering.MODID
 	);
-	private static final DeferredHolder<Codec<? extends IGlobalLootModifier>, Codec<AddDropModifier>> GRASS_DROPS = REGISTER.register(
-			"add_drop", () -> RecordCodecBuilder.create(
+	private static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<AddDropModifier>> GRASS_DROPS = REGISTER.register(
+			"add_drop", () -> RecordCodecBuilder.mapCodec(
 					inst -> codecStart(inst)
 							.and(BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(m -> m.item))
 							.apply(inst, AddDropModifier::new)
@@ -69,7 +69,7 @@ public class AddDropModifier extends LootModifier
 	}
 
 	@Override
-	public Codec<? extends IGlobalLootModifier> codec()
+	public MapCodec<? extends IGlobalLootModifier> codec()
 	{
 		return GRASS_DROPS.value();
 	}

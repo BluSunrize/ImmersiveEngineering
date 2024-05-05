@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments.Mutable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
@@ -58,9 +58,9 @@ public class GrindingDiskItem extends SawbladeItem
 	}
 
 	@Override
-	public ItemEnchantments modifyEnchants(ItemEnchantments baseEnchants)
+	public void modifyEnchants(Mutable baseEnchants)
 	{
-		baseEnchants.put(Enchantments.SILK_TOUCH, 1);
+		baseEnchants.set(Enchantments.SILK_TOUCH, 1);
 	}
 
 	@Override

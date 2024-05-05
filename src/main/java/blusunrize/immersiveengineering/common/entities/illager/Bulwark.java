@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.entities.illager;
 import blusunrize.immersiveengineering.common.entities.ai.ChemthrowerAttackGoal;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -95,11 +94,12 @@ public class Bulwark extends EngineerIllager
 	}
 
 	@Nullable
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag)
+	@Override
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData)
 	{
 		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Weapons.CHEMTHROWER));
 		this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Misc.SHIELD));
-		return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+		return super.finalizeSpawn(level, difficulty, reason, spawnData);
 	}
 
 	@Override

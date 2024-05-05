@@ -35,7 +35,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,14 +107,14 @@ public class AlloySmelterLogic implements IMultiblockLogic<State>, IServerTickab
 		@Override
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("inventory", inventory.serializeNBT(provider));
 			nbt.put("furnace", furnace.toNBT());
 		}
 
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 			furnace.readNBT(nbt.get("furnace"));
 		}
 
@@ -135,7 +134,7 @@ public class AlloySmelterLogic implements IMultiblockLogic<State>, IServerTickab
 		public int getBurnTimeOf(Level level, ItemStack fuel)
 		{
 			//TODO more specific type?
-			return CommonHooks.getBurnTime(fuel, RecipeType.SMELTING);
+			return fuel.getBurnTime(RecipeType.SMELTING);
 		}
 
 		public ContainerData getStateView()

@@ -60,12 +60,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool.Projection;
-import net.minecraft.world.level.saveddata.maps.MapDecoration.Type;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -203,7 +201,7 @@ public class Villages
 		}
 	}
 
-	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.GAME)
+	@EventBusSubscriber(modid = MODID, bus = Bus.GAME)
 	public static class Events
 	{
 		@SubscribeEvent

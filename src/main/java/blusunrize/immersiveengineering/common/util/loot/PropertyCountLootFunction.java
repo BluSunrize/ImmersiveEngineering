@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +28,7 @@ import java.util.List;
 
 public class PropertyCountLootFunction extends LootItemConditionalFunction
 {
-	public static final Codec<PropertyCountLootFunction> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<PropertyCountLootFunction> CODEC = RecordCodecBuilder.mapCodec(
 			inst -> commonFields(inst)
 					.and(Codec.STRING.fieldOf("countProperty").forGetter(f -> f.propertyName))
 					.apply(inst, PropertyCountLootFunction::new)

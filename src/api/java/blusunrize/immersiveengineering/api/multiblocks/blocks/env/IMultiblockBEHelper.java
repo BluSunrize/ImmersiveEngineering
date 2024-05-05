@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlock
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -41,17 +42,17 @@ public interface IMultiblockBEHelper<State extends IMultiblockState>
 	@Nullable
 	IMultiblockContext<State> getContext();
 
-	void load(CompoundTag tag);
+	void load(CompoundTag tag, Provider provider);
 
-	void saveAdditional(CompoundTag tag);
+	void saveAdditional(CompoundTag tag, Provider provider);
 
-	CompoundTag getUpdateTag();
+	CompoundTag getUpdateTag(Provider provider);
 
-	void handleUpdateTag(CompoundTag tag);
+	void handleUpdateTag(CompoundTag tag, Provider provider);
 
 	Packet<ClientGamePacketListener> getUpdatePacket();
 
-	void onDataPacket(CompoundTag tag);
+	void onDataPacket(CompoundTag tag, Provider provider);
 
 	MultiblockRegistration<State> getMultiblock();
 

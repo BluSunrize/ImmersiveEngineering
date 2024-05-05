@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteEnergyData;
+import com.mojang.datafixers.util.Either;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,29 +24,28 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) implements IMessage
+public record MessageRequestEnergyUpdate(Either<BlockPos, Integer> pos) implements IMessage
 {
 	public static final Type<MessageRequestEnergyUpdate> ID = IMessage.createType("request_energy_update");
 	public static final StreamCodec<ByteBuf, MessageRequestEnergyUpdate> CODEC = ByteBufCodecs.either(
 			BlockPos.STREAM_CODEC, ByteBufCodecs.INT
-	).map(e -> new MessageRequestEnergyUpdate(FastEither.fromDFU(e)), m -> m.pos.toDFU());
+	).map(MessageRequestEnergyUpdate::new, MessageRequestEnergyUpdate::pos);
 
 	@Override
 	public void process(IPayloadContext context)
 	{
 		context.enqueueWork(() -> {
 			Level level = context.player().level();
-			IEnergyStorage storage;
-			if(pos.isLeft())
-				storage = level.getCapability(EnergyStorage.BLOCK, pos.leftNonnull(), null);
-			else
-			{
-				Entity entity = level.getEntity(pos.rightNonnull());
-				if(entity!=null)
-					storage = entity.getCapability(EnergyStorage.ENTITY, null);
-				else
-					storage = null;
-			}
+			IEnergyStorage storage = pos.map(
+					bp -> level.getCapability(EnergyStorage.BLOCK, bp, null),
+					id -> {
+						Entity entity = level.getEntity(id);
+						if(entity!=null)
+							return entity.getCapability(EnergyStorage.ENTITY, null);
+						else
+							return null;
+					}
+			);
 			RemoteEnergyData data = null;
 			if(storage!=null&&storage.getMaxEnergyStored() > 0)
 				data = new RemoteEnergyData(

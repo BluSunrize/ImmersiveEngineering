@@ -116,7 +116,7 @@ public class EventHandler
 			if(wrapper!=null&&!event.getLevel().isClientSide)
 			{
 				wrapper.setShaderItem(stack.copyWithCount(1));
-				PacketDistributor.TRACKING_ENTITY.with(cart).send(new MessageMinecartShaderSync(cart, wrapper));
+				PacketDistributor.sendToPlayersTrackingEntity(cart, new MessageMinecartShaderSync(cart.getId(), wrapper.getShaderItem()));
 			}
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.SUCCESS);
@@ -245,7 +245,7 @@ public class EventHandler
 						packStorage.extractEnergy(PowerpackItem.TESLA_CONSUMPTION, false);
 						ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(player.level(), 2+player.getRandom().nextInt(4), true);
 						if(dmgsrc.apply(attacker))
-							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED.value(), 60));
+							attacker.addEffect(new MobEffectInstance(IEPotions.STUNNED, 60));
 						player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.value(),
 								SoundSource.BLOCKS, 2.5F, 0.5F+rng.nextFloat());
 					}
@@ -257,16 +257,16 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)
 	{
-		if(event.getSource().is(DamageTypeTags.IS_FIRE)&&event.getEntity().getEffect(IEPotions.FLAMMABLE.value())!=null)
+		if(event.getSource().is(DamageTypeTags.IS_FIRE)&&event.getEntity().getEffect(IEPotions.FLAMMABLE)!=null)
 		{
-			int amp = event.getEntity().getEffect(IEPotions.FLAMMABLE.value()).getAmplifier();
+			int amp = event.getEntity().getEffect(IEPotions.FLAMMABLE).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
 		if(("flux".equals(event.getSource().getMsgId())||event.getSource().is(DamageTypes.RAZOR_SHOCK)||
-				event.getSource() instanceof ElectricDamageSource)&&event.getEntity().getEffect(IEPotions.CONDUCTIVE.value())!=null)
+				event.getSource() instanceof ElectricDamageSource)&&event.getEntity().getEffect(IEPotions.CONDUCTIVE)!=null)
 		{
-			int amp = event.getEntity().getEffect(IEPotions.CONDUCTIVE.value()).getAmplifier();
+			int amp = event.getEntity().getEffect(IEPotions.CONDUCTIVE).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
@@ -278,9 +278,9 @@ public class EventHandler
 	public void onLivingJump(LivingJumpEvent event)
 	{
 		Vec3 motion = event.getEntity().getDeltaMovement();
-		if(event.getEntity().getEffect(IEPotions.STICKY.value())!=null)
-			motion = motion.subtract(0, (event.getEntity().getEffect(IEPotions.STICKY.value()).getAmplifier()+1)*0.2F, 0);
-		else if(event.getEntity().getEffect(IEPotions.CONCRETE_FEET.value())!=null)
+		if(event.getEntity().getEffect(IEPotions.STICKY)!=null)
+			motion = motion.subtract(0, (event.getEntity().getEffect(IEPotions.STICKY).getAmplifier()+1)*0.2F, 0);
+		else if(event.getEntity().getEffect(IEPotions.CONCRETE_FEET)!=null)
 			motion = Vec3.ZERO;
 		event.getEntity().setDeltaMovement(motion);
 	}
@@ -382,7 +382,7 @@ public class EventHandler
 			if(!event.getEntity().isShiftKeyDown())
 			{
 				if(event.getEntity() instanceof ServerPlayer serverPlayer)
-					PacketDistributor.PLAYER.with(serverPlayer).send(new MessageOpenManual());
+					PacketDistributor.sendToPlayer(serverPlayer, new MessageOpenManual());
 			}
 			else
 			{

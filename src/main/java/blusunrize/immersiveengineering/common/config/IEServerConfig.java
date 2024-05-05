@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -513,7 +514,8 @@ public class IEServerConfig
 			URANIUM(EnumMetals.URANIUM, OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 9),
 			;
 			public static final VeinType[] VALUES = values();
-			public static final Codec<VeinType> CODEC = Codec.INT.xmap(i -> VALUES[i], VeinType::ordinal);
+			public static final MapCodec<VeinType> CODEC = Codec.INT.xmap(i -> VALUES[i], VeinType::ordinal)
+					.fieldOf("veinType");
 
 			public final EnumMetals metal;
 			private final OreDistribution defaultDistribution;

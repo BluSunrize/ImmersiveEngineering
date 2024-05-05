@@ -18,14 +18,10 @@ import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
-import com.google.common.collect.Multimap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -34,6 +30,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.ItemAttributeModifiers.Entry;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -47,9 +45,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem
 {
@@ -144,23 +140,20 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
+	public ItemAttributeModifiers getAttributeModifiers(ItemStack stack)
 	{
-		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		if(slot==EquipmentSlot.MAINHAND)
+		List<Entry> modifiers = new ArrayList<>();
+		ItemStack head = getHead(stack);
+		if(!head.isEmpty()&&canToolBeUsed(stack))
 		{
-			ItemStack head = getHead(stack);
-			if(!head.isEmpty()&&canToolBeUsed(stack))
-			{
-				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
-						BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(stack, head), Operation.ADDITION
-				));
-				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
-						BASE_ATTACK_SPEED_UUID, "Tool modifier", -2.5D, Operation.ADDITION
-				));
-			}
+			modifiers.add(new Entry(Attributes.ATTACK_DAMAGE, new AttributeModifier(
+					BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(stack, head), Operation.ADD_VALUE
+			), EquipmentSlotGroup.MAINHAND));
+			modifiers.add(new Entry(Attributes.ATTACK_SPEED, new AttributeModifier(
+					BASE_ATTACK_SPEED_UUID, "Tool modifier", -2.5D, Operation.ADD_VALUE
+			), EquipmentSlotGroup.MAINHAND));
 		}
-		return builder.build();
+		return new ItemAttributeModifiers(modifiers, false);
 	}
 
 	@Override

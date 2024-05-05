@@ -73,11 +73,11 @@ public class BlockItemIE extends BlockItem
 					ChatFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
-			var fs = FluidStack.parse(ctx.registries(), ItemNBTHelper.getTagCompound(stack, "tank"));
-			if(fs!=null)
-				tooltip.add(TextUtils.applyFormat(
-						Component.translatable(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
-						ChatFormatting.GRAY));
+			Optional<FluidStack> fs = FluidStack.parse(ctx.registries(), ItemNBTHelper.getTagCompound(stack, "tank"));
+			if(fs.isPresent())
+				tooltip.add(Component.translatable(
+						Lib.DESC_INFO+"fluidStored", fs.get().getHoverName(), fs.get().getAmount()
+				).withStyle(ChatFormatting.GRAY));
 		}
 	}
 

@@ -221,7 +221,7 @@ public class AutoWorkbenchLogic
 		@Override
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("inventory", inventory.serializeNBT(provider));
 			nbt.putInt("selectedRecipe", selectedRecipe);
 			nbt.put("processor", processor.toNBT(provider));
 			nbt.put("energy", energy.serializeNBT(provider));
@@ -230,7 +230,7 @@ public class AutoWorkbenchLogic
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 			selectedRecipe = nbt.getInt("selectedRecipe");
 			processor.fromNBT(nbt.get("processor"), MultiblockProcessInWorld::new, provider);
 			energy.deserializeNBT(provider, nbt.get("energy"));

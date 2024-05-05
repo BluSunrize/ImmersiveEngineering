@@ -45,7 +45,7 @@ public class WireSyncManager implements IWireSyncManager
 				if(shouldSendConnection(conn, pos, player, add, cp))
 				{
 					WireLogger.logger.info("Sending connection {} ({}) for chunk change at {}", conn, add, pos);
-					PacketDistributor.PLAYER.with(player).send(new MessageWireSync(conn, operation));
+					PacketDistributor.sendToPlayer(player, new MessageWireSync(conn, operation));
 				}
 	}
 
@@ -82,7 +82,7 @@ public class WireSyncManager implements IWireSyncManager
 			addPlayersTrackingPoint(targets, connection.getEndB().getX(), connection.getEndB().getZ(), serverLevel);
 			MessageWireSync msg = new MessageWireSync(connection, operation);
 			for(ServerPlayer p : targets)
-				PacketDistributor.PLAYER.with(p).send(msg);
+				PacketDistributor.sendToPlayer(p, msg);
 		}, true);
 	}
 

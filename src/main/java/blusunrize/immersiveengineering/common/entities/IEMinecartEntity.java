@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -77,7 +78,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 			ItemStack itemstack = getPickResult();
 			this.writeTileToItem(itemstack);
 			if(this.hasCustomName())
-				itemstack.setHoverName(this.getCustomName());
+				itemstack.set(DataComponents.CUSTOM_NAME, this.getCustomName());
 			this.spawnAtLocation(itemstack);
 		}
 	}
@@ -120,7 +121,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 		super.addAdditionalSaveData(compound);
 		if(this.containedBlockEntity!=null)
 		{
-			CompoundTag bEntityData = this.containedBlockEntity.saveWithoutMetadata();
+			CompoundTag bEntityData = this.containedBlockEntity.saveWithoutMetadata(level().registryAccess());
 			compound.merge(bEntityData);
 		}
 	}
@@ -130,7 +131,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	{
 		super.readAdditionalSaveData(compound);
 		this.containedBlockEntity = getTileProvider().get();
-		this.containedBlockEntity.load(compound);
+		this.containedBlockEntity.loadCustomOnly(compound, level().registryAccess());
 	}
 
 	// This is only used by the super impl of destroy, which does not allow attaching NBT to the drop. So it's actually

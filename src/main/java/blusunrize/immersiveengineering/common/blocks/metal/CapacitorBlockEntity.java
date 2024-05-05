@@ -212,7 +212,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false, );
+		writeCustomNBT(stack.getOrCreateTag(), false, context.getLevel().registryAccess());
 		drop.accept(stack);
 	}
 
@@ -221,7 +221,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false, );
+			readCustomNBT(stack.getOrCreateTag(), false, ctx.getLevel().registryAccess());
 	}
 
 	protected IEnergyStorage makeMainEnergyStorage()

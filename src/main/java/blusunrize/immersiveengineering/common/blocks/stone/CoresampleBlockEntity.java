@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -28,6 +29,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
@@ -162,7 +164,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	@Nullable
 	public Component getDisplayName()
 	{
-		if(coresample.hasCustomHoverName())
+		if(coresample.has(DataComponents.CUSTOM_NAME))
 			return coresample.getHoverName();
 		else
 			return Component.translatable("item.immersiveengineering.coresample.name");
@@ -188,7 +190,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 		if(overlay==null)
 		{
 			List<Component> list = new ArrayList<>();
-			CoresampleItem.getCoresampleInfo(coresample, list, ChatFormatting.WHITE, level, false, false);
+			CoresampleItem.getCoresampleInfo(coresample, list, ChatFormatting.WHITE, TooltipContext.of(level), false, false);
 			overlay = list.toArray(new Component[0]);
 		}
 		return overlay;

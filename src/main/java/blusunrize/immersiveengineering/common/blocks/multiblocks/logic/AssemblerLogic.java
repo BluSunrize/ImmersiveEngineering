@@ -361,7 +361,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			nbt.put("tanks", tanks);
 			nbt.put("patterns", patterns);
 			nbt.putBoolean("recursiveIngredients", recursiveIngredients);
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("inventory", inventory.serializeNBT(provider));
 			nbt.put("energy", energy.serializeNBT(provider));
 		}
 
@@ -375,7 +375,7 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			for(int i = 0; i < NUM_PATTERNS; ++i)
 				this.patterns[i].readFromNBT(patterns.getList(i), provider);
 			recursiveIngredients = nbt.getBoolean("recursiveIngredients");
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 			energy.deserializeNBT(provider, nbt.get("energy"));
 		}
 

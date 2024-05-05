@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.client.fx.FractalOptions;
+import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.core.Holder;
@@ -32,7 +33,7 @@ public class CommonProxy
 	{
 	}
 
-	public void spawnFractalFX(Level world, double x, double y, double z, Vec3 direction, double scale, int prefixColour, float[][] colour)
+	public void spawnFractalFX(Level world, double x, double y, double z, Vec3 direction, double scale, int prefixColour, Color4[] colour)
 	{
 		if(prefixColour >= 0)
 			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;

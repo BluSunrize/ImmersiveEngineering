@@ -105,7 +105,7 @@ public class Commando extends EngineerIllager
 	{
 		super.addAdditionalSaveData(compound);
 		if(!this.revolverAmmo.isEmpty())
-			compound.put("revolverAmmo", this.revolverAmmo.save(new CompoundTag()));
+			compound.put("revolverAmmo", this.revolverAmmo.save(level().registryAccess()));
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class Commando extends EngineerIllager
 	{
 		super.readAdditionalSaveData(compound);
 		if(compound.contains("revolverAmmo"))
-			this.revolverAmmo = ItemStack.of(compound.getCompound("revolverAmmo"));
+			this.revolverAmmo = ItemStack.parseOptional(level().registryAccess(), compound.getCompound("revolverAmmo"));
 	}
 
 	public ItemStack getRevolverAmmo()
@@ -122,7 +122,7 @@ public class Commando extends EngineerIllager
 	}
 
 	@Nullable
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData, @Nullable CompoundTag dataTag)
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, @Nullable SpawnGroupData spawnData)
 	{
 		this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Weapons.REVOLVER));
 		this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
@@ -133,7 +133,7 @@ public class Commando extends EngineerIllager
 			this.revolverAmmo = BulletHandler.getBulletStack(BulletItem.DRAGONS_BREATH);
 		else // and the rest are just normal guys
 			this.revolverAmmo = BulletHandler.getBulletStack(BulletItem.CASULL);
-		return super.finalizeSpawn(level, difficulty, reason, spawnData, dataTag);
+		return super.finalizeSpawn(level, difficulty, reason, spawnData);
 	}
 
 	@Override

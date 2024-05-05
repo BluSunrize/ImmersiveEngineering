@@ -58,7 +58,7 @@ public class HammerItem extends IEBaseItem
 {
 	public HammerItem()
 	{
-		super(new Properties().defaultDurability(100));// Value is overridden in getMaxDamage
+		super(new Properties().durability(100));// Value is overridden in getMaxDamage
 	}
 
 	@Override
@@ -68,9 +68,9 @@ public class HammerItem extends IEBaseItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn)
 	{
-		super.appendHoverText(stack, worldIn, tooltip, flagIn);
+		super.appendHoverText(stack, ctx, tooltip, flagIn);
 		addInfo(tooltip, Lib.DESC_INFO+"multiblocksAllowed", stack, "multiblockPermission");
 		addInfo(tooltip, Lib.DESC_INFO+"multiblockForbidden", stack, "multiblockInterdiction");
 	}

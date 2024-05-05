@@ -111,16 +111,16 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		BlockState state = level().getBlockState(blockPosition());
 		// TODO this is a very rough port of the previous material-based check
 		if(this.canIgnite()&&(state.is(BlockTags.FIRE)||state.getFluidState().is(FluidTags.LAVA)))
-			this.setSecondsOnFire(6);
+			this.igniteForSeconds(6);
 		super.baseTick();
 	}
 
 	@Override
-	public void setSecondsOnFire(int seconds)
+	public void igniteForTicks(int p_320711_)
 	{
 		if(!canIgnite())
 			return;
-		super.setSecondsOnFire(seconds);
+		super.igniteForTicks(p_320711_);
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			if(f > 0)
 			{
 				Entity hit = ((EntityHitResult)mop).getEntity();
-				hit.setSecondsOnFire(f);
+				hit.igniteForSeconds(f);
 				if(hit.hurt(hit.damageSources().inFire(), 2))
 					hit.invulnerableTime = (int)(hit.invulnerableTime*.75);
 			}
@@ -177,5 +177,11 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 				return light;
 		}
 		return 0;
+	}
+
+	@Override
+	protected ItemStack getDefaultPickupItem()
+	{
+		return ItemStack.EMPTY;
 	}
 }

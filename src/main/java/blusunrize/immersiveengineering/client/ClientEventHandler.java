@@ -319,6 +319,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent
+	// TODO RegisterGuiLayersEvent
 	public void onRenderOverlayPre(RenderGuiOverlayEvent.Pre event)
 	{
 		if(event.getOverlay().id().equals(VanillaGuiOverlay.SUBTITLES.id()))

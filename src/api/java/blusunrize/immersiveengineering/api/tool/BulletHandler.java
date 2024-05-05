@@ -21,6 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
@@ -104,7 +105,7 @@ public class BulletHandler
 			return baseName;
 		}
 
-		default void addTooltip(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+		default void addTooltip(ItemStack stack, @Nullable TooltipContext world, List<Component> list, TooltipFlag flag)
 		{
 		}
 

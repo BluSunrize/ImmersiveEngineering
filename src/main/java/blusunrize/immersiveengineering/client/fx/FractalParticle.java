@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -39,15 +40,16 @@ public class FractalParticle extends Particle
 {
 	public static final Deque<FractalParticle> PARTICLE_FRACTAL_DEQUE = new ArrayDeque<>();
 
-	public static final float[][] COLOUR_RED = {{.79f, .31f, .31f, .5f}, {1, .97f, .87f, .75f}};
-	public static final float[][] COLOUR_ORANGE = {{Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], .5f}, {1, .97f, .87f, .75f}};
-	public static final float[][] COLOUR_LIGHTNING = {{77/255f, 74/255f, 152/255f, .75f}, {1, 1, 1, 1}};
+	public static final Color4[] COLOUR_RED = {new Color4(.79f, .31f, .31f, .5f), new Color4(1, .97f, .87f, .75f)};
+	public static final Color4[] COLOUR_ORANGE = {new Color4(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], .5f), new Color4(1, .97f, .87f, .75f)};
+	public static final Color4[] COLOUR_LIGHTNING = {new Color4(77/255f, 74/255f, 152/255f, .75f), new Color4(1, 1, 1, 1)};
 
 	private final Vector3f[] pointsList;
-	private final float[] colourOut;
-	private final float[] colourIn;
+	private final Color4 colourOut;
+	private final Color4 colourIn;
 
-	public FractalParticle(ClientLevel world, double x, double y, double z, double speedX, double speedY, double speedZ, Vec3 direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
+	public FractalParticle(
+			ClientLevel world, double x, double y, double z, double speedX, double speedY, double speedZ, Vec3 direction, double scale, int maxAge, int points, Color4 colourOut, Color4 colourIn)
 	{
 		super(world, x, y, z, speedX, speedY, speedZ);
 		this.lifetime = maxAge;
@@ -157,7 +159,7 @@ public class FractalParticle extends Particle
 	}
 
 	private static void renderLinePoint(
-			Matrix3f transformN, Matrix4f transform, Vector3f start, Vector3f end, float[] color, VertexConsumer buffer, boolean atStart
+			Matrix3f transformN, Matrix4f transform, Vector3f start, Vector3f end, Color4 color, VertexConsumer buffer, boolean atStart
 	)
 	{
 		Vector3f normal = new Vector3f(start.x()-end.x(), start.y()-end.y(), start.z()-end.z());
@@ -165,7 +167,7 @@ public class FractalParticle extends Particle
 		normal.normalize();
 		Vector3f here = atStart?start: end;
 		buffer.vertex(transform, here.x(), here.y(), here.z())
-				.color(color[0], color[1], color[2], color[3])
+				.color(color.r(), color.b(), color.g(), color.a())
 				.normal(normal.x(), normal.y(), normal.z())
 				.endVertex();
 	}
@@ -177,14 +179,14 @@ public class FractalParticle extends Particle
 			new Vector3f(-1, 1, 0),
 	};
 
-	private void drawPoint(VertexConsumer builder, Matrix4f transform, Vector3f center, float size, float[] color)
+	private void drawPoint(VertexConsumer builder, Matrix4f transform, Vector3f center, float size, Color4 color)
 	{
 		Vector4f vector4f = new Vector4f(center.x(), center.y(), center.z(), 1.0F);
 		vector4f.mul(transform);
 		vector4f.div(vector4f.w);
 		for(Vector3f normal : POINT_NORMALS)
 			builder.vertex(vector4f.x(), vector4f.y(), vector4f.z())
-					.color(color[0], color[1], color[2], color[3])
+					.color(color.r(), color.b(), color.g(), color.a())
 					// Passing this as the normal is a hack, and needs to be scaled since normals are encoded with 1 byte in the range [-1, 1]
 					// And then another factor of 2 since size is the full point size, not the "radius"
 					.normal(normal.x()*size/200, normal.y()*size/200, 0)
@@ -193,7 +195,7 @@ public class FractalParticle extends Particle
 
 	private interface LinePointProcessor
 	{
-		void draw(VertexConsumer builder, int index, float[] color);
+		void draw(VertexConsumer builder, int index, Color4 color);
 	}
 
 	public static class Factory implements ParticleProvider<FractalOptions>

@@ -101,7 +101,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag nbt = new CompoundTag();
-		ContainerHelper.saveAllItems(nbt, inventory);
+		ContainerHelper.saveAllItems(nbt, inventory, context.getLevel().registryAccess());
 		if(!nbt.isEmpty())
 			stack.setTag(nbt);
 		drop.accept(stack);
@@ -112,7 +112,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false, );
+			readCustomNBT(stack.getOrCreateTag(), false, ctx.getLevel().registryAccess());
 	}
 
 	@Override

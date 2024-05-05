@@ -297,7 +297,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		nbt.putFloat("growth", growth);
 		nbt.putBoolean("renderActive", renderActive);
 		PacketDistributor.sendToPlayersTrackingChunk(
-				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(this, nbt)
+				(ServerLevel)level, new ChunkPos(worldPosition), new MessageBlockEntitySync(getBlockPos(), nbt)
 		);
 	}
 

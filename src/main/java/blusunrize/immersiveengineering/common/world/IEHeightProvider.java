@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreDistribution;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
@@ -24,7 +24,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 
 public class IEHeightProvider extends HeightProvider
 {
-	public static final Codec<IEHeightProvider> CODEC = VeinType.CODEC.xmap(IEHeightProvider::new, p -> p.type);
+	public static final MapCodec<IEHeightProvider> CODEC = VeinType.CODEC.xmap(IEHeightProvider::new, p -> p.type);
 
 	private final VeinType type;
 	private final Lazy<HeightProvider> internalProvider;

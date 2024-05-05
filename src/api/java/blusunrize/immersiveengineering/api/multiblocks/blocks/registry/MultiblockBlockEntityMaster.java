@@ -50,14 +50,14 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 	public void loadAdditional(CompoundTag tag, Provider provider)
 	{
 		super.loadAdditional(tag, provider);
-		helper.load(tag);
+		helper.load(tag, provider);
 	}
 
 	@Override
 	protected void saveAdditional(CompoundTag tag, Provider provider)
 	{
 		super.saveAdditional(tag, provider);
-		helper.saveAdditional(tag);
+		helper.saveAdditional(tag, provider);
 	}
 
 	@Nullable
@@ -71,19 +71,19 @@ public class MultiblockBlockEntityMaster<State extends IMultiblockState>
 	@Override
 	public CompoundTag getUpdateTag(Provider provider)
 	{
-		return helper.getUpdateTag();
+		return helper.getUpdateTag(provider);
 	}
 
 	@Override
 	public void handleUpdateTag(CompoundTag tag, Provider provider)
 	{
-		helper.handleUpdateTag(tag);
+		helper.handleUpdateTag(tag, provider);
 	}
 
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, Provider provider)
 	{
-		helper.onDataPacket(pkt.getTag());
+		helper.onDataPacket(pkt.getTag(), provider);
 	}
 
 	@Override

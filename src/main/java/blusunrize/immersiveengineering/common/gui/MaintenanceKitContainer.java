@@ -26,7 +26,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-
 import java.util.Objects;
 
 import static blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer.MAX_NUM_DYNAMIC_SLOTS;
@@ -151,8 +150,7 @@ public class MaintenanceKitContainer extends ItemContainer
 	{
 		if(wasUsed)
 		{
-			this.heldItem.hurtAndBreak(1, this.player, player -> {
-			});
+			this.heldItem.hurtAndBreak(1, this.player, this.equipmentSlot);
 			player.setItemSlot(this.equipmentSlot, this.heldItem);
 		}
 		super.removed(par1EntityPlayer);

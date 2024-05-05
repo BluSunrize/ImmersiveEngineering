@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import net.minecraft.core.Registry;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -36,7 +36,7 @@ public class IESaveData extends SavedData
 		super();
 	}
 
-	public IESaveData(CompoundTag nbt)
+	public IESaveData(CompoundTag nbt, Provider provider)
 	{
 		this();
 		ListTag dimensionList = nbt.getList("mineralVeins", Tag.TAG_COMPOUND);
@@ -77,7 +77,7 @@ public class IESaveData extends SavedData
 
 	@Nonnull
 	@Override
-	public CompoundTag save(@Nonnull CompoundTag nbt)
+	public CompoundTag save(@Nonnull CompoundTag nbt, Provider provider)
 	{
 		ListTag dimensionList = new ListTag();
 		synchronized(ExcavatorHandler.getMineralVeinList())

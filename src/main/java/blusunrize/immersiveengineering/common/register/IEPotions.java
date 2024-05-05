@@ -44,18 +44,18 @@ public class IEPotions
 	);
 	public static final Holder<MobEffect> STICKY = REGISTER.register(
 			"sticky", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x9c6800, 0, false, 3, true, true)
-					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.2, Operation.MULTIPLY_TOTAL)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.2, Operation.ADD_MULTIPLIED_TOTAL)
 	);
 	public static final Holder<MobEffect> STUNNED = REGISTER.register(
 			"stunned", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 4, true, true)
 	);
 	public static final Holder<MobEffect> CONCRETE_FEET = REGISTER.register(
 			"concrete_feet", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 5, true, true)
-					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.ADD_MULTIPLIED_TOTAL)
 	);
 	public static final Holder<MobEffect> FLASHED = REGISTER.register(
 			"flashed", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 6, true, true)
-					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.ADD_MULTIPLIED_TOTAL)
 	);
 
 	public static class IEPotion extends MobEffect
@@ -104,7 +104,7 @@ public class IEPotions
 		}
 
 		@Override
-		public void applyEffectTick(LivingEntity living, int amplifier)
+		public boolean applyEffectTick(LivingEntity living, int amplifier)
 		{
 			if(this==IEPotions.SLIPPERY.value())
 			{
@@ -121,9 +121,10 @@ public class IEPotions
 			else if(this==IEPotions.CONCRETE_FEET.value()&&!living.level().isClientSide)
 			{
 				BlockState state = living.level().getBlockState(living.blockPosition());
-				if(!state.is(IETags.concreteForFeet))
-					living.removeEffect(this);
+				return state.is(IETags.concreteForFeet);
 			}
+			// TODO infinite?
+			return true;
 		}
 	}
 }

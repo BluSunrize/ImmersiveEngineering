@@ -13,25 +13,26 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
-import blusunrize.immersiveengineering.mixin.accessors.PotionMixAccessor;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionBrewing.Mix;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.brewing.BrewingRecipe;
-import net.neoforged.neoforge.common.brewing.BrewingRecipeRegistry;
 import net.neoforged.neoforge.common.brewing.IBrewingRecipe;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public class PotionHelper
 {
-	public static FluidTagInput getFluidTagForType(Potion type, int amount)
+	public static FluidTagInput getFluidTagForType(Holder<Potion> type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
 			return new FluidTagInput(FluidTags.WATER, amount);
@@ -45,8 +46,9 @@ public class PotionHelper
 
 	public static void applyToAllPotionRecipes(PotionRecipeProcessor out)
 	{
+		PotionBrewing brewingData = ServerLifecycleHooks.getCurrentServer().potionBrewing();
 		// Vanilla
-		for(Mix<Potion> mixPredicate : PotionBrewingAccess.getConversions())
+		for(Mix<Potion> mixPredicate : ((PotionBrewingAccess)brewingData).getConversions())
 			if(mixPredicate.to()!=Potions.MUNDANE&&mixPredicate.to()!=Potions.THICK)
 				out.apply(
 						mixPredicate.to(), mixPredicate.from(),
@@ -54,16 +56,21 @@ public class PotionHelper
 				);
 
 		// Modded
-		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
-			if(recipe instanceof BrewingRecipe)
+		for(IBrewingRecipe recipe : ((PotionBrewingAccess)brewingData).getRegistry().recipes())
+			if(recipe instanceof BrewingRecipe brewingRecipe)
 			{
-				IngredientWithSize ingredient = new IngredientWithSize(((BrewingRecipe)recipe).getIngredient());
-				Ingredient input = ((BrewingRecipe)recipe).getInput();
-				ItemStack output = ((BrewingRecipe)recipe).getOutput();
+				IngredientWithSize ingredient = new IngredientWithSize(brewingRecipe.getIngredient());
+				Ingredient input = brewingRecipe.getInput();
+				ItemStack output = brewingRecipe.getOutput();
 				if(output.getItem()==Items.POTION&&input.getItems().length > 0)
-					out.apply(PotionUtils.getPotion(output),
-							PotionUtils.getPotion(input.getItems()[0]), ingredient);
+					out.apply(getPotion(output), getPotion(input.getItems()[0]), ingredient);
 			}
+	}
+
+	private static Holder<Potion> getPotion(ItemStack potion)
+	{
+		PotionContents potionData = potion.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+		return potionData.potion().orElse(Potions.WATER);
 	}
 
 	public interface PotionRecipeProcessor

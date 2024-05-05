@@ -36,7 +36,6 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.Tags.Items;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class DrillheadItem extends IEBaseItem implements IDrillHead
@@ -57,7 +56,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));
 		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));

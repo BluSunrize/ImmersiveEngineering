@@ -22,7 +22,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class EngineersBlueprintItem extends IEBaseItem
@@ -40,7 +39,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		String key = getCategory(stack);
 		if(key.isEmpty())

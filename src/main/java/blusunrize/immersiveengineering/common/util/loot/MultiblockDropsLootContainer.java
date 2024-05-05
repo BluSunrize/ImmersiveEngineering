@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.Compo
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperCommon;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.blockimpl.MultiblockBEHelperMaster;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 
 public class MultiblockDropsLootContainer extends LootPoolSingletonContainer
 {
-	public static final Codec<MultiblockDropsLootContainer> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<MultiblockDropsLootContainer> CODEC = RecordCodecBuilder.mapCodec(
 			inst -> singletonFields(inst).apply(inst, MultiblockDropsLootContainer::new)
 	);
 

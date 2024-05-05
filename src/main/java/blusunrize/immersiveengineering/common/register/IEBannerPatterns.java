@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.register;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import net.minecraft.core.Holder;
@@ -44,7 +45,8 @@ public class IEBannerPatterns
 
 	private static BannerEntry addBanner(String name, String hashName)
 	{
-		Holder<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
+		// TODO probably wrong
+		Holder<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern(IEApi.ieLoc(hashName), name));
 		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, pattern.unwrapKey().get().location());
 		ItemRegObject<BannerPatternItem> item = IEItems.register("bannerpattern_"+name, () -> new BannerPatternItem(
 				tag, new Properties()

@@ -32,7 +32,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class IEMinecartItem extends IEBaseItem
@@ -83,7 +82,7 @@ public class IEMinecartItem extends IEBaseItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "tank"))

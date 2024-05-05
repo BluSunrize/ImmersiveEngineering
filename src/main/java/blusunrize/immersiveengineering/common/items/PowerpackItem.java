@@ -103,7 +103,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		IEnergyStorage energy = stack.getCapability(EnergyStorage.ITEM);
 		if(energy!=null)

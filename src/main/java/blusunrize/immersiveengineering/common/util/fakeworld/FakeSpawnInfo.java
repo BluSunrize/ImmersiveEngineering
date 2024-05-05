@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.fakeworld;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.WritableLevelData;
@@ -16,51 +17,20 @@ public class FakeSpawnInfo implements WritableLevelData
 {
 	private static final GameRules RULES = new GameRules();
 
-	private int spawnX;
-	private int spawnY;
-	private int spawnZ;
+	private BlockPos spawnPos = BlockPos.ZERO;
 	private float spawnAngle;
 
 	@Override
-	public void setXSpawn(int x)
-	{
-		spawnX = x;
-	}
-
-	@Override
-	public void setYSpawn(int y)
-	{
-		spawnY = y;
-	}
-
-	@Override
-	public void setZSpawn(int z)
-	{
-		spawnZ = z;
-	}
-
-	@Override
-	public void setSpawnAngle(float angle)
+	public void setSpawn(BlockPos pos, float angle)
 	{
 		spawnAngle = angle;
+		spawnPos = pos;
 	}
 
 	@Override
-	public int getXSpawn()
+	public BlockPos getSpawnPos()
 	{
-		return spawnX;
-	}
-
-	@Override
-	public int getYSpawn()
-	{
-		return spawnY;
-	}
-
-	@Override
-	public int getZSpawn()
-	{
-		return spawnZ;
+		return spawnPos;
 	}
 
 	@Override

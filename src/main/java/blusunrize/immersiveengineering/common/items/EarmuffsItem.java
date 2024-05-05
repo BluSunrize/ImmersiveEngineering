@@ -20,10 +20,8 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
@@ -31,7 +29,7 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendColoredColour;
 
-public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, IConfigurableTool, IColouredItem
+public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColouredItem
 {
 	/**
 	 * The minimum allowed volume multiplier, i.e. the strongest attenuation. Note that this has to be strictly
@@ -103,7 +101,7 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		int color = this.getColourForIEItem(stack, 0);
 		MutableComponent mainComponent = Component.translatable(Lib.DESC_INFO+"colour");

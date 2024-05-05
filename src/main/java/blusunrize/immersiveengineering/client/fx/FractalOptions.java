@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.client.fx;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.IECodecs;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
@@ -24,7 +25,7 @@ public record FractalOptions(
 		Vec3 direction, double scale, int maxAge, int points, Color4 colourOut, Color4 colourIn
 ) implements ParticleOptions
 {
-	public static Codec<FractalOptions> CODEC = RecordCodecBuilder.create(
+	public static MapCodec<FractalOptions> CODEC = RecordCodecBuilder.mapCodec(
 			instance -> instance.group(
 					Vec3.CODEC.fieldOf("direction").forGetter(d -> d.direction),
 					Codec.DOUBLE.fieldOf("scale").forGetter(d -> d.scale),

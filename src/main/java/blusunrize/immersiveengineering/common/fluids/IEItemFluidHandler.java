@@ -34,7 +34,7 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 			FluidType attr = fluid.getFluid().getFluidType();
 			ChatFormatting rarity = attr.getRarity()==Rarity.COMMON?ChatFormatting.GRAY: attr.getRarity().color();
 			return TextUtils.applyFormat(
-					Component.translatable(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),
+					Component.translatable(Lib.DESC_FLAVOUR+"fluidStack", fluid.getHoverName(), fluid.getAmount(), fluidCapacity),
 					rarity
 			);
 		}

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class RevolverperkLootFunction extends LootItemConditionalFunction
 {
-	public static final Codec<RevolverperkLootFunction> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<RevolverperkLootFunction> CODEC = RecordCodecBuilder.mapCodec(
 			inst -> commonFields(inst).apply(inst, RevolverperkLootFunction::new)
 	);
 

@@ -374,7 +374,7 @@ public class ArcFurnaceLogic
 		{
 			nbt.put("energy", energy.serializeNBT(provider));
 			nbt.put("inventory", inventory.serializeNBT(provider));
-			nbt.put("processor", processor.toNBT());
+			nbt.put("processor", processor.toNBT(provider));
 		}
 
 		@Override
@@ -382,7 +382,7 @@ public class ArcFurnaceLogic
 		{
 			energy.deserializeNBT(provider, nbt.get("energy"));
 			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
-			processor.fromNBT(nbt.get("processor"), (getRecipe, data, provider) -> new ArcFurnaceProcess(getRecipe, data), );
+			processor.fromNBT(nbt.get("processor"), (getRecipe, data, p) -> new ArcFurnaceProcess(getRecipe, data), provider);
 		}
 
 		@Override

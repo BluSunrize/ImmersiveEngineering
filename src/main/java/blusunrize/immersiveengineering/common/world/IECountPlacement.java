@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.levelgen.placement.RepeatingPlacement;
 
 public class IECountPlacement extends RepeatingPlacement
 {
-	public static final Codec<IECountPlacement> CODEC = VeinType.CODEC.xmap(IECountPlacement::new, p -> p.type);
+	public static final MapCodec<IECountPlacement> CODEC = VeinType.CODEC.xmap(IECountPlacement::new, p -> p.type);
 	private final VeinType type;
 
 	public IECountPlacement(VeinType type)

@@ -42,6 +42,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments.Mutable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -199,17 +200,22 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		// Not ideal, but anything faster has a lot of code duplication. And getting the sawblade isn't the fastest
 		// thing in the world anyway.
-		return getAllEnchantments(stack).getOrDefault(enchantment, 0);
+		return getAllEnchantments(stack).getLevel(enchantment);
 	}
 
 	@Override
 	public ItemEnchantments getAllEnchantments(ItemStack stack)
 	{
 		ItemStack sawblade = getSawblade(stack, 0);
-		var superEnchants = super.getAllEnchantments(stack);
+		ItemEnchantments superEnchants = super.getAllEnchantments(stack);
 		if(sawblade.getItem() instanceof SawbladeItem blade)
-			blade.modifyEnchants(superEnchants);
-		return superEnchants;
+		{
+			ItemEnchantments.Mutable mutable = new Mutable(superEnchants);
+			blade.modifyEnchants(mutable);
+			return mutable.toImmutable();
+		}
+		else
+			return superEnchants;
 	}
 
 	@Override

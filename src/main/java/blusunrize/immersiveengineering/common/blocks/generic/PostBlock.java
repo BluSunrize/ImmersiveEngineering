@@ -20,7 +20,6 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -156,11 +155,11 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 			BlockPlaceContext context = new BlockPlaceContext(new UseOnContext(player, hand, hit));
 			//No Arms if space is blocked
 			if(!world.getBlockState(offsetPos).canBeReplaced(context))
-				return InteractionResult.FAIL;
+				return ItemInteractionResult.FAIL;
 			//No Arms if perpendicular arms exist
 			for(Direction forbidden : ImmutableList.of(side.getClockWise(), side.getCounterClockWise()))
 				if(hasArmFor(pos, forbidden, world, this))
-					return InteractionResult.FAIL;
+					return ItemInteractionResult.FAIL;
 
 			BlockState arm_state = this.getStateForPlacement(context).setValue(POST_SLAVE, 3)
 					.setValue(HORIZONTAL_OFFSET, HorizontalOffset.get(side));
@@ -177,7 +176,7 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 			BlockPos masterPos = pos.below(dummy).subtract(offset.getOffset());
 			BlockState masterState = world.getBlockState(masterPos);
 			world.sendBlockUpdated(masterPos, masterState, masterState, 3);
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		return super.hammerUseSide(side, player, hand, world, pos, hit);
 	}

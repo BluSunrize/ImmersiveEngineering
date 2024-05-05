@@ -80,7 +80,7 @@ public class SawbladeEntity extends IEProjectileEntity
 	}
 
 	@Override
-	public double getGravity()
+	public double getDefaultGravity()
 	{
 		return .005;
 	}
@@ -103,8 +103,7 @@ public class SawbladeEntity extends IEProjectileEntity
 	{
 		int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
 		Entity shooter = getOwner();
-		if(getAmmo().hurt(dmg, level().random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
-			this.discard();
+		getAmmo().hurtAndBreak(dmg, level().random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null, this::discard);
 	}
 
 	@Override
@@ -150,13 +149,13 @@ public class SawbladeEntity extends IEProjectileEntity
 	{
 		super.addAdditionalSaveData(nbt);
 		if(!this.ammo.isEmpty())
-			nbt.put("ammo", this.ammo.save(new CompoundTag()));
+			nbt.put("ammo", this.ammo.save(level().registryAccess()));
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag nbt)
 	{
 		super.readAdditionalSaveData(nbt);
-		this.ammo = ItemStack.of(nbt.getCompound("ammo"));
+		this.ammo = ItemStack.parseOptional(level().registryAccess(), nbt.getCompound("ammo"));
 	}
 }

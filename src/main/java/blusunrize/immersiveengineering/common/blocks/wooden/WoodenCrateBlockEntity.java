@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -139,12 +140,12 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag tag = new CompoundTag();
-		ContainerHelper.saveAllItems(tag, inventory, false);
+		ContainerHelper.saveAllItems(tag, inventory, false, context.getLevel().registryAccess());
 		if(!tag.isEmpty())
 			stack.setTag(tag);
 		Component customName = getCustomName();
 		if(customName!=null)
-			stack.setHoverName(customName);
+			stack.set(DataComponents.CUSTOM_NAME, customName);
 		if(enchantments!=null&&enchantments.size() > 0)
 			stack.getOrCreateTag().put("ench", enchantments);
 		drop.accept(stack);

@@ -9,11 +9,10 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -33,7 +31,7 @@ import java.util.function.Consumer;
 
 public class DropInventoryLootEntry extends LootPoolSingletonContainer
 {
-	public static final Codec<DropInventoryLootEntry> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<DropInventoryLootEntry> CODEC = RecordCodecBuilder.mapCodec(
 			inst -> singletonFields(inst).apply(inst, DropInventoryLootEntry::new)
 	);
 

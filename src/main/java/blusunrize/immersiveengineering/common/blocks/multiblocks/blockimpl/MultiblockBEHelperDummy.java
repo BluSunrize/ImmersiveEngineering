@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.registry.MultiblockBlockEntityMaster;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
@@ -66,30 +67,30 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 	}
 
 	@Override
-	public void load(CompoundTag tag)
+	public void load(CompoundTag tag, Provider provider)
 	{
 		final String key = tag.contains("posInMultiblock", Tag.TAG_COMPOUND)?"posInMultiblock": "posInMB";
 		this.positionInMB = NbtUtils.readBlockPos(tag, key).orElseThrow();
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag tag)
+	public void saveAdditional(CompoundTag tag, Provider provider)
 	{
 		tag.put("posInMB", NbtUtils.writeBlockPos(this.positionInMB));
 	}
 
 	@Override
-	public CompoundTag getUpdateTag()
+	public CompoundTag getUpdateTag(Provider provider)
 	{
 		CompoundTag result = new CompoundTag();
-		saveAdditional(result);
+		saveAdditional(result, provider);
 		return result;
 	}
 
 	@Override
-	public void handleUpdateTag(CompoundTag tag)
+	public void handleUpdateTag(CompoundTag tag, Provider provider)
 	{
-		load(tag);
+		load(tag, provider);
 	}
 
 	@Override
@@ -99,9 +100,9 @@ public class MultiblockBEHelperDummy<State extends IMultiblockState>
 	}
 
 	@Override
-	public void onDataPacket(CompoundTag tag)
+	public void onDataPacket(CompoundTag tag, Provider provider)
 	{
-		load(tag);
+		load(tag, provider);
 	}
 
 	@Override

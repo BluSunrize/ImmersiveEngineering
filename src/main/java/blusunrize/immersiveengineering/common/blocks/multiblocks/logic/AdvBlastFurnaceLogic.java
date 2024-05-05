@@ -167,13 +167,13 @@ public class AdvBlastFurnaceLogic
 		@Override
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			innerState.writeSaveNBT(nbt, );
+			innerState.writeSaveNBT(nbt, provider);
 		}
 
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			innerState.readSaveNBT(nbt, );
+			innerState.readSaveNBT(nbt, provider);
 		}
 
 		@Override

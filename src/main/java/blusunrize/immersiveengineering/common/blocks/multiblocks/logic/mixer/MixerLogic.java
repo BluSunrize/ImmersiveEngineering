@@ -274,18 +274,18 @@ public class MixerLogic
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("inventory", inventory.serializeNBT(provider));
 			nbt.putBoolean("outputAll", outputAll);
-			nbt.put("processor", processor.toNBT());
+			nbt.put("processor", processor.toNBT(provider));
 		}
 
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			tank.readFromNBT(nbt.getCompound("tank"));
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 			outputAll = nbt.getBoolean("outputAll");
-			processor.fromNBT(nbt.get("processor"), (getRecipe, data, provider) -> new MixingProcess(getRecipe, data, tank), );
+			processor.fromNBT(nbt.get("processor"), (getRecipe, data, p) -> new MixingProcess(getRecipe, data, tank), provider);
 		}
 
 		@Override

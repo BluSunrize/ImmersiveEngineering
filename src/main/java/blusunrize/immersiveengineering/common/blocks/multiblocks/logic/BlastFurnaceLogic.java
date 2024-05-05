@@ -106,14 +106,14 @@ public class BlastFurnaceLogic implements IMultiblockLogic<State>, IServerTickab
 		@Override
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("inventory", inventory.serializeNBT());
+			nbt.put("inventory", inventory.serializeNBT(provider));
 			nbt.put("furnace", furnace.toNBT());
 		}
 
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			inventory.deserializeNBT(nbt.getCompound("inventory"));
+			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 			furnace.readNBT(nbt.get("furnace"));
 		}
 

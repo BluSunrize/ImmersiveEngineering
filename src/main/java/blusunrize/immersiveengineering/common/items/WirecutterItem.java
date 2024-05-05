@@ -44,7 +44,7 @@ public class WirecutterItem extends IEBaseItem
 {
 	public WirecutterItem()
 	{
-		super(new Properties().defaultDurability(100));
+		super(new Properties().durability(100));
 	}
 
 	@Override
@@ -58,10 +58,9 @@ public class WirecutterItem extends IEBaseItem
 	public ItemStack getCraftingRemainingItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		if(container.hurt(1, ApiUtils.RANDOM_SOURCE, null))
-			return ItemStack.EMPTY;
-		else
-			return container;
+		container.hurtAndBreak(1, ApiUtils.RANDOM_SOURCE, null, () -> {
+		});
+		return container;
 	}
 
 	@Override
@@ -91,7 +90,7 @@ public class WirecutterItem extends IEBaseItem
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
 	{
-		return enchantment==Enchantments.BLOCK_EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
+		return enchantment==Enchantments.EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
 	}
 
 	@Override
@@ -105,7 +104,8 @@ public class WirecutterItem extends IEBaseItem
 	public boolean mineBlock(ItemStack itemstack, Level pLevel, BlockState state, BlockPos pPos, LivingEntity pEntityLiving)
 	{
 		boolean effective = state.is(IETags.wirecutterHarvestable);
-		itemstack.hurt(1, ApiUtils.RANDOM_SOURCE, null);
+		itemstack.hurtAndBreak(1, ApiUtils.RANDOM_SOURCE, null, () -> {
+		});
 		return effective;
 	}
 

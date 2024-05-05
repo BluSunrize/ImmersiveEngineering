@@ -9,7 +9,9 @@
 package blusunrize.immersiveengineering.common.entities.illager;
 
 import blusunrize.immersiveengineering.common.entities.ai.ShieldCombatGoal;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.level.Level;
@@ -19,16 +21,6 @@ public abstract class EngineerIllager extends AbstractIllager
 	protected EngineerIllager(EntityType<? extends AbstractIllager> entityType, Level level)
 	{
 		super(entityType, level);
-	}
-
-	@Override
-	public boolean isAlliedTo(Entity entity)
-	{
-		if(super.isAlliedTo(entity))
-			return true;
-		else if(entity instanceof LivingEntity&&((LivingEntity)entity).getMobType()==MobType.ILLAGER)
-			return this.getTeam()==null&&entity.getTeam()==null;
-		return false;
 	}
 
 	@Override

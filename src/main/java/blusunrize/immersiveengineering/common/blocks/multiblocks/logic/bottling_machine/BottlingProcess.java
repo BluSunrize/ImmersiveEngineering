@@ -60,7 +60,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 			State state
 	)
 	{
-		super(nbt.getBoolean("isFilling")?($, $1) -> DUMMY_RECIPE.value(): getRecipe, nbt);
+		super(nbt.getBoolean("isFilling")?($, $1) -> DUMMY_RECIPE.value(): getRecipe, nbt, provider);
 		this.tank = state.tank;
 		this.allowPartialFill = () -> state.allowPartialFill;
 		this.isFilling = nbt.getBoolean("isFilling");

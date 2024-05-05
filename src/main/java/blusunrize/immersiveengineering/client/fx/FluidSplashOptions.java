@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.fx;
 
 
 import blusunrize.immersiveengineering.common.register.IEParticles;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,8 +25,9 @@ import javax.annotation.Nonnull;
 
 public record FluidSplashOptions(Fluid fluid) implements ParticleOptions
 {
-	public static final Codec<FluidSplashOptions> CODEC = BuiltInRegistries.FLUID.byNameCodec()
-			.xmap(FluidSplashOptions::new, FluidSplashOptions::fluid);
+	public static final MapCodec<FluidSplashOptions> CODEC = BuiltInRegistries.FLUID.byNameCodec()
+			.xmap(FluidSplashOptions::new, FluidSplashOptions::fluid)
+			.fieldOf("fluid");
 	public static final StreamCodec<RegistryFriendlyByteBuf, FluidSplashOptions> STREAM_CODEC = ByteBufCodecs.registry(Registries.FLUID)
 			.map(FluidSplashOptions::new, FluidSplashOptions::fluid);
 

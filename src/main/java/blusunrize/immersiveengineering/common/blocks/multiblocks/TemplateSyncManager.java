@@ -44,6 +44,6 @@ public class TemplateSyncManager
 				toSync.add(new SyncedTemplate(template, rl));
 			}
 
-		PacketDistributor.PLAYER.with(player).send(new MessageMultiblockSync(toSync));
+		PacketDistributor.sendToPlayer(player, new MessageMultiblockSync(toSync));
 	}
 }

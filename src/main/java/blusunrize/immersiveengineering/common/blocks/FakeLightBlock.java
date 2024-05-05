@@ -58,7 +58,7 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type)
+	public boolean isPathfindable(BlockState state, PathComputationType type)
 	{
 		return true;
 	}

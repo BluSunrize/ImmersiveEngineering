@@ -120,7 +120,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 				{
 					Entity hit = ((EntityHitResult)mop).getEntity();
 					if(!hit.fireImmune())
-						hit.setSecondsOnFire(8);
+						hit.igniteForSeconds(8);
 				}
 				else if(mop instanceof BlockHitResult)
 				{

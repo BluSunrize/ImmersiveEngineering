@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
 import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.mixin.accessors.DataStorageAccess;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -57,11 +58,11 @@ public class WireNetworkCreator
 				() -> {
 					throw new UnsupportedOperationException();
 				},
-				nbt -> {
+				(nbt, provider) -> {
 					if(nbt.isEmpty())
 						return null;
 					else
-						return SERIALIZER.read(level, nbt);
+						return SERIALIZER.read(level, nbt, provider);
 				}
 		);
 		DimensionDataStorage dataStorage = serverLevel.getDataStorage();
@@ -83,14 +84,14 @@ public class WireNetworkCreator
 	{
 		@Override
 		@Nullable
-		public CompoundTag write(GlobalWireNetwork attachment)
+		public CompoundTag write(GlobalWireNetwork attachment, Provider provider)
 		{
-			return attachment.save(new CompoundTag());
+			return attachment.save(new CompoundTag(), provider);
 		}
 
 		@Override
 		@Nonnull
-		public GlobalWireNetwork read(@Nonnull IAttachmentHolder holder, @Nonnull CompoundTag tag)
+		public GlobalWireNetwork read(@Nonnull IAttachmentHolder holder, @Nonnull CompoundTag tag, Provider provider)
 		{
 			GlobalWireNetwork baseNet = CREATOR.apply(holder);
 			baseNet.readFromNBT(tag);

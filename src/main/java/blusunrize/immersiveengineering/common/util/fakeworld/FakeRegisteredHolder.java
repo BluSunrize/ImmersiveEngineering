@@ -54,6 +54,13 @@ public record FakeRegisteredHolder<T>(
 	}
 
 	@Override
+	public boolean is(Holder<T> p_316447_)
+	{
+		// TODO is this right? Is this even critical?
+		return p_316447_==this;
+	}
+
+	@Override
 	public Stream<TagKey<T>> tags()
 	{
 		return Stream.empty();

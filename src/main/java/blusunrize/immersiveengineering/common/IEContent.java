@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrigger;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
@@ -78,8 +77,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.ParallelDispatchEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
@@ -96,7 +95,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
 import static blusunrize.immersiveengineering.common.fluids.IEFluid.BUCKET_DISPENSE_BEHAVIOR;
 
-@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
+@EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
 {
 	private static CompletableFuture<?> lastOnThreadFuture;
@@ -237,13 +236,13 @@ public class IEContent
 		});
 
 		// TODO move to IEFluids/constructors?
-		IEFluids.CREOSOTE.getBlock().setEffect(IEPotions.FLAMMABLE.value(), 100, 0);
+		IEFluids.CREOSOTE.getBlock().setEffect(IEPotions.FLAMMABLE, 100, 0);
 		IEFluids.ETHANOL.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
-		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.value(), 100, 1);
+		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE, 100, 1);
 		IEFluids.CONCRETE.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
-		IEFluids.REDSTONE_ACID.getBlock().setEffect(IEPotions.CONDUCTIVE.value(), 100, 1);
+		IEFluids.REDSTONE_ACID.getBlock().setEffect(IEPotions.CONDUCTIVE, 100, 1);
 		IEFluids.ACETALDEHYDE.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
-		IEFluids.PHENOLIC_RESIN.getBlock().setEffect(IEPotions.STICKY.value(), 40, 1);
+		IEFluids.PHENOLIC_RESIN.getBlock().setEffect(IEPotions.STICKY, 40, 1);
 
 		ChemthrowerEffects.register();
 
@@ -277,7 +276,6 @@ public class IEContent
 	public static void populateAPI()
 	{
 		SetRestrictedField.startInitializing(false);
-		IngredientWithSize.SERIALIZER.setValue(IngredientWithSizeSerializer.INSTANCE);
 		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.BLUEPRINT);
 		ExcavatorHandler.setSetDirtyCallback(IESaveData::markInstanceDirty);
 		TemplateMultiblock.setCallbacks(
@@ -314,7 +312,7 @@ public class IEContent
 		IEServerConfig.MACHINES.populateAPI();
 		SetRestrictedField.lock(false);
 
-		ShieldDisablingHandler.registerDisablingFunction(Player.class, player -> player.disableShield(true));
+		ShieldDisablingHandler.registerDisablingFunction(Player.class, Player::disableShield);
 		ShieldDisablingHandler.registerDisablingFunction(EngineerIllager.class, EngineerIllager::disableShield);
 	}
 

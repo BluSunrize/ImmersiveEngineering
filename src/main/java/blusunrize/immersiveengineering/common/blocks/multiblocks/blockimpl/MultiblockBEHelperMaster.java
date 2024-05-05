@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -100,15 +101,15 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	}
 
 	@Override
-	public void load(CompoundTag tag)
+	public void load(CompoundTag tag, Provider provider)
 	{
-		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSaveNBT(nbt, ));
+		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSaveNBT(nbt, provider));
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag tag)
+	public void saveAdditional(CompoundTag tag, Provider provider)
 	{
-		save(tag, (iMultiblockState, nbt) -> iMultiblockState.writeSaveNBT(nbt, ));
+		save(tag, (iMultiblockState, nbt) -> iMultiblockState.writeSaveNBT(nbt, provider));
 	}
 
 	private void save(CompoundTag out, BiConsumer<IMultiblockState, CompoundTag> saveSingle)
@@ -142,10 +143,10 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	}
 
 	@Override
-	public CompoundTag getUpdateTag()
+	public CompoundTag getUpdateTag(Provider provider)
 	{
 		CompoundTag result = new CompoundTag();
-		save(result, (iMultiblockState, nbt) -> iMultiblockState.writeSyncNBT(nbt, ));
+		save(result, (iMultiblockState, nbt) -> iMultiblockState.writeSyncNBT(nbt, provider));
 		return result;
 	}
 
@@ -156,15 +157,15 @@ public class MultiblockBEHelperMaster<State extends IMultiblockState>
 	}
 
 	@Override
-	public void handleUpdateTag(CompoundTag tag)
+	public void handleUpdateTag(CompoundTag tag, Provider provider)
 	{
-		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSyncNBT(nbt, ));
+		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSyncNBT(nbt, provider));
 	}
 
 	@Override
-	public void onDataPacket(CompoundTag tag)
+	public void onDataPacket(CompoundTag tag, Provider provider)
 	{
-		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSyncNBT(nbt, ));
+		load(tag, (iMultiblockState, nbt) -> iMultiblockState.readSyncNBT(nbt, provider));
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterBlockEnti
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Inventory;
@@ -84,7 +85,10 @@ public class FluidSorterMenu extends IEContainerMenu
 		{
 			int side = message.getInt("filter_side");
 			int slot = message.getInt("filter_slot");
-			FluidStack newFilter = FluidStack.loadFluidStackFromNBT(message.getCompound("filter"));
+			FluidStack newFilter = FluidStack.parseOptional(
+					Minecraft.getInstance().level.registryAccess(),
+					message.getCompound("filter")
+			);
 			if(!newFilter.isEmpty())
 				newFilter.setAmount(1); // Not strictly necessary, but also doesn't hurt
 			this.filters.get(side).get(slot).set(newFilter);

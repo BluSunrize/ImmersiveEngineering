@@ -10,8 +10,9 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class BluprintzLootFunction extends LootItemConditionalFunction
 {
-	public static final Codec<BluprintzLootFunction> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<BluprintzLootFunction> CODEC = RecordCodecBuilder.mapCodec(
 			inst -> commonFields(inst).apply(inst, BluprintzLootFunction::new)
 	);
 
@@ -37,7 +38,7 @@ public class BluprintzLootFunction extends LootItemConditionalFunction
 	@Override
 	public ItemStack run(ItemStack stack, @Nonnull LootContext context)
 	{
-		stack.setHoverName(Component.literal("Super Special BluPrintz"));
+		stack.set(DataComponents.CUSTOM_NAME, Component.literal("Super Special BluPrintz"));
 		ItemNBTHelper.setLore(stack, Component.literal("Congratulations!"), Component.literal("You have found an easter egg!"));
 		return stack;
 	}

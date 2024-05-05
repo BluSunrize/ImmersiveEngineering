@@ -64,7 +64,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	public void writeTileToItem(ItemStack itemStack)
 	{
 		CompoundTag tag = new CompoundTag();
-		this.containedBlockEntity.writeTank(tag, true);
+		this.containedBlockEntity.writeTank(level().registryAccess(), tag, true);
 		if(!tag.isEmpty())
 			itemStack.setTag(tag);
 	}

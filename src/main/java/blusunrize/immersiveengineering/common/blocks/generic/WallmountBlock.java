@@ -15,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -101,9 +100,9 @@ public class WallmountBlock extends IEBaseBlock
 			Orientation old = state.getValue(ORIENTATION);
 			Orientation newO = old.getDual();
 			w.setBlockAndUpdate(pos, state.setValue(ORIENTATION, newO));
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	//ordinal matches <=1.12 value

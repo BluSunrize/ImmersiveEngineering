@@ -99,7 +99,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	@Override
 	public EntityDimensions getDimensions(Pose poseIn)
 	{
-		return new EntityDimensions(.125f, .125f, true);
+		return new EntityDimensions(.125f, .125f, .125f, EntityAttachments.createDefault(0, 0), true);
 	}
 
 	public void setTickLimit(int limit)
@@ -244,7 +244,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 			this.discard();
 	}
 
-	public double getGravity()
+	public double getDefaultGravity()
 	{
 		return 0.05F;
 	}

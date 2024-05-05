@@ -34,7 +34,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -46,7 +45,7 @@ public class SkyhookItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		if(shouldLimitSpeed(stack))
 			list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));

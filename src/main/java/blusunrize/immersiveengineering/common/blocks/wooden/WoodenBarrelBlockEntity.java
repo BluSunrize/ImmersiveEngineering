@@ -343,7 +343,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag tag = new CompoundTag();
-		writeTank(tag, true);
+		writeTank(context.getLevel().registryAccess(), tag, true);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
 		drop.accept(stack);

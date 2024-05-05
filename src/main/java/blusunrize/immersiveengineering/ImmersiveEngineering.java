@@ -52,7 +52,7 @@ import net.minecraft.world.level.saveddata.SavedData.Factory;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -87,7 +87,7 @@ public class ImmersiveEngineering
 			return new CommonProxy();
 	});
 
-	public ImmersiveEngineering(Dist dist, IEventBus modBus)
+	public ImmersiveEngineering(ModContainer container, Dist dist, IEventBus modBus)
 	{
 		DIST = dist;
 		IELogger.logger = LogManager.getLogger(MODID);
@@ -99,9 +99,9 @@ public class ImmersiveEngineering
 		RecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
 		Villages.Registers.POINTS_OF_INTEREST.register(modBus);
 		Villages.Registers.PROFESSIONS.register(modBus);
-		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
-		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
-		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC);
+		container.registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC);
+		container.registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC);
+		container.registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC);
 		IEContent.modConstruction(modBus);
 		if(dist.isClient())
 			ClientProxy.modConstruction();
@@ -130,7 +130,7 @@ public class ImmersiveEngineering
 		// Vanilla Tools, Swords & Armor
 		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof DiggerItem
 				||stack instanceof ShearsItem||stack instanceof SwordItem||
-				stack instanceof ArmorItem||stack instanceof HorseArmorItem||
+				stack instanceof ArmorItem||stack instanceof AnimalArmorItem||
 				stack instanceof BucketItem);
 		// IE Tools
 		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof HammerItem

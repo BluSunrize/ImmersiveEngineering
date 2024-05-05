@@ -26,6 +26,7 @@ import net.minecraft.world.TickRateManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Scoreboard;
@@ -64,9 +66,9 @@ public class TemplateWorld extends Level
 			DIMENSION_TYPE, ResourceKey.create(Registries.DIMENSION_TYPE, DIMENSION_TYPE_ID)
 	);
 
-	private final Map<String, MapItemSavedData> maps = new HashMap<>();
+	private final Map<MapId, MapItemSavedData> maps = new HashMap<>();
 	private final Scoreboard scoreboard = new Scoreboard();
-	private final RecipeManager recipeManager = new RecipeManager();
+	private final RecipeManager recipeManager;
 	private final TemplateChunkProvider chunkProvider;
 	private final TickRateManager tickRateManager = new TickRateManager();
 
@@ -84,6 +86,7 @@ public class TemplateWorld extends Level
 				() -> InactiveProfiler.INSTANCE, true, false, 0, 0
 		);
 		this.chunkProvider = new TemplateChunkProvider(blocks, this, shouldShow);
+		this.recipeManager = new RecipeManager(regAccess);
 	}
 
 	@Override
@@ -123,21 +126,24 @@ public class TemplateWorld extends Level
 
 	@Nullable
 	@Override
-	public MapItemSavedData getMapData(@Nonnull String mapName)
+	public MapItemSavedData getMapData(MapId p_324234_)
 	{
-		return maps.get(mapName);
+		return maps.get(p_324234_);
 	}
 
 	@Override
-	public void setMapData(@Nonnull String key, @Nonnull MapItemSavedData mapDataIn)
+	public void setMapData(MapId p_324009_, MapItemSavedData p_151534_)
 	{
-		maps.put(key, mapDataIn);
+		maps.put(p_324009_, p_151534_);
 	}
 
 	@Override
-	public int getFreeMapId()
+	public MapId getFreeMapId()
 	{
-		return maps.size();
+		int i = 0;
+		while(maps.containsKey(new MapId(i)))
+			++i;
+		return new MapId(i);
 	}
 
 	@Override
@@ -193,8 +199,9 @@ public class TemplateWorld extends Level
 	}
 
 	@Override
-	public void gameEvent(GameEvent p_220404_, Vec3 p_220405_, Context p_220406_)
+	public void gameEvent(Holder<GameEvent> p_316267_, Vec3 p_220405_, Context p_220406_)
 	{
+
 	}
 
 	@Nonnull
@@ -203,6 +210,12 @@ public class TemplateWorld extends Level
 	{
 		Level clientWorld = ImmersiveEngineering.proxy.getClientWorld();
 		return Objects.requireNonNull(clientWorld).registryAccess();
+	}
+
+	@Override
+	public PotionBrewing potionBrewing()
+	{
+		return null;
 	}
 
 	@Override
@@ -235,11 +248,5 @@ public class TemplateWorld extends Level
 	public int getBrightness(@Nonnull LightLayer lightType, @Nonnull BlockPos pos)
 	{
 		return 15;
-	}
-
-	@Override
-	public ResourceKey<DimensionType> dimensionTypeId()
-	{
-		throw new UnsupportedOperationException("The dimension type for this \"world\" is not actually registered!");
 	}
 }

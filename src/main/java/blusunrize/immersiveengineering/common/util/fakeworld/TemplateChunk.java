@@ -45,7 +45,9 @@ public class TemplateChunk extends LevelChunk
 			actuallSetBlockState(info.pos(), info.state());
 			if(info.nbt()!=null)
 			{
-				BlockEntity tile = BlockEntity.loadStatic(info.pos(), info.state(), info.nbt());
+				BlockEntity tile = BlockEntity.loadStatic(
+						info.pos(), info.state(), info.nbt(), worldIn.registryAccess()
+				);
 				if(tile!=null)
 				{
 					tile.setLevel(worldIn);

@@ -50,33 +50,33 @@ public class MultiblockBlockEntityDummy<State extends IMultiblockState>
 	protected void loadAdditional(CompoundTag tag, Provider provider)
 	{
 		super.loadAdditional(tag, provider);
-		helper.load(tag);
+		helper.load(tag, provider);
 	}
 
 	@Override
 	protected void saveAdditional(@Nonnull CompoundTag tag, Provider provider)
 	{
 		super.saveAdditional(tag, provider);
-		helper.saveAdditional(tag);
+		helper.saveAdditional(tag, provider);
 	}
 
 	@Nonnull
 	@Override
 	public CompoundTag getUpdateTag(Provider provider)
 	{
-		return helper.getUpdateTag();
+		return helper.getUpdateTag(provider);
 	}
 
 	@Override
 	public void handleUpdateTag(CompoundTag tag, Provider provider)
 	{
-		helper.handleUpdateTag(tag);
+		helper.handleUpdateTag(tag, provider);
 	}
 
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, Provider provider)
 	{
-		helper.onDataPacket(pkt.getTag());
+		helper.onDataPacket(pkt.getTag(), provider);
 	}
 
 	@Nullable

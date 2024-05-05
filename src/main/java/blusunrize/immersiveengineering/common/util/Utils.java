@@ -30,7 +30,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerLevel;
@@ -43,7 +43,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
-import net.minecraft.world.Containers;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,6 +57,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -86,11 +86,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.TierSortingRegistry;
-import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -157,6 +154,7 @@ public class Utils
 		return stack.is(Tags.Items.DYES);
 	}
 
+	@Deprecated(forRemoval = true)
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
 		return FluidUtils.copyFluidStackWithAmount(stack, amount, stripPressure);
@@ -433,7 +431,7 @@ public class Utils
 	}
 
 	//TODO test! I think the NBT format is wrong
-	public static CompoundTag getRandomFireworkExplosion(Random rand, int preType)
+	public static List<FireworkExplosion> getRandomFireworkExplosion(Random rand, int preType)
 	{
 		CompoundTag tag = new CompoundTag();
 		CompoundTag expl = new CompoundTag();
@@ -602,41 +600,6 @@ public class Utils
 			ei.setDeltaMovement(0.075*facing.getStepX(), 0.025, 0.075*facing.getStepZ());
 			world.addFreshEntity(ei);
 		}
-	}
-
-	public static void dropStackAtPos(Level world, BlockPos pos, ItemStack stack)
-	{
-		Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-	}
-
-	// Todo: Remove? No longer needed since changes to the refinery
-	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut)
-	{
-		if(containerIn==null||containerIn.isEmpty())
-			return ItemStack.EMPTY;
-
-		if(containerIn.hasTag()&&containerIn.getOrCreateTag().isEmpty())
-			containerIn.setTag(null);
-
-		FluidActionResult result = FluidUtils.tryEmptyContainer(
-				containerIn, handler, Integer.MAX_VALUE, FluidAction.SIMULATE
-		);
-		if(result.isSuccess())
-		{
-			ItemStack empty = result.getResult();
-			if((containerOut.isEmpty()||ItemStack.isSameItemSameComponents(containerOut, empty)))
-			{
-				if(!containerOut.isEmpty()&&containerOut.getCount()+empty.getCount() > containerOut.getMaxStackSize())
-					return ItemStack.EMPTY;
-				result = FluidUtils.tryEmptyContainer(containerIn, handler, Integer.MAX_VALUE, FluidAction.EXECUTE);
-				if(result.isSuccess())
-				{
-					return result.getResult();
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-
 	}
 
 	public static boolean isFluidRelatedItemStack(ItemStack stack)
@@ -814,8 +777,8 @@ public class Utils
 
 	public static void getDrops(BlockState state, LootContext originalCtx, Consumer<ItemStack> out)
 	{
-		ResourceLocation resourcelocation = state.getBlock().getLootTable();
-		if(resourcelocation==BuiltInLootTables.EMPTY)
+		ResourceKey<LootTable> lootKey = state.getBlock().getLootTable();
+		if(lootKey==BuiltInLootTables.EMPTY)
 			return;
 		LootParams lootcontext = new LootParams.Builder(originalCtx.getLevel())
 				.withOptionalParameter(LootContextParams.TOOL, originalCtx.getParamOrNull(LootContextParams.TOOL))
@@ -823,7 +786,7 @@ public class Utils
 				.withParameter(LootContextParams.BLOCK_STATE, state)
 				.create(LootContextParamSets.BLOCK);
 		ServerLevel serverworld = lootcontext.getLevel();
-		LootTable loottable = serverworld.getServer().getLootData().getLootTable(resourcelocation);
+		LootTable loottable = serverworld.getServer().reloadableRegistries().getLootTable(lootKey);
 		loottable.getRandomItems(lootcontext, out);
 	}
 

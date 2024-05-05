@@ -18,7 +18,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -228,7 +228,7 @@ public class IEBlockInterfaces
 
 	public interface IScrewdriverInteraction
 	{
-		InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec);
+		ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec);
 	}
 
 	public interface IPlacementInteraction

@@ -41,7 +41,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -414,9 +413,9 @@ public class SkylineHookEntity extends Entity
 	}
 
 	@Override
-	protected Vector3f getPassengerAttachmentPoint(Entity rider, EntityDimensions size, float p_296362_)
+	public Vec3 getPassengerAttachmentPoint(Entity rider, EntityDimensions size, float p_296362_)
 	{
-		return new Vector3f(0.0F, size.height-2, 0.0F);
+		return new Vec3(0.0F, size.height()-2, 0.0F);
 	}
 
 	@Override

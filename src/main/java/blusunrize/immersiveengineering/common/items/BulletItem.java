@@ -173,7 +173,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 			{
 				((RevolvershotEntity)projectile).setTickLimit(10);
-				projectile.setSecondsOnFire(3);
+				projectile.igniteForSeconds(3);
 				return projectile;
 			}
 		});
@@ -193,9 +193,9 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
-		type.addTooltip(stack, world, list, flag);
+		type.addTooltip(stack, ctx, list, flag);
 	}
 
 	@Nonnull
@@ -293,8 +293,8 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 										if(target instanceof EntityHitResult&&living==((EntityHitResult)target).getEntity())
 											dist2 = 1D;
 										for(MobEffectInstance p : effects)
-											if(p.getEffect().isInstantenous())
-												p.getEffect().applyInstantenousEffect(bullet, shooter, living, p.getAmplifier(), dist2);
+											if(p.getEffect().value().isInstantenous())
+												p.getEffect().value().applyInstantenousEffect(bullet, shooter, living, p.getAmplifier(), dist2);
 											else
 											{
 												int j = (int)(dist2*p.getDuration()+.5D);
@@ -318,7 +318,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 
 
 		@Override
-		public void addTooltip(ItemStack stack, Level world, List<Component> list, TooltipFlag flag)
+		public void addTooltip(ItemStack stack, TooltipContext world, List<Component> list, TooltipFlag flag)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
 			if(!pot.isEmpty()&&pot.getItem() instanceof PotionItem)
@@ -378,7 +378,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		}
 
 		@Override
-		public void addTooltip(ItemStack stack, Level world, List<Component> list, TooltipFlag flag)
+		public void addTooltip(ItemStack stack, TooltipContext world, List<Component> list, TooltipFlag flag)
 		{
 			if(stack.getItem() instanceof IColouredItem)
 			{
@@ -448,7 +448,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		}
 
 		@Override
-		public void addTooltip(ItemStack stack, Level world, List<Component> list, TooltipFlag flag)
+		public void addTooltip(ItemStack stack, TooltipContext world, List<Component> list, TooltipFlag flag)
 		{
 			Items.FIREWORK_ROCKET.appendHoverText(stack, world, list, flag);
 		}

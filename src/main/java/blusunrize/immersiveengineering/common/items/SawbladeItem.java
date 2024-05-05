@@ -13,7 +13,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments.Mutable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
@@ -87,7 +87,7 @@ public class SawbladeItem extends IEBaseItem
 		return true;
 	}
 
-	public ItemEnchantments modifyEnchants(ItemEnchantments baseEnchants)
+	public void modifyEnchants(Mutable baseEnchants)
 	{
 		return baseEnchants;
 	}

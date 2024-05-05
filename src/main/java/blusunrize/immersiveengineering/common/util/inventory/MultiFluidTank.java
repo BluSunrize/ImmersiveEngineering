@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.inventory;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -35,7 +36,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		this.capacity = capacity;
 	}
 
-	public MultiFluidTank readFromNBT(CompoundTag nbt)
+	public MultiFluidTank readFromNBT(CompoundTag nbt, Provider provider)
 	{
 		if(nbt.contains("fluids", Tag.TAG_LIST))
 		{
@@ -43,7 +44,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 			ListTag tagList = nbt.getList("fluids", Tag.TAG_COMPOUND);
 			for(int i = 0; i < tagList.size(); i++)
 			{
-				FluidStack fs = FluidStack.loadFluidStackFromNBT(tagList.getCompound(i));
+				FluidStack fs = FluidStack.parseOptional(provider, tagList.getCompound(i));
 				if(!fs.isEmpty())
 					this.fluids.add(fs);
 			}
@@ -51,12 +52,12 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		return this;
 	}
 
-	public CompoundTag writeToNBT(CompoundTag nbt)
+	public CompoundTag writeToNBT(CompoundTag nbt, Provider provider)
 	{
 		ListTag tagList = new ListTag();
 		for(FluidStack fs : this.fluids)
 			if(!fs.isEmpty())
-				tagList.add(fs.writeToNBT(new CompoundTag()));
+				tagList.add(fs.save(provider));
 		nbt.put("fluids", tagList);
 		return nbt;
 	}
@@ -210,6 +211,6 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 	{
 		if(this.fluids.isEmpty())
 			return FluidStack.EMPTY;
-		return drain(new FluidStack(getFluid(), maxDrain), doDrain);
+		return drain(getFluid().copyWithAmount(maxDrain), doDrain);
 	}
 }

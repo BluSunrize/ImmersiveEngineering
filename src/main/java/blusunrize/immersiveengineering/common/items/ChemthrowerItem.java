@@ -152,7 +152,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 					if(!player.onGround())
 						player.setDeltaMovement(player.getDeltaMovement().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
-						chem.setSecondsOnFire(10);
+						chem.igniteForSeconds(10);
 					if(!player.level().isClientSide)
 						player.level().addFreshEntity(chem);
 				}

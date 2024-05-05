@@ -21,7 +21,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -218,9 +217,9 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		{
 			boolean b = ((IHammerInteraction)tile).hammerUseSide(side, player, hand, hit.getLocation());
 			if(b)
-				return InteractionResult.SUCCESS;
+				return ItemInteractionResult.SUCCESS;
 			else
-				return InteractionResult.FAIL;
+				return ItemInteractionResult.FAIL;
 		}
 		return super.hammerUseSide(side, player, hand, w, pos, hit);
 	}
@@ -229,19 +228,19 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
 		BlockEntity tile = w.getBlockEntity(pos);
-		if(tile instanceof IScrewdriverInteraction)
+		if(tile instanceof IScrewdriverInteraction interaction)
 		{
-			InteractionResult teResult = ((IScrewdriverInteraction)tile).screwdriverUseSide(side, player, hand, hit.getLocation());
-			if(teResult!=InteractionResult.PASS)
+			ItemInteractionResult teResult = interaction.screwdriverUseSide(side, player, hand, hit.getLocation());
+			if(teResult!=ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION)
 				return teResult;
 		}
 		return super.screwdriverUseSide(side, player, hand, w, pos, hit);
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
 	{
-		InteractionResult superResult = super.use(state, world, pos, player, hand, hit);
+		ItemInteractionResult superResult = super.useItemOn(stack, state, world, pos, player, hand, hit);
 		if(superResult.consumesAction())
 			return superResult;
 		final Direction side = hit.getDirection();
@@ -278,13 +277,13 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 			tile.setChanged();
 			world.sendBlockUpdated(pos, state, state, 3);
 			world.blockEvent(tile.getBlockPos(), tile.getBlockState().getBlock(), 255, 0);
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		if(tile instanceof IPlayerInteraction)
 		{
 			boolean b = ((IPlayerInteraction)tile).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 			if(b)
-				return InteractionResult.SUCCESS;
+				return ItemInteractionResult.SUCCESS;
 		}
 		if(tile instanceof MenuProvider menuProvider&&hand==InteractionHand.MAIN_HAND&&!player.isShiftKeyDown())
 		{
@@ -306,7 +305,7 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 				else
 					serverPlayer.openMenu(menuProvider);
 			}
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		return superResult;
 	}

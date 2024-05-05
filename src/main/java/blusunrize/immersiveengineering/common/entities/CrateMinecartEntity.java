@@ -67,7 +67,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	public void writeTileToItem(ItemStack itemStack)
 	{
 		CompoundTag tag = new CompoundTag();
-		ContainerHelper.saveAllItems(tag, containedBlockEntity.getInventory());
+		ContainerHelper.saveAllItems(tag, containedBlockEntity.getInventory(), level().registryAccess());
 		if(!tag.isEmpty())
 			itemStack.setTag(tag);
 	}

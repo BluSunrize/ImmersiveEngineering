@@ -105,7 +105,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 					if(shooter!=null)
 						Utils.unlockIEAdvancement(shooter, "tools/secret_birthdayparty");
 					level().playSound(null, getX(), getY(), getZ(), IESounds.birthdayParty.value(), SoundSource.PLAYERS, 1.0F, 1.2F/(this.random.nextFloat()*0.2F+0.9F));
-					PacketDistributor.TRACKING_ENTITY.with(hitEntity).send(new MessageBirthdayParty((LivingEntity)hitEntity));
+					PacketDistributor.sendToPlayersTrackingEntity(hitEntity, new MessageBirthdayParty(hitEntity.getId()));
 				}
 			}
 		}
@@ -153,7 +153,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
 		nbt.putString("bulletType", BulletHandler.findRegistryName(this.bulletType).toString());
 		if(!bulletPotion.isEmpty())
-			nbt.put("bulletPotion", bulletPotion.save(new CompoundTag()));
+			nbt.put("bulletPotion", bulletPotion.save(level().registryAccess()));
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 		super.readAdditionalSaveData(nbt);
 		this.bulletType = BulletHandler.getBullet(new ResourceLocation(nbt.getString("bulletType")));
 		if(nbt.contains("bulletPotion", Tag.TAG_COMPOUND))
-			this.bulletPotion = ItemStack.of(nbt.getCompound("bulletPotion"));
+			this.bulletPotion = ItemStack.parseOptional(level().registryAccess(), nbt.getCompound("bulletPotion"));
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	public double getGravity()
+	public double getDefaultGravity()
 	{
 		return gravity;
 	}

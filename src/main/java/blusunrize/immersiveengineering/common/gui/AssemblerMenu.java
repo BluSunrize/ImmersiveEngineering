@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.Assembler
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -185,7 +186,10 @@ public class AssemblerMenu extends IEContainerMenu
 			for(int i = 0; i < list.size(); i++)
 			{
 				CompoundTag itemTag = list.getCompound(i);
-				pattern.setStackInSlot(itemTag.getInt("slot"), ItemStack.of(itemTag));
+				pattern.setStackInSlot(
+						itemTag.getInt("slot"),
+						ItemStack.parseOptional(Minecraft.getInstance().level.registryAccess(), itemTag)
+				);
 			}
 		}
 	}
