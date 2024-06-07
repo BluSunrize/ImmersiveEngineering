@@ -8,12 +8,8 @@
     ]
   },
   "redstone_acid": {
-    "type": "item_display",
-    "items": [
-      {
-        "item": "immersiveengineering:redstone_acid_bucket"
-      }
-    ]
+    "type": "crafting",
+    "recipe": "crafting/redstone_acid"
   },
   "redstone_acid_mixer": {
     "type": "mixer",
