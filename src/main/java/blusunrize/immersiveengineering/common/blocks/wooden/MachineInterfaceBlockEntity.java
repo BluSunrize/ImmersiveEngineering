@@ -36,8 +36,8 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.apache.commons.compress.utils.Lists;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 			IMachineInterfaceConnection.CAPABILITY, this, this::getFacing
 	);
 
-	public List<MachineInterfaceConfig<?>> configurations = Lists.newArrayList();
+	public List<MachineInterfaceConfig<?>> configurations = new ArrayList<>();
 
 	private final int[] outputs = new int[DyeColor.values().length];
 

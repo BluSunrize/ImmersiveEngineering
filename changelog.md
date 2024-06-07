@@ -2,6 +2,7 @@
 - Re-add CC-Tweaked intregration (Malte)
 - Add missing redstone acid recipe to the manual (BluSunrize)
 - Fix fractions not rendering properly in the manual (BluSunrize)
+- Fix Machine Interface crashing on servers (BluSunrize)
 
 ##### Version 1.20.4-11.2.0-173
 - Overhaul the Engineering's Manual (voidsong-dragonfly)
