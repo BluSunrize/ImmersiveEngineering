@@ -1,3 +1,8 @@
+##### Version 1.20.4-11.3.0-pre
+- Re-add CC-Tweaked intregration (Malte)
+- Add missing redstone acid recipe to the manual (BluSunrize)
+- Fix fractions not rendering properly in the manual (BluSunrize)
+
 ##### Version 1.20.4-11.2.0-173
 - Overhaul the Engineering's Manual (voidsong-dragonfly)
     - Splitting various long entries into multiple smaller ones (fluid transport, logic circuits, ...)
