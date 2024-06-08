@@ -61,6 +61,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -323,21 +324,21 @@ public class BlockStates extends ExtendedBlockstateProvider
 			ModelFile windowModel = models()
 					.withExistingParent("treated_window", modLoc("block/window_thick"))
 					.texture("frame", "immersiveengineering:block/wooden_decoration/treated_wood_vertical");
-			createHorizontalRotatedBlock(WoodenDecoration.WINDOW, windowModel);
+			createRotatedBlock(WoodenDecoration.WINDOW, windowModel, IEProperties.FACING_ALL, List.of(), 0, 180);
 			itemModel(WoodenDecoration.WINDOW, windowModel);
 		}
 		{
 			ModelFile windowModel = models()
 					.withExistingParent("steel_window", modLoc("block/window_thin"))
 					.texture("frame", "immersiveengineering:block/metal/storage_steel");
-			createHorizontalRotatedBlock(MetalDecoration.STEEL_WINDOW, windowModel);
+			createRotatedBlock(MetalDecoration.STEEL_WINDOW, windowModel, IEProperties.FACING_ALL, List.of(), 0, 180);
 			itemModel(MetalDecoration.STEEL_WINDOW, windowModel);
 		}
 		{
 			ModelFile windowModel = models()
 					.withExistingParent("alu_window", modLoc("block/window_thin"))
 					.texture("frame", "immersiveengineering:block/metal/storage_aluminum");
-			createHorizontalRotatedBlock(MetalDecoration.ALU_WINDOW, windowModel);
+			createRotatedBlock(MetalDecoration.ALU_WINDOW, windowModel, IEProperties.FACING_ALL, List.of(), 0, 180);
 			itemModel(MetalDecoration.ALU_WINDOW, windowModel);
 		}
 
