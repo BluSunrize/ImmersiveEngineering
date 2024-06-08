@@ -30,7 +30,6 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -145,14 +144,14 @@ public class ElectromagnetBlockEntity extends IEBaseBlockEntity implements IESer
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
+		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
-		EnergyHelper.serializeTo(energyStorage, nbt);
+		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 	}
 
 	public static void registerCapabilities(BECapabilityRegistrar<ElectromagnetBlockEntity> registrar)
@@ -185,6 +184,6 @@ public class ElectromagnetBlockEntity extends IEBaseBlockEntity implements IESer
 			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 }

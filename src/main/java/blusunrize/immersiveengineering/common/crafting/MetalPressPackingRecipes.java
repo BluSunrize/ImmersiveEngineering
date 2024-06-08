@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class MetalPressPackingRecipes
 {
-	public static final CachedRecipeList<CraftingRecipe> CRAFTING_RECIPE_MAP = new CachedRecipeList<>(() -> RecipeType.CRAFTING, CraftingRecipe.class);
+	public static final CachedRecipeList<CraftingRecipe> CRAFTING_RECIPE_MAP = new CachedRecipeList<>(() -> RecipeType.CRAFTING);
 	public static final ResourceLocation UNPACK_ID = ImmersiveEngineering.rl("unpacking");
 	public static final ResourceLocation PACK4_ID = ImmersiveEngineering.rl("packing4");
 	public static final ResourceLocation PACK9_ID = ImmersiveEngineering.rl("packing9");

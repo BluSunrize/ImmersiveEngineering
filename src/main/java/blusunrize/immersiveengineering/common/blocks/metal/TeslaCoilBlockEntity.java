@@ -44,7 +44,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -366,7 +365,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
+		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 	}
 
 	@Override
@@ -374,7 +373,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.putBoolean("lowPower", lowPower);
-		EnergyHelper.serializeTo(energyStorage, nbt);
+		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 	}
 
 	@Override
@@ -410,7 +409,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 			BlockEntity te = level.getBlockEntity(getBlockPos().relative(getFacing(), -1));
 			if(te instanceof TeslaCoilBlockEntity)
 				return ((TeslaCoilBlockEntity)te).screwdriverUseSide(side, player, hand, hitVec);
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 		if(!level.isClientSide)
 		{
@@ -441,7 +440,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				this.markContainingBlockForUpdate(null);
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override

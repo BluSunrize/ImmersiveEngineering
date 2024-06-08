@@ -72,20 +72,19 @@ import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.common.Tags.EntityTypes;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
-import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
+import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
@@ -124,10 +123,10 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onItemPickup(ItemPickupEvent event)
+	public void onItemPickup(ItemEntityPickupEvent event)
 	{
-		Player player = event.getEntity();
-		ItemStack stack = event.getStack();
+		Player player = event.getPlayer();
+		ItemStack stack = event.getItemEntity().getItem();
 		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
 		{
 			ResourceLocation shader = ((IShaderItem)stack.getItem()).getShaderName(stack);
@@ -160,11 +159,12 @@ public class EventHandler
 
 
 	@SubscribeEvent
-	public void onWorldTick(LevelTickEvent event)
+	public void onWorldTick(LevelTickEvent.Pre event)
 	{
-		if(event.level.isClientSide||event.phase!=TickEvent.Phase.START)
+		final var level = event.getLevel();
+		if(level.isClientSide)
 			return;
-		GlobalWireNetwork.getNetwork(event.level).update(event.level);
+		GlobalWireNetwork.getNetwork(level).update(level);
 
 		// Explicitly support tasks adding more tasks to be delayed
 		int numToRun = SERVER_TASKS.size();
@@ -175,7 +175,7 @@ public class EventHandler
 				next.run();
 		}
 
-		final Set<IEExplosion> explosionsInLevel = currentExplosions.get(event.level);
+		final Set<IEExplosion> explosionsInLevel = currentExplosions.get(level);
 		if(explosionsInLevel!=null)
 		{
 			Iterator<IEExplosion> itExplosion = explosionsInLevel.iterator();
@@ -286,9 +286,10 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onLivingUpdate(LivingTickEvent event)
+	public void onLivingUpdate(EntityTickEvent.Pre event)
 	{
-		LivingEntity entity = event.getEntity();
+		if(!(event.getEntity() instanceof LivingEntity entity))
+			return;
 		ItemStack chestplate = entity.getItemBySlot(EquipmentSlot.CHEST);
 		if(entity instanceof Player player&&!chestplate.isEmpty()&&ItemNBTHelper.hasKey(chestplate, Lib.NBT_Powerpack))
 		{

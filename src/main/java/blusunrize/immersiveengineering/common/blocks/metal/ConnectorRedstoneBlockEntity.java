@@ -33,7 +33,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -164,7 +163,7 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 	{
 		if(level.isClientSide)
 			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneConnector, this);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	protected void updateAfterConfigure()

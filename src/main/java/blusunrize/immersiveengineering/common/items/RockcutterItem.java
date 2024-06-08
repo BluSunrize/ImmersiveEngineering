@@ -42,7 +42,7 @@ public class RockcutterItem extends SawbladeItem
 	@Override
 	public void modifyEnchants(Mutable baseEnchants)
 	{
-		baseEnchants.put(Enchantments.SILK_TOUCH, 1);
+		baseEnchants.set(Enchantments.SILK_TOUCH, 1);
 	}
 
 	@Override

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -41,7 +41,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
-		String key = getCategory(stack);
+		String key = stack.get(IEDataComponents.BLUEPRINT);
 		if(key.isEmpty())
 			return;
 		String formatKey = Lib.DESC_INFO+"blueprint."+key;
@@ -50,6 +50,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 			list.add(Component.literal(key));
 		else
 			list.add(Component.translatable(formatKey));
+		final var world = ImmersiveEngineering.proxy.getClientWorld();
 		if(world==null)
 			return;
 		List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(world, key);
@@ -74,7 +75,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 			for(String key : BlueprintCraftingRecipe.getCategoriesWithRecipes(level))
 			{
 				ItemStack stack = new ItemStack(this);
-				ItemNBTHelper.putString(stack, "blueprint", key);
+				stack.set(IEDataComponents.BLUEPRINT, key);
 				out.accept(stack);
 			}
 	}
@@ -82,11 +83,6 @@ public class EngineersBlueprintItem extends IEBaseItem
 	@Nonnull
 	public static List<RecipeHolder<BlueprintCraftingRecipe>> getRecipes(Level level, ItemStack stack)
 	{
-		return BlueprintCraftingRecipe.findRecipes(level, getCategory(stack));
-	}
-
-	public static String getCategory(ItemStack stack)
-	{
-		return ItemNBTHelper.getString(stack, "blueprint");
+		return BlueprintCraftingRecipe.findRecipes(level, stack.get(IEDataComponents.BLUEPRINT));
 	}
 }

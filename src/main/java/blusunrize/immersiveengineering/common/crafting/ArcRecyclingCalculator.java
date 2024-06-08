@@ -30,8 +30,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -110,7 +110,7 @@ public class ArcRecyclingCalculator
 			}
 
 			@SubscribeEvent
-			public void onServerTick(ServerTickEvent ev)
+			public void onServerTick(ServerTickEvent.Pre ev)
 			{
 				fillInRecipes(ServerLifecycleHooks.getCurrentServer());
 			}

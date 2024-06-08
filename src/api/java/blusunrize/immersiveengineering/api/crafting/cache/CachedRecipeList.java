@@ -39,21 +39,19 @@ public class CachedRecipeList<R extends Recipe<?>>
 	private static int reloadCount = 0;
 
 	private final Supplier<RecipeType<R>> type;
-	private final Class<R> recipeClass;
-	private Map<ResourceLocation, R> recipes;
+	private Map<ResourceLocation, RecipeHolder<R>> recipes;
 	private List<RecipeHolder<R>> recipeHolders;
 	private boolean cachedDataIsClient;
 	private int cachedAtReloadCount = INVALID_RELOAD_COUNT;
 
-	public CachedRecipeList(Supplier<RecipeType<R>> type, Class<R> recipeClass)
+	public CachedRecipeList(Supplier<RecipeType<R>> type)
 	{
 		this.type = type;
-		this.recipeClass = recipeClass;
 	}
 
 	public CachedRecipeList(IERecipeTypes.TypeWithClass<R> type)
 	{
-		this(type.type(), type.recipeClass());
+		this(type.type());
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
@@ -87,6 +85,12 @@ public class CachedRecipeList<R extends Recipe<?>>
 
 	public R getById(@Nonnull Level level, ResourceLocation name)
 	{
+		var holder = holderById(level, name);
+		return holder!=null?holder.value(): null;
+	}
+
+	public RecipeHolder<R> holderById(@Nonnull Level level, ResourceLocation name)
+	{
 		updateCache(level.getRecipeManager(), level.isClientSide());
 		return recipes.get(name);
 	}
@@ -106,10 +110,8 @@ public class CachedRecipeList<R extends Recipe<?>>
 					else
 						return Stream.of(r);
 				})
-				.collect(Collectors.toMap(RecipeHolder::id, rh -> recipeClass.cast(rh.value())));
-		this.recipeHolders = this.recipes.entrySet().stream()
-				.map(e -> new RecipeHolder<>(e.getKey(), e.getValue()))
-				.toList();
+				.collect(Collectors.toMap(RecipeHolder::id, rh -> (RecipeHolder<R>)rh));
+		this.recipeHolders = List.copyOf(this.recipes.values());
 		this.cachedDataIsClient = isClient;
 		this.cachedAtReloadCount = reloadCount;
 	}

@@ -90,7 +90,7 @@ public class BulletHandler
 		return REGISTRY.values();
 	}
 
-	public interface IBullet
+	public interface IBullet<StackData>
 	{
 		/**
 		 * @return whether this cartridge should appear as an item and should be fired from revolver. Return false if this is a bullet the player can't get access to
@@ -100,12 +100,12 @@ public class BulletHandler
 			return true;
 		}
 
-		default String getTranslationKey(ItemStack cartridge, String baseName)
+		default String getTranslationKey(StackData data, String baseName)
 		{
 			return baseName;
 		}
 
-		default void addTooltip(ItemStack stack, @Nullable TooltipContext world, List<Component> list, TooltipFlag flag)
+		default void addTooltip(StackData data, @Nullable TooltipContext world, List<Component> list, TooltipFlag flag)
 		{
 		}
 
@@ -116,12 +116,12 @@ public class BulletHandler
 
 		/**
 		 * @param shooter
-		 * @param cartridge
+		 * @param data
 		 * @param projectile
 		 * @param charged    whether the revolver has the electron tube upgrade
 		 * @return the given or a custom entity
 		 */
-		default Entity getProjectile(@Nullable Player shooter, ItemStack cartridge, Entity projectile, boolean charged)
+		default Entity getProjectile(@Nullable Player shooter, StackData data, Entity projectile, boolean charged)
 		{
 			return projectile;
 		}
@@ -144,7 +144,7 @@ public class BulletHandler
 		/**
 		 * @return the colour applied to the given layer
 		 */
-		int getColour(ItemStack stack, int layer);
+		int getColour(StackData data, int layer);
 
 		/**
 		 * @return whether this cartridge should be allowed to be placed in, and used from a turret.<br>
@@ -164,7 +164,7 @@ public class BulletHandler
 		}
 	}
 
-	public static class DamagingBullet implements IBullet
+	public static class DamagingBullet<StackData> implements IBullet<StackData>
 	{
 		final DamageSourceProvider damageSourceGetter;
 		final DoubleSupplier damage;
@@ -238,7 +238,7 @@ public class BulletHandler
 		}
 
 		@Override
-		public int getColour(ItemStack stack, int layer)
+		public int getColour(StackData data, int layer)
 		{
 			return 0xffffffff;
 		}

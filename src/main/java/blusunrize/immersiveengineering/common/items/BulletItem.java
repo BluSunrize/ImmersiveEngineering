@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.mojang.datafixers.util.Unit;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.EntityHitResult;
@@ -74,19 +76,19 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 
 	public static void initBullets()
 	{
-		BulletHandler.registerBullet(CASULL, new BulletHandler.DamagingBullet(
+		BulletHandler.registerBullet(CASULL, new BulletHandler.DamagingBullet<Unit>(
 				(projectile, shooter, hit) -> IEDamageSources.causeCasullDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Casull::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_casull")));
 
-		BulletHandler.registerBullet(ARMOR_PIERCING, new BulletHandler.DamagingBullet(
+		BulletHandler.registerBullet(ARMOR_PIERCING, new BulletHandler.DamagingBullet<Unit>(
 				(projectile, shooter, hit) -> IEDamageSources.causePiercingDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_AP::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_armor_piercing")));
 
-		BulletHandler.registerBullet(BUCKSHOT, new BulletHandler.DamagingBullet(
+		BulletHandler.registerBullet(BUCKSHOT, new BulletHandler.DamagingBullet<Unit>(
 				(projectile, shooter, hit) -> IEDamageSources.causeBuckshotDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Buck::get,
 				true,
@@ -110,7 +112,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			}
 		});
 
-		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet(null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), new ResourceLocation("immersiveengineering:item/bullet_he"))
+		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet<Unit>(null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), new ResourceLocation("immersiveengineering:item/bullet_he"))
 		{
 			@Override
 			public void onHitTarget(Level world, HitResult target, UUID shooterId, Entity projectile, boolean headshot)
@@ -122,7 +124,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			}
 
 			@Override
-			public Entity getProjectile(@Nullable Player shooter, ItemStack cartridge, Entity projectile, boolean charged)
+			public Entity getProjectile(@Nullable Player shooter, Unit ignored, Entity projectile, boolean charged)
 			{
 				if(projectile instanceof RevolvershotEntity)
 				{
@@ -139,7 +141,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			}
 		});
 
-		BulletHandler.registerBullet(SILVER, new BulletHandler.DamagingBullet(
+		BulletHandler.registerBullet(SILVER, new BulletHandler.DamagingBullet<Unit>(
 				(projectile, shooter, hit) -> IEDamageSources.causeSilverDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Silver::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
@@ -155,7 +157,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			}
 		});
 
-		BulletHandler.registerBullet(DRAGONS_BREATH, new BulletHandler.DamagingBullet(
+		BulletHandler.registerBullet(DRAGONS_BREATH, new BulletHandler.DamagingBullet<Unit>(
 				(projectile, shooter, hit) -> IEDamageSources.causeDragonsbreathDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Dragon::get,
 				true,
@@ -170,7 +172,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			}
 
 			@Override
-			public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
+			public Entity getProjectile(Player shooter, Unit ignored, Entity projectile, boolean electro)
 			{
 				((RevolvershotEntity)projectile).setTickLimit(10);
 				projectile.igniteForSeconds(3);
@@ -215,12 +217,12 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		return type.getColour(stack, pass);
 	}
 
-	public IBullet getType()
+	public IBullet<?> getType()
 	{
 		return type;
 	}
 
-	public static class PotionBullet extends BulletHandler.DamagingBullet
+	public static class PotionBullet extends BulletHandler.DamagingBullet<PotionContents>
 	{
 		public PotionBullet()
 		{
@@ -231,20 +233,23 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		}
 
 		@Override
-		public String getTranslationKey(ItemStack cartridge, String baseName)
+		public String getTranslationKey(PotionContents potion, String baseName)
 		{
-			ItemStack pot = ItemNBTHelper.getItemStack(cartridge, "potion");
-			if(!pot.isEmpty())
+			// TODO need to attach more
+			if(potion.hasEffects())
+			{
 				if(pot.getItem() instanceof LingeringPotionItem)
 					baseName += ".linger";
 				else if(pot.getItem() instanceof SplashPotionItem)
 					baseName += ".splash";
+			}
 			return baseName;
 		}
 
 		@Override
-		public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
+		public Entity getProjectile(Player shooter, PotionContents potion, Entity projectile, boolean electro)
 		{
+			// TODO replace by automatic attachment of bullet data
 			((RevolvershotEntity)projectile).bulletPotion = ItemNBTHelper.getItemStack(cartridge, "potion");
 			return projectile;
 		}

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.fluids;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +47,7 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 
 	public IEItemFluidHandler(ItemStack container, int capacity)
 	{
-		super(container, capacity);
+		super(IEDataComponents.GENERIC_FLUID, container, capacity);
 	}
 
 	public int getCapacity()

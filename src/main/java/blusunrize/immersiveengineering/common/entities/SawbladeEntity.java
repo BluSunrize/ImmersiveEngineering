@@ -58,7 +58,7 @@ public class SawbladeEntity extends IEProjectileEntity
 
 	@Nonnull
 	@Override
-	protected ItemStack getPickupItem()
+	protected ItemStack getDefaultPickupItem()
 	{
 		return ammo;
 	}

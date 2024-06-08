@@ -24,7 +24,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.util.*;
@@ -42,7 +42,7 @@ public class SpawnInterdictionHandler
 	}
 
 	@SubscribeEvent
-	public static void onEntitySpawnCheck(MobSpawnEvent.FinalizeSpawn event)
+	public static void onEntitySpawnCheck(FinalizeSpawnEvent event)
 	{
 		if(event.isSpawnCancelled()||event.getSpawner()!=null)
 			return;

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -35,14 +36,14 @@ public class ShaderBagItem extends IEBaseItem implements IColouredItem
 
 	public ShaderBagItem(Rarity rarity)
 	{
-		super(new Properties());
+		super(new Properties().component(DataComponents.RARITY, rarity));
 		this.rarity = rarity;
 	}
 
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
-		return rarity.color.getColor();
+		return rarity.color().getColor();
 	}
 
 	@Override
@@ -57,12 +58,6 @@ public class ShaderBagItem extends IEBaseItem implements IColouredItem
 	public String getDescriptionId()
 	{
 		return "item."+ImmersiveEngineering.MODID+".shader_bag";
-	}
-
-	@Override
-	public Rarity getRarity(ItemStack stack)
-	{
-		return rarity;
 	}
 
 	@Override

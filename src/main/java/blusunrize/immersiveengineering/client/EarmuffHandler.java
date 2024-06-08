@@ -21,8 +21,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
-import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -41,9 +40,9 @@ public class EarmuffHandler
 	 * need to force the volume update when necessary.
 	 */
 	@SubscribeEvent
-	public static void updateEarmuffMultipliers(ClientTickEvent ev)
+	public static void updateEarmuffMultipliers(ClientTickEvent.Pre ev)
 	{
-		if(ev.phase!=Phase.START||ClientUtils.mc().player==null)
+		if(ClientUtils.mc().player==null)
 			return;
 		Map<SoundSource, Float> newMultipliers = makeDefaultMultipliers();
 		ItemStack earmuffs = EarmuffsItem.EARMUFF_GETTERS.getFrom(ClientUtils.mc().player);

@@ -23,7 +23,6 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
@@ -122,7 +121,7 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 	{
 		if(level.isClientSide)
 			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override

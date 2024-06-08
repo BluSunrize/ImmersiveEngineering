@@ -19,7 +19,7 @@ public class IEStairsBlock extends StairBlock implements IIEBlock
 
 	public <T extends Block & IIEBlock> IEStairsBlock(Properties properties, Supplier<T> base)
 	{
-		super(() -> base.get().defaultBlockState(), properties);
+		super(base.get().defaultBlockState(), properties);
 		this.base = base;
 	}
 

@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
-import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.common.network.MessageRequestRedstoneUpdate;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -43,7 +42,7 @@ import java.util.List;
 public class VoltmeterItem extends IEBaseItem
 {
 	public static RemoteEnergyData lastEnergyUpdate = new RemoteEnergyData(
-			FastEither.left(BlockPos.ZERO), 0, false, 0, 0
+			Either.left(BlockPos.ZERO), 0, false, 0, 0
 	);
 	public static RemoteRedstoneData lastRedstoneUpdate = new RemoteRedstoneData(
 			BlockPos.ZERO, 0, false, (byte)0
@@ -57,16 +56,16 @@ public class VoltmeterItem extends IEBaseItem
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn)
 	{
-		super.appendHoverText(stack, worldIn, tooltip, flagIn);
-		if(WirecoilUtils.hasWireLink(stack))
+		super.appendHoverText(stack, ctx, tooltip, flagIn);
+		if(stack.has(IEApiDataComponents.WIRE_LINK))
 		{
-			WireLink link = WireLink.readFromItem(stack);
+			WireLink link = stack.get(IEApiDataComponents.WIRE_LINK);
 			tooltip.add(Component.translatable(
 					Lib.DESC_INFO+"attachedToDim",
-					link.cp.getX(),
-					link.cp.getY(),
-					link.cp.getZ(),
-					link.dimension.toString()
+					link.cp().getX(),
+					link.cp().getY(),
+					link.cp().getZ(),
+					link.dimension().toString()
 			));
 		}
 	}
@@ -103,26 +102,23 @@ public class VoltmeterItem extends IEBaseItem
 				ConnectionPoint cp = ((IImmersiveConnectable)bEntity).getTargetedPoint(targetingInfo, delta);
 				if(cp==null)
 					return InteractionResult.FAIL;
-				if(!WirecoilUtils.hasWireLink(stack))
-				{
-					WireLink link = WireLink.create(cp, world, delta, targetingInfo);
-					link.writeToItem(stack);
-				}
+				if(!stack.has(IEApiDataComponents.WIRE_LINK))
+					stack.set(IEApiDataComponents.WIRE_LINK, WireLink.create(cp, world, delta, targetingInfo));
 				else
 				{
-					WireLink link = WireLink.readFromItem(stack);
-					if(link.dimension.equals(world.dimension()))
+					WireLink link = stack.remove(IEApiDataComponents.WIRE_LINK);
+					if(link.dimension().equals(world.dimension()))
 					{
 						GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 						LocalWireNetwork netHere = global.getNullableLocalNet(cp);
-						LocalWireNetwork netLink = global.getNullableLocalNet(link.cp);
+						LocalWireNetwork netLink = global.getNullableLocalNet(link.cp());
 						if(netHere==netLink&&netHere!=null)
 						{
 							EnergyTransferHandler energyHandler = netHere.getHandler(EnergyTransferHandler.ID,
 									EnergyTransferHandler.class);
 							if(energyHandler!=null)
 							{
-								Path energyPath = energyHandler.getPath(link.cp, cp);
+								Path energyPath = energyHandler.getPath(link.cp(), cp);
 								double loss;
 								if(energyPath!=null)
 									loss = energyPath.loss;
@@ -134,7 +130,6 @@ public class VoltmeterItem extends IEBaseItem
 							}
 						}
 					}
-					WirecoilUtils.clearWireLink(stack);
 				}
 				return InteractionResult.SUCCESS;
 			}

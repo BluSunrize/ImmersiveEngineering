@@ -26,7 +26,6 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -252,7 +251,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	private final IFluidHandler tankCap = makeFluidInput(tank);

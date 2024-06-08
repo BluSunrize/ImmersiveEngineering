@@ -320,7 +320,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		if(nbt.contains("placeCobble", Tag.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(provider, nbt.getCompound("tank"));
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
+		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -334,7 +334,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);
 		nbt.put("tank", tank.writeToNBT(provider, new CompoundTag()));
-		EnergyHelper.serializeTo(energyStorage, nbt);
+		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 	}
 
 	@Override

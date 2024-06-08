@@ -16,7 +16,8 @@ import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.BucketItem;
@@ -34,13 +35,9 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -241,7 +238,7 @@ public class IEFluids
 		private static BucketItem makeBucket(Supplier<IEFluid> still, int burnTime)
 		{
 			return new BucketItem(
-					still, new Item.Properties()
+					still.get(), new Item.Properties()
 					.stacksTo(1)
 					.craftRemainder(Items.BUCKET))
 			{

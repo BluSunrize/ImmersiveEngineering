@@ -50,7 +50,7 @@ public class SurveyToolsItem extends IEBaseItem
 
 	public SurveyToolsItem()
 	{
-		super(new Properties().stacksTo(1).defaultDurability(300));
+		super(new Properties().stacksTo(1).durability(300));
 		// earthen materials
 		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(IETags.surveyToolTargets));
 		// Stone, Diorite, Andesite, etc.

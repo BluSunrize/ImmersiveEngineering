@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.bus.api.Event;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -66,9 +65,9 @@ public class BlockMatcher
 	public static class Result
 	{
 		final int strength;
-		final Event.Result type;
+		final ResultType type;
 
-		private Result(int strength, Event.Result type)
+		private Result(int strength, ResultType type)
 		{
 			this.strength = strength;
 			this.type = type;
@@ -76,17 +75,17 @@ public class BlockMatcher
 
 		public boolean isAllow()
 		{
-			return type==Event.Result.ALLOW;
+			return type==ResultType.ALLOW;
 		}
 
 		public boolean isDefault()
 		{
-			return type==Event.Result.DEFAULT;
+			return type==ResultType.DEFAULT;
 		}
 
 		public boolean isDeny()
 		{
-			return type==Event.Result.DENY;
+			return type==ResultType.DENY;
 		}
 
 		public static Result combine(Result a, Result b)
@@ -103,18 +102,23 @@ public class BlockMatcher
 			}
 		}
 
-		public static final Result DEFAULT = new Result(0, Event.Result.DEFAULT);
+		public static final Result DEFAULT = new Result(0, ResultType.DEFAULT);
 
 		public static Result allow(int strength)
 		{
 			Preconditions.checkArgument(strength > 0);
-			return new Result(strength, Event.Result.ALLOW);
+			return new Result(strength, ResultType.ALLOW);
 		}
 
 		public static Result deny(int strength)
 		{
 			Preconditions.checkArgument(strength > 0);
-			return new Result(strength, Event.Result.DENY);
+			return new Result(strength, ResultType.DENY);
 		}
+	}
+
+	public enum ResultType
+	{
+		ALLOW, DEFAULT, DENY
 	}
 }

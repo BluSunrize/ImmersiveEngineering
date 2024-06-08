@@ -14,7 +14,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.ItemData;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,21 +25,21 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
+import net.minecraft.world.item.component.MapDecorations;
+import net.minecraft.world.item.component.MapDecorations.Entry;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.HitResult;
@@ -46,13 +49,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IBlockEntityDrop, IPlayerInteraction,
 		IBlockOverlayText, IBlockBounds
 {
-	public ItemStack coresample = ItemStack.EMPTY;
+	public CoresampleItem.ItemData containedSample;
 
 	public CoresampleBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -62,13 +66,16 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		coresample = ItemStack.parseOptional(provider, nbt.getCompound("coresample"));
+		containedSample = ItemData.CODEC.decode(NbtOps.INSTANCE, nbt.get("containedSample"))
+				.result()
+				.orElseThrow()
+				.getFirst();
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		nbt.put("coresample", coresample.save(provider));
+		nbt.put("coresample", ItemData.CODEC.encodeStart(NbtOps.INSTANCE, containedSample).getOrThrow());
 	}
 
 	@Override
@@ -92,67 +99,61 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	@Override
 	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		ColumnPos coords = CoresampleItem.getCoords(coresample);
 		if(player.isShiftKeyDown())
 		{
 			if(!level.isClientSide)
 			{
-				ItemEntity entityitem = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), coresample, 0, 0, 0);
+				ItemEntity entityitem = new ItemEntity(
+						level, player.getX(), player.getY(), player.getZ(), makeSampleStack(), 0, 0, 0
+				);
 				level.removeBlock(worldPosition, false);
 				level.addFreshEntity(entityitem);
 			}
 			return true;
 		}
-		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP&&coords!=null)
+		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP)
 		{
 			if(!level.isClientSide)
 			{
 				MapItemSavedData mapData = MapItem.getSavedData(heldItem, player.getCommandSenderWorld());
 				if(mapData!=null)
 				{
-					if(mapData.dimension!=CoresampleItem.getDimension(coresample))
+					if(mapData.dimension!=containedSample.position().dimension())
 					{
 						player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapDimension"));
 						return true;
 					}
 
-					String ident = "ie:coresample_"+coords;
-					CompoundTag mapTagCompound = heldItem.getOrCreateTag();
-					ListTag nbttaglist = mapTagCompound.getList("Decorations", 10);
-
-					for(int i = 0; i < nbttaglist.size(); i++)
+					String ident = "ie:coresample_"+containedSample.position().position();
+					MapDecorations oldDecorations = heldItem.getOrDefault(DataComponents.MAP_DECORATIONS, MapDecorations.EMPTY);
+					if(oldDecorations.decorations().containsKey(ident))
 					{
-						CompoundTag tagCompound = (CompoundTag)nbttaglist.get(i);
-						if(ident.equalsIgnoreCase(tagCompound.getString("id")))
-						{
-							nbttaglist.remove(i);
-							mapTagCompound.put("Decorations", nbttaglist);
-							//TODO mapData.removeDecoration(ident);
-							return true;
-						}
-					}
-
-					double sampleX = coords.x()+.5;
-					double sampleZ = coords.z()+.5;
-
-					int mapScale = 1<<mapData.scale;
-					float distX = (float)(sampleX-mapData.centerX)/(float)mapScale;
-					float distZ = (float)(sampleZ-mapData.centerZ)/(float)mapScale;
-					if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
-					{
-						CompoundTag tagCompound = new CompoundTag();
-						tagCompound.putString("id", ident);
-						tagCompound.putByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
-						tagCompound.putDouble("x", sampleX);
-						tagCompound.putDouble("z", sampleZ);
-						tagCompound.putDouble("rot", 180.0);
-						tagCompound.put("minerals", CoresampleItem.getSimplifiedMineralList(level, coresample));
-
-						nbttaglist.add(tagCompound);
-						mapTagCompound.put("Decorations", nbttaglist);
+						HashMap<String, Entry> newMap = new HashMap<>(oldDecorations.decorations());
+						newMap.remove(ident);
+						heldItem.set(DataComponents.MAP_DECORATIONS, new MapDecorations(newMap));
 					}
 					else
-						player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapFail"));
+					{
+						double sampleX = containedSample.position().x()+.5;
+						double sampleZ = containedSample.position().z()+.5;
+
+						int mapScale = 1<<mapData.scale;
+						float distX = (float)(sampleX-mapData.centerX)/(float)mapScale;
+						float distZ = (float)(sampleZ-mapData.centerZ)/(float)mapScale;
+						if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
+						{
+							MapDecorations.Entry sampleEntry = new MapDecorations.Entry(
+									MapDecorationTypes.TARGET_POINT, sampleX, sampleZ, 180
+							);
+							// TODO
+							// tagCompound.put("minerals", CoresampleItem.getSimplifiedMineralList(level, coresample));
+							heldItem.set(
+									DataComponents.MAP_DECORATIONS, oldDecorations.withDecoration(ident, sampleEntry)
+							);
+						}
+						else
+							player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapFail"));
+					}
 				}
 			}
 			return true;
@@ -161,25 +162,25 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	}
 
 	//TODO @Override
-	@Nullable
-	public Component getDisplayName()
-	{
-		if(coresample.has(DataComponents.CUSTOM_NAME))
-			return coresample.getHoverName();
-		else
-			return Component.translatable("item.immersiveengineering.coresample.name");
-	}
+	// @Nullable
+	// public Component getDisplayName()
+	// {
+	// 	if(coresample.has(DataComponents.CUSTOM_NAME))
+	// 		return coresample.getHoverName();
+	// 	else
+	// 		return Component.translatable("item.immersiveengineering.coresample.name");
+	// }
 
 	@Override
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
-		drop.accept(this.coresample);
+		drop.accept(makeSampleStack());
 	}
 
 	@Override
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		this.coresample = ctx.getItemInHand().copy();
+		this.containedSample = ctx.getItemInHand().getOrDefault(IEDataComponents.CORESAMPLE, ItemData.EMPTY);
 	}
 
 	private Component[] overlay = null;
@@ -190,7 +191,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 		if(overlay==null)
 		{
 			List<Component> list = new ArrayList<>();
-			CoresampleItem.getCoresampleInfo(coresample, list, ChatFormatting.WHITE, TooltipContext.of(level), false, false);
+			CoresampleItem.getCoresampleInfo(containedSample, list, ChatFormatting.WHITE, level, false, false);
 			overlay = list.toArray(new Component[0]);
 		}
 		return overlay;
@@ -209,5 +210,12 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return getFacing().getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
+	}
+
+	private ItemStack makeSampleStack()
+	{
+		ItemStack coresampleStack = Misc.CORESAMPLE.asItem().getDefaultInstance();
+		coresampleStack.set(IEDataComponents.CORESAMPLE, this.containedSample);
+		return coresampleStack;
 	}
 }

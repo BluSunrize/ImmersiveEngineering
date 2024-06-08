@@ -55,7 +55,7 @@ public class IEShieldItem extends UpgradeableToolItem
 {
 	public IEShieldItem()
 	{
-		super(new Properties().defaultDurability(1024), "SHIELD");
+		super(new Properties().durability(1024), "SHIELD");
 	}
 
 	@Override

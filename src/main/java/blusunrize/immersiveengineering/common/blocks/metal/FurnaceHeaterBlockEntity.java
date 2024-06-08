@@ -92,13 +92,13 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
+		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		EnergyHelper.serializeTo(energyStorage, nbt);
+		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 	}
 
 	public static void registerCapabilities(BECapabilityRegistrar<FurnaceHeaterBlockEntity> registrar)

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -38,7 +37,7 @@ public class PotionRecipeGenerators
 	public static List<MixerRecipe> initPotionRecipes()
 	{
 		Map<Potion, List<MixerRecipe>> recipes = new HashMap<>();
-		PotionHelper.applyToAllPotionRecipes((out, in, reagent) -> registerPotionRecipe(out.value(), in, reagent, recipes));
+		PotionHelper.applyToAllPotionRecipes((out, in, reagent) -> registerPotionRecipe(out, in, reagent, recipes));
 		return recipes.values().stream()
 				.flatMap(List::stream)
 				.collect(Collectors.toList());
@@ -71,15 +70,15 @@ public class PotionRecipeGenerators
 	}
 
 	public static void registerPotionRecipe(
-			Potion output, Holder<Potion> input, IngredientWithSize reagent, Map<Potion, List<MixerRecipe>> all
+			Holder<Potion> output, Holder<Potion> input, IngredientWithSize reagent, Map<Potion, List<MixerRecipe>> all
 	)
 	{
-		ResourceLocation outputID = BuiltInRegistries.POTION.getKey(output);
+		ResourceLocation outputID = output.unwrapKey().orElseThrow().location();
 		if(!BLACKLIST.contains(outputID.toString()))
 		{
-			List<MixerRecipe> existing = all.computeIfAbsent(output, p -> new ArrayList<>());
+			List<MixerRecipe> existing = all.computeIfAbsent(output.value(), p -> new ArrayList<>());
 
-			MixerRecipe recipe = new MixerRecipe(getFluidStackForType(output, FluidType.BUCKET_VOLUME),
+			MixerRecipe recipe = new MixerRecipe(getFluidStackForType(Optional.of(output), FluidType.BUCKET_VOLUME),
 					getFluidTagForType(input, FluidType.BUCKET_VOLUME), List.of(reagent), 6400);
 			existing.add(recipe);
 		}

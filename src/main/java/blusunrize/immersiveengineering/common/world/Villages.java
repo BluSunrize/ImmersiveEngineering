@@ -35,6 +35,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -52,6 +53,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -60,6 +62,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool.Projection;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -67,15 +70,11 @@ import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -433,12 +432,16 @@ public class Villages
 				BlockPos blockPos = new BlockPos(veinPos.x(), 64, veinPos.z());
 				ItemStack selling = MapItem.create(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				MapItem.lockMap(world, selling);
-				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
-				selling.setHoverName(Component.translatable("item.immersiveengineering.map_orevein"));
+				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", MapDecorationTypes.RED_X);
+				selling.set(
+						DataComponents.ITEM_NAME,
+						Component.translatable("item.immersiveengineering.map_orevein")
+				);
 				ItemNBTHelper.setLore(selling, Component.translatable(vein.getMineral(world).getTranslationKey(vein.getMineralName())));
 				// return offer
 				return new MerchantOffer(
-						new ItemStack(Items.EMERALD, 8+random.nextInt(8)), new ItemStack(Items.COMPASS),
+						new ItemCost(Items.EMERALD, 8+random.nextInt(8)),
+						Optional.of(new ItemCost(Items.COMPASS)),
 						selling, 0, 1, 30, 0.5F
 				);
 			}
@@ -505,18 +508,18 @@ public class Villages
 	}
 
 	private static final TradeOutline EMERALD_FOR_ITEM = (buying, priceInfo, random, maxUses, xp, priceMultiplier) -> new MerchantOffer(
-			ItemHandlerHelper.copyStackWithSize(buying, priceInfo.getPrice(random)),
+			new ItemCost(buying.getItem(), priceInfo.getPrice(random)),
 			new ItemStack(Items.EMERALD),
 			maxUses, xp, priceMultiplier
 	);
 	private static final TradeOutline ONE_ITEM_FOR_EMERALDS = (selling, priceInfo, random, maxUses, xp, priceMultiplier) -> new MerchantOffer(
-			new ItemStack(Items.EMERALD, priceInfo.getPrice(random)),
+			new ItemCost(Items.EMERALD, priceInfo.getPrice(random)),
 			selling,
 			maxUses, xp, priceMultiplier
 	);
 	private static final TradeOutline ITEMS_FOR_ONE_EMERALD = (selling, priceInfo, random, maxUses, xp, priceMultiplier) -> new MerchantOffer(
-			new ItemStack(Items.EMERALD),
-			ItemHandlerHelper.copyStackWithSize(selling, priceInfo.getPrice(random)),
+			new ItemCost(Items.EMERALD),
+			selling.copyWithCount(priceInfo.getPrice(random)),
 			maxUses, xp, priceMultiplier
 	);
 

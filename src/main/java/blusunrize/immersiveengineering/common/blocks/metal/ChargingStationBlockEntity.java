@@ -160,7 +160,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
+		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 		inventory.set(0, ItemStack.parseOptional(provider, nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
@@ -168,7 +168,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		EnergyHelper.serializeTo(energyStorage, nbt);
+		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 		nbt.putBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
 			nbt.put("inventory", inventory.get(0).save(provider, new CompoundTag()));

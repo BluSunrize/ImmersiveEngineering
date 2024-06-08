@@ -164,7 +164,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		for(Direction f : DirectionUtils.VALUES)
 			nbt.putInt("sideConfig_"+f.ordinal(), sideConfig.get(f).ordinal());
 		if(energyStorage instanceof EnergyStorage forgeStorage)
-			EnergyHelper.serializeTo(forgeStorage, nbt);
+			EnergyHelper.serializeTo(forgeStorage, nbt, provider);
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		for(Direction f : DirectionUtils.VALUES)
 			sideConfig.put(f, IOSideConfig.values()[nbt.getInt("sideConfig_"+f.ordinal())]);
 		if(energyStorage instanceof EnergyStorage forgeStorage)
-			EnergyHelper.deserializeFrom(forgeStorage, nbt);
+			EnergyHelper.deserializeFrom(forgeStorage, nbt, provider);
 	}
 
 	public static void registerCapabilities(BECapabilityRegistrar<? extends CapacitorBlockEntity> registrar)

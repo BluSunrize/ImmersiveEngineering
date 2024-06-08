@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.register.IEIngredients;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  */
 public class IngredientFluidStack extends Ingredient
 {
-	public static final Codec<IngredientFluidStack> CODEC = FluidTagInput.CODEC.xmap(
+	public static final MapCodec<IngredientFluidStack> CODEC = FluidTagInput.MAP_CODEC.xmap(
 			IngredientFluidStack::new, IngredientFluidStack::getFluidTagInput
 	);
 

@@ -64,7 +64,7 @@ public class ChemthrowerAttackGoal<T extends Bulwark> extends ShieldCombatGoal<T
 
 			// Apply momentum from the player.
 			chem.setDeltaMovement(this.mob.getDeltaMovement().add(vecDir.scale(range)));
-			chem.setSecondsOnFire(10);
+			chem.igniteForSeconds(10);
 			if(!this.mob.level().isClientSide)
 				this.mob.level().addFreshEntity(chem);
 		}

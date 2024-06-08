@@ -107,7 +107,7 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 							throwerPos.z+v.z*0.875, fs);
 					chem.setDeltaMovement(vecDir.scale(range));
 					if(ignite)
-						chem.setSecondsOnFire(10);
+						chem.igniteForSeconds(10);
 					if(!level.isClientSide)
 						level.addFreshEntity(chem);
 				}

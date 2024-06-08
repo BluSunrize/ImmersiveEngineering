@@ -320,7 +320,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		fertilizerMod = nbt.getFloat("fertilizerMod");
 		if(!descPacket)
 		{
-			EnergyHelper.deserializeFrom(energyStorage, nbt);
+			EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 			tank.readFromNBT(provider, nbt.getCompound("tank"));
 			growth = nbt.getFloat("growth");
 		}
@@ -338,7 +338,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		nbt.putFloat("fertilizerMod", fertilizerMod);
 		if(!descPacket)
 		{
-			EnergyHelper.serializeTo(energyStorage, nbt);
+			EnergyHelper.serializeTo(energyStorage, nbt, provider);
 			CompoundTag tankTag = tank.writeToNBT(provider, new CompoundTag());
 			nbt.put("tank", tankTag);
 			nbt.putFloat("growth", growth);

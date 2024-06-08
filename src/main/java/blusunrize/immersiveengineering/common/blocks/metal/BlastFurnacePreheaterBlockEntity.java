@@ -136,7 +136,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 		else
-			EnergyHelper.deserializeFrom(energyStorage, nbt);
+			EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 	}
 
 	@Override
@@ -145,7 +145,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 		nbt.putInt("dummy", dummy);
 		nbt.putBoolean("active", active);
 		if(!descPacket)
-			EnergyHelper.serializeTo(energyStorage, nbt);
+			EnergyHelper.serializeTo(energyStorage, nbt, provider);
 	}
 
 	public static void registerCapabilities(BECapabilityRegistrar<BlastFurnacePreheaterBlockEntity> registrar)

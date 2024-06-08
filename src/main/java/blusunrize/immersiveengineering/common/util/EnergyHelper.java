@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
@@ -19,7 +19,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,7 +35,7 @@ public class EnergyHelper
 	public static final String ENERGY_KEY = "energy";
 	static HashMap<Item, Boolean> reverseInsertion = new HashMap<>();
 
-	public static void deserializeFrom(EnergyStorage storage, CompoundTag mainTag)
+	public static void deserializeFrom(EnergyStorage storage, CompoundTag mainTag, Provider provider)
 	{
 		Tag subtag;
 		if(mainTag.contains(LEGACY_ENERGY_KEY, Tag.TAG_INT))
@@ -45,12 +44,12 @@ public class EnergyHelper
 			subtag = mainTag.get(ENERGY_KEY);
 		else
 			subtag = IntTag.valueOf(0);
-		storage.deserializeNBT(subtag);
+		storage.deserializeNBT(provider, subtag);
 	}
 
-	public static void serializeTo(EnergyStorage storage, CompoundTag mainTag)
+	public static void serializeTo(EnergyStorage storage, CompoundTag mainTag, Provider provider)
 	{
-		mainTag.put(ENERGY_KEY, storage.serializeNBT());
+		mainTag.put(ENERGY_KEY, storage.serializeNBT(provider));
 	}
 
 	public static int forceExtractFlux(ItemStack stack, int energy, boolean simulate)

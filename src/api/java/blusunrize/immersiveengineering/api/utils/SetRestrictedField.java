@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ public class SetRestrictedField<T> implements Supplier<T>
 		Preconditions.checkState(tracker.state==TrackerState.INITIALIZING);
 		String currentMod = ModLoadingContext.get().getActiveNamespace();
 		Preconditions.checkState(
-				FMLLoader.getLaunchHandler().isData()||Lib.MODID.equals(currentMod),
+				DatagenModLoader.isRunningDataGen()||Lib.MODID.equals(currentMod),
 				"Restricted fields may only be set by Immersive Engineering, current mod is %s", currentMod
 		);
 		this.value = value;

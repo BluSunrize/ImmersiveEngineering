@@ -18,10 +18,10 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
 
@@ -43,7 +43,7 @@ public interface IVertexBufferHolder
 			.build());
 
 
-	static IVertexBufferHolder create(NonNullSupplier<List<BakedQuad>> getQuads)
+	static IVertexBufferHolder create(Supplier<List<BakedQuad>> getQuads)
 	{
 		return CREATE.get().apply(getQuads);
 	}
@@ -72,7 +72,7 @@ public interface IVertexBufferHolder
 		}
 	}
 
-	interface VertexBufferHolderFactory extends Function<NonNullSupplier<List<BakedQuad>>, IVertexBufferHolder>
+	interface VertexBufferHolderFactory extends Function<Supplier<List<BakedQuad>>, IVertexBufferHolder>
 	{
 		IVertexBufferHolder create(Renderer renderer);
 	}

@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.MixerSha
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler;
 import blusunrize.immersiveengineering.common.util.inventory.SlotwiseItemHandler.IOConstraint;
@@ -144,7 +143,7 @@ public class MixerLogic
 		{
 			FluidStack inTank = state.tank.getFluid();
 			final int maxAmount = Math.min(inTank.getAmount(), FluidType.BUCKET_VOLUME);
-			FluidStack out = Utils.copyFluidStackWithAmount(inTank, maxAmount, false);
+			FluidStack out = inTank.copyWithAmount(maxAmount);
 			int drained = output.fill(out, FluidAction.EXECUTE);
 			state.tank.drain(drained, FluidAction.EXECUTE);
 			return drained > 0;
@@ -159,7 +158,7 @@ public class MixerLogic
 				if(fs==null)
 					continue;
 				final int maxAmount = Math.min(fs.getAmount(), FluidType.BUCKET_VOLUME-totalOut);
-				FluidStack out = Utils.copyFluidStackWithAmount(fs, maxAmount, false);
+				FluidStack out = fs.copyWithAmount(maxAmount);
 				int drained = output.fill(out, FluidAction.EXECUTE);
 				MultiFluidTank.drain(drained, fs, it, FluidAction.EXECUTE);
 				totalOut += drained;
@@ -273,7 +272,7 @@ public class MixerLogic
 		@Override
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.put("tank", tank.writeToNBT(new CompoundTag(), provider));
 			nbt.put("inventory", inventory.serializeNBT(provider));
 			nbt.putBoolean("outputAll", outputAll);
 			nbt.put("processor", processor.toNBT(provider));
@@ -282,7 +281,7 @@ public class MixerLogic
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			tank.readFromNBT(nbt.getCompound("tank"));
+			tank.readFromNBT(nbt.getCompound("tank"), provider);
 			inventory.deserializeNBT(provider, nbt.getCompound("inventory"));
 			outputAll = nbt.getBoolean("outputAll");
 			processor.fromNBT(nbt.get("processor"), (getRecipe, data, p) -> new MixingProcess(getRecipe, data, tank), provider);
@@ -291,7 +290,7 @@ public class MixerLogic
 		@Override
 		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.put("tank", tank.writeToNBT(new CompoundTag(), provider));
 			nbt.putBoolean("isActive", isActive);
 			nbt.putFloat("animation_agitator", animation_agitator);
 		}
@@ -299,7 +298,7 @@ public class MixerLogic
 		@Override
 		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
-			tank.readFromNBT(nbt.getCompound("tank"));
+			tank.readFromNBT(nbt.getCompound("tank"), provider);
 			isActive = nbt.getBoolean("isActive");
 			animation_agitator = nbt.getFloat("animation_agitator");
 		}

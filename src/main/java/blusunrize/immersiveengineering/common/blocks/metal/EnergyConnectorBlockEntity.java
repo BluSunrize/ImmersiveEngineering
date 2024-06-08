@@ -174,10 +174,10 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	{
 		super.writeCustomNBT(nbt, descPacket, provider);
 		CompoundTag toNet = new CompoundTag();
-		EnergyHelper.serializeTo(storageToNet, toNet);
+		EnergyHelper.serializeTo(storageToNet, toNet, provider);
 		nbt.put("toNet", toNet);
 		CompoundTag toMachine = new CompoundTag();
-		EnergyHelper.serializeTo(storageToMachine, toMachine);
+		EnergyHelper.serializeTo(storageToMachine, toMachine, provider);
 		nbt.put("toMachine", toMachine);
 	}
 
@@ -186,9 +186,9 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	{
 		super.readCustomNBT(nbt, descPacket, provider);
 		CompoundTag toMachine = nbt.getCompound("toMachine");
-		EnergyHelper.deserializeFrom(storageToMachine, toMachine);
+		EnergyHelper.deserializeFrom(storageToMachine, toMachine, provider);
 		CompoundTag toNet = nbt.getCompound("toNet");
-		EnergyHelper.deserializeFrom(storageToNet, toNet);
+		EnergyHelper.deserializeFrom(storageToNet, toNet, provider);
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuit
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -102,7 +103,7 @@ public class CircuitTableMenu extends IEContainerMenu
 
 	private LogicCircuitInstruction getEditInstruction()
 	{
-		return LogicCircuitBoardItem.getInstruction(inv.getStackInSlot(getEditSlot()));
+		return inv.getStackInSlot(getEditSlot()).get(IEDataComponents.CIRCUIT_INSTRUCTION);
 	}
 
 	@Override

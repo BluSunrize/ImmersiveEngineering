@@ -57,9 +57,8 @@ public class RailgunShotEntity extends IEProjectileEntity
 		builder.define(dataMarker_ammo, ItemStack.EMPTY);
 	}
 
-	@Nonnull
 	@Override
-	protected ItemStack getPickupItem()
+	protected ItemStack getDefaultPickupItem()
 	{
 		return ammo;
 	}

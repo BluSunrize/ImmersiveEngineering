@@ -67,7 +67,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
+		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 		if(!descPacket)
 			ContainerHelper.loadAllItems(nbt, inventory, provider);
 	}
@@ -75,7 +75,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		EnergyHelper.serializeTo(energyStorage, nbt);
+		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 		if(!descPacket)
 			ContainerHelper.saveAllItems(nbt, inventory, provider);
 	}

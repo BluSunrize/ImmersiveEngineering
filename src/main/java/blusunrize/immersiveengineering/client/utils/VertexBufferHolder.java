@@ -22,12 +22,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 public class VertexBufferHolder implements IVertexBufferHolder
 {
@@ -50,7 +50,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	private final ResettableLazy<VertexBuffer> buffer;
 	private final Renderer renderer;
 
-	private static VertexBufferHolder forQuads(NonNullSupplier<List<BakedQuad>> quads)
+	private static VertexBufferHolder forQuads(Supplier<List<BakedQuad>> quads)
 	{
 		final ResettableLazy<List<BakedQuad>> cachedQuads = new ResettableLazy<>(quads);
 		return new VertexBufferHolder(new Renderer()
@@ -102,7 +102,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 			}
 
 			@Override
-			public IVertexBufferHolder apply(NonNullSupplier<List<BakedQuad>> quads)
+			public IVertexBufferHolder apply(Supplier<List<BakedQuad>> quads)
 			{
 				return forQuads(quads);
 			}

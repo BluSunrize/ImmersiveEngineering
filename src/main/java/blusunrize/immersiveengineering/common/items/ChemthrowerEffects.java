@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
@@ -24,7 +25,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,10 +51,10 @@ public class ChemthrowerEffects
 			@Override
 			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
 			{
-				if(fluid.hasTag())
+				if(fluid.has(DataComponents.POTION_CONTENTS))
 				{
-					List<MobEffectInstance> effects = PotionUtils.getAllEffects(fluid.getOrCreateTag());
-					for(MobEffectInstance e : effects)
+					PotionContents potionContents = fluid.get(DataComponents.POTION_CONTENTS);
+					for(MobEffectInstance e : potionContents.getAllEffects())
 					{
 						MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
 						target.addEffect(newEffect);

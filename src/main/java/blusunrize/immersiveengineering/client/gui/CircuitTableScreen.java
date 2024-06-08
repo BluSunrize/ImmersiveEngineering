@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity;
 import blusunrize.immersiveengineering.common.gui.CircuitTableMenu;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
@@ -112,7 +113,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 
 	private LogicCircuitInstruction getEditInstruction()
 	{
-		return LogicCircuitBoardItem.getInstruction(this.menu.slots.get(CircuitTableBlockEntity.getEditSlot()).getItem());
+		return this.menu.slots.get(CircuitTableBlockEntity.getEditSlot()).getItem().get(IEDataComponents.CIRCUIT_INSTRUCTION);
 	}
 
 	@Nullable
@@ -237,7 +238,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 	{
 		if(isMouseIn((int)mouseX, (int)mouseY, 52, 7, 100, 70)&&this.menu.getCarried().getItem() instanceof LogicCircuitBoardItem)
 		{
-			LogicCircuitInstruction instr = LogicCircuitBoardItem.getInstruction(this.menu.getCarried());
+			LogicCircuitInstruction instr = this.menu.getCarried().get(IEDataComponents.CIRCUIT_INSTRUCTION);
 			if(instr!=null)
 			{
 				this.operatorList.setSelectedString(instr.getOperator().name());

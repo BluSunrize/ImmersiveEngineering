@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -165,7 +166,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 		Arrays.fill(registers, false);
 		Arrays.fill(outputs, false);
 		this.inventory.stream()
-				.map(LogicCircuitBoardItem::getInstruction)
+				.map(s -> s.get(IEDataComponents.CIRCUIT_INSTRUCTION))
 				.filter(Objects::nonNull)
 				.forEachOrdered(instruction -> instruction.apply(this));
 		if(!Arrays.equals(outPre, outputs))

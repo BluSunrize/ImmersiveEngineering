@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +29,7 @@ import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.BlockGetter;
@@ -45,40 +46,31 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
-	public static FluidStack getFluidStackForType(Potion type, int amount)
+	public static FluidStack getFluidStackForType(Optional<Holder<Potion>> type, int amount)
 	{
-		if(type==Potions.WATER||type==null)
+		if(type.isEmpty()||type.get().is(Potions.WATER))
 			return new FluidStack(Fluids.WATER, amount);
 		FluidStack stack = new FluidStack(IEFluids.POTION.get(), amount);
-		stack.getOrCreateTag().putString("Potion", BuiltInRegistries.POTION.getKey(type).toString());
+		stack.set(DataComponents.POTION_CONTENTS, new PotionContents(type.get()));
 		return stack;
 	}
 
 	public static Potion getType(FluidStack stack)
 	{
-		return fromTag(stack.getTag());
-	}
-
-	public static Potion fromTag(@Nullable CompoundTag tag)
-	{
-		if(tag==null||!tag.contains("Potion", Tag.TAG_STRING))
-			return Potions.WATER;
-		ResourceLocation name = ResourceLocation.tryParse(tag.getString("Potion"));
-		if(name==null)
-			return Potions.WATER;
-		Potion result = BuiltInRegistries.POTION.get(name);
-		return result==Potions.EMPTY?Potions.WATER: result;
+		return stack.getOrDefault(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER))
+				.potion()
+				.orElse(Potions.WATER)
+				.value();
 	}
 
 	@Nonnull

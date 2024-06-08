@@ -178,6 +178,12 @@ public class RevolvershotEntity extends IEProjectileEntity
 	}
 
 	@Override
+	protected ItemStack getDefaultPickupItem()
+	{
+		return ItemStack.EMPTY;
+	}
+
+	@Override
 	public boolean hurt(DamageSource source, float amount)
 	{
 		return false;

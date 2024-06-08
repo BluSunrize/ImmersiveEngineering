@@ -88,10 +88,10 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	public double getGravity()
+	public double getDefaultGravity()
 	{
 		if(getFluid().isEmpty())
-			return super.getGravity();
+			return super.getDefaultGravity();
 		FluidStack fluidStack = getFluid();
 		boolean isGas = fluidStack.getFluid().is(Tags.Fluids.GASEOUS);
 		return (isGas?.025f: .05F)*(fluidStack.getFluid().getFluidType().getDensity(fluidStack) < 0?-1: 1);

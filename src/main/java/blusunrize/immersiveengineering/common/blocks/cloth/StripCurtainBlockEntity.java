@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -22,7 +23,6 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,7 +52,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 		IScrewdriverInteraction, IAdvancedDirectionalBE, IStateBasedDirectional, IColouredBE, IBlockEntityDrop,
 		IBlockBounds
 {
-	public int colour = 0xffffff;
+	public Color4 colour = Color4.WHITE;
 	private int redstoneSignal = 0;
 	private boolean strongSignal = false;
 
@@ -136,14 +136,14 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		colour = nbt.getInt("colour");
+		colour = Color4.load(nbt.get("colour"));
 		this.strongSignal = nbt.getBoolean("strongSignal");
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		nbt.putInt("colour", colour);
+		nbt.put("colour", colour.save());
 		nbt.putBoolean("strongSignal", this.strongSignal);
 	}
 
@@ -195,7 +195,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	public int getRenderColour(int tintIndex)
 	{
 		if(tintIndex==1)
-			return colour;
+			return colour.toInt();
 		return 0xffffff;
 	}
 
@@ -203,8 +203,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		if(colour!=0xffffff)
-			ItemNBTHelper.putInt(stack, "colour", colour);
+		stack.set(IEDataComponents.COLOR, colour);
 		drop.accept(stack);
 	}
 
@@ -212,8 +211,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		if(ItemNBTHelper.hasKey(stack, "colour"))
-			this.colour = ItemNBTHelper.getInt(stack, "colour");
+		this.colour = stack.get(IEDataComponents.COLOR);
 	}
 
 	@Override
@@ -227,7 +225,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 			);
 			sendRSUpdates();
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	public boolean isCeilingAttached()

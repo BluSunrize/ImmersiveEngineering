@@ -35,7 +35,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -306,7 +305,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
+		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 
 		if(nbt.contains("owner", Tag.TAG_STRING))
 			owner = nbt.getString("owner");
@@ -328,7 +327,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
-		EnergyHelper.serializeTo(energyStorage, nbt);
+		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 
 		if(owner!=null)
 			nbt.putString("owner", owner);
@@ -374,7 +373,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			BlockEntity te = level.getBlockEntity(getBlockPos().below());
 			if(te instanceof TurretBlockEntity<?>)
 				return ((TurretBlockEntity<?>)te).screwdriverUseSide(side, player, hand, hitVec);
-			return InteractionResult.FAIL;
+			return ItemInteractionResult.FAIL;
 		}
 		if(player.isShiftKeyDown()&&!level.isClientSide)
 		{
@@ -386,7 +385,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.wrapper.EmptyHandler;
+import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 
 // TODO this is basically a copy of the API in PoweredMultiblockBE, and should be cleaned up at some point
 public interface ProcessContext<R extends MultiblockRecipe>
@@ -69,6 +69,6 @@ public interface ProcessContext<R extends MultiblockRecipe>
 	}
 
 	int[] EMPTY_INTS = {};
-	IItemHandlerModifiable EMPTY_ITEM_HANDLER = new EmptyHandler();
+	IItemHandlerModifiable EMPTY_ITEM_HANDLER = new EmptyItemHandler();
 	IFluidTank[] EMPTY_TANKS = {};
 }

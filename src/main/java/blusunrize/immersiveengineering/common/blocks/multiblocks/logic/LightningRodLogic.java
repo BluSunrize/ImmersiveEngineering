@@ -182,13 +182,13 @@ public class LightningRodLogic implements IMultiblockLogic<State>, IServerTickab
 		@Override
 		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			EnergyHelper.serializeTo(energy, nbt);
+			EnergyHelper.serializeTo(energy, nbt, provider);
 		}
 
 		@Override
 		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
-			EnergyHelper.deserializeFrom(energy, nbt);
+			EnergyHelper.deserializeFrom(energy, nbt, provider);
 		}
 	}
 

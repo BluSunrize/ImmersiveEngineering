@@ -32,7 +32,7 @@ public class SawbladeItem extends IEBaseItem
 
 	public SawbladeItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage, ResourceLocation texture)
 	{
-		super(new Properties().defaultDurability(maxDamage).setNoRepair());
+		super(new Properties().durability(maxDamage).setNoRepair());
 		this.sawbladeSpeed = sawbladeSpeed;
 		this.sawbladeDamage = sawbladeDamage;
 		this.texture = texture;
@@ -42,12 +42,6 @@ public class SawbladeItem extends IEBaseItem
 	public SawbladeItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
 	{
 		this(maxDamage, sawbladeSpeed, sawbladeDamage, ImmersiveEngineering.rl("item/sawblade_blade"));
-	}
-
-	@Override
-	public boolean canBeDepleted()
-	{
-		return true;
 	}
 
 	@Override
@@ -89,7 +83,6 @@ public class SawbladeItem extends IEBaseItem
 
 	public void modifyEnchants(Mutable baseEnchants)
 	{
-		return baseEnchants;
 	}
 
 	public Predicate<BlockState> getSawbladeMaterials()

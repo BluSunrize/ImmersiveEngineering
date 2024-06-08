@@ -136,19 +136,19 @@ public class HempBlock extends CropBlock implements BonemealableBlock
 			if(notMaxAge||canGrowTop)
 			{
 				float f = getGrowthSpeed(this, world, pos);
-				if(CommonHooks.onCropsGrowPre(world, pos, state, rand.nextInt((int)(25.0F/f)+1)==0))
+				if(CommonHooks.canCropGrow(world, pos, state, rand.nextInt((int)(25.0F/f)+1)==0))
 				{
 					if(notMaxAge)
 					{
 						world.setBlock(pos, this.getStateForAge(i+1), 2);
-						CommonHooks.onCropsGrowPost(world, pos, state);
+						CommonHooks.fireCropGrowPost(world, pos, state);
 					}
 					else if(canGrowTop)
 					{
 						BlockPos above = pos.above();
 						BlockState aboveState = this.getStateForAge(getMaxAge()).setValue(TOP, true);
 						world.setBlockAndUpdate(above, aboveState);
-						CommonHooks.onCropsGrowPost(world, above, aboveState);
+						CommonHooks.fireCropGrowPost(world, above, aboveState);
 					}
 				}
 			}

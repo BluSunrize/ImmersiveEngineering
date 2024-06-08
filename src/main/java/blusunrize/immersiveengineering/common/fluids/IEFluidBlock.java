@@ -40,7 +40,7 @@ public class IEFluidBlock extends LiquidBlock
 
 	public IEFluidBlock(IEFluids.FluidEntry entry, Properties props)
 	{
-		super(entry.getStillGetter(), Util.make(props, $ -> entryStatic = entry));
+		super(entry.getStill(), Util.make(props, $ -> entryStatic = entry));
 		this.entry = entry;
 		entryStatic = null;
 	}

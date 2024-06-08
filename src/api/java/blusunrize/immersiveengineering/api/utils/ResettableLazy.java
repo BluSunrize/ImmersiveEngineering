@@ -9,27 +9,25 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import net.neoforged.neoforge.common.util.NonNullConsumer;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ResettableLazy<T> implements Supplier<T>
 {
-	private final NonNullSupplier<T> getter;
-	private final NonNullConsumer<T> destructor;
+	private final Supplier<T> getter;
+	private final Consumer<T> destructor;
 	@Nullable
 	private T cached;
 
-	public ResettableLazy(NonNullSupplier<T> getter)
+	public ResettableLazy(Supplier<T> getter)
 	{
 		this(getter, v -> {
 		});
 	}
 
-	public ResettableLazy(NonNullSupplier<T> getter, NonNullConsumer<T> destructor)
+	public ResettableLazy(Supplier<T> getter, Consumer<T> destructor)
 	{
 		this.getter = getter;
 		this.destructor = destructor;

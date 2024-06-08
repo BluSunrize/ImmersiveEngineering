@@ -19,6 +19,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 
 public class FluidTagInput implements Predicate<FluidStack>
 {
-	public static final Codec<FluidTagInput> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+	public static final MapCodec<FluidTagInput> MAP_CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			Codec.mapEither(
 					TagKey.codec(Registries.FLUID).fieldOf("tag"),
 					ResourceLocation.CODEC.listOf().fieldOf("fluids")
@@ -55,6 +56,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 			Codec.INT.fieldOf("amount").forGetter(t -> t.amount),
 			CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(t -> Optional.ofNullable(t.nbtTag))
 	).apply(inst, (tag, amount, nbt) -> new FluidTagInput(tag, amount, nbt.orElse(null))));
+	public static final Codec<FluidTagInput> CODEC = MAP_CODEC.codec();
 	public static final StreamCodec<RegistryFriendlyByteBuf, FluidTagInput> STREAM_CODEC = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), FluidTagInput::getMatchingFluidNames,
 			ByteBufCodecs.INT, t -> t.amount,

@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
-import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -53,6 +52,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font.DisplayMode;
@@ -91,15 +91,13 @@ import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.event.TickEvent;
-import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -124,69 +122,65 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent
-	public void onPlayerTick(TickEvent.PlayerTickEvent event)
+	public void onPlayerTick(PlayerTickEvent.Post event)
 	{
-		if(event.side==LogicalSide.CLIENT&&event.player!=null&&event.player==ClientUtils.mc().getCameraEntity())
-		{
-			if(event.phase==Phase.END)
+		final var player = event.getEntity();
+		if(player==null||!player.level().isClientSide||player!=ClientUtils.mc().player)
+			return;
+		if(this.shieldToggleTimer > 0)
+			this.shieldToggleTimer--;
+		if(IEKeybinds.keybind_magnetEquip.isDown()&&!this.shieldToggleButton)
+			if(this.shieldToggleTimer <= 0)
+				this.shieldToggleTimer = 7;
+			else
 			{
-				if(this.shieldToggleTimer > 0)
-					this.shieldToggleTimer--;
-				if(IEKeybinds.keybind_magnetEquip.isDown()&&!this.shieldToggleButton)
-					if(this.shieldToggleTimer <= 0)
-						this.shieldToggleTimer = 7;
-					else
-					{
-						Player player = event.player;
-						ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
-						if(!held.isEmpty()&&held.getItem() instanceof IEShieldItem)
-						{
-							if(((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
-									((IEShieldItem)held.getItem()).getUpgrades(held).contains("prevSlot"))
-								PacketDistributor.sendToServer(new MessageMagnetEquip(-1));
-						}
-						else
-						{
-							for(int i = 0; i < player.getInventory().items.size(); i++)
-							{
-								ItemStack s = player.getInventory().items.get(i);
-								if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
-									PacketDistributor.sendToServer(new MessageMagnetEquip(i));
-							}
-						}
-					}
-				if(this.shieldToggleButton!=ClientUtils.mc().options.keyDown.isDown())
-					this.shieldToggleButton = ClientUtils.mc().options.keyDown.isDown();
-
-
-				if(!IEKeybinds.keybind_chemthrowerSwitch.isUnbound()&&IEKeybinds.keybind_chemthrowerSwitch.consumeClick())
+				ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
+				if(!held.isEmpty()&&held.getItem() instanceof IEShieldItem)
 				{
-					ItemStack held = event.player.getItemInHand(InteractionHand.MAIN_HAND);
-					if(held.getItem() instanceof IScrollwheel)
-						PacketDistributor.sendToServer(new MessageScrollwheelItem(true));
+					if(((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
+							((IEShieldItem)held.getItem()).getUpgrades(held).contains("prevSlot"))
+						PacketDistributor.sendToServer(new MessageMagnetEquip(-1));
 				}
-
-				if(!IEKeybinds.keybind_railgunZoom.isUnbound()&&IEKeybinds.keybind_railgunZoom.consumeClick())
-					for(InteractionHand hand : InteractionHand.values())
+				else
+				{
+					for(int i = 0; i < player.getInventory().items.size(); i++)
 					{
-						ItemStack held = event.player.getItemInHand(hand);
-						if(held.getItem() instanceof IZoomTool&&((IZoomTool)held.getItem()).canZoom(held, event.player))
-						{
-							ZoomHandler.isZooming = !ZoomHandler.isZooming;
-							if(ZoomHandler.isZooming)
-							{
-								float[] steps = ((IZoomTool)held.getItem()).getZoomSteps(held, event.player);
-								if(steps!=null&&steps.length > 0)
-									ZoomHandler.fovZoom = steps[ZoomHandler.getCurrentZoomStep(steps)];
-							}
-						}
+						ItemStack s = player.getInventory().items.get(i);
+						if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+							PacketDistributor.sendToServer(new MessageMagnetEquip(i));
 					}
+				}
 			}
+		if(this.shieldToggleButton!=ClientUtils.mc().options.keyDown.isDown())
+			this.shieldToggleButton = ClientUtils.mc().options.keyDown.isDown();
+
+
+		if(!IEKeybinds.keybind_chemthrowerSwitch.isUnbound()&&IEKeybinds.keybind_chemthrowerSwitch.consumeClick())
+		{
+			ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
+			if(held.getItem() instanceof IScrollwheel)
+				PacketDistributor.sendToServer(new MessageScrollwheelItem(true));
 		}
+
+		if(!IEKeybinds.keybind_railgunZoom.isUnbound()&&IEKeybinds.keybind_railgunZoom.consumeClick())
+			for(InteractionHand hand : InteractionHand.values())
+			{
+				ItemStack held = player.getItemInHand(hand);
+				if(held.getItem() instanceof IZoomTool&&((IZoomTool)held.getItem()).canZoom(held, player))
+				{
+					ZoomHandler.isZooming = !ZoomHandler.isZooming;
+					if(ZoomHandler.isZooming)
+					{
+						float[] steps = ((IZoomTool)held.getItem()).getZoomSteps(held, player);
+						if(steps!=null&&steps.length > 0)
+							ZoomHandler.fovZoom = steps[ZoomHandler.getCurrentZoomStep(steps)];
+					}
+				}
+			}
 	}
 
 	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event)
+	public void onClientTick(ClientTickEvent.Pre event)
 	{
 		LevelStageRenders.FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getSecond().decrementAndGet() <= 0);
 		ClientLevel world = Minecraft.getInstance().level;
@@ -536,11 +530,11 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	private void renderVoltmeterOverlay(Player player, float scaledWidth, float scaledHeight, PoseStack transform, MultiBufferSource buffer)
 	{
 		HitResult rrt = ClientUtils.mc().hitResult;
-		FastEither<BlockPos, Integer> pos = null;
+		Either<BlockPos, Integer> pos = null;
 		if(rrt instanceof BlockHitResult mop)
-			pos = FastEither.left(mop.getBlockPos());
+			pos = Either.left(mop.getBlockPos());
 		else if(rrt instanceof EntityHitResult ehr)
-			pos = FastEither.right(ehr.getEntity().getId());
+			pos = Either.right(ehr.getEntity().getId());
 
 		if(pos==null)
 			return;
@@ -562,12 +556,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					.split("<br>")));
 		}
 
-		if(pos.isLeft())
+		if(rrt instanceof BlockHitResult mop)
 		{
-			matches = VoltmeterItem.lastRedstoneUpdate.pos().equals(pos.leftNonnull());
+			matches = VoltmeterItem.lastRedstoneUpdate.pos().equals(mop);
 			sinceLast = player.level().getGameTime()-VoltmeterItem.lastRedstoneUpdate.measuredInTick();
 			if(!matches||sinceLast > 20)
-				PacketDistributor.sendToServer(new MessageRequestRedstoneUpdate(pos.leftNonnull()));
+				PacketDistributor.sendToServer(new MessageRequestRedstoneUpdate(mop.getBlockPos()));
 
 			if(VoltmeterItem.lastRedstoneUpdate.isSignalSource()&&matches)
 			{
@@ -817,6 +811,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
 		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart)
+			// TODO split into 2 messages?
 			PacketDistributor.sendToServer(new MessageMinecartShaderSync(event.getEntity()));
 	}
 }
