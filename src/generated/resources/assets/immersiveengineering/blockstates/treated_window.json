@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:block/treated_window",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/treated_window"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/treated_window",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/treated_window",
+      "y": 270
+    }
+  }
+}

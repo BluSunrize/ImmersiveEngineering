@@ -155,6 +155,15 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('b', new IngredientFluidStack(IETags.fluidResin, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_resin", has(IEFluids.PHENOLIC_RESIN.getBucket()))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.FIBERBOARD)));
+
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, WoodenDecoration.WINDOW, 8)
+				.pattern("wgw")
+				.pattern("ggg")
+				.pattern("wgw")
+				.define('w', IETags.getItemTag(IETags.treatedWoodSlab))
+				.define('g', Tags.Items.GLASS_PANES)
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.WINDOW)));
 	}
 
 	private void stoneDecoration(RecipeOutput out)
@@ -556,6 +565,23 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('l', MetalDecoration.METAL_LADDER.get(CoverType.NONE))
 				.unlockedBy("has_metal_ladder", has(MetalDecoration.METAL_LADDER.get(CoverType.NONE)))
 				.save(out, toRL(toPath(MetalDecoration.METAL_LADDER.get(CoverType.STEEL))));
+
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.STEEL_WINDOW, 8)
+				.pattern("rgr")
+				.pattern("ggg")
+				.pattern("rgr")
+				.define('r', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
+				.define('g', Tags.Items.GLASS_PANES)
+				.unlockedBy("has_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_WINDOW)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.ALU_WINDOW, 8)
+				.pattern("rgr")
+				.pattern("ggg")
+				.pattern("rgr")
+				.define('r', IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).sheetmetal))
+				.define('g', Tags.Items.GLASS_PANES)
+				.unlockedBy("has_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).sheetmetal)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.ALU_WINDOW)));
 	}
 
 	private void addStairs(ItemLike block, RecipeOutput out)

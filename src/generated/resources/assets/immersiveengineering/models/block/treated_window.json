@@ -1,0 +1,6 @@
+{
+  "parent": "immersiveengineering:block/window_thick",
+  "textures": {
+    "frame": "immersiveengineering:block/wooden_decoration/treated_wood_vertical"
+  }
+}

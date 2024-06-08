@@ -319,6 +319,28 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createStructuralArm("block/metal_decoration/steel_scaffolding", MetalDecoration.STEEL_SLOPE);
 		createStructuralArm("block/metal_decoration/aluminum_scaffolding", MetalDecoration.ALU_SLOPE);
 
+		{
+			ModelFile windowModel = models()
+					.withExistingParent("treated_window", modLoc("block/window_thick"))
+					.texture("frame", "immersiveengineering:block/wooden_decoration/treated_wood_vertical");
+			createHorizontalRotatedBlock(WoodenDecoration.WINDOW, windowModel);
+			itemModel(WoodenDecoration.WINDOW, windowModel);
+		}
+		{
+			ModelFile windowModel = models()
+					.withExistingParent("steel_window", modLoc("block/window_thin"))
+					.texture("frame", "immersiveengineering:block/metal/storage_steel");
+			createHorizontalRotatedBlock(MetalDecoration.STEEL_WINDOW, windowModel);
+			itemModel(MetalDecoration.STEEL_WINDOW, windowModel);
+		}
+		{
+			ModelFile windowModel = models()
+					.withExistingParent("alu_window", modLoc("block/window_thin"))
+					.texture("frame", "immersiveengineering:block/metal/storage_aluminum");
+			createHorizontalRotatedBlock(MetalDecoration.ALU_WINDOW, windowModel);
+			itemModel(MetalDecoration.ALU_WINDOW, windowModel);
+		}
+
 		createHorizontalRotatedBlock(StoneDecoration.CORESAMPLE, obj("block/coresample.obj"));
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete/concrete0");
 		simpleBlockAndItem(StoneDecoration.CONCRETE_SHEET, models().carpet("concrete_sheet", concreteTexture));

@@ -36,25 +36,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.ibm.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class IEBlockTags extends BlockTagsProvider
 {
@@ -343,6 +336,7 @@ public class IEBlockTags extends BlockTagsProvider
 				WoodenDecoration.TREATED_POST,
 				WoodenDecoration.SAWDUST,
 				WoodenDecoration.FIBERBOARD,
+				WoodenDecoration.WINDOW,
 				Cloth.SHADER_BANNER,
 				Cloth.SHADER_BANNER_WALL
 		);
@@ -483,6 +477,8 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.LANTERN,
 				MetalDecoration.STEEL_SLOPE,
 				MetalDecoration.ALU_SLOPE,
+				MetalDecoration.STEEL_WINDOW,
+				MetalDecoration.ALU_WINDOW,
 				Connectors.CONNECTOR_STRUCTURAL,
 				Connectors.TRANSFORMER,
 				Connectors.POST_TRANSFORMER,

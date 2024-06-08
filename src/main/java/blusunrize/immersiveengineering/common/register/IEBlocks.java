@@ -344,6 +344,9 @@ public final class IEBlocks
 						.instrument(NoteBlockInstrument.BASS)
 						.strength(1.25f, 1)
 		);
+		public static final BlockEntry<IEBaseBlock> WINDOW = new BlockEntry<>(
+			"treated_window", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+		);
 
 		private static void init()
 		{
@@ -446,6 +449,12 @@ public final class IEBlocks
 		public static final Map<MetalScaffoldingType, BlockEntry<ScaffoldingBlock>> STEEL_SCAFFOLDING = new EnumMap<>(MetalScaffoldingType.class);
 		public static final Map<MetalScaffoldingType, BlockEntry<ScaffoldingBlock>> ALU_SCAFFOLDING = new EnumMap<>(MetalScaffoldingType.class);
 		public static final Map<DyeColor, BlockEntry<IEBaseBlock>> COLORED_SHEETMETAL = new EnumMap<>(DyeColor.class);
+		public static final BlockEntry<IEBaseBlock> STEEL_WINDOW = new BlockEntry<>(
+				"steel_window", METAL_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> ALU_WINDOW = new BlockEntry<>(
+				"alu_window", METAL_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+		);
 
 		private static void init()
 		{

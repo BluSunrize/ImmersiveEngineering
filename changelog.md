@@ -1,6 +1,8 @@
 ##### Version 1.20.4-11.3.0-pre
 - Re-add CC-Tweaked intregration (Malte)
 - Add missing redstone acid recipe to the manual (BluSunrize)
+- Add the windows from Engineer's Decor (BluSunrize)
+    - Thank you wilechaote for giving us permission to include these blocks in the mod <3
 - Fix fractions not rendering properly in the manual (BluSunrize)
 - Fix Machine Interface crashing on servers (BluSunrize)
 
