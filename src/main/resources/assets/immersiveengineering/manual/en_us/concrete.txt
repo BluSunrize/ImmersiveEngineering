@@ -6,7 +6,7 @@ Concrete bricks have the same blast resistance as concrete, but can be disassemb
 <&partial>Concrete can be cut into slabs of varying thickness using a §2Stonecutter§r.<br>
 You can also use that machine to make slabs and stairs of concrete, as well as concrete tiles which are smoother and more polished.
 <&leaded>Lead plating added to concrete, makes it a little more resistant to explosions.<br>
-More importantly however, it prevents end-affiliated energies from penetrating it, blocking any teleporting through it for End-creatures, Ender Pearls and Chorus Fruits.
+More importantly however, it prevents etheric energies from penetrating it, blocking any teleporting through it for End-creatures, Ender Pearls and Chorus Fruits.
 <&reinforced>Reinforced concrete is made from <link;concrete;liquid concrete;liquid> shaped around bars of §2Netherite§r, making it highly resistant to even powerful explosions like those of a Wither.
 <&liquid>Liquid concrete can be produced in a <link;mixer;Mixer> by combining half a bucket of Water with §2Gravel§r, §2Clay§r and §2two pieces of Sand§r. When emptied onto the ground it will spread like water, before solidifying after some time.<br>
 Multiple buckets can be used to fill a larger area by placing it at key locations.
