@@ -51,6 +51,7 @@ public class IERenderTypes extends RenderStateShard
 	public static final RenderType TRANSLUCENT_FULLBRIGHT;
 	public static final RenderType SOLID_FULLBRIGHT;
 	public static final RenderType LINES;
+	public static final RenderType LINES_NONTRANSLUCENT;
 	public static final RenderType POINTS;
 	public static final RenderType TRANSLUCENT_TRIANGLES;
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
@@ -113,6 +114,18 @@ public class IERenderTypes extends RenderStateShard
 						.setLineState(new LineStateShard(OptionalDouble.of(2)))
 						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setOutputState(ITEM_ENTITY_TARGET)
+						.setWriteMaskState(COLOR_DEPTH_WRITE)
+						.setCullState(NO_CULL)
+						.createCompositeState(false)
+		);
+		LINES_NONTRANSLUCENT = createDefault(
+				ImmersiveEngineering.MODID+":nontranslucent_lines", DefaultVertexFormat.POSITION_COLOR_NORMAL, Mode.LINES,
+				RenderType.CompositeState.builder()
+						.setShaderState(RENDERTYPE_LINES_SHADER)
+						.setLineState(new LineStateShard(OptionalDouble.of(2)))
+						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+						.setTransparencyState(NO_TRANSPARENCY)
 						.setOutputState(ITEM_ENTITY_TARGET)
 						.setWriteMaskState(COLOR_DEPTH_WRITE)
 						.setCullState(NO_CULL)

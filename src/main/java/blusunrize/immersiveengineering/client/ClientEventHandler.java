@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.generic.WindowBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -42,11 +43,13 @@ import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.network.*;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -61,6 +64,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -229,7 +233,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			{
 				List<Component> tooltip = event.getToolTip();
 				// find gap
-				int idx = IntStream.range(0,tooltip.size() ).filter(i -> tooltip.get(i) == CommonComponents.EMPTY).findFirst().orElse(tooltip.size()-1);
+				int idx = IntStream.range(0, tooltip.size()).filter(i -> tooltip.get(i)==CommonComponents.EMPTY).findFirst().orElse(tooltip.size()-1);
 				// put tooltip in that gap
 				tooltip.add(idx++, CommonComponents.EMPTY);
 				tooltip.add(idx++, TextUtils.applyFormat(powerpack.getHoverName(), ChatFormatting.GRAY));
@@ -279,7 +283,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						PoseStack transform = event.getPoseStack();
 						transform.pushPose();
 						MultiBufferSource buffer = event.getMultiBufferSource();
-						transform.mulPose(new Quaternionf().rotateXYZ(0, 0, -i*Mth.PI / 4));
+						transform.mulPose(new Quaternionf().rotateXYZ(0, 0, -i*Mth.PI/4));
 						transform.translate(-.5, .5, -.001);
 						VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
 						GuiHelper.drawTexturedColoredRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
@@ -774,6 +778,17 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 
 			transform.popPose();
 			BlockState targetBlock = world.getBlockState(rtr.getBlockPos());
+			// fix lines overlaying on translucent blocks
+			if(targetBlock.getBlock() instanceof WindowBlock)
+			{
+				((WorldRendererAccess)event.getLevelRenderer()).callRenderHitOutline(
+						transform, buffer.getBuffer(IERenderTypes.LINES_NONTRANSLUCENT),
+						living, renderView.x, renderView.y, renderView.z,
+						pos, targetBlock
+				);
+				event.setCanceled(true);
+			}
+
 			if(stack.getItem() instanceof DrillItem drillItem&&drillItem.isEffective(stack, targetBlock))
 			{
 				ItemStack head = drillItem.getHead(stack);
