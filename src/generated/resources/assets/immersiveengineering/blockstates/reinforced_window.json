@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "immersiveengineering:block/reinforced_window",
+      "x": -90
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/reinforced_window",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/reinforced_window"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/reinforced_window",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "immersiveengineering:block/reinforced_window",
+      "x": 90
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/reinforced_window",
+      "y": 270
+    }
+  }
+}

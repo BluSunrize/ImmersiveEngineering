@@ -357,7 +357,7 @@ public final class IEBlocks
 						.strength(1.25f, 1)
 		);
 		public static final BlockEntry<IEBaseBlock> WINDOW = new BlockEntry<>(
-			"treated_window", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+				"treated_window", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindowBlock::new
 		);
 
 		private static void init()
@@ -397,7 +397,7 @@ public final class IEBlocks
 				"reinforced_crate",
 				() -> Properties.of()
 						.sound(SoundType.WOOD)
-						.strength(2, 1200000)
+						.strength(2, 1200)
 						.mapColor(MapColor.WOOD)
 						.ignitedByLava()
 						.instrument(NoteBlockInstrument.BASS),
@@ -466,6 +466,18 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<IEBaseBlock> ALU_WINDOW = new BlockEntry<>(
 				"alu_window", METAL_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> REINFORCED_WINDOW = new BlockEntry<>(
+				"reinforced_window",
+				() -> Properties.of()
+						.mapColor(MapColor.METAL)
+						.sound(SoundType.METAL)
+						.strength(20, 1200)
+						.requiresCorrectToolForDrops()
+						.isViewBlocking((state, blockReader, pos) -> false)
+						.noOcclusion()
+						.forceSolidOn(),
+				WindowBlock::new
 		);
 
 		private static void init()

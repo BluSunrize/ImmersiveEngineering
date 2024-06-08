@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-08T15:35:07.83483	Loot Tables
+// 1.20.4	2024-06-08T20:15:15.1327493	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -149,6 +149,7 @@ ec35c2841ff15f67bb7082cf6a5cc2358d2139cd data/immersiveengineering/loot_tables/b
 75369ea3b605ff48faa594fda9253970440ce503 data/immersiveengineering/loot_tables/blocks/redstone_breaker.json
 988653c4aeaaa483ee0411310954fe4acff62c4a data/immersiveengineering/loot_tables/blocks/refinery.json
 564072dd7b7d393c2adcda8ca618b27bc620b983 data/immersiveengineering/loot_tables/blocks/reinforced_crate.json
+1b5def40e6e21b1eef66e2753d96e4b258d63bb5 data/immersiveengineering/loot_tables/blocks/reinforced_window.json
 7d074918e7deea010f87808d949ac245a5010235 data/immersiveengineering/loot_tables/blocks/rs_engineering.json
 de94d8e1323f57d2eab536e7a31ec402a21a5200 data/immersiveengineering/loot_tables/blocks/sample_drill.json
 9d7236c82a3b99b89ba32e3a3d094c6f857c43bc data/immersiveengineering/loot_tables/blocks/sawdust.json

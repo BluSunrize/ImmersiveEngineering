@@ -8,5 +8,9 @@
         "crafting/alu_window"
       ]
     ]
+  },
+  "reinforced": {
+    "type": "crafting",
+    "recipe": "crafting/reinforced_window"
   }
 }

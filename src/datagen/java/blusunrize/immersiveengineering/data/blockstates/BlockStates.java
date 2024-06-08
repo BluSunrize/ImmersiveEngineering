@@ -345,6 +345,14 @@ public class BlockStates extends ExtendedBlockstateProvider
 			createRotatedBlock(MetalDecoration.ALU_WINDOW, windowModel, IEProperties.FACING_ALL, List.of(), 0, 180);
 			itemModel(MetalDecoration.ALU_WINDOW, windowModel);
 		}
+		{
+			ModelFile windowModel = models()
+					.withExistingParent("reinforced_window", modLoc("block/window_thick"))
+					.texture("glass", "immersiveengineering:block/panzerglass")
+					.texture("frame", "minecraft:block/netherite_block");
+			createRotatedBlock(MetalDecoration.REINFORCED_WINDOW, windowModel, IEProperties.FACING_ALL, List.of(), 0, 180);
+			itemModel(MetalDecoration.REINFORCED_WINDOW, windowModel);
+		}
 
 		createHorizontalRotatedBlock(StoneDecoration.CORESAMPLE, obj("block/coresample.obj"));
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete/concrete0");

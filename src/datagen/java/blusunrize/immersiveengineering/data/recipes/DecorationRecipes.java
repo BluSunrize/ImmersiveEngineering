@@ -599,6 +599,15 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('g', Tags.Items.GLASS_PANES)
 				.unlockedBy("has_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).sheetmetal)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.ALU_WINDOW)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.REINFORCED_WINDOW, 4)
+				.pattern("rgr")
+				.pattern("ddd")
+				.pattern("rgr")
+				.define('r', IETags.netheriteRod)
+				.define('g', Tags.Items.GLASS_PANES)
+				.define('d', IETags.plasticPlate)
+				.unlockedBy("has_duroplast", has(IETags.plasticPlate))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.REINFORCED_WINDOW)));
 	}
 
 	private void addStairs(ItemLike block, RecipeOutput out)

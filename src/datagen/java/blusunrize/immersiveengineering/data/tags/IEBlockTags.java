@@ -167,7 +167,8 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.CONCRETE_REINFORCED.get())
 				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED.getId()).get())
 				.add(StoneDecoration.CONCRETE_REINFORCED_TILE.get())
-				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED_TILE.getId()).get());
+				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED_TILE.getId()).get())
+				.add(MetalDecoration.REINFORCED_WINDOW.get());
 		//Add parity tags to gravel & sand for IE similar blocks
 		tag(BlockTags.BAMBOO_PLANTABLE_ON)
 				.add(StoneDecoration.SLAG_GRAVEL.get())
@@ -502,6 +503,7 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.ALU_SLOPE,
 				MetalDecoration.STEEL_WINDOW,
 				MetalDecoration.ALU_WINDOW,
+				MetalDecoration.REINFORCED_WINDOW,
 				Connectors.CONNECTOR_STRUCTURAL,
 				Connectors.TRANSFORMER,
 				Connectors.POST_TRANSFORMER,
