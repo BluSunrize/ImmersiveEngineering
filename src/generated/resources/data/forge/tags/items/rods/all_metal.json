@@ -2,6 +2,7 @@
   "values": [
     "#forge:rods/aluminum",
     "#forge:rods/iron",
-    "#forge:rods/steel"
+    "#forge:rods/steel",
+    "#forge:rods/netherite"
   ]
 }

@@ -261,6 +261,8 @@ public class DecorationRecipes extends IERecipeProvider
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_TILE, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_TILE.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_LEADED.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()), out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_REINFORCED, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED.getId()), 2, out);
+		addStonecuttingRecipe(StoneDecoration.CONCRETE_REINFORCED_TILE, IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED_TILE.getId()), 2, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_BRICK, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_CHISELED, out);
 		addStonecuttingRecipe(StoneDecoration.HEMPCRETE, StoneDecoration.HEMPCRETE_PILLAR, out);
@@ -333,6 +335,21 @@ public class DecorationRecipes extends IERecipeProvider
 				.requires(IETags.getTagsFor(EnumMetals.LEAD).plate)
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL(toPath(StoneDecoration.CONCRETE_LEADED)));
+		shapedMisc(StoneDecoration.CONCRETE_REINFORCED, 4)
+				.pattern("rrr")
+				.pattern("rcr")
+				.pattern("rrr")
+				.define('r', IETags.netheriteRod)
+				.define('c', new IngredientFluidStack(IETags.fluidConcrete, FluidType.BUCKET_VOLUME))
+				.unlockedBy("has_netherite", has(Items.NETHERITE_INGOT))
+				.save(out, toRL(toPath(StoneDecoration.CONCRETE_REINFORCED)));
+		shapedMisc(StoneDecoration.CONCRETE_REINFORCED_TILE, 4)
+				.group("ie_concrete")
+				.pattern("cc")
+				.pattern("cc")
+				.define('c', StoneDecoration.CONCRETE_REINFORCED)
+				.unlockedBy("has_reinforced_concrete", has(StoneDecoration.CONCRETE_REINFORCED))
+				.save(out, toRL(toPath(StoneDecoration.CONCRETE_REINFORCED_TILE)));
 	}
 
 	private void metalDecorations(RecipeOutput out)

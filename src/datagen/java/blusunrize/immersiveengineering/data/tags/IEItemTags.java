@@ -96,6 +96,7 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.ironRod).add(Ingredients.STICK_IRON.get());
 		tag(IETags.steelRod).add(Ingredients.STICK_STEEL.get());
 		tag(IETags.aluminumRod).add(Ingredients.STICK_ALUMINUM.get());
+		tag(IETags.netheriteRod).add(Ingredients.STICK_NETHERITE.get());
 		tag(IETags.fiberHemp).add(Ingredients.HEMP_FIBER.get());
 		tag(IETags.fabricHemp).add(Ingredients.HEMP_FABRIC.get());
 		tag(IETags.coalCoke).add(Ingredients.COAL_COKE.get());
@@ -118,7 +119,8 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.metalRods)
 				.addTag(IETags.aluminumRod)
 				.addTag(IETags.ironRod)
-				.addTag(IETags.steelRod);
+				.addTag(IETags.steelRod)
+				.addTag(IETags.netheriteRod);
 		tag(IETags.plasticPlate).add(Ingredients.DUROPLAST_PLATE.asItem());
 		tag(IETags.sawblades).add(Tools.SAWBLADE.get());
 		tag(IETags.circuitPCB).add(Ingredients.CIRCUIT_BOARD.asItem());

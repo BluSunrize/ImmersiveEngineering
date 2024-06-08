@@ -104,6 +104,13 @@ public class MultiblockRecipes extends IERecipeProvider
 				.build(out, toRL("metalpress/electrode"));
 
 		MetalPressRecipeBuilder.builder()
+				.input(Tags.Items.INGOTS_NETHERITE)
+				.mold(Molds.MOLD_ROD)
+				.output(Ingredients.STICK_NETHERITE, 2)
+				.setEnergy(2400)
+				.build(out, toRL("metalpress/rod_netherite"));
+
+		MetalPressRecipeBuilder.builder()
 				.input(Items.MELON)
 				.mold(Molds.MOLD_UNPACKING)
 				.output(new ItemStack(Items.MELON_SLICE, 9))

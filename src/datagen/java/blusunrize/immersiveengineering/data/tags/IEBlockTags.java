@@ -39,6 +39,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -162,6 +163,11 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
+		tag(BlockTags.WITHER_IMMUNE)
+				.add(StoneDecoration.CONCRETE_REINFORCED.get())
+				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED.getId()).get())
+				.add(StoneDecoration.CONCRETE_REINFORCED_TILE.get())
+				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED_TILE.getId()).get());
 		//Add parity tags to gravel & sand for IE similar blocks
 		tag(BlockTags.BAMBOO_PLANTABLE_ON)
 				.add(StoneDecoration.SLAG_GRAVEL.get())
@@ -174,15 +180,25 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.GRIT_SAND.get());
 		tag(BlockTags.DEAD_BUSH_MAY_PLACE_ON)
 				.add(StoneDecoration.GRIT_SAND.get());
-		tag(IETags.concreteForFeet)
-				.add(StoneDecoration.CONCRETE.get())
-				.add(StoneDecoration.CONCRETE_TILE.get())
-				.add(StoneDecoration.CONCRETE_SPRAYED.get())
-				.add(IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()).get())
-				.add(StoneDecoration.CONCRETE_THREE_QUARTER.get())
-				.add(StoneDecoration.CONCRETE_SHEET.get())
-				.add(StoneDecoration.CONCRETE_QUARTER.get())
-				.add(StoneDecoration.CONCRETE_LEADED.get());
+		BlockEntry<?>[] concreteBlocks = new BlockEntry<?>[]{
+				StoneDecoration.CONCRETE,
+				StoneDecoration.CONCRETE_TILE,
+				StoneDecoration.CONCRETE_SPRAYED,
+				StoneDecoration.CONCRETE_THREE_QUARTER,
+				StoneDecoration.CONCRETE_SHEET,
+				StoneDecoration.CONCRETE_QUARTER,
+				StoneDecoration.CONCRETE_LEADED,
+				StoneDecoration.CONCRETE_REINFORCED,
+				StoneDecoration.CONCRETE_REINFORCED_TILE,
+		};
+		for(BlockEntry<?> entry:concreteBlocks) {
+			tag(IETags.concreteForFeet).add(entry.get());
+			BlockEntry<?> shaped;
+			if((shaped = IEBlocks.TO_SLAB.get(entry.getId())) !=null)
+				tag(IETags.concreteForFeet).add(shaped.get());
+			if((shaped = IEBlocks.TO_STAIRS.get(entry.getId())) !=null)
+				tag(IETags.concreteForFeet).add(shaped.get());
+		}
 
 		registerHammerMineable();
 		registerRockcutterMineable();
@@ -428,6 +444,8 @@ public class IEBlockTags extends BlockTagsProvider
 				StoneDecoration.CONCRETE_PILLAR,
 				StoneDecoration.CONCRETE_TILE,
 				StoneDecoration.CONCRETE_LEADED,
+				StoneDecoration.CONCRETE_REINFORCED,
+				StoneDecoration.CONCRETE_REINFORCED_TILE,
 				StoneDecoration.INSULATING_GLASS,
 				StoneDecoration.SLAG_GLASS,
 				StoneDecoration.CONCRETE_SPRAYED,

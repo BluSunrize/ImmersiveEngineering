@@ -68,6 +68,13 @@ public class IngredientRecipes extends IERecipeProvider
 				.group("sticks")
 				.unlockedBy("has_alu_ingot", has(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.save(out, toRL(toPath(Ingredients.STICK_ALUMINUM)));
+		shapedMisc(Ingredients.STICK_NETHERITE, 4)
+				.pattern("i")
+				.pattern("i")
+				.define('i', Tags.Items.INGOTS_NETHERITE)
+				.group("sticks")
+				.unlockedBy("has_netherite_ingot", has(Tags.Items.INGOTS_NETHERITE))
+				.save(out, toRL(toPath(Ingredients.STICK_NETHERITE)));
 		shapedMisc(Ingredients.HEMP_FABRIC)
 				.pattern("fff")
 				.pattern("fsf")

@@ -83,6 +83,7 @@ public class IETags
 	public static final TagKey<Item> steelRod = createItemWrapper(getRod("steel"));
 	public static final TagKey<Item> metalRods = createItemWrapper(getRod("all_metal"));
 	public static final TagKey<Item> aluminumRod = createItemWrapper(getRod("aluminum"));
+	public static final TagKey<Item> netheriteRod = createItemWrapper(getRod("netherite"));
 	public static final TagKey<Item> seedsHemp = createItemWrapper(forgeLoc("seeds/hemp"));
 	public static final TagKey<Item> fiberHemp = createItemWrapper(forgeLoc("fiber_hemp"));
 	public static final TagKey<Item> fabricHemp = createItemWrapper(forgeLoc("fabric_hemp"));

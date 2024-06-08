@@ -3,6 +3,8 @@
 - Add missing redstone acid recipe to the manual (BluSunrize)
 - Add the windows from Engineer's Decor (BluSunrize)
     - Thank you wilechaote for giving us permission to include these blocks in the mod <3
+- Add Reinforced Concrete, crafted with Netherite Rods (BluSunrize)
+    - It's witherproof!
 - Fix fractions not rendering properly in the manual (BluSunrize)
 - Fix Machine Interface crashing on servers (BluSunrize)
 - Fix Toolbox being movable while opened (BluSunrize)

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "ie_concrete",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:concrete_reinforced"
+    }
+  },
+  "pattern": [
+    "cc",
+    "cc"
+  ],
+  "result": {
+    "count": 4,
+    "item": "immersiveengineering:concrete_reinforced_tile"
+  }
+}

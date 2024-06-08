@@ -76,6 +76,12 @@ public final class IEBlocks
 			.instrument(NoteBlockInstrument.BASEDRUM)
 			.requiresCorrectToolForDrops()
 			.strength(2, 180);
+	private static final Supplier<Properties> STONE_DECO_REINFORCED_PROPS = () -> Block.Properties.of()
+			.sound(SoundType.STONE)
+			.mapColor(MapColor.STONE)
+			.instrument(NoteBlockInstrument.BASEDRUM)
+			.requiresCorrectToolForDrops()
+			.strength(20, 1500);
 	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of()
 			.sound(SoundType.STONE)
 			.mapColor(MapColor.STONE)
@@ -189,6 +195,12 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> CONCRETE_TILE = BlockEntry.simple("concrete_tile", STONE_DECO_PROPS);
 		public static final BlockEntry<IEBaseBlock> CONCRETE_LEADED = BlockEntry.simple(
 				"concrete_leaded", STONE_DECO_LEADED_PROPS
+		);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_REINFORCED = BlockEntry.simple(
+				"concrete_reinforced", STONE_DECO_REINFORCED_PROPS
+		);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_REINFORCED_TILE = BlockEntry.simple(
+				"concrete_reinforced_tile", STONE_DECO_REINFORCED_PROPS
 		);
 		public static final BlockEntry<IEBaseBlock> INSULATING_GLASS = BlockEntry.simple(
 				"insulating_glass", STONE_DECO_PROPS_NOT_SOLID
@@ -705,6 +717,8 @@ public final class IEBlocks
 		registerSlab(StoneDecoration.CONCRETE_BRICK);
 		registerSlab(StoneDecoration.CONCRETE_TILE);
 		registerSlab(StoneDecoration.CONCRETE_LEADED);
+		registerSlab(StoneDecoration.CONCRETE_REINFORCED);
+		registerSlab(StoneDecoration.CONCRETE_REINFORCED_TILE);
 		registerSlab(StoneDecoration.INSULATING_GLASS);
 		registerSlab(StoneDecoration.ALLOYBRICK);
 		registerStairs(StoneDecoration.SLAG_BRICK);

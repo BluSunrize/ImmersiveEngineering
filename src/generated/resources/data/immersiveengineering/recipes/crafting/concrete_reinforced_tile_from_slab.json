@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "immersiveengineering:slab_concrete_reinforced_tile"
+    }
+  },
+  "pattern": [
+    "s",
+    "s"
+  ],
+  "result": {
+    "item": "immersiveengineering:concrete_reinforced_tile"
+  }
+}

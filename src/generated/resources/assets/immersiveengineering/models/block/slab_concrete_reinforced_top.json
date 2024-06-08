@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "immersiveengineering:block/stone_decoration/concrete_reinforced",
+    "side": "immersiveengineering:block/stone_decoration/concrete_reinforced",
+    "top": "immersiveengineering:block/stone_decoration/concrete_reinforced"
+  }
+}

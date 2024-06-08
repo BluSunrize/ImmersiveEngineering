@@ -69,6 +69,7 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> STICK_IRON = simple("stick_iron");
 		public static final ItemRegObject<IEBaseItem> STICK_STEEL = simple("stick_steel");
 		public static final ItemRegObject<IEBaseItem> STICK_ALUMINUM = simple("stick_aluminum");
+		public static final ItemRegObject<IEBaseItem> STICK_NETHERITE = simple("stick_netherite");
 		public static final ItemRegObject<IEBaseItem> HEMP_FIBER = simple("hemp_fiber");
 		public static final ItemRegObject<IEBaseItem> HEMP_FABRIC = simple("hemp_fabric");
 		public static final ItemRegObject<IEBaseItem> ERSATZ_LEATHER = simple("ersatz_leather");
