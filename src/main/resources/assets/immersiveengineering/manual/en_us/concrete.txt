@@ -5,7 +5,8 @@ Fortress Material
 Concrete bricks have the same blast resistance as concrete, but can be disassembled faster than their solid counterpart, making them a good structural material.
 <&partial>Concrete can be cut into slabs of varying thickness using a §2Stonecutter§r.<br>
 You can also use that machine to make slabs and stairs of concrete, as well as concrete tiles which are smoother and more polished.
-<&leaded>Leaded concrete is a reinforced material, which is highly resistant to explosions. It may also afford protection against radiation, if that is something you worry about.
+<&leaded>Leaded concrete is plated in lead, making it more resistant to explosions. It may also afford protection against radiation, if that is something you worry about.
+<&reinforced>Reinforced concrete is made from <link;concrete;liquid concrete;liquid> shaped around bars of §2Netherite§r, making it highly resistant to even powerful explosions like those of a Wither.
 <&liquid>Liquid concrete can be produced in a <link;mixer;Mixer> by combining half a bucket of Water with §2Gravel§r, §2Clay§r and §2two pieces of Sand§r. When emptied onto the ground it will spread like water, before solidifying after some time.<br>
 Multiple buckets can be used to fill a larger area by placing it at key locations.
 Note that if it spreads too thin, the liquid will dry into slabs instead of full blocks.<br>

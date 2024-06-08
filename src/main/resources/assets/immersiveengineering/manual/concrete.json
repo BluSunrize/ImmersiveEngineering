@@ -53,6 +53,15 @@
     "type": "crafting",
     "recipe": "crafting/concrete_leaded"
   },
+  "reinforced": {
+    "type": "crafting",
+    "recipes": [
+      [
+        "crafting/concrete_reinforced",
+        "crafting/concrete_reinforced_tile"
+      ]
+    ]
+  },
   "liquid": {
     "type": "mixer",
     "recipe": {
