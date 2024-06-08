@@ -10,23 +10,30 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEPotions;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.util.*;
 
@@ -38,8 +45,35 @@ public class SpawnInterdictionHandler
 	@SubscribeEvent
 	public static void onEnderTeleport(EntityTeleportEvent.EnderEntity event)
 	{
-		if(shouldCancel(event.getEntity())||event.getEntityLiving().getEffect(IEPotions.STUNNED.value())!=null)
+		LivingEntity living = event.getEntityLiving();
+		if(shouldCancel(living)||living.getEffect(IEPotions.STUNNED.value())!=null)
 			event.setCanceled(true);
+		else if(checkForLeadedBlocks(event, living))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public static void onEnderpearlTeleport(EntityTeleportEvent.EnderPearl event)
+	{
+		if(checkForLeadedBlocks(event, event.getPlayer()))
+			event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public static void onChorusTeleport(EntityTeleportEvent.ChorusFruit event)
+	{
+		if(checkForLeadedBlocks(event, event.getEntityLiving()))
+			event.setCanceled(true);
+	}
+
+	private static boolean checkForLeadedBlocks(EntityTeleportEvent event, LivingEntity living)
+	{
+		Level level = living.level();
+		Set<BlockPos> blocksBetween = Raytracer.rayTrace(living.getEyePosition(), event.getTarget(), level);
+		return blocksBetween.stream().anyMatch(blockPos -> {
+			BlockState blockState = level.getBlockState(blockPos);
+			return blockState.is(IEBlocks.StoneDecoration.CONCRETE_LEADED.get());
+		});
 	}
 
 	@SubscribeEvent

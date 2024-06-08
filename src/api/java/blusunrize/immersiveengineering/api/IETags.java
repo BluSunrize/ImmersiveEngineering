@@ -123,6 +123,7 @@ public class IETags
 	public static final TagKey<Block> grindingDiskHarvestable = createBlockWrapper(rl("mineable/grinding_disk"));
 	public static final TagKey<Block> surveyToolTargets = createBlockWrapper(rl("survey_tool_targets"));
 	public static final TagKey<Block> concreteForFeet = createBlockWrapper(rl("concrete_for_concrete_feet"));
+	public static final TagKey<Block> teleportBlocking = createBlockWrapper(rl("teleport_blocking"));
 
 	public static final TagKey<Block> buzzsawTreeBlacklist = createBlockWrapper(rl("buzzsaw/tree_blacklist"));
 	public static final TagKey<Item> tools = createItemWrapper(forgeLoc("tools"));

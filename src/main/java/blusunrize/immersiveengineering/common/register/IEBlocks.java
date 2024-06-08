@@ -75,13 +75,13 @@ public final class IEBlocks
 			.mapColor(MapColor.STONE)
 			.instrument(NoteBlockInstrument.BASEDRUM)
 			.requiresCorrectToolForDrops()
-			.strength(2, 180);
+			.strength(2, 100);
 	private static final Supplier<Properties> STONE_DECO_REINFORCED_PROPS = () -> Block.Properties.of()
 			.sound(SoundType.STONE)
 			.mapColor(MapColor.STONE)
 			.instrument(NoteBlockInstrument.BASEDRUM)
 			.requiresCorrectToolForDrops()
-			.strength(20, 1500);
+			.strength(20, 1200);
 	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of()
 			.sound(SoundType.STONE)
 			.mapColor(MapColor.STONE)

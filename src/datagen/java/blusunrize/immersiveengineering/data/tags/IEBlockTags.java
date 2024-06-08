@@ -191,14 +191,19 @@ public class IEBlockTags extends BlockTagsProvider
 				StoneDecoration.CONCRETE_REINFORCED,
 				StoneDecoration.CONCRETE_REINFORCED_TILE,
 		};
-		for(BlockEntry<?> entry:concreteBlocks) {
+		for(BlockEntry<?> entry : concreteBlocks)
+		{
 			tag(IETags.concreteForFeet).add(entry.get());
 			BlockEntry<?> shaped;
-			if((shaped = IEBlocks.TO_SLAB.get(entry.getId())) !=null)
+			if((shaped = IEBlocks.TO_SLAB.get(entry.getId()))!=null)
 				tag(IETags.concreteForFeet).add(shaped.get());
-			if((shaped = IEBlocks.TO_STAIRS.get(entry.getId())) !=null)
+			if((shaped = IEBlocks.TO_STAIRS.get(entry.getId()))!=null)
 				tag(IETags.concreteForFeet).add(shaped.get());
 		}
+		tag(IETags.teleportBlocking)
+				.add(StoneDecoration.CONCRETE_LEADED.get())
+				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_LEADED.getId()).get())
+				.add(IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()).get());
 
 		registerHammerMineable();
 		registerRockcutterMineable();

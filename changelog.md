@@ -5,6 +5,7 @@
     - Thank you wilechaote for giving us permission to include these blocks in the mod <3
 - Add Reinforced Concrete, crafted with Netherite Rods (BluSunrize)
     - It's witherproof!
+- Change Leaded Concrete to be less resistant to explosions and block teleporting instead
 - Fix fractions not rendering properly in the manual (BluSunrize)
 - Fix Machine Interface crashing on servers (BluSunrize)
 - Fix Toolbox being movable while opened (BluSunrize)
