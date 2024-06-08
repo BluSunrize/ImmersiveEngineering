@@ -119,7 +119,7 @@ public class IEMenuTypes
 	);
 
 	public static final ItemContainerTypeNew<ToolboxMenu> TOOLBOX = registerItem(
-			Lib.GUIID_Toolbox, ToolboxMenu::makeFromItem, ToolboxMenu::makeClient
+			Lib.GUIID_Toolbox, ToolboxMenu::makeFromItem, ToolboxMenu::makeClientItem
 	);
 	public static final ItemContainerType<RevolverContainer> REVOLVER = register(Lib.GUIID_Revolver, RevolverContainer::new);
 	public static final ItemContainerType<MaintenanceKitContainer> MAINTENANCE_KIT = register(Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);
