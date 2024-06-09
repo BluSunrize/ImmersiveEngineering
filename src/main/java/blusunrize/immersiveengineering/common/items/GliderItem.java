@@ -86,10 +86,10 @@ public class GliderItem extends IEBaseItem implements Equipable
 
 				if(nextFlightTick%20==0)
 				{
-					stack.hurtAndBreak(itemDamage, entity, e -> e.broadcastBreakEvent(net.minecraft.world.entity.EquipmentSlot.CHEST));
+					stack.hurtAndBreak(itemDamage, entity, EquipmentSlot.CHEST);
 					// Unlike an Elytra, this glider can completely break due to the extra damage at speed
 					if(itemDamage>1 && !ElytraItem.isFlyEnabled(stack))
-						stack.hurtAndBreak(1, entity, e -> e.broadcastBreakEvent(net.minecraft.world.entity.EquipmentSlot.CHEST));
+						stack.hurtAndBreak(1, entity, EquipmentSlot.CHEST);
 				}
 				entity.gameEvent(GameEvent.ELYTRA_GLIDE);
 			}

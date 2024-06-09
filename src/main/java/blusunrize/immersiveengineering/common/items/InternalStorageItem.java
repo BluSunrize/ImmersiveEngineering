@@ -9,18 +9,12 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
-import blusunrize.immersiveengineering.common.register.IEDataAttachments;
-import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.attachment.IAttachmentSerializer;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ComponentItemHandler;
 
 public abstract class InternalStorageItem extends IEBaseItem
 {
@@ -35,73 +29,18 @@ public abstract class InternalStorageItem extends IEBaseItem
 	public static void registerCapabilitiesISI(ItemCapabilityRegistrar registrar)
 	{
 		registrar.register(ItemHandler.ITEM, stack -> {
-			AttachmentType<IEItemStackHandler> key = IEDataAttachments.ITEM_INVENTORY.get();
 			InternalStorageItem item = (InternalStorageItem)stack.getItem();
-			if(!stack.hasData(key))
-				stack.setData(key, new IEItemStackHandler(item, null));
-			IEItemStackHandler inventory = stack.getData(key);
-			if(inventory.getSlots()!=item.getSlotCount())
-			{
-				inventory = new IEItemStackHandler(item, inventory);
-				stack.setData(key, inventory);
-			}
-			return inventory;
+			return new ComponentItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.getSlotCount());
 		});
 	}
 
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)
 	{
-		IItemHandler handler = stack.getCapability(ItemHandler.ITEM);
-		if(handler instanceof IItemHandlerModifiable modifiable)
-		{
-			if(inventory.size()!=modifiable.getSlots())
-				throw new IllegalArgumentException("Parameter inventory has "+inventory.size()+" slots, capability inventory has "+modifiable.getSlots());
-			for(int i = 0; i < modifiable.getSlots(); i++)
-				modifiable.setStackInSlot(i, inventory.get(i));
-		}
-		else
-			IELogger.warn("No valid inventory handler found for "+stack);
+		stack.set(IEDataComponents.GENERIC_ITEMS, ItemContainerContents.fromItems(inventory));
 	}
 
-	public NonNullList<ItemStack> getContainedItems(ItemStack stack)
+	public static ItemContainerContents getContainedItems(ItemStack stack)
 	{
-		IItemHandler handler = stack.getCapability(ItemHandler.ITEM);
-		if(handler!=null)
-		{
-			if(handler instanceof IEItemStackHandler ieHandler)
-				return ieHandler.getContainedItems();
-			else
-			{
-				IELogger.warn("Inefficiently getting contained items. Why does "+stack+" have a non-IE IItemHandler?");
-				NonNullList<ItemStack> inv = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
-				for(int i = 0; i < handler.getSlots(); i++)
-					inv.set(i, handler.getStackInSlot(i));
-				return inv;
-			}
-		}
-		else
-			return NonNullList.create();
+		return stack.getOrDefault(IEDataComponents.GENERIC_ITEMS, ItemContainerContents.EMPTY);
 	}
-
-	public static final IAttachmentSerializer<CompoundTag, IEItemStackHandler> DATA_SERIALIZER = new IAttachmentSerializer<CompoundTag, IEItemStackHandler>()
-	{
-		@Override
-		public IEItemStackHandler read(IAttachmentHolder holder, CompoundTag tag)
-		{
-			if(tag.isEmpty())
-				return null;
-			IEItemStackHandler result = new IEItemStackHandler();
-			result.deserializeNBT(tag);
-			return result;
-		}
-
-		@Override
-		public CompoundTag write(IEItemStackHandler attachment)
-		{
-			if(attachment==null)
-				return new CompoundTag();
-			else
-				return attachment.serializeNBT();
-		}
-	};
 }

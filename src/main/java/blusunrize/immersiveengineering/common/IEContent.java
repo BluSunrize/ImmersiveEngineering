@@ -148,6 +148,7 @@ public class IEContent
 		IELootFunctions.init(modBus);
 		IEArgumentTypes.init(modBus);
 		IEBannerPatterns.init(modBus);
+		IEArmorMaterials.init(modBus);
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
@@ -190,8 +191,8 @@ public class IEContent
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
 		AssemblerHandler.registerSpecialIngredientConverter((o, remain) -> {
-			if(o instanceof IngredientFluidStack)
-				return new FluidTagRecipeQuery(((IngredientFluidStack)o).getFluidTagInput());
+			if(o.getCustomIngredient() instanceof IngredientFluidStack fluidIngred)
+				return new FluidTagRecipeQuery(fluidIngred.getFluidTagInput());
 			else
 				return null;
 		});
@@ -214,7 +215,7 @@ public class IEContent
 			//noinspection deprecation
 			if(!bucketItem.hasCraftingRemainingItem()||bucketItem.getCraftingRemainingItem()!=Items.BUCKET)
 				return null;
-			final Fluid contained = ((BucketItem)bucketItem).getFluid();
+			final Fluid contained = ((BucketItem)bucketItem).content;
 			return new FluidStackRecipeQuery(new FluidStack(contained, FluidType.BUCKET_VOLUME));
 		});
 		// Milk is a weird special case

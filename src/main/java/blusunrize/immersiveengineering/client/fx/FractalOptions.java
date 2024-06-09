@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.client.fx;
 
+import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.common.register.IEParticles;
-import blusunrize.immersiveengineering.common.util.IECodecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

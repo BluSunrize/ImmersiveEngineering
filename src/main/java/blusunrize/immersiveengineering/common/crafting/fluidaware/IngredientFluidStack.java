@@ -14,9 +14,10 @@ import blusunrize.immersiveengineering.common.register.IEIngredients;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -29,19 +30,11 @@ import java.util.stream.Stream;
 /**
  * @author BluSunrize - 03.07.2017
  */
-public class IngredientFluidStack extends Ingredient
+public record IngredientFluidStack(FluidTagInput fluidTagInput) implements ICustomIngredient
 {
 	public static final MapCodec<IngredientFluidStack> CODEC = FluidTagInput.MAP_CODEC.xmap(
 			IngredientFluidStack::new, IngredientFluidStack::getFluidTagInput
 	);
-
-	private final FluidTagInput fluidTagInput;
-
-	public IngredientFluidStack(FluidTagInput fluidTagInput)
-	{
-		super(Stream.empty(), IEIngredients.FLUID_STACK::value);
-		this.fluidTagInput = fluidTagInput;
-	}
 
 	public IngredientFluidStack(TagKey<Fluid> tag, int amount)
 	{
@@ -53,27 +46,14 @@ public class IngredientFluidStack extends Ingredient
 		return fluidTagInput;
 	}
 
-	ItemStack[] cachedStacks;
-
 	@Nonnull
 	@Override
-	public ItemStack[] getItems()
+	public Stream<ItemStack> getItems()
 	{
-		if(cachedStacks==null)
-			cachedStacks = this.fluidTagInput.getMatchingFluidStacks()
-					.stream()
-					.map(FluidUtil::getFilledBucket)
-					.filter(s -> !s.isEmpty())
-					.toArray(ItemStack[]::new);
-		return this.cachedStacks;
-	}
-
-	@Override
-	public boolean isEmpty()
-	{
-		return false;
-		// todo? I don't think there is a way to do this now, because the tag isn't bound yet on world load
-		// this.fluidTagInput.getMatchingFluidStacks().isEmpty();
+		return this.fluidTagInput.getMatchingFluidStacks()
+				.stream()
+				.map(FluidUtil::getFilledBucket)
+				.filter(s -> !s.isEmpty());
 	}
 
 	@Override
@@ -100,5 +80,11 @@ public class IngredientFluidStack extends Ingredient
 			return handler.getContainer();
 		}
 		return input.getCraftingRemainingItem();
+	}
+
+	@Override
+	public IngredientType<?> getType()
+	{
+		return IEIngredients.FLUID_STACK.value();
 	}
 }

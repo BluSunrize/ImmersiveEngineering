@@ -11,20 +11,16 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import blusunrize.immersiveengineering.common.register.IEItems;
-import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
@@ -66,10 +62,10 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	@Override
 	public void writeTileToItem(ItemStack itemStack)
 	{
-		CompoundTag tag = new CompoundTag();
-		ContainerHelper.saveAllItems(tag, containedBlockEntity.getInventory(), level().registryAccess());
-		if(!tag.isEmpty())
-			itemStack.setTag(tag);
+		itemStack.set(
+				IEDataComponents.GENERIC_ITEMS,
+				ItemContainerContents.fromItems(containedBlockEntity.getInventory())
+		);
 	}
 
 	@Override

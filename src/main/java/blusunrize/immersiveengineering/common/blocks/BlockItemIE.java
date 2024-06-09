@@ -11,13 +11,11 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.BundleTooltip;
@@ -27,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.BundleContents;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -126,22 +125,9 @@ public class BlockItemIE extends BlockItem
 	@Override
 	public Optional<TooltipComponent> getTooltipImage(@Nonnull ItemStack stack)
 	{
-		if(stack.hasTag())
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			if(tag.contains("Items"))
-			{
-				// manual readout, skipping empty slots
-				ListTag list = tag.getList("Items", 10);
-				NonNullList<ItemStack> items = NonNullList.create();
-				list.forEach(e -> {
-					ItemStack s = ItemStack.of((CompoundTag)e);
-					if(!s.isEmpty())
-						items.add(s);
-				});
-				return Optional.of(new BundleTooltip(new BundleContents(items)));
-			}
-		}
+		final ItemContainerContents items = stack.get(IEDataComponents.GENERIC_ITEMS);
+		if(items!=null)
+			return Optional.of(new BundleTooltip(new BundleContents(items.stream().toList())));
 		return super.getTooltipImage(stack);
 	}
 

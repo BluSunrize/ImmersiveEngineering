@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
+import net.minecraft.core.Holder;
 import net.neoforged.neoforge.common.crafting.IngredientType;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.NeoForgeRegistries.Keys;
 
 public class IEIngredients
@@ -23,6 +23,7 @@ public class IEIngredients
 
 	public static final Holder<IngredientType<?>> FLUID_STACK = REGISTER.register(
 			"fluid_stack",
-			() -> new IngredientType<>(IngredientFluidStack.CODEC, IngredientFluidStack.CODEC)
+			// TODO stream codec?
+			() -> new IngredientType<>(IngredientFluidStack.CODEC)
 	);
 }

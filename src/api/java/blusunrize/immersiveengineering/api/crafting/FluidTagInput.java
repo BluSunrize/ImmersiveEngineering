@@ -42,6 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -235,5 +236,20 @@ public class FluidTagInput implements Predicate<FluidStack>
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this==o) return true;
+		if(o==null||getClass()!=o.getClass()) return false;
+		FluidTagInput that = (FluidTagInput)o;
+		return amount==that.amount&&Objects.equals(fluidTag, that.fluidTag)&&Objects.equals(nbtTag, that.nbtTag);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(fluidTag, amount, nbtTag);
 	}
 }

@@ -8,12 +8,14 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
+import blusunrize.immersiveengineering.common.network.SyncedConnection;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,8 +36,6 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 import static blusunrize.immersiveengineering.api.wires.utils.WireUtils.findObstructingBlocks;
-import static blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.clearWireLink;
-import static blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils.hasWireLink;
 
 public class WireCoilItem extends IEBaseItem implements IWireCoil
 {
@@ -67,19 +67,19 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction0"));
 			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
-		if(hasWireLink(stack))
+		WireLink link = stack.get(IEApiDataComponents.WIRE_LINK);
+		if(link!=null)
 		{
-			WireLink link = WireLink.readFromItem(stack);
 			String dimensionName = "";
-			if(link.dimension!=null)
+			if(link.dimension()!=null)
 			{
-				String s2 = link.dimension.location().getPath();
+				String s2 = link.dimension().location().getPath();
 				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					s2 = s2.substring(4);
 				dimensionName = Utils.toCamelCase(s2);
 			}
-			list.add(Component.translatable(Lib.DESC_INFO+"attachedToDim", link.cp.getX(),
-					link.cp.getY(), link.cp.getZ(), dimensionName));
+			list.add(Component.translatable(Lib.DESC_INFO+"attachedToDim", link.cp().getX(),
+					link.cp().getY(), link.cp().getZ(), dimensionName));
 		}
 	}
 
@@ -119,21 +119,18 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 
 			if(!world.isClientSide)
 			{
-				if(!hasWireLink(stack))
-				{
-					WireLink link = WireLink.create(cpHere, world, masterOffsetHere, targetHere);
-					link.writeToItem(stack);
-				}
+				final WireLink storedLink = stack.get(IEApiDataComponents.WIRE_LINK);
+				if(storedLink==null)
+					stack.set(IEApiDataComponents.WIRE_LINK, WireLink.create(cpHere, world, masterOffsetHere, targetHere));
 				else
 				{
-					final WireLink otherLink = WireLink.readFromItem(stack);
-					BlockEntity tileEntityLinkingPos = world.getBlockEntity(otherLink.cp.position());
-					int distanceSq = (int)Math.ceil(otherLink.cp.position().distSqr(masterPos));
+					BlockEntity tileEntityLinkingPos = world.getBlockEntity(storedLink.cp().position());
+					int distanceSq = (int)Math.ceil(storedLink.cp().position().distSqr(masterPos));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(!otherLink.dimension.equals(world.dimension()))
+					if(!storedLink.dimension().equals(world.dimension()))
 						player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"wrongDimension"), true);
-					else if(otherLink.cp.position().equals(masterPos))
+					else if(storedLink.cp().position().equals(masterPos))
 						player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
 						player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"tooFar"), true);
@@ -143,8 +140,8 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 							player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"invalidPoint"), true);
 						else
 						{
-							if(!iicLink.canConnectCable(wire, otherLink.cp, otherLink.offset)||
-									!iicLink.getConnectionMaster(wire, otherLink.target).equals(otherLink.cp.position())||
+							if(!iicLink.canConnectCable(wire, storedLink.cp(), storedLink.offset())||
+									!iicLink.getConnectionMaster(wire, storedLink.target()).equals(storedLink.cp().position())||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
 								player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"invalidPoint"), true);
@@ -154,13 +151,13 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 								GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
 								boolean connectionExists = false;
 								LocalWireNetwork localA = net.getLocalNet(cpHere);
-								LocalWireNetwork localB = net.getLocalNet(otherLink.cp);
+								LocalWireNetwork localB = net.getLocalNet(storedLink.cp());
 								if(localA==localB)
 								{
 									Collection<Connection> outputs = localA.getConnections(cpHere);
 									if(outputs!=null)
 										for(Connection con : outputs)
-											if(!con.isInternal()&&con.getOtherEnd(cpHere).equals(otherLink.cp))
+											if(!con.isInternal()&&con.getOtherEnd(cpHere).equals(storedLink.cp()))
 												connectionExists = true;
 								}
 								if(connectionExists)
@@ -170,14 +167,14 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(iicHere.getIgnored(iicLink));
 									ignore.addAll(iicLink.getIgnored(iicHere));
-									Connection conn = new Connection(wire, cpHere, otherLink.cp, net);
+									Connection conn = new Connection(wire, cpHere, storedLink.cp(), net);
 									Set<BlockPos> failedReasons = findObstructingBlocks(world, conn, ignore);
 									if(failedReasons.isEmpty())
 									{
 										net.addConnection(conn);
 
-										iicHere.connectCable(wire, cpHere, iicLink, otherLink.cp);
-										iicLink.connectCable(wire, otherLink.cp, iicHere, cpHere);
+										iicHere.connectCable(wire, cpHere, iicLink, storedLink.cp());
+										iicLink.connectCable(wire, storedLink.cp(), iicHere, cpHere);
 										Utils.unlockIEAdvancement(player, "main/connect_wire");
 
 										if(!player.getAbilities().instabuild)
@@ -188,22 +185,23 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 										BlockState state = world.getBlockState(masterPos);
 										world.sendBlockUpdated(masterPos, state, state, 3);
 										((BlockEntity)iicLink).setChanged();
-										world.blockEvent(otherLink.cp.position(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
-										state = world.getBlockState(otherLink.cp.position());
-										world.sendBlockUpdated(otherLink.cp.position(), state, state, 3);
+										world.blockEvent(storedLink.cp().position(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
+										state = world.getBlockState(storedLink.cp().position());
+										world.sendBlockUpdated(storedLink.cp().position(), state, state, 3);
 									}
 									else
 									{
 										player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"cantSee"), true);
-										PacketDistributor.PLAYER.with((ServerPlayer)player).send(
-												new MessageObstructedConnection(conn, failedReasons)
+										PacketDistributor.sendToPlayer(
+												(ServerPlayer)player,
+												new MessageObstructedConnection(failedReasons, new SyncedConnection(conn))
 										);
 									}
 								}
 							}
 						}
 					}
-					clearWireLink(stack);
+					stack.remove(IEApiDataComponents.WIRE_LINK);
 				}
 			}
 			return InteractionResult.SUCCESS;

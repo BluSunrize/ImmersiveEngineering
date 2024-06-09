@@ -202,7 +202,6 @@ public class ClientProxy extends CommonProxy
 		IEManual.addIEManualEntries();
 		// TODO is this necessary? Is this enough?
 		IEBannerPatterns.ALL_BANNERS.forEach(entry -> Sheets.getBannerMaterial(entry.pattern()));
-		ev.enqueueWork(OptifineWarning::warnIfRequired);
 	}
 
 	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(

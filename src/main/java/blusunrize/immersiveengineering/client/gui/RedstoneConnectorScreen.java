@@ -73,7 +73,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 	{
 		CompoundTag message = new CompoundTag();
 		message.putInt(key, value);
-		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity.getBlockPos(), message));
 	}
 
 	@Override

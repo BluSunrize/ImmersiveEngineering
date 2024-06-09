@@ -21,8 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -109,16 +108,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public int getHeadDamage(ItemStack head)
 	{
-		if(head.hasTag())
-		{
-			CompoundTag nbt = head.getOrCreateTag();
-			if(nbt.contains(DAMAGE_KEY_OLD, Tag.TAG_INT))
-				return nbt.getInt(DAMAGE_KEY_OLD);
-			else
-				return nbt.getInt(DAMAGE_KEY);
-		}
-		else
-			return 0;
+		return head.get(DataComponents.DAMAGE);
 	}
 
 	@Override
@@ -135,9 +125,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 
 	public static void setHeadDamage(ItemStack head, int totalDamage)
 	{
-		CompoundTag nbt = head.getOrCreateTag();
-		nbt.remove(DAMAGE_KEY_OLD);
-		nbt.putInt(DAMAGE_KEY, totalDamage);
+		head.set(DataComponents.DAMAGE, totalDamage);
 	}
 
 	@Override

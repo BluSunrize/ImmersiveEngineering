@@ -212,7 +212,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 		return getFacing().getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
 	}
 
-	private ItemStack makeSampleStack()
+	public ItemStack makeSampleStack()
 	{
 		ItemStack coresampleStack = Misc.CORESAMPLE.asItem().getDefaultInstance();
 		coresampleStack.set(IEDataComponents.CORESAMPLE, this.containedSample);

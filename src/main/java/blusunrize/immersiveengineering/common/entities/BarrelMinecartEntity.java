@@ -12,10 +12,10 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
@@ -63,10 +64,10 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	@Override
 	public void writeTileToItem(ItemStack itemStack)
 	{
-		CompoundTag tag = new CompoundTag();
-		this.containedBlockEntity.writeTank(level().registryAccess(), tag, true);
-		if(!tag.isEmpty())
-			itemStack.setTag(tag);
+		itemStack.set(
+				IEDataComponents.GENERIC_FLUID,
+				SimpleFluidContent.copyOf(this.containedBlockEntity.tank.getFluid())
+		);
 	}
 
 	@Override

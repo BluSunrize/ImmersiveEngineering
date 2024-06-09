@@ -54,12 +54,12 @@ public class SurveyToolsItem extends IEBaseItem
 		// earthen materials
 		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(IETags.surveyToolTargets));
 		// Stone, Diorite, Andesite, etc.
-		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(Tags.Blocks.STONE));
+		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(Tags.Blocks.ORE_BEARING_GROUND_STONE));
 		// Nether materials
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
-			return state.is(Tags.Blocks.NETHERRACK)
+			return state.is(Tags.Blocks.ORE_BEARING_GROUND_NETHERRACK)
 					||block==Blocks.SOUL_SAND
 					||block==Blocks.BLACKSTONE
 					||block==Blocks.BASALT;
@@ -67,7 +67,7 @@ public class SurveyToolsItem extends IEBaseItem
 		// soft rocks
 		CAN_USE_ON.add((world, pos) -> {
 			BlockState state = world.getBlockState(pos);
-			return state.is(Tags.Blocks.STONE)&&state.getDestroySpeed(world, pos) < 0.5;
+			return state.is(Tags.Blocks.STONES)&&state.getDestroySpeed(world, pos) < 0.5;
 		});
 	}
 
@@ -177,11 +177,11 @@ public class SurveyToolsItem extends IEBaseItem
 		tag.putInt("x", pos.getX());
 		tag.putInt("z", pos.getZ());
 		// Lets save the hint, in case we ever want to give this a GUI
-		tag.putString("hint", Component.Serializer.toJson(response));
+		tag.putString("hint", Component.Serializer.toJson(response, world.registryAccess()));
 		data.add(tag);
 
 		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.NEUTRAL, 1.0F, 1.0F+(world.random.nextFloat()-world.random.nextFloat())*0.4F);
-		stack.hurtAndBreak(1, player, (user) -> user.broadcastBreakEvent(user.getUsedItemHand()));
+		stack.hurtAndBreak(1, player, player.getUsedItemHand());
 
 		return stack;
 	}

@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.util.IECodecs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;

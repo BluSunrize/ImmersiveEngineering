@@ -22,7 +22,7 @@ public class CoresampleRenderer extends IEBlockEntityRenderer<CoresampleBlockEnt
 	@Override
 	public void render(CoresampleBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.coresample==null)
+		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.containedSample==null)
 			return;
 
 		matrixStack.pushPose();
@@ -33,7 +33,7 @@ public class CoresampleRenderer extends IEBlockEntityRenderer<CoresampleBlockEnt
 		matrixStack.mulPose(new Quaternionf().rotateX(-Mth.HALF_PI/2));
 		matrixStack.translate(0, .04864, .02903);
 		ClientUtils.mc().getItemRenderer().renderStatic(
-				tile.coresample, ItemDisplayContext.FIXED,
+				tile.makeSampleStack(), ItemDisplayContext.FIXED,
 				combinedLightIn, combinedOverlayIn, matrixStack, bufferIn,
 				tile.getLevel(), 0
 		);

@@ -24,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.Collections;

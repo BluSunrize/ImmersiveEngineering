@@ -472,7 +472,7 @@ public class Villages
 			int tier = Math.max(1, RevolverItem.RevolverPerk.calculateTier(perksTag));
 
 			ItemNBTHelper.putBoolean(stack, "generatePerks", true);
-			return new MerchantOffer(new ItemStack(Items.EMERALD, 5*tier+random.nextInt(5)), stack, 1, 45, 0.25F);
+			return new MerchantOffer(new ItemCost(Items.EMERALD, 5*tier+random.nextInt(5)), stack, 1, 45, 0.25F);
 		}
 	}
 

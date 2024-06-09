@@ -11,11 +11,15 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
+import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -44,6 +48,18 @@ public class IEDataComponents
 					.networkSynchronized(SimpleFluidContent.STREAM_CODEC)
 					.build()
 	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<ItemContainerContents>> GENERIC_ITEMS = REGISTER.register(
+			"items", () -> DataComponentType.<ItemContainerContents>builder()
+					.persistent(ItemContainerContents.CODEC)
+					.networkSynchronized(ItemContainerContents.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> GENERIC_ENERGY = REGISTER.register(
+			"energy", () -> DataComponentType.<Integer>builder()
+					.persistent(Codec.INT)
+					.networkSynchronized(ByteBufCodecs.VAR_INT)
+					.build()
+	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<CoresampleItem.ItemData>> CORESAMPLE = REGISTER.register(
 			"coresample_data", () -> DataComponentType.<CoresampleItem.ItemData>builder()
 					.persistent(CoresampleItem.ItemData.CODEC)
@@ -62,6 +78,19 @@ public class IEDataComponents
 					.networkSynchronized(Color4.STREAM_CODEC)
 					.build()
 	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<Block>> DEFAULT_COVER = REGISTER.register(
+			"default_cover", () -> DataComponentType.<Block>builder()
+					.persistent(BuiltInRegistries.BLOCK.byNameCodec())
+					.networkSynchronized(ByteBufCodecs.registry(Registries.BLOCK))
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<CapacitorState>> CAPACITOR_CONFIG = REGISTER.register(
+			"default_cover", () -> DataComponentType.<CapacitorState>builder()
+					.persistent(CapacitorState.CODEC)
+					.networkSynchronized(CapacitorState.STREAM_CODEC)
+					.build()
+	);
+
 	// TODO probably just a massive hack? Does this need to be persistent?
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> JERRYCAN_DRAIN = REGISTER.register(
 			"jerrycan_drain", () -> DataComponentType.<Integer>builder().build()

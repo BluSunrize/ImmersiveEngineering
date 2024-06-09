@@ -57,9 +57,8 @@ public class VoltmeterItem extends IEBaseItem
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn)
 	{
 		super.appendHoverText(stack, ctx, tooltip, flagIn);
-		if(stack.has(IEApiDataComponents.WIRE_LINK))
-		{
-			WireLink link = stack.get(IEApiDataComponents.WIRE_LINK);
+		WireLink link = stack.get(IEApiDataComponents.WIRE_LINK);
+		if(link!=null)
 			tooltip.add(Component.translatable(
 					Lib.DESC_INFO+"attachedToDim",
 					link.cp().getX(),
@@ -67,7 +66,6 @@ public class VoltmeterItem extends IEBaseItem
 					link.cp().getZ(),
 					link.dimension().toString()
 			));
-		}
 	}
 
 	@Override

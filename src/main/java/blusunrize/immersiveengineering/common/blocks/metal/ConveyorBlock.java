@@ -16,13 +16,11 @@ import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +51,6 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 			.sound(SoundType.METAL)
 			.strength(3.0F, 15.0F)
 			.noOcclusion();
-	public static final String DEFAULT_COVER = "defaultCover";
 
 	private final IConveyorType<?> type;
 	public static final EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
@@ -78,7 +75,7 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 	public static ItemStack makeCovered(ItemLike conveyor, Block cover)
 	{
 		ItemStack covered = new ItemStack(conveyor, 1);
-		covered.getOrCreateTag().putString(DEFAULT_COVER, BuiltInRegistries.BLOCK.getKey(cover).toString());
+		covered.set(IEDataComponents.DEFAULT_COVER, cover);
 		return covered;
 	}
 
@@ -122,12 +119,7 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 
 	public static Block getCover(ItemStack conveyor)
 	{
-		ResourceLocation coverID = new ResourceLocation(ItemNBTHelper.getString(conveyor, ConveyorBlock.DEFAULT_COVER));
-		Block result = BuiltInRegistries.BLOCK.get(coverID);
-		if(result!=null)
-			return result;
-		else
-			return Blocks.AIR;
+		return conveyor.getOrDefault(IEDataComponents.DEFAULT_COVER, Blocks.AIR);
 	}
 
 	@Override

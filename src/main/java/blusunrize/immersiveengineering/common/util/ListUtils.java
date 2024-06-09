@@ -12,32 +12,14 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Created by codew on 4/04/2017.
  */
 public final class ListUtils
 {
-	public static NonNullList<ItemStack> fromItem(ItemStack itemStack)
-	{
-		NonNullList<ItemStack> list = NonNullList.create();
-		if(itemStack!=null)
-		{
-			list.add(0, itemStack);
-		}
-		return list;
-	}
-
-	public static NonNullList<ItemStack> fromItems(ItemStack... itemStack)
-	{
-		NonNullList<ItemStack> list = NonNullList.create();
-		for(int i = 0; i < itemStack.length; i++)
-		{
-			list.add(i, itemStack[i]!=null?(itemStack[i]): ItemStack.EMPTY);
-		}
-		return list;
-	}
-
 	private ListUtils()
 	{
 	}
@@ -47,5 +29,10 @@ public final class ListUtils
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.addAll(stackList);
 		return list;
+	}
+
+	public static <T> Collector<T, ?, NonNullList<T>> collector()
+	{
+		return Collectors.toCollection(NonNullList::create);
 	}
 }

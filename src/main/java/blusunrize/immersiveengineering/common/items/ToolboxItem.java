@@ -27,6 +27,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.BundleTooltip;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -157,15 +158,14 @@ public class ToolboxItem extends InternalStorageItem
 	@Override
 	public Optional<TooltipComponent> getTooltipImage(@Nonnull ItemStack stack)
 	{
-		if(stack.hasTag())
-		{
-			// cut all empty slots from list
-			NonNullList<ItemStack> items = getContainedItems(stack)
-					.stream()
-					.filter(s -> !s.isEmpty())
-					.collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
-			return Optional.of(new BundleTooltip(items, 0));
-		}
-		return super.getTooltipImage(stack);
+		// cut all empty slots from list
+		NonNullList<ItemStack> items = getContainedItems(stack)
+				.stream()
+				.filter(s -> !s.isEmpty())
+				.collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
+		if(!items.isEmpty())
+			return Optional.of(new BundleTooltip(new BundleContents(items)));
+		else
+			return super.getTooltipImage(stack);
 	}
 }

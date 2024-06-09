@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.own
 
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillBlockEntity;
-import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSample;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
@@ -52,25 +52,25 @@ public class SampleDrillCallbacks extends CallbackOwner<SampleDrillBlockEntity>
 	@ComputerCallable
 	public List<String> getVeinNames(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		return getVeinProperties(env, vsd -> vsd.getTypeHolder().id().toString());
+		return getVeinProperties(env, vsd -> vsd.mineral().toString());
 	}
 
 	@ComputerCallable
 	public List<Integer> getVeinIntegrities(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		return getVeinProperties(env, vsd -> ExcavatorHandler.mineralVeinYield-vsd.getDepletion());
+		return getVeinProperties(env, vsd -> ExcavatorHandler.mineralVeinYield-vsd.depletion());
 	}
 
 	@ComputerCallable
 	public List<Double> getVeinWeights(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		return getVeinProperties(env, VeinSampleData::getPercentageInTotalSample);
+		return getVeinProperties(env, VeinSample::percentageInTotalSample);
 	}
 
 	@ComputerCallable
 	public List<Double> getVeinSaturations(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		return getVeinProperties(env, VeinSampleData::getSaturation);
+		return getVeinProperties(env, VeinSample::saturation);
 	}
 
 	@ComputerCallable
@@ -82,9 +82,9 @@ public class SampleDrillCallbacks extends CallbackOwner<SampleDrillBlockEntity>
 	}
 
 	@Nullable
-	private <T> List<T> getVeinProperties(CallbackEnvironment<SampleDrillBlockEntity> env, Function<VeinSampleData, T> get)
+	private <T> List<T> getVeinProperties(CallbackEnvironment<SampleDrillBlockEntity> env, Function<VeinSample, T> get)
 	{
-		List<VeinSampleData> veins = env.object().getVein();
+		List<VeinSample> veins = env.object().getVein();
 		if(veins==null)
 			return null;
 		return veins.stream()

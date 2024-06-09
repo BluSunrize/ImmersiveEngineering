@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -25,14 +26,18 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -212,7 +217,8 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false, context.getLevel().registryAccess());
+		stack.set(IEDataComponents.GENERIC_ENERGY, this.energyStorage.getEnergyStored());
+		stack.set(IEDataComponents.CAPACITOR_CONFIG, new CapacitorState(this.sideConfig));
 		drop.accept(stack);
 	}
 
@@ -220,8 +226,12 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false, ctx.getLevel().registryAccess());
+		final Integer stored = stack.get(IEDataComponents.GENERIC_ENERGY);
+		if(stored!=null&&this.energyStorage instanceof MutableEnergyStorage mutable)
+			mutable.setStoredEnergy(stored);
+		final var sideConfig = stack.get(IEDataComponents.CAPACITOR_CONFIG);
+		if(sideConfig!=null)
+			this.sideConfig = new EnumMap<>(sideConfig.sideConfig);
 	}
 
 	protected IEnergyStorage makeMainEnergyStorage()
@@ -272,6 +282,19 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		public boolean canReceive()
 		{
 			return sideConfigs.get(side)==IOSideConfig.INPUT;
+		}
+	}
+
+	public record CapacitorState(EnumMap<Direction, IOSideConfig> sideConfig)
+	{
+		public static final Codec<CapacitorState> CODEC = IECodecs.enumMapCodec(Direction.values(), IOSideConfig.CODEC)
+				.xmap(CapacitorState::new, CapacitorState::sideConfig);
+		public static final StreamCodec<ByteBuf, CapacitorState> STREAM_CODEC = IECodecs.enumMapStreamCodec(Direction.values(), IOSideConfig.STREAM_CODEC)
+				.map(CapacitorState::new, CapacitorState::sideConfig);
+
+		public CapacitorState
+		{
+			sideConfig = new EnumMap<>(sideConfig);
 		}
 	}
 }

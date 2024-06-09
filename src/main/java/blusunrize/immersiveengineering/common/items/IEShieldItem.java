@@ -149,7 +149,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{
-					t.addEffect(new MobEffectInstance(IEPotions.FLASHED.value(), 100, 1));
+					t.addEffect(new MobEffectInstance(IEPotions.FLASHED, 100, 1));
 					if(t instanceof Mob)
 						((Mob)t).setTarget(null);
 				}

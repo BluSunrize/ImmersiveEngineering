@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.own
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration.ExtraComponent;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.component.RedstoneControl;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import net.minecraft.core.BlockPos;
