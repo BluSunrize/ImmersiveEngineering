@@ -226,7 +226,7 @@ public class IEBlockTags extends BlockTagsProvider
 		tag(IETags.surveyToolTargets)
 				.addTag(BlockTags.DIRT)
 				.addTag(Tags.Blocks.GRAVEL)
-				.add(Blocks.GRASS_BLOCK)
+			    .addTag(Tags.Blocks.SAND)
 				.add(Blocks.CLAY);
 		checkAllRegisteredForBreaking();
 
