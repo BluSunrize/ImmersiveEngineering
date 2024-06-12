@@ -5,6 +5,7 @@
 - Add crushing recipes for stone and deepslate (voidsong-dragonfly)
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
+- Fix potential race condition with wires damaging entities (BluSunrize)
 
 ##### Version 1.20.4-11.3.0-174
 - Re-add CC-Tweaked integration (Malte)

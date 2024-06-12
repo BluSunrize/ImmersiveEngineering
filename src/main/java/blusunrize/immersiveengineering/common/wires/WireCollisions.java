@@ -44,12 +44,16 @@ public class WireCollisions
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.level());
 			WireCollisionData wireData = global.getCollisionData();
 			Collection<WireCollisionData.CollisionInfo> atBlock = wireData.getCollisionInfo(p);
-			for(CollisionInfo info : atBlock)
+			//noinspection SynchronizationOnLocalVariableOrMethodParameter
+			synchronized(wireData)
 			{
-				LocalWireNetwork local = info.getLocalNet(global);
-				for(LocalNetworkHandler h : local.getAllHandlers())
-					if(h instanceof ICollisionHandler collisionHandler)
-						collisionHandler.onCollided(living, p, info);
+				for(CollisionInfo info : atBlock)
+				{
+					LocalWireNetwork local = info.getLocalNet(global);
+					for(LocalNetworkHandler h : local.getAllHandlers())
+						if(h instanceof ICollisionHandler collisionHandler)
+							collisionHandler.onCollided(living, p, info);
+				}
 			}
 		}
 	}
