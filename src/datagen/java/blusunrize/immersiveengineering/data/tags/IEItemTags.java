@@ -207,9 +207,9 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Items.COMPASS)
 				.add(Items.FLINT_AND_STEEL)
 				.add(Items.FISHING_ROD)
-			    .add(Items.BRUSH)
-			    .add(Items.RECOVERY_COMPASS)
-			    .add(Items.GOAT_HORN)
+				.add(Items.BRUSH)
+				.add(Items.RECOVERY_COMPASS)
+				.add(Items.GOAT_HORN)
 				.addOptionalTag(new ResourceLocation("forge", "buckets/empty"))
 				.addOptionalTag(new ResourceLocation("forge", "tools/wrench"))
 		;

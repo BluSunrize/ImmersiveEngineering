@@ -83,19 +83,19 @@ public class ClocheRecipes extends IERecipeProvider
 	private void plants(RecipeOutput out)
 	{
 		ClocheRecipeBuilder.builder()
-			.output(Blocks.SHORT_GRASS)
-			.seed(Blocks.SHORT_GRASS)
-			.soil(Blocks.COARSE_DIRT)
-			.setTime(480)
-			.setRender(new RenderFunctionGeneric(Blocks.SHORT_GRASS))
-			.build(out, toRL("cloche/"+Blocks.SHORT_GRASS.builtInRegistryHolder().key().location().getPath()));
+				.output(Blocks.SHORT_GRASS)
+				.seed(Blocks.SHORT_GRASS)
+				.soil(Blocks.COARSE_DIRT)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.SHORT_GRASS))
+				.build(out, toRL("cloche/"+Blocks.SHORT_GRASS.builtInRegistryHolder().key().location().getPath()));
 		ClocheRecipeBuilder.builder()
-			.output(Blocks.FERN)
-			.seed(Blocks.FERN)
-			.soil(Blocks.COARSE_DIRT)
-			.setTime(480)
-			.setRender(new RenderFunctionGeneric(Blocks.FERN))
-			.build(out, toRL("cloche/"+Blocks.FERN.builtInRegistryHolder().key().location().getPath()));
+				.output(Blocks.FERN)
+				.seed(Blocks.FERN)
+				.soil(Blocks.COARSE_DIRT)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.FERN))
+				.build(out, toRL("cloche/"+Blocks.FERN.builtInRegistryHolder().key().location().getPath()));
 	}
 
 	private void flowers(RecipeOutput out)
