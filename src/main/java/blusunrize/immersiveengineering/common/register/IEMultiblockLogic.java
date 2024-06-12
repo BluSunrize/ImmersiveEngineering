@@ -171,6 +171,7 @@ public class IEMultiblockLogic
 		Properties properties = Properties.of()
 				.mapColor(MapColor.STONE)
 				.instrument(NoteBlockInstrument.BASEDRUM)
+				.forceSolidOn()
 				.strength(2, 20);
 		if(!solid)
 			properties.noOcclusion();
