@@ -2,7 +2,7 @@
   "values": [
     "#minecraft:dirt",
     "#forge:gravel",
-    "minecraft:grass_block",
+    "#forge:sand",
     "minecraft:clay"
   ]
 }

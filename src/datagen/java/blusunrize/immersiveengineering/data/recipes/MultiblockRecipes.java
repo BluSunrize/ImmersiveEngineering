@@ -219,6 +219,16 @@ public class MultiblockRecipes extends IERecipeProvider
 	private void crusher(RecipeOutput out)
 	{
 		CrusherRecipeBuilder.builder()
+				.output(Items.COBBLED_DEEPSLATE)
+				.input(Items.DEEPSLATE)
+				.setEnergy(2000)
+				.build(out, toRL("crusher/deepslate"));
+		CrusherRecipeBuilder.builder()
+				.output(Items.COBBLESTONE)
+				.input(Items.STONE)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/stone"));
+		CrusherRecipeBuilder.builder()
 				.output(Items.GRAVEL)
 				.input(Tags.Items.COBBLESTONE)
 				.setEnergy(1600)

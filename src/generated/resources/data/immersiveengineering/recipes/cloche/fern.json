@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:fern"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:fern"
+  },
+  "results": [
+    {
+      "item": "minecraft:fern"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:coarse_dirt"
+  },
+  "time": 480
+}

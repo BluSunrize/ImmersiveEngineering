@@ -61,8 +61,11 @@ public class SurveyToolsItem extends IEBaseItem
 			Block block = state.getBlock();
 			return state.is(Tags.Blocks.NETHERRACK)
 					||block==Blocks.SOUL_SAND
+					||block==Blocks.SOUL_SOIL
 					||block==Blocks.BLACKSTONE
-					||block==Blocks.BASALT;
+					||block==Blocks.BASALT
+					||block==Blocks.CRIMSON_NYLIUM
+					||block==Blocks.WARPED_NYLIUM;
 		});
 		// soft rocks
 		CAN_USE_ON.add((world, pos) -> {
