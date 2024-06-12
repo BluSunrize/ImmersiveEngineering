@@ -1,4 +1,5 @@
 ##### Version 1.20.4-11.3.1-pre
+- Allow Phial Cartridges to be filled in the Bottling Machine (BluSunrize)
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
 
