@@ -1,0 +1,10 @@
+{
+  "type": "immersiveengineering:crusher",
+  "energy": 2000,
+  "input": {
+    "item": "minecraft:deepslate"
+  },
+  "result": {
+    "item": "minecraft:cobbled_deepslate"
+  }
+}
