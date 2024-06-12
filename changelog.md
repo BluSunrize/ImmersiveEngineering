@@ -1,3 +1,6 @@
+##### Version 1.20.4-11.3.1-pre
+- Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
+
 ##### Version 1.20.4-11.3.0-174
 - Re-add CC-Tweaked integration (Malte)
 - Add missing redstone acid recipe to the manual (BluSunrize)

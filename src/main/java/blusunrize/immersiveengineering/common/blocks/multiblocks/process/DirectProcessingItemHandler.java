@@ -53,8 +53,16 @@ public class DirectProcessingItemHandler<R extends MultiblockRecipe> extends Ins
 		RecipeHolder<R> recipe = getRecipeOnInsert.apply(level.get(), stack);
 		if(recipe==null)
 			return stack;
-		ItemStack displayStack = recipe.value().getDisplayStack(stack);
-		displayStack = ItemHandlerHelper.copyStackWithSize(stack, displayStack.getCount());
+		ItemStack displayStack;
+		if(!doProcessStacking)
+		{
+			// if process stacking is not allowed, we need to work with exact input quantities
+			displayStack = recipe.value().getDisplayStack(stack);
+			displayStack = ItemHandlerHelper.copyStackWithSize(stack, displayStack.getCount());
+		}
+		else
+			displayStack = stack.copy();
+
 		if(processor.addProcessToQueue(new MultiblockProcessInWorld<>(
 				recipe,
 				TRANSFORMATION_POINT,
