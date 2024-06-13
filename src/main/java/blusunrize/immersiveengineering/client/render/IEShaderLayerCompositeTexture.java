@@ -72,8 +72,8 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 						NativeImage texureImage = NativeImage.read(texStream);
 				)
 				{
-
-					float[] mod = new float[]{colour.x(), colour.y(), colour.z(), colour.w()};
+					// this uses ABGR instead of ARGB, because Mojang I guess
+					float[] mod = new float[]{colour.z(), colour.y(), colour.x(), colour.w()};
 					if(mod[3] < 0.2)
 						mod[3] *= 2.5f;
 

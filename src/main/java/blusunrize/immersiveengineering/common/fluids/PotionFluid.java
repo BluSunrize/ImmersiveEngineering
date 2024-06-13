@@ -90,7 +90,7 @@ public class PotionFluid extends Fluid
 
 	@Override
 	protected boolean canBeReplacedWith(@Nonnull FluidState fluidState, @Nonnull BlockGetter blockReader,
-								  @Nonnull BlockPos pos, @Nonnull Fluid fluid, @Nonnull Direction direction)
+										@Nonnull BlockPos pos, @Nonnull Fluid fluid, @Nonnull Direction direction)
 	{
 		return true;
 	}
@@ -221,9 +221,13 @@ public class PotionFluid extends Fluid
 				@Override
 				public int getTintColor(FluidStack stack)
 				{
-					if(stack==null||!stack.hasTag())
+					if(stack.isEmpty()||!stack.hasTag())
 						return 0xff0000ff;
-					return 0xff000000|PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
+					int argb = PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
+					// flip to AGBR, because Mojang I guess
+					return (argb&0xFF00FF00) // alpha and green same spot
+							|((argb>>16)&0x000000FF) // red moves to blue
+							|((argb<<16)&0x00FF0000); // blue moves to red
 				}
 			});
 		}
