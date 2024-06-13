@@ -1,0 +1,15 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "bannerpatterns",
+  "inputs": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "immersiveengineering:wirecutter"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:bannerpattern_wirecutter"
+  }
+}

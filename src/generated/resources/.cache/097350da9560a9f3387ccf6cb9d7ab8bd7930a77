@@ -1,9 +1,10 @@
-// 1.20.4	2023-12-13T14:40:08.940450052	Tags for minecraft:banner_pattern mod id immersiveengineering
+// 1.20.4	2024-06-13T14:02:34.7277823	Tags for minecraft:banner_pattern mod id immersiveengineering
 ddb1c650b3c462bf3507da13e6950d7945ce7657 data/immersiveengineering/tags/banner_pattern/bevels.json
 6e2720545b691b7dd962c68ecb9715cab8583fb9 data/immersiveengineering/tags/banner_pattern/hammer.json
 f07357f56a3a9bd328e633669c33ec559026bba6 data/immersiveengineering/tags/banner_pattern/ornate.json
 90d8c7b101303a7497706654182eed407a14c953 data/immersiveengineering/tags/banner_pattern/treated_wood.json
 96a3c601f5bc4ce4d2c384d31458ccec8f4883be data/immersiveengineering/tags/banner_pattern/windmill.json
+abd64977cb7f9a82733f5a615230b150179a2123 data/immersiveengineering/tags/banner_pattern/wirecutter.json
 e40d232522b0b7047807059f27b560e5bc3e7582 data/immersiveengineering/tags/banner_pattern/wolf.json
 8ddf49c4315a55ba1ff452d578e350eccafa9b31 data/immersiveengineering/tags/banner_pattern/wolf_l.json
 d4d47235f31d83ddff739693c9aac9aee9411fdc data/immersiveengineering/tags/banner_pattern/wolf_r.json

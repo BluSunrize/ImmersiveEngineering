@@ -264,6 +264,12 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("blueprint/banner_hammer"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
+				.output(IEBannerPatterns.WIRECUTTER.item())
+				.input(Items.PAPER)
+				.input(Tools.WIRECUTTER)
+				.build(out, toRL("blueprint/banner_wirecutter"));
+		BlueprintCraftingRecipeBuilder.builder()
+				.category("bannerpatterns")
 				.output(IEBannerPatterns.BEVELS.item())
 				.input(Items.PAPER)
 				.input(IETags.plates)

@@ -29,6 +29,7 @@ public class IEBannerPatterns
 	);
 	public static final List<BannerEntry> ALL_BANNERS = new ArrayList<>();
 	public static final BannerEntry HAMMER = addBanner("hammer", "hmr");
+	public static final BannerEntry WIRECUTTER = addBanner("wirecutter", "wct");
 	public static final BannerEntry BEVELS = addBanner("bevels", "bvl");
 	public static final BannerEntry ORNATE = addBanner("ornate", "orn");
 	public static final BannerEntry TREATED_WOOD = addBanner("treated_wood", "twd");

@@ -265,6 +265,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);
 		addItemModels("", IEItems.Misc.FERTILIZER);
 		addItemModel("banner_pattern", IEBannerPatterns.HAMMER.item());
+		addItemModel("banner_pattern", IEBannerPatterns.WIRECUTTER.item());
 		addItemModel("banner_pattern", IEBannerPatterns.BEVELS.item());
 		addItemModel("banner_pattern", IEBannerPatterns.ORNATE.item());
 		addItemModel("banner_pattern", IEBannerPatterns.TREATED_WOOD.item());
