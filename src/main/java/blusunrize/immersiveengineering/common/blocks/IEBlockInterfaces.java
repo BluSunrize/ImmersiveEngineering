@@ -56,7 +56,9 @@ public class IEBlockInterfaces
 		Component[] getOverlayText(Player player, HitResult mop, boolean hammer);
 
 		@Deprecated
-		boolean useNixieFont(Player player, HitResult mop);
+		default boolean useNixieFont(Player player, HitResult mop) {
+			return false;
+		};
 	}
 
 	public interface ISoundBE
@@ -315,7 +317,7 @@ public class IEBlockInterfaces
 	}
 
 	/**
-	 * super-interface for {@link MultiblockPartBlockEntity} and {@link IHasDummyBlocks}
+	 * super-interface for {@link IHasDummyBlocks}
 	 */
 	public interface IGeneralMultiblock extends BlockstateProvider
 	{

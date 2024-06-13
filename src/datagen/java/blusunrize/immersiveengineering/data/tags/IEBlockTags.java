@@ -339,6 +339,7 @@ public class IEBlockTags extends BlockTagsProvider
 				tag,
 				WoodenDevices.CRAFTING_TABLE,
 				WoodenDevices.WORKBENCH,
+				WoodenDevices.BLUEPRINT_SHELF,
 				WoodenDevices.CIRCUIT_TABLE,
 				WoodenDevices.GUNPOWDER_BARREL,
 				WoodenDevices.WOODEN_BARREL,

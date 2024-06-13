@@ -67,6 +67,9 @@ public class IEBlockEntities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ModWorkbenchBlockEntity>> MOD_WORKBENCH = REGISTER.register(
 			"modworkbench", makeType(ModWorkbenchBlockEntity::new, WoodenDevices.WORKBENCH)
 	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlueprintShelfBlockEntity>> BLUEPRINT_SHELF = REGISTER.register(
+			"blueprint_shelf", makeType(BlueprintShelfBlockEntity::new, WoodenDevices.BLUEPRINT_SHELF)
+	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CircuitTableBlockEntity>> CIRCUIT_TABLE = REGISTER.register(
 			"circuittable", makeType(CircuitTableBlockEntity::new, WoodenDevices.CIRCUIT_TABLE)
 	);

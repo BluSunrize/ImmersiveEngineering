@@ -938,6 +938,7 @@
   "block.immersiveengineering.craftingtable": "Engineer's Crafting Table",
   "block.immersiveengineering.crate": "Wooden Storage Crate",
   "block.immersiveengineering.workbench": "Engineer's Workbench",
+  "block.immersiveengineering.blueprint_shelf": "Blueprint Shelf",
   "block.immersiveengineering.circuit_table": "Engineer's Circuit Workbench",
   "block.immersiveengineering.sorter": "Item Router",
   "block.immersiveengineering.item_batcher": "Item Batcher",

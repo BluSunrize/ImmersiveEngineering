@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orie
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.BlueprintShelfBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
@@ -49,11 +50,8 @@ import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
-import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -362,6 +360,33 @@ public class BlockStates extends ExtendedBlockstateProvider
 		simpleBlock(StoneDecoration.CONCRETE_SPRAYED.get(), obj("block/sprayed_concrete.obj", cutout()));
 
 		createHorizontalRotatedBlock(WoodenDevices.CRAFTING_TABLE, obj("block/wooden_device/craftingtable.obj"));
+		{
+			MultiPartBlockStateBuilder multipartBuilder = getMultipartBuilder(WoodenDevices.BLUEPRINT_SHELF.get());
+			for(Direction d : Direction.values())
+			{
+				int rotX = d.getAxis()==Axis.Y?-90: 0;
+				int rotY = d.getAxis()==Axis.Y?0: getAngle(d, 180);
+				// add the frame
+				multipartBuilder.part()
+						.modelFile(models().getExistingFile(modLoc("block/blueprint_shelf/frame")))
+						.rotationX(rotX)
+						.rotationY(rotY)
+						.addModel()
+						.condition(IEProperties.FACING_ALL, d)
+						.end();
+				// add the blueprints
+				for(int i = 0; i < BlueprintShelfBlock.BLUEPRINT_SLOT_FILLED.length; i++)
+					multipartBuilder.part()
+							.modelFile(models().getExistingFile(modLoc("block/blueprint_shelf/blueprint_"+i)))
+							.rotationX(rotX)
+							.rotationY(rotY)
+							.addModel()
+							.condition(IEProperties.FACING_ALL, d)
+							.condition(BlueprintShelfBlock.BLUEPRINT_SLOT_FILLED[i], true)
+							.end();
+			}
+			itemModel(WoodenDevices.BLUEPRINT_SHELF, models().getExistingFile(modLoc("block/blueprint_shelf/frame")));
+		}
 		cubeAll(WoodenDevices.CRATE, modLoc("block/wooden_device/crate"));
 		cubeAll(WoodenDevices.REINFORCED_CRATE, modLoc("block/wooden_device/reinforced_crate"));
 		{

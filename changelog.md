@@ -3,6 +3,7 @@
 - Allow survey tools to be used on more blocks (voidsong-dragonfly)
 - Add cloche recipes for ferns and grass (voidsong-dragonfly)
 - Add crushing recipes for stone and deepslate (voidsong-dragonfly)
+- Add the blueprint shelf, a block that can store up to 9 blueprints! (BluSunrize)
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
 - Fix potential race condition with wires damaging entities (BluSunrize)

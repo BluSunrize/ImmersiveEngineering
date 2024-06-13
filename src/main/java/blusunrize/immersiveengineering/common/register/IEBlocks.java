@@ -382,6 +382,9 @@ public final class IEBlocks
 		public static final BlockEntry<DeskBlock<ModWorkbenchBlockEntity>> WORKBENCH = new BlockEntry<>(
 				"workbench", DeskBlock.PROPERTIES, p -> new DeskBlock<>(IEBlockEntities.MOD_WORKBENCH, p)
 		);
+		public static final BlockEntry<BlueprintShelfBlock> BLUEPRINT_SHELF = new BlockEntry<>(
+				"blueprint_shelf", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, BlueprintShelfBlock::new
+		);
 		public static final BlockEntry<DeskBlock<CircuitTableBlockEntity>> CIRCUIT_TABLE = new BlockEntry<>(
 				"circuit_table", DeskBlock.PROPERTIES, p -> new DeskBlock<>(IEBlockEntities.CIRCUIT_TABLE, p)
 		);
