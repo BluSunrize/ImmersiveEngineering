@@ -4,7 +4,10 @@
 - Add cloche recipes for ferns and grass (voidsong-dragonfly)
 - Add crushing recipes for stone and deepslate (voidsong-dragonfly)
 - Add the blueprint shelf, a block that can store up to 9 blueprints! (BluSunrize)
-- Add a banner pattern for the wirecutter (BluSunrize)
+- Add a banner pattern for the wire cutter (BluSunrize)
+- Add sub-designs for the banner patterns: hammer, wire cutter & wolf (BluSunrize)
+    - This allows for individual coloured grip + head of the tool
+    - It also allows all three wolf designs to be stored in one pattern
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
 - Fix potential race condition with wires damaging entities (BluSunrize)

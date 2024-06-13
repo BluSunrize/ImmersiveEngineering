@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data.tags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -37,6 +38,10 @@ public class BannerTags extends IntrinsicHolderTagsProvider<BannerPattern>
 	protected void addTags(Provider p_256380_)
 	{
 		for(BannerEntry entry : IEBannerPatterns.ALL_BANNERS)
-			tag(entry.tag()).add(entry.pattern().value());
+		{
+			IntrinsicTagAppender<BannerPattern> tag = tag(entry.tag());
+			for(Holder<BannerPattern> pattern : entry.patterns())
+				tag.add(pattern.value());
+		}
 	}
 }

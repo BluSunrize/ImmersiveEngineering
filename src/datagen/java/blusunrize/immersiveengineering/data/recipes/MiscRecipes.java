@@ -294,18 +294,6 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("blueprint/banner_windmill"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
-				.output(IEBannerPatterns.WOLF_R.item())
-				.input(Items.PAPER)
-				.input(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
-				.build(out, toRL("blueprint/banner_wolf_r"));
-		BlueprintCraftingRecipeBuilder.builder()
-				.category("bannerpatterns")
-				.output(IEBannerPatterns.WOLF_L.item())
-				.input(Items.PAPER)
-				.input(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
-				.build(out, toRL("blueprint/banner_wolf_l"));
-		BlueprintCraftingRecipeBuilder.builder()
-				.category("bannerpatterns")
 				.output(IEBannerPatterns.WOLF.item())
 				.input(Items.PAPER)
 				.input(BulletHandler.getBulletItem(BulletItem.WOLFPACK))

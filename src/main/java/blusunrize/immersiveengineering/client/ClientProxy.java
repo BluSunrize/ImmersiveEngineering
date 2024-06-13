@@ -52,6 +52,7 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
 import blusunrize.immersiveengineering.common.register.*;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
@@ -205,9 +206,12 @@ public class ClientProxy extends CommonProxy
 
 		IEManual.addIEManualEntries();
 		IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
-			ResourceKey<BannerPattern> pattern = entry.pattern().unwrapKey().orElseThrow();
-			Sheets.BANNER_MATERIALS.put(pattern, new Material(Sheets.BANNER_SHEET, BannerPattern.location(pattern, true)));
-			Sheets.SHIELD_MATERIALS.put(pattern, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(pattern, false)));
+			for(Holder<BannerPattern> pattern : entry.patterns())
+			{
+				ResourceKey<BannerPattern> key = pattern.unwrapKey().orElseThrow();
+				Sheets.BANNER_MATERIALS.put(key, new Material(Sheets.BANNER_SHEET, BannerPattern.location(key, true)));
+				Sheets.SHIELD_MATERIALS.put(key, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(key, false)));
+			}
 		});
 		ev.enqueueWork(OptifineWarning::warnIfRequired);
 	}

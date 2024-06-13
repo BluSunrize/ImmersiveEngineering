@@ -19,7 +19,9 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IEBannerPatterns
@@ -28,22 +30,20 @@ public class IEBannerPatterns
 			Registries.BANNER_PATTERN, Lib.MODID
 	);
 	public static final List<BannerEntry> ALL_BANNERS = new ArrayList<>();
-	public static final BannerEntry HAMMER = addBanner("hammer", "hmr");
-	public static final BannerEntry WIRECUTTER = addBanner("wirecutter", "wct");
+	public static final BannerEntry HAMMER = addBanner("hammer", "hmr", "head","grip");
+	public static final BannerEntry WIRECUTTER = addBanner("wirecutter", "wct", "head","grip");
 	public static final BannerEntry BEVELS = addBanner("bevels", "bvl");
 	public static final BannerEntry ORNATE = addBanner("ornate", "orn");
 	public static final BannerEntry TREATED_WOOD = addBanner("treated_wood", "twd");
 	public static final BannerEntry WINDMILL = addBanner("windmill", "wnd");
-	public static final BannerEntry WOLF_R = addBanner("wolf_r", "wlfr");
-	public static final BannerEntry WOLF_L = addBanner("wolf_l", "wlfl");
-	public static final BannerEntry WOLF = addBanner("wolf", "wlf");
+	public static final BannerEntry WOLF = addBanner("wolf", "wlf", "r", "l");
 
 	public static void init(IEventBus modBus)
 	{
 		REGISTER.register(modBus);
 	}
 
-	private static BannerEntry addBanner(String name, String hashName)
+	private static BannerEntry addBanner(String name, String hashName, String... subdesigns)
 	{
 		Holder<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
 		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, pattern.unwrapKey().get().location());
@@ -51,15 +51,24 @@ public class IEBannerPatterns
 				tag, new Properties()
 		));
 		BannerEntry result = new BannerEntry(pattern, tag, item);
+		for(String design : subdesigns)
+			result.patterns().add(
+					REGISTER.register(name+"_"+design, () -> new BannerPattern("ie_"+hashName+"_"+design))
+			);
 		ALL_BANNERS.add(result);
 		return result;
 	}
 
 	public record BannerEntry(
-			Holder<BannerPattern> pattern,
+			List<Holder<BannerPattern>> patterns,
 			TagKey<BannerPattern> tag,
 			IEItems.ItemRegObject<BannerPatternItem> item
 	)
 	{
+		public BannerEntry(Holder<BannerPattern> pattern, TagKey<BannerPattern> tag, ItemRegObject<BannerPatternItem> item)
+		{
+			this(new ArrayList<>(), tag, item);
+			this.patterns.add(pattern);
+		}
 	}
 }

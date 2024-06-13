@@ -270,8 +270,6 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModel("banner_pattern", IEBannerPatterns.ORNATE.item());
 		addItemModel("banner_pattern", IEBannerPatterns.TREATED_WOOD.item());
 		addItemModel("banner_pattern", IEBannerPatterns.WINDMILL.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WOLF_R.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WOLF_L.item());
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF.item());
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
 				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
