@@ -194,6 +194,15 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('f', WoodenDecoration.TREATED_FENCE)
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(WoodenDevices.WORKBENCH)));
+		shapedMisc(WoodenDevices.BLUEPRINT_SHELF)
+				.pattern("srs")
+				.pattern("rsr")
+				.pattern("www")
+				.define('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.define('r', IETags.treatedStick)
+				.define('w', IETags.getItemTag(IETags.treatedWood))
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(out, toRL(toPath(WoodenDevices.BLUEPRINT_SHELF)));
 		shapedMisc(WoodenDevices.CIRCUIT_TABLE)
 				.pattern("sst")
 				.pattern("c e")
