@@ -38,6 +38,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
@@ -46,11 +47,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -97,7 +100,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		super(type, pos, state);
 	}
 
-	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> neighborFluids = IEBlockCapabilityCaches.allNeighbors(
+	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> blockFluidHandlers = IEBlockCapabilityCaches.allNeighbors(
 			FluidHandler.BLOCK, this
 	);
 
@@ -125,7 +128,8 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			for(Direction f : Direction.values())
 				if(sideConfig.get(f)==IOSideConfig.INPUT)
 				{
-					IFluidHandler input = neighborFluids.get(f).getCapability();
+					IFluidHandler input = blockFluidHandlers.get(f).getCapability();
+					List<Entity> entities;
 					if(input!=null)
 					{
 						int drainAmount = IFluidPipe.getTransferableAmount(this.canOutputPressurized(false));
@@ -134,6 +138,21 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 							continue;
 						int out = this.outputFluid(drain, FluidAction.EXECUTE);
 						input.drain(out, FluidAction.EXECUTE);
+					}
+					else if (!(entities=level.getEntities(null, new AABB(getBlockPos().offset(f.getNormal())))).isEmpty())
+					{
+						for (Entity toCheck : entities) {
+							input = toCheck.getCapability(FluidHandler.ENTITY, f);
+							if (input!=null)
+							{
+								int drainAmount = IFluidPipe.getTransferableAmount(this.canOutputPressurized(false));
+								FluidStack drain = input.drain(drainAmount, FluidAction.SIMULATE);
+								if(drain.isEmpty())
+									continue;
+								int out = this.outputFluid(drain, FluidAction.EXECUTE);
+								input.drain(out, FluidAction.EXECUTE);
+							}
+						}
 					}
 					else
 						gatherInfiniteFluidFromWorld(f);
@@ -264,7 +283,8 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		for(Direction f : Direction.values())
 			if(sideConfig.get(f)==IOSideConfig.OUTPUT)
 			{
-				IFluidHandler handler = neighborFluids.get(f).getCapability();
+				IFluidHandler handler = blockFluidHandlers.get(f).getCapability();
+				List<Entity> entities;
 				if(handler!=null)
 				{
 					// TODO check if there are bad BE assumptions here
@@ -277,6 +297,22 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					{
 						sorting.put(new DirectionalFluidOutput(handler, f, tile, worldPosition.relative(f)), temp);
 						sum += temp;
+					}
+				}
+				else if (!(entities=level.getEntities(null, new AABB(getBlockPos().offset(f.getNormal())))).isEmpty())
+				{
+					for (Entity toCheck : entities) {
+						handler = toCheck.getCapability(FluidHandler.ENTITY, f);
+						if (handler!=null)
+						{
+							FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
+							int temp = handler.fill(insertResource, FluidAction.SIMULATE);
+							if(temp > 0)
+							{
+								sorting.put(new DirectionalFluidOutput(handler, f, null, worldPosition.relative(f)), temp);
+								sum += temp;
+							}
+						}
 					}
 				}
 			}
