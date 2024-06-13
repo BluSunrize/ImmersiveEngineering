@@ -254,8 +254,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				for(Connection c : path.conns)
 				{
 					currentPoint = c.getOtherEnd(currentPoint);
-					//TODO use Blu's loss formula
-					availableFactor -= getBasicLoss(c);
+					// We use exponential loss here so there is still some power at arbitrarily far distances
+					availableFactor *= (1-getBasicLoss(c));
 					double availableAtPoint = atSource*availableFactor;
 					transferredNextTick.addTo(c, availableAtPoint);
 					if(!currentPoint.equals(path.end))
@@ -344,7 +344,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		public Path append(Connection next, boolean isPathToSink)
 		{
 			ConnectionPoint newEnd = next.getOtherEnd(end);
-			double newLoss = loss+getBasicLoss(next);
+			double newLoss = loss+(1-loss)*getBasicLoss(next);
 			Connection[] newPath = Arrays.copyOf(conns, conns.length+1);
 			newPath[newPath.length-1] = next;
 			return new Path(newPath, start, newEnd, newLoss, isPathToSink);
