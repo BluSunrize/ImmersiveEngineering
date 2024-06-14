@@ -139,10 +139,10 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 						int out = this.outputFluid(drain, FluidAction.EXECUTE);
 						input.drain(out, FluidAction.EXECUTE);
 					}
-					else if (!(entities=level.getEntities(null, new AABB(getBlockPos().offset(f.getNormal())))).isEmpty())
+					else if (!(entities=level.getEntities(null, new AABB(getBlockPos().relative(f)))).isEmpty())
 					{
 						for (Entity toCheck : entities) {
-							input = toCheck.getCapability(FluidHandler.ENTITY, f);
+							input = toCheck.getCapability(FluidHandler.ENTITY, f.getOpposite());
 							if (input!=null)
 							{
 								int drainAmount = IFluidPipe.getTransferableAmount(this.canOutputPressurized(false));
@@ -299,10 +299,10 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 						sum += temp;
 					}
 				}
-				else if (!(entities=level.getEntities(null, new AABB(getBlockPos().offset(f.getNormal())))).isEmpty())
+				else if (!(entities=level.getEntities(null, new AABB(getBlockPos().relative(f)))).isEmpty())
 				{
 					for (Entity toCheck : entities) {
-						handler = toCheck.getCapability(FluidHandler.ENTITY, f);
+						handler = toCheck.getCapability(FluidHandler.ENTITY, f.getOpposite());
 						if (handler!=null)
 						{
 							FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
