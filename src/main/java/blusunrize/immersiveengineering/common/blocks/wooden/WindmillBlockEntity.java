@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
@@ -23,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
@@ -82,6 +84,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	{
 		rotation += getActualTurnSpeed();
 		rotation %= 1;
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.wooden_creaking, this, turnSpeed>0, 0.5f, 1f);
 	}
 
 

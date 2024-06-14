@@ -258,6 +258,13 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.process_2_lift"
 	},
+	"wooden_creaking": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:wooden_creaking"
+		],
+		"subtitle": "subtitle.immersiveengineering.wooden_creaking"
+	},
 	"electromagnet": {
 		"category": "player",
 		"sounds": [

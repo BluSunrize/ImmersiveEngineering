@@ -57,6 +57,8 @@ public class IESounds
 	public static final Holder<SoundEvent> process1Lift = registerSound("process_1_lift");
 	public static final Holder<SoundEvent> process2 = registerSound("process_2");
 	public static final Holder<SoundEvent> process2Lift = registerSound("process_2_lift");
+	public static final Holder<SoundEvent> wooden_creaking = registerSound("wooden_creaking");
+	public static final Holder<SoundEvent> windmill = registerSound("windmill");
 	public static final Holder<SoundEvent> electromagnet = registerSound("electromagnet");
 
 
