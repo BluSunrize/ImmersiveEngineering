@@ -19,20 +19,25 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -73,15 +78,10 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public static final int ENERGY_CAPACITY = 16000;
 
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY);
-	public boolean redstoneControlInverted = false;
 
 	// TODO move to UUID?
 	public String owner;
-	public List<String> targetList = new ArrayList<>();
-	public boolean whitelist = false;
-	public boolean attackAnimals = false;
-	public boolean attackPlayers = false;
-	public boolean attackNeutrals = false;
+	public TurretConfig config = TurretConfig.DEFAULT;
 
 	protected int tick = 0;
 	protected LivingEntity target;
@@ -154,7 +154,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			markContainingBlockForUpdate(null);
 
 		int energy = IEServerConfig.MACHINES.turret_consumption.get();
-		if(isRSPowered()^redstoneControlInverted)
+		if(isRSPowered()^config.redstoneControlInverted)
 		{
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
@@ -246,22 +246,22 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(entity==null||!entity.isAlive()||entity.getHealth() <= 0)
 			return false;
 		//Continue if blacklist and name is in list, or whitelist and name is not in list
-		boolean isListed = isListedName(targetList, entity.getName().getString()) || isListedName(targetList, entity.getType().getDescription().getString());
-		if(whitelist^isListed)
+		boolean isListed = isListedName(config.targetList, entity.getName().getString())||isListedName(config.targetList, entity.getType().getDescription().getString());
+		if(config.whitelist^isListed)
 			return false;
 		//Same as above but for the owner of the pet, to prevent shooting wolves
 		if(entity instanceof TamableAnimal)
 		{
 			Entity entityOwner = ((TamableAnimal)entity).getOwner();
-			if(entityOwner!=null&&(whitelist^isListedName(targetList, entityOwner.getName().getString())))
+			if(entityOwner!=null&&(config.whitelist^isListedName(config.targetList, entityOwner.getName().getString())))
 				return false;
 		}
 
-		if(entity instanceof Animal&&!attackAnimals)
+		if(entity instanceof Animal&&!config.attackAnimals)
 			return false;
-		if(entity instanceof Player&&!attackPlayers)
+		if(entity instanceof Player&&!config.attackPlayers)
 			return false;
-		if(!(entity instanceof Player)&&!(entity instanceof Animal)&&!(entity instanceof Enemy)&&!attackNeutrals)
+		if(!(entity instanceof Player)&&!(entity instanceof Animal)&&!(entity instanceof Enemy)&&!config.attackNeutrals)
 			return false;
 
 		if(target==null||getBlockPos().distToCenterSqr(entity.position()) < getBlockPos().distToCenterSqr(target.position()))
@@ -304,19 +304,13 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		EnergyHelper.deserializeFrom(energyStorage, nbt, provider);
 
-		if(nbt.contains("owner", Tag.TAG_STRING))
+		if(nbt.contains("owner"))
 			owner = nbt.getString("owner");
-		ListTag list = nbt.getList("targetList", 8);
-		targetList.clear();
-		for(int i = 0; i < list.size(); i++)
-			targetList.add(list.getString(i));
-		whitelist = nbt.getBoolean("whitelist");
-		attackAnimals = nbt.getBoolean("attackAnimals");
-		attackPlayers = nbt.getBoolean("attackPlayers");
-		attackNeutrals = nbt.getBoolean("attackNeutrals");
+		else
+			owner = null;
+		this.config = TurretConfig.CODEC.decode(NbtOps.INSTANCE, nbt.get("config")).getOrThrow().getFirst();
 
 		target = null;
 		if(nbt.contains("target", Tag.TAG_STRING))
@@ -326,19 +320,12 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 
 		if(owner!=null)
 			nbt.putString("owner", owner);
-		ListTag list = new ListTag();
-		for(String s : targetList)
-			list.add(StringTag.valueOf(s));
-		nbt.put("targetList", list);
-		nbt.putBoolean("whitelist", whitelist);
-		nbt.putBoolean("attackAnimals", attackAnimals);
-		nbt.putBoolean("attackPlayers", attackPlayers);
-		nbt.putBoolean("attackNeutrals", attackNeutrals);
+
+		nbt.put("config", TurretConfig.CODEC.encodeStart(NbtOps.INSTANCE, config).getOrThrow());
 
 		if(target!=null)
 			nbt.putString("target", target.getUUID().toString());
@@ -349,18 +336,14 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	{
 		if(!isDummy())
 			return Shapes.block();
-		switch(getFacing())
+		return switch(getFacing())
 		{
-			case NORTH:
-				return Shapes.box(.125f, .0625f, .125f, .875f, .875f, 1);
-			case SOUTH:
-				return Shapes.box(.125f, .0625f, 0, .875f, .875f, .875f);
-			case WEST:
-				return Shapes.box(.125f, .0625f, .125f, 1, .875f, .875f);
-			case EAST:
-				return Shapes.box(0, .0625f, .125f, .875f, .875f, .875f);
-		}
-		return Shapes.block();
+			case NORTH -> Shapes.box(.125f, .0625f, .125f, .875f, .875f, 1);
+			case SOUTH -> Shapes.box(.125f, .0625f, 0, .875f, .875f, .875f);
+			case WEST -> Shapes.box(.125f, .0625f, .125f, 1, .875f, .875f);
+			case EAST -> Shapes.box(0, .0625f, .125f, .875f, .875f, .875f);
+			default -> Shapes.block();
+		};
 	}
 
 	public AABB renderBB;
@@ -377,9 +360,11 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		}
 		if(player.isShiftKeyDown()&&!level.isClientSide)
 		{
-			redstoneControlInverted = !redstoneControlInverted;
+			config = new TurretConfig(
+					config.targetList, config.whitelist, config.attackAnimals, config.attackPlayers, config.attackNeutrals, !config.redstoneControlInverted
+			);
 			player.displayClientMessage(
-					Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")),
+					Component.translatable(Lib.CHAT_INFO+"rsControl."+(config.redstoneControlInverted?"invertedOn": "invertedOff")),
 					true
 			);
 			setChanged();
@@ -514,31 +499,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 				return;
 			}
 		}
-
-		CompoundTag tag = new CompoundTag();
-		//Only writing values when they are different from defaults
-		if(turret.owner!=null&&(player==null||!player.getName().getString().equalsIgnoreCase(turret.owner)))
-			tag.putString("owner", turret.owner);
-		if(turret.targetList.size()!=1||!isListedName(turret.targetList, turret.owner))
-		{
-			ListTag list = new ListTag();
-			for(String s : turret.targetList)
-				list.add(StringTag.valueOf(s));
-			tag.put("targetList", list);
-		}
-		if(turret.whitelist)
-			tag.putBoolean("whitelist", turret.whitelist);
-		if(turret.attackAnimals)
-			tag.putBoolean("attackAnimals", turret.attackAnimals);
-		if(!turret.attackPlayers)
-			tag.putBoolean("attackPlayers", turret.attackPlayers);
-		if(turret.attackNeutrals)
-			tag.putBoolean("attackNeutrals", turret.attackNeutrals);
-		if(turret.redstoneControlInverted)
-			tag.putBoolean("redstoneControlInverted", turret.redstoneControlInverted);
-
-		if(!tag.isEmpty())
-			stack.setTag(tag);
+		stack.set(IEDataComponents.TURRET_DATA, config);
 		drop.accept(stack);
 	}
 
@@ -547,37 +508,13 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	{
 		final ItemStack stack = ctx.getItemInHand();
 		final Player placer = ctx.getPlayer();
-		if(stack.hasTag())
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			if(tag.contains("owner", Tag.TAG_STRING))
-				this.owner = tag.getString("owner");
-			else if(placer!=null)
-				this.owner = placer.getName().getString();
-			if(tag.contains("targetList", Tag.TAG_LIST))
-			{
-				ListTag list = tag.getList("targetList", 8);
-				targetList.clear();
-				for(int i = 0; i < list.size(); i++)
-					targetList.add(list.getString(i));
-			}
-			else if(owner!=null)
-				targetList.add(owner);
-			if(tag.contains("whitelist", Tag.TAG_BYTE))
-				whitelist = tag.getBoolean("whitelist");
-			if(tag.contains("attackAnimals", Tag.TAG_BYTE))
-				attackAnimals = tag.getBoolean("attackAnimals");
-			if(tag.contains("attackPlayers", Tag.TAG_BYTE))
-				attackPlayers = tag.getBoolean("attackPlayers");
-			if(tag.contains("attackNeutrals", Tag.TAG_BYTE))
-				attackNeutrals = tag.getBoolean("attackNeutrals");
-			if(tag.contains("redstoneControlInverted", Tag.TAG_BYTE))
-				redstoneControlInverted = tag.getBoolean("redstoneControlInverted");
-		}
-		else if(placer!=null)
+		final var configFromStack = stack.get(IEDataComponents.TURRET_DATA);
+		if(configFromStack!=null)
+			config = configFromStack;
+		if(placer!=null)
 		{
 			this.owner = placer.getName().getString();
-			targetList.add(owner);
+			config = config.addToList(this.owner);
 		}
 	}
 
@@ -610,5 +547,78 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			return new BlockPos(0, 1, 0);
 		else
 			return BlockPos.ZERO;
+	}
+
+	public record TurretConfig(
+			List<String> targetList,
+			boolean whitelist,
+			boolean attackAnimals,
+			boolean attackPlayers,
+			boolean attackNeutrals,
+			boolean redstoneControlInverted
+	)
+	{
+		public static final Codec<TurretConfig> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				Codec.STRING.listOf().fieldOf("targetList").forGetter(TurretConfig::targetList),
+				Codec.BOOL.fieldOf("whitelist").forGetter(TurretConfig::whitelist),
+				Codec.BOOL.fieldOf("attackAnimals").forGetter(TurretConfig::attackAnimals),
+				Codec.BOOL.fieldOf("attackPlayers").forGetter(TurretConfig::attackPlayers),
+				Codec.BOOL.fieldOf("attackNeutrals").forGetter(TurretConfig::attackNeutrals),
+				Codec.BOOL.fieldOf("redstoneControlInverted").forGetter(TurretConfig::redstoneControlInverted)
+		).apply(inst, TurretConfig::new));
+		public static final StreamCodec<ByteBuf, TurretConfig> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), TurretConfig::targetList,
+				ByteBufCodecs.BOOL, TurretConfig::whitelist,
+				ByteBufCodecs.BOOL, TurretConfig::attackAnimals,
+				ByteBufCodecs.BOOL, TurretConfig::attackPlayers,
+				ByteBufCodecs.BOOL, TurretConfig::attackNeutrals,
+				ByteBufCodecs.BOOL, TurretConfig::redstoneControlInverted,
+				TurretConfig::new
+		);
+		public static final TurretConfig DEFAULT = new TurretConfig(
+				List.of(), false, false, false, false, false
+		);
+
+		public TurretConfig
+		{
+			targetList = List.copyOf(targetList);
+		}
+
+		public TurretConfig addToList(String name)
+		{
+			if(targetList.contains(name))
+				return this;
+			else
+			{
+				List<String> newTargets = new ArrayList<>(targetList);
+				newTargets.add(name);
+				return withTargetList(newTargets);
+			}
+		}
+
+		public TurretConfig withWhitelist(boolean whitelist)
+		{
+			return new TurretConfig(targetList, whitelist, attackAnimals, attackPlayers, attackNeutrals, redstoneControlInverted);
+		}
+
+		public TurretConfig withAttackAnimals(boolean attackAnimals)
+		{
+			return new TurretConfig(targetList, whitelist, attackAnimals, attackPlayers, attackNeutrals, redstoneControlInverted);
+		}
+
+		public TurretConfig withAttackPlayers(boolean attackPlayers)
+		{
+			return new TurretConfig(targetList, whitelist, attackAnimals, attackPlayers, attackNeutrals, redstoneControlInverted);
+		}
+
+		public TurretConfig withAttackNeutrals(boolean attackNeutrals)
+		{
+			return new TurretConfig(targetList, whitelist, attackAnimals, attackPlayers, attackNeutrals, redstoneControlInverted);
+		}
+
+		public TurretConfig withTargetList(List<String> targetList)
+		{
+			return new TurretConfig(targetList, whitelist, attackAnimals, attackPlayers, attackNeutrals, redstoneControlInverted);
+		}
 	}
 }

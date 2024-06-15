@@ -69,8 +69,8 @@ public class CustomParticleManager
 		);
 		// Need to fix *some* normal, so just use "up" for all quads. Does not seem to actually affect rendering.
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		particleBuilder.setNormal(0, 1, 0);
-		particleBuilder.setOverlay(OverlayTexture.NO_OVERLAY);
+		particleBuilder.setDefaultNormal(0, 1, 0);
+		particleBuilder.setDefaultOverlay(OverlayTexture.NO_OVERLAY);
 		for(Particle p : particles)
 			p.render(particleBuilder, activeInfo, partialTicks);
 		matrixStack.popPose();

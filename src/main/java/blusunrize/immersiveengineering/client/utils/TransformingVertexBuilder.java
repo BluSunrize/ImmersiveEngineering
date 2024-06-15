@@ -17,7 +17,6 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -33,7 +32,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 	private final PoseStack transform;
 	private final List<ObjectWithGlobal<?>> allObjects = new ArrayList<>();
 	private final ObjectWithGlobal<Vec2> uv = new ObjectWithGlobal<>(this);
-	private final ObjectWithGlobal<Vec3> pos = new ObjectWithGlobal<>(this);
+	private final ObjectWithGlobal<Vector3f> pos = new ObjectWithGlobal<>(this);
 	private final ObjectWithGlobal<Vec2i> overlay = new ObjectWithGlobal<>(this);
 	private final ObjectWithGlobal<Vec2i> lightmap = new ObjectWithGlobal<>(this);
 	private final ObjectWithGlobal<Vector3f> normal = new ObjectWithGlobal<>(this);
@@ -64,15 +63,15 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer vertex(double x, double y, double z)
+	public VertexConsumer addVertex(float x, float y, float z)
 	{
-		pos.putData(new Vec3(x, y, z));
+		pos.putData(new Vector3f(x, y, z));
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public VertexConsumer color(int red, int green, int blue, int alpha)
+	public VertexConsumer setColor(int red, int green, int blue, int alpha)
 	{
 		color.putData(new Vector4f(red/255f, green/255f, blue/255f, alpha/255f));
 		return this;
@@ -80,7 +79,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer uv(float u, float v)
+	public VertexConsumer setUv(float u, float v)
 	{
 		uv.putData(new Vec2(u, v));
 		return this;
@@ -88,7 +87,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer setOverlay(int u, int v)
+	public VertexConsumer setUv1(int u, int v)
 	{
 		overlay.putData(new Vec2i(u, v));
 		return this;
@@ -96,7 +95,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer uv2(int u, int v)
+	public VertexConsumer setUv2(int u, int v)
 	{
 		lightmap.putData(new Vec2i(u, v));
 		return this;
@@ -104,7 +103,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer normal(float x, float y, float z)
+	public VertexConsumer setNormal(float x, float y, float z)
 	{
 		normal.putData(new Vector3f(x, y, z));
 		return this;
@@ -115,20 +114,18 @@ public class TransformingVertexBuilder implements VertexConsumer
 	{
 		for(VertexFormatElement element : format.getElements())
 		{
-			if(element==ELEMENT_POSITION)
+			if(element==VertexFormatElement.POSITION)
 				pos.ifPresent(pos -> base.addVertex(transform.last().pose(), (float)pos.x, (float)pos.y, (float)pos.z));
-			else if(element==ELEMENT_COLOR)
+			else if(element==VertexFormatElement.COLOR)
 				color.ifPresent(c -> base.setColor(c.x(), c.y(), c.z(), c.w()));
-			else if(element==ELEMENT_UV0)
-				uv.ifPresent(uv -> base.uv(uv.x, uv.y));
-			else if(element==ELEMENT_UV1)
-				overlay.ifPresent(overlay -> base.setOverlay(overlay.x, overlay.y));
-			else if(element==ELEMENT_UV2)
+			else if(element==VertexFormatElement.UV0)
+				uv.ifPresent(uv -> base.setUv(uv.x, uv.y));
+			else if(element==VertexFormatElement.UV1)
+				overlay.ifPresent(overlay -> base.setUv1(overlay.x, overlay.y));
+			else if(element==VertexFormatElement.UV2)
 				lightmap.ifPresent(lightmap -> base.setUv2(lightmap.x, lightmap.y));
-			else if(element==ELEMENT_NORMAL)
-				normal.ifPresent(
-						normal -> base.normal(transform.last(), normal.x(), normal.y(), normal.z())
-				);
+			else if(element==VertexFormatElement.NORMAL)
+				normal.ifPresent(normal -> base.setNormal(transform.last(), normal.x(), normal.y(), normal.z()));
 		}
 		allObjects.forEach(ObjectWithGlobal::clear);
 	}
@@ -138,13 +135,6 @@ public class TransformingVertexBuilder implements VertexConsumer
 		color.setGlobal(new Vector4f(r, g, b, a));
 	}
 
-	@Override
-	public void defaultColor(int r, int g, int b, int a)
-	{
-		defaultColor(r/255f, g/255f, b/255f, a/255f);
-	}
-
-	@Override
 	public void unsetDefaultColor()
 	{
 		color.setGlobal(null);
@@ -155,19 +145,19 @@ public class TransformingVertexBuilder implements VertexConsumer
 		this.uv.setGlobal(uv);
 	}
 
-	public void setLight(int light)
+	public void setDefaultLight(int light)
 	{
 		lightmap.setGlobal(new Vec2i(light&255, light>>16));
 	}
 
-	public void setNormal(float x, float y, float z)
+	public void setDefaultNormal(float x, float y, float z)
 	{
 		Vector3f vec = new Vector3f(x, y, z);
 		vec.normalize();
 		normal.setGlobal(vec);
 	}
 
-	public void setOverlay(int packedOverlayIn)
+	public void setDefaultOverlay(int packedOverlayIn)
 	{
 		overlay.setGlobal(new Vec2i(packedOverlayIn&0xffff, packedOverlayIn>>16));
 	}

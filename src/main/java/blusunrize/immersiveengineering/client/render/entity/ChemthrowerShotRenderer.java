@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
@@ -70,9 +71,9 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 				bufferIn, RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS), matrixStackIn
 		);
 		builder.defaultColor(r, g, b, a);
-		builder.setNormal(0, 1, 0);
-		builder.setLight(packedLightIn);
-		builder.setOverlay(OverlayTexture.NO_OVERLAY);
+		builder.setDefaultNormal(0, 1, 0);
+		builder.setDefaultLight(packedLightIn);
+		builder.setDefaultOverlay(OverlayTexture.NO_OVERLAY);
 		builder.addVertex(-.25f, -.25f, 0)
 				.setUv(sprite.getU(0.25f), sprite.getV(0.25f));
 		builder.addVertex(.25f, -.25f, 0)

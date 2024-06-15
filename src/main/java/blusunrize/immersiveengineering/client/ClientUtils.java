@@ -67,7 +67,7 @@ public class ClientUtils
 
 	public static float partialTicks()
 	{
-		return mc().getFrameTime();
+		return mc().getTimer().getGameTimeDeltaTicks();
 	}
 
 	public static BufferedImage readBufferedImage(InputStream imageStream) throws IOException

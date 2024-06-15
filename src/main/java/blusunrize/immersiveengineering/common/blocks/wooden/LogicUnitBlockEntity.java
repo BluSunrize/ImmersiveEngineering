@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
+import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
@@ -104,16 +105,16 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 		CompoundTag nbt = new CompoundTag();
 		ContainerHelper.saveAllItems(nbt, inventory, context.getLevel().registryAccess());
 		if(!nbt.isEmpty())
-			stack.setTag(nbt);
+			stack.set(IEDataComponents.LOGIC_UNIT_DATA, new DirectNBT(nbt));
 		drop.accept(stack);
 	}
 
 	@Override
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		final ItemStack stack = ctx.getItemInHand();
-		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false, ctx.getLevel().registryAccess());
+		final var data = ctx.getItemInHand().get(IEDataComponents.LOGIC_UNIT_DATA);
+		if(data!=null)
+			readCustomNBT(data.tag(), false, ctx.getLevel().registryAccess());
 	}
 
 	@Override

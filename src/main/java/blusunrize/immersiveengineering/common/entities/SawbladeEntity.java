@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.AbstractArrowAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -46,7 +47,7 @@ public class SawbladeEntity extends IEProjectileEntity
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickup = Pickup.ALLOWED;
-		this.setPierceLevel((byte)3);
+		((AbstractArrowAccess)this).invokeSetPierceLevel((byte)3);
 	}
 
 	@Override

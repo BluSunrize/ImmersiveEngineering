@@ -13,17 +13,23 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -114,8 +120,8 @@ public class SurveyToolsItem extends IEBaseItem
 			return stack;
 		}
 
-		ListTag data = getVeinData(stack, world.dimension(), vein.getPos());
-		int dataCount = data.size();
+		List<HintedPosition> oldHints = getVeinData(stack, world.dimension(), vein.getPos());
+		int dataCount = oldHints.size();
 		/* I considered not giving any information after 3 surveys, but because the text is displayed above the action
 		 * bar and can't be brought back after it fades, that could lead to frustration
 
@@ -127,9 +133,9 @@ public class SurveyToolsItem extends IEBaseItem
 		 */
 
 		// Need at least 4 blocks between samples
-		boolean tooClose = data.stream().anyMatch(inbt -> {
-			int dX = ((CompoundTag)inbt).getInt("x")-pos.getX();
-			int dZ = ((CompoundTag)inbt).getInt("z")-pos.getZ();
+		boolean tooClose = oldHints.stream().anyMatch(hint -> {
+			int dX = hint.x-pos.getX();
+			int dZ = hint.z-pos.getZ();
 			return dX*dX+dZ*dZ < 16;
 		});
 		if(tooClose)
@@ -149,77 +155,64 @@ public class SurveyToolsItem extends IEBaseItem
 			double angle = Math.toDegrees(Math.atan2(vecToCenter.y, vecToCenter.x));
 			int segment = (int)((angle+270)%360/45);
 
-			switch(dataCount)
+			response = switch(dataCount)
 			{
-				case 0: // hint at the type of vein
-					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.1",
-							Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())));
-					break;
-				case 1: // hint at the direction
-					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.2",
-							Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())),
-							Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment));
-					break;
-				case 2: // hint at distance
-				default:
-					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.3",
-							Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())),
-							Math.round(Math.sqrt(vecToCenter.x*vecToCenter.x+vecToCenter.y*vecToCenter.y)),
-							Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment));
-					break;
-			}
+				case 0 -> // hint at the type of vein
+						Component.translatable(Lib.CHAT_INFO+"survey.hint.1",
+								Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())));
+				case 1 -> // hint at the direction
+						Component.translatable(Lib.CHAT_INFO+"survey.hint.2",
+								Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())),
+								Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment)); // hint at distance
+				default -> Component.translatable(Lib.CHAT_INFO+"survey.hint.3",
+						Component.translatable(MineralMix.getTranslationKey(vein.getMineralName())),
+						Math.round(Math.sqrt(vecToCenter.x*vecToCenter.x+vecToCenter.y*vecToCenter.y)),
+						Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment));
+			};
 		}
 		// Send message to player
 		player.displayClientMessage(response, false);
-
-		// Add entry for current position
-		CompoundTag tag = new CompoundTag();
-		tag.putInt("x", pos.getX());
-		tag.putInt("z", pos.getZ());
-		// Lets save the hint, in case we ever want to give this a GUI
-		tag.putString("hint", Component.Serializer.toJson(response, world.registryAccess()));
-		data.add(tag);
+		addHintedPosition(stack, world.dimension(), vein.getPos(), new HintedPosition(pos.getX(), pos.getZ(), response));
 
 		world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.NEUTRAL, 1.0F, 1.0F+(world.random.nextFloat()-world.random.nextFloat())*0.4F);
-		stack.hurtAndBreak(1, player, player.getUsedItemHand());
+		stack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 
 		return stack;
 	}
 
 	private static final String DATA_KEY = "veinData";
 
-	public static ListTag getVeinData(ItemStack surveyTools, ResourceKey<Level> dimension, ColumnPos veinPos)
+	public static List<HintedPosition> getVeinData(ItemStack surveyTools, ResourceKey<Level> dimension, ColumnPos veinPos)
 	{
-		ListTag list = surveyTools.getOrCreateTag().getList(DATA_KEY, Tag.TAG_COMPOUND);
-		CompoundTag tag = null;
-		String dimString = dimension.location().toString();
-		for(Tag nbt : list)
+		List<VeinEntry> allVeins = surveyTools.getOrDefault(IEDataComponents.SURVERYTOOL_DATA, List.of());
+		for(final var vein : allVeins)
+			if(vein.x==veinPos.x()&&vein.z==veinPos.z()&&vein.level.equals(dimension))
+				return vein.hinted;
+		return List.of();
+	}
+
+	public static void addHintedPosition(ItemStack surveyTools, ResourceKey<Level> dimension, ColumnPos veinPos, HintedPosition toAdd)
+	{
+		List<VeinEntry> newVeins = new ArrayList<>(surveyTools.getOrDefault(IEDataComponents.SURVERYTOOL_DATA, List.of()));
+		boolean found = false;
+		for(int i = 0; i < newVeins.size(); ++i)
 		{
-			CompoundTag tmp = (CompoundTag)nbt;
-			if(dimString.equals(tmp.getString("dimension"))&&tmp.getInt("x")==veinPos.x()&&tmp.getInt("z")==veinPos.z())
+			final var vein = newVeins.get(i);
+			if(vein.x==veinPos.x()&&vein.z==veinPos.z()&&vein.level.equals(dimension))
 			{
-				tag = tmp;
+				found = true;
+				final var newHints = new ArrayList<>(vein.hinted);
+				newHints.add(toAdd);
+				newVeins.set(i, new VeinEntry(vein.x, vein.z, vein.level, newHints));
 				break;
 			}
 		}
-		if(tag==null)
-		{
-			tag = new CompoundTag();
-			tag.putString("dimension", dimString);
-			tag.putInt("x", veinPos.x());
-			tag.putInt("z", veinPos.z());
-			list.add(tag);
-			surveyTools.getOrCreateTag().put(DATA_KEY, list);
-		}
-		if(tag.contains("data", Tag.TAG_LIST))
-			return tag.getList("data", Tag.TAG_COMPOUND);
-		ListTag data = new ListTag();
-		tag.put("data", data);
-		return data;
+		if(!found)
+			newVeins.add(new VeinEntry(veinPos.x(), veinPos.z(), dimension, List.of(toAdd)));
+		surveyTools.set(IEDataComponents.SURVERYTOOL_DATA, newVeins);
 	}
 
 	@Override
-
 	public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player)
 	{
 		return true;
@@ -229,6 +222,38 @@ public class SurveyToolsItem extends IEBaseItem
 	public boolean isEnchantable(@Nonnull ItemStack stack)
 	{
 		return false;
+	}
+
+	private record HintedPosition(int x, int z, Component hintText)
+	{
+		public static final Codec<HintedPosition> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				Codec.INT.fieldOf("x").forGetter(HintedPosition::x),
+				Codec.INT.fieldOf("z").forGetter(HintedPosition::z),
+				ComponentSerialization.CODEC.fieldOf("hintText").forGetter(HintedPosition::hintText)
+		).apply(inst, HintedPosition::new));
+		public static final StreamCodec<RegistryFriendlyByteBuf, HintedPosition> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, HintedPosition::x,
+				ByteBufCodecs.VAR_INT, HintedPosition::z,
+				ComponentSerialization.TRUSTED_STREAM_CODEC, HintedPosition::hintText,
+				HintedPosition::new
+		);
+	}
+
+	public record VeinEntry(int x, int z, ResourceKey<Level> level, List<HintedPosition> hinted)
+	{
+		public static final Codec<VeinEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				Codec.INT.fieldOf("x").forGetter(VeinEntry::x),
+				Codec.INT.fieldOf("z").forGetter(VeinEntry::z),
+				Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(VeinEntry::level),
+				HintedPosition.CODEC.listOf().fieldOf("hinted").forGetter(VeinEntry::hinted)
+		).apply(inst, VeinEntry::new));
+		public static final StreamCodec<RegistryFriendlyByteBuf, VeinEntry> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.VAR_INT, VeinEntry::x,
+				ByteBufCodecs.VAR_INT, VeinEntry::z,
+				ResourceKey.streamCodec(Registries.DIMENSION), VeinEntry::level,
+				HintedPosition.STREAM_CODEC.apply(ByteBufCodecs.list()), VeinEntry::hinted,
+				VeinEntry::new
+		);
 	}
 }
 

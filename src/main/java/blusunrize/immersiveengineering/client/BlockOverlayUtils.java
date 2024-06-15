@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
 import com.google.common.collect.ImmutableList;
@@ -301,104 +300,104 @@ public class BlockOverlayUtils
 		if(frameEntity==null)
 			return;
 		ItemStack frameItem = frameEntity.getItem();
-		if(frameItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(frameItem, "Decorations", 9))
+		if(frameItem.getItem()!=Items.FILLED_MAP)
+			return;
+		MapItemSavedData mapData = MapItem.getSavedData(frameItem, world);
+		Level world = frameEntity.getCommandSenderWorld();
+		if(mapData!=null)
 		{
-			Level world = frameEntity.getCommandSenderWorld();
-			MapItemSavedData mapData = MapItem.getSavedData(frameItem, world);
-			if(mapData!=null)
+			Font font = ClientUtils.font();
+			int mapScale = 1<<mapData.scale;
+			float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
+
+			// Player hit vector, relative to frame block pos
+			Vec3 hitVec = rayTraceResult.getLocation().subtract(Vec3.atLowerCornerOf(frameEntity.getPos()));
+			Direction frameDir = frameEntity.getDirection();
+			double cursorH = 0;
+			double cursorV = 0;
+			// Get a 0-1 cursor coordinate; this could be ternary operator, but switchcase is easier to read
+			switch(frameDir)
 			{
-				Font font = ClientUtils.font();
-				int mapScale = 1<<mapData.scale;
-				float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
-
-				// Player hit vector, relative to frame block pos
-				Vec3 hitVec = rayTraceResult.getLocation().subtract(Vec3.atLowerCornerOf(frameEntity.getPos()));
-				Direction frameDir = frameEntity.getDirection();
-				double cursorH = 0;
-				double cursorV = 0;
-				// Get a 0-1 cursor coordinate; this could be ternary operator, but switchcase is easier to read
-				switch(frameDir)
+				case DOWN ->
 				{
-					case DOWN ->
-					{
-						cursorH = hitVec.x;
-						cursorV = 1-hitVec.z;
-					}
-					case UP ->
-					{
-						cursorH = hitVec.x;
-						cursorV = hitVec.z;
-					}
-					case NORTH ->
-					{
-						cursorH = 1-hitVec.x;
-						cursorV = 1-hitVec.y;
-					}
-					case SOUTH ->
-					{
-						cursorH = hitVec.x;
-						cursorV = 1-hitVec.y;
-					}
-					case WEST ->
-					{
-						cursorH = hitVec.z;
-						cursorV = 1-hitVec.y;
-					}
-					case EAST ->
-					{
-						cursorH = 1-hitVec.z;
-						cursorV = 1-hitVec.y;
-					}
+					cursorH = hitVec.x;
+					cursorV = 1-hitVec.z;
 				}
-				// Multiply it to the number scale vanilla maps use
-				cursorH *= 128;
-				cursorV *= 128;
-
-				ListTag minerals = null;
-				double lastDist = Double.MAX_VALUE;
-				MapDecorations decorations = frameItem.get(DataComponents.MAP_DECORATIONS);
-				for(Map.Entry<String, Entry> decoration : decorations.decorations().entrySet())
+				case UP ->
 				{
-					// This needs to be redone, probably as a new type of component. We cannot add arbitrary data to
-					// vanilla components.
-					throw new UnsupportedOperationException();
-					//if(decoration.getKey().startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
-					//{
-					//	double sampleX = tagCompound.getDouble("x");
-					//	double sampleZ = tagCompound.getDouble("z");
-					//	// Map coordinates require some pretty funky maths. I tried to simplify this,
-					//	// and ran into issues that made highlighting fail on certain markers.
-					//	// This implementation works, so I just won't touch it again.
-					//	float f = (float)(sampleX-(double)mapData.centerX)/(float)mapScale;
-					//	float f1 = (float)(sampleZ-(double)mapData.centerZ)/(float)mapScale;
-					//	byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
-					//	byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
-					//	// Make it a vector, rotate it around the map center
-					//	Vec3 mapPos = new Vec3(0, b1, b0);
-					//	mapPos = mapPos.xRot(mapRotation);
-					//	// Turn it into a 0.0 to 128.0 offset
-					//	double offsetH = (mapPos.z/2.0F+64.0F);
-					//	double offsetV = (mapPos.y/2.0F+64.0F);
-					//	// Get cursor distance
-					//	double dH = cursorH-offsetH;
-					//	double dV = cursorV-offsetV;
-					//	double dist = dH*dH+dV*dV;
-					//	if(dist < 10&&dist < lastDist)
-					//	{
-					//		lastDist = dist;
-					//		minerals = tagCompound.getList("minerals", Tag.TAG_STRING);
-					//	}
-					//}
+					cursorH = hitVec.x;
+					cursorV = hitVec.z;
 				}
-				if(minerals!=null)
-					for(int i = 0; i < minerals.size(); i++)
-					{
-						ResourceLocation id = new ResourceLocation(minerals.getString(i));
-						MineralMix mix = MineralMix.RECIPES.getById(Minecraft.getInstance().level, id);
-						if(mix!=null)
-							graphics.drawString(font, I18n.get(mix.getTranslationKey(id)), scaledWidth/2+8, scaledHeight/2+8+i*font.lineHeight, 0xffffff, true);
-					}
+				case NORTH ->
+				{
+					cursorH = 1-hitVec.x;
+					cursorV = 1-hitVec.y;
+				}
+				case SOUTH ->
+				{
+					cursorH = hitVec.x;
+					cursorV = 1-hitVec.y;
+				}
+				case WEST ->
+				{
+					cursorH = hitVec.z;
+					cursorV = 1-hitVec.y;
+				}
+				case EAST ->
+				{
+					cursorH = 1-hitVec.z;
+					cursorV = 1-hitVec.y;
+				}
 			}
+			// Multiply it to the number scale vanilla maps use
+			cursorH *= 128;
+			cursorV *= 128;
+
+			ListTag minerals = null;
+			double lastDist = Double.MAX_VALUE;
+			MapDecorations decorations = frameItem.get(DataComponents.MAP_DECORATIONS);
+			for(Map.Entry<String, Entry> decoration : decorations.decorations().entrySet())
+			{
+				// This needs to be redone, probably as a new type of component. We cannot add arbitrary data to
+				// vanilla components.
+				// TODO
+				throw new UnsupportedOperationException();
+				//if(decoration.getKey().startsWith("ie:coresample_")&&tagCompound.contains("minerals"))
+				//{
+				//	double sampleX = tagCompound.getDouble("x");
+				//	double sampleZ = tagCompound.getDouble("z");
+				//	// Map coordinates require some pretty funky maths. I tried to simplify this,
+				//	// and ran into issues that made highlighting fail on certain markers.
+				//	// This implementation works, so I just won't touch it again.
+				//	float f = (float)(sampleX-(double)mapData.centerX)/(float)mapScale;
+				//	float f1 = (float)(sampleZ-(double)mapData.centerZ)/(float)mapScale;
+				//	byte b0 = (byte)((int)((double)(f*2.0F)+0.5D));
+				//	byte b1 = (byte)((int)((double)(f1*2.0F)+0.5D));
+				//	// Make it a vector, rotate it around the map center
+				//	Vec3 mapPos = new Vec3(0, b1, b0);
+				//	mapPos = mapPos.xRot(mapRotation);
+				//	// Turn it into a 0.0 to 128.0 offset
+				//	double offsetH = (mapPos.z/2.0F+64.0F);
+				//	double offsetV = (mapPos.y/2.0F+64.0F);
+				//	// Get cursor distance
+				//	double dH = cursorH-offsetH;
+				//	double dV = cursorV-offsetV;
+				//	double dist = dH*dH+dV*dV;
+				//	if(dist < 10&&dist < lastDist)
+				//	{
+				//		lastDist = dist;
+				//		minerals = tagCompound.getList("minerals", Tag.TAG_STRING);
+				//	}
+				//}
+			}
+			if(minerals!=null)
+				for(int i = 0; i < minerals.size(); i++)
+				{
+					ResourceLocation id = ResourceLocation.parse(minerals.getString(i));
+					MineralMix mix = MineralMix.RECIPES.getById(Minecraft.getInstance().level, id);
+					if(mix!=null)
+						graphics.drawString(font, I18n.get(mix.getTranslationKey(id)), scaledWidth/2+8, scaledHeight/2+8+i*font.lineHeight, 0xffffff, true);
+				}
 		}
 	}
 }

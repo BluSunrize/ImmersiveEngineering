@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity.TurretConfig;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
@@ -29,6 +30,8 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public abstract class TurretMenu extends IEContainerMenu
 {
@@ -69,13 +72,20 @@ public abstract class TurretMenu extends IEContainerMenu
 					IEContainerMenu.blockCtx(type, id, be),
 					invPlayer,
 					be.energyStorage,
-					new GetterAndSetter<>(() -> be.targetList, l -> be.targetList = l),
+					configSetter(be, TurretConfig::targetList, TurretConfig::withTargetList),
 					be::resetTarget,
-					new GetterAndSetter<>(() -> be.whitelist, b -> be.whitelist = b),
-					new GetterAndSetter<>(() -> be.attackAnimals, b -> be.attackAnimals = b),
-					new GetterAndSetter<>(() -> be.attackPlayers, b -> be.attackPlayers = b),
-					new GetterAndSetter<>(() -> be.attackNeutrals, b -> be.attackNeutrals = b)
+					configSetter(be, TurretConfig::whitelist, TurretConfig::withWhitelist),
+					configSetter(be, TurretConfig::attackAnimals, TurretConfig::withAttackAnimals),
+					configSetter(be, TurretConfig::attackPlayers, TurretConfig::withAttackPlayers),
+					configSetter(be, TurretConfig::attackNeutrals, TurretConfig::withAttackNeutrals)
 			);
+		}
+
+		private static <T> GetterAndSetter<T> configSetter(
+				TurretBlockEntity<?> be, Function<TurretConfig, T> get, BiFunction<TurretConfig, T, TurretConfig> with
+		)
+		{
+			return new GetterAndSetter<>(() -> get.apply(be.config), t -> be.config = with.apply(be.config, t));
 		}
 
 		public static TurretContext clientCtx(MenuType<?> type, int id, Inventory invPlayer)

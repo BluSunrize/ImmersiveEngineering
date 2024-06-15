@@ -15,15 +15,13 @@ import blusunrize.immersiveengineering.common.entities.SkyhookUserData;
 import blusunrize.immersiveengineering.common.entities.SkyhookUserData.SkyhookStatus;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEDataAttachments;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -41,7 +39,7 @@ public class SkyhookItem extends UpgradeableToolItem
 {
 	public SkyhookItem()
 	{
-		super(new Properties().stacksTo(1), "SKYHOOK");
+		super(new Properties().stacksTo(1).component(IEDataComponents.SKYHOOK_SPEED_LIMIT, false), "SKYHOOK");
 	}
 
 	@Override
@@ -54,48 +52,22 @@ public class SkyhookItem extends UpgradeableToolItem
 		list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook"));
 	}
 
-	private static final String LIMIT_SPEED = "limitSpeed";
-
 	public static boolean shouldLimitSpeed(ItemStack stack)
 	{
-		return ItemNBTHelper.getBoolean(stack, LIMIT_SPEED);
+		return stack.getOrDefault(IEDataComponents.SKYHOOK_SPEED_LIMIT, false);
 	}
 
 	public static void setLimitSpeed(ItemStack stack, boolean doLimit)
 	{
-		ItemNBTHelper.putBoolean(stack, LIMIT_SPEED, doLimit);
+		stack.set(IEDataComponents.SKYHOOK_SPEED_LIMIT, doLimit);
 	}
 
 	public static boolean toggleSpeedLimit(ItemStack stack)
 	{
-		CompoundTag nbt = stack.getOrCreateTag();
-		boolean wasActive = nbt.getBoolean(LIMIT_SPEED);
-		nbt.putBoolean(LIMIT_SPEED, !wasActive);
+		boolean wasActive = shouldLimitSpeed(stack);
+		setLimitSpeed(stack, !wasActive);
 		return !wasActive;
 	}
-
-	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity ent, int slot, boolean inHand)
-	{
-		super.inventoryTick(stack, world, ent, slot, inHand);
-		if(getUpgrades(stack).getBoolean("fallBoost"))
-		{
-			float dmg = (float)Math.ceil(ent.fallDistance/5);
-			ItemNBTHelper.putFloat(stack, "fallDamageBoost", dmg);
-		}
-	}
-	/*@Override
-	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
-	{
-		Multimap multimap = super.getAttributeModifiers(slot, stack);
-		if(slot == EntityEquipmentSlot.MAINHAND)
-		{
-			float dmg = 5 + ItemNBTHelper.getFloat(stack, "fallDamageBoost");
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
-		}
-		return multimap;
-	}*/
-
 
 	@Nonnull
 	@Override

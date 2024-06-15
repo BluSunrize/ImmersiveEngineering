@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -70,9 +68,8 @@ public class ShaderBagItem extends IEBaseItem implements IColouredItem
 				ResourceLocation shader = ShaderRegistry.getRandomShader(player.getUUID(), player.getRandom(), rarity, true);
 				if(shader==null)
 					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-				ItemStack shaderItem = new ItemStack(Misc.SHADER);
-				ItemNBTHelper.putString(shaderItem, "shader_name", shader.toString());
-				Rarity shaderRarity = ShaderRegistry.shaderRegistry.get(shader).getRarity();
+				ItemStack shaderItem = ShaderItem.makeShaderItem(shader);
+				Rarity shaderRarity = shaderItem.getRarity();
 				if(ShaderRegistry.sortedRarityMap.indexOf(shaderRarity) <= ShaderRegistry.sortedRarityMap.indexOf(Rarity.EPIC)&&
 						ShaderRegistry.sortedRarityMap.indexOf(rarity) >= ShaderRegistry.sortedRarityMap.indexOf(Rarity.COMMON))
 					Utils.unlockIEAdvancement(player, "main/secret_luckofthedraw");

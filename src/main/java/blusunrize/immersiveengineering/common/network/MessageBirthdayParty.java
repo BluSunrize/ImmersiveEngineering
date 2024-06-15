@@ -36,7 +36,7 @@ public record MessageBirthdayParty(int entityID) implements IMessage
 				Entity entity = world.getEntity(entityID);
 				if(entity!=null&&entity instanceof LivingEntity)
 				{
-					world.createFireworks(entity.getX(), entity.getY(), entity.getZ(), 0, 0, 0, Utils.getRandomFireworkExplosion(ApiUtils.RANDOM, 4));
+					world.createFireworks(entity.getX(), entity.getY(), entity.getZ(), 0, 0, 0, Utils.getRandomFireworkExplosion(ApiUtils.RANDOM));
 					entity.getPersistentData().putBoolean("headshot", true);
 				}
 			}

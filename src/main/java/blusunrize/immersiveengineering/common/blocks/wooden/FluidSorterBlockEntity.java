@@ -16,7 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
@@ -220,7 +222,9 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false, context.getLevel().registryAccess());
+		CompoundTag data = new CompoundTag();
+		writeCustomNBT(data, false, context.getLevel().registryAccess());
+		stack.set(IEDataComponents.FLUID_SORTER_DATA, new DirectNBT(data));
 		drop.accept(stack);
 	}
 
@@ -228,8 +232,8 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false, ctx.getLevel().registryAccess());
+		if(stack.has(IEDataComponents.FLUID_SORTER_DATA))
+			readCustomNBT(stack.get(IEDataComponents.FLUID_SORTER_DATA).tag(), false, ctx.getLevel().registryAccess());
 	}
 
 

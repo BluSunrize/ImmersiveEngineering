@@ -8,11 +8,12 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -45,22 +46,15 @@ public class GuiHelper
 		worldrenderer.addVertex(mat, x, y, 0);
 	}
 
-	public static void drawColouredRect(PoseStack transform, int x, int y, int w, int h, DyeColor dyeColor)
+	public static void drawColouredRect(GuiGraphics graphics, int x, int y, int w, int h, DyeColor dyeColor)
 	{
-		Matrix4f mat = transform.last().pose();
-		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.setShader(GameRenderer::getPositionColorShader);
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-		float[] color = dyeColor.getTextureDiffuseColors();
-		bufferbuilder.addVertex(mat, x, y+h, 0).setColor(color[0], color[1], color[2], 1);
-		bufferbuilder.addVertex(mat, x+w, y+h, 0).setColor(color[0], color[1], color[2], 1);
-		bufferbuilder.addVertex(mat, x+w, y, 0).setColor(color[0], color[1], color[2], 1);
-		bufferbuilder.addVertex(mat, x, y, 0).setColor(color[0], color[1], color[2], 1);
-		bufferbuilder.unsetDefaultColor();
-		BufferUploader.drawWithShader(bufferbuilder.end());
-		RenderSystem.disableBlend();
+		Matrix4f mat = graphics.pose().last().pose();
+		var bufferbuilder = graphics.bufferSource().getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
+		var color = Utils.vec4fFromDye(dyeColor);
+		bufferbuilder.addVertex(mat, x, y+h, 0).setColor(color.x, color.y, color.z, 1);
+		bufferbuilder.addVertex(mat, x+w, y+h, 0).setColor(color.x, color.y, color.z, 1);
+		bufferbuilder.addVertex(mat, x+w, y, 0).setColor(color.x, color.y, color.z, 1);
+		bufferbuilder.addVertex(mat, x, y, 0).setColor(color.x, color.y, color.z, 1);
 	}
 
 	public static void drawTexturedColoredRect(
@@ -72,13 +66,13 @@ public class GuiHelper
 	{
 		TransformingVertexBuilder innerBuilder = new TransformingVertexBuilder(builder, transform, DefaultVertexFormat.BLOCK);
 		innerBuilder.defaultColor((int)(255*r), (int)(255*g), (int)(255*b), (int)(255*alpha));
-		innerBuilder.setLight(LightTexture.pack(15, 15));
-		innerBuilder.setOverlay(OverlayTexture.NO_OVERLAY);
-		innerBuilder.setNormal(1, 1, 1);
-		innerBuilder.addVertex(x, y+h, 0).uv(u0, v1);
-		innerBuilder.addVertex(x+w, y+h, 0).uv(u1, v1);
-		innerBuilder.addVertex(x+w, y, 0).uv(u1, v0);
-		innerBuilder.addVertex(x, y, 0).uv(u0, v0);
+		innerBuilder.setDefaultLight(LightTexture.pack(15, 15));
+		innerBuilder.setDefaultOverlay(OverlayTexture.NO_OVERLAY);
+		innerBuilder.setDefaultNormal(1, 1, 1);
+		innerBuilder.addVertex(x, y+h, 0).setUv(u0, v1);
+		innerBuilder.addVertex(x+w, y+h, 0).setUv(u1, v1);
+		innerBuilder.addVertex(x+w, y, 0).setUv(u1, v0);
+		innerBuilder.addVertex(x, y, 0).setUv(u0, v0);
 		innerBuilder.unsetDefaultColor();
 	}
 

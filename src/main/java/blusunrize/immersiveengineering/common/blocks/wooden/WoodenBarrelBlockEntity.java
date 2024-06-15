@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelBlockEntit
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -44,6 +45,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -100,7 +102,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 				IFluidHandler handler = capRef.getCapability();
 				if(handler!=null)
 				{
-					int accepted = handler.fill(Utils.copyFluidStackWithAmount(tank.getFluid(), out, false), FluidAction.SIMULATE);
+					int accepted = handler.fill(tank.getFluid().copyWithAmount(out), FluidAction.SIMULATE);
 					FluidStack drained = this.tank.drain(accepted, FluidAction.EXECUTE);
 					if(!drained.isEmpty())
 					{
@@ -342,10 +344,8 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		CompoundTag tag = new CompoundTag();
-		writeTank(context.getLevel().registryAccess(), tag, true);
-		if(!tag.isEmpty())
-			stack.setTag(tag);
+		if(!tank.isEmpty())
+			stack.set(IEDataComponents.GENERIC_FLUID, SimpleFluidContent.copyOf(tank.getFluid()));
 		drop.accept(stack);
 	}
 
@@ -357,8 +357,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 
 	public void onBEPlaced(ItemStack stack)
 	{
-		if(stack.hasTag())
-			readTank(stack.getOrCreateTag());
+		tank.setFluid(stack.getOrDefault(IEDataComponents.GENERIC_FLUID, SimpleFluidContent.EMPTY).copy());
 	}
 
 	@Override

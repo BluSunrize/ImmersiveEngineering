@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common;
 
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.fx.FractalOptions;
-import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.core.Holder;

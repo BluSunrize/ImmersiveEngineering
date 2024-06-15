@@ -178,7 +178,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	@Override
 	public void onUseTick(Level level, LivingEntity user, ItemStack stack, int count)
 	{
-		int inUse = this.getUseDuration(stack)-count;
+		int inUse = this.getUseDuration(stack, user)-count;
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRandom().nextInt(20))
 		{
 			user.level().playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark.value(), SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
@@ -196,7 +196,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		if(!world.isClientSide()&&user instanceof Player player)
 		{
-			int inUse = this.getUseDuration(stack)-timeLeft;
+			int inUse = this.getUseDuration(stack, user)-timeLeft;
 			ItemNBTHelper.remove(stack, "inUse");
 			if(inUse < getChargeTime(stack))
 				return;

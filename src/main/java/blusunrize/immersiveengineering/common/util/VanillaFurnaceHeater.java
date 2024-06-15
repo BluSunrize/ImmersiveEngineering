@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalH
 import blusunrize.immersiveengineering.mixin.accessors.FurnaceTEAccess;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,7 +36,7 @@ public class VanillaFurnaceHeater implements IExternalHeatable
 		ItemStack input = furnace.getItem(DATA_LIT_TIME);
 		if(input.isEmpty())
 			return false;
-		var output = ((FurnaceTEAccess)furnace).getQuickCheck().getRecipeFor(furnace, furnace.getLevel());
+		var output = ((FurnaceTEAccess)furnace).getQuickCheck().getRecipeFor(new SingleRecipeInput(furnace.getItem(0)), furnace.getLevel());
 		if(output.isEmpty())
 			return false;
 		ItemStack existingOutput = furnace.getItem(2);

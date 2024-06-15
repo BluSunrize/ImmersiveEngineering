@@ -21,12 +21,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.items.CoresampleItem;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.ItemData;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.SamplePosition;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSample;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -145,10 +145,23 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	public ItemStack createCoreSample(@Nullable MineralWorldInfo info)
 	{
 		ItemStack stack = new ItemStack(Misc.CORESAMPLE);
-		ItemNBTHelper.putLong(stack, "timestamp", level.getGameTime());
-		CoresampleItem.setDimension(stack, level.dimension());
-		CoresampleItem.setCoords(stack, getBlockPos());
-		CoresampleItem.setMineralInfo(level, stack, info, getBlockPos());
+		List<VeinSample> veins;
+		if(info!=null)
+			veins = info.getAllVeins().stream()
+					.map(p -> new VeinSample(
+							p.getFirst().getMineralName(),
+							p.getFirst().getDepletion(),
+							1-p.getFirst().getFailChance(worldPosition),
+							p.getSecond()/(double)info.getTotalWeight()
+					))
+					.toList();
+		else
+			veins = List.of();
+		stack.set(IEDataComponents.CORESAMPLE, new ItemData(
+				new SamplePosition(level.dimension(), getBlockPos().getX(), getBlockPos().getZ()),
+				veins,
+				level.getGameTime()
+		));
 		return stack;
 	}
 

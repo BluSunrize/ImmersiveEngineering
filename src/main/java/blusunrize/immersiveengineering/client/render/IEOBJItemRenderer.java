@@ -26,7 +26,6 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderType.CompositeState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.resources.ResourceLocation;
@@ -38,7 +37,6 @@ import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -69,7 +67,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			else
 				callback = DefaultCallback.cast();
 		}
-		float partialTicks = mc().getFrameTime();
+		float partialTicks = mc().getTimer().getGameTimeDeltaTicks();
 		Set<String> visible = new HashSet<>();
 		for(String g : model.getGroups().keySet())
 			if(callback.shouldRenderGroup(model.getKey(), g, null))

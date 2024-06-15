@@ -39,6 +39,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
@@ -351,18 +352,18 @@ public class EventHandler
 
 				if(event.getName()==null||event.getName().isEmpty())
 				{
-					if(event.getLeft().hasCustomHoverName())
+					if(event.getLeft().has(DataComponents.CUSTOM_NAME))
 					{
 						event.setCost(event.getCost()+5);
-						event.getOutput().resetHoverName();
+						event.getOutput().remove(DataComponents.CUSTOM_NAME);
 					}
 				}
 				else if(!event.getName().equals(event.getLeft().getHoverName().getString()))
 				{
 					event.setCost(event.getCost()+5);
-					if(event.getLeft().hasCustomHoverName())
+					if(event.getLeft().has(DataComponents.CUSTOM_NAME))
 						event.setCost(event.getCost()+2);
-					event.getOutput().setHoverName(Component.literal(event.getName()));
+					event.getOutput().set(DataComponents.CUSTOM_NAME, Component.literal(event.getName()));
 				}
 			}
 		}

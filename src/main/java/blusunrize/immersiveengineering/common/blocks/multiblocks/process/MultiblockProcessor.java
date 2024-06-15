@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInWorld;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -152,7 +151,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 					for(ItemStack old : existingProcess.inputItems)
 					{
 						for(ItemStack in : newProcess.inputItems)
-							if(ItemStack.isSameItem(old, in)&&Utils.compareItemNBT(old, in))
+							if(ItemStack.isSameItemSameComponents(old, in))
 								if(old.getCount()+in.getCount() > old.getMaxStackSize())
 								{
 									canStack = false;
@@ -167,7 +166,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 							for(ItemStack old : existingProcess.inputItems)
 							{
 								for(ItemStack in : newProcess.inputItems)
-									if(ItemStack.isSameItem(old, in)&&Utils.compareItemNBT(old, in))
+									if(ItemStack.isSameItemSameComponents(old, in))
 									{
 										old.grow(in.getCount());
 										break;
@@ -179,7 +178,7 @@ public class MultiblockProcessor<R extends MultiblockRecipe, CTX extends Process
 		}
 		if(maxQueueLength < 0||processQueue.size() < maxQueueLength)
 		{
-			if(processQueue.size() > 0)
+			if(!processQueue.isEmpty())
 			{
 				MultiblockProcess<R, CTX> previousProcess = processQueue.get(processQueue.size()-1);
 				final int maxTime = previousProcess.getMaxTicks(level);

@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -58,19 +59,18 @@ public class WirecutterItem extends IEBaseItem
 	public ItemStack getCraftingRemainingItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		container.hurtAndBreak(1, ApiUtils.RANDOM_SOURCE, null, () -> {
-		});
-		return container;
+		final var damage = container.getOrDefault(DataComponents.DAMAGE, 0);
+		if(damage >= container.getMaxDamage())
+			return ItemStack.EMPTY;
+		else
+		{
+			container.set(DataComponents.DAMAGE, damage+1);
+			return container;
+		}
 	}
 
 	@Override
 	public boolean hasCraftingRemainingItem(@Nonnull ItemStack stack)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canBeDepleted()
 	{
 		return true;
 	}

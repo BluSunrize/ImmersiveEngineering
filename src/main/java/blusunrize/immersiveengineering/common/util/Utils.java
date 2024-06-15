@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,8 +29,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.ServerAdvancementManager;
@@ -51,14 +50,15 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.TransientCraftingContainer;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.FireworkExplosion.Shape;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -104,19 +104,6 @@ import java.util.function.*;
 public class Utils
 {
 	public static final DecimalFormat NUMBERFORMAT_PREFIXED = new DecimalFormat("+#;-#");
-
-	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
-	{
-		if((stack1.isEmpty())!=(stack2.isEmpty()))
-			return false;
-		boolean hasTag1 = stack1.hasTag();
-		boolean hasTag2 = stack2.hasTag();
-		if(hasTag1!=hasTag2)
-			return false;
-		if(hasTag1&&!stack1.getOrCreateTag().equals(stack2.getOrCreateTag()))
-			return false;
-		return stack1.areAttachmentsCompatible(stack2);
-	}
 
 	public static final BiMap<TagKey<Item>, DyeColor> DYES_BY_TAG =
 			ImmutableBiMap.<TagKey<Item>, DyeColor>builder()
@@ -431,13 +418,8 @@ public class Utils
 		}
 	}
 
-	//TODO test! I think the NBT format is wrong
-	public static List<FireworkExplosion> getRandomFireworkExplosion(Random rand, int preType)
+	public static List<FireworkExplosion> getRandomFireworkExplosion(Random rand)
 	{
-		CompoundTag tag = new CompoundTag();
-		CompoundTag expl = new CompoundTag();
-		expl.putBoolean("Flicker", true);
-		expl.putBoolean("Trail", true);
 		int[] colors = new int[rand.nextInt(8)+1];
 		for(int i = 0; i < colors.length; i++)
 		{
@@ -449,16 +431,13 @@ public class Utils
 				j += 2;
 			colors[i] = DyeColor.byId(j).getFireworkColor();
 		}
-		expl.putIntArray("Colors", colors);
-		int type = preType >= 0?preType: rand.nextInt(4);
-		if(preType < 0&&type==3)
-			type = 4;
-		expl.putByte("Type", (byte)type);
-		ListTag list = new ListTag();
-		list.add(expl);
-		tag.put("Explosions", list);
-
-		return tag;
+		return List.of(new FireworkExplosion(
+				Shape.values()[rand.nextInt(Shape.values().length)],
+				IntList.of(colors),
+				IntList.of(colors),
+				true,
+				true
+		));
 	}
 
 	public static int intFromRGBA(Vector4f rgba)

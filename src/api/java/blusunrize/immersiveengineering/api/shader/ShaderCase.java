@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import org.joml.Vector4f;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
@@ -91,7 +91,7 @@ public abstract class ShaderCase
 	/**
 	 * @return the ARGB values to be appleid to the given part in the given pass
 	 */
-	public Vector4f getRenderColor(String modelPart, int pass, Vector4f original)
+	public Color4 getRenderColor(String modelPart, int pass, Color4 original)
 	{
 		return getLayers()[pass].getColor();
 	}

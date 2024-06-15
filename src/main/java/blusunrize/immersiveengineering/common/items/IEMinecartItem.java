@@ -12,10 +12,11 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity.MinecartConstructor;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -70,7 +71,7 @@ public class IEMinecartItem extends IEBaseItem
 					d0 = 0.5D;
 
 				IEMinecartEntity minecartEntity = this.createCart(world, (double)blockpos.getX()+0.5D, (double)blockpos.getY()+0.0625D+d0, (double)blockpos.getZ()+0.5D, itemstack);
-				if(itemstack.hasCustomHoverName())
+				if(itemstack.has(DataComponents.CUSTOM_NAME))
 					minecartEntity.setCustomName(itemstack.getHoverName());
 				minecartEntity.readTileFromItem(context.getPlayer(), itemstack);
 				world.addFreshEntity(minecartEntity);
@@ -85,14 +86,14 @@ public class IEMinecartItem extends IEBaseItem
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag advanced)
 	{
 		super.appendHoverText(stack, ctx, tooltip, advanced);
-		if(ItemNBTHelper.hasKey(stack, "tank"))
+		var content = stack.get(IEDataComponents.GENERIC_FLUID);
+		if(content!=null)
 		{
-			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
-			if(fs!=null)
-				tooltip.add(TextUtils.applyFormat(
-						Component.translatable(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
-						ChatFormatting.GRAY
-				));
+			FluidStack fs = content.copy();
+			tooltip.add(TextUtils.applyFormat(
+					Component.translatable(Lib.DESC_INFO+"fluidStored", fs.getHoverName(), fs.getAmount()),
+					ChatFormatting.GRAY
+			));
 		}
 	}
 
@@ -141,7 +142,7 @@ public class IEMinecartItem extends IEBaseItem
 			}
 
 			IEMinecartEntity minecartEntity = ((IEMinecartItem)stack.getItem()).createCart(world, d0, d1+d3, d2, stack);
-			if(stack.hasCustomHoverName())
+			if(stack.has(DataComponents.CUSTOM_NAME))
 				minecartEntity.setCustomName(stack.getHoverName());
 			minecartEntity.readTileFromItem(null, stack);
 

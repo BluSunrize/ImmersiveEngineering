@@ -381,7 +381,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat, k.layer));
 						if(renderBlockInLayer)
 						{
-							var tintTransformer = QuadTransformer.setColor(colorMultiplier);
+							var tintTransformer = QuadTransformer.color(colorMultiplier);
 							all.addAll(tintTransformer.process(
 									model.getQuads(k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer)
 							));

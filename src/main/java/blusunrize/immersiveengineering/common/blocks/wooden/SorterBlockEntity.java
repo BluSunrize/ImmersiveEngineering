@@ -14,7 +14,9 @@ import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
@@ -26,6 +28,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
@@ -232,22 +236,17 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		}
 		if(nbt)
 		{
-			final CompoundTag stackTag = getTagWithoutDamage(stack);
-			final CompoundTag filterTag = getTagWithoutDamage(filterStack);
+			final var stackTag = getTagWithoutDamage(stack);
+			final var filterTag = getTagWithoutDamage(filterStack);
 			if(!stackTag.equals(filterTag))
 				return false;
 		}
 		return true;
 	}
 
-	private static CompoundTag getTagWithoutDamage(ItemStack stack)
+	private static DataComponentMap getTagWithoutDamage(ItemStack stack)
 	{
-		final CompoundTag directTag = stack.getTag();
-		if(directTag==null)
-			return EMPTY_NBT;
-		final CompoundTag tagCopy = directTag.copy();
-		tagCopy.remove(ItemStack.TAG_DAMAGE);
-		return tagCopy;
+		return stack.getComponents().filter(type -> type!=DataComponents.DAMAGE);
 	}
 
 	/**
@@ -343,17 +342,19 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	@Override
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
+		CompoundTag data = new CompoundTag();
+		writeCustomNBT(data, false, context.getLevel().registryAccess());
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		writeCustomNBT(stack.getOrCreateTag(), false, context.getLevel().registryAccess());
+		stack.set(IEDataComponents.SORTER_DATA, new DirectNBT(data));
 		drop.accept(stack);
 	}
 
 	@Override
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		final ItemStack stack = ctx.getItemInHand();
-		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false, ctx.getLevel().registryAccess());
+		final var data = ctx.getItemInHand().get(IEDataComponents.SORTER_DATA);
+		if(data!=null)
+			readCustomNBT(data.tag(), false, ctx.getLevel().registryAccess());
 	}
 
 	private final EnumMap<Direction, IItemHandler> insertionHandlers = new EnumMap<>(Direction.class);

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.resources.ResourceLocation;
 
 public class IEApiDataComponents
 {
@@ -21,5 +22,6 @@ public class IEApiDataComponents
 
 	public static DataComponentType<WireLink> WIRE_LINK;
 	public static DataComponentType<String> BLUEPRINT_TYPE;
+	public static DataComponentType<ResourceLocation> SHADER_TYPE;
 	public static DataComponentType<Unit> FLUID_PRESSURIZED;
 }

@@ -10,12 +10,16 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
-import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity.TurretConfig;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerData;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem.EarmuffData;
+import blusunrize.immersiveengineering.common.items.HammerItem.MultiblockRestriction;
+import blusunrize.immersiveengineering.common.items.SurveyToolsItem.VeinEntry;
 import blusunrize.immersiveengineering.common.items.components.AttachedItem;
+import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,6 +30,8 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.List;
 
 public class IEDataComponents
 {
@@ -115,6 +121,48 @@ public class IEDataComponents
 			"chemthrower_data", () -> DataComponentType.<ChemthrowerData>builder()
 					.persistent(ChemthrowerData.CODEC)
 					.networkSynchronized(ChemthrowerData.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<TurretConfig>> TURRET_DATA = REGISTER.register(
+			"turret_data", () -> DataComponentType.<TurretConfig>builder()
+					.persistent(TurretConfig.CODEC)
+					.networkSynchronized(TurretConfig.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<List<VeinEntry>>> SURVERYTOOL_DATA = REGISTER.register(
+			"surveytool_data", () -> DataComponentType.<List<VeinEntry>>builder()
+					.persistent(VeinEntry.CODEC.listOf())
+					.networkSynchronized(VeinEntry.STREAM_CODEC.apply(ByteBufCodecs.list()))
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> FLUID_SORTER_DATA = REGISTER.register(
+			"fluid_sorter_nbt", () -> DataComponentType.<DirectNBT>builder()
+					.persistent(DirectNBT.CODEC)
+					.networkSynchronized(DirectNBT.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> LOGIC_UNIT_DATA = REGISTER.register(
+			"logic_unit_nbt", () -> DataComponentType.<DirectNBT>builder()
+					.persistent(DirectNBT.CODEC)
+					.networkSynchronized(DirectNBT.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> SORTER_DATA = REGISTER.register(
+			"sorter_nbt", () -> DataComponentType.<DirectNBT>builder()
+					.persistent(DirectNBT.CODEC)
+					.networkSynchronized(DirectNBT.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SKYHOOK_SPEED_LIMIT = REGISTER.register(
+			"speed_limit", () -> DataComponentType.<Boolean>builder()
+					.persistent(Codec.BOOL)
+					.networkSynchronized(ByteBufCodecs.BOOL)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<MultiblockRestriction>> MULTIBLOCK_RESTRICTION = REGISTER.register(
+			"multiblock_restriction", () -> DataComponentType.<MultiblockRestriction>builder()
+					.persistent(MultiblockRestriction.CODEC)
+					.networkSynchronized(MultiblockRestriction.STREAM_CODEC)
 					.build()
 	);
 

@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "blusunrize.immersiveengineering.common.mixin.IEMixinConfig",
   "mixins": [
+    "accessors.AbstractArrowAccess",
     "accessors.BETypeAccess",
     "accessors.ConcretePowderBlockAccess",
     "accessors.ContainerAccess",

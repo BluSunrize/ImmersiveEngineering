@@ -241,7 +241,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 										overlay = OverlayTexture.pack(0, true);
 									else
 										overlay = OverlayTexture.NO_OVERLAY;
-									translucentFullbright.setOverlay(overlay);
+									translucentFullbright.setDefaultOverlay(overlay);
 									ModelData modelData = ModelData.EMPTY;
 									BlockEntity te = structureWorld.getBlockEntity(pos);
 									if(te!=null)

@@ -19,17 +19,21 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigur
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.orientation.RotationUtil;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -53,6 +57,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class HammerItem extends IEBaseItem
 {
@@ -71,29 +76,26 @@ public class HammerItem extends IEBaseItem
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag flagIn)
 	{
 		super.appendHoverText(stack, ctx, tooltip, flagIn);
-		addInfo(tooltip, Lib.DESC_INFO+"multiblocksAllowed", stack, "multiblockPermission");
-		addInfo(tooltip, Lib.DESC_INFO+"multiblockForbidden", stack, "multiblockInterdiction");
+		var permissions = stack.getOrDefault(IEDataComponents.MULTIBLOCK_RESTRICTION, MultiblockRestriction.DEFAULT);
+		addInfo(tooltip, Lib.DESC_INFO+"multiblocksAllowed", permissions.allowed);
+		addInfo(tooltip, Lib.DESC_INFO+"multiblockForbidden", permissions.forbidden);
 	}
 
-	private void addInfo(List<Component> list, String titleKey, ItemStack stack, String nbtKey)
+	private void addInfo(List<Component> tooltip, String titleKey, Optional<List<ResourceLocation>> list)
 	{
-		if(!ItemNBTHelper.hasKey(stack, nbtKey, Tag.TAG_LIST))
+		if(list.isEmpty())
 			return;
 		MutableComponent title = Component.translatable(titleKey);
-		ListTag tagList = stack.getOrCreateTag().getList(nbtKey, Tag.TAG_STRING);
 		if(!Screen.hasShiftDown())
-			list.add(title.append(" ").append(Component.translatable(Lib.DESC_INFO+"holdShift")));
+			tooltip.add(title.append(" ").append(Component.translatable(Lib.DESC_INFO+"holdShift")));
 		else
 		{
-			list.add(title);
-			for(int i = 0; i < tagList.size(); i++)
+			tooltip.add(title);
+			for(ResourceLocation mbName : list.get())
 			{
-				ResourceLocation mbName = ResourceLocation.tryParse(tagList.getString(i));
-				if(mbName==null)
-					continue;
 				IMultiblock multiblock = MultiblockHandler.getByUniqueName(mbName);
 				if(multiblock!=null)
-					list.add(TextUtils.applyFormat(multiblock.getDisplayName(), ChatFormatting.DARK_GRAY));
+					tooltip.add(TextUtils.applyFormat(multiblock.getDisplayName(), ChatFormatting.DARK_GRAY));
 			}
 		}
 	}
@@ -109,22 +111,7 @@ public class HammerItem extends IEBaseItem
 		/*
 			Multiblock Handling
 		 */
-		List<ResourceLocation> permittedMultiblocks = null;
-		List<ResourceLocation> interdictedMultiblocks = null;
-		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
-		{
-			ListTag list = stack.getOrCreateTag().getList("multiblockPermission", Tag.TAG_STRING);
-			permittedMultiblocks = parseMultiblockNames(list, player, "permission");
-			if(permittedMultiblocks==null)
-				return InteractionResult.FAIL;
-		}
-		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
-		{
-			ListTag list = stack.getOrCreateTag().getList("multiblockInterdiction", Tag.TAG_STRING);
-			interdictedMultiblocks = parseMultiblockNames(list, player, "interdiction");
-			if(interdictedMultiblocks==null)
-				return InteractionResult.FAIL;
-		}
+		var restriction = stack.getOrDefault(IEDataComponents.MULTIBLOCK_RESTRICTION, MultiblockRestriction.DEFAULT);
 		final Direction multiblockSide;
 		if(side.getAxis()==Axis.Y&&player!=null)
 			multiblockSide = Direction.fromYRot(player.getYRot()).getOpposite();
@@ -134,10 +121,10 @@ public class HammerItem extends IEBaseItem
 			if(mb.isBlockTrigger(world.getBlockState(pos), multiblockSide, world))
 			{
 				boolean isAllowed;
-				if(permittedMultiblocks!=null)
-					isAllowed = permittedMultiblocks.contains(mb.getUniqueName());
-				else if(interdictedMultiblocks!=null)
-					isAllowed = !interdictedMultiblocks.contains(mb.getUniqueName());
+				if(restriction.allowed.isPresent())
+					isAllowed = restriction.allowed.get().contains(mb.getUniqueName());
+				else if(restriction.forbidden.isPresent())
+					isAllowed = !restriction.forbidden.get().contains(mb.getUniqueName());
 				else
 					isAllowed = true;
 				if(!isAllowed)
@@ -274,5 +261,32 @@ public class HammerItem extends IEBaseItem
 	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
 		return state.is(IETags.hammerHarvestable);
+	}
+
+	public record MultiblockRestriction(
+			Optional<List<ResourceLocation>> allowed,
+			Optional<List<ResourceLocation>> forbidden
+	)
+	{
+		public static final Codec<MultiblockRestriction> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				ResourceLocation.CODEC.listOf().optionalFieldOf("allowed").forGetter(MultiblockRestriction::allowed),
+				ResourceLocation.CODEC.listOf().optionalFieldOf("forbidden").forGetter(MultiblockRestriction::forbidden)
+		).apply(inst, MultiblockRestriction::new));
+		public static final StreamCodec<ByteBuf, MultiblockRestriction> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list())), MultiblockRestriction::allowed,
+				ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list())), MultiblockRestriction::forbidden,
+				MultiblockRestriction::new
+		);
+		public static final MultiblockRestriction DEFAULT = new MultiblockRestriction(
+				Optional.empty(), Optional.empty()
+		);
+
+		public MultiblockRestriction
+		{
+			if(allowed.isPresent())
+				allowed = Optional.of(List.copyOf(allowed.get()));
+			if(forbidden.isPresent())
+				forbidden = Optional.of(List.copyOf(forbidden.get()));
+		}
 	}
 }

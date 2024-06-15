@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
+import blusunrize.immersiveengineering.api.utils.Color4;
 import com.google.common.base.Preconditions;
-import org.joml.Vector4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -86,9 +86,9 @@ public class ShaderLayer
 		return texture;
 	}
 
-	public Vector4f getColor()
+	public Color4 getColor()
 	{
-		return new Vector4f((color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f);
+		return new Color4((color>>16&255)/255f, (color>>8&255)/255f, (color&255)/255f, (color>>24&255)/255f);
 	}
 
 	/**

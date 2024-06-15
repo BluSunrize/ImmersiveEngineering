@@ -31,6 +31,6 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		super.renderWidget(graphics, mouseX, mouseY, partialTicks);
-		GuiHelper.drawColouredRect(graphics.pose(), getX()+2, getY()+2, 4, 4, getState());
+		GuiHelper.drawColouredRect(graphics, getX()+2, getY()+2, 4, 4, getState());
 	}
 }

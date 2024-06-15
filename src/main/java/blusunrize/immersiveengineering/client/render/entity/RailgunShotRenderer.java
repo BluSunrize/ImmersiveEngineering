@@ -79,7 +79,7 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 				matrixStackIn,
 				IERenderTypes.POSITION_COLOR_LIGHTMAP.format()
 		);
-		builder.setLight(light);
+		builder.setDefaultLight(light);
 		int[] rgb;
 		//Front&Back
 		for(int i = 0; i < colWidth; i++)

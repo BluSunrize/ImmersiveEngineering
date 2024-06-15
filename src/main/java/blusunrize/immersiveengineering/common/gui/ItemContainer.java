@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -80,7 +79,7 @@ public abstract class ItemContainer extends AbstractContainerMenu implements Sup
 					Slot s = slots.get(i);
 					if(s!=null&&s.mayPlace(stackInSlot))
 					{
-						if(!s.getItem().isEmpty()&&(!ItemStack.isSameItem(stackInSlot, s.getItem())||!Utils.compareItemNBT(stackInSlot, s.getItem())))
+						if(!s.getItem().isEmpty()&&!ItemStack.isSameItemSameComponents(stackInSlot, s.getItem()))
 							continue;
 						int space = Math.min(s.getMaxStackSize(stackInSlot), stackInSlot.getMaxStackSize());
 						if(!s.getItem().isEmpty())

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -35,7 +36,6 @@ import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Vector4f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +87,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 					for(int pass = 0; pass < layers.length; pass++)
 						if(sCase.shouldRenderGroupForPass(""+part, pass))
 						{
-							Vector4f col = sCase.getRenderColor(""+part, pass, new Vector4f(1, 1, 1, 1));
+							Color4 col = sCase.getRenderColor(""+part, pass, Color4.WHITE);
 							matrixStackIn.pushPose();
 							matrixStackIn.scale(scale, scale, scale);
 
@@ -99,8 +99,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 							//TODO Fix this
 							//boolean oldMirrored = subModel.mirror;
 							//subModel.mirror = ((ShaderCaseMinecart)sCase).mirrorSideForPass[pass];
-							subModel.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn,
-									OverlayTexture.NO_OVERLAY, col.x(), col.y(), col.z(), col.w());
+							subModel.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, col.toInt());
 							//subModel.mirror = oldMirrored;
 
 							matrixStackIn.popPose();

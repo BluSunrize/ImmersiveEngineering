@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.items.ShaderItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -73,8 +73,7 @@ public record MessageShaderManual(MessageType key, List<ResourceLocation> args) 
 				{
 					if(!player.getAbilities().instabuild)
 						IngredientUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args.get(0)).replicationCost.get());
-					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
-					ItemNBTHelper.putString(shaderStack, "shader_name", args.get(0).toString());
+					ItemStack shaderStack = ShaderItem.makeShaderItem(args.get(0));
 					ItemEntity entityitem = player.drop(shaderStack, false);
 					if(entityitem!=null)
 					{
