@@ -223,11 +223,7 @@ public class PotionFluid extends Fluid
 				{
 					if(stack.isEmpty()||!stack.hasTag())
 						return 0xff0000ff;
-					int argb = PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
-					// flip to AGBR, because Mojang I guess
-					return (argb&0xFF00FF00) // alpha and green same spot
-							|((argb>>16)&0x000000FF) // red moves to blue
-							|((argb<<16)&0x00FF0000); // blue moves to red
+					return 0xff000000 | PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
 				}
 			});
 		}

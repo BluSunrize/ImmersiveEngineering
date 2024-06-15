@@ -142,7 +142,11 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 			final FluidStack fluid = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
 			if(fluid.isEmpty())
 				return nested.resolve(model, stack, world, livingEntity, unused);
-			final int color = IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
+			int color = IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
+			// flip to AGBR, because Mojang I guess
+			color = (color&0xFF00FF00) // alpha and green same spot
+					|((color>>16)&0x000000FF) // red moves to blue
+					|((color<<16)&0x00FF0000); // blue moves to red
 			return coloredModels.computeIfAbsent(color, i -> new PotionBucketModel(i).bake(
 					owner, bakery, textureGetter,
 					BlockModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")
