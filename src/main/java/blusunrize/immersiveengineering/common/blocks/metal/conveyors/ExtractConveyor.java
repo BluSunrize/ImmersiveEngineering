@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
@@ -38,14 +39,12 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.OptionalDouble;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-
 /**
  * @author BluSunrize - 19.05.2017
  */
 public class ExtractConveyor extends ConveyorBase
 {
-	public static final ResourceLocation NAME = new ResourceLocation(MODID, "extract");
+	public static final ResourceLocation NAME = IEApi.ieLoc("extract");
 	public static final IConveyorType<ExtractConveyor> TYPE = new BasicConveyorType<>(
 			NAME, true, true, ExtractConveyor::new, () -> new ExtractConveyorRender(texture_on, texture_off)
 	);

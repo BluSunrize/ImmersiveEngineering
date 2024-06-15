@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
@@ -21,15 +21,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
-import org.joml.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +48,7 @@ import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -277,7 +279,7 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	public static class Loader implements IGeometryLoader<ConfigSidesModelBase>
 	{
-		public static ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "conf_sides");
+		public static ResourceLocation NAME = IEApi.ieLoc("conf_sides");
 
 		@Nonnull
 		@Override
@@ -292,7 +294,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				{
 					String key = f.getSerializedName()+"_"+cfg.getTextureName();
 					String tex = name+"_"+namer.getTextureName(f, cfg);
-					builder.put(key, new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(tex)));
+					builder.put(key, new Material(InventoryMenu.BLOCK_ATLAS, ResourceLocation.parse(tex)));
 				}
 			return new ConfigSidesModelBase(name, type, builder.build());
 		}
@@ -304,7 +306,7 @@ public class ModelConfigurableSides extends BakedIEModel
 	{
 
 		@Override
-		public BakedModel bake(IGeometryBakingContext owner, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext owner, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides)
 		{
 			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
 			for(Direction f : DirectionUtils.VALUES)
@@ -319,7 +321,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				tex.put(f, forSide);
 			}
 			final ResourceLocation renderTypeName = Objects.requireNonNullElseGet(
-					owner.getRenderTypeHint(), () -> new ResourceLocation("solid")
+					owner.getRenderTypeHint(), () -> ResourceLocation.withDefaultNamespace("solid")
 			);
 			return new ModelConfigurableSides(name, tex, owner.getRenderType(renderTypeName));
 		}

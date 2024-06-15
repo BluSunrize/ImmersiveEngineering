@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
@@ -128,7 +128,7 @@ public class ModelCoresample extends BakedIEModel
 				else
 				{
 					pixelLength = 16;
-					textureStone = ClientUtils.getSprite(new ResourceLocation("block/stone"));
+					textureStone = ClientUtils.getSprite(ResourceLocation.withDefaultNamespace("block/stone"));
 				}
 
 				double[] stoneUVs = {
@@ -331,7 +331,7 @@ public class ModelCoresample extends BakedIEModel
 	public static class RawCoresampleModel implements IUnbakedGeometry<RawCoresampleModel>
 	{
 		@Override
-		public BakedModel bake(IGeometryBakingContext owner, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext owner, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides)
 		{
 			return new ModelCoresample(null);
 		}
@@ -339,7 +339,7 @@ public class ModelCoresample extends BakedIEModel
 
 	public static class CoresampleLoader implements IGeometryLoader<RawCoresampleModel>
 	{
-		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/coresample");
+		public static final ResourceLocation LOCATION = IEApi.ieLoc("models/coresample");
 
 		@Override
 		public RawCoresampleModel read(JsonObject modelContents, JsonDeserializationContext deserializationContext)

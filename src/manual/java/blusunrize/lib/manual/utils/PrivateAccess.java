@@ -10,10 +10,7 @@ package blusunrize.lib.manual.utils;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.neoforged.neoforge.common.util.Lazy;
 
 import java.lang.invoke.MethodHandle;
@@ -37,7 +34,7 @@ public class PrivateAccess
 	});
 
 	@SuppressWarnings("unchecked")
-	public static <C extends Container, T extends Recipe<C>>
+	public static <C extends RecipeInput, T extends Recipe<C>>
 	Map<ResourceLocation, RecipeHolder<T>> getRecipes(RecipeManager manager, RecipeType<T> recipeTypeIn)
 	{
 		try

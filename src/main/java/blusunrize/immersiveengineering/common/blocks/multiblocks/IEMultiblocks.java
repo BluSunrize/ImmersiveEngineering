@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher;
@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultib
 import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
-
 public class IEMultiblocks
 {
 	public static final List<IMultiblock> IE_MULTIBLOCKS = new ArrayList<>();
@@ -134,7 +132,7 @@ public class IEMultiblocks
 		SHEETMETAL_TANK = register(new SheetmetalTankMultiblock());
 		SILO = register(new SiloMultiblock());
 		SQUEEZER = register(new SqueezerMultiblock());
-		EXCAVATOR_DEMO = register(new UnionMultiblock(new ResourceLocation(ImmersiveEngineering.MODID, "excavator_demo"),
+		EXCAVATOR_DEMO = register(new UnionMultiblock(IEApi.ieLoc("excavator_demo"),
 				ImmutableList.of(
 						new TransformedMultiblock(EXCAVATOR, Vec3i.ZERO, Rotation.NONE),
 						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)

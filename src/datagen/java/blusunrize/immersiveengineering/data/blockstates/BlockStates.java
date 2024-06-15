@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.data.blockstates;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
@@ -472,7 +471,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		{
 			final var pottedHempModel = models()
 					.withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
-					.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted"))
+					.texture("plant", IEApi.ieLoc("block/hemp/potted"))
 					.renderType(ModelProviderUtils.getName(cutout()));
 			simpleBlock(Misc.POTTED_HEMP.get(), pottedHempModel);
 		}
@@ -562,13 +561,13 @@ public class BlockStates extends ExtendedBlockstateProvider
 		if(bottomTop!=null)
 		{
 			Preconditions.checkNotNull(sides);
-			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_scaffoldladder");
+			parent = IEApi.ieLoc("block/ie_scaffoldladder");
 			textures.put("top", bottomTop);
 			textures.put("bottom", bottomTop);
 			textures.put("side", sides);
 		}
 		else
-			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_ladder");
+			parent = IEApi.ieLoc("block/ie_ladder");
 		textures.put("ladder", rl("block/metal_decoration/metal_ladder"));
 		BlockModelBuilder ret = models().withExistingParent(name, parent);
 		for(Entry<String, ResourceLocation> e : textures.entrySet())
@@ -642,7 +641,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		// Top
 		ModelFile model = models()
 				.withExistingParent("block/hemp/top", new ResourceLocation("block/crop"))
-				.texture("crop", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/top0"))
+				.texture("crop", IEApi.ieLoc("block/hemp/top0"))
 				.renderType(ModelProviderUtils.getName(cutout()));
 		builder.partialState().with(HempBlock.TOP, true).setModels(new ConfiguredModel(model));
 
@@ -651,7 +650,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		{
 			model = models()
 					.withExistingParent("block/hemp/bottom"+i, new ResourceLocation("block/crop"))
-					.texture("crop", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/bottom"+i))
+					.texture("crop", IEApi.ieLoc("block/hemp/bottom"+i))
 					.renderType(ModelProviderUtils.getName(cutout()));
 			builder.partialState().with(HempBlock.TOP, false).with(HempBlock.AGE, i).setModels(new ConfiguredModel(model));
 		}
@@ -660,7 +659,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 	private void createSawdust()
 	{
 		VariantBlockStateBuilder builder = getVariantBuilder(WoodenDecoration.SAWDUST.get());
-		ResourceLocation sawdustTexture = new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_decoration/sawdust");
+		ResourceLocation sawdustTexture = IEApi.ieLoc("block/wooden_decoration/sawdust");
 		ModelFile singleModel = null;
 		for(int layer : SawdustBlock.LAYERS.getPossibleValues())
 		{

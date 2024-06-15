@@ -41,7 +41,7 @@ public class ClocheRenderFunctions
 	{
 		// register farmland texture
 		ClocheRecipe.registerSoilTexture(Ingredient.of(new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
-				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.DIRT_PATH)), new ResourceLocation("block/farmland_moist"));
+				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.DIRT_PATH)), ResourceLocation.withDefaultNamespace("block/farmland_moist"));
 
 		// register defaults
 		register("crop", RenderFunctionCrop.CODEC);

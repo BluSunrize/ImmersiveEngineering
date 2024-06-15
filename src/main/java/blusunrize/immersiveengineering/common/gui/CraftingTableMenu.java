@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity;
 import blusunrize.immersiveengineering.mixin.accessors.CraftingContainerAccess;
 import invtweaks.api.container.ChestContainer;
@@ -20,6 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -116,12 +116,14 @@ public class CraftingTableMenu extends IEContainerMenu
 		access.execute((world, $) -> {
 			ServerPlayer serverplayerentity = (ServerPlayer)this.player;
 			ItemStack itemstack = ItemStack.EMPTY;
-			Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
+			Optional<RecipeHolder<CraftingRecipe>> optional = world.getServer().getRecipeManager().getRecipeFor(
+					RecipeType.CRAFTING, craftingInventory.asCraftInput(), world
+			);
 			if(optional.isPresent())
 			{
 				RecipeHolder<CraftingRecipe> icraftingrecipe = optional.get();
 				if(craftResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe))
-					itemstack = icraftingrecipe.value().assemble(craftingInventory, world.registryAccess());
+					itemstack = icraftingrecipe.value().assemble(craftingInventory.asCraftInput(), world.registryAccess());
 			}
 
 			craftResultInventory.setItem(0, itemstack);

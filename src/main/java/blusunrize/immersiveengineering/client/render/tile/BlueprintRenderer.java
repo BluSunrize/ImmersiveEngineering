@@ -201,9 +201,9 @@ public class BlueprintRenderer
 	{
 		Vector4f position = new Vector4f(x, z, 0, 1);
 		position.mul(transform.pose()).div(position.w);
-		out.vertex(
+		out.addVertex(
 				position.x(), position.y(), position.z(),
-				1, 1, 1, 1,
+				-1,
 				0.5f, 0.5f,
 				OverlayTexture.NO_OVERLAY,
 				light,

@@ -17,7 +17,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.HashMap;
@@ -94,7 +93,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 			for(ItemStack stack : input)
 				if(this.inputs.get(i).test(stack))
 				{
-					list.set(i, ItemHandlerHelper.copyStackWithSize(stack, this.inputs.get(i).getCount()));
+					list.set(i, stack.copyWithCount(this.inputs.get(i).getCount()));
 					break;
 				}
 		return list;

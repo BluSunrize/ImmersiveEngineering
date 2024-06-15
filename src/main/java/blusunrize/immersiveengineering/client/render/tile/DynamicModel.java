@@ -10,17 +10,19 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +30,22 @@ import java.util.List;
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD, value = Dist.CLIENT)
 public class DynamicModel
 {
-	private static final List<ResourceLocation> MODELS = new ArrayList<>();
+	private static final List<ModelResourceLocation> MODELS = new ArrayList<>();
 
 	@SubscribeEvent
 	public static void registerModels(ModelEvent.RegisterAdditional ev)
 	{
-		for(ResourceLocation model : MODELS)
+		for(ModelResourceLocation model : MODELS)
+			// TODO check if this works
 			ev.register(model);
 	}
 
-	private final ResourceLocation name;
+	private final ModelResourceLocation name;
 
 	public DynamicModel(String desc)
 	{
-		this.name = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/"+desc);
+		// TODO does this work?
+		this.name = new ModelResourceLocation(IEApi.ieLoc("dynamic/"+desc), "");
 		MODELS.add(this.name);
 	}
 
@@ -63,6 +67,6 @@ public class DynamicModel
 
 	public ResourceLocation getName()
 	{
-		return name;
+		return name.id();
 	}
 }

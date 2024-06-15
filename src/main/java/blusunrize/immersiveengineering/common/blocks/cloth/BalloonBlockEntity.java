@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -29,7 +28,6 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -51,7 +49,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 	public int style = 0;
 	public DyeColor colour0 = null;
 	public DyeColor colour1 = null;
-	private ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
+	private ShaderWrapper_Direct shader = new ShaderWrapper_Direct(IEApi.ieLoc("balloon"));
 
 	public BalloonBlockEntity(BlockPos pos, BlockState state)
 	{

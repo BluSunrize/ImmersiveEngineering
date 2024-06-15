@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models.split;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class SplitModelLoader implements IGeometryLoader<UnbakedSplitModel>
 {
-	public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "basic_split");
+	public static final ResourceLocation LOCATION = IEApi.ieLoc("basic_split");
 	public static final String PARTS = "split_parts";
 	public static final String INNER_MODEL = "inner_model";
 	public static final String DYNAMIC = "dynamic";

@@ -29,7 +29,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 	public WorkbenchRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, JEIRecipeTypes.BLUEPRINT, "block.immersiveengineering.workbench");
-		setBackground(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/workbench.png"), 0, 11, 176, 54));
+		setBackground(helper.createDrawable(IEApi.ieLoc("textures/gui/workbench.png"), 0, 11, 176, 54));
 		setIcon(new ItemStack(IEBlocks.WoodenDevices.WORKBENCH));
 	}
 

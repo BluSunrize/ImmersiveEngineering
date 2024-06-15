@@ -38,12 +38,11 @@ public class GuiHelper
 	{
 		Matrix4f mat = transform.last().pose();
 		VertexConsumer worldrenderer = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-		worldrenderer.defaultColor(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255);
-		worldrenderer.vertex(mat, x, y+h, 0).endVertex();
-		worldrenderer.vertex(mat, x+w, y+h, 0).endVertex();
-		worldrenderer.vertex(mat, x+w, y, 0).endVertex();
-		worldrenderer.vertex(mat, x, y, 0).endVertex();
-		worldrenderer.unsetDefaultColor();
+		worldrenderer.setColor(colour>>16&255, colour>>8&255, colour&255, colour>>24&255);
+		worldrenderer.addVertex(mat, x, y+h, 0);
+		worldrenderer.addVertex(mat, x+w, y+h, 0);
+		worldrenderer.addVertex(mat, x+w, y, 0);
+		worldrenderer.addVertex(mat, x, y, 0);
 	}
 
 	public static void drawColouredRect(PoseStack transform, int x, int y, int w, int h, DyeColor dyeColor)
@@ -55,10 +54,10 @@ public class GuiHelper
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 		float[] color = dyeColor.getTextureDiffuseColors();
-		bufferbuilder.vertex(mat, x, y+h, 0).color(color[0], color[1], color[2], 1).endVertex();
-		bufferbuilder.vertex(mat, x+w, y+h, 0).color(color[0], color[1], color[2], 1).endVertex();
-		bufferbuilder.vertex(mat, x+w, y, 0).color(color[0], color[1], color[2], 1).endVertex();
-		bufferbuilder.vertex(mat, x, y, 0).color(color[0], color[1], color[2], 1).endVertex();
+		bufferbuilder.addVertex(mat, x, y+h, 0).setColor(color[0], color[1], color[2], 1);
+		bufferbuilder.addVertex(mat, x+w, y+h, 0).setColor(color[0], color[1], color[2], 1);
+		bufferbuilder.addVertex(mat, x+w, y, 0).setColor(color[0], color[1], color[2], 1);
+		bufferbuilder.addVertex(mat, x, y, 0).setColor(color[0], color[1], color[2], 1);
 		bufferbuilder.unsetDefaultColor();
 		BufferUploader.drawWithShader(bufferbuilder.end());
 		RenderSystem.disableBlend();
@@ -76,10 +75,10 @@ public class GuiHelper
 		innerBuilder.setLight(LightTexture.pack(15, 15));
 		innerBuilder.setOverlay(OverlayTexture.NO_OVERLAY);
 		innerBuilder.setNormal(1, 1, 1);
-		innerBuilder.vertex(x, y+h, 0).uv(u0, v1).endVertex();
-		innerBuilder.vertex(x+w, y+h, 0).uv(u1, v1).endVertex();
-		innerBuilder.vertex(x+w, y, 0).uv(u1, v0).endVertex();
-		innerBuilder.vertex(x, y, 0).uv(u0, v0).endVertex();
+		innerBuilder.addVertex(x, y+h, 0).uv(u0, v1);
+		innerBuilder.addVertex(x+w, y+h, 0).uv(u1, v1);
+		innerBuilder.addVertex(x+w, y, 0).uv(u1, v0);
+		innerBuilder.addVertex(x, y, 0).uv(u0, v0);
 		innerBuilder.unsetDefaultColor();
 	}
 
@@ -208,10 +207,10 @@ public class GuiHelper
 		transform.pushPose();
 		transform.translate(x, y, 0);
 		Matrix4f mat = transform.last().pose();
-		builder.vertex(mat, 0, 0, 0).color(red, green, blue, 255).endVertex();
-		builder.vertex(mat, 0, height, 0).color(red, green, blue, 255).endVertex();
-		builder.vertex(mat, width, height, 0).color(red, green, blue, 255).endVertex();
-		builder.vertex(mat, width, 0, 0).color(red, green, blue, 255).endVertex();
+		builder.addVertex(mat, 0, 0, 0).setColor(red, green, blue, 255);
+		builder.addVertex(mat, 0, height, 0).setColor(red, green, blue, 255);
+		builder.addVertex(mat, width, height, 0).setColor(red, green, blue, 255);
+		builder.addVertex(mat, width, 0, 0).setColor(red, green, blue, 255);
 		transform.popPose();
 	}
 }

@@ -218,7 +218,7 @@ public class CoresampleItem extends IEBaseItem
 				SamplePosition::new
 		);
 		public static final SamplePosition NONE = new SamplePosition(
-				ResourceKey.create(Registries.DIMENSION, new ResourceLocation("overworld")), 0, 0
+				ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")), 0, 0
 		);
 
 		public ColumnPos position()

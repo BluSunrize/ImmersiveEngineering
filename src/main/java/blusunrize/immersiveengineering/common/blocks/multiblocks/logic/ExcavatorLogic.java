@@ -41,6 +41,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -294,7 +295,13 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 				block.destroy(rawLevel, absolutePos, blockstate);
 
 				ItemStack tool = new ItemStack(Items.IRON_PICKAXE);
-				tool.enchant(Enchantments.SILK_TOUCH, 1);
+				tool.enchant(
+						serverLevel.registryAccess()
+								.registryOrThrow(Registries.ENCHANTMENT)
+								.getHolder(Enchantments.SILK_TOUCH)
+								.orElseThrow(),
+						1
+				);
 				LootParams.Builder dropContext = new LootParams.Builder(serverLevel)
 						.withOptionalParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(absolutePos))
 						.withOptionalParameter(LootContextParams.TOOL, tool);

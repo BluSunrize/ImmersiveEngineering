@@ -50,7 +50,7 @@ public class RenderUtils
 	private static final float[][] normalizationFactors = new float[2][8];
 
 	private static final VertexFormat FORMAT = DefaultVertexFormat.BLOCK;
-	private static final int VERTEX_SIZE = FORMAT.getIntegerSize();
+	private static final int VERTEX_SIZE = FORMAT.getVertexSize()/4;
 	private static final int UV_OFFSET = ClientUtils.findTextureOffset(FORMAT);
 	private static final int POSITION_OFFSET = ClientUtils.findPositionOffset(FORMAT);
 
@@ -103,13 +103,7 @@ public class RenderUtils
 						normalizationFactors[type][i] = (float)Math.sqrt(sSquared);
 					}
 			}
-			int rgba[] = {255, 255, 255, 255};
-			if(color >= 0)
-			{
-				rgba[0] = color>>16&255;
-				rgba[1] = color>>8&255;
-				rgba[2] = color&255;
-			}
+			int rgba = color >= 0?color: -1;
 			final Matrix4fc positionTransform = transform.last().pose();
 			final Matrix3fc normalTransform = transform.last().normal();
 			for(BakedQuad quad : quads)
@@ -138,9 +132,9 @@ public class RenderUtils
 				{
 					final Vector4f vertexPos = quadCoords[i];
 					vertexPos.mul(positionTransform);
-					renderer.vertex(
+					renderer.addVertex(
 							vertexPos.x(), vertexPos.y(), vertexPos.z(),
-							rgba[0]/255f, rgba[1]/255f, rgba[2]/255f, rgba[3]/255f,
+							rgba,
 							Float.intBitsToFloat(vData[VERTEX_SIZE*i+UV_OFFSET]), Float.intBitsToFloat(vData[VERTEX_SIZE*i+UV_OFFSET+1]),
 							OverlayTexture.NO_OVERLAY,
 							LightTexture.pack(l1>>4, l2>>4),
@@ -239,35 +233,35 @@ public class RenderUtils
 	public static void renderBox(VertexConsumer wr, PoseStack m, float x0, float y0, float z0, float x1, float y1, float z1)
 	{
 		Matrix4f transform = m.last().pose();
-		wr.vertex(transform, x0, y0, z1).endVertex();
-		wr.vertex(transform, x1, y0, z1).endVertex();
-		wr.vertex(transform, x1, y1, z1).endVertex();
-		wr.vertex(transform, x0, y1, z1).endVertex();
+		wr.addVertex(transform, x0, y0, z1);
+		wr.addVertex(transform, x1, y0, z1);
+		wr.addVertex(transform, x1, y1, z1);
+		wr.addVertex(transform, x0, y1, z1);
 
-		wr.vertex(transform, x0, y1, z0).endVertex();
-		wr.vertex(transform, x1, y1, z0).endVertex();
-		wr.vertex(transform, x1, y0, z0).endVertex();
-		wr.vertex(transform, x0, y0, z0).endVertex();
+		wr.addVertex(transform, x0, y1, z0);
+		wr.addVertex(transform, x1, y1, z0);
+		wr.addVertex(transform, x1, y0, z0);
+		wr.addVertex(transform, x0, y0, z0);
 
-		wr.vertex(transform, x0, y0, z0).endVertex();
-		wr.vertex(transform, x1, y0, z0).endVertex();
-		wr.vertex(transform, x1, y0, z1).endVertex();
-		wr.vertex(transform, x0, y0, z1).endVertex();
+		wr.addVertex(transform, x0, y0, z0);
+		wr.addVertex(transform, x1, y0, z0);
+		wr.addVertex(transform, x1, y0, z1);
+		wr.addVertex(transform, x0, y0, z1);
 
-		wr.vertex(transform, x0, y1, z1).endVertex();
-		wr.vertex(transform, x1, y1, z1).endVertex();
-		wr.vertex(transform, x1, y1, z0).endVertex();
-		wr.vertex(transform, x0, y1, z0).endVertex();
+		wr.addVertex(transform, x0, y1, z1);
+		wr.addVertex(transform, x1, y1, z1);
+		wr.addVertex(transform, x1, y1, z0);
+		wr.addVertex(transform, x0, y1, z0);
 
-		wr.vertex(transform, x0, y0, z0).endVertex();
-		wr.vertex(transform, x0, y0, z1).endVertex();
-		wr.vertex(transform, x0, y1, z1).endVertex();
-		wr.vertex(transform, x0, y1, z0).endVertex();
+		wr.addVertex(transform, x0, y0, z0);
+		wr.addVertex(transform, x0, y0, z1);
+		wr.addVertex(transform, x0, y1, z1);
+		wr.addVertex(transform, x0, y1, z0);
 
-		wr.vertex(transform, x1, y1, z0).endVertex();
-		wr.vertex(transform, x1, y1, z1).endVertex();
-		wr.vertex(transform, x1, y0, z1).endVertex();
-		wr.vertex(transform, x1, y0, z0).endVertex();
+		wr.addVertex(transform, x1, y1, z0);
+		wr.addVertex(transform, x1, y1, z1);
+		wr.addVertex(transform, x1, y0, z1);
+		wr.addVertex(transform, x1, y0, z0);
 	}
 
 	public static void renderTexturedBox(VertexConsumer wr, PoseStack stack, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)
@@ -335,12 +329,11 @@ public class RenderUtils
 			int light
 	)
 	{
-		b.vertex(mat.last().pose(), x, y, z)
-				.color(1F, 1F, 1F, 1F)
-				.uv(u, v)
-				.overlayCoords(OverlayTexture.NO_OVERLAY)
-				.uv2(light)
-				.normal(mat.last(), nX, nY, nZ)
-				.endVertex();
+		b.addVertex(mat.last().pose(), x, y, z)
+				.setColor(1F, 1F, 1F, 1F)
+				.setUv(u, v)
+				.setOverlay(OverlayTexture.NO_OVERLAY)
+				.setLight(light)
+				.setNormal(mat.last(), nX, nY, nZ);
 	}
 }

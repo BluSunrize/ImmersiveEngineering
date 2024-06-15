@@ -57,7 +57,7 @@ public class TemplateWorld extends Level
 {
 	private static final DimensionType DIMENSION_TYPE = new DimensionType(
 			OptionalLong.empty(), false, false, false, false, 1, false, false, 0, 256, 256,
-			BlockTags.INFINIBURN_OVERWORLD, new ResourceLocation("missingno"), 0,
+			BlockTags.INFINIBURN_OVERWORLD, ResourceLocation.withDefaultNamespace("missingno"), 0,
 			new DimensionType.MonsterSettings(true, false, ConstantInt.ZERO, 0)
 	);
 	private static final ResourceLocation DIMENSION_TYPE_ID = ImmersiveEngineering.rl("multiblock_preview");

@@ -39,7 +39,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		super(helper, JEIRecipeTypes.BOTTLING_MACHINE, "block.immersiveengineering.bottling_machine");
 		setBackground(helper.createBlankDrawable(120, 56));
 		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, IEMultiblockLogic.BOTTLING_MACHINE.iconStack()));
-		tankOverlay = helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png"), 177, 31, 20, 51)
+		tankOverlay = helper.drawableBuilder(IEApi.ieLoc("textures/gui/fermenter.png"), 177, 31, 20, 51)
 				.addPadding(-2, 2, -2, 2)
 				.build();
 	}

@@ -14,10 +14,8 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -78,15 +76,13 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 
 	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount, GuiGraphics graphics)
 	{
-		MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-		VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(TEXTURE));
+		VertexConsumer builder = graphics.bufferSource().getBuffer(IERenderTypes.getGui(TEXTURE));
 
 		GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 0, 1, 74, 74, 1, 1, 1, 1, 0/256f, 74/256f, 51/256f, 125/256f);
 		if(bulletAmount >= 18)
 			GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 47, 1, 103, 74, 1, 1, 1, 1, 74/256f, 177/256f, 51/256f, 125/256f);
 		else if(bulletAmount > 8)
 			GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 57, 1, 79, 39, 1, 1, 1, 1, 57/256f, 136/256f, 12/256f, 51/256f);
-		buffer.endBatch();
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];

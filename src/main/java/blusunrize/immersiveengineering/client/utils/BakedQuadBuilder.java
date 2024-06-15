@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -22,7 +20,7 @@ public class BakedQuadBuilder
 	public static final VertexFormat FORMAT = DefaultVertexFormat.BLOCK;
 
 	private int nextVertex = 0;
-	private int[] data = new int[FORMAT.getIntegerSize()*4];
+	private int[] data = new int[FORMAT.getVertexSize()];
 
 	public void putVertexData(
 			Vec3 pos, Vec3 faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha
@@ -34,7 +32,7 @@ public class BakedQuadBuilder
 
 	public void putVertexData(Vec3 pos, Vec3 faceNormal, double u, double v, float[] colour, float alpha)
 	{
-		int next = nextVertex*FORMAT.getIntegerSize();
+		int next = nextVertex*FORMAT.getVertexSize()/4;
 
 		data[next++] = Float.floatToIntBits((float)pos.x);
 		data[next++] = Float.floatToIntBits((float)pos.y);
@@ -55,19 +53,7 @@ public class BakedQuadBuilder
 		data[next] |= ((int)(faceNormal.z*127)&255)<<16;
 		++next;
 
-		// Optifine adds some extra elements when shaders are enabled (all marked as PADDING), skip those
-		int extraPaddingBytes = 0;
-		for(int i = 6; i < FORMAT.getElements().size(); ++i)
-		{
-			final var extraElement = FORMAT.getElements().get(i);
-			Preconditions.checkState(extraElement.getUsage()==Usage.PADDING);
-			extraPaddingBytes += extraElement.getByteSize();
-		}
-		Preconditions.checkState(extraPaddingBytes%Integer.BYTES==0);
-		next += extraPaddingBytes/Integer.BYTES;
-
 		++nextVertex;
-		Preconditions.checkState(next==nextVertex*FORMAT.getIntegerSize());
 	}
 
 	public BakedQuad bake(int tint, Direction side, TextureAtlasSprite texture, boolean shade)

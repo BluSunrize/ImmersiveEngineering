@@ -66,7 +66,7 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 				String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
 				Vector4f colour = this.layers[layer].getColor();
 
-				Resource iresource1 = resourceManager.getResource(new ResourceLocation(texture)).orElseThrow();
+				Resource iresource1 = resourceManager.getResource(ResourceLocation.parse(texture)).orElseThrow();
 				try(
 						InputStream texStream = iresource1.open();
 						NativeImage texureImage = NativeImage.read(texStream);

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -33,14 +33,14 @@ public class IERepairItemRecipe extends CustomRecipe
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level worldIn)
+	public boolean matches(@Nonnull CraftingInput inv, @Nonnull Level worldIn)
 	{
 		return findInputSlots(inv).isPresent();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv, Provider access)
+	public ItemStack assemble(@Nonnull CraftingInput inv, Provider access)
 	{
 		return findInputSlots(inv)
 				.map(p -> combineStacks(p.getFirst(), p.getSecond()))
@@ -55,9 +55,9 @@ public class IERepairItemRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInput inv)
 	{
-		return NonNullList.withSize(inv.getHeight()*inv.getWidth(), ItemStack.EMPTY);
+		return NonNullList.withSize(inv.height()*inv.width(), ItemStack.EMPTY);
 	}
 
 	@Nonnull
@@ -67,11 +67,11 @@ public class IERepairItemRecipe extends CustomRecipe
 		return RecipeSerializers.IE_REPAIR_SERIALIZER.get();
 	}
 
-	private Optional<Pair<ItemStack, ItemStack>> findInputSlots(CraftingContainer inv)
+	private Optional<Pair<ItemStack, ItemStack>> findInputSlots(CraftingInput inv)
 	{
 		Optional<ItemStack> first = Optional.empty();
 		Optional<ItemStack> second = Optional.empty();
-		for(int slot = 0; slot < inv.getContainerSize(); ++slot)
+		for(int slot = 0; slot < inv.size(); ++slot)
 		{
 			ItemStack stack = inv.getItem(slot);
 			if(!stack.isEmpty())

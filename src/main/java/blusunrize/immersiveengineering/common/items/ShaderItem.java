@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
@@ -84,7 +85,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 			BlockEntity tile = world.getBlockEntity(pos);
 			if(tile instanceof BannerBlockEntity)
 			{
-				ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
+				ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(IEApi.ieLoc("banner"));
 				if(sCase!=null)
 				{
 					boolean wall = blockState.getBlock() instanceof WallBannerBlock;
@@ -98,7 +99,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 					tile = world.getBlockEntity(pos);
 					if(tile instanceof ShaderBannerBlockEntity)
 					{
-						((ShaderBannerBlockEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
+						((ShaderBannerBlockEntity)tile).shader.setShaderItem(ctx.getItemInHand().copyWithCount(1));
 						tile.setChanged();
 						return InteractionResult.SUCCESS;
 					}
@@ -106,7 +107,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 			}
 			else if(tile instanceof ShaderBannerBlockEntity)
 			{
-				((ShaderBannerBlockEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
+				((ShaderBannerBlockEntity)tile).shader.setShaderItem(ctx.getItemInHand().copyWithCount(1));
 				tile.setChanged();
 				return InteractionResult.SUCCESS;
 			}
@@ -181,7 +182,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 		ResourceLocation name = getShaderName(stack);
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
-			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation(ImmersiveEngineering.MODID, "item"));
+			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(IEApi.ieLoc("item"));
 			if(sCase!=null)
 			{
 				ShaderLayer[] layers = sCase.getLayers();

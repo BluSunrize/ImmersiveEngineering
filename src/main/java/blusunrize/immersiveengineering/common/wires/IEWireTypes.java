@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.wires;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.WireApi;
@@ -63,16 +64,16 @@ public class IEWireTypes
 
 	public static void setup()
 	{
-		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv"),
+		registerFeedthroughForWiretype(COPPER, IEApi.ieLoc("block/connector/connector_lv"),
 				new double[]{0, 4, 8, 12}, .5,
 				Connectors.getEnergyConnector(LV_CATEGORY, false).defaultBlockState());
-		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv"),
+		registerFeedthroughForWiretype(ELECTRUM, IEApi.ieLoc("block/connector/connector_mv"),
 				new double[]{0, 4, 8, 12}, .5625,
 				Connectors.getEnergyConnector(MV_CATEGORY, false).defaultBlockState());
-		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv"),
+		registerFeedthroughForWiretype(STEEL, IEApi.ieLoc("block/connector/connector_hv"),
 				new double[]{0, 4, 8, 12}, .75,
 				Connectors.getEnergyConnector(HV_CATEGORY, false).defaultBlockState());
-		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone"),
+		registerFeedthroughForWiretype(REDSTONE, IEApi.ieLoc("block/connector/connector_redstone"),
 				new double[]{3, 8, 11, 16}, .5625, .5,
 				Connectors.CONNECTOR_REDSTONE.defaultBlockState()
 		);

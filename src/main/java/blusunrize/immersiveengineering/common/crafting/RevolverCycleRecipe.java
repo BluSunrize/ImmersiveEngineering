@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -28,10 +28,10 @@ public class RevolverCycleRecipe extends CustomRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, @Nonnull Level world)
+	public boolean matches(CraftingInput inv, @Nonnull Level world)
 	{
 		ItemStack revolver = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -47,10 +47,10 @@ public class RevolverCycleRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, Provider access)
+	public ItemStack assemble(CraftingInput inv, Provider access)
 	{
 		ItemStack revolver = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())

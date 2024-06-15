@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.client.render.tile.ShaderBannerRenderer;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Suppliers;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -146,7 +147,7 @@ public class ModelPowerpack
 			matrixStackIn.pushPose();
 
 			ResourceLocation shaderTexture = ShaderBannerRenderer.getShaderResourceLocation(
-					banner, new ResourceLocation(ImmersiveEngineering.MODID, "banner")
+					banner, IEApi.ieLoc("banner")
 			);
 			if(shaderTexture!=null)
 			{
@@ -277,10 +278,10 @@ public class ModelPowerpack
 			Layer layer = patternList.get(i);
 			Holder<BannerPattern> bannerpattern = layer.pattern();
 			Material material = Sheets.getShieldMaterial(bannerpattern);
-			float[] colour = layer.color().getTextureDiffuseColors();
+			var colour = Utils.vec4fFromDye(layer.color());
 			cached.add(new BannerLayer(
 					mbs -> material.buffer(mbs, RenderType::entityCutoutNoCullZOffset),
-					colour[0], colour[1], colour[2],
+					colour.x, colour.y, colour.z,
 					quads
 			));
 		}

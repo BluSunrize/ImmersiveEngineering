@@ -8,16 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-
 public class RefineryMultiblock extends IETemplateMultiblock
 {
 	public RefineryMultiblock()
 	{
-		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/refinery"),
+		super(IEApi.ieLoc("multiblocks/refinery"),
 				new BlockPos(2, 1, 2), new BlockPos(2, 1, 2), new BlockPos(5, 3, 3),
 				IEMultiblockLogic.REFINERY);
 	}

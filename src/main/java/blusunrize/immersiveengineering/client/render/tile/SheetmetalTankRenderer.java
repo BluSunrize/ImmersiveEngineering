@@ -47,10 +47,10 @@ public class SheetmetalTankRenderer extends IEMultiblockRenderer<State>
 
 			Matrix4f mat = matrixStack.last().pose();
 			final VertexConsumer builder = bufferIn.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-			builder.vertex(mat, -4, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			builder.vertex(mat, -4, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			builder.vertex(mat, 20, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			builder.vertex(mat, 20, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			builder.addVertex(mat, -4, -4, 0).setColor(0x22, 0x22, 0x22, 0xff);
+			builder.addVertex(mat, -4, 20, 0).setColor(0x22, 0x22, 0x22, 0xff);
+			builder.addVertex(mat, 20, 20, 0).setColor(0x22, 0x22, 0x22, 0xff);
+			builder.addVertex(mat, 20, -4, 0).setColor(0x22, 0x22, 0x22, 0xff);
 
 			if(!fs.isEmpty())
 			{

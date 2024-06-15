@@ -9,14 +9,12 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,8 +22,9 @@ import net.neoforged.fml.ModList;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static blusunrize.immersiveengineering.api.Lib.MODID;
 
 /**
  * @author BluSunrize - 13.08.2015
@@ -101,11 +100,11 @@ public class IEApi
 
 	public static String getCurrentVersion()
 	{
-		return ModList.get().getModFileById(Lib.MODID).versionString();
+		return ModList.get().getModFileById(MODID).versionString();
 	}
 
 	public static ResourceLocation ieLoc(String path)
 	{
-		return new ResourceLocation(Lib.MODID, path);
+		return ResourceLocation.fromNamespaceAndPath(MODID, path);
 	}
 }

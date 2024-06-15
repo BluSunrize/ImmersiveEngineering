@@ -227,13 +227,12 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		public void render(int lightStart, int lightEnd, int overlay, VertexConsumer out, PoseStack transform)
 		{
 			for(Vertex v : vertices)
-				out.vertex(transform.last().pose(), v.posX, v.posY, v.posZ)
-						.color(v.red, v.green, v.blue, 1)
-						.uv(v.texU, v.texV)
-						.overlayCoords(overlay)
-						.uv2(v.lightForStart?lightStart: lightEnd)
-						.normal(transform.last(), v.normalX, v.normalY, v.normalZ)
-						.endVertex();
+				out.addVertex(transform.last().pose(), v.posX, v.posY, v.posZ)
+						.setColor(v.red, v.green, v.blue, 1)
+						.setUv(v.texU, v.texV)
+						.setOverlay(overlay)
+						.setLight(v.lightForStart?lightStart: lightEnd)
+						.setNormal(transform.last(), v.normalX, v.normalY, v.normalZ);
 		}
 	}
 }

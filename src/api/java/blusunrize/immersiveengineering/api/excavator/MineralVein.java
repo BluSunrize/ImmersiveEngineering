@@ -110,7 +110,7 @@ public class MineralVein
 		try
 		{
 			ColumnPos pos = new ColumnPos(tag.getInt("x"), tag.getInt("z"));
-			ResourceLocation id = new ResourceLocation(tag.getString("mineral"));
+			ResourceLocation id = ResourceLocation.parse(tag.getString("mineral"));
 			int radius = tag.getInt("radius");
 			MineralVein info = new MineralVein(pos, id, radius);
 			info.depletion = tag.getInt("depletion");

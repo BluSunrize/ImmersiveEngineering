@@ -8,17 +8,18 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.Mth;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nonnull;
 
@@ -43,20 +44,20 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 		matrixStackIn.scale(0.25F, 0.25F, 0.25F);
 		Matrix4f mat = matrixStackIn.last().pose();
 
-		builder.vertex(mat, 0, 0, -.25f).uv(5/32f, 10/32f).endVertex();
-		builder.vertex(mat, 0, 0, .25f).uv(0/32f, 10/32f).endVertex();
-		builder.vertex(mat, 0, .5f, .25f).uv(0/32f, 5/32f).endVertex();
-		builder.vertex(mat, 0, .5f, -.25f).uv(5/32f, 5/32f).endVertex();
+		builder.addVertex(mat, 0, 0, -.25f).setUv(5/32f, 10/32f);
+		builder.addVertex(mat, 0, 0, .25f).setUv(0/32f, 10/32f);
+		builder.addVertex(mat, 0, .5f, .25f).setUv(0/32f, 5/32f);
+		builder.addVertex(mat, 0, .5f, -.25f).setUv(5/32f, 5/32f);
 
-		builder.vertex(mat, .375f, .125f, 0).uv(8/32f, 5/32f).endVertex();
-		builder.vertex(mat, 0, .125f, 0).uv(0/32f, 5/32f).endVertex();
-		builder.vertex(mat, 0, .375f, 0).uv(0/32f, 0/32f).endVertex();
-		builder.vertex(mat, .375f, .375f, 0).uv(8/32f, 0/32f).endVertex();
+		builder.addVertex(mat, .375f, .125f, 0).setUv(8/32f, 5/32f);
+		builder.addVertex(mat, 0, .125f, 0).setUv(0/32f, 5/32f);
+		builder.addVertex(mat, 0, .375f, 0).setUv(0/32f, 0/32f);
+		builder.addVertex(mat, .375f, .375f, 0).setUv(8/32f, 0/32f);
 
-		builder.vertex(mat, .375f, .25f, -.25f).uv(8/32f, 5/32f).endVertex();
-		builder.vertex(mat, 0, .25f, -.25f).uv(0/32f, 5/32f).endVertex();
-		builder.vertex(mat, 0, .25f, .25f).uv(0/32f, 0/32f).endVertex();
-		builder.vertex(mat, .375f, .25f, .25f).uv(8/32f, 0/32f).endVertex();
+		builder.addVertex(mat, .375f, .25f, -.25f).setUv(8/32f, 5/32f);
+		builder.addVertex(mat, 0, .25f, -.25f).setUv(0/32f, 5/32f);
+		builder.addVertex(mat, 0, .25f, .25f).setUv(0/32f, 0/32f);
+		builder.addVertex(mat, .375f, .25f, .25f).setUv(8/32f, 0/32f);
 
 		matrixStackIn.popPose();
 	}
@@ -65,7 +66,7 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 	@Nonnull
 	public ResourceLocation getTextureLocation(@Nonnull RevolvershotEntity entity)
 	{
-		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
+		return IEApi.ieLoc("textures/models/bullet.png");
 	}
 
 }

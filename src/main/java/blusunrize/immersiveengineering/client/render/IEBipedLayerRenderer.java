@@ -59,11 +59,10 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 		{
 			earmuffModel.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			RenderType type = earmuffModel.renderType(EARMUFF_OVERLAY);
-			earmuffModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+			earmuffModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, -1);
 			int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
 			type = earmuffModel.renderType(EARMUFF_TEXTURE);
-			earmuffModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
-					(colour>>16&255)/255f, (colour>>8&255)/255f, (colour&255)/255f, 1F);
+			earmuffModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, colour);
 		}
 
 		ItemStack powerpack = PowerpackItem.POWERPACK_GETTER.getFrom(living);
@@ -76,9 +75,7 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 			gliderModel.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			gliderModel.body.getChild("glider").visible = living.isFallFlying();
 			RenderType type = gliderModel.renderType(GLIDER_TEXTURE);
-			gliderModel.renderToBuffer(
-					matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1
-			);
+			gliderModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, -1);
 		}
 	}
 

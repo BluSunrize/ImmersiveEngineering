@@ -66,7 +66,7 @@ public class RailgunProjectiles
 			public void onHitTarget(Level world, HitResult target, @Nullable UUID shooter, Entity projectile)
 			{
 				if(target instanceof EntityHitResult)
-					((EntityHitResult)target).getEntity().setSecondsOnFire(5);
+					((EntityHitResult)target).getEntity().igniteForSeconds(5);
 			}
 
 			@Override
@@ -93,7 +93,7 @@ public class RailgunProjectiles
 			{
 				if(target instanceof EnderMan enderMan)
 				{
-					enderMan.addEffect(new MobEffectInstance(IEPotions.STUNNED.value(), 200));
+					enderMan.addEffect(new MobEffectInstance(IEPotions.STUNNED, 200));
 					final DamageSourcesAccess sources = (DamageSourcesAccess)world.damageSources();
 					Player p;
 					if(shooter!=null&&(p = world.getPlayerByUUID(shooter))!=null)

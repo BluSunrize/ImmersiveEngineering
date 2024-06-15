@@ -10,9 +10,11 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments.Mutable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ToolAction;
@@ -81,7 +83,7 @@ public class SawbladeItem extends IEBaseItem
 		return true;
 	}
 
-	public void modifyEnchants(Mutable baseEnchants)
+	public void modifyEnchants(Mutable baseEnchants, RegistryLookup<Enchantment> lookup)
 	{
 	}
 

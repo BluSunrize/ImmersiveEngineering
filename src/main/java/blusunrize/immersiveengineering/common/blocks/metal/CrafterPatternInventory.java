@@ -15,8 +15,8 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -30,13 +30,13 @@ public class CrafterPatternInventory
 	private static final int NUM_SLOTS = 10;
 
 	public final NonNullList<ItemStack> inv = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
-	public Recipe<CraftingContainer> recipe;
+	public Recipe<CraftingInput> recipe;
 
 	public void recalculateOutput(@Nullable Level level)
 	{
 		if(level==null)
 			return;
-		CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
+		CraftingInput invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
 		this.recipe = Utils.findCraftingRecipe(invC, level).map(RecipeHolder::value).orElse(null);
 		this.inv.set(9, recipe!=null?recipe.assemble(invC, level.registryAccess()): ItemStack.EMPTY);
 	}
@@ -78,7 +78,7 @@ public class CrafterPatternInventory
 	}
 
 	@Nullable
-	private static <R extends Recipe<CraftingContainer>>
+	private static <R extends Recipe<CraftingInput>>
 	List<RecipeQuery> getQueriesGeneric(R recipe, NonNullList<ItemStack> inv, Level level)
 	{
 		AssemblerHandler.IRecipeAdapter<? super R> adapter = AssemblerHandler.findAdapter(recipe);

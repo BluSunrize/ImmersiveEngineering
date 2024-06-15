@@ -120,11 +120,6 @@ public class IEBaseItem extends Item
 		return null;
 	}
 
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
-	{
-		return Mob.getEquipmentSlotForItem(stack)==armorType||getEquipmentSlot(stack)==armorType;
-	}
-
 	@Override
 	public int getBarColor(ItemStack pStack)
 	{

@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
@@ -31,23 +30,22 @@ import java.util.OptionalDouble;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
+import static com.mojang.blaze3d.vertex.DefaultVertexFormat.NEW_ENTITY;
+import static com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_TEX_COLOR;
 import static net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES;
 
 //This extends RenderStateShard to get access to various protected members
 public class IERenderTypes extends RenderStateShard
 {
-	public static final VertexFormat BLOCK_WITH_OVERLAY = new VertexFormat(
-			ImmutableMap.<String, VertexFormatElement>builder()
-					.put("Position", ELEMENT_POSITION)
-					.put("Color", ELEMENT_COLOR)
-					.put("UV0", ELEMENT_UV0)
-					.put("UV1", ELEMENT_UV1)
-					.put("UV2", ELEMENT_UV2)
-					.put("Normal", ELEMENT_NORMAL)
-					.put("Padding", ELEMENT_PADDING)
-					.build()
-	);
+	public static final VertexFormat BLOCK_WITH_OVERLAY = VertexFormat.builder()
+			.add("Position", VertexFormatElement.POSITION)
+			.add("Color", VertexFormatElement.COLOR)
+			.add("UV0", VertexFormatElement.UV0)
+			.add("UV1", VertexFormatElement.UV1)
+			.add("UV2", VertexFormatElement.UV2)
+			.add("Normal", VertexFormatElement.NORMAL)
+			.padding(1)
+			.build();
 	public static final RenderType TRANSLUCENT_FULLBRIGHT;
 	public static final RenderType SOLID_FULLBRIGHT;
 	public static final RenderType LINES;
@@ -191,13 +189,13 @@ public class IERenderTypes extends RenderStateShard
 		);
 		GUI_CUTOUT = Util.memoize(texture -> createDefault(
 				"gui_"+texture,
-				DefaultVertexFormat.POSITION_COLOR_TEX,
+				POSITION_TEX_COLOR,
 				Mode.QUADS,
 				makeGuiState(texture).createCompositeState(false)
 		));
 		GUI_TRANSLUCENT = Util.memoize(texture -> createDefault(
 				"gui_translucent_"+texture,
-				DefaultVertexFormat.POSITION_COLOR_TEX,
+				POSITION_TEX_COLOR,
 				Mode.QUADS,
 				makeGuiState(texture)
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -237,7 +235,7 @@ public class IERenderTypes extends RenderStateShard
 	{
 		return RenderType.CompositeState.builder()
 				.setTextureState(new TextureStateShard(texture, false, false))
-				.setShaderState(POSITION_COLOR_TEX_SHADER);
+				.setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER);
 	}
 
 	public static RenderType getLines(float lineWidth)

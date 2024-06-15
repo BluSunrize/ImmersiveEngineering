@@ -71,8 +71,8 @@ import java.util.function.Predicate;
 @JeiPlugin
 public class JEIHelper implements IModPlugin
 {
-	private static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "main");
-	public static final ResourceLocation JEI_GUI = new ResourceLocation(Lib.MODID, "textures/gui/jei_elements.png");
+	private static final ResourceLocation UID = IEApi.ieLoc("main");
+	public static final ResourceLocation JEI_GUI = IEApi.ieLoc("textures/gui/jei_elements.png");
 	public static IDrawableStatic slotDrawable;
 	public static IRecipeSlotTooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
 
@@ -251,7 +251,7 @@ public class JEIHelper implements IModPlugin
 				if(!bucket.isEmpty()&&tag.isPresent())
 					recipes.add(
 							new RecipeHolder<>(
-									new ResourceLocation(Lib.MODID, "jei_bucket_"+BuiltInRegistries.FLUID.getKey(f).getPath()),
+									IEApi.ieLoc("jei_bucket_"+BuiltInRegistries.FLUID.getKey(f).getPath()),
 									new BottlingMachineRecipe(
 											new TagOutputList(new TagOutput(bucket)),
 											IngredientWithSize.of(new ItemStack(Items.BUCKET)),

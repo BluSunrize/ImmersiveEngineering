@@ -46,7 +46,7 @@ public class IESaveData extends SavedData
 			for(int i = 0; i < dimensionList.size(); i++)
 			{
 				CompoundTag dimTag = dimensionList.getCompound(i);
-				ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
+				ResourceLocation rl = ResourceLocation.parse(dimTag.getString("dimension"));
 				ResourceKey<Level> dimensionType = ResourceKey.create(Registries.DIMENSION, rl);
 				ListTag mineralList = dimTag.getList("veins", Tag.TAG_COMPOUND);
 
@@ -70,7 +70,7 @@ public class IESaveData extends SavedData
 			{
 				String s = playerReceived.getString(j);
 				if(!s.isEmpty())
-					ShaderRegistry.receivedShaders.put(player, new ResourceLocation(s));
+					ShaderRegistry.receivedShaders.put(player, ResourceLocation.parse(s));
 			}
 		}
 	}

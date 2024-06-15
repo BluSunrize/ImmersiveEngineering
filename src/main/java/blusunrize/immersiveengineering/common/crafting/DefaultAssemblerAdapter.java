@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
@@ -25,10 +25,10 @@ import net.neoforged.neoforge.common.util.RecipeMatcher;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingContainer>>
+public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingInput>>
 {
 	@Override
-	public List<RecipeQuery> getQueriedInputs(Recipe<CraftingContainer> recipe, NonNullList<ItemStack> input, Level world)
+	public List<RecipeQuery> getQueriedInputs(Recipe<CraftingInput> recipe, NonNullList<ItemStack> input, Level world)
 	{
 		NonNullList<Ingredient> ingred = recipe.getIngredients();
 		// Check that the ingredients roughly match what the recipe actually requires.

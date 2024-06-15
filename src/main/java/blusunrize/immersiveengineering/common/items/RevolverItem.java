@@ -146,7 +146,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	}
 
 	@Override
-	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag)
+	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())

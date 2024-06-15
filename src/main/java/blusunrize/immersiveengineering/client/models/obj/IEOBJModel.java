@@ -41,8 +41,7 @@ public record IEOBJModel(
 			ModelBaker bakery,
 			Function<Material, TextureAtlasSprite> spriteGetter,
 			ModelState modelState,
-			ItemOverrides overrides,
-			ResourceLocation modelLocation
+			ItemOverrides overrides
 	)
 	{
 		List<RenderType> blockTypes = new ArrayList<>();

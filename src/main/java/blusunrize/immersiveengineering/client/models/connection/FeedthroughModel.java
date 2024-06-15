@@ -30,8 +30,6 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
-import net.minecraft.core.registries.BuiltInRegistries;
-import org.joml.Vector3f;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -50,6 +48,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -67,6 +66,7 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelData.Builder;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -363,7 +363,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 							List<BakedQuad> modelQuads = model.getQuads(
 									k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer
 							);
-							quads.add(QuadTransformer.color(colorMultiplier).process(modelQuads));
+							quads.add(QuadTransformer.setColor(colorMultiplier).process(modelQuads));
 						}
 						break;
 					case 1:
@@ -381,7 +381,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat, k.layer));
 						if(renderBlockInLayer)
 						{
-							var tintTransformer = QuadTransformer.color(colorMultiplier);
+							var tintTransformer = QuadTransformer.setColor(colorMultiplier);
 							all.addAll(tintTransformer.process(
 									model.getQuads(k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer)
 							));

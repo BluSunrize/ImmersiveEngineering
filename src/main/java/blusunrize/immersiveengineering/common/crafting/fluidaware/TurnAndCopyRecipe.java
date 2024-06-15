@@ -12,11 +12,12 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import blusunrize.immersiveengineering.mixin.accessors.ShapedPatternAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -46,7 +47,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 				vanilla.getGroup(),
 				vanilla.getWidth(), vanilla.getHeight(),
 				vanilla.getIngredients(), vanilla.getResultItem(null), vanilla.category(),
-				((ShapedRecipeAccess)vanilla).getPattern().data()
+				((ShapedPatternAccess)(Object)((ShapedRecipeAccess)vanilla).getPattern()).getData()
 		);
 		this.nbtCopyTargetSlot = copySlots;
 	}
@@ -71,7 +72,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer matrix, Provider access)
+	public ItemStack assemble(@Nonnull CraftingInput matrix, Provider access)
 	{
 		ItemStack out = super.assemble(matrix, access);
 		CompoundTag tag = new CompoundTag();
@@ -88,7 +89,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingContainer inv)
+	protected MatchLocation findMatch(CraftingInput inv)
 	{
 		for(int xOffset = 0; xOffset <= inv.getWidth()-this.getWidth(); ++xOffset)
 			for(int yOffset = 0; yOffset <= inv.getHeight()-this.getHeight(); ++yOffset)
@@ -104,7 +105,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 		return null;
 	}
 
-	private boolean checkMatchDo(CraftingContainer inv, MatchLocation loc)
+	private boolean checkMatchDo(CraftingInput inv, MatchLocation loc)
 	{
 		for(int x = 0; x < inv.getWidth(); x++)
 			for(int y = 0; y < inv.getHeight(); y++)

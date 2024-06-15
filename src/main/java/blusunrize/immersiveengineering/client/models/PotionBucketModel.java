@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -51,7 +52,7 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 
 	public PotionBucketModel(int color)
 	{
-		this.recolorTransformer = QuadTransformer.color($ -> color);
+		this.recolorTransformer = QuadTransformer.setColor($ -> color);
 		JsonObject baseModelJSON = new JsonObject();
 		baseModelJSON.addProperty("fluid", IEFluids.POTION.getId().toString());
 		this.baseGeometry = DynamicFluidContainerModel.Loader.INSTANCE.read(baseModelJSON, null);
@@ -60,14 +61,14 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 	@Override
 	public BakedModel bake(
 			IGeometryBakingContext context, ModelBaker bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-			ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation
+			ModelState modelTransform, ItemOverrides overrides
 	)
 	{
-		BakedModel baseModel = baseGeometry.bake(context, bakery, spriteGetter, modelTransform, overrides, modelLocation);
+		BakedModel baseModel = baseGeometry.bake(context, bakery, spriteGetter, modelTransform, overrides);
 		StandaloneGeometryBakingContext itemContext = StandaloneGeometryBakingContext.builder(context)
 				.withGui3d(false)
 				.withUseBlockLight(false)
-				.build(modelLocation);
+				.build(IEApi.ieLoc("temporary"));
 		Builder builder = CompositeModel.Baked.builder(
 				itemContext,
 				baseModel.getParticleIcon(ModelData.EMPTY),
@@ -145,7 +146,7 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 			final int color = IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
 			return coloredModels.computeIfAbsent(color, i -> new PotionBucketModel(i).bake(
 					owner, bakery, textureGetter,
-					BlockModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")
+					BlockModelRotation.X0_Y0, this
 			));
 		}
 	}

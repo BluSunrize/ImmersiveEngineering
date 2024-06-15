@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.wires.*;
@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.IEProperties.FACING_ALL;
-
 public class FeedthroughMultiblock implements IMultiblock
 {
 	public static FeedthroughMultiblock instance = new FeedthroughMultiblock();
@@ -84,7 +83,7 @@ public class FeedthroughMultiblock implements IMultiblock
 	@Override
 	public ResourceLocation getUniqueName()
 	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "feedthrough");
+		return IEApi.ieLoc("feedthrough");
 	}
 
 	@Override

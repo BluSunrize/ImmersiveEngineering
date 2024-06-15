@@ -13,13 +13,14 @@ import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.ProbeConnectorCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
-import org.joml.Vector4f;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 
@@ -60,15 +61,9 @@ public class ProbeConnectorCallbacks implements BlockCallback<Key>
 	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shader, Vector4f original)
 	{
 		if("colour_in".equals(group))
-		{
-			float[] rgb = key.receiving().getTextureDiffuseColors();
-			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
-		}
+			return Utils.vec4fFromDye(key.receiving);
 		else if("colour_out".equals(group))
-		{
-			float[] rgb = key.sending().getTextureDiffuseColors();
-			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
-		}
+			return Utils.vec4fFromDye(key.sending);
 		return original;
 	}
 

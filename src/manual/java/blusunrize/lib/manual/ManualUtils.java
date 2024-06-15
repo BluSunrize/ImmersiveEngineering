@@ -80,25 +80,20 @@ public class ManualUtils
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
 		Matrix4f mat = graphics.pose().last().pose();
-		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-		buffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		buffer.vertex(mat, x, y+h, 0)
-				.color(1F, 1F, 1F, 1F)
-				.uv(uv[0], uv[3])
-				.endVertex();
-		buffer.vertex(mat, x+w, y+h, 0)
-				.color(1F, 1F, 1F, 1F)
-				.uv(uv[1], uv[3])
-				.endVertex();
-		buffer.vertex(mat, x+w, y, 0)
-				.color(1F, 1F, 1F, 1F)
-				.uv(uv[1], uv[2])
-				.endVertex();
-		buffer.vertex(mat, x, y, 0)
-				.color(1F, 1F, 1F, 1F)
-				.uv(uv[0], uv[2])
-				.endVertex();
-		BufferUploader.drawWithShader(buffer.end());
+		BufferBuilder buffer = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		buffer.addVertex(mat, x, y+h, 0)
+				.setColor(1F, 1F, 1F, 1F)
+				.setUv(uv[0], uv[3]);
+		buffer.addVertex(mat, x+w, y+h, 0)
+				.setColor(1F, 1F, 1F, 1F)
+				.setUv(uv[1], uv[3]);
+		buffer.addVertex(mat, x+w, y, 0)
+				.setColor(1F, 1F, 1F, 1F)
+				.setUv(uv[1], uv[2]);
+		buffer.addVertex(mat, x, y, 0)
+				.setColor(1F, 1F, 1F, 1F)
+				.setUv(uv[0], uv[2]);
+		BufferUploader.drawWithShader(buffer.buildOrThrow());
 	}
 
 	public static <T> List<T> getPrimitiveSpellingCorrections
@@ -232,19 +227,6 @@ public class ManualUtils
 		RenderSystem.setShaderTexture(0, path);
 	}
 
-	public static ResourceLocation getResource(String path)
-	{
-		ResourceLocation rl = resourceMap.containsKey(path)?resourceMap.get(path): new ResourceLocation(path);
-		if(!resourceMap.containsKey(path))
-			resourceMap.put(path, rl);
-		return rl;
-	}
-
-	public static ItemRenderer renderItem()
-	{
-		return mc().getItemRenderer();
-	}
-
 	/**
 	 * Custom implementation of drawing a split string because Mojang's doesn't reset text colour between lines >___>
 	 */
@@ -290,9 +272,9 @@ public class ManualUtils
 	public static ResourceLocation getLocationForManual(String s, ManualInstance instance)
 	{
 		if(s.indexOf(':') >= 0)
-			return new ResourceLocation(s);
+			return ResourceLocation.parse(s);
 		else
-			return new ResourceLocation(instance.getDefaultResourceDomain(), s);
+			return ResourceLocation.fromNamespaceAndPath(instance.getDefaultResourceDomain(), s);
 	}
 
 	public static boolean isNumber(JsonObject main, String name)

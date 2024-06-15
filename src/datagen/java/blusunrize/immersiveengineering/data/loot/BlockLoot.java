@@ -71,7 +71,7 @@ public class BlockLoot implements LootTableSubProvider
 
 	private ResourceLocation toTableLoc(ResourceLocation in)
 	{
-		return new ResourceLocation(in.getNamespace(), "blocks/"+in.getPath());
+		return in.withPath("blocks/"+in.getPath());
 	}
 
 	@Override

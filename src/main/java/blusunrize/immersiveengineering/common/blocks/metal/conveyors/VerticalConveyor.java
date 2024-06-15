@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.conveyor.*;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
@@ -32,23 +33,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
 /**
  * @author BluSunrize - 20.08.2016
  */
 public class VerticalConveyor extends ConveyorBase
 {
-	public static final ResourceLocation NAME = new ResourceLocation(MODID, "vertical");
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/vertical");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/vertical_off");
+	public static final ResourceLocation NAME = IEApi.ieLoc("vertical");
+	public static ResourceLocation texture_on = IEApi.ieLoc("block/conveyor/vertical");
+	public static ResourceLocation texture_off = IEApi.ieLoc("block/conveyor/vertical_off");
 	public static IConveyorType<VerticalConveyor> TYPE = new BasicConveyorType<>(
 			NAME, false, true, VerticalConveyor::new, () -> new VerticalConveyorRender(texture_on, texture_off)
 	);

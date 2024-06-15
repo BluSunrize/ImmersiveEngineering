@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.entities.illager.Bulwark;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -21,7 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class BulwarkRenderer extends IllagerRenderer<Bulwark>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(ImmersiveEngineering.MODID, "textures/entity/illager/bulwark.png");
+	private static final ResourceLocation TEXTURE = IEApi.ieLoc("textures/entity/illager/bulwark.png");
 
 	public BulwarkRenderer(EntityRendererProvider.Context p_174354_)
 	{

@@ -76,7 +76,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		this.pageWidth = pageWidth;
 		contentTree = new Tree<>(name);
 		((ReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
-		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
+		registerSpecialElement(name.withPath("crafting"), s -> {
 			ManualRecipeRef[][] stacksAndRecipes;
 			if(GsonHelper.isArrayNode(s, "recipes"))
 			{
@@ -104,7 +104,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 			}
 			return new ManualElementCrafting(this, stacksAndRecipes);
 		});
-		registerSpecialElement(new ResourceLocation(name.getNamespace(), "image"),
+		registerSpecialElement(name.withPath("image"),
 				s -> {
 					JsonArray data = GsonHelper.getAsJsonArray(s, "images");
 					ManualImage[] images = new ManualImage[data.size()];
@@ -122,7 +122,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 					return new ManualElementImage(this, images);
 				}
 		);
-		registerSpecialElement(new ResourceLocation(name.getNamespace(), "item_display"),
+		registerSpecialElement(name.withPath("item_display"),
 				s -> {
 					NonNullList<ItemStack> stacks;
 					if(s.has("item"))
@@ -138,7 +138,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 					return new ManualElementItem(this, stacks);
 				}
 		);
-		registerSpecialElement(new ResourceLocation(name.getNamespace(), "table"),
+		registerSpecialElement(name.withPath("table"),
 				s -> {
 					JsonArray arr = GsonHelper.getAsJsonArray(s, "table");
 					Component[][] table = new Component[arr.size()][];
@@ -153,7 +153,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 							"horizontal_bars", false));
 				}
 		);
-		registerSpecialElement(new ResourceLocation(name.getNamespace(), "entity"),
+		registerSpecialElement(name.withPath("entity"),
 				s -> {
 					String sType = GsonHelper.getAsString(s, "id");
 					Optional<EntityType<?>> type = EntityType.byString(sType);

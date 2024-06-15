@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.util.inventory.InsertOnlyInventory
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
@@ -54,7 +53,7 @@ public class DirectProcessingItemHandler<R extends MultiblockRecipe> extends Ins
 		if(recipe==null)
 			return stack;
 		ItemStack displayStack = recipe.value().getDisplayStack(stack);
-		displayStack = ItemHandlerHelper.copyStackWithSize(stack, displayStack.getCount());
+		displayStack = stack.copyWithCount(displayStack.getCount());
 		if(processor.addProcessToQueue(new MultiblockProcessInWorld<>(
 				recipe,
 				TRANSFORMATION_POINT,

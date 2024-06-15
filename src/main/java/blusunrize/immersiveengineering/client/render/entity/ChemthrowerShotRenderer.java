@@ -73,18 +73,14 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		builder.setNormal(0, 1, 0);
 		builder.setLight(packedLightIn);
 		builder.setOverlay(OverlayTexture.NO_OVERLAY);
-		builder.vertex(-.25f, -.25f, 0)
-				.uv(sprite.getU(0.25f), sprite.getV(0.25f))
-				.endVertex();
-		builder.vertex(.25f, -.25f, 0)
-				.uv(sprite.getU(0), sprite.getV(0.25f))
-				.endVertex();
-		builder.vertex(.25f, .25f, 0)
-				.uv(sprite.getU(0), sprite.getV(0))
-				.endVertex();
-		builder.vertex(-.25f, .25f, 0)
-				.uv(sprite.getU(0.25f), sprite.getV(0))
-				.endVertex();
+		builder.addVertex(-.25f, -.25f, 0)
+				.setUv(sprite.getU(0.25f), sprite.getV(0.25f));
+		builder.addVertex(.25f, -.25f, 0)
+				.setUv(sprite.getU(0), sprite.getV(0.25f));
+		builder.addVertex(.25f, .25f, 0)
+				.setUv(sprite.getU(0), sprite.getV(0));
+		builder.addVertex(-.25f, .25f, 0)
+				.setUv(sprite.getU(0.25f), sprite.getV(0));
 		matrixStackIn.popPose();
 	}
 
@@ -92,7 +88,7 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 	@Nonnull
 	public ResourceLocation getTextureLocation(@Nonnull ChemthrowerShotEntity chemthrowerShotEntity)
 	{
-		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
+		return IEApi.ieLoc("textures/models/bullet.png");
 	}
 
 }

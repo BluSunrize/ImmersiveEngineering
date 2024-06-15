@@ -14,11 +14,8 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -39,7 +36,7 @@ public class JerrycanRefillRecipe extends CustomRecipe
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, Level world)
+	public boolean matches(@Nonnull CraftingInput inv, Level world)
 	{
 		ItemStack[] components = getComponents(inv);
 		if(!components[jerrycanIndex].isEmpty()&&!components[containerIndex].isEmpty()&&countOccupiedSlots(inv)==2)
@@ -56,7 +53,7 @@ public class JerrycanRefillRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv, Provider access)
+	public ItemStack assemble(@Nonnull CraftingInput inv, Provider access)
 	{
 		ItemStack[] components = getComponents(inv);
 		ItemStack newContainer = components[containerIndex].copyWithCount(1);
@@ -68,10 +65,10 @@ public class JerrycanRefillRecipe extends CustomRecipe
 		return newContainer;
 	}
 
-	private ItemStack[] getComponents(Container inv)
+	private ItemStack[] getComponents(RecipeInput inv)
 	{
 		ItemStack[] ret = {ItemStack.EMPTY, ItemStack.EMPTY};
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -88,10 +85,10 @@ public class JerrycanRefillRecipe extends CustomRecipe
 		return ret;
 	}
 
-	private int countOccupiedSlots(Container inv)
+	private int countOccupiedSlots(CraftingInput inv)
 	{
 		int c = 0;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 			if(!inv.getItem(i).isEmpty())
 				c++;
 		return c;
@@ -105,11 +102,11 @@ public class JerrycanRefillRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInput inv)
 	{
 		NonNullList<ItemStack> remaining = super.getRemainingItems(inv);
 		boolean foundJerrycan = false;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())

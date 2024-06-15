@@ -84,22 +84,18 @@ public class ItemOverlayUtils
 
 					VertexConsumer builder = getHudElementsBuilder(buffer);
 					Matrix4f mat = transform.last().pose();
-					builder.vertex(mat, (right?0: 1-x2)*7, 15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMin, 127/256f)
-							.endVertex();
-					builder.vertex(mat, (right?x2: 1)*7, 15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMax, 127/256f)
-							.endVertex();
-					builder.vertex(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMax, vMin2)
-							.endVertex();
-					builder.vertex(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMin, vMin1)
-							.endVertex();
+					builder.addVertex(mat, (right?0: 1-x2)*7, 15, 0)
+							.setColor(1F, 1F, 1F, 1F)
+							.setUv(uMin, 127/256f);
+					builder.addVertex(mat, (right?x2: 1)*7, 15, 0)
+							.setColor(1F, 1F, 1F, 1F)
+							.setUv(uMax, 127/256f);
+					builder.addVertex(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0)
+							.setColor(1F, 1F, 1F, 1F)
+							.setUv(uMax, vMin2);
+					builder.addVertex(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0)
+							.setColor(1F, 1F, 1F, 1F)
+							.setUv(uMin, vMin1);
 				}
 			}
 			transform.popPose();

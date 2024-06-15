@@ -371,12 +371,12 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected ResourceLocation forgeLoc(String path)
 	{
-		return new ResourceLocation("forge", path);
+		return "forge",path);
 	}
 
 	protected ResourceLocation addModelsPrefix(ResourceLocation in)
 	{
-		return new ResourceLocation(in.getNamespace(), "models/"+in.getPath());
+		return new ResourceLocation(in.withPath("models/"+in.getPath());
 	}
 
 	protected void itemModel(Supplier<? extends Block> block, ModelFile model)

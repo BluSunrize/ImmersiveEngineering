@@ -160,7 +160,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	public void readAdditionalSaveData(CompoundTag nbt)
 	{
 		super.readAdditionalSaveData(nbt);
-		this.bulletType = BulletHandler.getBullet(new ResourceLocation(nbt.getString("bulletType")));
+		this.bulletType = BulletHandler.getBullet(ResourceLocation.parse(nbt.getString("bulletType")));
 		if(nbt.contains("bulletPotion", Tag.TAG_COMPOUND))
 			this.bulletPotion = ItemStack.parseOptional(level().registryAccess(), nbt.getCompound("bulletPotion"));
 	}

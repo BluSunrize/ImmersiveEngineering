@@ -291,7 +291,7 @@ public class ImmersiveEngineering
 
 	public static ResourceLocation rl(String path)
 	{
-		return new ResourceLocation(MODID, path);
+		return IEApi.ieLoc(path);
 	}
 
 	public static class ThreadContributorSpecialsDownloader extends Thread

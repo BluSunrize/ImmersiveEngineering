@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -32,11 +32,11 @@ public class FlareBulletColorRecipe extends CustomRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, @Nonnull Level world)
+	public boolean matches(CraftingInput inv, @Nonnull Level world)
 	{
 		boolean hasBullet = false;
 		boolean hasDye = false;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -58,13 +58,13 @@ public class FlareBulletColorRecipe extends CustomRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, Provider access)
+	public ItemStack assemble(CraftingInput inv, Provider access)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
 		ItemStack bullet = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -84,10 +84,10 @@ public class FlareBulletColorRecipe extends CustomRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = Utils.getDye(stackInSlot).getTextureDiffuseColors();
-					int r = (int)(afloat[0]*255.0F);
-					int g = (int)(afloat[1]*255.0F);
-					int b = (int)(afloat[2]*255.0F);
+					int color = Utils.getDye(stackInSlot).getTextureDiffuseColor();
+					int r = (color>>16)&255;
+					int g = (color>>8)&255;
+					int b = color&255;
 					j += Math.max(r, Math.max(g, b));
 					colourArray[0] += r;
 					colourArray[1] += g;

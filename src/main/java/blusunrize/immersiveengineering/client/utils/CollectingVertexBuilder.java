@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import com.mojang.blaze3d.vertex.DefaultedVertexConsumer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import javax.annotation.Nonnull;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO actually handle default color!
-public class CollectingVertexBuilder extends DefaultedVertexConsumer
+public class CollectingVertexBuilder implements VertexConsumer
 {
 	protected final List<Vertex> vertices = new ArrayList<>();
 	private final List<Vertex> pool = new ArrayList<>();
@@ -25,7 +24,7 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer vertex(double x, double y, double z)
+	public VertexConsumer addVertex(float x, float y, float z)
 	{
 		currentVertex.order.add(Element.POSITION);
 		currentVertex.position[0] = x;
@@ -36,7 +35,7 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer color(int red, int green, int blue, int alpha)
+	public VertexConsumer setColor(int red, int green, int blue, int alpha)
 	{
 		currentVertex.order.add(Element.COLOR);
 		currentVertex.color[0] = red;
@@ -48,7 +47,7 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer uv(float u, float v)
+	public VertexConsumer setUv(float u, float v)
 	{
 		currentVertex.order.add(Element.UV);
 		currentVertex.uv[0] = u;
@@ -58,7 +57,7 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer overlayCoords(int u, int v)
+	public VertexConsumer setUv1(int u, int v)
 	{
 		currentVertex.order.add(Element.OVERLAY);
 		currentVertex.overlay[0] = u;
@@ -68,7 +67,7 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer uv2(int u, int v)
+	public VertexConsumer setUv2(int u, int v)
 	{
 		currentVertex.order.add(Element.UV2);
 		currentVertex.uv2[0] = u;
@@ -78,7 +77,7 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer normal(float x, float y, float z)
+	public VertexConsumer setNormal(float x, float y, float z)
 	{
 		currentVertex.order.add(Element.NORMAL);
 		currentVertex.normal[0] = x;
@@ -121,7 +120,7 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 
 	protected static class Vertex
 	{
-		private final double[] position = new double[3];
+		private final float[] position = new float[3];
 		private final int[] color = new int[4];
 		private final float[] uv = new float[2];
 		private final int[] overlay = new int[2];
@@ -134,14 +133,13 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 			for(Element e : order)
 				switch(e)
 				{
-					case POSITION -> out.vertex(position[0], position[1], position[2]);
-					case COLOR -> out.color(color[0], color[1], color[2], color[3]);
-					case UV -> out.uv(uv[0], uv[1]);
-					case OVERLAY -> out.overlayCoords(overlay[0], overlay[1]);
-					case UV2 -> out.uv2(uv2[0], uv2[1]);
-					case NORMAL -> out.normal(normal[0], normal[1], normal[2]);
+					case POSITION -> out.addVertex(position[0], position[1], position[2]);
+					case COLOR -> out.setColor(color[0], color[1], color[2], color[3]);
+					case UV -> out.setUv(uv[0], uv[1]);
+					case OVERLAY -> out.setUv1(overlay[0], overlay[1]);
+					case UV2 -> out.setUv2(uv2[0], uv2[1]);
+					case NORMAL -> out.setNormal(normal[0], normal[1], normal[2]);
 				}
-			out.endVertex();
 		}
 	}
 

@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import org.jetbrains.annotations.NotNull;
@@ -46,11 +45,10 @@ public class UnbakedSplitModel implements IUnbakedGeometry<UnbakedSplitModel>
 			ModelBaker bakery,
 			Function<Material, TextureAtlasSprite> spriteGetter,
 			ModelState modelTransform,
-			ItemOverrides overrides,
-			ResourceLocation modelLocation
+			ItemOverrides overrides
 	)
 	{
-		BakedModel bakedBase = baseModel.bake(bakery, spriteGetter, BlockModelRotation.X0_Y0, modelLocation);
+		BakedModel bakedBase = baseModel.bake(bakery, spriteGetter, BlockModelRotation.X0_Y0);
 		if(dynamic)
 			return new BakedDynamicSplitModel<>(
 					(ICacheKeyProvider<?>)bakedBase, parts, modelTransform, size

@@ -304,7 +304,7 @@ public class MetalPressLogic
 		{
 			if(tag.contains("baseRecipe", Tag.TAG_STRING))
 				return new SpecialMetalPressProcess(
-						tag, new ResourceLocation(tag.getString("baseRecipe")), provider
+						tag, ResourceLocation.parse(tag.getString("baseRecipe")), provider
 				);
 			else
 				return new MultiblockProcessInWorld<>(getRecipe, tag, provider);

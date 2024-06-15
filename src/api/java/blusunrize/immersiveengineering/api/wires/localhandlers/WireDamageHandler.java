@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.wires.localhandlers;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
@@ -36,7 +36,7 @@ import java.util.Map.Entry;
 
 public class WireDamageHandler extends LocalNetworkHandler implements ICollisionHandler
 {
-	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "wire_damage");
+	public static final ResourceLocation ID = IEApi.ieLoc("wire_damage");
 	public static final SetRestrictedField<WireDamageGetter> GET_WIRE_DAMAGE = SetRestrictedField.common();
 
 	private static final double KNOCKBACK_PER_DAMAGE = 10;

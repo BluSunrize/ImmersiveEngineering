@@ -191,10 +191,9 @@ public class BlockOverlayUtils
 				Vec2 next = rotationArrowCoords[(i+1)%rotationArrowCoords.length];
 				Vec2 diff = new Vec2(next.x-here.x, next.y-here.y).normalized();
 				for(Vec2 v : ImmutableList.of(here, next))
-					builder.vertex(mat, v.x, 0, v.y)
-							.color(0, 0, 0, 0.4F)
-							.normal(transform.last(), diff.x, 0, diff.y)
-							.endVertex();
+					builder.addVertex(mat, v.x, 0, v.y)
+							.setColor(0, 0, 0, 0.4F)
+							.setNormal(transform.last(), diff.x, 0, diff.y);
 			}
 			transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.PI, 0));
 		}
@@ -208,9 +207,8 @@ public class BlockOverlayUtils
 				for(int offset : vertexOrder)
 				{
 					Vec2 p = rotationArrowQuads[i+offset];
-					builder.vertex(mat, p.x, 0, p.y)
-							.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
-							.endVertex();
+					builder.addVertex(mat, p.x, 0, p.y)
+							.setColor(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F);
 				}
 			transform.mulPose(new Quaternionf().rotateXYZ(0, Mth.PI, 0));
 		}
@@ -252,9 +250,8 @@ public class BlockOverlayUtils
 			Vec3 point = translatedPositions[i];
 			Vec3 prevPoint = translatedPositions[i-1];
 			for(Vec3 p : new Vec3[]{center, prevPoint, point})
-				triBuilder.vertex(transform.pose(), (float)p.x, (float)p.y, (float)p.z)
-						.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
-						.endVertex();
+				triBuilder.addVertex(transform.pose(), (float)p.x, (float)p.y, (float)p.z)
+						.setColor(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F);
 		}
 		VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
 		for(int i = 0; i < translatedPositions.length; i++)
@@ -263,10 +260,9 @@ public class BlockOverlayUtils
 			Vec3 next = translatedPositions[(i+1)%translatedPositions.length];
 			Vec3 diff = next.subtract(point).normalize();
 			for(Vec3 p : ImmutableList.of(point, next))
-				lineBuilder.vertex(transform.pose(), (float)p.x, (float)p.y, (float)p.z)
-						.color(0, 0, 0, 0.4F)
-						.normal(transform, (float)diff.x, (float)diff.y, (float)diff.z)
-						.endVertex();
+				lineBuilder.addVertex(transform.pose(), (float)p.x, (float)p.y, (float)p.z)
+						.setColor(0, 0, 0, 0.4F)
+						.setNormal(transform, (float)diff.x, (float)diff.y, (float)diff.z);
 		}
 	}
 

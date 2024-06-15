@@ -10,11 +10,9 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe.MatchLocation;
+import blusunrize.immersiveengineering.mixin.accessors.ShapedPatternAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -24,15 +22,17 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 {
 	public BasicShapedRecipe(ShapedRecipe vanillaBase)
 	{
-		super(vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
+		super(
+				vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
 				vanillaBase.getIngredients(), vanillaBase.getResultItem(null), vanillaBase.category(),
-				((ShapedRecipeAccess)vanillaBase).getPattern().data());
+				((ShapedPatternAccess)(Object)((ShapedRecipeAccess)vanillaBase).getPattern()).getData()
+		);
 	}
 
-	protected boolean checkMatch(CraftingContainer craftingInventory, MatchLocation loc)
+	protected boolean checkMatch(CraftingInput craftingInventory, MatchLocation loc)
 	{
-		for(int invX = 0; invX < craftingInventory.getWidth(); ++invX)
-			for(int invY = 0; invY < craftingInventory.getHeight(); ++invY)
+		for(int invX = 0; invX < craftingInventory.width(); ++invX)
+			for(int invY = 0; invY < craftingInventory.height(); ++invY)
 			{
 				int recX = invX-loc.xOffset;
 				int recY = invY-loc.yOffset;
@@ -47,7 +47,7 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 					expectedContent = getIngredients().get(recipeSlot);
 				}
 
-				if(!expectedContent.test(craftingInventory.getItem(invX+invY*craftingInventory.getWidth())))
+				if(!expectedContent.test(craftingInventory.getItem(invX+invY*craftingInventory.width())))
 					return false;
 			}
 
@@ -56,10 +56,10 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingContainer inv)
+	protected MatchLocation findMatch(CraftingInput inv)
 	{
-		for(int xOffset = 0; xOffset <= inv.getWidth()-this.getWidth(); ++xOffset)
-			for(int yOffset = 0; yOffset <= inv.getHeight()-this.getHeight(); ++yOffset)
+		for(int xOffset = 0; xOffset <= inv.width()-this.getWidth(); ++xOffset)
+			for(int yOffset = 0; yOffset <= inv.height()-this.getHeight(); ++yOffset)
 				for(boolean mirror : BOOLEANS)
 				{
 					MatchLocation loc = new MatchLocation(xOffset, yOffset, mirror, getWidth());

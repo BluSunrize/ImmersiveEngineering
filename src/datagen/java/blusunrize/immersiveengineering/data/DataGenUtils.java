@@ -82,6 +82,6 @@ public class DataGenUtils
 	{
 		String basePath = base.getPath();
 		String lastDir = basePath.substring(0, basePath.lastIndexOf('/')+1);
-		return new ResourceLocation(base.getNamespace(), lastDir+relativePath);
+		return base.withPath(lastDir+relativePath);
 	}
 }

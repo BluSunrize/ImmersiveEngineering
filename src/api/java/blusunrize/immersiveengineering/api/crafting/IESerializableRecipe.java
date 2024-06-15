@@ -9,15 +9,14 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
-public abstract class IESerializableRecipe implements Recipe<Container>
+public abstract class IESerializableRecipe implements Recipe<RecipeInput>
 {
 	protected final TagOutput outputDummy;
 	protected final RecipeType<?> type;
@@ -42,13 +41,13 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 	}
 
 	@Override
-	public boolean matches(Container inv, Level worldIn)
+	public boolean matches(RecipeInput inv, Level worldIn)
 	{
 		return false;
 	}
 
 	@Override
-	public ItemStack assemble(Container inv, Provider access)
+	public ItemStack assemble(RecipeInput inv, Provider access)
 	{
 		return this.outputDummy.get();
 	}

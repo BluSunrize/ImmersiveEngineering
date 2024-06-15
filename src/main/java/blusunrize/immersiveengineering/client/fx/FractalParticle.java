@@ -166,10 +166,9 @@ public class FractalParticle extends Particle
 		normal.mul(transformN);
 		normal.normalize();
 		Vector3f here = atStart?start: end;
-		buffer.vertex(transform, here.x(), here.y(), here.z())
-				.color(color.r(), color.b(), color.g(), color.a())
-				.normal(normal.x(), normal.y(), normal.z())
-				.endVertex();
+		buffer.addVertex(transform, here.x(), here.y(), here.z())
+				.setColor(color.r(), color.b(), color.g(), color.a())
+				.setNormal(normal.x(), normal.y(), normal.z());
 	}
 
 	private static final Vector3f[] POINT_NORMALS = {
@@ -185,12 +184,11 @@ public class FractalParticle extends Particle
 		vector4f.mul(transform);
 		vector4f.div(vector4f.w);
 		for(Vector3f normal : POINT_NORMALS)
-			builder.vertex(vector4f.x(), vector4f.y(), vector4f.z())
-					.color(color.r(), color.b(), color.g(), color.a())
+			builder.addVertex(vector4f.x(), vector4f.y(), vector4f.z())
+					.setColor(color.r(), color.b(), color.g(), color.a())
 					// Passing this as the normal is a hack, and needs to be scaled since normals are encoded with 1 byte in the range [-1, 1]
 					// And then another factor of 2 since size is the full point size, not the "radius"
-					.normal(normal.x()*size/200, normal.y()*size/200, 0)
-					.endVertex();
+					.setNormal(normal.x()*size/200, normal.y()*size/200, 0);
 	}
 
 	private interface LinePointProcessor

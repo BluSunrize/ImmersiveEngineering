@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.wires.redstone;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class RedstoneNetworkHandler extends LocalNetworkHandler implements IWorldTickable
 {
-	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "redstone");
+	public static final ResourceLocation ID = IEApi.ieLoc("redstone");
 	private byte[] totalValues = new byte[16];
 	private final Map<ConnectionPoint, byte[]> emittedValues = new HashMap<>();
 	private boolean updateNextTick = false;

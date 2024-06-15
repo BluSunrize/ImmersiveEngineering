@@ -8,22 +8,16 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
@@ -32,8 +26,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -43,7 +39,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	public static final String NAME = "sawblade_entity";
 	public static DynamicModel MODEL;
 
-	public static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
+	public static final ResourceLocation SAWBLADE = IEApi.ieLoc("item/sawblade_blade");
 	private static final VisibilityList DYNAMIC_GROUPS = VisibilityList.show("blade");
 	private final ItemRenderer itemRenderer;
 
@@ -56,9 +52,6 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	@Override
 	public void render(SawbladeEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
-		VertexConsumer builder = bufferIn.getBuffer(RenderType.translucent());
-
-		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = entity.blockPosition();
 		BlockState state = entity.getCommandSenderWorld().getBlockState(blockPos);
 		BakedModel model = MODEL.get();

@@ -124,7 +124,7 @@ public class PowerpackItem extends UpgradeableToolItem
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
 	{
 		ItemStack heldItem = player.getItemInHand(hand);
-		EquipmentSlot slot = Mob.getEquipmentSlotForItem(heldItem);
+		EquipmentSlot slot = player.getEquipmentSlotForItem(heldItem);
 		if(!player.getItemBySlot(slot).isEmpty())
 			return InteractionResultHolder.fail(heldItem);
 		player.setItemSlot(slot, heldItem.copy());
@@ -215,7 +215,9 @@ public class PowerpackItem extends UpgradeableToolItem
 			if(orthLength < 0||orthLength > 1||dist >= 8)
 			{
 				PLAYER_ATTACHED_TO.remove(player.getUUID());
-				PacketDistributor.ALL.noArg().send(new MessagePowerpackAntenna(player, null));
+				PacketDistributor.sendToAllPlayers(new MessagePowerpackAntenna(
+						player.getUUID(), false, conn.getEndA().position(), conn.getEndB().position()
+				));
 				break tooFar;
 			}
 
@@ -245,7 +247,7 @@ public class PowerpackItem extends UpgradeableToolItem
 					.findAny();
 			connection.ifPresent(conn -> {
 				PLAYER_ATTACHED_TO.put(player.getUUID(), conn);
-				PacketDistributor.ALL.noArg().send(new MessagePowerpackAntenna(player, conn));
+				PacketDistributor.sendToAllPlayers(new MessagePowerpackAntenna(player.getUUID(), false, conn.getEndA().position(), conn.getEndB().position()));
 				if(player.getVehicle() instanceof AbstractMinecart minecart&&minecart.getDeltaMovement().lengthSqr() > 4)
 					findBestSource(global, conn).ifPresent(e -> {
 						if(e.getAvailableEnergy() >= 4096)

@@ -44,7 +44,7 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 	public ClocheRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, JEIRecipeTypes.CLOCHE, "block.immersiveengineering.cloche");
-		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/cloche.png");
+		ResourceLocation background = IEApi.ieLoc("textures/gui/cloche.png");
 		setBackground(helper.createDrawable(background, 0, 0, 176, 77));
 		setIcon(new ItemStack(IEBlocks.MetalDevices.CLOCHE));
 		tankOverlay = helper.createDrawable(background, 176, 30, 20, 51);

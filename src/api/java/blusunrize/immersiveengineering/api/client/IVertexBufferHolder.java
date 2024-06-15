@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.api.client;
 
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -23,8 +22,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
-
 /**
  * Used to render models in TERs using VBOs. For complex models this is significantly more efficient than rendering
  * the model directly. Make sure to always call {@link IVertexBufferHolder#reset()} if a vertex buffer is not going to be
@@ -34,14 +31,13 @@ import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
 public interface IVertexBufferHolder
 {
 	SetRestrictedField<VertexBufferHolderFactory> CREATE = SetRestrictedField.client();
-	VertexFormat BUFFER_FORMAT = new VertexFormat(ImmutableMap.<String, VertexFormatElement>builder()
-			.put("Position", ELEMENT_POSITION)
-			.put("Color", ELEMENT_COLOR)
-			.put("UV0", ELEMENT_UV0)
-			.put("Normal", ELEMENT_NORMAL)
-			.put("Padding", ELEMENT_PADDING)
-			.build());
-
+	VertexFormat BUFFER_FORMAT = VertexFormat.builder()
+			.add("Position", VertexFormatElement.POSITION)
+			.add("Color", VertexFormatElement.COLOR)
+			.add("UV0", VertexFormatElement.UV0)
+			.add("Normal", VertexFormatElement.NORMAL)
+			.padding(1)
+			.build();
 
 	static IVertexBufferHolder create(Supplier<List<BakedQuad>> getQuads)
 	{

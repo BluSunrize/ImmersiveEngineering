@@ -8,17 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.LightningRodLogic;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-
 public class LightningRodMultiblock extends IETemplateMultiblock
 {
 	public LightningRodMultiblock()
 	{
-		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/lightning_rod"),
+		super(IEApi.ieLoc("multiblocks/lightning_rod"),
 				LightningRodLogic.MASTER_OFFSET, new BlockPos(1, 1, 2), new BlockPos(3, 3, 3),
 				IEMultiblockLogic.LIGHTNING_ROD);
 	}

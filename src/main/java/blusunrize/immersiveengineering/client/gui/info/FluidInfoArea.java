@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -100,7 +99,7 @@ public class FluidInfoArea extends InfoArea
 		FluidStack fluid = tank.getFluid();
 		float capacity = tank.getCapacity();
 		graphics.pose().pushPose();
-		MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+		MultiBufferSource.BufferSource buffer = graphics.bufferSource();
 		if(!fluid.isEmpty())
 		{
 			int fluidHeight = (int)(area.getHeight()*(fluid.getAmount()/capacity));
@@ -114,7 +113,6 @@ public class FluidInfoArea extends InfoArea
 				area.getX()+xOff, area.getY()+yOff, overlayWidth, overlayHeight,
 				256f, overlayUMin, overlayUMin+overlayWidth, overlayVMin, overlayVMin+overlayHeight
 		);
-		buffer.endBatch();
 		graphics.pose().popPose();
 	}
 }

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -44,8 +45,8 @@ public class IEManualInstance extends ManualInstance
 
 	public IEManualInstance()
 	{
-		super(new ResourceLocation(ImmersiveEngineering.MODID, "textures/gui/manual.png"),
-				120, 148, new ResourceLocation(ImmersiveEngineering.MODID, "manual"));
+		super(IEApi.ieLoc("textures/gui/manual.png"),
+				120, 148, IEApi.ieLoc("manual"));
 		configGetters.add(s -> {
 			//TODO change in manual?
 			if("wires.wireTransferRate".equals(s))
@@ -106,7 +107,7 @@ public class IEManualInstance extends ManualInstance
 			String[] segment = rep.substring(0, rep.length()-1).split(splitKey);
 			if(segment.length < 2)
 				break;
-			ResourceLocation dimKey = new ResourceLocation(segment[1]);
+			ResourceLocation dimKey = ResourceLocation.parse(segment[1]);
 			StringBuilder dimName = new StringBuilder();
 			for(String ss : dimKey.getPath().split("_"))
 				if(!"the".equalsIgnoreCase(ss))
@@ -237,7 +238,7 @@ public class IEManualInstance extends ManualInstance
 	}
 
 	//TODO this was changed to snake_case. Where else do I need to change it
-	private static final ResourceLocation SHADER_ENTRY = new ResourceLocation(ImmersiveEngineering.MODID, "shader_list");
+	private static final ResourceLocation SHADER_ENTRY = IEApi.ieLoc("shader_list");
 
 	public void hideEntry(ResourceLocation name)
 	{

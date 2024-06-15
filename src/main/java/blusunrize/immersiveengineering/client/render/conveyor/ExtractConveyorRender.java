@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.conveyor;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorCacheData;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender;
@@ -44,10 +44,10 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 		if(renderType!=null&&renderType!=RenderType.cutout())
 			return super.modifyQuads(baseModel, context, renderType);
 
-		final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/metal/storage_steel"));
-		final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/turntable_bottom"));
-		final TextureAtlasSprite texture_curtain = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/stripcurtain"));
-		final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/multiblocks/assembler"));
+		final TextureAtlasSprite texture_steel = ClientUtils.getSprite(IEApi.ieLoc("block/metal/storage_steel"));
+		final TextureAtlasSprite texture_casing = ClientUtils.getSprite(IEApi.ieLoc("block/wooden_device/turntable_bottom"));
+		final TextureAtlasSprite texture_curtain = ClientUtils.getSprite(IEApi.ieLoc("block/stripcurtain"));
+		final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(IEApi.ieLoc("block/multiblocks/assembler"));
 
 		float[] colour = {1, 1, 1, 1};
 		ExtractConveyor instance = context.instance();

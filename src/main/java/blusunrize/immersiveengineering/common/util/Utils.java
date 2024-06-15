@@ -51,8 +51,9 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -484,8 +485,8 @@ public class Utils
 	{
 		if(dyeColor==null)
 			return new Vector4f(1, 1, 1, 1);
-		float[] rgb = dyeColor.getTextureDiffuseColors();
-		return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
+		int rgb = dyeColor.getTextureDiffuseColor();
+		return new Vector4f(((rgb>>16)&255)/255f, ((rgb>>8)&255)/255f, (rgb&255)/255f, 1);
 	}
 
 	public static Vector4f vec4fFromInt(int argb)
@@ -609,7 +610,7 @@ public class Utils
 		return stack.getCapability(FluidHandler.ITEM)!=null;
 	}
 
-	public static Optional<RecipeHolder<CraftingRecipe>> findCraftingRecipe(CraftingContainer crafting, Level world)
+	public static Optional<RecipeHolder<CraftingRecipe>> findCraftingRecipe(CraftingInput crafting, Level world)
 	{
 		return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, crafting, world);
 	}

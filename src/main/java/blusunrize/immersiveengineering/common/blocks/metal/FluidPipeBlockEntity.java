@@ -226,7 +226,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			}
 		}
 		final Block oldCover = cover;
-		cover = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString("cover")));
+		cover = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(nbt.getString("cover")));
 		DyeColor oldColor = color;
 		if(nbt.contains("color", Tag.TAG_INT))
 			color = DyeColor.byId(nbt.getInt("color"));

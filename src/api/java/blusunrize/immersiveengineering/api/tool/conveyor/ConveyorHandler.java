@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool.conveyor;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
@@ -44,7 +45,7 @@ public class ConveyorHandler
 
 	public static final SetRestrictedField<Function<IConveyorType<?>, Block>> CONVEYOR_BLOCKS = SetRestrictedField.common();
 	public static final SetRestrictedField<Function<IConveyorType<?>, BlockEntityType<?>>> BLOCK_ENTITY_TYPES = SetRestrictedField.common();
-	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
+	public static final ResourceLocation textureConveyorColour = IEApi.ieLoc("block/conveyor/colour");
 
 	// Should work for multiple dimensions since the calls aren't "interleaved" for multiple dimensions
 	private static final IntSet entitiesHandledInCurrentTickClient = new IntOpenHashSet();
@@ -122,7 +123,7 @@ public class ConveyorHandler
 			path = conveyorLoc.getPath();
 		else
 			path = conveyorLoc.getNamespace()+"_"+conveyorLoc.getPath();
-		return new ResourceLocation(Lib.MODID, "conveyor_"+path);
+		return IEApi.ieLoc("conveyor_"+path);
 	}
 
 	public static IConveyorType<?> getType(Block b)

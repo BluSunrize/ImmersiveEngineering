@@ -68,7 +68,7 @@ public class LevelStageRenders
 
 	private static void renderFractalParticles(RenderLevelStageEvent event)
 	{
-		float partial = event.getPartialTick();
+		float partial = event.getPartialTick().getGameTimeDeltaTicks();
 		final Pair<PoseStack, BufferSource> context = prepare(event);
 		List<Pair<RenderType, List<Consumer<VertexConsumer>>>> renders = new ArrayList<>();
 		for(FractalParticle p : FractalParticle.PARTICLE_FRACTAL_DEQUE)
@@ -144,8 +144,8 @@ public class LevelStageRenders
 				transform.translate(pos.x(), 0, pos.z());
 				VertexConsumer bufferBuilder = context.getSecond().getBuffer(IERenderTypes.CHUNK_MARKER);
 				Matrix4f mat = transform.last().pose();
-				bufferBuilder.vertex(mat, 0, minHeight, 0).color(r, g, b, .75f).normal(transform.last(), 0, 1, 0).endVertex();
-				bufferBuilder.vertex(mat, 0, maxHeight, 0).color(r, g, b, .75f).normal(transform.last(), 0, 1, 0).endVertex();
+				bufferBuilder.addVertex(mat, 0, minHeight, 0).setColor(r, g, b, .75f).setNormal(transform.last(), 0, 1, 0);
+				bufferBuilder.addVertex(mat, 0, maxHeight, 0).setColor(r, g, b, .75f).setNormal(transform.last(), 0, 1, 0);
 				int radius = vein.getRadius();
 				List<Vector3f> positions = new ArrayList<>();
 				for(int p = 0; p < 12; p++)
@@ -163,11 +163,10 @@ public class LevelStageRenders
 					diff.sub(pointA);
 					diff.normalize();
 					for(Vector3f point : List.of(pointA, pointB))
-						bufferBuilder.vertex(mat, point.x(), point.y(), point.z())
-								.color(r, g, b, .75f)
+						bufferBuilder.addVertex(mat, point.x(), point.y(), point.z())
+								.setColor(r, g, b, .75f)
 								//Not actually a normal, just the direction of the line
-								.normal(transform.last(), diff.x(), diff.y(), diff.z())
-								.endVertex();
+								.setNormal(transform.last(), diff.x(), diff.y(), diff.z());
 				}
 				transform.popPose();
 			}
@@ -193,15 +192,13 @@ public class LevelStageRenders
 			{
 				Vec3 next = conn.getCatenaryData().getRenderPoint(i+1);
 				Vec3 diff = next.subtract(prev).normalize();
-				builder.vertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
-						.color(1, 0, 0, alpha)
-						.normal(transform.last(), (float)diff.x, (float)diff.y, (float)diff.z)
-						.endVertex();
+				builder.addVertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
+						.setColor(1, 0, 0, alpha)
+						.setNormal(transform.last(), (float)diff.x, (float)diff.y, (float)diff.z);
 				alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
-				builder.vertex(mat, (float)next.x, (float)next.y, (float)next.z)
-						.color(1, 0, 0, alpha)
-						.normal(transform.last(), (float)diff.x, (float)diff.y, (float)diff.z)
-						.endVertex();
+				builder.addVertex(mat, (float)next.x, (float)next.y, (float)next.z)
+						.setColor(1, 0, 0, alpha)
+						.setNormal(transform.last(), (float)diff.x, (float)diff.y, (float)diff.z);
 				prev = next;
 			}
 			transform.popPose();

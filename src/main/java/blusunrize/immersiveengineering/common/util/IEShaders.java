@@ -168,14 +168,14 @@ public class IEShaders
 
 	private static void addBlockScaledLayer(ShaderRegistryEntry entry, String texture, int colour)
 	{
-		entry.getCase(ieLoc("revolver")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .8125, .25, 1));
-		entry.getCase(ieLoc("drill")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d).setCutoutBounds(.1875f, 0, .8125, .75f));
-		entry.getCase(ieLoc("buzzsaw")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/64f, 44/64f, 26/64f, 54/64f).setCutoutBounds(0, .615, 1, 1));
-		entry.getCase(ieLoc("chemthrower")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(6/64d, 40/64d, 22/64d, 48/64d).setCutoutBounds(0, 0, 1, .5));
-		entry.getCase(ieLoc("railgun")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(55/64d, 6/64d, 1, 16/64d).setCutoutBounds(.25, .125, .75, .6875));
-		entry.getCase(ieLoc("shield")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0/32f, 6/32f, 14/32f, 23/32f).setCutoutBounds(.0625, 0, .9375, 1));
-		entry.getCase(ieLoc("balloon")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(0, .125, .75, .625).setCutoutBounds(.125, 0, .875, .5));
-		entry.getCase(ieLoc("banner")).addLayers(new ShaderLayer(new ResourceLocation(texture), colour).setTextureBounds(1/64d, 23/64d, 21/64d, 43/64d));
+		entry.getCase(ieLoc("revolver")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(0, .8125, .25, 1));
+		entry.getCase(ieLoc("drill")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d).setCutoutBounds(.1875f, 0, .8125, .75f));
+		entry.getCase(ieLoc("buzzsaw")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(0/64f, 44/64f, 26/64f, 54/64f).setCutoutBounds(0, .615, 1, 1));
+		entry.getCase(ieLoc("chemthrower")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(6/64d, 40/64d, 22/64d, 48/64d).setCutoutBounds(0, 0, 1, .5));
+		entry.getCase(ieLoc("railgun")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(55/64d, 6/64d, 1, 16/64d).setCutoutBounds(.25, .125, .75, .6875));
+		entry.getCase(ieLoc("shield")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(0/32f, 6/32f, 14/32f, 23/32f).setCutoutBounds(.0625, 0, .9375, 1));
+		entry.getCase(ieLoc("balloon")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(0, .125, .75, .625).setCutoutBounds(.125, 0, .875, .5));
+		entry.getCase(ieLoc("banner")).addLayers(new ShaderLayer(ResourceLocation.parse(texture), colour).setTextureBounds(1/64d, 23/64d, 21/64d, 43/64d));
 	}
 
 	private static void addLayer(ShaderRegistryEntry entry, String texture, int colour)

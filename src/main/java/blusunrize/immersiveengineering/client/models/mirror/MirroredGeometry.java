@@ -10,18 +10,18 @@ package blusunrize.immersiveengineering.client.models.mirror;
 
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.client.utils.ModelUtils.copyTypes;
@@ -32,10 +32,10 @@ public record MirroredGeometry(UnbakedModel inner) implements IUnbakedGeometry<M
 	public BakedModel bake(
 			IGeometryBakingContext owner, ModelBaker bakery,
 			Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
-			ItemOverrides overrides, ResourceLocation modelLoc
+			ItemOverrides overrides
 	)
 	{
-		BakedModel baseResult = inner.bake(bakery, spriteGetter, new MirroredModelState(modelState), modelLoc);
+		BakedModel baseResult = inner.bake(bakery, spriteGetter, new MirroredModelState(modelState));
 		if(baseResult instanceof SimpleBakedModel simpleModel)
 		{
 			List<BakedQuad> unculledQuads = MirroredModelLoader.getReversedQuads(simpleModel, null);

@@ -56,7 +56,7 @@ public class AdvancementBuilder
 
 	public static AdvancementBuilder root(String bg)
 	{
-		return new AdvancementBuilder(page+"_root").background(new ResourceLocation(Lib.MODID, "textures/"+bg+".png"));
+		return new AdvancementBuilder(page+"_root").background(IEApi.ieLoc("textures/"+bg+".png"));
 	}
 
 	public static AdvancementBuilder child(String name, AdvancementHolder parent)
@@ -138,7 +138,7 @@ public class AdvancementBuilder
 	{
 		this.builder.rewards(new AdvancementRewards(
 				0,
-				List.of(new ResourceLocation(Lib.MODID, "advancements/"+lootPath)),
+				List.of(IEApi.ieLoc("advancements/"+lootPath)),
 				List.of(),
 				Optional.empty())
 		);

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.client.ieobj.DefaultCallback;
 import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
 import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallbacks;
@@ -28,11 +29,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-
 public class IEOBJLoader implements IGeometryLoader<IEOBJModel>
 {
-	public static final ResourceLocation LOADER_NAME = new ResourceLocation(MODID, "ie_obj");
+	public static final ResourceLocation LOADER_NAME = IEApi.ieLoc("ie_obj");
 	public static final String MODEL_KEY = "model";
 	public static final String CALLBACKS_KEY = "callbacks";
 	public static final String DYNAMIC_KEY = "dynamic";
@@ -54,7 +53,7 @@ public class IEOBJLoader implements IGeometryLoader<IEOBJModel>
 			if(modelContents.has(CALLBACKS_KEY))
 			{
 				String key = modelContents.get(CALLBACKS_KEY).getAsString();
-				callback = IEOBJCallbacks.getCallback(new ResourceLocation(key));
+				callback = IEOBJCallbacks.getCallback(ResourceLocation.parse(key));
 			}
 			else
 				callback = DefaultCallback.INSTANCE;
@@ -64,7 +63,7 @@ public class IEOBJLoader implements IGeometryLoader<IEOBJModel>
 			{
 				layers = new ArrayList<>();
 				for(final JsonElement entry : modelContents.getAsJsonArray(LAYERS_KEY))
-					layers.add(new ResourceLocation(entry.getAsString()));
+					layers.add(ResourceLocation.parse(entry.getAsString()));
 			}
 			return new IEOBJModel(model, dynamic, callback, layers);
 		} catch(IOException e)
@@ -76,11 +75,11 @@ public class IEOBJLoader implements IGeometryLoader<IEOBJModel>
 	private static ResourceLocation toRL(String name, @Nullable ResourceLocation basePath)
 	{
 		if(name.contains(":"))
-			return new ResourceLocation(name);
+			return ResourceLocation.parse(name);
 		else if(basePath!=null)
 		{
 			String baseDir = basePath.getPath().substring(0, basePath.getPath().lastIndexOf('/')+1);
-			return new ResourceLocation(basePath.getNamespace(), baseDir+name);
+			return basePath.withPath(baseDir+name);
 		}
 		else
 			return ImmersiveEngineering.rl(name);

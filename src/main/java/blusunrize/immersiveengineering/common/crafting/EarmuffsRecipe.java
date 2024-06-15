@@ -18,13 +18,9 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -43,12 +39,12 @@ public class EarmuffsRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, @Nonnull Level worldIn)
+	public boolean matches(CraftingInput inv, @Nonnull Level worldIn)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -73,14 +69,14 @@ public class EarmuffsRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, Provider access)
+	public ItemStack assemble(CraftingInput inv, Provider access)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -101,10 +97,10 @@ public class EarmuffsRecipe implements CraftingRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = Utils.getDye(stackInSlot).getTextureDiffuseColors();
-					int r = (int)(afloat[0]*255.0F);
-					int g = (int)(afloat[1]*255.0F);
-					int b = (int)(afloat[2]*255.0F);
+					int color = Utils.getDye(stackInSlot).getTextureDiffuseColor();
+					int r = (color>>16)&255;
+					int g = (color>>8)&255;
+					int b = color&255;
 					j += Math.max(r, Math.max(g, b));
 					colourArray[0] += r;
 					colourArray[1] += g;
@@ -168,7 +164,7 @@ public class EarmuffsRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInput inv)
 	{
 		NonNullList<ItemStack> remaining = CraftingRecipe.super.getRemainingItems(inv);
 		for(int i = 0; i < remaining.size(); i++)

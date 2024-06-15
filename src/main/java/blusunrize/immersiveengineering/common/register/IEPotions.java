@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.register;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -44,18 +45,18 @@ public class IEPotions
 	);
 	public static final Holder<MobEffect> STICKY = REGISTER.register(
 			"sticky", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x9c6800, 0, false, 3, true, true)
-					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.2, Operation.ADD_MULTIPLIED_TOTAL)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, IEApi.ieLoc("sticky_movement"), -0.2, Operation.ADD_MULTIPLIED_TOTAL)
 	);
 	public static final Holder<MobEffect> STUNNED = REGISTER.register(
 			"stunned", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 4, true, true)
 	);
 	public static final Holder<MobEffect> CONCRETE_FEET = REGISTER.register(
 			"concrete_feet", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 5, true, true)
-					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.ADD_MULTIPLIED_TOTAL)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, IEApi.ieLoc("concrete_feet_movement"), -2D, Operation.ADD_MULTIPLIED_TOTAL)
 	);
 	public static final Holder<MobEffect> FLASHED = REGISTER.register(
 			"flashed", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 6, true, true)
-					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.ADD_MULTIPLIED_TOTAL)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, IEApi.ieLoc("flashed_movement"), -0.15, Operation.ADD_MULTIPLIED_TOTAL)
 	);
 
 	public static class IEPotion extends MobEffect

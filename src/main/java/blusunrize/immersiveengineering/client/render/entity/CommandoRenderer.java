@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.entities.illager.Commando;
 import net.minecraft.client.model.IllagerModel;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -21,7 +21,7 @@ import net.minecraft.world.entity.monster.AbstractIllager.IllagerArmPose;
 
 public class CommandoRenderer extends IllagerRenderer<Commando>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(ImmersiveEngineering.MODID, "textures/entity/illager/commando.png");
+	private static final ResourceLocation TEXTURE = IEApi.ieLoc("textures/entity/illager/commando.png");
 
 	public CommandoRenderer(EntityRendererProvider.Context p_174354_)
 	{

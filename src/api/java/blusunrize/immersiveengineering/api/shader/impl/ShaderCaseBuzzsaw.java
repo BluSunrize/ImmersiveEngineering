@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.shader.impl;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +32,7 @@ public class ShaderCaseBuzzsaw extends ShaderCase
 	@Override
 	public ResourceLocation getShaderType()
 	{
-		return new ResourceLocation(Lib.MODID, "buzzsaw");
+		return IEApi.ieLoc("buzzsaw");
 	}
 
 	@Override

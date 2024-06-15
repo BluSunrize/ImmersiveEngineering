@@ -40,6 +40,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -120,7 +121,12 @@ public class ArcFurnaceLogic
 			{
 				int finalI = i;
 				state.inventory.getStackInSlot(i).hurtAndBreak(
-						1, ApiUtils.RANDOM_SOURCE, null, () -> state.inventory.setStackInSlot(finalI, ItemStack.EMPTY)
+						1,
+						(ServerLevel)level.getRawLevel(),
+						null,
+						// TODO?
+						(item) -> {
+						}
 				);
 			}
 

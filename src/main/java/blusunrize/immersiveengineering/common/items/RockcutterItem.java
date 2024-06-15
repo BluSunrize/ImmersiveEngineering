@@ -11,7 +11,9 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments.Mutable;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,9 +42,9 @@ public class RockcutterItem extends SawbladeItem
 	}
 
 	@Override
-	public void modifyEnchants(Mutable baseEnchants)
+	public void modifyEnchants(Mutable baseEnchants, RegistryLookup<Enchantment> lookup)
 	{
-		baseEnchants.set(Enchantments.SILK_TOUCH, 1);
+		baseEnchants.set(lookup.getOrThrow(Enchantments.SILK_TOUCH), 1);
 	}
 
 	@Override

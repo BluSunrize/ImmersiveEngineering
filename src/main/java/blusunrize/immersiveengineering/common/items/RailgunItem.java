@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
@@ -129,7 +130,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		);
 		registrar.register(
 				CapabilityShader.ITEM,
-				stack -> new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "railgun"), stack)
+				stack -> new ShaderWrapper_Item(IEApi.ieLoc("railgun"), stack)
 		);
 	}
 

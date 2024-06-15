@@ -156,12 +156,12 @@ public class ClientUtils
 		int offset = 0;
 		for(VertexFormatElement element : vf.getElements())
 		{
-			if(element.getUsage()==u&&element.getType()==t)
+			if(element.usage()==u&&element.type()==t)
 			{
 				Preconditions.checkState(offset%4==0);
 				return offset/4;
 			}
-			offset += element.getByteSize();
+			offset += element.byteSize();
 		}
 		throw new IllegalStateException();
 	}

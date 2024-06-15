@@ -24,6 +24,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
@@ -57,6 +59,7 @@ import net.neoforged.neoforge.common.ToolAction;
 import net.neoforged.neoforge.common.ToolActions;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
@@ -196,7 +199,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment)
+	public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment)
 	{
 		// Not ideal, but anything faster has a lot of code duplication. And getting the sawblade isn't the fastest
 		// thing in the world anyway.
@@ -204,14 +207,14 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public ItemEnchantments getAllEnchantments(ItemStack stack)
+	public ItemEnchantments getAllEnchantments(ItemStack stack, RegistryLookup<Enchantment> lookup)
 	{
 		ItemStack sawblade = getSawblade(stack, 0);
-		ItemEnchantments superEnchants = super.getAllEnchantments(stack);
+		ItemEnchantments superEnchants = super.getAllEnchantments(stack, lookup);
 		if(sawblade.getItem() instanceof SawbladeItem blade)
 		{
 			ItemEnchantments.Mutable mutable = new Mutable(superEnchants);
-			blade.modifyEnchants(mutable);
+			blade.modifyEnchants(mutable, lookup);
 			return mutable.toImmutable();
 		}
 		else
@@ -533,9 +536,9 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		NeoForge.EVENT_BUS.register(new Object()
 		{
 			@SubscribeEvent
-			public void onTick(TickEvent.LevelTickEvent event)
+			public void onTick(LevelTickEvent.Pre event)
 			{
-				if(event.phase==Phase.START&&event.level==world)
+				if(event.getLevel()==world)
 				{
 					breakFromList(closedList, 5, world, player, stack);
 					if(closedList.isEmpty())

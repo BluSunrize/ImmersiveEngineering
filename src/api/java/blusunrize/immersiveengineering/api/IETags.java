@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.*;
 
 public class IETags
@@ -58,21 +59,21 @@ public class IETags
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final TagKey<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
 	public static final TagKey<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
-	public static final TagKey<Block> copperBlocks = createBlockTag(rl("blocks/copper"));
-	public static final TagKey<Block> cutCopperBlocks = createBlockTag(rl("cut_blocks/copper"));
+	public static final TagKey<Block> copperBlocks = createBlockTag(ieLoc("blocks/copper"));
+	public static final TagKey<Block> cutCopperBlocks = createBlockTag(ieLoc("cut_blocks/copper"));
 
-	public static final TagKey<Block> cutCopperStairs = createBlockTag(rl("cut_stairs/copper"));
-	public static final TagKey<Block> cutCopperSlabs = createBlockTag(rl("cut_slabs/copper"));
+	public static final TagKey<Block> cutCopperStairs = createBlockTag(ieLoc("cut_stairs/copper"));
+	public static final TagKey<Block> cutCopperSlabs = createBlockTag(ieLoc("cut_slabs/copper"));
 	//IE Blocks
 	public static final TagKey<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
 	public static final TagKey<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
 	public static final TagKey<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
-	public static final TagKey<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
-	public static final TagKey<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
-	public static final TagKey<Block> scaffoldingSteelStair = createBlockTag(rl("scaffolding_stairs/steel"));
-	public static final TagKey<Block> scaffoldingAluStair = createBlockTag(rl("scaffolding_stairs/aluminum"));
-	public static final TagKey<Block> scaffoldingSteelSlab = createBlockTag(rl("scaffolding_slabs/steel"));
-	public static final TagKey<Block> scaffoldingAluSlab = createBlockTag(rl("scaffolding_slabs/aluminum"));
+	public static final TagKey<Block> scaffoldingSteel = createBlockTag(ieLoc("scaffoldings/steel"));
+	public static final TagKey<Block> scaffoldingAlu = createBlockTag(ieLoc("scaffoldings/aluminum"));
+	public static final TagKey<Block> scaffoldingSteelStair = createBlockTag(ieLoc("scaffolding_stairs/steel"));
+	public static final TagKey<Block> scaffoldingAluStair = createBlockTag(ieLoc("scaffolding_stairs/aluminum"));
+	public static final TagKey<Block> scaffoldingSteelSlab = createBlockTag(ieLoc("scaffolding_slabs/steel"));
+	public static final TagKey<Block> scaffoldingAluSlab = createBlockTag(ieLoc("scaffolding_slabs/aluminum"));
 	public static final TagKey<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
 	public static final TagKey<Block> sheetmetalSlabs = createBlockTag(forgeLoc("sheetmetal_slabs"));
 	public static final TagKey<Block> fencesSteel = createBlockTag(forgeLoc("fences/steel"));
@@ -104,37 +105,37 @@ public class IETags
 	public static final TagKey<Item> plasticPlate = createItemWrapper(getPlate("plastic"));
 	public static final TagKey<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
 	//Utility tags
-	public static final TagKey<Item> forbiddenInCrates = createItemWrapper(rl("forbidden_in_crates"));
-	public static final TagKey<Item> circuitPCB = createItemWrapper(rl("circuits/pcb"));
-	public static final TagKey<Item> circuitLogic = createItemWrapper(rl("circuits/logic"));
-	public static final TagKey<Item> circuitSolder = createItemWrapper(rl("circuits/solder"));
-	public static final TagKey<Item> hammers = createItemWrapper(rl("tools/hammers"));
-	public static final TagKey<Item> screwdrivers = createItemWrapper(rl("tools/screwdrivers"));
-	public static final TagKey<Item> wirecutters = createItemWrapper(rl("tools/wirecutters"));
-	public static final TagKey<Item> toolboxTools = createItemWrapper(rl("toolbox/tools"));
-	public static final TagKey<Item> toolboxFood = createItemWrapper(rl("toolbox/food"));
-	public static final TagKey<Item> toolboxWiring = createItemWrapper(rl("toolbox/wiring"));
-	public static final TagKey<Item> connectorInsulator = createItemWrapper(rl("connector_insulator"));
-	public static final TagKey<Block> hammerHarvestable = createBlockWrapper(rl("mineable/hammer"));
-	public static final TagKey<Block> wirecutterHarvestable = createBlockWrapper(rl("mineable/wirecutter"));
-	public static final TagKey<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));
-	public static final TagKey<Block> rockcutterHarvestable = createBlockWrapper(rl("mineable/rockcutter"));
-	public static final TagKey<Block> grindingDiskHarvestable = createBlockWrapper(rl("mineable/grinding_disk"));
-	public static final TagKey<Block> surveyToolTargets = createBlockWrapper(rl("survey_tool_targets"));
-	public static final TagKey<Block> concreteForFeet = createBlockWrapper(rl("concrete_for_concrete_feet"));
+	public static final TagKey<Item> forbiddenInCrates = createItemWrapper(ieLoc("forbidden_in_crates"));
+	public static final TagKey<Item> circuitPCB = createItemWrapper(ieLoc("circuits/pcb"));
+	public static final TagKey<Item> circuitLogic = createItemWrapper(ieLoc("circuits/logic"));
+	public static final TagKey<Item> circuitSolder = createItemWrapper(ieLoc("circuits/solder"));
+	public static final TagKey<Item> hammers = createItemWrapper(ieLoc("tools/hammers"));
+	public static final TagKey<Item> screwdrivers = createItemWrapper(ieLoc("tools/screwdrivers"));
+	public static final TagKey<Item> wirecutters = createItemWrapper(ieLoc("tools/wirecutters"));
+	public static final TagKey<Item> toolboxTools = createItemWrapper(ieLoc("toolbox/tools"));
+	public static final TagKey<Item> toolboxFood = createItemWrapper(ieLoc("toolbox/food"));
+	public static final TagKey<Item> toolboxWiring = createItemWrapper(ieLoc("toolbox/wiring"));
+	public static final TagKey<Item> connectorInsulator = createItemWrapper(ieLoc("connector_insulator"));
+	public static final TagKey<Block> hammerHarvestable = createBlockWrapper(ieLoc("mineable/hammer"));
+	public static final TagKey<Block> wirecutterHarvestable = createBlockWrapper(ieLoc("mineable/wirecutter"));
+	public static final TagKey<Block> drillHarvestable = createBlockWrapper(ieLoc("mineable/drill"));
+	public static final TagKey<Block> rockcutterHarvestable = createBlockWrapper(ieLoc("mineable/rockcutter"));
+	public static final TagKey<Block> grindingDiskHarvestable = createBlockWrapper(ieLoc("mineable/grinding_disk"));
+	public static final TagKey<Block> surveyToolTargets = createBlockWrapper(ieLoc("survey_tool_targets"));
+	public static final TagKey<Block> concreteForFeet = createBlockWrapper(ieLoc("concrete_for_concrete_feet"));
 
-	public static final TagKey<Block> buzzsawTreeBlacklist = createBlockWrapper(rl("buzzsaw/tree_blacklist"));
+	public static final TagKey<Block> buzzsawTreeBlacklist = createBlockWrapper(ieLoc("buzzsaw/tree_blacklist"));
 	public static final TagKey<Item> tools = createItemWrapper(forgeLoc("tools"));
 	public static final TagKey<Item> pickaxes = createItemWrapper(forgeLoc("tools/pickaxes"));
 	public static final TagKey<Item> shovels = createItemWrapper(forgeLoc("tools/shovels"));
 	public static final TagKey<Item> axes = createItemWrapper(forgeLoc("tools/axes"));
 	public static final TagKey<Item> hoes = createItemWrapper(forgeLoc("tools/hoes"));
 	public static final TagKey<Item> swords = createItemWrapper(forgeLoc("tools/swords"));
-	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(rl("powerpack/forbid_attach"));
+	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(ieLoc("powerpack/forbid_attach"));
 
-	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(rl("recycling/ignored_components"));
-	public static final TagKey<Item> recyclingWhitelist = createItemWrapper(rl("recycling/whitelist"));
-	public static final TagKey<Item> recyclingBlacklist = createItemWrapper(rl("recycling/blacklist"));
+	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(ieLoc("recycling/ignored_components"));
+	public static final TagKey<Item> recyclingWhitelist = createItemWrapper(ieLoc("recycling/whitelist"));
+	public static final TagKey<Item> recyclingBlacklist = createItemWrapper(ieLoc("recycling/blacklist"));
 
 	public static final TagKey<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
 	public static final TagKey<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));
@@ -146,14 +147,14 @@ public class IETags
 	public static final TagKey<Fluid> fluidPotion = createFluidWrapper(forgeLoc("potion"));
 	public static final TagKey<Fluid> fluidAcetaldehyde = createFluidWrapper(forgeLoc("acetaldehyde"));
 	public static final TagKey<Fluid> fluidResin = createFluidWrapper(forgeLoc("phenolic_resin"));
-	public static final TagKey<Fluid> drillFuel = createFluidWrapper(rl("drill_fuel"));
+	public static final TagKey<Fluid> drillFuel = createFluidWrapper(ieLoc("drill_fuel"));
 
-	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(rl("shaderbag/whitelist"));
-	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(rl("shaderbag/blacklist"));
+	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(ieLoc("shaderbag/whitelist"));
+	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(ieLoc("shaderbag/blacklist"));
 
 	public static final TagKey<Biome> is_swamp = createBiomeWrapper(forgeLoc("is_swamp"));
-	public static final TagKey<Biome> generateClaypan = createBiomeWrapper(rl("generate_hardened_clay_pan"));
-	public static final TagKey<Biome> generateSeabed = createBiomeWrapper(rl("generate_ancient_seabed"));
+	public static final TagKey<Biome> generateClaypan = createBiomeWrapper(ieLoc("generate_hardened_clay_pan"));
+	public static final TagKey<Biome> generateSeabed = createBiomeWrapper(ieLoc("generate_ancient_seabed"));
 
 	static
 	{
@@ -247,7 +248,8 @@ public class IETags
 
 	private static ResourceLocation forgeLoc(String path)
 	{
-		return new ResourceLocation("forge", path);
+		// TODO should this be NeoForge these days? Is there an existing helper?
+		return ResourceLocation.fromNamespaceAndPath("forge", path);
 	}
 
 	public static ResourceLocation getOre(String type)
@@ -313,10 +315,5 @@ public class IETags
 	public static ResourceLocation getSheetmetalBlock(String type)
 	{
 		return forgeLoc("sheetmetals/"+type);
-	}
-
-	private static ResourceLocation rl(String path)
-	{
-		return new ResourceLocation(Lib.MODID, path);
 	}
 }

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
@@ -48,8 +49,8 @@ import java.util.function.Predicate;
  */
 public abstract class ConveyorBase implements IConveyorBelt
 {
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/conveyor");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/off");
+	public static ResourceLocation texture_on = IEApi.ieLoc("block/conveyor/conveyor");
+	public static ResourceLocation texture_off = IEApi.ieLoc("block/conveyor/off");
 
 	private Block cover = Blocks.AIR;
 
@@ -149,7 +150,7 @@ public abstract class ConveyorBase implements IConveyorBelt
 		else
 			dyeColour = null;
 		if(nbt.contains("cover", Tag.TAG_STRING))
-			cover = BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString("cover")));
+			cover = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(nbt.getString("cover")));
 	}
 
 	/* ============ RENDERING ============ */

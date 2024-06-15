@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.api.tool.assembler;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
@@ -33,7 +33,7 @@ public class AssemblerHandler
 	private static final HashMap<Class<? extends Recipe>, IRecipeAdapter> registry = new LinkedHashMap<>();
 	private static final List<BiFunction<Ingredient, ItemStack, RecipeQuery>> specialIngredientConverters = new ArrayList<>();
 	private static final List<BiFunction<ItemStack, ItemStack, RecipeQuery>> specialItemStackConverters = new ArrayList<>();
-	public static IRecipeAdapter<Recipe<CraftingContainer>> defaultAdapter;
+	public static IRecipeAdapter<Recipe<CraftingInput>> defaultAdapter;
 
 	public static void registerRecipeAdapter(Class<? extends Recipe> recipeClass, IRecipeAdapter adapter)
 	{
@@ -54,7 +54,7 @@ public class AssemblerHandler
 	}
 
 	@Nonnull
-	public static <R extends Recipe<CraftingContainer>>
+	public static <R extends Recipe<CraftingInput>>
 	IRecipeAdapter<R> findAdapter(R recipe)
 	{
 		return (IRecipeAdapter<R>)findAdapterForClass(recipe.getClass());
@@ -70,7 +70,7 @@ public class AssemblerHandler
 		specialItemStackConverters.add(func);
 	}
 
-	public interface IRecipeAdapter<R extends Recipe<CraftingContainer>>
+	public interface IRecipeAdapter<R extends Recipe<CraftingInput>>
 	{
 		@Nullable
 		List<RecipeQuery> getQueriedInputs(R recipe, NonNullList<ItemStack> input, Level world);

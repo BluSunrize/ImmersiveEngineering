@@ -47,7 +47,7 @@ public class GliderItem extends IEBaseItem implements Equipable
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
 	{
 		ItemStack heldItem = player.getItemInHand(hand);
-		EquipmentSlot slot = Mob.getEquipmentSlotForItem(heldItem);
+		EquipmentSlot slot = player.getEquipmentSlotForItem(heldItem);
 		ItemStack equipped = player.getItemBySlot(slot);
 		if(equipped.isEmpty())
 		{

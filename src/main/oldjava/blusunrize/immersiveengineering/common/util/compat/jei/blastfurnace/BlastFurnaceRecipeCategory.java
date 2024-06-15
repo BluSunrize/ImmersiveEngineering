@@ -36,7 +36,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 	public BlastFurnaceRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, JEIRecipeTypes.BLAST_FURNACE, "gui.immersiveengineering.blastFurnace");
-		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/blast_furnace.png");
+		ResourceLocation background = IEApi.ieLoc("textures/gui/blast_furnace.png");
 		setBackground(helper.createDrawable(background, 42, 9, 100, 64));
 		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, IEMultiblockLogic.BLAST_FURNACE.iconStack()));
 		flame = helper.drawableBuilder(background, 177, 0, 14, 14).buildAnimated(300, IDrawableAnimated.StartDirection.TOP, true);

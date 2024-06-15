@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import net.minecraft.client.model.IllagerModel;
@@ -22,7 +22,7 @@ import net.minecraft.world.entity.monster.AbstractIllager.IllagerArmPose;
 
 public class FusilierRenderer extends IllagerRenderer<Fusilier>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(ImmersiveEngineering.MODID, "textures/entity/illager/fusilier.png");
+	private static final ResourceLocation TEXTURE = IEApi.ieLoc("textures/entity/illager/fusilier.png");
 
 	public FusilierRenderer(EntityRendererProvider.Context p_174354_)
 	{

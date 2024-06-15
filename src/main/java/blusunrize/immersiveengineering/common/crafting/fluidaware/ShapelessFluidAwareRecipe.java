@@ -12,8 +12,8 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.ShapelessFluidAwareRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -41,13 +41,13 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingContainer inv)
+	protected MatchLocation findMatch(CraftingInput inv)
 	{
 		List<ItemStack> inputs = new ArrayList<>();
-		int[] slotToInput = new int[inv.getContainerSize()];
+		int[] slotToInput = new int[inv.size()];
 		Arrays.fill(slotToInput, -1);
 
-		for(int i = 0; i < inv.getContainerSize(); ++i)
+		for(int i = 0; i < inv.size(); ++i)
 		{
 			ItemStack itemstack = inv.getItem(i);
 			if(!itemstack.isEmpty())
@@ -63,11 +63,11 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 		int[] matchMap = RecipeMatcher.findMatches(inputs, getIngredients());
 		if(matchMap==null)
 			return null;
-		int[][] slotToIngredient = new int[inv.getWidth()][inv.getHeight()];
-		for(int x = 0; x < inv.getWidth(); ++x)
-			for(int y = 0; y < inv.getHeight(); ++y)
+		int[][] slotToIngredient = new int[inv.width()][inv.height()];
+		for(int x = 0; x < inv.width(); ++x)
+			for(int y = 0; y < inv.height(); ++y)
 			{
-				int inputId = slotToInput[x+inv.getWidth()*y];
+				int inputId = slotToInput[x+inv.width()*y];
 				if(inputId >= 0)
 					slotToIngredient[x][y] = matchMap[inputId];
 				else

@@ -78,7 +78,7 @@ public class SurveyToolsItem extends IEBaseItem
 	}
 
 	@Override
-	public int getUseDuration(ItemStack stack)
+	public int getUseDuration(ItemStack p_41454_, LivingEntity p_344979_)
 	{
 		return 50;
 	}

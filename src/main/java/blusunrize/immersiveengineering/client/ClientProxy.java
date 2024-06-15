@@ -71,7 +71,6 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -340,7 +339,7 @@ public class ClientProxy extends CommonProxy
 	public void startSkyhookSound(SkylineHookEntity hook)
 	{
 		Minecraft.getInstance().getSoundManager().play(new SkyhookSound(hook,
-				new ResourceLocation(MODID, "skyhook")));
+				IEApi.ieLoc("skyhook")));
 	}
 
 	@Override

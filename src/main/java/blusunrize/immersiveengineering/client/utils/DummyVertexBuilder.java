@@ -10,67 +10,48 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
-import javax.annotation.Nonnull;
-
-public record DummyVertexBuilder(VertexFormat format) implements VertexConsumer
+public class DummyVertexBuilder implements VertexConsumer
 {
-	@Nonnull
-	@Override
-	public VertexConsumer vertex(double x, double y, double z)
+	public static final DummyVertexBuilder INSTANCE = new DummyVertexBuilder();
+
+	private DummyVertexBuilder()
 	{
-		return this;
 	}
 
-	@Nonnull
 	@Override
-	public VertexConsumer color(int red, int green, int blue, int alpha)
-	{
-		return this;
-	}
-
-	@Nonnull
-	@Override
-	public VertexConsumer uv(float u, float v)
-	{
-		return this;
-	}
-
-	@Nonnull
-	@Override
-	public VertexConsumer overlayCoords(int u, int v)
-	{
-		return this;
-	}
-
-	@Nonnull
-	@Override
-	public VertexConsumer uv2(int u, int v)
-	{
-		return this;
-	}
-
-	@Nonnull
-	@Override
-	public VertexConsumer normal(float x, float y, float z)
+	public VertexConsumer addVertex(float p_350761_, float p_350704_, float p_350711_)
 	{
 		return this;
 	}
 
 	@Override
-	public void endVertex()
+	public VertexConsumer setColor(int p_350535_, int p_350875_, int p_350886_, int p_350775_)
 	{
+		return this;
 	}
 
 	@Override
-	public void defaultColor(int r, int g, int b, int a)
+	public VertexConsumer setUv(float p_350572_, float p_350917_)
 	{
+		return this;
 	}
 
 	@Override
-	public void unsetDefaultColor()
+	public VertexConsumer setUv1(int p_350815_, int p_350629_)
 	{
+		return this;
+	}
 
+	@Override
+	public VertexConsumer setUv2(int p_350859_, int p_351004_)
+	{
+		return this;
+	}
+
+	@Override
+	public VertexConsumer setNormal(float p_350429_, float p_350286_, float p_350836_)
+	{
+		return this;
 	}
 }

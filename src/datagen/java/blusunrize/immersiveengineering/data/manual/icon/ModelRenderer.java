@@ -12,7 +12,10 @@ import blusunrize.immersiveengineering.client.utils.DummyVertexBuilder;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -124,7 +127,7 @@ public class ModelRenderer implements AutoCloseable
         // randomly. Additionally, glint isn't really visible in the output anyway, I assume this is technically a bug.
         MultiBufferSource noFoilSource = type -> {
             if(type==RenderType.glintDirect())
-                return new DummyVertexBuilder(DefaultVertexFormat.BLOCK);
+                return DummyVertexBuilder.INSTANCE;
             else
                 return bufferSources.getBuffer(type);
         };

@@ -242,7 +242,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 							group, baseModel.getOwner(), quads::add, spriteGetter, colorGetter,
 							coordinateRemapper, state.transform().compose(optionalTransform.blockCenterToCorner())
 					);
-					ShaderLayer layer = shader!=null?shader.getLayers()[pass]: new ShaderLayer(new ResourceLocation("missing/no"), -1)
+					ShaderLayer layer = shader!=null?shader.getLayers()[pass]: new ShaderLayer(ResourceLocation.withDefaultNamespace("missing/no"), -1)
 					{
 						@Override
 						public RenderType getRenderType(RenderType baseType)

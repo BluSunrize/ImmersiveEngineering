@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidA
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -62,26 +62,26 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level worldIn)
+	public boolean matches(@Nonnull CraftingInput inv, @Nonnull Level worldIn)
 	{
 		return findMatch(inv)!=null;
 	}
 
 	@Nullable
-	protected abstract MatchLocation findMatch(CraftingContainer inv);
+	protected abstract MatchLocation findMatch(CraftingInput inv);
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer inv, Provider access)
+	public ItemStack assemble(@Nonnull CraftingInput inv, Provider access)
 	{
 		return this.getResultItem(access).copy();
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingContainer inv)
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingInput inv)
 	{
-		NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
+		NonNullList<ItemStack> remaining = NonNullList.withSize(inv.size(), ItemStack.EMPTY);
 		final MatchLocation offset = findMatch(inv);
 		if(offset==null)
 		{
@@ -91,8 +91,8 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 			return CraftingRecipe.super.getRemainingItems(inv);
 		}
 
-		for(int x = 0; x < inv.getWidth(); ++x)
-			for(int y = 0; y < inv.getHeight(); ++y)
+		for(int x = 0; x < inv.width(); ++x)
+			for(int y = 0; y < inv.height(); ++y)
 			{
 				final int invIndex = getInventoryIndex(inv, x, y);
 				final int ingrIndex = offset.getListIndex(x, y);
@@ -114,9 +114,9 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 		return remaining;
 	}
 
-	private int getInventoryIndex(CraftingContainer inv, int x, int y)
+	private int getInventoryIndex(CraftingInput inv, int x, int y)
 	{
-		return x+y*inv.getWidth();
+		return x+y*inv.width();
 	}
 
 	@Override

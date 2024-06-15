@@ -38,17 +38,17 @@ public class PolygonUtils
 			if(e==element)
 				return offset/4;
 			else
-				offset += e.getByteSize();
-		throw new IllegalStateException("Did not find element with usage "+element.getUsage().name()+" and type "+element.getType().name());
+				offset += e.byteSize();
+		throw new IllegalStateException("Did not find element with usage "+element.usage().name()+" and type "+element.type().name());
 	}
 
 	public static Polygon<ExtraQuadData> toPolygon(BakedQuad quad)
 	{
 		List<Vertex> vertices = new ArrayList<>(4);
-		final int posOffset = getOffset(DefaultVertexFormat.ELEMENT_POSITION);
-		final int uvOffset = getOffset(DefaultVertexFormat.ELEMENT_UV);
-		final int normalOffset = getOffset(DefaultVertexFormat.ELEMENT_NORMAL);
-		final int colorOffset = getOffset(DefaultVertexFormat.ELEMENT_COLOR);
+		final int posOffset = getOffset(VertexFormatElement.POSITION);
+		final int uvOffset = getOffset(VertexFormatElement.UV);
+		final int normalOffset = getOffset(VertexFormatElement.NORMAL);
+		final int colorOffset = getOffset(VertexFormatElement.COLOR);
 		final int color = quad.getVertices()[colorOffset];
 		for(int v = 0; v < 4; ++v)
 		{

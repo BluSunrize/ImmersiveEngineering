@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity.LightningAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import malte0811.modelsplitter.math.Vec3d;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.AABB;
@@ -61,12 +60,10 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntit
 	private static void drawLine(Vec3 start, Vec3 end, double offX, double offY, double offZ, VertexConsumer out)
 	{
 		Vec3 normal = new Vec3(start.x()-end.x(), start.y()-end.y(), start.z()-end.z()).normalize();
-		out.vertex(start.x-offX, start.y-offY, start.z-offZ)
-				.normal((float)normal.x, (float)normal.y, (float)normal.z)
-				.endVertex();
-		out.vertex(end.x-offX, end.y-offY, end.z-offZ)
-				.normal((float)normal.x, (float)normal.y, (float)normal.z)
-				.endVertex();
+		out.addVertex((float)(start.x-offX), (float)(start.y-offY), (float)(start.z-offZ))
+				.setNormal((float)normal.x, (float)normal.y, (float)normal.z);
+		out.addVertex((float)(end.x-offX), (float)(end.y-offY), (float)(end.z-offZ))
+				.setNormal((float)normal.x, (float)normal.y, (float)normal.z);
 	}
 
 	@Override

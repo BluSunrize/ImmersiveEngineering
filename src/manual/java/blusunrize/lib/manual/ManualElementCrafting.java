@@ -69,7 +69,7 @@ public class ManualElementCrafting extends SpecialManualElements
 		}
 	}
 
-	private void addRecipe(Recipe<CraftingContainer> rec, int recipeIndex)
+	private void addRecipe(Recipe<?> rec, int recipeIndex)
 	{
 		NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
 		int recipeWidth;

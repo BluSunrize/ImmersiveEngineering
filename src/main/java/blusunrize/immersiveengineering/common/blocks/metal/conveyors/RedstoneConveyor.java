@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
@@ -29,14 +30,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Map;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-
 /**
  * @author BluSunrize - 06.05.2017
  */
 public class RedstoneConveyor extends ConveyorBase
 {
-	public static final ResourceLocation NAME = new ResourceLocation(MODID, "redstone");
+	public static final ResourceLocation NAME = IEApi.ieLoc("redstone");
 	public static final IConveyorType<RedstoneConveyor> TYPE = new BasicConveyorType<>(
 			NAME, false, true, RedstoneConveyor::new, () -> new RedstoneConveyorRender(texture_on, texture_off), false
 	);

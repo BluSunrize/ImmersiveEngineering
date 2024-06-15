@@ -20,14 +20,12 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Transformation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -189,7 +187,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 	{
 		if(multiblock.getStructure(level)!=null)
 		{
-			MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 			PoseStack transform = graphics.pose();
 			PoseStack.Pose lastEntryBeforeTry = transform.last();
 			try
@@ -221,13 +218,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 				if(showCompleted&&renderProperties.canRenderFormedStructure())
 				{
 					transform.pushPose();
-					renderProperties.renderFormedStructure(transform, buffer);
+					renderProperties.renderFormedStructure(transform, graphics.bufferSource());
 					transform.popPose();
 				}
 				else
 				{
 					TransformingVertexBuilder translucentFullbright = new TransformingVertexBuilder(
-							buffer, IERenderTypes.TRANSLUCENT_FULLBRIGHT
+							graphics.bufferSource(), IERenderTypes.TRANSLUCENT_FULLBRIGHT
 					);
 					for(int h = 0; h < structureHeight; h++)
 						for(int l = 0; l < structureLength; l++)
@@ -273,7 +270,6 @@ public class ManualElementMultiblock extends SpecialManualElements
 				while(lastEntryBeforeTry!=transform.last())
 					transform.popPose();
 			}
-			buffer.endBatch();
 
 			if(componentTooltip!=null)
 			{

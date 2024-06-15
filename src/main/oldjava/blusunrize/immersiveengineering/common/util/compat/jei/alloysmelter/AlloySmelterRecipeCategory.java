@@ -30,7 +30,7 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	public AlloySmelterRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, JEIRecipeTypes.ALLOY, "block.immersiveengineering.alloy_smelter");
-		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/alloy_smelter.png");
+		ResourceLocation background = IEApi.ieLoc("textures/gui/alloy_smelter.png");
 		setBackground(helper.createDrawable(background, 36, 15, 106, 56));
 		setIcon(IEMultiblockLogic.ALLOY_SMELTER.iconStack());
 		flame = helper.drawableBuilder(background, 177, 0, 14, 14).buildAnimated(200, IDrawableAnimated.StartDirection.TOP, true);

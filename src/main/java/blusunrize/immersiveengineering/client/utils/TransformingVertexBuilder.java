@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
-
 public class TransformingVertexBuilder implements VertexConsumer
 {
 	private final VertexConsumer base;
@@ -90,7 +88,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	@Nonnull
 	@Override
-	public VertexConsumer overlayCoords(int u, int v)
+	public VertexConsumer setOverlay(int u, int v)
 	{
 		overlay.putData(new Vec2i(u, v));
 		return this;
@@ -118,21 +116,20 @@ public class TransformingVertexBuilder implements VertexConsumer
 		for(VertexFormatElement element : format.getElements())
 		{
 			if(element==ELEMENT_POSITION)
-				pos.ifPresent(pos -> base.vertex(transform.last().pose(), (float)pos.x, (float)pos.y, (float)pos.z));
+				pos.ifPresent(pos -> base.addVertex(transform.last().pose(), (float)pos.x, (float)pos.y, (float)pos.z));
 			else if(element==ELEMENT_COLOR)
-				color.ifPresent(c -> base.color(c.x(), c.y(), c.z(), c.w()));
+				color.ifPresent(c -> base.setColor(c.x(), c.y(), c.z(), c.w()));
 			else if(element==ELEMENT_UV0)
 				uv.ifPresent(uv -> base.uv(uv.x, uv.y));
 			else if(element==ELEMENT_UV1)
-				overlay.ifPresent(overlay -> base.overlayCoords(overlay.x, overlay.y));
+				overlay.ifPresent(overlay -> base.setOverlay(overlay.x, overlay.y));
 			else if(element==ELEMENT_UV2)
-				lightmap.ifPresent(lightmap -> base.uv2(lightmap.x, lightmap.y));
+				lightmap.ifPresent(lightmap -> base.setUv2(lightmap.x, lightmap.y));
 			else if(element==ELEMENT_NORMAL)
 				normal.ifPresent(
 						normal -> base.normal(transform.last(), normal.x(), normal.y(), normal.z())
 				);
 		}
-		base.endVertex();
 		allObjects.forEach(ObjectWithGlobal::clear);
 	}
 

@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -29,14 +29,14 @@ public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRec
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingContainer pContainer, @Nonnull Level pLevel)
+	public boolean matches(@Nonnull CraftingInput pContainer, @Nonnull Level pLevel)
 	{
 		return baseRecipe.matches(pContainer, pLevel);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(@Nonnull CraftingContainer pContainer, Provider access)
+	public ItemStack assemble(@Nonnull CraftingInput pContainer, Provider access)
 	{
 		return baseRecipe.assemble(pContainer, access);
 	}
@@ -70,9 +70,9 @@ public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRec
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingContainer pContainer)
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingInput pContainer)
 	{
-		return NonNullList.withSize(pContainer.getContainerSize(), ItemStack.EMPTY);
+		return NonNullList.withSize(pContainer.size(), ItemStack.EMPTY);
 	}
 
 	@Nonnull

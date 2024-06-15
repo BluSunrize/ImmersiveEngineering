@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
@@ -53,18 +54,18 @@ import java.util.function.DoubleSupplier;
 
 public class BulletItem extends IEBaseItem implements IColouredItem
 {
-	public static final ResourceLocation CASULL = new ResourceLocation(ImmersiveEngineering.MODID, "casull");
-	public static final ResourceLocation ARMOR_PIERCING = new ResourceLocation(ImmersiveEngineering.MODID, "armor_piercing");
-	public static final ResourceLocation BUCKSHOT = new ResourceLocation(ImmersiveEngineering.MODID, "buckshot");
-	public static final ResourceLocation HIGH_EXPLOSIVE = new ResourceLocation(ImmersiveEngineering.MODID, "he");
-	public static final ResourceLocation SILVER = new ResourceLocation(ImmersiveEngineering.MODID, "silver");
-	public static final ResourceLocation DRAGONS_BREATH = new ResourceLocation(ImmersiveEngineering.MODID, "dragons_breath");
-	public static final ResourceLocation POTION = new ResourceLocation(ImmersiveEngineering.MODID, "potion");
-	public static final ResourceLocation FLARE = new ResourceLocation(ImmersiveEngineering.MODID, "flare");
-	public static final ResourceLocation FIREWORK = new ResourceLocation(ImmersiveEngineering.MODID, "firework");
-	public static final ResourceLocation HOMING = new ResourceLocation(ImmersiveEngineering.MODID, "homing");
-	public static final ResourceLocation WOLFPACK = new ResourceLocation(ImmersiveEngineering.MODID, "wolfpack");
-	public static final ResourceLocation WOLFPACK_PART = new ResourceLocation(ImmersiveEngineering.MODID, "wolfpack_part");
+	public static final ResourceLocation CASULL = IEApi.ieLoc("casull");
+	public static final ResourceLocation ARMOR_PIERCING = IEApi.ieLoc("armor_piercing");
+	public static final ResourceLocation BUCKSHOT = IEApi.ieLoc("buckshot");
+	public static final ResourceLocation HIGH_EXPLOSIVE = IEApi.ieLoc("he");
+	public static final ResourceLocation SILVER = IEApi.ieLoc("silver");
+	public static final ResourceLocation DRAGONS_BREATH = IEApi.ieLoc("dragons_breath");
+	public static final ResourceLocation POTION = IEApi.ieLoc("potion");
+	public static final ResourceLocation FLARE = IEApi.ieLoc("flare");
+	public static final ResourceLocation FIREWORK = IEApi.ieLoc("firework");
+	public static final ResourceLocation HOMING = IEApi.ieLoc("homing");
+	public static final ResourceLocation WOLFPACK = IEApi.ieLoc("wolfpack");
+	public static final ResourceLocation WOLFPACK_PART = IEApi.ieLoc("wolfpack_part");
 
 	private final IBullet type;
 
@@ -80,13 +81,13 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				(projectile, shooter, hit) -> IEDamageSources.causeCasullDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Casull::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
-				new ResourceLocation("immersiveengineering:item/bullet_casull")));
+				IEApi.ieLoc("item/bullet_casull")));
 
 		BulletHandler.registerBullet(ARMOR_PIERCING, new BulletHandler.DamagingBullet<Unit>(
 				(projectile, shooter, hit) -> IEDamageSources.causePiercingDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_AP::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
-				new ResourceLocation("immersiveengineering:item/bullet_armor_piercing")));
+				IEApi.ieLoc("item/bullet_armor_piercing")));
 
 		BulletHandler.registerBullet(BUCKSHOT, new BulletHandler.DamagingBullet<Unit>(
 				(projectile, shooter, hit) -> IEDamageSources.causeBuckshotDamage((RevolvershotEntity)projectile, shooter),
@@ -94,7 +95,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				true,
 				false,
 				() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
-				new ResourceLocation("immersiveengineering:item/bullet_buckshot"))
+				IEApi.ieLoc("item/bullet_buckshot"))
 		{
 			@Override
 			public int getProjectileCount(Player shooter)
@@ -112,7 +113,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			}
 		});
 
-		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet<Unit>(null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), new ResourceLocation("immersiveengineering:item/bullet_he"))
+		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet<Unit>(null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), IEApi.ieLoc("item/bullet_he"))
 		{
 			@Override
 			public void onHitTarget(Level world, HitResult target, UUID shooterId, Entity projectile, boolean headshot)
@@ -145,7 +146,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				(projectile, shooter, hit) -> IEDamageSources.causeSilverDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Silver::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
-				new ResourceLocation("immersiveengineering:item/bullet_silver"))
+				IEApi.ieLoc("item/bullet_silver"))
 		{
 			@Override
 			protected float getDamage(Entity hitEntity, boolean headshot)
@@ -163,7 +164,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 				true,
 				true,
 				() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
-				new ResourceLocation("immersiveengineering:item/bullet_dragons_breath"))
+				IEApi.ieLoc("item/bullet_dragons_breath"))
 		{
 			@Override
 			public int getProjectileCount(Player shooter)
@@ -187,7 +188,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 		BulletHandler.registerBullet(FIREWORK, new FireworkBullet());
 
 		BulletHandler.registerBullet(HOMING, new HomingBullet(IEServerConfig.TOOLS.bulletDamage_Homing::get,
-				new ResourceLocation("immersiveengineering:item/bullet_homing")));
+				IEApi.ieLoc("item/bullet_homing")));
 
 		BulletHandler.registerBullet(WOLFPACK, new WolfpackBullet());
 
@@ -229,7 +230,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			super((projectile, shooter, hit) -> IEDamageSources.causePotionDamage((RevolvershotEntity)projectile, shooter),
 					IEServerConfig.TOOLS.bulletDamage_Potion::get,
 					() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
-					new ResourceLocation("immersiveengineering:item/bullet_potion"), new ResourceLocation("immersiveengineering:item/bullet_potion_layer"));
+					IEApi.ieLoc("item/bullet_potion"), IEApi.ieLoc("item/bullet_potion_layer"));
 		}
 
 		@Override
@@ -344,7 +345,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 
 	public static class FlareBullet implements BulletHandler.IBullet
 	{
-		static ResourceLocation[] textures = {new ResourceLocation("immersiveengineering:item/bullet_flare"), new ResourceLocation("immersiveengineering:item/bullet_flare_layer")};
+		static ResourceLocation[] textures = {IEApi.ieLoc("item/bullet_flare"), IEApi.ieLoc("item/bullet_flare_layer")};
 
 		public FlareBullet()
 		{
@@ -412,7 +413,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 
 	public static class FireworkBullet implements BulletHandler.IBullet
 	{
-		static ResourceLocation[] textures = {new ResourceLocation("immersiveengineering:item/bullet_firework")};
+		static ResourceLocation[] textures = {IEApi.ieLoc("item/bullet_firework")};
 
 		public FireworkBullet()
 		{
@@ -505,7 +506,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			super((projectile, shooter, hit) -> IEDamageSources.causeWolfpackDamage((RevolvershotEntity)projectile, shooter),
 					IEServerConfig.TOOLS.bulletDamage_Wolfpack::get,
 					() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
-					new ResourceLocation("immersiveengineering:item/bullet_wolfpack"));
+					IEApi.ieLoc("item/bullet_wolfpack"));
 		}
 
 		@Override
@@ -556,7 +557,7 @@ public class BulletItem extends IEBaseItem implements IColouredItem
 			super((projectile, shooter, hit) -> IEDamageSources.causeWolfpackDamage((RevolvershotEntity)projectile, shooter),
 					IEServerConfig.TOOLS.bulletDamage_WolfpackPart::get,
 					() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
-					new ResourceLocation("immersiveengineering:item/bullet_wolfpack"));
+					IEApi.ieLoc("item/bullet_wolfpack"));
 		}
 
 		@Override

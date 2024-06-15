@@ -101,7 +101,7 @@ public class Villages
 		for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"})
 			for(String type : new String[]{"engineer", "machinist", "electrician", "gunsmith", "outfitter"})
 				addToPool(
-						new ResourceLocation("village/"+biome+"/houses"),
+						ResourceLocation.withDefaultNamespace("village/"+biome+"/houses"),
 						rl("village/houses/"+biome+"_"+type),
 						ev.getRegistryAccess()
 				);
@@ -207,7 +207,7 @@ public class Villages
 		public static void registerTrades(VillagerTradesEvent ev)
 		{
 			Int2ObjectMap<List<ItemListing>> trades = ev.getTrades();
-			final ResourceLocation typeName = new ResourceLocation(ev.getType().name());
+			final ResourceLocation typeName = ResourceLocation.parse(ev.getType().name());
 			if(ENGINEER.equals(typeName))
 			{
 				/* Structural Engineer

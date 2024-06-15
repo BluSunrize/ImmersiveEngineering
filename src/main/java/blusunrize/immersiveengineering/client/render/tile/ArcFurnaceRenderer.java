@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
 import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
@@ -40,8 +40,8 @@ public class ArcFurnaceRenderer extends IEMultiblockRenderer<State>
 
 	public static final String NAME = "arc_furnace_electrodes";
 	public static DynamicModel ELECTRODES;
-	public static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
-	public static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
+	public static final ResourceLocation HOT_METLA_STILL = IEApi.ieLoc("block/fluid/hot_metal_still");
+	public static final ResourceLocation HOT_METLA_FLOW = IEApi.ieLoc("block/fluid/hot_metal_flow");
 
 	@Override
 	public void render(IMultiblockContext<State> ctx, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,

@@ -54,7 +54,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe, CTX extends 
 			BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data
 	)
 	{
-		this(new ResourceLocation(data.getString("recipe")), getRecipe);
+		this(ResourceLocation.parse(data.getString("recipe")), getRecipe);
 		this.processTick = data.getInt("process_processTick");
 	}
 

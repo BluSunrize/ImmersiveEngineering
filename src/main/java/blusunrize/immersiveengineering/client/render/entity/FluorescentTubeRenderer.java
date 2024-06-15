@@ -62,7 +62,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		matrixStackIn.translate(-0.25, -1, 0);
 		if(tex==null)
 			tex = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-					.apply(new ResourceLocation("minecraft:block/iron_block"));
+					.apply(ResourceLocation.withDefaultNamespace("block/iron_block"));
 
 		VertexConsumer builder = bufferIn.getBuffer(RenderType.solid());
 		RenderUtils.renderTexturedBox(builder, matrixStackIn,

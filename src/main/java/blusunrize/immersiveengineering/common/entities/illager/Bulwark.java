@@ -15,6 +15,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.SynchedEntityData.Builder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
@@ -103,10 +104,9 @@ public class Bulwark extends EngineerIllager
 	}
 
 	@Override
-	public void applyRaidBuffs(int wave, boolean unusedFalse)
+	public void applyRaidBuffs(ServerLevel p_348605_, int p_37844_, boolean p_37845_)
 	{
 	}
-
 
 	@Override
 	protected SoundEvent getAmbientSound()

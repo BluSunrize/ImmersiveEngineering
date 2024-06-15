@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
@@ -58,8 +59,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
-
 public class IEManual
 {
 	public static void initManual()
@@ -96,13 +95,13 @@ public class IEManual
 				"ticks"
 		));
 
-		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
+		ieMan.registerSpecialElement(IEApi.ieLoc("blueprint"),
 				s -> new ManualElementBlueprint(ieMan, collectRecipeStacksFromJSON(s)));
-		ieMan.registerSpecialElement(new ResourceLocation(MODID, "bottling"),
+		ieMan.registerSpecialElement(IEApi.ieLoc("bottling"),
 				s -> new ManualElementBottling(ieMan, collectRecipeStacksFromJSON(s)));
-		ieMan.registerSpecialElement(new ResourceLocation(MODID, "mixer"),
+		ieMan.registerSpecialElement(IEApi.ieLoc("mixer"),
 				s -> new ManualElementMixer(ieMan, collectRecipeFluidsFromJSON(s)));
-		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
+		ieMan.registerSpecialElement(IEApi.ieLoc("multiblock"),
 				s -> {
 					ResourceLocation name = ManualUtils.getLocationForManual(
 							GsonHelper.getAsString(s, "name"),
@@ -113,7 +112,7 @@ public class IEManual
 						throw new NullPointerException("Multiblock "+name+" does not exist");
 					return new ManualElementMultiblock(ieMan, mb);
 				});
-		ieMan.registerSpecialElement(new ResourceLocation(MODID, "dynamic_table"),
+		ieMan.registerSpecialElement(IEApi.ieLoc("dynamic_table"),
 				s -> new ManualElementTable(
 						ManualHelper.getManual(),
 						ManualHelper.DYNAMIC_TABLES.get(GsonHelper.getAsString(s, "table")).get(),
@@ -124,17 +123,16 @@ public class IEManual
 	public static void addIEManualEntries()
 	{
 		IEManualInstance ieMan = (IEManualInstance)ManualHelper.getManual();
-		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_GENERAL), 0);
+		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(IEApi.ieLoc(ManualHelper.CAT_GENERAL), 0);
 
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.readFromFile(new ResourceLocation(MODID, "minerals"));
+			builder.readFromFile(IEApi.ieLoc("minerals"));
 			builder.appendText(IEManual::getMineralVeinTexts);
 			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "graphite", -0.5));
 		}
 		// hide entry on blueprints
-		ieMan.hideEntry(new ResourceLocation(MODID, "blueprints"));
+		ieMan.hideEntry(IEApi.ieLoc("blueprints"));
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
 			builder.setContent(
@@ -158,7 +156,7 @@ public class IEManual
 				String key = shader.name.getPath();
 				builder.addSpecialElement(new SpecialElementData(key, 0, new ShaderManualElement(ieMan, shader)));
 			}
-			builder.setLocation(new ResourceLocation(MODID, "shader_list"));
+			builder.setLocation(IEApi.ieLoc("shader_list"));
 			ManualEntry e = builder.create();
 			ieMan.addEntry(generalCat, e);
 			ieMan.hideEntry(e.getLocation());
@@ -262,7 +260,7 @@ public class IEManual
 		SortedMap<ComparableVersion, ManualEntry> allChanges = new TreeMap<>(Comparator.reverseOrder());
 		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
 		//Included changelog
-		try(InputStream in = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(MODID,
+		try(InputStream in = Minecraft.getInstance().getResourceManager().getResource(IEApi.ieLoc(
 				"changelog.json")).orElseThrow().open())
 		{
 			JsonElement ele = JsonParser.parseReader(new InputStreamReader(in));
@@ -287,7 +285,7 @@ public class IEManual
 					allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
 
 		ManualInstance ieMan = ManualHelper.getManual();
-		InnerNode<ResourceLocation, ManualEntry> updateCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+		InnerNode<ResourceLocation, ManualEntry> updateCat = ieMan.getRoot().getOrCreateSubnode(IEApi.ieLoc(
 				ManualHelper.CAT_UPDATE), -2);
 		for(ManualEntry entry : allChanges.values())
 			ManualHelper.getManual().addEntry(updateCat, entry);
@@ -305,7 +303,7 @@ public class IEManual
 				title += " - "+I18n.get("ie.manual.currentVersion");
 			return title;
 		}, () -> "", () -> text);
-		builder.setLocation(new ResourceLocation(MODID, "changelog_"+version.toString()));
+		builder.setLocation(IEApi.ieLoc("changelog_"+version.toString()));
 		return builder.create();
 	}
 
@@ -357,7 +355,7 @@ public class IEManual
 			stacks = new Fluid[arr.size()];
 			for(int i = 0; i < stacks.length; ++i)
 				stacks[i] = BuiltInRegistries.FLUID.get(
-						new ResourceLocation(GsonHelper.getAsString(arr.get(i).getAsJsonObject(), "fluid"))
+						ResourceLocation.parse(GsonHelper.getAsString(arr.get(i).getAsJsonObject(), "fluid"))
 				);
 		}
 		else
@@ -365,7 +363,7 @@ public class IEManual
 			JsonElement recipe = json.get("recipe");
 			Preconditions.checkArgument(recipe.isJsonObject());
 			stacks = new Fluid[]{BuiltInRegistries.FLUID.get(
-					new ResourceLocation(GsonHelper.getAsString(recipe.getAsJsonObject(), "fluid"))
+					ResourceLocation.parse(GsonHelper.getAsString(recipe.getAsJsonObject(), "fluid"))
 			)};
 		}
 		return stacks;

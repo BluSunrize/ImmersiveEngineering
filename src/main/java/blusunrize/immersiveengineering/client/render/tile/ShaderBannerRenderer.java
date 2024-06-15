@@ -19,8 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -32,6 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -104,7 +103,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 		matrixStack.popPose();
 	}
 
-	private static final ResourceLocation BASE_TEXTURE = new ResourceLocation("textures/entity/banner_base.png");
+	private static final ResourceLocation BASE_TEXTURE = ResourceLocation.withDefaultNamespace("textures/entity/banner_base.png");
 	private static final HashMap<ResourceLocation, ResourceLocation> CACHE = new HashMap<>();
 
 	@Nullable
@@ -130,7 +129,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 		if(sCase!=null)
 		{
 			ShaderLayer[] layers = sCase.getLayers();
-			ResourceLocation textureLocation = new ResourceLocation(name.getNamespace(), "bannershader/"+name.getPath());
+			ResourceLocation textureLocation = name.withPath("bannershader/"+name.getPath());
 			ClientUtils.mc().getTextureManager().register(textureLocation, new IEShaderLayerCompositeTexture(BASE_TEXTURE, layers));
 			CACHE.put(name, textureLocation);
 			return textureLocation;

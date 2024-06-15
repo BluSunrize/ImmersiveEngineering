@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -92,7 +91,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
-		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+		MultiBufferSource.BufferSource buffers = graphics.bufferSource();
 		VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGui(InventoryMenu.BLOCK_ATLAS));
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
@@ -111,7 +110,6 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 							sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1());
 				}
 			}
-		buffers.endBatch();
 		for(int side = 0; side < 6; side++)
 		{
 			int x = leftPos+30+(side/2)*58;

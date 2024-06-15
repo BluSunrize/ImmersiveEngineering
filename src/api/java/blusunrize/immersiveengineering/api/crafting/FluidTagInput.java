@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.common.base.Preconditions;
@@ -101,7 +100,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	{
 		Preconditions.checkArgument(input instanceof JsonObject, "FluidTagWithSize can only be deserialized from a JsonObject");
 		JsonObject jsonObject = input.getAsJsonObject();
-		ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, "tag"));
+		ResourceLocation resourceLocation = ResourceLocation.parse(GsonHelper.getAsString(jsonObject, "tag"));
 		if(!GsonHelper.isValidNode(jsonObject, "nbt"))
 			return new FluidTagInput(resourceLocation, GsonHelper.getAsInt(jsonObject, "amount"));
 		try
@@ -225,7 +224,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 			FluidStack inTank = handler.getFluidInTank(tank);
 			if(testIgnoringAmount(inTank))
 			{
-				FluidStack toExtract = FluidUtils.copyFluidStackWithAmount(inTank, this.amount);
+				FluidStack toExtract = inTank.copyWithAmount(this.amount);
 				FluidStack extractedSim = handler.drain(toExtract, FluidAction.SIMULATE);
 				if(extractedSim.getAmount() >= this.amount)
 				{

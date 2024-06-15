@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.conveyor;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
@@ -41,7 +42,7 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 		return false;
 	}
 
-	public static ResourceLocation texture_casing = new ResourceLocation("immersiveengineering:block/conveyor/split_wall");
+	public static ResourceLocation texture_casing = IEApi.ieLoc("block/conveyor/split_wall");
 
 	@Override
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<SplitConveyor> context, @Nullable RenderType renderType)

@@ -33,7 +33,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 	public SqueezerRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, JEIRecipeTypes.SQUEEZER, "block.immersiveengineering.squeezer");
-		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/squeezer.png");
+		ResourceLocation background = IEApi.ieLoc("textures/gui/squeezer.png");
 		setBackground(helper.createDrawable(background, 6, 12, 126, 59));
 		setIcon(IEMultiblockLogic.SQUEEZER.iconStack());
 		tankOverlay = helper.createDrawable(background, 179, 33, 16, 47);

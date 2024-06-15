@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
@@ -42,6 +41,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -101,9 +101,11 @@ public class SawmillLogic
 				processIterator.remove();
 				state.sawblade.hurtAndBreak(
 						IEServerConfig.MACHINES.sawmill_bladeDamage.get(),
-						ApiUtils.RANDOM_SOURCE,
+						(ServerLevel)level.getRawLevel(),
 						null,
-						() -> state.sawblade = ItemStack.EMPTY
+						// TODO?
+						(item) -> {
+						}
 				);
 				context.markDirtyAndSync();
 			}

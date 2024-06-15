@@ -14,10 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 
 import java.util.Map;
 import java.util.Objects;
@@ -80,7 +77,7 @@ public class ManualRecipeRef
 		return Objects.requireNonNull(recipeName);
 	}
 
-	public <C extends Container, R extends Recipe<C>>
+	public <C extends RecipeInput, R extends Recipe<C>>
 	void forEachMatchingRecipe(RecipeType<R> type, Consumer<R> out)
 	{
 		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();

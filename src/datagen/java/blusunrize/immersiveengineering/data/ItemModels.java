@@ -420,7 +420,7 @@ public class ItemModels extends TRSRItemModelProvider
 		return getBuilder(item)
 				.customLoader(ObjModelBuilder::begin)
 				.flipV(true)
-				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()))
+				.modelLocation(model.withPath("models/"+model.getPath()))
 				.end();
 	}
 
@@ -429,7 +429,7 @@ public class ItemModels extends TRSRItemModelProvider
 		Preconditions.checkArgument(existingFileHelper.exists(model, PackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
 				.customLoader(IEOBJBuilder::begin)
-				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()));
+				.modelLocation(model.withPath("models/"+model.getPath()));
 	}
 
 	private TRSRModelBuilder getBuilder(ItemLike item)

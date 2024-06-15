@@ -39,7 +39,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 	public CokeOvenRecipeCategory(IGuiHelper helper)
 	{
 		super(helper, JEIRecipeTypes.COKE_OVEN, "block.immersiveengineering.coke_oven");
-		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/coke_oven.png");
+		ResourceLocation background = IEApi.ieLoc("textures/gui/coke_oven.png");
 		setBackground(helper.createDrawable(background, 26, 16, 123, 55));
 		setIcon(IEMultiblockLogic.COKE_OVEN.iconStack());
 		tankOverlay = helper.createDrawable(background, 178, 33, 16, 47);

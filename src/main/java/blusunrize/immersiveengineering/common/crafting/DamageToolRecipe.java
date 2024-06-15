@@ -10,12 +10,8 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -38,7 +34,7 @@ public class DamageToolRecipe extends ShapelessRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingInput inv)
 	{
 		NonNullList<ItemStack> remains = super.getRemainingItems(inv);
 		for(int i = 0; i < remains.size(); i++)
@@ -63,11 +59,11 @@ public class DamageToolRecipe extends ShapelessRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingContainer matrix, Level world)
+	public boolean matches(CraftingInput matrix, Level world)
 	{
 		List<Ingredient> required = new LinkedList<>(getIngredients());
 
-		for(int i = 0; i < matrix.getContainerSize(); i++)
+		for(int i = 0; i < matrix.size(); i++)
 		{
 			ItemStack slot = matrix.getItem(i);
 			if(!slot.isEmpty())

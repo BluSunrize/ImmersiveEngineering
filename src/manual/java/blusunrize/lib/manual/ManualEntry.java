@@ -320,17 +320,14 @@ public class ManualEntry implements Comparable<ManualEntry>
 		{
 			location = name;
 			getContent = () -> {
-				ResourceLocation langLoc = new ResourceLocation(name.getNamespace(),
-						"manual/"+Minecraft.getInstance().getLanguageManager().getSelected()
-								+"/"+name.getPath()+".txt");
-				ResourceLocation dataLoc = new ResourceLocation(name.getNamespace(),
-						"manual/"+name.getPath()+".json");
+				ResourceLocation langLoc = name.withPath("manual/"+Minecraft.getInstance().getLanguageManager().getSelected()
+						+"/"+name.getPath()+".txt");
+				ResourceLocation dataLoc = name.withPath("manual/"+name.getPath()+".json");
 				Resource resLang = getResourceNullable(langLoc);
 				ResourceManager manager = Minecraft.getInstance().getResourceManager();
 				Resource resData = manager.getResource(dataLoc).orElseThrow();
 				if(resLang==null)
-					resLang = getResourceNullable(new ResourceLocation(name.getNamespace(),
-							"manual/en_us/"+name.getPath()+".txt"));
+					resLang = getResourceNullable(name.withPath("manual/en_us/"+name.getPath()+".txt"));
 				if(resLang==null)
 					return new EntryData(
 							"ERROR", "This is not a good thing", "Could not find the file for "+name, ImmutableList.of()

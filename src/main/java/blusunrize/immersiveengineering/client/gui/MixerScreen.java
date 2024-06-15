@@ -17,9 +17,7 @@ import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer.MixerLogic;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -73,15 +71,12 @@ public class MixerScreen extends IEContainerScreen<MixerMenu>
 	protected void drawContainerBackgroundPre(@Nonnull GuiGraphics graphics, float f, int mx, int my)
 	{
 		graphics.pose().pushPose();
-		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
 		for(final var slotProgress : menu.progress.get())
 		{
 			final int slot = slotProgress.slot();
 			final int h = (int)Math.max(1, slotProgress.progress()*16);
 			graphics.blit(TEXTURE, leftPos+24+slot%2*21, topPos+7+slot/2*18+(16-h), 176, 16-h, 2, h);
 		}
-
-		buffers.endBatch();
+		graphics.pose().popPose();
 	}
 }

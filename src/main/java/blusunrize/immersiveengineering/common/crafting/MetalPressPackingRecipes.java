@@ -22,7 +22,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -210,7 +210,7 @@ public class MetalPressPackingRecipes
 
 	public static Pair<RecipeHolder<CraftingRecipe>, ItemStack> getPackedOutput(int gridSize, ItemStack stack, Level world)
 	{
-		CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(
+		CraftingInput invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(
 				gridSize, gridSize, NonNullList.withSize(gridSize*gridSize, stack.copy())
 		);
 		return world.getRecipeManager()

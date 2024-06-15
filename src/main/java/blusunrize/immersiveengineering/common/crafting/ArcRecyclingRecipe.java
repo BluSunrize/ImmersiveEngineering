@@ -20,7 +20,6 @@ import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +89,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	{
 		//Noone likes nuggets anyway >_>
 		if(scaledOut >= 1)
-			outs.add(ItemHandlerHelper.copyStackWithSize(e.getFirst().get(), (int)scaledOut));
+			outs.add(e.getFirst().get().copyWithCount((int)scaledOut));
 		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
 		if(nuggetOut > 0)
 		{

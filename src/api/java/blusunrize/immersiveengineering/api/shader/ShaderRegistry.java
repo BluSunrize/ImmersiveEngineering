@@ -160,7 +160,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("item/revolvers/shaders/revolver_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("item/revolvers/shaders/revolver_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("item/revolvers/shaders/revolver_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("item/revolvers/shaders/revolver_uncoloured"), 0xffffffff));
@@ -189,7 +189,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("item/shaders/chemthrower_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("item/shaders/chemthrower_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("item/shaders/chemthrower_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("item/shaders/chemthrower_uncoloured"), 0xffffffff));
@@ -219,7 +219,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("item/shaders/drill_diesel_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("item/shaders/drill_diesel_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("item/shaders/drill_diesel_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("item/shaders/drill_diesel_uncoloured"), 0xffffffff));
@@ -250,7 +250,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("item/shaders/buzzsaw_diesel_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("item/shaders/buzzsaw_diesel_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("item/shaders/buzzsaw_diesel_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("item/shaders/buzzsaw_diesel_uncoloured"), 0xffffffff));
@@ -280,7 +280,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("item/shaders/railgun_1_"+overlayType), colour2));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("item/shaders/railgun_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("item/shaders/railgun_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("item/shaders/railgun_uncoloured"), 0xffffffff));
@@ -308,7 +308,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("item/shaders/shield_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("item/shaders/shield_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("item/shaders/shield_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("item/shaders/shield_uncoloured"), 0xffffffff));
@@ -338,7 +338,7 @@ public class ShaderRegistry
 		if(additionalTexture!=null)
 		{
 			if(additionalTexture.indexOf(58) >= 0)
-				list.add(new ShaderLayer(new ResourceLocation(additionalTexture+".png"), colourAddtional));
+				list.add(new ShaderLayer(ResourceLocation.parse(additionalTexture+".png"), colourAddtional));
 			else
 				list.add(new ShaderLayer(ieLoc("textures/models/shaders/minecart_"+additionalTexture+".png"), colourAddtional));
 		}
@@ -377,7 +377,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("block/shaders/balloon_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("block/shaders/balloon_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("block/shaders/balloon_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("block/shaders/balloon_uncoloured"), 0xffffffff));
@@ -405,7 +405,7 @@ public class ShaderRegistry
 		list.add(new ShaderLayer(ieLoc("block/shaders/banner_1_"+overlayType), colour1));
 		if(additionalTexture!=null)
 		{
-			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?new ResourceLocation(additionalTexture): ieLoc("block/shaders/banner_"+additionalTexture);
+			ResourceLocation rl = additionalTexture.indexOf(58) >= 0?ResourceLocation.parse(additionalTexture): ieLoc("block/shaders/banner_"+additionalTexture);
 			list.add(new ShaderLayer(rl, colourAddtional));
 		}
 		list.add(new ShaderLayer(ieLoc("block/shaders/banner_uncoloured"), 0xffffffff));

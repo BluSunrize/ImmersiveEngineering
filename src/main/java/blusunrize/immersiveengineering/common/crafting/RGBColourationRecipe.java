@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -36,11 +36,11 @@ public class RGBColourationRecipe implements CraftingRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, @Nonnull Level world)
+	public boolean matches(CraftingInput inv, @Nonnull Level world)
 	{
 		ItemStack itemToColour = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -58,13 +58,13 @@ public class RGBColourationRecipe implements CraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack assemble(CraftingContainer inv, Provider access)
+	public ItemStack assemble(CraftingInput inv, Provider access)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
 		ItemStack itemToColour = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getContainerSize(); i++)
+		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
@@ -87,10 +87,10 @@ public class RGBColourationRecipe implements CraftingRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = Utils.getDye(stackInSlot).getTextureDiffuseColors();
-					int r = (int)(afloat[0]*255.0F);
-					int g = (int)(afloat[1]*255.0F);
-					int b = (int)(afloat[2]*255.0F);
+					int color = Utils.getDye(stackInSlot).getTextureDiffuseColor();
+					int r = (color>>16)&255;
+					int g = (color>>8)&255;
+					int b = color&255;
 					j += Math.max(r, Math.max(g, b));
 					colourArray[0] += r;
 					colourArray[1] += g;

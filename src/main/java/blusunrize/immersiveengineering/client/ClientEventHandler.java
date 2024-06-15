@@ -738,22 +738,18 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				Matrix4f mat = transform.last().pose();
 				VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
 				float sqrt2Half = (float)(Math.sqrt(2)/2);
-				lineBuilder.vertex(mat, 0-eps, y, 0-eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(transform.last(), sqrt2Half, 0, sqrt2Half)
-						.endVertex();
-				lineBuilder.vertex(mat, 1+eps, y, 1+eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(transform.last(), sqrt2Half, 0, sqrt2Half)
-						.endVertex();
-				lineBuilder.vertex(mat, 0-eps, y, 1+eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(transform.last(), sqrt2Half, 0, -sqrt2Half)
-						.endVertex();
-				lineBuilder.vertex(mat, 1+eps, y, 0-eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(transform.last(), sqrt2Half, 0, -sqrt2Half)
-						.endVertex();
+				lineBuilder.addVertex(mat, 0-eps, y, 0-eps)
+						.setColor(0, 0, 0, 0.4F)
+						.setNormal(transform.last(), sqrt2Half, 0, sqrt2Half);
+				lineBuilder.addVertex(mat, 1+eps, y, 1+eps)
+						.setColor(0, 0, 0, 0.4F)
+						.setNormal(transform.last(), sqrt2Half, 0, sqrt2Half);
+				lineBuilder.addVertex(mat, 0-eps, y, 1+eps)
+						.setColor(0, 0, 0, 0.4F)
+						.setNormal(transform.last(), sqrt2Half, 0, -sqrt2Half);
+				lineBuilder.addVertex(mat, 1+eps, y, 0-eps)
+						.setColor(0, 0, 0, 0.4F)
+						.setNormal(transform.last(), sqrt2Half, 0, -sqrt2Half);
 
 				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getLocation().x-pos.getX()-.5f;
 				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getLocation().y-pos.getY()-.5f;

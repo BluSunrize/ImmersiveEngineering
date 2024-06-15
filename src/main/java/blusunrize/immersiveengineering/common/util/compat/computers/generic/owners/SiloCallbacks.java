@@ -21,6 +21,6 @@ public class SiloCallbacks extends Callback<State>
 	public ItemStack getContents(CallbackEnvironment<State> env)
 	{
 		// This stack will be converted to a lua object immediately, so using a large stack size is ok
-		return ItemHandlerHelper.copyStackWithSize(env.object().identStack, env.object().storageAmount);
+		return env.object().identStack.copyWithCount(env.object().storageAmount);
 	}
 }

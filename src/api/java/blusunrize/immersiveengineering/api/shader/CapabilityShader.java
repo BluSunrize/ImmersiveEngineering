@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.shader;
 import blusunrize.immersiveengineering.api.IEApi;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -166,7 +165,7 @@ public class CapabilityShader
 		@Override
 		public ShaderWrapper_Direct read(IAttachmentHolder holder, CompoundTag tag, Provider provider)
 		{
-			ShaderWrapper_Direct wrapper = new ShaderWrapper_Direct(new ResourceLocation(tag.getString("IE:ShaderType")));
+			ShaderWrapper_Direct wrapper = new ShaderWrapper_Direct(ResourceLocation.parse(tag.getString("IE:ShaderType")));
 			if(!tag.contains("IE:NoShader"))
 				wrapper.setShaderItem(ItemStack.parseOptional(provider, tag));
 			return wrapper;

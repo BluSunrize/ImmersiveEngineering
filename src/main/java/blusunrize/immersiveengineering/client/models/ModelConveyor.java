@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.conveyor.*;
@@ -85,10 +85,10 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 {
 	private static final ModelProperty<IConveyorBelt> CONVEYOR_MODEL_DATA = new ModelProperty<>();
 	public static final ResourceLocation[] rl_casing = {
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_top"),
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_side"),
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_walls"),
-			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_full")
+			IEApi.ieLoc("block/conveyor/casing_top"),
+			IEApi.ieLoc("block/conveyor/casing_side"),
+			IEApi.ieLoc("block/conveyor/casing_walls"),
+			IEApi.ieLoc("block/conveyor/casing_full")
 	};
 
 	private final Map<RenderType, Cache<Object, List<BakedQuad>>> modelCache = new HashMap<>();
@@ -295,7 +295,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 	public TextureAtlasSprite getParticleIcon()
 	{
 		if(tex_particle==null)
-			tex_particle = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/off"));
+			tex_particle = ClientUtils.getSprite(IEApi.ieLoc("block/conveyor/off"));
 		return tex_particle;
 	}
 
@@ -415,8 +415,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 				ModelBaker bakery,
 				Function<Material, TextureAtlasSprite> spriteGetter,
 				ModelState modelState,
-				ItemOverrides overrides,
-				ResourceLocation modelLocation
+				ItemOverrides overrides
 		)
 		{
 			if(!REFRESHED_SINCE_BAKE.getAndSet(true))
@@ -434,7 +433,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 
 	public static class ConveyorLoader implements IGeometryLoader<RawConveyorModel>
 	{
-		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/conveyor");
+		public static final ResourceLocation LOCATION = IEApi.ieLoc("models/conveyor");
 		public static final String TYPE_KEY = "conveyorType";
 
 		@Nonnull
@@ -442,7 +441,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		public RawConveyorModel read(JsonObject modelContents, @Nonnull JsonDeserializationContext deserializationContext)
 		{
 			String typeName = modelContents.get(TYPE_KEY).getAsString();
-			IConveyorType<?> type = ConveyorHandler.getConveyorType(new ResourceLocation(typeName));
+			IConveyorType<?> type = ConveyorHandler.getConveyorType(ResourceLocation.parse(typeName));
 			return new RawConveyorModel(Objects.requireNonNull(type));
 		}
 	}
