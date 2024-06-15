@@ -22,6 +22,9 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -61,6 +64,9 @@ public class SkylineHookEntity extends Entity
 	public double friction = .99;
 	public InteractionHand hand;
 	private boolean limitSpeed;
+	private float slopeModifier;
+	private static final EntityDataAccessor<Float> SLOPE_MODIFIER = SynchedEntityData.defineId(SkylineHookEntity.class, EntityDataSerializers.FLOAT);
+
 	private final Set<BlockPos> ignoreCollisions = new HashSet<>();
 
 
@@ -71,11 +77,13 @@ public class SkylineHookEntity extends Entity
 	}
 
 	public SkylineHookEntity(Level world, Connection connection, ConnectionPoint start, double linePos, InteractionHand hand, double horSpeed,
-							 boolean limitSpeed)
+							 boolean limitSpeed, float slopeModifier)
 	{
 		this(IEEntityTypes.SKYLINE_HOOK.get(), world);
 		this.hand = hand;
 		this.limitSpeed = limitSpeed;
+		this.slopeModifier = slopeModifier;
+		this.setSlopeModifier(slopeModifier);
 		setConnectionAndPos(connection, start, linePos, horSpeed);
 
 		Vec3 motion = getDeltaMovement();
@@ -113,9 +121,20 @@ public class SkylineHookEntity extends Entity
 		}
 	}
 
+	private float getSlopeModifier()
+	{
+		return this.entityData.get(SLOPE_MODIFIER);
+	}
+
+	private void setSlopeModifier(float slopeModifier)
+	{
+		this.entityData.set(SLOPE_MODIFIER, slopeModifier);
+	}
+
 	@Override
 	protected void defineSynchedData()
 	{
+		this.entityData.define(SLOPE_MODIFIER, 1f);
 	}
 
 
@@ -172,7 +191,7 @@ public class SkylineHookEntity extends Entity
 				//Linear interpolation w.r.t. the angle of the line
 				double lambda = Math.atan(slopeInDirection)/(Math.PI/2);
 				speed = lambda*MOVE_SPEED_VERT+(1-lambda)*MOVE_SPEED_HOR;
-				slopeFactor = 1/Math.sqrt(1+slope*slope);
+				slopeFactor = 1/(Math.sqrt(1+slope*slope)*getSlopeModifier());
 			}
 			if(slopeInDirection > -.1)
 			{
@@ -237,6 +256,7 @@ public class SkylineHookEntity extends Entity
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
 			discard();
+			System.out.println("Launch me?");
 			return;
 		}
 		this.setPos(pos.x, pos.y, pos.z);
@@ -323,14 +343,14 @@ public class SkylineHookEntity extends Entity
 			discard();
 	}
 
-	private static double getSpeedPerHor(Connection connection, ConnectionPoint start, double pos)
+	private double getSpeedPerHor(Connection connection, ConnectionPoint start, double pos)
 	{
 		if(connection.getCatenaryData().isVertical())
 			return 1;
 		else
 		{
 			double slope = connection.getSlope(pos, start);
-			return Math.sqrt(slope*slope+1);
+			return Math.sqrt(slope*slope+1)*getSlopeModifier();
 		}
 	}
 
@@ -421,11 +441,14 @@ public class SkylineHookEntity extends Entity
 	@Override
 	protected void addAdditionalSaveData(CompoundTag nbt)
 	{
+		nbt.putFloat("slopeModifier", this.slopeModifier);
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag nbt)
 	{
+		this.slopeModifier = nbt.getFloat("slopeModifier");
+		this.setSlopeModifier(this.slopeModifier);
 	}
 
 	@Override
@@ -503,7 +526,7 @@ public class SkylineHookEntity extends Entity
 		else
 		{
 			double slope = connection.getSlope(linePos, start);
-			return Math.abs(horizontalSpeed)*Math.sqrt(1+slope*slope);
+			return Math.abs(horizontalSpeed)*Math.sqrt(1+slope*slope)*getSlopeModifier();
 		}
 	}
 

@@ -98,7 +98,8 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 		POWERPACK_INDUCTION(ImmutableSet.of("POWERPACK"), 1, (upgrade, modifications) -> modifications.putBoolean("induction", true)),
 		POWERPACK_TESLA(ImmutableSet.of("POWERPACK"), 1, (target, upgrade) -> !PowerpackItem.getUpgradesStatic(target).contains("antenna"), (upgrade, modifications) -> modifications.putBoolean("tesla", true)),
 
-		POWERPACK_MAGNET(ImmutableSet.of("POWERPACK"), 1, (upgrade, modifications) -> modifications.putBoolean("magnet", true))
+		POWERPACK_MAGNET(ImmutableSet.of("POWERPACK"), 1, (upgrade, modifications) -> modifications.putBoolean("magnet", true)),
+		SKYHOOK_SLOPE(ImmutableSet.of("SKYHOOK"), 1, (upgrade, modifications) -> modifications.putFloat("slopeModifier", 0.5f))
 		;
 
 		private ImmutableSet<String> toolset;

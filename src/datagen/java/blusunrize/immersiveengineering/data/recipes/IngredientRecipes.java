@@ -349,6 +349,17 @@ public class IngredientRecipes extends IERecipeProvider
 				.unlockedBy("has_powerpack", has(Misc.POWERPACK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.POWERPACK_MAGNET))));
 
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_SLOPE))
+				.pattern(" we")
+				.pattern(" mw")
+				.pattern("r  ")
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('m', Ingredients.COMPONENT_STEEL)
+				.define('r', IETags.steelRod)
+				.unlockedBy("has_skyhook", has(Misc.SKYHOOK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_SLOPE))));
+
 		shapelessMisc(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.requires(Tools.WIRECUTTER)

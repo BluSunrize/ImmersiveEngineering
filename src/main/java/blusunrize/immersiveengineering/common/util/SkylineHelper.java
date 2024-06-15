@@ -50,7 +50,7 @@ public class SkylineHelper
 	private static final double LN_0_98 = Math.log(.98);
 
 	public static void spawnHook(LivingEntity player, Connection connection, InteractionHand hand,
-								 boolean limitSpeed)
+								 boolean limitSpeed, float slopeModifier)
 	{
 		if(!player.level().isClientSide)
 		{
@@ -83,8 +83,8 @@ public class SkylineHelper
 			extendedWire = extendedWire.normalize();
 
 			double totalSpeed = playerMovement.dot(extendedWire);
-			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
-			SkylineHookEntity hook = new SkylineHookEntity(player.level(), connection, cpA, linePos, hand, horSpeed, limitSpeed);
+			double horSpeed = totalSpeed/(Math.sqrt(1+slopeAtPos*slopeAtPos)*slopeModifier);
+			SkylineHookEntity hook = new SkylineHookEntity(player.level(), connection, cpA, linePos, hand, horSpeed, limitSpeed, slopeModifier);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
 					hook.position());
 			if(hook.isValidPosition(hook.getX(), hook.getY(), hook.getZ(), player))
@@ -141,63 +141,63 @@ public class SkylineHelper
 		final BlockPos.MutableBlockPos currPos = new BlockPos.MutableBlockPos();
 		final VoxelShape searchShape = Shapes.create(aabb);
 		StreamSupport.stream(new AbstractSpliterator<VoxelShape>(Long.MAX_VALUE, Spliterator.NONNULL|Spliterator.IMMUTABLE)
-		{
-			boolean isEntityNull = entityIn==null;
-
-			public boolean tryAdvance(Consumer<? super VoxelShape> add)
-			{
-				if(!this.isEntityNull)
 				{
-					assert (entityIn!=null);
-					this.isEntityNull = true;
-					VoxelShape worldBorder = w.getWorldBorder().getCollisionShape();
-					boolean veryOutside = Shapes.joinIsNotEmpty(worldBorder, Shapes.create(entityIn.getBoundingBox().deflate(1.0E-7D)), BooleanOp.AND);
-					boolean nearlyOutside = Shapes.joinIsNotEmpty(worldBorder, Shapes.create(entityIn.getBoundingBox().inflate(1.0E-7D)), BooleanOp.AND);
-					if(!veryOutside&&nearlyOutside)
-					{
-						add.accept(worldBorder);
-						return true;
-					}
-				}
+					boolean isEntityNull = entityIn==null;
 
-				while(true)
-				{
-					if(!it.advance())
-						return false;
-
-					int currX = it.nextX();
-					int currY = it.nextY();
-					int currZ = it.nextZ();
-					int numBounderies = it.getNextType();
-					if(numBounderies!=3)
+					public boolean tryAdvance(Consumer<? super VoxelShape> add)
 					{
-						int chunkX = currX >> 4;
-						int chunkZ = currZ >> 4;
-						BlockGetter iblockreader = w.getChunkForCollisions(chunkX, chunkZ);
-						if(iblockreader!=null)
+						if(!this.isEntityNull)
 						{
-							currPos.set(currX, currY, currZ);
-							BlockState blockstate = iblockreader.getBlockState(currPos);
-							if((numBounderies!=1||blockstate.hasLargeCollisionShape())&&
-									(numBounderies!=2||blockstate.getBlock()==Blocks.MOVING_PISTON)&&
-									!ignored.contains(currPos)
-							)
+							assert (entityIn!=null);
+							this.isEntityNull = true;
+							VoxelShape worldBorder = w.getWorldBorder().getCollisionShape();
+							boolean veryOutside = Shapes.joinIsNotEmpty(worldBorder, Shapes.create(entityIn.getBoundingBox().deflate(1.0E-7D)), BooleanOp.AND);
+							boolean nearlyOutside = Shapes.joinIsNotEmpty(worldBorder, Shapes.create(entityIn.getBoundingBox().inflate(1.0E-7D)), BooleanOp.AND);
+							if(!veryOutside&&nearlyOutside)
 							{
-								VoxelShape blockShape = blockstate.getCollisionShape(w, currPos, selectionCtx);
-								VoxelShape blockShapeWithOffset = blockShape.move(currX, currY, currZ);
-								if(Shapes.joinIsNotEmpty(searchShape, blockShapeWithOffset, BooleanOp.AND))
+								add.accept(worldBorder);
+								return true;
+							}
+						}
+
+						while(true)
+						{
+							if(!it.advance())
+								return false;
+
+							int currX = it.nextX();
+							int currY = it.nextY();
+							int currZ = it.nextZ();
+							int numBounderies = it.getNextType();
+							if(numBounderies!=3)
+							{
+								int chunkX = currX>>4;
+								int chunkZ = currZ>>4;
+								BlockGetter iblockreader = w.getChunkForCollisions(chunkX, chunkZ);
+								if(iblockreader!=null)
 								{
-									add.accept(blockShapeWithOffset);
-									break;
+									currPos.set(currX, currY, currZ);
+									BlockState blockstate = iblockreader.getBlockState(currPos);
+									if((numBounderies!=1||blockstate.hasLargeCollisionShape())&&
+											(numBounderies!=2||blockstate.getBlock()==Blocks.MOVING_PISTON)&&
+											!ignored.contains(currPos)
+									)
+									{
+										VoxelShape blockShape = blockstate.getCollisionShape(w, currPos, selectionCtx);
+										VoxelShape blockShapeWithOffset = blockShape.move(currX, currY, currZ);
+										if(Shapes.joinIsNotEmpty(searchShape, blockShapeWithOffset, BooleanOp.AND))
+										{
+											add.accept(blockShapeWithOffset);
+											break;
+										}
+									}
 								}
 							}
 						}
-					}
-				}
 
-				return true;
-			}
-		}, false)
+						return true;
+					}
+				}, false)
 				.forEach(outList::add);
 	}
 }

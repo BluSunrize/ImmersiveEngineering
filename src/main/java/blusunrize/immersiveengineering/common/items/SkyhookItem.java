@@ -18,6 +18,9 @@ import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
+import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -25,7 +28,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -80,23 +87,23 @@ public class SkyhookItem extends UpgradeableToolItem
 	public void inventoryTick(ItemStack stack, Level world, Entity ent, int slot, boolean inHand)
 	{
 		super.inventoryTick(stack, world, ent, slot, inHand);
-		if(getUpgrades(stack).getBoolean("fallBoost"))
-		{
-			float dmg = (float)Math.ceil(ent.fallDistance/5);
-			ItemNBTHelper.putFloat(stack, "fallDamageBoost", dmg);
-		}
 	}
-	/*@Override
-	public Multimap getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack)
+
+	@Override
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
 	{
-		Multimap multimap = super.getAttributeModifiers(slot, stack);
-		if(slot == EntityEquipmentSlot.MAINHAND)
+		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+		if(slot==EquipmentSlot.MAINHAND)
 		{
-			float dmg = 5 + ItemNBTHelper.getFloat(stack, "fallDamageBoost");
-			multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", dmg, 0));
+			builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
+					BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 5, AttributeModifier.Operation.ADDITION
+			));
+			builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
+					BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION
+			));
 		}
-		return multimap;
-	}*/
+		return builder.build();
+	}
 
 
 	@Nonnull
@@ -141,7 +148,7 @@ public class SkyhookItem extends UpgradeableToolItem
 			return;
 		Connection con = WireUtils.getConnectionMovedThrough(level, player);
 		if(con!=null)
-			SkylineHelper.spawnHook(player, con, player.getUsedItemHand(), shouldLimitSpeed(stack));
+			SkylineHelper.spawnHook(player, con, player.getUsedItemHand(), shouldLimitSpeed(stack), getSlopeModifier(stack));
 	}
 
 	@Override
@@ -152,9 +159,12 @@ public class SkyhookItem extends UpgradeableToolItem
 			player.getData(IEDataAttachments.SKYHOOK_USER.get()).release();
 	}
 
-	public float getSkylineSpeed(ItemStack stack)
+	public float getSlopeModifier(ItemStack stack)
 	{
-		return 3f+this.getUpgrades(stack).getFloat("speed");
+		CompoundTag upgrades = this.getUpgrades(stack);
+		if(upgrades.contains("slopeModifier"))
+			return Math.max(upgrades.getFloat("slopeModifier"), 0.5f);
+		return 1;
 	}
 
 	@Override
