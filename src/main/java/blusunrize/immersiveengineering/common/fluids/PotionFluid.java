@@ -18,7 +18,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +29,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
@@ -48,6 +46,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -65,12 +64,11 @@ public class PotionFluid extends Fluid
 		return stack;
 	}
 
-	public static Potion getType(FluidStack stack)
+	public static Holder<Potion> getType(FluidStack stack)
 	{
 		return stack.getOrDefault(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER))
 				.potion()
-				.orElse(Potions.WATER)
-				.value();
+				.orElse(Potions.WATER);
 	}
 
 	@Nonnull
@@ -153,31 +151,31 @@ public class PotionFluid extends Fluid
 
 	public void addInformation(FluidStack fluidStack, Consumer<Component> tooltip)
 	{
-		if(fluidStack!=null&&fluidStack.hasTag())
+		var potionData = fluidStack.get(DataComponents.POTION_CONTENTS);
+		if(potionData==null)
+			return;
+		List<MobEffectInstance> effects = new ArrayList<>();
+		potionData.forEachEffect(effects::add);
+		if(effects.isEmpty())
+			tooltip.accept(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
+		else
 		{
-			List<MobEffectInstance> effects = PotionUtils.getAllEffects(fluidStack.getTag());
-			if(effects.isEmpty())
-				tooltip.accept(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
-			else
+			for(MobEffectInstance instance : effects)
 			{
-				for(MobEffectInstance instance : effects)
-				{
-					MutableComponent itextcomponent = Component.translatable(instance.getDescriptionId());
-					MobEffect effect = instance.getEffect();
-					if(instance.getAmplifier() > 0)
-						itextcomponent.append(" ").append(Component.translatable("potion.potency."+instance.getAmplifier()));
-					if(instance.getDuration() > 20)
-						itextcomponent.append(" (").append(MobEffectUtil.formatDuration(instance, 1, 20)).append(")");
+				MutableComponent itextcomponent = Component.translatable(instance.getDescriptionId());
+				MobEffect effect = instance.getEffect().value();
+				if(instance.getAmplifier() > 0)
+					itextcomponent.append(" ").append(Component.translatable("potion.potency."+instance.getAmplifier()));
+				if(instance.getDuration() > 20)
+					itextcomponent.append(" (").append(MobEffectUtil.formatDuration(instance, 1, 20)).append(")");
 
-					tooltip.accept(itextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));
-				}
+				tooltip.accept(itextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));
 			}
-			Potion potionType = PotionUtils.getPotion(fluidStack.getTag());
-			if(potionType!=Potions.EMPTY)
-			{
-				String modID = BuiltInRegistries.POTION.getKey(potionType).getNamespace();
-				tooltip.accept(Component.translatable(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
-			}
+		}
+		if(potionData.potion().isPresent())
+		{
+			String modID = potionData.potion().get().unwrapKey().orElseThrow().location().getNamespace();
+			tooltip.accept(Component.translatable(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
 		}
 	}
 
@@ -213,9 +211,10 @@ public class PotionFluid extends Fluid
 				@Override
 				public int getTintColor(FluidStack stack)
 				{
-					if(stack==null||!stack.hasTag())
+					var potionData = stack.get(DataComponents.POTION_CONTENTS);
+					if(potionData==null)
 						return 0xff0000ff;
-					return 0xff000000|PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
+					return 0xff000000|potionData.getColor();
 				}
 			});
 		}
@@ -223,9 +222,8 @@ public class PotionFluid extends Fluid
 		@Override
 		public Component getDescription(FluidStack stack)
 		{
-			if(stack==null||!stack.hasTag())
-				return super.getDescription(stack);
-			return Component.translatable(PotionUtils.getPotion(stack.getTag()).getName("item.minecraft.potion.effect."));
+			var potionData = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+			return Component.translatable(Potion.getName(potionData.potion(), this.getDescriptionId()+".effect."));
 		}
 
 		@Override

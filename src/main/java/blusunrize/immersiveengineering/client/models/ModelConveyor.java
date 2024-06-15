@@ -173,7 +173,10 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		float[] colour = {1, 1, 1, 1};
 		float[] colourStripes = {1, 1, 1, 1};
 		if(stripeColour!=null)
-			System.arraycopy(stripeColour.getTextureDiffuseColors(), 0, colourStripes, 0, 3);
+		{
+			var colorVec = Utils.vec4fFromDye(stripeColour);
+			colourStripes = new float[]{colorVec.x, colorVec.y, colorVec.z, colorVec.w};
+		}
 		final TextureAtlasSprite topTexture = tex_conveyor_colour!=null?tex_conveyor_colour: tex_casing2;
 		final float[] topColor = stripeColour!=null?colourStripes: colour;
 

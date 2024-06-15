@@ -16,15 +16,18 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
-import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.IESlot.Upgrades;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -40,10 +43,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.Tags.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -52,6 +54,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+import static blusunrize.immersiveengineering.common.register.IEDataComponents.CHEMTHROWER_DATA;
 
 public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IScrollwheel
 {
@@ -59,7 +62,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 	public ChemthrowerItem()
 	{
-		super(new Properties().stacksTo(1), "CHEMTHROWER");
+		super(new Properties().stacksTo(1).component(CHEMTHROWER_DATA, ChemthrowerData.DEFAULT), "CHEMTHROWER");
 	}
 
 	@Override
@@ -78,7 +81,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 		for(int i = 0; i < numberOfTanks; i++)
 		{
-			Component add = IEItemFluidHandler.fluidItemInfoFlavor(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
+			Component add = IEItemFluidHandler.fluidItemInfoFlavor(getData(stack).getFluid(i), cap);
 			if(i > 0)
 				TextUtils.applyFormat(
 						add,
@@ -123,13 +126,13 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		FluidStack fs = this.getFluid(stack);
 		if(!fs.isEmpty())
 		{
-			int duration = getUseDuration(stack)-remainingUseDuration;
+			int duration = getUseDuration(stack, player)-remainingUseDuration;
 			int consumed = IEServerConfig.TOOLS.chemthrower_consumption.get();
 			if(consumed*duration <= fs.getAmount())
 			{
 				Vec3 v = player.getLookAngle();
 				int split = 8;
-				boolean isGas = fs.getFluid().is(Tags.Fluids.GASEOUS);
+				boolean isGas = fs.getFluid().is(Fluids.GASEOUS);
 
 				float scatter = isGas?.25f: .15f;
 				float range = isGas?.5f: 1f;
@@ -174,20 +177,17 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	@Override
 	public void releaseUsing(ItemStack stack, Level world, LivingEntity player, int timeLeft)
 	{
-		FluidStack fs = this.getFluid(stack);
-		if(!fs.isEmpty())
-		{
-			int duration = getUseDuration(stack)-timeLeft;
-			fs.shrink(IEServerConfig.TOOLS.chemthrower_consumption.get()*duration);
-			if(fs.getAmount() <= 0)
-				ItemNBTHelper.remove(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
-			else
-				ItemNBTHelper.setFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fs);
-		}
+		final var data = getData(stack);
+		FluidStack fs = data.mainFluid.copy();
+		if(fs.isEmpty())
+			return;
+		int duration = getUseDuration(stack, player)-timeLeft;
+		fs.shrink(IEServerConfig.TOOLS.chemthrower_consumption.get()*duration);
+		stack.set(CHEMTHROWER_DATA, new ChemthrowerData(data.ignite, fs, data.fluid1, data.fluid2));
 	}
 
 	@Override
-	public int getUseDuration(ItemStack stack)
+	public int getUseDuration(ItemStack p_41454_, LivingEntity p_344979_)
 	{
 		return 72000;
 	}
@@ -197,34 +197,23 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	{
 		if(getUpgrades(stack).getBoolean("multitank"))
 		{
-			CompoundTag fluidTag = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
-			CompoundTag fluidTag1 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1");
-			CompoundTag fluidTag2 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2");
+			var oldData = getData(stack);
 
 			if(forward)
-			{
-				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fluidTag2);
-				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1", fluidTag);
-				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2", fluidTag1);
-			}
+				stack.set(CHEMTHROWER_DATA, new ChemthrowerData(oldData.ignite, oldData.fluid2, oldData.mainFluid, oldData.fluid1));
 			else
-			{
-				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fluidTag1);
-				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1", fluidTag2);
-				ItemNBTHelper.setTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2", fluidTag);
-			}
+				stack.set(CHEMTHROWER_DATA, new ChemthrowerData(oldData.ignite, oldData.fluid1, oldData.fluid2, oldData.mainFluid));
 		}
 	}
 
 	@Override
 	public void finishUpgradeRecalculation(ItemStack stack)
 	{
-		FluidStack fs = getFluid(stack);
-		if(!fs.isEmpty()&&fs.getAmount() > getCapacity(stack, CAPACITY))
-		{
-			fs.setAmount(getCapacity(stack, CAPACITY));
-			ItemNBTHelper.setFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fs);
-		}
+		final var data = getData(stack);
+		FluidStack fs = data.mainFluid.copy();
+		final var capacity = getCapacity(stack, CAPACITY);
+		if(fs.getAmount() > capacity)
+			stack.set(CHEMTHROWER_DATA, new ChemthrowerData(data.ignite, fs.copyWithAmount(capacity), data.fluid1, data.fluid2));
 	}
 
 	@Override
@@ -268,18 +257,70 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
 		return new Slot[]{
-				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, "CHEMTHROWER", stack, true, level, getPlayer),
-				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, "CHEMTHROWER", stack, true, level, getPlayer)
+				new Upgrades(container, toolInventory, 0, 80, 32, "CHEMTHROWER", stack, true, level, getPlayer),
+				new Upgrades(container, toolInventory, 1, 100, 32, "CHEMTHROWER", stack, true, level, getPlayer)
 		};
 	}
 
 	public static void setIgniteEnable(ItemStack chemthrower, boolean enabled)
 	{
-		chemthrower.getOrCreateTag().putBoolean("ignite", enabled);
+		var data = getData(chemthrower);
+		chemthrower.set(CHEMTHROWER_DATA, new ChemthrowerData(enabled, data.mainFluid, data.fluid1, data.fluid2));
 	}
 
 	public static boolean isIgniteEnable(ItemStack chemthrower)
 	{
-		return ItemNBTHelper.getBoolean(chemthrower, "ignite");
+		return getData(chemthrower).ignite;
+	}
+
+	@Override
+	public FluidStack getFluid(ItemStack container)
+	{
+		return getData(container).mainFluid;
+	}
+
+	private static ChemthrowerData getData(ItemStack chemthrower)
+	{
+		return chemthrower.getOrDefault(CHEMTHROWER_DATA, ChemthrowerData.DEFAULT);
+	}
+
+	public record ChemthrowerData(
+			boolean ignite, FluidStack mainFluid, FluidStack fluid1, FluidStack fluid2
+	)
+	{
+		public static final Codec<ChemthrowerData> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				Codec.BOOL.fieldOf("ignite").forGetter(ChemthrowerData::ignite),
+				FluidStack.CODEC.fieldOf("mainFluid").forGetter(ChemthrowerData::mainFluid),
+				FluidStack.CODEC.fieldOf("fluid1").forGetter(ChemthrowerData::fluid1),
+				FluidStack.CODEC.fieldOf("fluid2").forGetter(ChemthrowerData::fluid2)
+		).apply(inst, ChemthrowerData::new));
+		public static final StreamCodec<RegistryFriendlyByteBuf, ChemthrowerData> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.BOOL, ChemthrowerData::ignite,
+				FluidStack.STREAM_CODEC, ChemthrowerData::mainFluid,
+				FluidStack.STREAM_CODEC, ChemthrowerData::fluid1,
+				FluidStack.STREAM_CODEC, ChemthrowerData::fluid2,
+				ChemthrowerData::new
+		);
+		public static final ChemthrowerData DEFAULT = new ChemthrowerData(
+				false, FluidStack.EMPTY, FluidStack.EMPTY, FluidStack.EMPTY
+		);
+
+		public ChemthrowerData
+		{
+			mainFluid = mainFluid.copy();
+			fluid1 = fluid1.copy();
+			fluid2 = fluid2.copy();
+		}
+
+		public FluidStack getFluid(int i)
+		{
+			return switch(i)
+			{
+				case 0 -> mainFluid;
+				case 1 -> fluid1;
+				case 2 -> fluid2;
+				default -> throw new IllegalStateException("Unexpected value: "+i);
+			};
+		}
 	}
 }

@@ -84,10 +84,7 @@ public class Lib
 	public static final String GUIID_MaintenanceKit = "maintenancekit";
 	//Entities
 	public static final String GUIID_CartCrate = "cart_crate";
-	public static final String GUIID_CartReinforcedCrate = "cart_reinforcedcrate";
 
-	public static final String NBT_Earmuffs = "IE:Earmuffs";
-	public static final String NBT_EarmuffColour = "IE:EarmuffColour";
 	public static final String NBT_Powerpack = "IE:Powerpack";
 	public static final String NBT_DAMAGE = "Damage";
 

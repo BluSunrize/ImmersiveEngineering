@@ -24,9 +24,9 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.network.MessagePowerpackAntenna;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Suppliers;
 import net.minecraft.ChatFormatting;
@@ -40,7 +40,10 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -85,8 +88,9 @@ public class PowerpackItem extends UpgradeableToolItem
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 		if(chest.getItem() instanceof PowerpackItem)
 			return chest;
-		else if(ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack))
-			return ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
+		var attachedPack = chest.get(IEDataComponents.CONTAINED_POWERPACK);
+		if(attachedPack!=null)
+			return attachedPack.attached();
 		else
 			return ItemStack.EMPTY;
 	});

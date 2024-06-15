@@ -25,16 +25,17 @@ import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
+import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.network.MessageOpenManual;
-import blusunrize.immersiveengineering.common.register.IEDataAttachments;
-import blusunrize.immersiveengineering.common.register.IEEntityTypes;
+import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import blusunrize.immersiveengineering.common.register.IEPotions;
-import blusunrize.immersiveengineering.common.register.IEStats;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
+import blusunrize.immersiveengineering.common.util.IEExplosion;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -289,17 +290,15 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingUpdate(EntityTickEvent.Pre event)
 	{
-		if(!(event.getEntity() instanceof LivingEntity entity))
+		if(!(event.getEntity() instanceof Player player))
 			return;
-		ItemStack chestplate = entity.getItemBySlot(EquipmentSlot.CHEST);
-		if(entity instanceof Player player&&!chestplate.isEmpty()&&ItemNBTHelper.hasKey(chestplate, Lib.NBT_Powerpack))
+		ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
+		var powerpack = chestplate.get(IEDataComponents.CONTAINED_POWERPACK);
+		if(powerpack!=null)
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(chestplate, Lib.NBT_Powerpack);
-			if(!powerpack.isEmpty())
-			{
-				PowerpackItem.tickWornPack(powerpack, entity.level(), player);
-				ItemNBTHelper.setItemStack(chestplate, Lib.NBT_Powerpack, powerpack);
-			}
+			final var newPack = powerpack.attached().copy();
+			PowerpackItem.tickWornPack(newPack, player.level(), player);
+			chestplate.set(IEDataComponents.CONTAINED_POWERPACK, new AttachedItem(newPack));
 		}
 	}
 

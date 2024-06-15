@@ -9,20 +9,16 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.items.components.AttachedItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
@@ -57,9 +53,9 @@ public class PowerpackRecipe implements CraftingRecipe
 					return false;
 			}
 		}
-		if(!powerpack.isEmpty()&&!armor.isEmpty()&&!ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
-			return true;
-		else return !armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack)&&powerpack.isEmpty();
+		if(armor.isEmpty())
+			return false;
+		return armor.has(IEDataComponents.CONTAINED_POWERPACK)==powerpack.isEmpty();
 	}
 
 	@Nonnull
@@ -78,16 +74,16 @@ public class PowerpackRecipe implements CraftingRecipe
 					armor = stackInSlot;
 		}
 
-		if(!powerpack.isEmpty()&&!armor.isEmpty()&&!ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
+		if(!powerpack.isEmpty()&&armor.has(IEDataComponents.CONTAINED_POWERPACK))
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.setItemStack(output, Lib.NBT_Powerpack, powerpack.copyWithCount(1));
+			output.set(IEDataComponents.CONTAINED_POWERPACK, new AttachedItem(powerpack.copyWithCount(1)));
 			return output;
 		}
-		else if(!armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
+		else if(armor.has(IEDataComponents.CONTAINED_POWERPACK))
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.remove(output, Lib.NBT_Powerpack);
+			output.remove(IEDataComponents.CONTAINED_POWERPACK);
 			return output;
 		}
 		return ItemStack.EMPTY;
@@ -114,8 +110,9 @@ public class PowerpackRecipe implements CraftingRecipe
 		for(int i = 0; i < remaining.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
-			if(!stackInSlot.isEmpty()&&ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Powerpack))
-				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Powerpack));
+			var powerpack = stackInSlot.get(IEDataComponents.CONTAINED_POWERPACK);
+			if(powerpack!=null)
+				remaining.set(i, powerpack.attached().copy());
 		}
 		return remaining;
 	}

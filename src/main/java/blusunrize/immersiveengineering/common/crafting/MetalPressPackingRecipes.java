@@ -22,13 +22,9 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -212,7 +208,7 @@ public class MetalPressPackingRecipes
 	{
 		CraftingInput invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(
 				gridSize, gridSize, NonNullList.withSize(gridSize*gridSize, stack.copy())
-		);
+		).asCraftInput();
 		return world.getRecipeManager()
 				.getRecipeFor(RecipeType.CRAFTING, invC, world)
 				.map(recipe -> Pair.of(recipe, recipe.value().assemble(invC, world.registryAccess())))

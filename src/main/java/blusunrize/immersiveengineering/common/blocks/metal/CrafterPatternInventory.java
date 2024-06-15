@@ -36,7 +36,7 @@ public class CrafterPatternInventory
 	{
 		if(level==null)
 			return;
-		CraftingInput invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
+		CraftingInput invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv).asCraftInput();
 		this.recipe = Utils.findCraftingRecipe(invC, level).map(RecipeHolder::value).orElse(null);
 		this.inv.set(9, recipe!=null?recipe.assemble(invC, level.registryAccess()): ItemStack.EMPTY);
 	}

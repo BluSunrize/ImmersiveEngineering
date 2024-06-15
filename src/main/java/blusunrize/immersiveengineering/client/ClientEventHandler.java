@@ -41,10 +41,10 @@ import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.network.*;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
@@ -203,18 +203,18 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						ChatFormatting.DARK_GRAY
 				));
 		}
-		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Earmuffs))
+		if(event.getItemStack().has(IEDataComponents.CONTAINED_EARMUFF))
 		{
-			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
+			ItemStack earmuffs = event.getItemStack().get(IEDataComponents.CONTAINED_EARMUFF).attached();
 			if(!earmuffs.isEmpty())
 				event.getToolTip().add(TextUtils.applyFormat(
 						earmuffs.getHoverName(),
 						ChatFormatting.GRAY
 				));
 		}
-		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Powerpack))
+		if(event.getItemStack().has(IEDataComponents.CONTAINED_POWERPACK))
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
+			ItemStack powerpack = event.getItemStack().get(IEDataComponents.CONTAINED_POWERPACK).attached();
 			IEnergyStorage packStorage = powerpack.getCapability(EnergyStorage.ITEM);
 			if(!powerpack.isEmpty()&&packStorage!=null)
 			{
@@ -259,7 +259,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 
 			if(playerDistanceSq < 1000)
 			{
-				List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(event.getItemFrameEntity().level(), ItemNBTHelper.getString(event.getItemStack(), "blueprint"));
+				List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(event.getItemFrameEntity().level(), event.getItemStack().get(IEDataComponents.BLUEPRINT));
 				if(!recipes.isEmpty())
 				{
 					int i = event.getItemFrameEntity().getRotation();

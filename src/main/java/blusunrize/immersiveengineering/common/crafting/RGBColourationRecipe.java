@@ -8,33 +8,21 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class RGBColourationRecipe implements CraftingRecipe
+public record RGBColourationRecipe(Ingredient target) implements CraftingRecipe
 {
-	private final Ingredient target;
-	private final String colorKey;
-
-	public RGBColourationRecipe(Ingredient target, String colorKey)
-	{
-		this.target = target;
-		this.colorKey = colorKey;
-	}
-
 	@Override
 	public boolean matches(CraftingInput inv, @Nonnull Level world)
 	{
@@ -72,12 +60,12 @@ public class RGBColourationRecipe implements CraftingRecipe
 				{
 					itemToColour = stackInSlot;
 					int colour;
-					if(itemToColour.hasTag()&&itemToColour.getOrCreateTag().contains(colorKey, Tag.TAG_INT))
-						colour = itemToColour.getOrCreateTag().getInt(colorKey);
+					if(itemToColour.has(IEDataComponents.COLOR))
+						colour = itemToColour.get(IEDataComponents.COLOR).toInt();
 					else
 						colour = 0xff_ff_ff;
-					float r = (float)(colour >> 16&255)/255.0F;
-					float g = (float)(colour >> 8&255)/255.0F;
+					float r = (float)(colour>>16&255)/255.0F;
+					float g = (float)(colour>>8&255)/255.0F;
 					float b = (float)(colour&255)/255.0F;
 					j = (int)((float)j+Math.max(r, Math.max(g, b))*255.0F);
 					colourArray[0] = (int)((float)colourArray[0]+r*255.0F);
@@ -111,7 +99,7 @@ public class RGBColourationRecipe implements CraftingRecipe
 			b = (int)((float)b*colourMod/highestColour);
 			int newColour = (r<<8)+g;
 			newColour = (newColour<<8)+b;
-			newItem.getOrCreateTag().putInt(colorKey, newColour);
+			newItem.set(IEDataComponents.COLOR, new Color4(newColour));
 			return newItem;
 		}
 		return ItemStack.EMPTY;
@@ -141,16 +129,6 @@ public class RGBColourationRecipe implements CraftingRecipe
 	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.RGB_SERIALIZER.get();
-	}
-
-	public Ingredient getTarget()
-	{
-		return target;
-	}
-
-	public String getColorKey()
-	{
-		return colorKey;
 	}
 
 	@Override

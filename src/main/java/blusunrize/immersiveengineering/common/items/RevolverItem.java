@@ -31,13 +31,12 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -48,10 +47,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -61,6 +58,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -90,8 +88,8 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
-	public static UUID speedModUUID = Utils.generateNewUUID();
-	public static UUID luckModUUID = Utils.generateNewUUID();
+	public static final ResourceLocation speedModUUID = IEApi.ieLoc("speed_modifier");
+	public static final ResourceLocation luckModUUID = IEApi.ieLoc("luck_modifier");
 
 	/* ------------- CORE ITEM METHODS ------------- */
 
@@ -175,30 +173,34 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack)
+	public ItemAttributeModifiers getAttributeModifiers(ItemStack stack)
 	{
-		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		if(slot==EquipmentSlot.MAINHAND)
+		var builder = ItemAttributeModifiers.builder();
+		if(getUpgrades(stack).getBoolean("fancyAnimation"))
+			builder.add(
+					Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -2, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND
+			);
+		double melee = getUpgradeValue_d(stack, "melee");
+		if(melee!=0)
 		{
-			if(getUpgrades(stack).getBoolean("fancyAnimation"))
-				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2, Operation.ADDITION));
-			double melee = getUpgradeValue_d(stack, "melee");
-			if(melee!=0)
-			{
-				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", melee, Operation.ADDITION));
-				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
-			}
+			builder.add(
+					Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -2.4, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND
+			);
+			builder.add(
+					Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, melee, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND
+			);
 		}
-		if(slot.getType()==Type.HAND)
-		{
-			double speed = getUpgradeValue_d(stack, "speed");
-			if(speed!=0)
-				builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
+		double speed = getUpgradeValue_d(stack, "speed");
+		if(speed!=0)
+			builder.add(
+					Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, speed, Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.HAND
+			);
 
-			double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
-			if(luck!=0)
-				builder.put(Attributes.LUCK, new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
-		}
+		double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
+		if(luck!=0)
+			builder.add(
+					Attributes.LUCK, new AttributeModifier(luckModUUID, luck, Operation.ADD_VALUE), EquipmentSlotGroup.HAND
+			);
 		return builder.build();
 	}
 
@@ -654,7 +656,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 			int rarityTier = (int)Math.ceil(Mth.clamp(averageTier+3, 0, 6)/6*5);
 			Rarity rarity = rarityTier==5?Lib.RARITY_MASTERWORK: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
-			return name.copy().withStyle(rarity.color);
+			return name.copy().withStyle(rarity.color());
 		}
 
 		public static int calculateTier(CompoundTag perksTag)

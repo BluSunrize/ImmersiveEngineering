@@ -12,7 +12,10 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
+import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerData;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
+import blusunrize.immersiveengineering.common.items.EarmuffsItem.EarmuffData;
+import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -85,9 +88,33 @@ public class IEDataComponents
 					.build()
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<CapacitorState>> CAPACITOR_CONFIG = REGISTER.register(
-			"default_cover", () -> DataComponentType.<CapacitorState>builder()
+			"cap_config", () -> DataComponentType.<CapacitorState>builder()
 					.persistent(CapacitorState.CODEC)
 					.networkSynchronized(CapacitorState.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<EarmuffData>> EARMUFF_DATA = REGISTER.register(
+			"earmuff_data", () -> DataComponentType.<EarmuffData>builder()
+					.persistent(EarmuffData.CODEC)
+					.networkSynchronized(EarmuffData.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<AttachedItem>> CONTAINED_EARMUFF = REGISTER.register(
+			"contained_earmuff", () -> DataComponentType.<AttachedItem>builder()
+					.persistent(AttachedItem.CODEC)
+					.networkSynchronized(AttachedItem.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<AttachedItem>> CONTAINED_POWERPACK = REGISTER.register(
+			"contained_powerpack", () -> DataComponentType.<AttachedItem>builder()
+					.persistent(AttachedItem.CODEC)
+					.networkSynchronized(AttachedItem.STREAM_CODEC)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<ChemthrowerData>> CHEMTHROWER_DATA = REGISTER.register(
+			"chemthrower_data", () -> DataComponentType.<ChemthrowerData>builder()
+					.persistent(ChemthrowerData.CODEC)
+					.networkSynchronized(ChemthrowerData.STREAM_CODEC)
 					.build()
 	);
 

@@ -363,7 +363,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 							List<BakedQuad> modelQuads = model.getQuads(
 									k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer
 							);
-							quads.add(QuadTransformer.setColor(colorMultiplier).process(modelQuads));
+							quads.add(QuadTransformer.color(colorMultiplier).process(modelQuads));
 						}
 						break;
 					case 1:

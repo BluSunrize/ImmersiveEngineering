@@ -70,6 +70,11 @@ public record FractalOptions(
 				Color4::new
 		);
 
+		public Color4(int rgba)
+		{
+			this(((rgba>>16)&255)/255f, ((rgba>>8)&255)/255f, (rgba&255)/255f, ((rgba>>24)&255)/255f);
+		}
+
 		public static Color4 load(Tag nbt)
 		{
 			return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();

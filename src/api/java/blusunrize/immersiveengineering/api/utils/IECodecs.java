@@ -24,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -85,6 +86,16 @@ public class IECodecs
 		return Codec.pair(keyCodec, valueCodec)
 				.listOf()
 				.xmap(IECodecs::listToEnumMap, IECodecs::mapToList);
+	}
+
+	public static <C> Codec<Set<C>> setOf(Codec<C> codec)
+	{
+		return codec.listOf().xmap(Set::copyOf, List::copyOf);
+	}
+
+	public static <B extends ByteBuf, C> StreamCodec<B, Set<C>> setOf(StreamCodec<B, C> codec)
+	{
+		return codec.apply(ByteBufCodecs.list()).map(Set::copyOf, List::copyOf);
 	}
 
 	private static <E extends Enum<E>, T>

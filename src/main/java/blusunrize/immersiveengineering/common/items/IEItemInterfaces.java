@@ -36,7 +36,7 @@ public class IEItemInterfaces
 		{
 			Optional<FluidStack> optional = FluidUtils.getFluidContained(container);
 			if(optional.isPresent())
-				return optional.orElseThrow(RuntimeException::new);
+				return optional.orElseThrow(RuntimeException::new).copy();
 			else
 				return null;
 		}

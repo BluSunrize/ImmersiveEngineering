@@ -25,11 +25,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -94,13 +91,8 @@ public class PotionBucketItem extends IEBaseItem
 			@Nonnull Level worldIn, @Nonnull Player playerIn, @Nonnull InteractionHand handIn
 	)
 	{
-		HitResult rayTraceResult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.NONE);
 		ItemStack stack = playerIn.getItemInHand(handIn);
-		InteractionResultHolder<ItemStack> forgeResult = EventHooks.onBucketUse(playerIn, worldIn, stack, rayTraceResult);
-		if(forgeResult!=null)
-			return forgeResult;
-		else
-			return InteractionResultHolder.pass(stack);
+		return InteractionResultHolder.pass(stack);
 	}
 
 	@Override

@@ -10,26 +10,18 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.common.crafting.RGBColourationRecipe;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class RGBRecipeSerializer implements RecipeSerializer<RGBColourationRecipe>
 {
-	public static final MapCodec<RGBColourationRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			Ingredient.CODEC.fieldOf("target").forGetter(RGBColourationRecipe::getTarget),
-			Codec.STRING.fieldOf("key").forGetter(RGBColourationRecipe::getColorKey)
-	).apply(inst, RGBColourationRecipe::new));
-	public static final StreamCodec<RegistryFriendlyByteBuf, RGBColourationRecipe> STREAM_CODEC = StreamCodec.composite(
-			Ingredient.CONTENTS_STREAM_CODEC, RGBColourationRecipe::getTarget,
-			ByteBufCodecs.stringUtf8(512), RGBColourationRecipe::getColorKey,
-			RGBColourationRecipe::new
-	);
+	public static final MapCodec<RGBColourationRecipe> CODEC = Ingredient.CODEC.fieldOf("target")
+			.xmap(RGBColourationRecipe::new, RGBColourationRecipe::target);
+	public static final StreamCodec<RegistryFriendlyByteBuf, RGBColourationRecipe> STREAM_CODEC = Ingredient.CONTENTS_STREAM_CODEC
+			.map(RGBColourationRecipe::new, RGBColourationRecipe::target);
 
 	@Override
 	public MapCodec<RGBColourationRecipe> codec()

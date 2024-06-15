@@ -8,10 +8,11 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.items.components.AttachedItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
@@ -64,7 +65,7 @@ public class EarmuffsRecipe implements CraftingRecipe
 		}
 		if(!earmuffs.isEmpty()&&(!armor.isEmpty()||!list.isEmpty()))
 			return true;
-		else return !armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Earmuffs)&&earmuffs.isEmpty()&&list.isEmpty();
+		else return !armor.isEmpty()&&armor.has(IEDataComponents.CONTAINED_EARMUFF)&&earmuffs.isEmpty()&&list.isEmpty();
 	}
 
 	@Nonnull
@@ -126,24 +127,22 @@ public class EarmuffsRecipe implements CraftingRecipe
 				r = (int)((float)r*colourMod/highestColour);
 				g = (int)((float)g*colourMod/highestColour);
 				b = (int)((float)b*colourMod/highestColour);
-				int newColour = (r<<8)+g;
-				newColour = (newColour<<8)+b;
-				ItemNBTHelper.putInt(earmuffs, Lib.NBT_EarmuffColour, newColour);
+				earmuffs.set(IEDataComponents.COLOR, new Color4(r, g, b, 1));
 			}
 			ItemStack output;
 			if(!armor.isEmpty())
 			{
 				output = armor.copy();
-				ItemNBTHelper.setItemStack(output, Lib.NBT_Earmuffs, earmuffs.copy());
+				output.set(IEDataComponents.CONTAINED_EARMUFF, new AttachedItem(earmuffs));
 			}
 			else
 				output = earmuffs.copy();
 			return output;
 		}
-		else if(!armor.isEmpty()&&ItemNBTHelper.hasKey(armor, Lib.NBT_Earmuffs))
+		else if(!armor.isEmpty()&&armor.has(IEDataComponents.CONTAINED_EARMUFF))
 		{
 			ItemStack output = armor.copy();
-			ItemNBTHelper.remove(output, Lib.NBT_Earmuffs);
+			output.remove(IEDataComponents.CONTAINED_EARMUFF);
 			return output;
 		}
 		return ItemStack.EMPTY;
@@ -170,8 +169,9 @@ public class EarmuffsRecipe implements CraftingRecipe
 		for(int i = 0; i < remaining.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
-			if(!stackInSlot.isEmpty()&&ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Earmuffs))
-				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Earmuffs));
+			final var earmuffs = stackInSlot.get(IEDataComponents.CONTAINED_EARMUFF);
+			if(earmuffs!=null)
+				remaining.set(i, earmuffs.attached());
 		}
 		return remaining;
 	}

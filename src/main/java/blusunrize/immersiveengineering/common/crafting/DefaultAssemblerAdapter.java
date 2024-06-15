@@ -47,7 +47,7 @@ public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingIn
 
 		// Collect remaining items
 		NonNullList<ItemStack> remains = recipe.getRemainingItems(
-				Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input)
+				Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input).asCraftInput()
 		);
 
 		List<RecipeQuery> queries = new ArrayList<>();

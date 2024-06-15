@@ -11,7 +11,8 @@ package blusunrize.immersiveengineering.client;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.items.EarmuffsItem.EarmuffData;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.ResourceLocation;
@@ -47,17 +48,17 @@ public class EarmuffHandler
 		Map<SoundSource, Float> newMultipliers = makeDefaultMultipliers();
 		ItemStack earmuffs = EarmuffsItem.EARMUFF_GETTERS.getFrom(ClientUtils.mc().player);
 		if(!earmuffs.isEmpty())
+		{
+			final var earmuffConfig = earmuffs.getOrDefault(IEDataComponents.EARMUFF_DATA, EarmuffData.DEFAULT);
 			for(SoundSource source : SoundSource.values())
-				if(EarmuffsItem.affectedSoundCategories.contains(source.getName()))
-					if(!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+source.getName()))
-					{
-						// The max call is just a last safeguard against overly high attenuation (see documentation on
-						// EarmuffsItem.MIN_MULTIPLIER). The workbench config UI should limit the attenuation by itself.
-						final float newMultiplier = Math.max(
-								EarmuffsItem.MIN_MULTIPLIER, EarmuffsItem.getVolumeMod(earmuffs)
-						);
-						newMultipliers.put(source, newMultiplier);
-					}
+				if(EarmuffsItem.affectedSoundCategories.contains(source.getName())&&earmuffConfig.affectedCategories().contains(source.getName()))
+				{
+					// The max call is just a last safeguard against overly high attenuation (see documentation on
+					// EarmuffsItem.MIN_MULTIPLIER). The workbench config UI should limit the attenuation by itself.
+					final float newMultiplier = Math.max(EarmuffsItem.MIN_MULTIPLIER, earmuffConfig.volumeMod());
+					newMultipliers.put(source, newMultiplier);
+				}
+		}
 		for(SoundSource source : SoundSource.values())
 			if(LAST_MULTIPLIERS.get(source).floatValue()!=newMultipliers.get(source))
 			{

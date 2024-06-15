@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,10 +36,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
@@ -98,7 +98,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 		if(fs!=null&&fs.getAmount() > getCapacity(stack, CAPACITY))
 		{
 			fs.setAmount(getCapacity(stack, CAPACITY));
-			ItemNBTHelper.setFluidStack(stack, "Fluid", fs);
+			stack.set(IEDataComponents.GENERIC_FLUID, SimpleFluidContent.copyOf(fs));
 		}
 	}
 
@@ -147,10 +147,10 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 		if(!head.isEmpty()&&canToolBeUsed(stack))
 		{
 			modifiers.add(new Entry(Attributes.ATTACK_DAMAGE, new AttributeModifier(
-					BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(stack, head), Operation.ADD_VALUE
+					BASE_ATTACK_DAMAGE_ID, getAttackDamage(stack, head), Operation.ADD_VALUE
 			), EquipmentSlotGroup.MAINHAND));
 			modifiers.add(new Entry(Attributes.ATTACK_SPEED, new AttributeModifier(
-					BASE_ATTACK_SPEED_UUID, "Tool modifier", -2.5D, Operation.ADD_VALUE
+					BASE_ATTACK_SPEED_ID, -2.5D, Operation.ADD_VALUE
 			), EquipmentSlotGroup.MAINHAND));
 		}
 		return new ItemAttributeModifiers(modifiers, false);

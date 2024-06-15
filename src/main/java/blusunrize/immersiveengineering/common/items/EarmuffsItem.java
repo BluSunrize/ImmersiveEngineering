@@ -12,20 +12,29 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
+import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.client.fx.FractalOptions.Color4;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendColoredColour;
 
@@ -44,8 +53,9 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 				ItemStack head = entity.getItemBySlot(EquipmentSlot.HEAD);
 				if(head.getItem() instanceof EarmuffsItem)
 					return head;
-				else if(ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs))
-					return ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+				final var contained = head.get(IEDataComponents.CONTAINED_EARMUFF);
+				if(contained!=null)
+					return contained.attached();
 				else
 					return ItemStack.EMPTY;
 			}
@@ -53,7 +63,11 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 
 	public EarmuffsItem()
 	{
-		super(new Properties().stacksTo(1));
+		super(new Properties()
+				.stacksTo(1)
+				.component(IEDataComponents.EARMUFF_DATA, EarmuffData.DEFAULT)
+				.component(IEDataComponents.COLOR, new Color4(0xff486c94))
+		);
 	}
 
 	@Nullable
@@ -68,37 +82,37 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 	{
 		if(renderPass==1)
 			return 0xffffff;
-		if(!ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
-			return 0x486c94;
-		return ItemNBTHelper.getInt(stack, Lib.NBT_EarmuffColour);
+		else
+			return getColor(stack);
 	}
 
-	@Override
+	//TODO
+	// @Override
 	public boolean hasCustomColor(ItemStack stack)
 	{
 		return true;
 	}
 
-	@Override
+	//TODO
+	// @Override
 	public int getColor(ItemStack stack)
 	{
-		if(!ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
-			return 0x486c94;
-		return ItemNBTHelper.getInt(stack, Lib.NBT_EarmuffColour);
+		return stack.get(IEDataComponents.COLOR).toInt();
 	}
 
-	@Override
-	public void clearColor(ItemStack stack)
-	{
-		if(ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
-			ItemNBTHelper.remove(stack, Lib.NBT_EarmuffColour);
-	}
+	// TODO
+	//@Override
+	//public void clearColor(ItemStack stack)
+	//{
+	//	if(ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
+	//		ItemNBTHelper.remove(stack, Lib.NBT_EarmuffColour);
+	//}
 
-	@Override
-	public void setColor(ItemStack stack, int color)
-	{
-		ItemNBTHelper.putInt(stack, Lib.NBT_EarmuffColour, color);
-	}
+	//@Override
+	//public void setColor(ItemStack stack, int color)
+	//{
+	//	ItemNBTHelper.putInt(stack, Lib.NBT_EarmuffColour, color);
+	//}
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
@@ -123,9 +137,7 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 
 	public static float getVolumeMod(ItemStack stack)
 	{
-		if(!ItemNBTHelper.hasKey(stack, "IE:Earmuffs:Volume"))
-			return .1f;
-		return ItemNBTHelper.getFloat(stack, "IE:Earmuffs:Volume");
+		return stack.getOrDefault(IEDataComponents.EARMUFF_DATA, EarmuffData.DEFAULT).volumeMod;
 	}
 
 	@Override
@@ -140,7 +152,7 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 		ToolConfigBoolean[] array = new ToolConfigBoolean[affectedSoundCategories.size()];
 		int i = -1;
 		for(String cat : affectedSoundCategories)
-			array[++i] = new ToolConfigBoolean(cat, 60+i/4*55, 32+10*(i%4), !ItemNBTHelper.getBoolean(stack, "IE:Earmuffs:Cat_"+cat));
+			array[++i] = new ToolConfigBoolean(cat, 60+i/4*55, 32+10*(i%4), isMuted(stack, cat));
 		return array;
 	}
 
@@ -170,8 +182,48 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 	public void applyConfigOption(ItemStack stack, String key, Object value)
 	{
 		if(value instanceof Boolean bool)
-			ItemNBTHelper.putBoolean(stack, "IE:Earmuffs:Cat_"+key, !bool);
+		{
+			var oldData = stack.getOrDefault(IEDataComponents.EARMUFF_DATA, EarmuffData.DEFAULT);
+			Set<String> newCategories = new HashSet<>(oldData.affectedCategories);
+			if(bool)
+				newCategories.add(key);
+			else
+				newCategories.remove(key);
+			stack.set(IEDataComponents.EARMUFF_DATA, new EarmuffData(oldData.volumeMod, newCategories));
+		}
 		else if(value instanceof Float flt)
-			ItemNBTHelper.putFloat(stack, "IE:Earmuffs:Volume", MAX_REDUCTION-flt);
+		{
+			var oldData = stack.getOrDefault(IEDataComponents.EARMUFF_DATA, EarmuffData.DEFAULT);
+			stack.set(IEDataComponents.EARMUFF_DATA, new EarmuffData(flt, oldData.affectedCategories));
+		}
 	}
+
+	public boolean isMuted(ItemStack stack, String category)
+	{
+		return stack.getOrDefault(IEDataComponents.EARMUFF_DATA, EarmuffData.DEFAULT)
+				.affectedCategories
+				.contains(category);
+	}
+
+	public record EarmuffData(float volumeMod, Set<String> affectedCategories)
+	{
+		public static final Codec<EarmuffData> CODEC = RecordCodecBuilder.create(inst -> inst.group(
+				Codec.FLOAT.fieldOf("volumeMod").forGetter(EarmuffData::volumeMod),
+				IECodecs.setOf(Codec.STRING).fieldOf("affectedCategories").forGetter(EarmuffData::affectedCategories)
+		).apply(inst, EarmuffData::new));
+		public static final StreamCodec<ByteBuf, EarmuffData> STREAM_CODEC = StreamCodec.composite(
+				ByteBufCodecs.FLOAT, EarmuffData::volumeMod,
+				IECodecs.setOf(ByteBufCodecs.STRING_UTF8), EarmuffData::affectedCategories,
+				EarmuffData::new
+		);
+		public static final EarmuffData DEFAULT = new EarmuffData(
+				0.1f, affectedSoundCategories
+		);
+
+		public EarmuffData
+		{
+			affectedCategories = Set.copyOf(affectedCategories);
+		}
+	}
+
 }

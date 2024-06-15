@@ -147,7 +147,9 @@ public class AssemblerLogic implements IMultiblockLogic<State>, IServerTickableC
 			RecipeInputSources sources = new RecipeInputSources(pattern);
 			this.consumeIngredients(state, queries, availableStacks, true, sources);
 
-			NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, sources.gridItems));
+			NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(
+					Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, sources.gridItems).asCraftInput()
+			);
 			for(int i = 0; i < remainingItems.size(); i++)
 			{
 				ItemStack rem = remainingItems.get(i);

@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -136,16 +137,13 @@ public class LevelStageRenders
 					continue;
 				int iC = keyList.indexOf(vein.getMineralName());
 				DyeColor color = DyeColor.values()[iC%16];
-				float[] rgb = color.getTextureDiffuseColors();
-				float r = rgb[0];
-				float g = rgb[1];
-				float b = rgb[2];
+				var rgb = Utils.vec4fFromDye(color);
 				transform.pushPose();
 				transform.translate(pos.x(), 0, pos.z());
 				VertexConsumer bufferBuilder = context.getSecond().getBuffer(IERenderTypes.CHUNK_MARKER);
 				Matrix4f mat = transform.last().pose();
-				bufferBuilder.addVertex(mat, 0, minHeight, 0).setColor(r, g, b, .75f).setNormal(transform.last(), 0, 1, 0);
-				bufferBuilder.addVertex(mat, 0, maxHeight, 0).setColor(r, g, b, .75f).setNormal(transform.last(), 0, 1, 0);
+				bufferBuilder.addVertex(mat, 0, minHeight, 0).setColor(rgb.x, rgb.y, rgb.z, .75f).setNormal(transform.last(), 0, 1, 0);
+				bufferBuilder.addVertex(mat, 0, maxHeight, 0).setColor(rgb.x, rgb.y, rgb.z, .75f).setNormal(transform.last(), 0, 1, 0);
 				int radius = vein.getRadius();
 				List<Vector3f> positions = new ArrayList<>();
 				for(int p = 0; p < 12; p++)
@@ -164,7 +162,7 @@ public class LevelStageRenders
 					diff.normalize();
 					for(Vector3f point : List.of(pointA, pointB))
 						bufferBuilder.addVertex(mat, point.x(), point.y(), point.z())
-								.setColor(r, g, b, .75f)
+								.setColor(rgb.x, rgb.y, rgb.z, .75f)
 								//Not actually a normal, just the direction of the line
 								.setNormal(transform.last(), diff.x(), diff.y(), diff.z());
 				}

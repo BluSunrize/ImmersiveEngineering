@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -24,28 +22,28 @@ public class ItemNBTHelper
 {
 	public static boolean hasTag(ItemStack stack)
 	{
-		return stack.hasTag();
+		throw new RuntimeException();
 	}
 
 	public static boolean hasKey(ItemStack stack, String key)
 	{
-		return hasTag(stack)&&stack.getOrCreateTag().contains(key);
+		throw new RuntimeException();
 	}
 
 	public static boolean hasKey(ItemStack stack, String key, int type)
 	{
-		return hasTag(stack)&&stack.getOrCreateTag().contains(key, type);
+		throw new RuntimeException();
 	}
 
 	public static void remove(ItemStack stack, String key)
 	{
-		ItemUtils.removeTag(stack, key);
+		throw new RuntimeException();
 	}
 
 
 	public static void putInt(ItemStack stack, String key, int val)
 	{
-		stack.getOrCreateTag().putInt(key, val);
+		throw new RuntimeException();
 	}
 
 	public static void modifyInt(CompoundTag tagCompound, String key, int mod)
@@ -55,42 +53,42 @@ public class ItemNBTHelper
 
 	public static int getInt(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getInt(key): 0;
+		throw new RuntimeException();
 	}
 
 	public static void putString(ItemStack stack, String key, String val)
 	{
-		stack.getOrCreateTag().putString(key, val);
+		throw new RuntimeException();
 	}
 
 	public static String getString(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getString(key): "";
+		throw new RuntimeException();
 	}
 
 	public static void putLong(ItemStack stack, String key, long val)
 	{
-		stack.getOrCreateTag().putLong(key, val);
+		throw new RuntimeException();
 	}
 
 	public static long getLong(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getLong(key): 0;
+		throw new RuntimeException();
 	}
 
 	public static void putIntArray(ItemStack stack, String key, int[] val)
 	{
-		stack.getOrCreateTag().putIntArray(key, val);
+		throw new RuntimeException();
 	}
 
 	public static int[] getIntArray(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getIntArray(key): new int[0];
+		throw new RuntimeException();
 	}
 
 	public static void putFloat(ItemStack stack, String key, float val)
 	{
-		stack.getOrCreateTag().putFloat(key, val);
+		throw new RuntimeException();
 	}
 
 	public static void modifyFloat(CompoundTag tagCompound, String key, float mod)
@@ -100,64 +98,52 @@ public class ItemNBTHelper
 
 	public static float getFloat(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getFloat(key): 0;
+		throw new RuntimeException();
 	}
 
 	public static void putBoolean(ItemStack stack, String key, boolean val)
 	{
-		stack.getOrCreateTag().putBoolean(key, val);
+		throw new RuntimeException();
 	}
 
 	public static boolean getBoolean(ItemStack stack, String key)
 	{
-		return hasTag(stack)&&stack.getOrCreateTag().getBoolean(key);
+		throw new RuntimeException();
 	}
 
 	public static void setTagCompound(ItemStack stack, String key, CompoundTag val)
 	{
-		stack.getOrCreateTag().put(key, val);
+		throw new RuntimeException();
 	}
 
 	public static CompoundTag getTagCompound(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getCompound(key): new CompoundTag();
+		throw new RuntimeException();
 	}
 
 	public static void setFluidStack(ItemStack stack, String key, FluidStack val)
 	{
-		if(val!=null&&val.getFluid()!=null)
-			setTagCompound(stack, key, val.writeToNBT(new CompoundTag()));
-		else
-			remove(stack, key);
+		throw new RuntimeException();
 	}
 
 	public static FluidStack getFluidStack(ItemStack stack, String key)
 	{
-		if(hasTag(stack))
-			return FluidStack.loadFluidStackFromNBT(getTagCompound(stack, key));
-		return null;
+		throw new RuntimeException();
 	}
 
 	public static void setItemStack(ItemStack stack, String key, ItemStack val)
 	{
-		stack.getOrCreateTag().put(key, val.save(new CompoundTag()));
+		throw new RuntimeException();
 	}
 
 	public static ItemStack getItemStack(ItemStack stack, String key)
 	{
-		if(hasTag(stack)&&stack.getOrCreateTag().contains(key))
-			return ItemStack.of(getTagCompound(stack, key));
-		return ItemStack.EMPTY;
+		throw new RuntimeException();
 	}
 
 	public static void setLore(ItemStack stack, Component... lore)
 	{
-		CompoundTag displayTag = getTagCompound(stack, "display");
-		ListTag list = new ListTag();
-		for(Component s : lore)
-			list.add(StringTag.valueOf(Component.Serializer.toJson(s)));
-		displayTag.put("Lore", list);
-		setTagCompound(stack, "display", displayTag);
+		throw new RuntimeException();
 	}
 
 	public static CompoundTag combineTags(CompoundTag target, CompoundTag add, Pattern pattern)

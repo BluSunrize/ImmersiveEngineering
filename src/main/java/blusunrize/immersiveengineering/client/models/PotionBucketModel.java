@@ -52,7 +52,7 @@ public final class PotionBucketModel implements IUnbakedGeometry<PotionBucketMod
 
 	public PotionBucketModel(int color)
 	{
-		this.recolorTransformer = QuadTransformer.setColor($ -> color);
+		this.recolorTransformer = QuadTransformer.color($ -> color);
 		JsonObject baseModelJSON = new JsonObject();
 		baseModelJSON.addProperty("fluid", IEFluids.POTION.getId().toString());
 		this.baseGeometry = DynamicFluidContainerModel.Loader.INSTANCE.read(baseModelJSON, null);
