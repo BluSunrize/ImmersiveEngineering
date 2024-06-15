@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.entities.SkyhookUserData.SkyhookSt
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEDataAttachments;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -44,6 +45,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -52,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@EventBusSubscriber(modid = Lib.MODID)
 public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipment
 {
 	public SkyhookItem()
@@ -111,6 +116,29 @@ public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipme
 		return builder.build();
 	}
 
+	@SubscribeEvent
+	public static void criticalHit(CriticalHitEvent ev)
+	{
+		ItemStack heldItem = ev.getEntity().getMainHandItem();
+		if(heldItem.is(IEItems.Misc.SKYHOOK.asItem())&&getUpgradesStatic(heldItem).getBoolean("maceAttack")&&ev.isVanillaCritical())
+		{
+			// This is a similar formula to the mace inflicts in 1.21, but we can't do a flat damage bonus,
+			// so we approximate with a multiplier
+			float fallDistance = ev.getEntity().fallDistance;
+			if(fallDistance < 1.5)
+				return;
+			float damageBonus;
+			if(fallDistance <= 3)
+				damageBonus = 0.66f*fallDistance; // 66% / 4 damage for the first 3 blocks
+			else if(fallDistance <= 8)
+				damageBonus = 2f+0.33f*(fallDistance-3); // 33% / 2 damage for the next 5 blocks
+			else
+				damageBonus = 3.65f+0.165f*(fallDistance-8); // 16.5% / 1 damage for the rest of the way
+			ev.setDamageModifier(ev.getDamageModifier()+damageBonus);
+			// also reset fall damage on a successful attack
+			ev.getEntity().fallDistance = 0;
+		}
+	}
 
 	@Nonnull
 	@Override

@@ -367,6 +367,14 @@ public class IngredientRecipes extends IERecipeProvider
 				.define('g', Ingredients.WOODEN_GRIP)
 				.unlockedBy("has_skyhook", has(Misc.SKYHOOK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_INSULATION))));
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_MACE))
+				.pattern(" n ")
+				.pattern(" mn")
+				.pattern("n  ")
+				.define('n', Tags.Items.INGOTS_NETHERITE)
+				.define('m', Ingredients.COMPONENT_STEEL)
+				.unlockedBy("has_skyhook", has(Misc.SKYHOOK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_MACE))));
 
 		shapelessMisc(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)

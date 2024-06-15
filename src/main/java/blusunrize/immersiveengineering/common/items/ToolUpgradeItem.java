@@ -100,8 +100,8 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 
 		POWERPACK_MAGNET(ImmutableSet.of("POWERPACK"), 1, (upgrade, modifications) -> modifications.putBoolean("magnet", true)),
 		SKYHOOK_SLOPE(ImmutableSet.of("SKYHOOK"), 1, (upgrade, modifications) -> modifications.putFloat("slopeModifier", 0.5f)),
-		SKYHOOK_INSULATION(ImmutableSet.of("SKYHOOK"), 1, (upgrade, modifications) -> modifications.putBoolean("insulated", true))
-		;
+		SKYHOOK_INSULATION(ImmutableSet.of("SKYHOOK"), 1, (upgrade, modifications) -> modifications.putBoolean("insulated", true)),
+		SKYHOOK_MACE(ImmutableSet.of("SKYHOOK"), 1, (upgrade, modifications) -> modifications.putBoolean("maceAttack", true));
 
 		private ImmutableSet<String> toolset;
 		private int stackSize = 1;
