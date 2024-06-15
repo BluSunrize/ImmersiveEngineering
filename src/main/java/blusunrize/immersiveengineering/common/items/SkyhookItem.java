@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.register.IEDataAttachments;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -48,11 +49,11 @@ public class SkyhookItem extends UpgradeableToolItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
+		list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook").withStyle(ChatFormatting.GRAY));
 		if(shouldLimitSpeed(stack))
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook.speedLimit").withStyle(ChatFormatting.GRAY));
 		else
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
-		list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook.noLimit").withStyle(ChatFormatting.GRAY));
 	}
 
 	private static final String LIMIT_SPEED = "limitSpeed";

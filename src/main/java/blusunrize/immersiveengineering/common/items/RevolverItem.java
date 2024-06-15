@@ -150,11 +150,11 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+tag));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+tag).withStyle(ChatFormatting.GRAY));
 		else if(ItemNBTHelper.hasKey(stack, "flavour"))
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")).withStyle(ChatFormatting.GRAY));
 		else
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver").withStyle(ChatFormatting.GRAY));
 
 		CompoundTag perks = getPerks(stack);
 		for(String key : perks.getAllKeys())

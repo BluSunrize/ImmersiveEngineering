@@ -239,7 +239,7 @@
   "desc.immersiveengineering.info.mininglvl.4": "§9Cobalt",
   "desc.immersiveengineering.info.mininglvl.5": "§5Manyullyn",
   "desc.immersiveengineering.info.mininglvl.6": "§5Manyullyn§d+",
-  "desc.immersiveengineering.info.durability": "Durability: %1$s",
+  "desc.immersiveengineering.info.durability": "Durability:",
   "desc.immersiveengineering.info.holdShift": "§6Hold Shift§r",
   "desc.immersiveengineering.info.holdShiftForInfo": "§8Hold Shift for more info§r",
   "desc.immersiveengineering.info.mineral.bituminous_coal": "Bituminous Coal",
