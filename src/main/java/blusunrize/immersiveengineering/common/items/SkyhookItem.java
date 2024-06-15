@@ -9,12 +9,16 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.Lib.DamageTypes;
+import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.entities.SkyhookUserData;
 import blusunrize.immersiveengineering.common.entities.SkyhookUserData.SkyhookStatus;
+import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEDataAttachments;
+import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
@@ -27,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,9 +49,10 @@ import net.neoforged.neoforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
-public class SkyhookItem extends UpgradeableToolItem
+public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipment
 {
 	public SkyhookItem()
 	{
@@ -165,6 +171,16 @@ public class SkyhookItem extends UpgradeableToolItem
 		if(upgrades.contains("slopeModifier"))
 			return Math.max(upgrades.getFloat("slopeModifier"), 0.5f);
 		return 1;
+	}
+
+	@Override
+	public void onStrike(ItemStack equipped, EquipmentSlot eqSlot, LivingEntity owner, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
+	{
+		if(dmg instanceof ElectricDamageSource eds&&dmg.is(DamageTypes.WIRE_SHOCK)&&this.getUpgrades(equipped).getBoolean("insulated")
+				&&(owner.getVehicle() instanceof SkylineHookEntity||owner.isUsingItem())) // either on a wire or trying to attach
+		{
+			eds.dmg = 0;
+		}
 	}
 
 	@Override

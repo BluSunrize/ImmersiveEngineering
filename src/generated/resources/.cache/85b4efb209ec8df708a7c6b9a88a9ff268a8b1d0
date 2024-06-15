@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-16T00:23:42.1889619	Item models
+// 1.20.4	2024-06-16T01:06:23.5326712	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -320,6 +320,7 @@ dda78100e240bd28ad277a84141197815896b5f3 assets/immersiveengineering/models/item
 2cb91abe2177faebef25081866f2a83ef0c8369a assets/immersiveengineering/models/item/toolupgrade_shield_flash.json
 667ff679bbf8f72e7e391fdaa0e1a5587f194851 assets/immersiveengineering/models/item/toolupgrade_shield_magnet.json
 a8c4c4206570481b968bdaab01cd0e8a96ec2568 assets/immersiveengineering/models/item/toolupgrade_shield_shock.json
+16cdd9ab888a2352e50bb6a6a05691951e4ea70a assets/immersiveengineering/models/item/toolupgrade_skyhook_insulation.json
 c7e11cccde35d3d810e1327d87b10a4ad2c7d920 assets/immersiveengineering/models/item/toolupgrade_skyhook_slope.json
 898146ee7a12a78c5c596ceba1a03d59205c814c assets/immersiveengineering/models/item/transformer.json
 0a664e994f6616f557a3fafbbdcbfc1d762f0938 assets/immersiveengineering/models/item/transformer_hv.json

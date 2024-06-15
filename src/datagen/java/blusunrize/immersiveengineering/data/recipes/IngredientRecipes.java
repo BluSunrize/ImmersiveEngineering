@@ -359,6 +359,14 @@ public class IngredientRecipes extends IERecipeProvider
 				.define('r', IETags.steelRod)
 				.unlockedBy("has_skyhook", has(Misc.SKYHOOK))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_SLOPE))));
+		shapedMisc(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_INSULATION))
+				.pattern("rrd")
+				.pattern("dgg")
+				.define('r', IETags.aluminumRod)
+				.define('d', IETags.plasticPlate)
+				.define('g', Ingredients.WOODEN_GRIP)
+				.unlockedBy("has_skyhook", has(Misc.SKYHOOK))
+				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.SKYHOOK_INSULATION))));
 
 		shapelessMisc(Ingredients.WIRE_COPPER)
 				.requires(IETags.getTagsFor(EnumMetals.COPPER).plate)
