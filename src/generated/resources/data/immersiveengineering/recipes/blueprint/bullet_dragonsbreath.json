@@ -9,16 +9,13 @@
       "count": 4
     },
     {
-      "basePredicate": {
-        "tag": "forge:gunpowder"
-      },
-      "count": 2
+      "tag": "forge:gunpowder"
     },
     {
       "basePredicate": {
         "tag": "forge:dusts/aluminum"
       },
-      "count": 4
+      "count": 2
     }
   ],
   "result": {

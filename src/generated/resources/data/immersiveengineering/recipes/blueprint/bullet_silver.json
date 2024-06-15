@@ -9,22 +9,13 @@
       "count": 4
     },
     {
-      "basePredicate": {
-        "tag": "forge:gunpowder"
-      },
-      "count": 2
+      "tag": "forge:gunpowder"
     },
     {
-      "basePredicate": {
-        "tag": "forge:nuggets/lead"
-      },
-      "count": 2
+      "tag": "forge:nuggets/lead"
     },
     {
-      "basePredicate": {
-        "tag": "forge:nuggets/silver"
-      },
-      "count": 2
+      "tag": "forge:nuggets/silver"
     }
   ],
   "result": {

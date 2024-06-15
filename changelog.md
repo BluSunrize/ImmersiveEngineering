@@ -8,6 +8,7 @@
 - Add sub-designs for the banner patterns: hammer, wire cutter & wolf (BluSunrize)
     - This allows for individual coloured grip + head of the tool
     - It also allows all three wolf designs to be stored in one pattern
+- Change the recipes for revolver cartridges to be cheaper overall (BluSunrize)
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
 - Fix potential race condition with wires damaging entities (BluSunrize)
