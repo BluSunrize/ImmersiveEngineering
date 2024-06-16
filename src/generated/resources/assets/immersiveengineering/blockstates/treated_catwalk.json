@@ -1,0 +1,44 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_base"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_railing"
+      },
+      "when": {
+        "north": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_railing",
+        "y": -180
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_railing",
+        "y": -90
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_railing",
+        "y": 90
+      },
+      "when": {
+        "east": "true"
+      }
+    }
+  ]
+}

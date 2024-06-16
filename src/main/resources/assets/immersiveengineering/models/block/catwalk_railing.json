@@ -1,0 +1,54 @@
+{
+	"textures": {
+		"particle": "#side"
+	},
+	"render_type": "minecraft:cutout",
+	"elements": [
+		{
+			"from": [0, 2, 0],
+			"to": [1, 15, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 0.5]},
+			"faces": {
+				"north": {"uv": [15, 1, 16, 14], "texture": "#side", "tintindex": 1},
+				"east": {"uv": [15, 1, 16, 14], "texture": "#side", "tintindex": 1},
+				"south": {"uv": [0, 1, 1, 14], "texture": "#side", "tintindex": 1},
+				"west": {"uv": [0, 1, 1, 14], "texture": "#side", "tintindex": 1}
+			}
+		},
+		{
+			"from": [0, 15, 0],
+			"to": [16, 16, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 0.5]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 1], "texture": "#side", "tintindex": 1},
+				"east": {"uv": [15, 0, 16, 1], "texture": "#side", "tintindex": 1},
+				"south": {"uv": [0, 0, 16, 1], "texture": "#side", "tintindex": 1},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#side", "tintindex": 1},
+				"up": {"uv": [0, 0, 16, 1], "texture": "#side", "tintindex": 1},
+				"down": {"uv": [0, 15, 16, 16], "texture": "#side", "tintindex": 1}
+			}
+		},
+		{
+			"from": [1, 14.5, 0.25],
+			"to": [15, 15, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 0]},
+			"faces": {
+				"north": {"uv": [1, 1, 15, 1.5], "texture": "#side", "tintindex": 1},
+				"south": {"uv": [1, 1, 15, 1.5], "texture": "#side", "tintindex": 1},
+				"up": {"uv": [1, 0.25, 15, 1], "texture": "#side", "tintindex": 1},
+				"down": {"uv": [1, 15, 15, 15.75], "texture": "#side", "tintindex": 1}
+			}
+		},
+		{
+			"from": [15, 2, 0],
+			"to": [16, 15, 1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 0.5]},
+			"faces": {
+				"north": {"uv": [0, 1, 1, 14], "texture": "#side", "tintindex": 1},
+				"east": {"uv": [15, 1, 16, 14], "texture": "#side", "tintindex": 1},
+				"south": {"uv": [15, 1, 16, 14], "texture": "#side", "tintindex": 1},
+				"west": {"uv": [0, 1, 1, 14], "texture": "#side", "tintindex": 1}
+			}
+		}
+	]
+}

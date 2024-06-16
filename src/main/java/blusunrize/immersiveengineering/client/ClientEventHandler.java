@@ -34,6 +34,7 @@ import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.generic.CatwalkBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WindowBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
@@ -702,11 +703,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			MultiBufferSource buffer = event.getMultiBufferSource();
 			BlockHitResult rtr = event.getTarget();
 			BlockPos pos = rtr.getBlockPos();
+			Level world = living.level();
+			BlockState targetBlock = world.getBlockState(rtr.getBlockPos());
 			Vec3 renderView = event.getCamera().getPosition();
 			transform.pushPose();
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
-			float eps = 0.002F;
 			BlockEntity tile = living.level().getBlockEntity(rtr.getBlockPos());
 			ItemStack stack = living.getItemInHand(InteractionHand.MAIN_HAND);
 
@@ -735,7 +737,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				}
 			}
 
-			Level world = living.level();
 			if(!stack.isEmpty()&&ConveyorHandler.isConveyorBlock(Block.byItem(stack.getItem()))&&rtr.getDirection().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getDirection();
@@ -743,41 +744,24 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				AABB targetedBB = null;
 				if(!shape.isEmpty())
 					targetedBB = shape.bounds();
-
-				MultiBufferSource buffers = event.getMultiBufferSource();
-
-				float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-eps: targetedBB.maxY+eps);
-				Matrix4f mat = transform.last().pose();
-				Matrix3f matN = transform.last().normal();
-				VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
-				float sqrt2Half = (float)(Math.sqrt(2)/2);
-				lineBuilder.vertex(mat, 0-eps, y, 0-eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, sqrt2Half)
-						.endVertex();
-				lineBuilder.vertex(mat, 1+eps, y, 1+eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, sqrt2Half)
-						.endVertex();
-				lineBuilder.vertex(mat, 0-eps, y, 1+eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, -sqrt2Half)
-						.endVertex();
-				lineBuilder.vertex(mat, 1+eps, y, 0-eps)
-						.color(0, 0, 0, 0.4F)
-						.normal(matN, sqrt2Half, 0, -sqrt2Half)
-						.endVertex();
+				BlockOverlayUtils.drawQuadrantX(transform, buffer, side, targetedBB, 0.002f);
 
 				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getLocation().x-pos.getX()-.5f;
 				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getLocation().y-pos.getY()-.5f;
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getLocation().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3 dir = new Vec3(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
-				BlockOverlayUtils.drawBlockOverlayArrow(transform.last(), buffers, dir, side, targetedBB);
+				BlockOverlayUtils.drawBlockOverlayArrow(transform.last(), buffer, dir, side, targetedBB);
 			}
 
+			if(targetBlock.getBlock() instanceof CatwalkBlock&&Utils.isHammer(stack)&&rtr.getDirection()==Direction.UP)
+			{
+				AABB targetedBB = new AABB(0,0,0,1,.125,1);
+				BlockOverlayUtils.drawQuadrantX(transform, buffer, Direction.UP, targetedBB, 0.002f);
+			}
+
+
 			transform.popPose();
-			BlockState targetBlock = world.getBlockState(rtr.getBlockPos());
 			// fix lines overlaying on translucent blocks
 			if(targetBlock.getBlock() instanceof WindowBlock)
 			{

@@ -359,6 +359,9 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> WINDOW = new BlockEntry<>(
 				"treated_window", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindowBlock::new
 		);
+		public static final BlockEntry<IEBaseBlock> CATWALK = new BlockEntry<>(
+				"treated_catwalk", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, false)
+		);
 
 		private static void init()
 		{
@@ -481,6 +484,12 @@ public final class IEBlocks
 						.noOcclusion()
 						.forceSolidOn(),
 				WindowBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> STEEL_CATWALK = new BlockEntry<>(
+				"steel_catwalk", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, true)
+		);
+		public static final BlockEntry<IEBaseBlock> ALU_CATWALK = new BlockEntry<>(
+				"alu_catwalk", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, true)
 		);
 
 		private static void init()

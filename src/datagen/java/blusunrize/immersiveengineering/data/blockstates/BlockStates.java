@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.client.render.tile.TurretRenderer;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.CatwalkBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -47,6 +48,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -63,6 +65,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -351,6 +355,18 @@ public class BlockStates extends ExtendedBlockstateProvider
 			createRotatedBlock(MetalDecoration.REINFORCED_WINDOW, windowModel, IEProperties.FACING_ALL, List.of(), 0, 180);
 			itemModel(MetalDecoration.REINFORCED_WINDOW, windowModel);
 		}
+		createCatwalk(WoodenDecoration.CATWALK,
+				"immersiveengineering:block/wooden_decoration/scaffolding_top",
+				"immersiveengineering:block/wooden_decoration/scaffolding"
+		);
+		createCatwalk(MetalDecoration.STEEL_CATWALK,
+				"immersiveengineering:block/metal_decoration/steel_scaffolding_top_grate_top",
+				"immersiveengineering:block/metal_decoration/steel_scaffolding"
+		);
+		createCatwalk(MetalDecoration.ALU_CATWALK,
+				"immersiveengineering:block/metal_decoration/aluminum_scaffolding_top_grate_top",
+				"immersiveengineering:block/metal_decoration/aluminum_scaffolding"
+		);
 
 		createHorizontalRotatedBlock(StoneDecoration.CORESAMPLE, obj("block/coresample.obj"));
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete/concrete0");
@@ -672,6 +688,32 @@ public class BlockStates extends ExtendedBlockstateProvider
 						.setModels(new ConfiguredModel(model, 0, rotation, true));
 			}
 		}
+	}
+
+	private void createCatwalk(Supplier<? extends Block> block, String textureTop, String textureSide)
+	{
+		// prep textured elements
+		String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
+		BlockModelBuilder base = models()
+				.withExistingParent(name+"_base", modLoc("block/catwalk_base"))
+				.texture("top", textureTop)
+				.texture("side", textureSide);
+		BlockModelBuilder railing = models()
+				.withExistingParent(name+"_railing", modLoc("block/catwalk_railing"))
+				.texture("top", textureTop)
+				.texture("side", textureSide);
+		// assemble multipart
+		MultiPartBlockStateBuilder multipartBuilder = getMultipartBuilder(block.get());
+		multipartBuilder.part().modelFile(base).addModel().end();
+		CatwalkBlock.RAILING_PROPERTIES.forEach((direction, booleanProperty) ->
+				multipartBuilder.part().modelFile(railing).rotationY((int)(direction.toYRot()-180)%360)
+						.addModel().condition(booleanProperty, true).end());
+		// assemble item model
+		itemModel(block, models().withExistingParent(name+"_item", "block/block")
+				.customLoader(CompositeModelBuilder::begin)
+				.child("base", base)
+				.child("railing", railing)
+				.end());
 	}
 
 	protected ModelFile createMultiLayer(String path, Map<RenderType, ResourceLocation> modelGetter, ResourceLocation particle)

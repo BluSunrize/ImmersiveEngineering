@@ -17,6 +17,8 @@
 - Add High-Cetane Biodiesel (BluSunrize)
     - It's made from biodiesel and potion of strength in the refinery
     - Its burntime is 25% longer than normal biodiesel!
+- Add catwalk blocks, heavily inspired by Engineer's Decor (BluSunrize)
+    -  Thank you wilechaote for giving us permission to include these blocks in the mod <3
 - Change the recipes for revolver cartridges to be cheaper overall (BluSunrize)
 - Change Nickel and Uranium ores to have more easily identifiable textures (BluSunrize)
 - Change titles and descriptions of Advancements to more closely match Mojang's pattern (voidsong-dragonfly)

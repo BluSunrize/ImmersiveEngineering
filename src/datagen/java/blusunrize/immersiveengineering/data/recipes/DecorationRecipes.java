@@ -164,6 +164,15 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('g', Tags.Items.GLASS_PANES)
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.WINDOW)));
+
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, WoodenDecoration.CATWALK, 6)
+				.pattern("rrr")
+				.pattern("r r")
+				.pattern("sss")
+				.define('r', IETags.treatedStick)
+				.define('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.CATWALK)));
 	}
 
 	private void stoneDecoration(RecipeOutput out)
@@ -608,6 +617,23 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('d', IETags.plasticPlate)
 				.unlockedBy("has_duroplast", has(IETags.plasticPlate))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.REINFORCED_WINDOW)));
+
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.STEEL_CATWALK, 6)
+				.pattern("rrr")
+				.pattern("r r")
+				.pattern("sss")
+				.define('r', IETags.steelRod)
+				.define('s', IETags.getItemTag(IETags.scaffoldingSteelSlab))
+				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingSteel)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_CATWALK)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.ALU_CATWALK, 6)
+				.pattern("rrr")
+				.pattern("r r")
+				.pattern("sss")
+				.define('r', IETags.aluminumRod)
+				.define('s', IETags.getItemTag(IETags.scaffoldingAluSlab))
+				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingAlu)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.ALU_CATWALK)));
 	}
 
 	private void addStairs(ItemLike block, RecipeOutput out)

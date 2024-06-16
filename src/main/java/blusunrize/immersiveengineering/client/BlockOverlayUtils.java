@@ -50,6 +50,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
@@ -266,6 +267,31 @@ public class BlockOverlayUtils
 						.normal(transform.normal(), (float)diff.x, (float)diff.y, (float)diff.z)
 						.endVertex();
 		}
+	}
+
+	public static void drawQuadrantX(PoseStack transform, MultiBufferSource buffers, Direction side, AABB targetedBB, float eps)
+	{
+		float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-eps: targetedBB.maxY+eps);
+		Matrix4f mat = transform.last().pose();
+		Matrix3f matN = transform.last().normal();
+		VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
+		float sqrt2Half = (float)(Math.sqrt(2)/2);
+		lineBuilder.vertex(mat, 0-eps, y, 0-eps)
+				.color(0, 0, 0, 0.4F)
+				.normal(matN, sqrt2Half, 0, sqrt2Half)
+				.endVertex();
+		lineBuilder.vertex(mat, 1+eps, y, 1+eps)
+				.color(0, 0, 0, 0.4F)
+				.normal(matN, sqrt2Half, 0, sqrt2Half)
+				.endVertex();
+		lineBuilder.vertex(mat, 0-eps, y, 1+eps)
+				.color(0, 0, 0, 0.4F)
+				.normal(matN, sqrt2Half, 0, -sqrt2Half)
+				.endVertex();
+		lineBuilder.vertex(mat, 1+eps, y, 0-eps)
+				.color(0, 0, 0, 0.4F)
+				.normal(matN, sqrt2Half, 0, -sqrt2Half)
+				.endVertex();
 	}
 
 	/**
