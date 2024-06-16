@@ -53,15 +53,15 @@ public class IEServerConfig
 			// Split: Color in client, all others in server
 			energyWireConfigs.put(
 					IEWireType.COPPER,
-					new EnergyWireConfig(builder, "copper", 16, 2048, 0.05)
+					new EnergyWireConfig(builder, "copper", 16, 2048, 0.0125)
 			);
 			energyWireConfigs.put(
 					IEWireType.ELECTRUM,
-					new EnergyWireConfig(builder, "electrum", 16, 8192, 0.025)
+					new EnergyWireConfig(builder, "electrum", 16, 8192, 0.003)
 			);
 			energyWireConfigs.put(
 					IEWireType.STEEL,
-					new EnergyWireConfig(builder, "hv", 32, 32768, 0.025)
+					new EnergyWireConfig(builder, "hv", 32, 32768, 0.0008)
 			);
 			wireConfigs.put(
 					IEWireType.STRUCTURE_ROPE,
@@ -129,10 +129,10 @@ public class IEServerConfig
 				super(builder, name, defLength, false);
 				this.transferRate = builder.comment("The transfer rate of "+name+" wire in IF/t")
 						.defineInRange("transferRate", defRate, 0, Integer.MAX_VALUE);
-				this.lossRatio = builder.comment("The percentage of power lost every 16 blocks of distance in "+name+" wire")
-						.defineInRange("loss", defLoss, 0, 1);
+				this.lossRatio = builder.comment("The percentage of received power lost every 16 blocks of distance in "+name+" wire. This means exponential loss!")
+						.defineInRange("distanceLoss", defLoss, 0, 1);
 				this.connectorRate = builder
-						.comment("In- and output rates of "+name+" wire connectors. This is independant of the transferrate of the wires.")
+						.comment("In- and output rates of "+name+" wire connectors. This is independent of the transfer rate of the wires.")
 						.defineInRange("wireConnectorInput", defRate/8, 0, Integer.MAX_VALUE);
 				builder.pop();
 			}
