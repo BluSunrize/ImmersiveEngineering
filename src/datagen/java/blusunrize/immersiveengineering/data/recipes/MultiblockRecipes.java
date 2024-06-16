@@ -11,11 +11,13 @@ package blusunrize.immersiveengineering.data.recipes;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.crafting.PotionHelper;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
@@ -35,6 +37,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
@@ -573,6 +576,12 @@ public class MultiblockRecipes extends IERecipeProvider
 				.input(IETags.fluidEthanol, 8)
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
+		RefineryRecipeBuilder.builder()
+				.output(IEFluids.HIGH_POWER_BIODIESEL.getStill(), 16)
+				.input(IETags.fluidBiodiesel, 95)
+				.input(PotionHelper.getFluidTagForType(Potions.STRENGTH, 5))
+				.setEnergy(80)
+				.build(out, toRL("refinery/high_power_biodiesel"));
 		RefineryRecipeBuilder.builder()
 				.output(IEFluids.ACETALDEHYDE.getStill(), 8)
 				.catalyst(IETags.getTagsFor(EnumMetals.SILVER).plate)

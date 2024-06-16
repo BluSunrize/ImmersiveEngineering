@@ -50,6 +50,14 @@
       }
     ]
   },
+  "high_power_biodiesel": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:high_power_biodiesel_bucket"
+      }
+    ]
+  },
   "resin_acetaldehyde": {
     "type": "item_display",
     "items": [

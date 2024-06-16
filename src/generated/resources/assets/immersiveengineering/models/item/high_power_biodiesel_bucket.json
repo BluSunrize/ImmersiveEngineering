@@ -1,0 +1,5 @@
+{
+  "parent": "neoforge:item/bucket",
+  "fluid": "immersiveengineering:high_power_biodiesel",
+  "loader": "neoforge:fluid_container"
+}

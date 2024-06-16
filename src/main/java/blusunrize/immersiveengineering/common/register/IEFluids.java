@@ -78,6 +78,9 @@ public class IEFluids
 	public static final FluidEntry BIODIESEL = FluidEntry.make(
 			"biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow")
 	);
+	public static final FluidEntry HIGH_POWER_BIODIESEL = FluidEntry.make(
+			"high_power_biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow")
+	);
 	public static final FluidEntry CONCRETE = FluidEntry.make(
 			"concrete", rl("block/fluid/concrete_still"), rl("block/fluid/concrete_flow"),
 			ConcreteFluid::new, ConcreteFluid.Flowing::new, createBuilder(2400, 4000),

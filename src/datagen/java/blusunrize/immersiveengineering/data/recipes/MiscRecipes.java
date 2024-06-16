@@ -86,6 +86,7 @@ public class MiscRecipes extends IERecipeProvider
 		mineralMixes(out);
 
 		out.accept(toRL("generator_fuel/biodiesel"), new GeneratorFuel(IETags.fluidBiodiesel, 250), null);
+		out.accept(toRL("generator_fuel/high_power_biodiesel"), new GeneratorFuel(IETags.fluidHighPowerBiodiesel, 275), null);
 		out.accept(toRL("generator_fuel/creosote"), new GeneratorFuel(IETags.fluidCreosote, 20), null);
 
 		thermoelectricFuels(out);

@@ -12,9 +12,10 @@ The bottling recipe consumes an eighth of a bucket for each block oxidized.<np>
 Ethanol can also be used as a precursor to <link;industrial_fluids;Acetaldehyde;resin_and_acetaldehyde>. Plant Oil can also be used to lubricate the bearings of large tools.<np>
 <&biodiesel>§lBiodiesel§r is the great prime mover of any aspiring industrial engineer, and created from <link;industrial_fluids;Plant Oil and Ethanol;plant_oil_ethanol> in the <link;refinery;Refinery>.<br>
 When burned in the <link;diesel_generator;Diesel Generator>, biodiesel will produce truly industrial amounts of power.<np>
+<&high_power_biodiesel>To increase the energy output of §lBiodiesel§r further, it can be combined with a <link;industrial_fluids;Potion of Strength;potion> in the <link;refinery;Refinery> at 95 to 5 ratio. The resulting §lHigh-Cetane Biodiesel§r has a 25% longer burn time!<np>
 <&resin_acetaldehyde>§lPhenolic Resin§r and §lAcetaldehyde§r are primary constituents of the plastic <link;resin_and_duroplast;Duroplast;duroplast>.<br>
 The recipes for production involving these chemical precursors can be found <link;resin_and_duroplast;in later sections>.<np>
-<&herbicide>§lHerbicide§ris a chemical with rather poisonous effects to local plant life.<br>
+<&herbicide>§lHerbicide§r is a chemical with rather poisonous effects to local plant life.<br>
 When loaded into a <link;chemical_thrower;Chemical Thrower> it is dispersed as a fine mist, which withers and destroys any plants it comes in contact with.<np>
 <&herbicide_mixing>The fluid will remove leaves from trees, destroy flowers, bushes and crops and strip the grass from dirt. It will also dehydrate and ruin farmland.<br>
 To craft Herbicide, mix half a bucket of <link;fermenter;Ethanol> with §2Copper Dust§r and §2Sulfur Dust§r in the <link;mixer;Mixer>.<np>

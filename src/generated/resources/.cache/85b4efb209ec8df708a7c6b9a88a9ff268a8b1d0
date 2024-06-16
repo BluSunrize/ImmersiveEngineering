@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-16T01:36:28.5646854	Item models
+// 1.20.4	2024-06-16T11:00:43.9335019	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -174,6 +174,7 @@ b17b814d23052168fcab1f417621c93b73fb8234 assets/immersiveengineering/models/item
 40e5b1e7dcadbc20450be459438dbfde271e3442 assets/immersiveengineering/models/item/hemp_fabric.json
 cf4c2f6e46b334c23ce101ccd6f79b3bbee77b33 assets/immersiveengineering/models/item/hemp_fiber.json
 eec25d954ebf23859aececf0d692924c7383c760 assets/immersiveengineering/models/item/herbicide_bucket.json
+730da8a883eb50c082080f2cac0bae4024ed8314 assets/immersiveengineering/models/item/high_power_biodiesel_bucket.json
 9c5f2b57873b6124c10fe1ce4009275df933a5c4 assets/immersiveengineering/models/item/hoe_steel.json
 59f47b1f7f72f1ede3ea270660284d8973e99182 assets/immersiveengineering/models/item/homing.json
 48437dfd9e72ac9a7e50eb024b1f2a2a85c0da39 assets/immersiveengineering/models/item/ingot_aluminum.json

@@ -14,6 +14,9 @@
     - It also allows all three wolf designs to be stored in one pattern
 - Allow barrel and crate minecarts to be automatically loaded & unloaded (voidsong-dragonfly)
     - You can use a fluid pump to load and unload the barrel carts!
+- Add High-Cetane Biodiesel (BluSunrize)
+    - It's made from biodiesel and potion of strength in the refinery
+    - Its burntime is 25% longer than normal biodiesel!
 - Change the recipes for revolver cartridges to be cheaper overall (BluSunrize)
 - Change Nickel and Uranium ores to have more easily identifiable textures (BluSunrize)
 - Change titles and descriptions of Advancements to more closely match Mojang's pattern (voidsong-dragonfly)

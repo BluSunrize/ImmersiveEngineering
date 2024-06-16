@@ -241,6 +241,7 @@ public class IEContent
 		IEFluids.CREOSOTE.getBlock().setEffect(IEPotions.FLAMMABLE.value(), 100, 0);
 		IEFluids.ETHANOL.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
 		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.value(), 100, 1);
+		IEFluids.HIGH_POWER_BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.value(), 100, 2);
 		IEFluids.CONCRETE.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
 		IEFluids.REDSTONE_ACID.getBlock().setEffect(IEPotions.CONDUCTIVE.value(), 100, 1);
 		IEFluids.ACETALDEHYDE.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
