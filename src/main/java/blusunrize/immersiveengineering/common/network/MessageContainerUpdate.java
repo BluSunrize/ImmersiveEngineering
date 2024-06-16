@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
+import blusunrize.immersiveengineering.common.gui.IScreenMessageReceive;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -49,7 +49,7 @@ public class MessageContainerUpdate implements IMessage
 		assert player!=null;
 		context.workHandler().execute(() -> {
 			player.resetLastActionTime();
-			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IEContainerMenu ieMenu)
+			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IScreenMessageReceive ieMenu)
 				ieMenu.receiveMessageFromScreen(nbt);
 		});
 	}

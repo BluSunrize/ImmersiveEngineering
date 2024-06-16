@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.gui.CrateMenu;
@@ -28,7 +29,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -42,15 +45,17 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
-		implements IIEInventory, IBlockEntityDrop, IComparatorOverride, IPlayerInteraction
+		implements IIEInventory, IBlockEntityDrop, IComparatorOverride, IPlayerInteraction, IBlockOverlayText
 {
 	public static final int CONTAINER_SIZE = 27;
 	public static final int HITS_TO_SEAL = 6;
@@ -92,6 +97,28 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		if(!trySaveLootTable(nbt))
 			ContainerHelper.saveAllItems(nbt, inventory);
 		nbt.putInt("sealingProgress", this.sealingProgress);
+	}
+
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this, be -> {
+			CompoundTag nbttagcompound = new CompoundTag();
+			this.saveAdditional(nbttagcompound);
+			return nbttagcompound;
+		});
+	}
+
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
+	{
+		CompoundTag nonNullTag = pkt.getTag()!=null?pkt.getTag(): new CompoundTag();
+		if(nonNullTag.contains("CustomName", 8))
+		{
+			Component customName = Component.Serializer.fromJson(nonNullTag.getString("CustomName"));
+			if(customName!=null)
+				this.setCustomName(customName);
+		}
 	}
 
 	@Override
@@ -145,6 +172,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();
+		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
 	}
 
 	@Override
@@ -235,4 +263,16 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		}
 		return InteractionResult.PASS;
 	}
+
+	@Nullable
+	@Override
+	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
+	{
+		Component customName = getCustomName();
+		if(customName!=null)
+			return new Component[]{getCustomName()};
+		return null;
+	}
+
+
 }

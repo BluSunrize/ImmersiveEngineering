@@ -223,6 +223,7 @@ public class ImmersiveEngineering
 		registerMessage(registrar, MessageNoSpamChat.ID, MessageNoSpamChat::new, CLIENTBOUND);
 		registerMessage(registrar, MessageOpenManual.ID, MessageOpenManual::new, CLIENTBOUND);
 		registerMessage(registrar, MessagePowerpackAntenna.ID, MessagePowerpackAntenna::new, CLIENTBOUND);
+//		registerMessage(registrar, MessageCrateName.ID, MessageCrateName::new, SERVERBOUND);
 	}
 
 	private <T extends IMessage> void registerMessage(

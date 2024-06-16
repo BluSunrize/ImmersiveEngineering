@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.Da
 import blusunrize.immersiveengineering.common.network.MessageContainerData;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,7 +41,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
-public abstract class IEContainerMenu extends AbstractContainerMenu
+public abstract class IEContainerMenu extends AbstractContainerMenu implements IScreenMessageReceive
 {
 	private final List<GenericContainerData<?>> genericData = new ArrayList<>();
 	private final List<ServerPlayer> usingPlayers = new ArrayList<>();
@@ -185,10 +184,6 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 			}
 		}
 		return inAllowedRange&&move.moveItemStackTo(pStack, allowedStart, pEndIndex, false);
-	}
-
-	public void receiveMessageFromScreen(CompoundTag nbt)
-	{
 	}
 
 	@Override

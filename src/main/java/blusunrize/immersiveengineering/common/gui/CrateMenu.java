@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
 import com.google.common.base.Preconditions;
 import invtweaks.api.container.ChestContainer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nonnull;
 
 @ChestContainer
-public class CrateMenu extends AbstractContainerMenu
+public class CrateMenu extends AbstractContainerMenu implements IScreenMessageReceive
 {
 	private final Container container;
 
@@ -53,6 +55,15 @@ public class CrateMenu extends AbstractContainerMenu
 	public CrateMenu(MenuType<?> type, int id, Inventory inventoryPlayer)
 	{
 		this(type, id, inventoryPlayer, new SimpleContainer(WoodenCrateBlockEntity.CONTAINER_SIZE));
+	}
+
+	@Override
+	public void receiveMessageFromScreen(CompoundTag nbt)
+	{
+		if(container instanceof WoodenCrateBlockEntity crate){
+			crate.setCustomName(Component.literal(nbt.getString("name")));
+			crate.doGraphicalUpdates();
+		}
 	}
 
 	@Override
