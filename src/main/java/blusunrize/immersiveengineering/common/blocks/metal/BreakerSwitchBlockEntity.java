@@ -176,7 +176,7 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(!Utils.isHammer(heldItem))
 		{
@@ -186,10 +186,10 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 			level.blockEvent(getBlockPos(), getBlockState().getBlock(), active?1: 0, 0);
 			notifyNeighbours();
 			updateConductivity();
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else
-			return false;
+			return InteractionResult.PASS;
 	}
 
 	protected void updateConductivity()

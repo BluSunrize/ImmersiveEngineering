@@ -219,8 +219,7 @@ public class IEBlockInterfaces
 
 	public interface IPlayerInteraction
 	{
-		//TODO should really return ActionResultType
-		boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
+		InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
 	}
 
 	public interface IHammerInteraction

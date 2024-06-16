@@ -25,6 +25,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -88,7 +89,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		ColumnPos coords = CoresampleItem.getCoords(coresample);
 		if(player.isShiftKeyDown())
@@ -99,7 +100,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 				level.removeBlock(worldPosition, false);
 				level.addFreshEntity(entityitem);
 			}
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP&&coords!=null)
 		{
@@ -111,7 +112,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 					if(mapData.dimension!=CoresampleItem.getDimension(coresample))
 					{
 						player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapDimension"));
-						return true;
+						return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 					}
 
 					String ident = "ie:coresample_"+coords;
@@ -126,7 +127,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 							nbttaglist.remove(i);
 							mapTagCompound.put("Decorations", nbttaglist);
 							//TODO mapData.removeDecoration(ident);
-							return true;
+							return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 						}
 					}
 
@@ -153,9 +154,9 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 						player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapFail"));
 				}
 			}
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return false;
+		return InteractionResult.PASS;
 	}
 
 	//TODO @Override

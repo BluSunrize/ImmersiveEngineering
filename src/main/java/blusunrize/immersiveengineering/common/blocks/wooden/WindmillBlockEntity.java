@@ -35,6 +35,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -222,7 +223,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(sails < 8&&heldItem.getItem()==Ingredients.WINDMILL_SAIL.asItem())
 		{
@@ -230,9 +231,9 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 			if(!player.getAbilities().instabuild)
 				heldItem.shrink(1);
 			this.setChanged();
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return false;
+		return InteractionResult.PASS;
 	}
 
 	@Override

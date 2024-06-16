@@ -30,6 +30,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -136,7 +137,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(player.isShiftKeyDown())
 		{
@@ -148,13 +149,13 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 				level.removeBlock(getBlockPos(), false);
 				level.addFreshEntity(entityitem);
 			}
-			return true;
+			return InteractionResult.SUCCESS;
 		}
 		else if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
 		{
 			this.shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(heldItem, 1));
 			markContainingBlockForUpdate(null);
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		int target = 0;
 		if(side.getAxis()==Axis.Y&&style==0)
@@ -175,21 +176,21 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		}
 		DyeColor heldDye = Utils.getDye(heldItem);
 		if(heldDye==null)
-			return false;
+			return InteractionResult.PASS;
 		if(target==0)
 		{
 			if(colour0==heldDye)
-				return false;
+				return InteractionResult.PASS;
 			colour0 = heldDye;
 		}
 		else
 		{
 			if(colour1==heldDye)
-				return false;
+				return InteractionResult.PASS;
 			colour1 = heldDye;
 		}
 		markContainingBlockForUpdate(null);
-		return true;
+		return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 	}
 
 	@Override

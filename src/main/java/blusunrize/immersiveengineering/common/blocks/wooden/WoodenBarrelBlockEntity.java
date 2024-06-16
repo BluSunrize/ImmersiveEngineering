@@ -29,6 +29,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -304,37 +305,37 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		Optional<FluidStack> fOptional = FluidUtil.getFluidContained(heldItem);
 		boolean metal = this instanceof MetalBarrelBlockEntity;
 		if(!metal)
 		{
-			Optional<Boolean> ret = fOptional.map((f) -> {
+			InteractionResult ret = fOptional.map((f) -> {
 				if(f.getFluid().is(Tags.Fluids.GASEOUS))
 				{
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"noGasAllowed"), true);
-					return true;
+					return InteractionResult.FAIL;
 				}
 				else if(f.getFluid().getFluidType().getTemperature(f) >= WoodenBarrelBlockEntity.IGNITION_TEMPERATURE)
 				{
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"tooHot"), true);
-					return true;
+					return InteractionResult.FAIL;
 				}
 				else
-					return false;
-			});
-			if(ret.orElse(false))
-				return true;
+					return InteractionResult.PASS;
+			}).orElse(InteractionResult.PASS);
+			if(ret!=InteractionResult.PASS)
+				return ret;
 		}
 
 		if(FluidUtils.interactWithFluidHandler(player, hand, tank))
 		{
 			this.setChanged();
 			this.markContainingBlockForUpdate(null);
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return false;
+		return InteractionResult.PASS;
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -256,7 +257,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(isStackValid(0, heldItem))
 		{
@@ -265,7 +266,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 			player.setItemInHand(hand, stored);
 			setChanged();
 			this.markContainingBlockForUpdate(null);
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(!inventory.get(0).isEmpty())
 		{
@@ -274,8 +275,8 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 			inventory.set(0, ItemStack.EMPTY);
 			setChanged();
 			this.markContainingBlockForUpdate(null);
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return false;
+		return InteractionResult.PASS;
 	}
 }

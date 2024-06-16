@@ -31,6 +31,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -119,11 +120,11 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(getLevelNonnull().isClientSide)
 			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_MachineInterface, this);
-		return true;
+		return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 	}
 
 	@Override

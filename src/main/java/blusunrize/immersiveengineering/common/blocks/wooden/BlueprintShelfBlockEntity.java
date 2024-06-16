@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -140,7 +141,7 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		int targetedSlot = getTargetedSlot(side, hitX, hitY, hitZ);
 		ItemStack stackInSlot = this.inventory.get(targetedSlot);
@@ -153,16 +154,16 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 				player.spawnAtLocation(stackInSlot, 0);
 			this.inventory.set(targetedSlot, ItemStack.EMPTY);
 			this.setState(state.setValue(BlueprintShelfBlock.BLUEPRINT_SLOT_FILLED[targetedSlot], false));
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(isStackValid(targetedSlot, heldItem))
 		{
 			this.inventory.set(targetedSlot, heldItem.copyWithCount(1));
 			heldItem.shrink(1);
 			this.setState(state.setValue(BlueprintShelfBlock.BLUEPRINT_SLOT_FILLED[targetedSlot], true));
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return false;
+		return InteractionResult.FAIL;
 	}
 
 	@Nullable
