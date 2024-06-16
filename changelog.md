@@ -1,4 +1,8 @@
 ##### Version 1.20.4-11.3.1-pre
+- Add upgrades for the Engineering's Skyhook (BluSunrize)
+    - High Torque Motor makes it faster to go up slopes
+    - Insulated Grip allows riding live wires without getting zapped
+    - Heavy Impact Hooks deal bonus damage with a falling attack, much like the mace in 1.21
 - Allow Phial Cartridges to be filled in the Bottling Machine (BluSunrize)
 - Allow survey tools to be used on more blocks (voidsong-dragonfly)
 - Add cloche recipes for ferns and grass (voidsong-dragonfly)

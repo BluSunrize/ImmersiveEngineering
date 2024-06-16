@@ -7,5 +7,17 @@
         "crafting/wooden_grip"
       ]
     ]
+  },
+  "skyhook_slope": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_skyhook_slope"
+  },
+  "skyhook_insulation": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_skyhook_insulation"
+  },
+  "skyhook_mace": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_skyhook_mace"
   }
 }
