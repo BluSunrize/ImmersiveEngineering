@@ -104,7 +104,7 @@ public class CrusherLogic implements
 		{
 			final Vec3 absolutePos = level.toAbsolute(relativeOffset);
 			serverLevel.sendParticles(
-					particleData, absolutePos.x, absolutePos.y, absolutePos.z, 8, 0, 0, 0, 0.0625
+					particleData, absolutePos.x, absolutePos.y, absolutePos.z, 8, 0.125, 0.75, 0.125, 0.0625
 			);
 		}
 	}

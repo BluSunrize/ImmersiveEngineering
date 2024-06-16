@@ -224,32 +224,20 @@ public class ExcavatorLogic implements IMultiblockLogic<State>, IServerTickableC
 		if(!(level.getRawLevel() instanceof ServerLevel rawLevel))
 			return;
 		final Direction facing = level.getOrientation().front();
-		Axis axis = facing.getAxis();
-		int sign = level.getOrientation().mirrored()?1: -1;
+		final Direction outputDir = level.getOrientation().mirrored()?facing.getCounterClockWise():facing.getClockWise();
+
 		final Vec3 topCenterAbs = level.toAbsolute(WHEEL_CENTER_TOP);
-		double fixPosOffset = .5*sign*facing.getAxisDirection().getStep();
-		double fixVelOffset = .075*sign*facing.getAxisDirection().getStep();
-		for(int i = 0; i < 16; i++)
-		{
-			double mX = (rawLevel.random.nextDouble()-.5)*.01;
-			double mY = rawLevel.random.nextDouble()*-0.05D;
-			double mZ = (rawLevel.random.nextDouble()-.5)*.01;
-			double rndPosOffset = .2*(rawLevel.random.nextDouble()-.5);
-
-			if(axis==Axis.Z)
-				mX += fixVelOffset;
-			else
-				mZ += fixVelOffset;
-
-			rawLevel.sendParticles(
-					new ItemParticleOption(ParticleTypes.ITEM, stack),
-					topCenterAbs.x+axis.choose(rndPosOffset, 0, fixPosOffset),
-					topCenterAbs.y,
-					topCenterAbs.z+axis.choose(fixPosOffset, 0, rndPosOffset),
-					32,
-					mX, mY, mZ, 0.075
-			);
-		}
+		double dirX = 0.375*outputDir.getStepX();
+		double dirY = -0.5;
+		double dirZ = 0.375*outputDir.getStepZ();
+		rawLevel.sendParticles(
+				new ItemParticleOption(ParticleTypes.ITEM, stack),
+				topCenterAbs.x+dirX,
+				topCenterAbs.y-1,
+				topCenterAbs.z+dirY,
+				128,
+				dirX, dirY, dirZ, 0.075
+		);
 	}
 
 	@Nullable
