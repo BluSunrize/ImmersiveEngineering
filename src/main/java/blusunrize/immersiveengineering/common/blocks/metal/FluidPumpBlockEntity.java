@@ -46,6 +46,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -97,7 +98,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		super(type, pos, state);
 	}
 
-	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> neighborFluids = IEBlockCapabilityCaches.allNeighbors(
+	private final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> blockFluidHandlers = IEBlockCapabilityCaches.allNeighbors(
 			FluidHandler.BLOCK, this
 	);
 
@@ -125,7 +126,10 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			for(Direction f : Direction.values())
 				if(sideConfig.get(f)==IOSideConfig.INPUT)
 				{
-					IFluidHandler input = neighborFluids.get(f).getCapability();
+					IFluidHandler input = blockFluidHandlers.get(f).getCapability();
+					// attempt to find an adjacent entity fluid handler
+					if(input==null)
+						input = getEntityFluidHandler(f);
 					if(input!=null)
 					{
 						int drainAmount = IFluidPipe.getTransferableAmount(this.canOutputPressurized(false));
@@ -264,7 +268,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		for(Direction f : Direction.values())
 			if(sideConfig.get(f)==IOSideConfig.OUTPUT)
 			{
-				IFluidHandler handler = neighborFluids.get(f).getCapability();
+				IFluidHandler handler = blockFluidHandlers.get(f).getCapability();
 				if(handler!=null)
 				{
 					// TODO check if there are bad BE assumptions here
@@ -277,6 +281,20 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					{
 						sorting.put(new DirectionalFluidOutput(handler, f, tile, worldPosition.relative(f)), temp);
 						sum += temp;
+					}
+				}
+				else
+				{
+					handler = getEntityFluidHandler(f);
+					if(handler!=null)
+					{
+						FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
+						int temp = handler.fill(insertResource, FluidAction.SIMULATE);
+						if(temp > 0)
+						{
+							sorting.put(new DirectionalFluidOutput(handler, f, null, worldPosition.relative(f)), temp);
+							sum += temp;
+						}
 					}
 				}
 			}
@@ -305,6 +323,16 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			return f;
 		}
 		return 0;
+	}
+
+	@Nullable
+	private IFluidHandler getEntityFluidHandler(Direction direction)
+	{
+		return level.getEntities(null, new AABB(getBlockPos().relative(direction))).stream()
+				.map(entity -> entity.getCapability(FluidHandler.ENTITY, direction.getOpposite()))
+				.filter(Objects::nonNull)
+				.findFirst()
+				.orElse(null);
 	}
 
 

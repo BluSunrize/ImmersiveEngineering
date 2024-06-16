@@ -54,7 +54,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	public static <T extends CrateMinecartEntity>
 	void registerCapabilities(RegisterCapabilitiesEvent ev, Supplier<EntityType<T>> type)
 	{
-		ev.registerEntity(ItemHandler.ENTITY, type.get(), (e, $) -> e.containedBlockEntity.getInventoryCap());
+		ev.registerEntity(ItemHandler.ENTITY_AUTOMATION, type.get(), (e, $) -> e.containedBlockEntity.getInventoryCap());
 	}
 
 	@Override
