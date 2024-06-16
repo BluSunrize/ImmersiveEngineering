@@ -28,6 +28,7 @@
 - Fix accumulator backpack getting rendered as full-bright when worn (BluSunrize)
 - Fix IE's tools rendering inverted in offhand (BluSunrize)
 - Fix crusher and excavator particles behaving weirdly (BluSunrize)
+- Fix inconsistent breaking sounds with stone multiblocks (BluSunrize)
 
 ##### Version 1.20.4-11.3.0-174
 - Re-add CC-Tweaked integration (Malte)
