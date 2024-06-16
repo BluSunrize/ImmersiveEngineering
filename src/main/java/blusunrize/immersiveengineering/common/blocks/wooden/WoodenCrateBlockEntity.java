@@ -9,9 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.gui.CrateMenu;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
@@ -20,13 +23,18 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -38,14 +46,18 @@ import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
-		implements IIEInventory, IBlockEntityDrop, IComparatorOverride
+		implements IIEInventory, IBlockEntityDrop, IComparatorOverride, IPlayerInteraction
 {
 	public static final int CONTAINER_SIZE = 27;
+	public static final int HITS_TO_SEAL = 6;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
 	private ListTag enchantments;
+
+	private int sealingProgress = 0;
 
 	public WoodenCrateBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -68,6 +80,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 			nbt.putString("LootTable", nbt.getString("lootTable"));
 		if(!tryLoadLootTable(nbt))
 			ContainerHelper.loadAllItems(nbt, inventory);
+		this.sealingProgress = nbt.getInt("sealingProgress");
 	}
 
 	@Override
@@ -78,6 +91,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 			nbt.put("enchantments", this.enchantments);
 		if(!trySaveLootTable(nbt))
 			ContainerHelper.saveAllItems(nbt, inventory);
+		nbt.putInt("sealingProgress", this.sealingProgress);
 	}
 
 	@Override
@@ -138,7 +152,10 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag tag = new CompoundTag();
-		ContainerHelper.saveAllItems(tag, inventory, false);
+		if(isSealed())
+			ContainerHelper.saveAllItems(tag, inventory, false);
+		else
+			this.inventory.forEach(drop);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
 		Component customName = getCustomName();
@@ -164,6 +181,11 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 				setCustomName(stack.getHoverName());
 			enchantments = stack.getEnchantmentTags();
 		}
+	}
+
+	public boolean isSealed()
+	{
+		return sealingProgress >= HITS_TO_SEAL;
 	}
 
 	private final IItemHandler inventoryCap = new IEInventoryHandler(CONTAINER_SIZE, this);
@@ -194,5 +216,23 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	public int getContainerSize()
 	{
 		return CONTAINER_SIZE;
+	}
+
+	@Override
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	{
+		if(heldItem.is(IETags.hammers)&&player.isCrouching())
+		{
+			if(!player.getCooldowns().isOnCooldown(heldItem.getItem())&&!isSealed())
+			{
+				if(++sealingProgress >= HITS_TO_SEAL)
+					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"crate_sealed"), true);
+				player.playSound(SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR);
+				player.getCooldowns().addCooldown(heldItem.getItem(), 10);
+				return InteractionResult.sidedSuccess(Objects.requireNonNull(getLevel()).isClientSide);
+			}
+			return InteractionResult.FAIL;
+		}
+		return InteractionResult.PASS;
 	}
 }

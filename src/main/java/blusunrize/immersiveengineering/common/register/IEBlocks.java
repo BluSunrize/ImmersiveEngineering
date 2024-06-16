@@ -394,7 +394,7 @@ public final class IEBlocks
 		public static final BlockEntry<IEEntityBlock<?>> WOODEN_BARREL = BlockEntry.barrel("wooden_barrel", false);
 		public static final BlockEntry<TurntableBlock> TURNTABLE = new BlockEntry<>("turntable", STANDARD_WOOD_PROPERTIES, TurntableBlock::new);
 		public static final BlockEntry<IEEntityBlock<WoodenCrateBlockEntity>> CRATE = new BlockEntry<>(
-				"crate", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p, false)
+				"crate", STANDARD_WOOD_PROPERTIES, CrateBlock::new
 		);
 		public static final BlockEntry<IEEntityBlock<WoodenCrateBlockEntity>> REINFORCED_CRATE = new BlockEntry<>(
 				"reinforced_crate",
@@ -404,7 +404,7 @@ public final class IEBlocks
 						.mapColor(MapColor.WOOD)
 						.ignitedByLava()
 						.instrument(NoteBlockInstrument.BASS),
-				p -> new IEEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p, false)
+				CrateBlock::new
 		);
 		public static final BlockEntry<IEEntityBlock<SorterBlockEntity>> SORTER = new BlockEntry<>(
 				"sorter", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.SORTER, p)
@@ -580,6 +580,7 @@ public final class IEBlocks
 		public static final BlockEntry<AnyFacingEntityBlock<ElectromagnetBlockEntity>> ELECTROMAGNET = new BlockEntry<>(
 				"electromagnet", DEFAULT_METAL_PROPERTIES, p -> new AnyFacingEntityBlock<>(IEBlockEntities.ELECTROMAGNET, p)
 		);
+
 		private static void init()
 		{
 			for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
@@ -758,6 +759,8 @@ public final class IEBlocks
 				toItem = BlockItemBalloon::new;
 			else if(entry==Connectors.TRANSFORMER)
 				toItem = TransformerBlockItem::new;
+			else if(entry==WoodenDevices.CRATE||entry==WoodenDevices.REINFORCED_CRATE)
+				toItem = b -> new BlockItemIE(b, new Item.Properties().stacksTo(1));
 			else
 				toItem = BlockItemIE::new;
 			if(entry==StoneDecoration.COKE)
