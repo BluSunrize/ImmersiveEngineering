@@ -121,7 +121,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 		IRotationAcceptor dynamo = outputCap.getCapability();
 		if(dynamo!=null)
 		{
-			double power = getActualTurnSpeed()*800;
+			double power = getActualTurnSpeed()*2400;
 			dynamo.inputRotation(Math.abs(power));
 		}
 	}

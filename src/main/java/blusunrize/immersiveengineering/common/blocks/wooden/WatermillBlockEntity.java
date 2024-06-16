@@ -58,30 +58,40 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			IRotationAcceptor.CAPABILITY, this, this::getFacing
 	);
 	//These are position lists for blocks to check for flowrate. First 11 are breastshot, all 16 are overshot
-	private static final List<Vec3i> offsetsX = Arrays.asList(
-			new Vec3i(3, 1, 0),
-			new Vec3i(3, 0, 0),
-			new Vec3i(3, -1, 0),
-			new Vec3i(2, -2, 0),
-			new Vec3i(1, -3, 0),
-			new Vec3i(0, -3, 0),
-			new Vec3i(-1, -3, 0),
-			new Vec3i(-2, -2, 0),
-			new Vec3i(-3, -1, 0),
-			new Vec3i(-3, 0, 0),
-			new Vec3i(-3, 1, 0));
-	private static final List<Vec3i> offsetsZ = Arrays.asList(
-			new Vec3i(0, 1, 3),
-			new Vec3i(0, 0, 3),
-			new Vec3i(0, -1, 3),
-			new Vec3i(0, -2, 2),
-			new Vec3i(0, -3, 1),
-			new Vec3i(0, -3, 0),
-			new Vec3i(0, -3, -1),
-			new Vec3i(0, -2, -2),
-			new Vec3i(0, -1, -3),
-			new Vec3i(0, 0, -3),
-			new Vec3i(0, 1, -3));
+	private static final List<Vec3> offsetsZ = Arrays.asList(
+			new Vec3(+3, +1, 0),
+			new Vec3(+3,  0, 0),
+			new Vec3(+3, -1, 0),
+			new Vec3(+2, -2, 0),
+			new Vec3(+1, -3, 0),
+			new Vec3(+0, -3, 0),
+			new Vec3(-1, -3, 0),
+			new Vec3(-2, -2, 0),
+			new Vec3(-3, -1, 0),
+			new Vec3(-3,  0, 0),
+			new Vec3(-3, +1, 0),
+			new Vec3(-2, +2, 0),
+			new Vec3(-1, +3, 0),
+			new Vec3(+0, +3, 0),
+			new Vec3(+1, +3, 0),
+			new Vec3(+2, +2, 0));
+	private static final List<Vec3> offsetsX = Arrays.asList(
+			new Vec3(0, +1, +3),
+			new Vec3(0, +0, +3),
+			new Vec3(0, -1, +3),
+			new Vec3(0, -2, +2),
+			new Vec3(0, -3, +1),
+			new Vec3(0, -3,  0),
+			new Vec3(0, -3, -1),
+			new Vec3(0, -2, -2),
+			new Vec3(0, -1, -3),
+			new Vec3(0, +0, -3),
+			new Vec3(0, +1, -3),
+			new Vec3(0, +2, -2),
+			new Vec3(0, +3, -1),
+			new Vec3(0, +3,  0),
+			new Vec3(0, +3, +1),
+			new Vec3(0, +2, +2));
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -98,7 +108,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public void tickServer()
 	{
-		if(isBlocked())//TODO throttle?
+		if(isBlocked())
 		{
 			setPerTickAndAdvance(0);
 			return;
@@ -133,7 +143,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			}
 
 			// +1: Self is not included in list of connected wheels
-			setPerTickAndAdvance(1f/1440*power/(connectedWheels.size()+1));
+			setPerTickAndAdvance(0.00025*power/(connectedWheels.size()+1));
 			for(WatermillBlockEntity watermill : connectedWheels)
 			{
 				watermill.setPerTickAndAdvance(perTick);
@@ -145,10 +155,10 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 				watermill.multiblock = true;
 			}
 
-			dynamo.inputRotation(Math.abs(power*.75));
+			dynamo.inputRotation(power);
 		}
 		else
-			setPerTickAndAdvance(1f/1440*getPower());
+			setPerTickAndAdvance(0.00025*getPower());
 	}
 
 	private void setPerTickAndAdvance(double newValue)
@@ -181,26 +191,26 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			{
 				BlockPos pos = getBlockPos().relative(fdW, 2).relative(fdY, 2);
 				BlockState state = level.getBlockState(pos);
-				if(Block.isFaceFull(state.getShape(level, pos), fdW.getOpposite()))
+				if(Block.isFaceFull(state.getShape(level, pos), fdW.getOpposite())&&!state.canBeReplaced())
 					return true;
-				if(Block.isFaceFull(state.getShape(level, pos), fdY.getOpposite()))
+				if(Block.isFaceFull(state.getShape(level, pos), fdY.getOpposite())&&!state.canBeReplaced())
 					return true;
 			}
 		//Check side blocks for solid blocks
 		for(Direction side : getFacing().getAxis()==Axis.Z?new Direction[]{Direction.EAST, Direction.WEST, Direction.UP, Direction.DOWN}
-														   :new Direction[]{Direction.SOUTH, Direction.NORTH, Direction.UP, Direction.DOWN})
+														  :new Direction[]{Direction.SOUTH, Direction.NORTH, Direction.UP, Direction.DOWN})
 		{
 			BlockPos pos = getBlockPos().relative(side, 3).relative(side.getClockWise(getFacing().getAxis()));
 			BlockState state = level.getBlockState(pos);
-			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite()))
+			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite())&&!state.canBeReplaced())
 				return true;
 			pos = getBlockPos().relative(side, 3);
 			state = level.getBlockState(pos);
-			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite()))
+			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite())&&!state.canBeReplaced())
 				return true;
 			pos = getBlockPos().relative(side, 3).relative(side.getCounterClockWise(getFacing().getAxis()));
 			state = level.getBlockState(pos);
-			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite()))
+			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite())&&!state.canBeReplaced())
 				return true;
 		}
 		return false;
@@ -210,7 +220,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		boolean zFacing = getFacing().ordinal() <= 3;
 		boolean overshot = getOvershot(zFacing);
-		return (overshot?1:1.2)*Math.abs(zFacing?getTorque(zFacing, overshot).x():getTorque(zFacing, overshot).z());
+		//Multiply by 1.25f to get output in IF for the dynamo
+		return Math.abs(zFacing?getTorque(zFacing, overshot).z():getTorque(zFacing, overshot).x())*1.25f;
 	}
 
 	public Vec3 getTorque(boolean zAxis, boolean overshot)
@@ -218,7 +229,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		if(torqueVec==null)
 		{
 			torqueVec = overshot?getOvershotTorque(zAxis): getBreastshotTorque(zAxis);
-			System.out.println(torqueVec);
+			torqueVec = torqueVec.add(getResistanceTorque(torqueVec, zAxis));
 		}
 		return torqueVec;
 	}
@@ -240,19 +251,33 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		//Top corner positions
 		overshot = !level.getFluidState(getBlockPos().offset(-(zAxis?2: 0), +2, -(zAxis?0: 2))).isEmpty()||overshot;
 		overshot = !level.getFluidState(getBlockPos().offset(+(zAxis?2: 0), +2, +(zAxis?0: 2))).isEmpty()||overshot;
+		//Straight downwards entry on tops of sides (0.889 height, 0.778 is our lower bound)
+		overshot = (level.getFluidState(getBlockPos().offset(-(zAxis?3: 0), 1, -(zAxis?0: 3))).getOwnHeight()>0.8)||overshot;
+		overshot = (level.getFluidState(getBlockPos().offset(+(zAxis?3: 0), 1, +(zAxis?0: 3))).getOwnHeight()>0.8)||overshot;
 		return overshot;
 	}
 
+	/**
+	 * Calculates torque in vector form for an overshot wheel, using torque = cross between position and force
+	 * Values are adjusted from straight torque vector calculations to account for 'weight' and 'head'
+	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
+	 * @return Vec3 vector torque for the waterwheel
+	 */
 	private Vec3 getOvershotTorque(boolean zAxis)
 	{
-		Vec3 dir = new Vec3(0, 0, 0);
-
-		return dir;
+		Vec3 torque = new Vec3(0, 0, 0);
+		for (Vec3 position : zAxis?offsetsZ:offsetsX)
+		{
+			Vec3i tmp = new Vec3i((int)position.x(), (int)position.y(), (int)position.z());
+			torque = torque.add(position.cross(Utils.getScaledFlowVector(level, getBlockPos().offset(tmp))));
+		}
+		return torque;
 	}
 
 	/**
-	 * Calculates torque in vector form for the waterwheel, using torque = cross between position and force
-	 * @param zAxis
+	 * Calculates torque in vector form for a breastshot wheel, using torque = cross between position and force
+	 * Values are adjusted from straight torque vector calculations to account for 'weight' and 'head'
+	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
 	 * @return Vec3 vector torque for the waterwheel
 	 */
 	private Vec3 getBreastshotTorque(boolean zAxis)
@@ -260,62 +285,37 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		Vec3 torque = new Vec3(0, 0, 0);
 		for (int i=0;i<11;i++)
 		{
-			Vec3i position = zAxis?offsetsZ.get(i):offsetsX.get(i);
-			Vec3 tmp = new Vec3(position.getX(), position.getY(), position.getZ());
-			torque = torque.add(tmp).cross(Utils.getScaledFlowVector(level, getBlockPos().offset(getBlockPos().offset(position))));
+			Vec3 position = zAxis?offsetsZ.get(i):offsetsX.get(i);
+			Vec3i tmp = new Vec3i((int)position.x(), (int)position.y(), (int)position.z());
+			torque = torque.add(position.cross(Utils.getScaledFlowVector(level, getBlockPos().offset(tmp))));
 		}
-		return torque;
+		//Return early if we have a small torque - breastshot wheels really need throughspeed, and these won't have it
+		if (torque.length()<3.25) return torque;
+		//We add 0.778+2.667*0.8 here to counteract the negative flow velocity of the 'inlet' on breastshot wheels
+		//When the water enters 'against' the wheel the cross product makes a torque of -0.778, which severely hampers efficiency
+		//2.667 is a perfectly full downwards block, and 0.8 is the approximate average height
+		//This also has the helpful effect of diminishing the efficiency of sideways breastshot wheels
+		//We then scale by 1.3 to make breastshot wheels competitive with overshot wheels
+		return (torque.add(zAxis?0:(torque.x>0?2.9116:-2.9116), 0, zAxis?(torque.z>0?2.9116:-2.9116):0)).scale(1.35f);
 	}
 
-	private Vec3 getHorizontalVec(boolean faceZ)
+	/**
+	 * Calculates the viscosity-related torque that comes from having source blocks of fluid in the way of the waterwheel
+	 * Resistance torque will be negative if torque from the stream flow is positive, and is scaled by output torque
+	 * @param torque the pre-viscosity torque produced by the wheel
+	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
+	 * @return torque produced by viscosity acting upon the waterwheel
+	 */
+	private Vec3 getResistanceTorque(Vec3 torque, boolean zAxis)
 	{
-		Vec3 dir = new Vec3(0, 0, 0);
-		dir = dir.add(Utils.getScaledFlowVector(level, getBlockPos().offset(-(faceZ?1: 0), +3, -(faceZ?0: 1))));
-		dir = dir.add(Utils.getScaledFlowVector(level, getBlockPos().offset(0, +3, 0)));
-		dir = dir.add(Utils.getScaledFlowVector(level, getBlockPos().offset(+(faceZ?1: 0), +3, +(faceZ?0: 1))));
-
-		dir = dir.subtract(Utils.getScaledFlowVector(level, getBlockPos().offset(-(faceZ?1: 0), -3, -(faceZ?0: 1))));
-		dir = dir.subtract(Utils.getScaledFlowVector(level, getBlockPos().offset(0, -3, 0)));
-		dir = dir.subtract(Utils.getScaledFlowVector(level, getBlockPos().offset(+(faceZ?1: 0), -3, +(faceZ?0: 1))));
-
-		return dir;
-	}
-
-	private Vec3 getVerticalVec(boolean faceZ)
-	{
-		Vec3 dir = new Vec3(0, 0, 0);
-
-		dir = dir.add(Utils.getScaledFlowVector(level, getBlockPos().offset(-(faceZ?3: 0), 1, -(faceZ?0: 3))));
-		dir = dir.add(Utils.getScaledFlowVector(level, getBlockPos().offset(-(faceZ?3: 0), 0, -(faceZ?0: 3))));
-		dir = dir.add(Utils.getScaledFlowVector(level, getBlockPos().offset(-(faceZ?3: 0), -1, -(faceZ?0: 3))));
-
-		dir = dir.subtract(Utils.getScaledFlowVector(level, getBlockPos().offset((faceZ?3: 0), 1, (faceZ?0: 3))));
-		dir = dir.subtract(Utils.getScaledFlowVector(level, getBlockPos().offset((faceZ?3: 0), 0, (faceZ?0: 3))));
-		dir = dir.subtract(Utils.getScaledFlowVector(level, getBlockPos().offset((faceZ?3: 0), -1, (faceZ?0: 3))));
-
-		return dir;
-	}
-
-	private Vec3 getDiagonalVec(boolean faceZ)
-	{
-		Vec3 dir = new Vec3(0, 0, 0);
-		return dir;
-	}
-
-	private Vec3 getResistanceVec(boolean faceZ, Vec3 currentPositive)
-	{
-		Vec3 dir = new Vec3(0, 0, 0);
-		System.out.println(currentPositive);
-
-
-/*
-		if(getFacing().getAxis()==Axis.Z)
-			dir = dir.add(dirNeg.y-dirPos.y, 0, 0);
-		else
-			dir = dir.add(0, 0, dirNeg.y-dirPos.y);
-
- */
-		return dir;
+		Vec3 resistanceTorque = new Vec3(0, 0, 0);
+		for (Vec3 position : zAxis?offsetsZ:offsetsX)
+		{
+			Vec3i tmp = new Vec3i((int)position.x(), (int)position.y(), (int)position.z());
+			double resistance = level.getFluidState(getBlockPos().offset(tmp)).isSourceOfType(level.getFluidState(getBlockPos().offset(tmp)).getType())?(2+(0.1*torque.length())):0;
+			resistanceTorque = zAxis?resistanceTorque.add(0, 0, torque.z()>0?-resistance:resistance):resistanceTorque.add(torque.x()>0?-resistance:resistance, 0, 0);
+		}
+		return resistanceTorque;
 	}
 
 	@Override

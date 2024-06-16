@@ -152,8 +152,8 @@ public class IEServerConfig
 				builder.pop();
 			}
 			dynamo_output = builder
-					.comment("The base Flux that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill")
-					.defineInRange("dynamo_output", 3D, 0, Integer.MAX_VALUE);
+					.comment("Output modifier for the energy created by the kinetic dynamo. This will be modified by the rotation modifier of the attached water- or windmill")
+					.defineInRange("kinetic_output", 1D, 0, Integer.MAX_VALUE);
 			thermoelectric_output = builder
 					.comment("Output modifier for the energy created by the Thermoelectric Generator")
 					.defineInRange("thermoelectric_output", 1D, 0, Integer.MAX_VALUE);
