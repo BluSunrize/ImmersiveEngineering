@@ -158,7 +158,7 @@ public class ModelPowerpack
 				matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 				VertexConsumer consumer = buffers.getBuffer(RenderType.entitySolid(shaderTexture));
 				Minecraft.getInstance().getItemRenderer().renderModelLists(
-						bakedModel, powerpack, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, matrixStackIn, consumer
+						bakedModel, powerpack, packedLightIn, OverlayTexture.NO_OVERLAY, matrixStackIn, consumer
 				);
 			}
 			else
@@ -174,7 +174,7 @@ public class ModelPowerpack
 					for(BakedQuad quad : layer.bakedQuads())
 						consumer.putBulkData(
 								matrixStackIn.last(), quad, layer.red(), layer.green(), layer.blue(), 1,
-								LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false
+								packedLightIn, OverlayTexture.NO_OVERLAY, false
 						);
 				}
 			}
@@ -184,7 +184,7 @@ public class ModelPowerpack
 		Minecraft.getInstance().getItemRenderer().render(
 				powerpack, ItemDisplayContext.FIXED, false,
 				matrixStackIn, buffers,
-				LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+				packedLightIn, OverlayTexture.NO_OVERLAY,
 				renderer.getModel(powerpack, toRender.level(), toRender, 0)
 		);
 		PowerpackCallbacks.THIRD_PERSON_PASS = 0;
