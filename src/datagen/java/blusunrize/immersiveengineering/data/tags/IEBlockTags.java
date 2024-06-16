@@ -169,6 +169,9 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.CONCRETE_REINFORCED_TILE.get())
 				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED_TILE.getId()).get())
 				.add(MetalDecoration.REINFORCED_WINDOW.get());
+		tag(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON)
+				.add(WoodenDevices.WATERMILL.get())
+				.add(WoodenDevices.WINDMILL.get());
 		//Add parity tags to gravel & sand for IE similar blocks
 		tag(BlockTags.BAMBOO_PLANTABLE_ON)
 				.add(StoneDecoration.SLAG_GRAVEL.get())

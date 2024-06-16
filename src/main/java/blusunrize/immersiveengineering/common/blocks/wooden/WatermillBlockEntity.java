@@ -191,9 +191,9 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			{
 				BlockPos pos = getBlockPos().relative(fdW, 2).relative(fdY, 2);
 				BlockState state = level.getBlockState(pos);
-				if(Block.isFaceFull(state.getShape(level, pos), fdW.getOpposite())&&!state.canBeReplaced())
+				if(Block.isFaceFull(state.getShape(level, pos), fdW.getOpposite()))
 					return true;
-				if(Block.isFaceFull(state.getShape(level, pos), fdY.getOpposite())&&!state.canBeReplaced())
+				if(Block.isFaceFull(state.getShape(level, pos), fdY.getOpposite()))
 					return true;
 			}
 		//Check side blocks for solid blocks
@@ -202,15 +202,15 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		{
 			BlockPos pos = getBlockPos().relative(side, 3).relative(side.getClockWise(getFacing().getAxis()));
 			BlockState state = level.getBlockState(pos);
-			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite())&&!state.canBeReplaced())
+			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite()))
 				return true;
 			pos = getBlockPos().relative(side, 3);
 			state = level.getBlockState(pos);
-			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite())&&!state.canBeReplaced())
+			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite()))
 				return true;
 			pos = getBlockPos().relative(side, 3).relative(side.getCounterClockWise(getFacing().getAxis()));
 			state = level.getBlockState(pos);
-			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite())&&!state.canBeReplaced())
+			if(Block.isFaceFull(state.getShape(level, pos), side.getOpposite()))
 				return true;
 		}
 		return false;
