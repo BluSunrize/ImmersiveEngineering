@@ -385,11 +385,11 @@ public class Utils
 		return false;
 	}
 
-	public static Vec3 getFlowVector(Level world, BlockPos pos)
+	public static Vec3 getScaledFlowVector(Level world, BlockPos pos)
 	{
 		BlockState bState = world.getBlockState(pos);
 		FluidState fState = bState.getFluidState();
-		return fState.getFlow(world, pos);
+		return fState.getFlow(world, pos).scale(fState.getOwnHeight());
 	}
 
 	public static double minInArray(double... f)
