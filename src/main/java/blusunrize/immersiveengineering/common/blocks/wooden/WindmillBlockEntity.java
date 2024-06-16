@@ -14,10 +14,7 @@ import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlacementInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
@@ -54,7 +51,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
-		IStateBasedDirectional, IPlacementInteraction, IPlayerInteraction, IBlockBounds
+		IStateBasedDirectional, IPlacementInteraction, IPlayerInteraction, IBlockBounds, ISoundBE
 {
 	public float rotation = 0;
 	public float turnSpeed = 0;
@@ -84,7 +81,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	{
 		rotation += getActualTurnSpeed();
 		rotation %= 1;
-		ImmersiveEngineering.proxy.handleTileSound(IESounds.wooden_creaking, this, turnSpeed>0, 0.5f, 1f);
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, turnSpeed>0, 0.9f, 1f);
 	}
 
 
@@ -257,5 +254,11 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return SHAPES.get(this.getFacing());
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return turnSpeed>0;
 	}
 }

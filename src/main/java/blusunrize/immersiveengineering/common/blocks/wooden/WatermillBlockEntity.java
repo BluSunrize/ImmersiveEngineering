@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
@@ -41,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE, IStateBasedDirectional, IHasDummyBlocks
+public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE, IStateBasedDirectional, IHasDummyBlocks, ISoundBE
 {
 	public int[] offset = {0, 0};
 	public float rotation = 0;
@@ -68,7 +69,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		rotation += perTick;
 		rotation %= 1;
-		ImmersiveEngineering.proxy.handleTileSound(IESounds.wooden_creaking, this, !isBlocked(), 0.5f, 1f);
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, getPower()>0, 0.9f, 1f);
 	}
 
 	@Override
@@ -328,5 +329,11 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 						level.removeBlock(pos2, false);
 					}
 				}
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return getPower()>0;
 	}
 }
