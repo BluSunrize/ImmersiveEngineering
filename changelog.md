@@ -21,6 +21,11 @@
 - Change Nickel and Uranium ores to have more easily identifiable textures (BluSunrize)
 - Change titles and descriptions of Advancements to more closely match Mojang's pattern (voidsong-dragonfly)
 - Change wire loss to be exponential rather than linear, allowing HV lines to run much further and still be viable! (voidsong-dragonfly)
+- Change storage crates in their behavior (BluSunrize)
+    - They will only keep their items if they are sealed before being broken
+    - To seal a crate you'll need to use an engineer's hammer on it for an extended duration
+    - This way, they're not longer as good as Shulker Boxes
+    - To make up for it, the name of a crate can now be edited in its GUI and will display when hovering the cursor over the block
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
 - Fix potential race condition with wires damaging entities (BluSunrize)
