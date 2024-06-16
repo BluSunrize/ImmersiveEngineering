@@ -1,4 +1,4 @@
-##### Version 1.20.4-11.3.1-pre
+##### Version 1.20.4-11.4.0-pre
 - Add upgrades for the Engineering's Skyhook (BluSunrize)
     - High Torque Motor makes it faster to go up slopes
     - Insulated Grip allows riding live wires without getting zapped
@@ -12,8 +12,12 @@
 - Add sub-designs for the banner patterns: hammer, wire cutter & wolf (BluSunrize)
     - This allows for individual coloured grip + head of the tool
     - It also allows all three wolf designs to be stored in one pattern
+- Allow barrel and crate minecarts to be automatically loaded & unloaded (voidsong-dragonfly)
+    - You can use a fluid pump to load and unload the barrel carts!
 - Change the recipes for revolver cartridges to be cheaper overall (BluSunrize)
 - Change Nickel and Uranium ores to have more easily identifiable textures (BluSunrize)
+- Change titles and descriptions of Advancements to more closely match Mojang's pattern (voidsong-dragonfly)
+- Change wire loss to be exponential rather than linear, allowing HV lines to run much further and still be viable! (voidsong-dragonfly)
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
 - Fix potential race condition with wires damaging entities (BluSunrize)
