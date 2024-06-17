@@ -106,7 +106,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		rotation += perTick;
 		rotation %= 1;
-		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, getPower()>0, 0.9f, 1f);
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, Math.abs(getIFScaledTorque())>0, 0.9f, 1f);
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		boolean zFacing = getFacing().ordinal() <= 3;
 		boolean overshot = getOvershot(zFacing);
 		//Multiply by 1.25f to get output in IF for the dynamo
-		return zFacing?getTorque(zFacing, overshot).z():getTorque(zFacing, overshot).x()*1.25f;
+		return (zFacing?getTorque(zFacing, overshot).z():getTorque(zFacing, overshot).x())*1.25f;
 	}
 
 	/**
@@ -444,6 +444,6 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public boolean shouldPlaySound(String sound)
 	{
-		return getPower()>0;
+		return Math.abs(getIFScaledTorque())>0;
 	}
 }
