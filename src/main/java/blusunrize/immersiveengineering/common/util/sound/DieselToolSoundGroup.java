@@ -9,15 +9,12 @@
 package blusunrize.immersiveengineering.common.util.sound;
 
 import blusunrize.immersiveengineering.common.items.DieselToolItem;
-import li.cil.oc2.common.ConfigManager.Min;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,22 +23,21 @@ import java.util.Objects;
 
 public class DieselToolSoundGroup
 {
+	private static final int attackDuration = 7-1;
 	private final DieselToolItem dieselToolItem;
 	private final LivingEntity holder;
 	private final int harvestTimeoutGrace;
-	private final EquipmentSlot slot;
 
 	private ToolMotorState currentMotorState = ToolMotorState.OFF;
 	@Nullable
 	private BlockPos currentTargetPos = null;
 	private long lastTick = 0;
 
-	public DieselToolSoundGroup(DieselToolItem dieselToolItem, LivingEntity holder, EquipmentSlot slot)
+	public DieselToolSoundGroup(DieselToolItem dieselToolItem, LivingEntity holder)
 	{
 		this.dieselToolItem = dieselToolItem;
 		this.holder = holder;
-		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?0: 600; // shut off remote player's harvesting sound after 600 ticks
-		this.slot = slot;
+		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?0: 2400; // shut off remote player's harvesting sound after 2 minutes
 	}
 
 	private static void play(AbstractTickableSoundInstance soundInstance)
@@ -58,17 +54,20 @@ public class DieselToolSoundGroup
 	{
 		if(this.dieselToolItem!=handItem.getItem()||!dieselToolItem.canToolBeUsed(handItem))
 		{
-			switchMotorOnOff(false); // go to sounds-off state (propagates)
+			switchMotorOnOff(false);
 			return false;
 		}
 		return true;
 	}
 
-//	public enum ToolHarvestState
-//	{
-//		NON,
-//		HARVESTING
-//	}
+	public enum ToolMotorState
+	{
+		OFF,
+		IDLE,
+		BUSY,
+		ATTACK,
+		ATTACK_END
+	}
 
 	public boolean triggerMotorAttack()
 	{
@@ -80,15 +79,15 @@ public class DieselToolSoundGroup
 		return switchMotorState(motorOn, false, true);
 	}
 
-	public boolean switchMotorState(boolean motorOn, boolean attack, boolean propagate)
+	private boolean switchMotorState(boolean motorOn, boolean attack, boolean propagate)
 	{
 		ToolMotorState newMotorState = motorOn?(attack?(ToolMotorState.ATTACK): (currentTargetPos==null?ToolMotorState.IDLE: ToolMotorState.BUSY)): ToolMotorState.OFF;
 
-		if(currentMotorState==newMotorState || (propagate && currentMotorState==ToolMotorState.ATTACK))
+		if((currentMotorState==newMotorState||(propagate&&currentMotorState==ToolMotorState.ATTACK))&&newMotorState!=ToolMotorState.ATTACK)
 			return false;
 
 		currentMotorState = newMotorState;
-		//todo: motorSound = switch(newMotorState) case -> ?
+
 		switch(newMotorState)
 		{
 			case OFF:
@@ -104,12 +103,9 @@ public class DieselToolSoundGroup
 			case ATTACK:
 				if(propagate)
 					updateHarvestState(null, false);
-				lastTick = holder.level().getGameTime()+12;
+				lastTick = holder.level().getGameTime()+attackDuration;
 				play(new DieselToolMotorSound(dieselToolItem.getAttackSound().value(), newMotorState, false));
 				break;
-//				System.out.println("attaaaaack!"); //TODO: remove me
-//				motorSound = Optional.of(new DieselToolMotorSound(dieselToolItem.getBusySound()));
-//				break;
 		}
 		return true;
 	}
@@ -119,16 +115,14 @@ public class DieselToolSoundGroup
 		return updateHarvestState(newTargetPos, true);
 	}
 
-	public boolean updateHarvestState(@Nullable BlockPos newTargetPos, boolean propagate)
+	private boolean updateHarvestState(@Nullable BlockPos newTargetPos, boolean propagate)
 	{
 		lastTick = holder.level().getGameTime()+harvestTimeoutGrace;
 		if(Objects.equals(currentTargetPos, newTargetPos))
 			return false;
 
-		System.out.println(currentTargetPos+" ::: "+newTargetPos);
 		currentTargetPos = newTargetPos;
 
-		// TODO: simplify/remove null branch. See if it does anything with/without propagation in case of no target
 		if(newTargetPos!=null)
 		{
 			if(propagate)
@@ -138,49 +132,46 @@ public class DieselToolSoundGroup
 		return true;
 	}
 
-	public enum ToolMotorState
-	{
-		OFF,
-		IDLE,
-		BUSY,
-		ATTACK
-	}
-
 	public class DieselToolMotorSound extends AbstractTickableSoundInstance
 	{
 		private final ToolMotorState state;
-		private final SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+		private final long lastTick;
 
 		protected DieselToolMotorSound(SoundEvent sound, ToolMotorState state, boolean looping)
 		{
 			super(sound, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
-			//todo: get tool coordinates?
+
 			this.x = holder.getX();
-			this.y = holder.getY()+0.5d;
+			this.y = holder.getY()+0.5d; //todo: get tool coordinates?
 			this.z = holder.getZ();
 			this.state = state;
-			this.volume = state==ToolMotorState.IDLE?0.4f: 0.5f;
-			this.pitch = state==ToolMotorState.IDLE?0.5f: 0.8f;
 			this.looping = looping;
+			this.lastTick = looping?0: holder.level().getGameTime()+attackDuration;
 		}
 
 		@Override
 		public void tick()
 		{
-			if(currentMotorState==state)
+			if(!isStopped())
 			{
-				this.x = holder.getX();
-				this.y = holder.getY()+0.5d;
-				this.z = holder.getZ();
-
-				if(state==ToolMotorState.ATTACK && holder.level().getGameTime() > lastTick) // only check if currentMotorState is still ATTACK
+				if(currentMotorState==state)
 				{
-					switchMotorState(true, false, false);
+					this.x = holder.getX();
+					this.y = holder.getY()+0.5d;
+					this.z = holder.getZ();
+
+					if(state==ToolMotorState.ATTACK) // only check if currentMotorState is still ATTACK
+					{
+						if(lastTick!=DieselToolSoundGroup.this.lastTick) //second attack happened. I hate this.
+							this.stop();
+						else if(holder.level().getGameTime() > lastTick)
+							currentMotorState = ToolMotorState.ATTACK_END;
+					}
 				}
-			}
-			else if(!isStopped())
-			{
-				this.stop();
+				else
+				{
+					this.stop();
+				}
 			}
 		}
 	}
@@ -198,16 +189,18 @@ public class DieselToolSoundGroup
 			this.y = targetBlockPos.getY()+0.5d;
 			this.z = targetBlockPos.getZ()+0.5d;
 			this.looping = true;
-			this.volume = 1.2f;
 		}
 
 		@Override
 		public void tick()
 		{
-			if(holder.level().getGameTime() > lastTick) // TODO: I think this might make the repeat try on the same block fucky for remote players
-				currentTargetPos = null;
-			if((currentTargetPos==null||!Objects.equals(targetBlockPos, currentTargetPos))&&!isStopped()) //todo: doesn't die if currentTargetPos changed
-				this.stop();
+			if(!isStopped())
+			{
+				if(holder.level().getGameTime() > lastTick||holder.level().getBlockState(currentTargetPos).isAir()) // air check is slapped on addition, because ofc creative
+					currentTargetPos = null;
+				if(currentTargetPos==null||!Objects.equals(targetBlockPos, currentTargetPos))
+					this.stop();
+			}
 		}
 	}
 }

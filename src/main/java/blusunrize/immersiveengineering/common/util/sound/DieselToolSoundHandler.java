@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -32,6 +33,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class DieselToolSoundHandler
@@ -83,7 +86,7 @@ public class DieselToolSoundHandler
 		}
 		else if(handItem.getItem() instanceof DieselToolItem dieselItem&&dieselItem.canToolBeUsed(handItem))
 		{
-			soundGroup = new DieselToolSoundGroup(dieselItem, entity, slot);
+			soundGroup = new DieselToolSoundGroup(dieselItem, entity);
 			dtsgs.put(slot, soundGroup);
 		}
 
@@ -138,7 +141,6 @@ public class DieselToolSoundHandler
 		DieselToolSoundGroup dtsgMain = DieselToolSoundHandler.getSafeDTSG(holder, EquipmentSlot.MAINHAND);
 		DieselToolSoundGroup dtsgOff = DieselToolSoundHandler.getSafeDTSG(holder, EquipmentSlot.OFFHAND);
 
-		// TODO: should this be implicit anyways? as soon as it is switched off it is unhooked, so as long as it is returned here, it must be running?
 		if(dtsgMain!=null)
 			dtsgMain.switchMotorOnOff(true);
 		if(dtsgOff!=null)
@@ -151,6 +153,8 @@ public class DieselToolSoundHandler
 		if(isUsableDieselItem(ev.getItemStack()))
 		{
 			LivingEntity holder = ev.getEntity();
+			if (holder instanceof Player player && player.isCreative()) // skip for creative players, remote creative players don't send stop/abort on block break
+				return;
 			BlockPos targetPos = ev.getPos();
 			if(ev.getLevel().isClientSide()&&holder.equals(Minecraft.getInstance().player))
 				handleHarvestAction(holder, ev.getAction(), targetPos);
@@ -177,6 +181,11 @@ public class DieselToolSoundHandler
 		}
 	}
 
+	/**
+	 * handles stopping the sound instances and unlisting the sound group when the entity is removed
+	 * consider checking entity.isRemoved() in the ticking sound instances (see MinecartSoundInstance.tick())
+	 * @param ev
+	 */
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void stopLeavingSoundSource(EntityLeaveLevelEvent ev)
