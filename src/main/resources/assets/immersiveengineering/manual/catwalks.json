@@ -1,0 +1,29 @@
+{
+  "catwalk_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/treated_catwalk"
+        },
+        {
+          "recipe": "crafting/steel_catwalk"
+        },
+        {
+          "recipe": "crafting/alu_catwalk"
+        }
+      ],
+      [
+        {
+          "recipe": "crafting/treated_catwalk_stairs"
+        },
+        {
+          "recipe": "crafting/steel_catwalk_stairs"
+        },
+        {
+          "recipe": "crafting/alu_catwalk_stairs"
+        }
+      ]
+    ]
+  }
+}

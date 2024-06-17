@@ -1,0 +1,5 @@
+Catwalks
+OSHA Compliant!
+<&catwalk_recipes>Catwalks are a more safe structure for the upper floors of a factory, because unlike <link;scaffolding_and_ladders;scaffolding>, they can be equipped with railings.
+When sneaking and using an §2Engineer's Hammer§r on the catwalk, it will add or remove the railing on the respective side.<br>
+On metal catwalks, the railing can also be colored by using any dye on them.
