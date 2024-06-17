@@ -18,7 +18,8 @@
     - It's made from biodiesel and potion of strength in the refinery
     - Its burntime is 25% longer than normal biodiesel!
 - Add catwalk blocks, heavily inspired by Engineer's Decor (BluSunrize)
-    -  Thank you wilechaote for giving us permission to include these blocks in the mod <3
+    - Thank you wilechaote for giving us permission to include these blocks in the mod <3
+    - Also includes catwalks stairs!
 - Change the recipes for revolver cartridges to be cheaper overall (BluSunrize)
 - Change Nickel and Uranium ores to have more easily identifiable textures (BluSunrize)
 - Change titles and descriptions of Advancements to more closely match Mojang's pattern (voidsong-dragonfly)
@@ -28,6 +29,13 @@
     - To seal a crate you'll need to use an engineer's hammer on it for an extended duration
     - This way, they're not longer as good as Shulker Boxes
     - To make up for it, the name of a crate can now be edited in its GUI and will display when hovering the cursor over the block
+- Change waterwheels in their behavior (voidsong-dragonfly)
+    - Water source blocks directly in wheel paddles now have higher 'resistance' and penalize wheels
+    - Fluid blocks of lower height now provide less torque to waterwheels - higher flow is better
+    - Water will no longer spill/flow off the 'side' of waterwheels, their models have been adjusted to symbolize this
+    - Breastshot wheels are given a small buff to make millrace setups like large 17th century mills profitable
+    - The maximum power for an optimized overshot wheel is the same as before!
+    - Also both the waterwheel and windmill now have sounds!
 - Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
 - Fix stone multiblocks being washed away by water (BluSunrize)
 - Fix potential race condition with wires damaging entities (BluSunrize)
