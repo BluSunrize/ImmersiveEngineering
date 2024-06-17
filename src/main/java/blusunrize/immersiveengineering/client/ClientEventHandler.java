@@ -754,9 +754,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				BlockOverlayUtils.drawBlockOverlayArrow(transform.last(), buffer, dir, side, targetedBB);
 			}
 
-			if(targetBlock.getBlock() instanceof CatwalkBlock&&Utils.isHammer(stack)&&rtr.getDirection()==Direction.UP)
+			if(targetBlock.getBlock() instanceof CatwalkBlock&&Utils.isHammer(stack)&&rtr.getDirection()==Direction.UP&&living.isShiftKeyDown())
 			{
-				AABB targetedBB = new AABB(0,0,0,1,.125,1);
+				AABB targetedBB = new AABB(0, 0, 0, 1, .125, 1);
 				BlockOverlayUtils.drawQuadrantX(transform, buffer, Direction.UP, targetedBB, 0.002f);
 			}
 
