@@ -82,7 +82,8 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 		@Override
 		public void inputRotation(double rotation)
 		{
-			int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
+			// TODO: Make this divisor one on next major (1.21?) update, whenever IEServerConfig mult is updated
+			int output = (int)((IEServerConfig.MACHINES.dynamo_output.get()/3f)*rotation);
 			for(IEBlockCapabilityCache<IEnergyStorage> neighbor : neighbors.values())
 			{
 				IEnergyStorage capOnSide = neighbor.getCapability();
