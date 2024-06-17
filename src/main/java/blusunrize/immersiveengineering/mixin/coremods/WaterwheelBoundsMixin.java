@@ -31,7 +31,8 @@ public class WaterwheelBoundsMixin {
 					"Lnet/minecraft/world/level/material/Fluid;" +
 					"Lnet/minecraft/core/BlockPos;" +
 					"Lnet/minecraft/world/level/block/state/BlockState;" +
-					"Lnet/minecraft/core/Direction;Lnet/minecraft/core/BlockPos;" +
+					"Lnet/minecraft/core/Direction;" +
+					"Lnet/minecraft/core/BlockPos;" +
 					"Lnet/minecraft/world/level/block/state/BlockState;" +
 					"Lnet/minecraft/world/level/material/FluidState;)Z",
 			at = @At("HEAD"),
