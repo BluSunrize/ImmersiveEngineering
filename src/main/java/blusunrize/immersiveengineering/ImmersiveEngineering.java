@@ -227,6 +227,7 @@ public class ImmersiveEngineering
 		registerMessage(registrar, MessageOpenManual.ID, MessageOpenManual.CODEC, CLIENTBOUND);
 		registerMessage(registrar, MessagePowerpackAntenna.ID, MessagePowerpackAntenna.CODEC, CLIENTBOUND);
 //		registerMessage(registrar, MessageCrateName.ID, MessageCrateName::new, SERVERBOUND);
+		registerMessage(registrar, MessageDieselToolHarvestUpdate.ID, MessageDieselToolHarvestUpdate::new, CLIENTBOUND);
 	}
 
 	private <T extends IMessage> void registerMessage(

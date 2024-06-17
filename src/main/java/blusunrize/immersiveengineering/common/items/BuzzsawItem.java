@@ -288,6 +288,30 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
+	public Holder<SoundEvent> getIdleSound()
+	{
+		return null; //todo: implement
+	}
+
+	@Override
+	public Holder<SoundEvent> getBusySound()
+	{
+		return null; //todo: implement
+	}
+
+	@Override
+	public Holder<SoundEvent> getAttackSound()
+	{
+		return null;
+	}
+
+	@Override
+	public Holder<SoundEvent> getHarvestSound()
+	{
+		return null; //todo: implement
+	}
+
+	@Override
 	public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity living)
 	{
 		consumeDurability(stack, world, state, pos, living);

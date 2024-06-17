@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
@@ -25,6 +26,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -228,6 +230,30 @@ public class DrillItem extends DieselToolItem
 	protected void damageHead(ItemStack head, int amount, LivingEntity living)
 	{
 		((IDrillHead)head.getItem()).damageHead(head, amount);
+	}
+
+	@Override
+	public Holder<SoundEvent> getIdleSound()
+	{
+		return IESounds.drill_idle;
+	}
+
+	@Override
+	public Holder<SoundEvent> getBusySound()
+	{
+		return IESounds.drill_busy;
+	}
+
+	@Override
+	public Holder<SoundEvent> getAttackSound()
+	{
+		return IESounds.drill_attack;
+	}
+
+	@Override
+	public Holder<SoundEvent> getHarvestSound()
+	{
+		return IESounds.drill_harvest;
 	}
 
 	@Override

@@ -21,9 +21,11 @@ import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -239,4 +241,12 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	public abstract int getMaxHeadDamage(ItemStack stack);
 
 	public abstract int getHeadDamage(ItemStack stack);
+
+	public abstract Holder<SoundEvent> getIdleSound();
+
+	public abstract Holder<SoundEvent> getBusySound();
+
+	public abstract Holder<SoundEvent> getAttackSound();
+
+	public abstract Holder<SoundEvent> getHarvestSound();
 }
