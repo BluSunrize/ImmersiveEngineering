@@ -130,7 +130,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 		if(dynamo!=null)
 		{
-			double power = getPower();
+			double power = getIFScaledTorque();
 			List<WatermillBlockEntity> connectedWheels = new ArrayList<>();
 			for(int i = 1; i < 3; ++i)
 			{
@@ -139,7 +139,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 					break;
 				WatermillBlockEntity asWatermill = (WatermillBlockEntity)blockEntity;
 				connectedWheels.add(asWatermill);
-				power += asWatermill.getPower();
+				power += asWatermill.getIFScaledTorque();
 			}
 
 			// +1: Self is not included in list of connected wheels
@@ -155,10 +155,10 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 				watermill.multiblock = true;
 			}
 
-			dynamo.inputRotation(power);
+			dynamo.inputRotation(Math.abs(power));
 		}
 		else
-			setPerTickAndAdvance(0.00025*getPower());
+			setPerTickAndAdvance(0.00025*getIFScaledTorque());
 	}
 
 	private void setPerTickAndAdvance(double newValue)
@@ -216,14 +216,27 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		return false;
 	}
 
-	public double getPower()
+	/**
+	 * This method used to be getPower(), however power produced is always positive, so it was renamed.
+	 * Instead, torque is scaled to another energy unit (IF) and direction is assumed to be about this BE's axis.
+	 * Negative or positive torque is then represented as an IF double the magnitude of which is produced power per tick.
+	 * @return double representation of scalar quantity torque about this BE's axis
+	 */
+	public double getIFScaledTorque()
 	{
 		boolean zFacing = getFacing().ordinal() <= 3;
 		boolean overshot = getOvershot(zFacing);
 		//Multiply by 1.25f to get output in IF for the dynamo
-		return Math.abs(zFacing?getTorque(zFacing, overshot).z():getTorque(zFacing, overshot).x())*1.25f;
+		return zFacing?getTorque(zFacing, overshot).z():getTorque(zFacing, overshot).x()*1.25f;
 	}
 
+	/**
+	 * Returns a torque-alike measurement in units of "(scaled flow vector)-blocks".
+	 * Scaled flow vector is interpreted as total averaged force on the wheel from the water current.
+	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
+	 * @param overshot boolean for if the wheel should be considered an overshot wheel
+	 * @return Vec3 torque output from this wheel
+	 */
 	public Vec3 getTorque(boolean zAxis, boolean overshot)
 	{
 		if(torqueVec==null)
@@ -239,7 +252,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	 * Breastshot & undershot (which can be modeled as low efficiency breastshot) have it coming in on the "breast" of the waterwheel.
 	 * This function evaluates the wheel flow and selects between the two 'types' (overshot or breastshot) this wheel can be modeled by.
 	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
-	 * @return if this waterhweel is operating as an overshot wheel
+	 * @return boolean for if this waterwheel is operating as an overshot wheel
 	 */
 	private boolean getOvershot(boolean zAxis)
 	{
@@ -258,10 +271,10 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	/**
-	 * Calculates torque in vector form for an overshot wheel, using torque = cross between position and force
-	 * Values are adjusted from straight torque vector calculations to account for 'weight' and 'head'
+	 * Calculates torque in vector form for an overshot wheel, using torque = cross between position and force.
+	 * Values are adjusted from straight torque vector calculations to account for 'weight' and 'head'.
 	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
-	 * @return Vec3 vector torque for the waterwheel
+	 * @return Vec3 torque for the waterwheel
 	 */
 	private Vec3 getOvershotTorque(boolean zAxis)
 	{
@@ -275,10 +288,10 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	/**
-	 * Calculates torque in vector form for a breastshot wheel, using torque = cross between position and force
-	 * Values are adjusted from straight torque vector calculations to account for 'weight' and 'head'
+	 * Calculates torque in vector form for a breastshot wheel, using torque = cross between position and force.
+	 * Values are adjusted from straight torque vector calculations to account for 'weight' and 'head'.
 	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
-	 * @return Vec3 vector torque for the waterwheel
+	 * @return Vec3 torque for the waterwheel
 	 */
 	private Vec3 getBreastshotTorque(boolean zAxis)
 	{
@@ -300,11 +313,11 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	/**
-	 * Calculates the viscosity-related torque that comes from having source blocks of fluid in the way of the waterwheel
-	 * Resistance torque will be negative if torque from the stream flow is positive, and is scaled by output torque
+	 * Calculates the viscosity-related torque that comes from having source blocks of fluid in the way of the waterwheel.
+	 * Resistance torque will be negative if torque from the stream flow is positive, and is scaled by output torque.
 	 * @param torque the pre-viscosity torque produced by the wheel
 	 * @param zAxis boolean for if the wheel is facing in the Z axis or not
-	 * @return torque produced by viscosity acting upon the waterwheel
+	 * @return Vec3 torque produced by viscosity acting upon the waterwheel
 	 */
 	private Vec3 getResistanceTorque(Vec3 torque, boolean zAxis)
 	{
