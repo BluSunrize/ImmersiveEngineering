@@ -308,14 +308,16 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	 */
 	private Vec3 getResistanceTorque(Vec3 torque, boolean zAxis)
 	{
+
 		Vec3 resistanceTorque = new Vec3(0, 0, 0);
+		if (Math.abs(torque.length()) < 0.1f) return resistanceTorque;
 		for (Vec3 position : zAxis?offsetsZ:offsetsX)
 		{
 			Vec3i tmp = new Vec3i((int)position.x(), (int)position.y(), (int)position.z());
 			double resistance = level.getFluidState(getBlockPos().offset(tmp)).isSourceOfType(level.getFluidState(getBlockPos().offset(tmp)).getType())?(2+(0.1*torque.length())):0;
 			resistanceTorque = zAxis?resistanceTorque.add(0, 0, torque.z()>0?-resistance:resistance):resistanceTorque.add(torque.x()>0?-resistance:resistance, 0, 0);
 		}
-		return resistanceTorque;
+		return (resistanceTorque.length() > torque.length())?torque.scale(-0.9):resistanceTorque;
 	}
 
 	@Override
