@@ -59,6 +59,10 @@ public class IESounds
 	public static final Holder<SoundEvent> process2Lift = registerSound("process_2_lift");
 	public static final Holder<SoundEvent> mill_creaking = registerSound("mill_creaking");
 	public static final Holder<SoundEvent> electromagnet = registerSound("electromagnet");
+	public static final Holder<SoundEvent> drill_idle = registerSound("drill_idle");
+	public static final Holder<SoundEvent> drill_busy = registerSound("drill_busy");
+	public static final Holder<SoundEvent> drill_attack = registerSound("drill_attack");
+	public static final Holder<SoundEvent> drill_harvest = registerSound("drill_harvest");
 
 
 	public static void init(IEventBus modBus)

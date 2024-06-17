@@ -106,6 +106,34 @@
     ],
     "subtitle": "subtitle.immersiveengineering.skyhook"
   },
+  "drill_idle": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:drill_idle"
+    ],
+    "subtitle": "subtitle.immersiveengineering.tesla"
+  },
+  "drill_busy": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:drill_busy"
+    ],
+    "subtitle": "subtitle.immersiveengineering.tesla"
+  },
+  "drill_attack": {
+    "category": "neutral",
+    "sounds": [
+      "immersiveengineering:drill_attack"
+    ],
+    "subtitle": "subtitle.immersiveengineering.tesla"
+  },
+  "drill_harvest": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:drill_harvest"
+    ],
+    "subtitle": "subtitle.immersiveengineering.tesla"
+  },
 	"tesla": {
 		"category": "block",
 		"sounds": [

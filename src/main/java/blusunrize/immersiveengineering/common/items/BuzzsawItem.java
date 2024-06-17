@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
@@ -292,6 +293,30 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		ItemStack sawblade = getHead(stack);
 		return !sawblade.isEmpty()?sawblade.getDamageValue(): 0;
+	}
+
+	@Override
+	public Holder<SoundEvent> getIdleSound()
+	{
+		return null; //todo: implement
+	}
+
+	@Override
+	public Holder<SoundEvent> getBusySound()
+	{
+		return null; //todo: implement
+	}
+
+	@Override
+	public Holder<SoundEvent> getAttackSound()
+	{
+		return null;
+	}
+
+	@Override
+	public Holder<SoundEvent> getHarvestSound()
+	{
+		return null; //todo: implement
 	}
 
 	@Override
