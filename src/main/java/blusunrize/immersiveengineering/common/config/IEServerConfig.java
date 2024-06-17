@@ -151,9 +151,10 @@ public class IEServerConfig
 				hvCapConfig = new CapacitorConfig(builder, () -> IEBlockEntities.CAPACITOR_HV.get(), "high", 4000000, 4096, 4096);
 				builder.pop();
 			}
+			// TODO: Make this multiplier one on next major (1.21?) update
 			dynamo_output = builder
 					.comment("Output modifier for the energy created by the kinetic dynamo. This will be modified by the rotation modifier of the attached water- or windmill")
-					.defineInRange("kinetic_output", 1D, 0, Integer.MAX_VALUE);
+					.defineInRange("dynamo_output", 3D, 0, Integer.MAX_VALUE);
 			thermoelectric_output = builder
 					.comment("Output modifier for the energy created by the Thermoelectric Generator")
 					.defineInRange("thermoelectric_output", 1D, 0, Integer.MAX_VALUE);
