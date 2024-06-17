@@ -258,6 +258,13 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.process_2_lift"
 	},
+	"mill_creaking": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:mill_creaking"
+		],
+		"subtitle": "subtitle.immersiveengineering.mill_creaking"
+	},
 	"electromagnet": {
 		"category": "player",
 		"sounds": [
