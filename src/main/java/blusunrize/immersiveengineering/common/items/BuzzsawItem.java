@@ -20,6 +20,8 @@ import blusunrize.immersiveengineering.common.items.upgrades.ToolUpgrade;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -290,25 +292,25 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	public Holder<SoundEvent> getIdleSound()
 	{
-		return null; //todo: implement
+		return IESounds.buzzsaw_idle;
 	}
 
 	@Override
 	public Holder<SoundEvent> getBusySound()
 	{
-		return null; //todo: implement
+		return IESounds.buzzsaw_busy;
 	}
 
 	@Override
 	public Holder<SoundEvent> getAttackSound()
 	{
-		return null;
+		return IESounds.buzzsaw_attack;
 	}
 
 	@Override
 	public Holder<SoundEvent> getHarvestSound()
 	{
-		return null; //todo: implement
+		return IESounds.buzzsaw_harvest;
 	}
 
 	@Override

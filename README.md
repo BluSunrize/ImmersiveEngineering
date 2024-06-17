@@ -13,3 +13,6 @@ Wires, transformers, capacitors!
 - Sound for the electromagnet is by _MC5_ on [freesound.org](https://freesound.org/people/_MC5_/sounds/672082/), licensed under CC BY 4.0
 - Assets for several blocks are derived from @stfwi assets in [Engineer's Decor](https://github.com/stfwi/engineers-decor), licensed under MIT
     - These assets include clinker bricks, slag bricks, and grit sand
+- Sound for the drill motor is by DrinkingWindGames on [freesound.org](https://freesound.org/people/DrinkingWindGames/sounds/463735/), licensed under CC BY 4.0
+- Sound for the buzzsaw motor is by Audionautics on [freesound.org](https://freesound.org/people/Audionautics/sounds/171652/), licensed under CC BY 3.0
+- Sound for the buzzsaw harvesting is by gecop on [freesound.org](https://freesound.org/people/gecop/sounds/609919/), licensed under CC BY 4.0

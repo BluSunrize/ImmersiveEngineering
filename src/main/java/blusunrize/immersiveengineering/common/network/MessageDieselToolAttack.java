@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.util.sound.DieselToolSoundHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,15 +44,7 @@ public class MessageDieselToolAttack implements IMessage
 	{
 		assert context.flow().equals(CLIENTBOUND); //todo: remove me?
 
-//		context.workHandler().execute(() -> {
-//			Level world = ImmersiveEngineering.proxy.getClientWorld();
-//			if(world!=null) // This can happen if the task is scheduled right before leaving the world
-//			{
-//				Entity entity = world.getEntity(entityID);
-//				if(entity instanceof LivingEntity holder)
-//					DieselToolSoundHandler.handleAttackAction(holder, action, targetPos);
-//			}
-//		});
+		DieselToolSoundHandler.handleAttack((LivingEntity)Minecraft.getInstance().level.getEntity(holderID));
 	}
 
 	@Override

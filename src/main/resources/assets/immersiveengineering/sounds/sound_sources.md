@@ -13,7 +13,11 @@
  - Automatic Workbench Drill: https://freesound.org/people/nuncaconoci/sounds/619243/
  - Automatic Workbench Solder: https://freesound.org/people/soundsofscienceupf/sounds/460832/
  - Eletromagnet: https://freesound.org/people/_MC5_/sounds/672082/
-- Waterwheel/Windmill Creak: https://freesound.org/people/phonoflora/sounds/535013/
-- Siren: https://freesound.org/people/FusionWolf3740/sounds/570464/
-- Klaxon: https://en.wikipedia.org/wiki/File:WWII_submarine_dive_klaxon.ogg
-- Buzzer: https://freesound.org/people/guitarguy1985/sounds/54047/
+ - Waterwheel/Windmill Creak: https://freesound.org/people/phonoflora/sounds/535013/
+ - Siren: https://freesound.org/people/FusionWolf3740/sounds/570464/
+ - Klaxon: https://en.wikipedia.org/wiki/File:WWII_submarine_dive_klaxon.ogg
+ - Buzzer: https://freesound.org/people/guitarguy1985/sounds/54047/
+ - Drill motor: https://freesound.org/people/DrinkingWindGames/sounds/463735/
+ - Drill harvesting https://freesound.org/people/jameswrowles/sounds/516602/
+ - Buzzsaw motor https://freesound.org/people/Audionautics/sounds/171652/
+ - Buzzsaw harvesting https://freesound.org/people/gecop/sounds/609919/
