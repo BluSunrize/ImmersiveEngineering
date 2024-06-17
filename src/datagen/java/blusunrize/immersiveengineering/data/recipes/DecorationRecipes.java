@@ -173,6 +173,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('s', IETags.getItemTag(IETags.treatedWoodSlab))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.CATWALK)));
+		addStairs(WoodenDecoration.CATWALK, WoodenDecoration.CATWALK_STAIRS, out);
 	}
 
 	private void stoneDecoration(RecipeOutput out)
@@ -626,6 +627,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('s', IETags.getItemTag(IETags.scaffoldingSteelSlab))
 				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingSteel)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_CATWALK)));
+		addStairs(MetalDecoration.STEEL_CATWALK, MetalDecoration.STEEL_CATWALK_STAIRS, out);
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.ALU_CATWALK, 6)
 				.pattern("rrr")
 				.pattern("r r")
@@ -634,11 +636,16 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('s', IETags.getItemTag(IETags.scaffoldingAluSlab))
 				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingAlu)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.ALU_CATWALK)));
+		addStairs(MetalDecoration.ALU_CATWALK, MetalDecoration.ALU_CATWALK_STAIRS, out);
 	}
 
 	private void addStairs(ItemLike block, RecipeOutput out)
 	{
-		ItemLike stairs = IEBlocks.TO_STAIRS.get(BuiltInRegistries.ITEM.getKey(block.asItem()));
+		addStairs(block, IEBlocks.TO_STAIRS.get(BuiltInRegistries.ITEM.getKey(block.asItem())), out);
+	}
+
+	private void addStairs(ItemLike block, ItemLike stairs, RecipeOutput out)
+	{
 		shapedMisc(stairs, 4)
 				.define('s', block)
 				.pattern("s  ")

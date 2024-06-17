@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.client.render.tile.TurretRenderer;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.CatwalkBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.CatwalkStairsBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -359,11 +360,23 @@ public class BlockStates extends ExtendedBlockstateProvider
 				"immersiveengineering:block/wooden_decoration/scaffolding_top",
 				"immersiveengineering:block/wooden_decoration/scaffolding"
 		);
+		createCatwalkStairs(WoodenDecoration.CATWALK_STAIRS,
+				"immersiveengineering:block/wooden_decoration/scaffolding_top",
+				"immersiveengineering:block/wooden_decoration/scaffolding"
+		);
 		createCatwalk(MetalDecoration.STEEL_CATWALK,
 				"immersiveengineering:block/metal_decoration/steel_scaffolding_top_grate_top",
 				"immersiveengineering:block/metal_decoration/steel_scaffolding"
 		);
+		createCatwalkStairs(MetalDecoration.STEEL_CATWALK_STAIRS,
+				"immersiveengineering:block/metal_decoration/steel_scaffolding_top_grate_top",
+				"immersiveengineering:block/metal_decoration/steel_scaffolding"
+		);
 		createCatwalk(MetalDecoration.ALU_CATWALK,
+				"immersiveengineering:block/metal_decoration/aluminum_scaffolding_top_grate_top",
+				"immersiveengineering:block/metal_decoration/aluminum_scaffolding"
+		);
+		createCatwalkStairs(MetalDecoration.ALU_CATWALK_STAIRS,
 				"immersiveengineering:block/metal_decoration/aluminum_scaffolding_top_grate_top",
 				"immersiveengineering:block/metal_decoration/aluminum_scaffolding"
 		);
@@ -706,7 +719,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		MultiPartBlockStateBuilder multipartBuilder = getMultipartBuilder(block.get());
 		multipartBuilder.part().modelFile(base).addModel().end();
 		CatwalkBlock.RAILING_PROPERTIES.forEach((direction, booleanProperty) ->
-				multipartBuilder.part().modelFile(railing).rotationY((int)(direction.toYRot()-180)%360)
+				multipartBuilder.part().modelFile(railing).rotationY(getAngle(direction, 180))
 						.addModel().condition(booleanProperty, true).end());
 		// assemble item model
 		itemModel(block, models().withExistingParent(name+"_item", "block/block")
@@ -714,6 +727,44 @@ public class BlockStates extends ExtendedBlockstateProvider
 				.child("base", base)
 				.child("railing", railing)
 				.end());
+	}
+
+	private void createCatwalkStairs(Supplier<? extends Block> block, String textureTop, String textureSide)
+	{
+		// prep textured elements
+		String name = BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
+		ModelFile base = models().withExistingParent(name+"_base", modLoc("block/catwalk_stairs"))
+				.texture("top", textureTop)
+				.texture("side", textureSide);
+		ModelFile railing_r = models().withExistingParent(name+"_railing_r", modLoc("block/catwalk_stairs_railing_r"))
+				.texture("top", textureTop)
+				.texture("side", textureSide);
+		ModelFile railing_l = models().withExistingParent(name+"_railing_l", modLoc("block/catwalk_stairs_railing_l"))
+				.texture("top", textureTop)
+				.texture("side", textureSide);
+		// create blockstate
+		MultiPartBlockStateBuilder multipartBuilder = getMultipartBuilder(block.get());
+		for(Direction direction : IEProperties.FACING_HORIZONTAL.getPossibleValues())
+		{
+			multipartBuilder.part().modelFile(base)
+					.rotationY(getAngle(direction, 180))
+					.addModel()
+					.condition(IEProperties.FACING_HORIZONTAL, direction)
+					.end();
+			multipartBuilder.part().modelFile(railing_r)
+					.rotationY(getAngle(direction, 180))
+					.addModel()
+					.condition(IEProperties.FACING_HORIZONTAL, direction)
+					.condition(CatwalkStairsBlock.RAILING_RIGHT, true)
+					.end();
+			multipartBuilder.part().modelFile(railing_l)
+					.rotationY(getAngle(direction, 180))
+					.addModel()
+					.condition(IEProperties.FACING_HORIZONTAL, direction)
+					.condition(CatwalkStairsBlock.RAILING_LEFT, true)
+					.end();
+		}
+		itemModel(block, base);
 	}
 
 	protected ModelFile createMultiLayer(String path, Map<RenderType, ResourceLocation> modelGetter, ResourceLocation particle)

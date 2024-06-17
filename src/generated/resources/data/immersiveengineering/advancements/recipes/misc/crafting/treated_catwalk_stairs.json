@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/treated_catwalk_stairs"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_treated_catwalk": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:treated_catwalk"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_treated_catwalk"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/treated_catwalk_stairs"
+    ]
+  }
+}

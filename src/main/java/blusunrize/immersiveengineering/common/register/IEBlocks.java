@@ -363,6 +363,10 @@ public final class IEBlocks
 				"treated_catwalk", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, false)
 		);
 
+		public static final BlockEntry<IEBaseBlock> CATWALK_STAIRS = new BlockEntry<>(
+				"treated_catwalk_stairs", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, false)
+		);
+
 		private static void init()
 		{
 			for(TreatedWoodStyles style : TreatedWoodStyles.values())
@@ -488,8 +492,14 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> STEEL_CATWALK = new BlockEntry<>(
 				"steel_catwalk", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, true)
 		);
+		public static final BlockEntry<IEBaseBlock> STEEL_CATWALK_STAIRS = new BlockEntry<>(
+				"steel_catwalk_stairs", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, true)
+		);
 		public static final BlockEntry<IEBaseBlock> ALU_CATWALK = new BlockEntry<>(
 				"alu_catwalk", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, true)
+		);
+		public static final BlockEntry<IEBaseBlock> ALU_CATWALK_STAIRS = new BlockEntry<>(
+				"alu_catwalk_stairs", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, true)
 		);
 
 		private static void init()

@@ -8,16 +8,20 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +41,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import static blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation.SIDE_UP;
+
 public class CatwalkBlock extends IEBaseBlock implements IColouredBlock
 {
 	public static final EnumMap<Direction, BooleanProperty> RAILING_PROPERTIES = new EnumMap<>(Direction.class);
@@ -49,9 +55,9 @@ public class CatwalkBlock extends IEBaseBlock implements IColouredBlock
 		RAILING_PROPERTIES.put(Direction.WEST, PipeBlock.WEST);
 	}
 
-	public static final EnumProperty<DyeColor> DYE_PROPERTY = EnumProperty.create("dye", DyeColor.class);
+	protected static final EnumProperty<DyeColor> DYE_PROPERTY = EnumProperty.create("dye", DyeColor.class);
 
-	private final boolean isDyeable;
+	protected final boolean isDyeable;
 
 	public CatwalkBlock(Properties blockProps, boolean isDyeable)
 	{
@@ -63,14 +69,13 @@ public class CatwalkBlock extends IEBaseBlock implements IColouredBlock
 	@Override
 	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.createBlockStateDefinition(builder);
 		builder.add(DYE_PROPERTY, BlockStateProperties.WATERLOGGED).add(RAILING_PROPERTIES.values().toArray(BooleanProperty[]::new)).add();
 	}
 
 	@Override
 	protected BlockState getInitDefaultState()
 	{
-		BlockState ret = super.getInitDefaultState().setValue(BlockStateProperties.WATERLOGGED, false);
+		BlockState ret = super.getInitDefaultState();
 		for(BooleanProperty prop : RAILING_PROPERTIES.values())
 			ret = ret.setValue(prop, false);
 		if(this.isDyeable)
@@ -97,18 +102,21 @@ public class CatwalkBlock extends IEBaseBlock implements IColouredBlock
 	@Override
 	public InteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
-		Direction target;
-		Vec3 hitVec = hit.getLocation().subtract(Vec3.atCenterOf(pos));
-		if(hitVec.x*hitVec.x > hitVec.z*hitVec.z)
-			target = hitVec.x < 0?Direction.WEST: Direction.EAST;
-		else
-			target = hitVec.z < 0?Direction.NORTH: Direction.SOUTH;
-		BooleanProperty prop = RAILING_PROPERTIES.get(target);
-		if(prop!=null)
+		if(player.isShiftKeyDown())
 		{
-			BlockState state = w.getBlockState(pos);
-			w.setBlock(pos, state.setValue(prop, !state.getValue(prop)), 3);
-			return InteractionResult.sidedSuccess(w.isClientSide);
+			Direction target;
+			Vec3 hitVec = hit.getLocation().subtract(Vec3.atCenterOf(pos));
+			if(hitVec.x*hitVec.x > hitVec.z*hitVec.z)
+				target = hitVec.x < 0?Direction.WEST: Direction.EAST;
+			else
+				target = hitVec.z < 0?Direction.NORTH: Direction.SOUTH;
+			BooleanProperty prop = RAILING_PROPERTIES.get(target);
+			if(prop!=null)
+			{
+				BlockState state = w.getBlockState(pos);
+				w.setBlock(pos, state.setValue(prop, !state.getValue(prop)), 3);
+				return InteractionResult.sidedSuccess(w.isClientSide);
+			}
 		}
 		return InteractionResult.PASS;
 	}

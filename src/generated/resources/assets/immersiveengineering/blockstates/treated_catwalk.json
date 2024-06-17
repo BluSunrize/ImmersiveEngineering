@@ -16,7 +16,7 @@
     {
       "apply": {
         "model": "immersiveengineering:block/treated_catwalk_railing",
-        "y": -180
+        "y": 180
       },
       "when": {
         "south": "true"
@@ -25,7 +25,7 @@
     {
       "apply": {
         "model": "immersiveengineering:block/treated_catwalk_railing",
-        "y": -90
+        "y": 270
       },
       "when": {
         "west": "true"
