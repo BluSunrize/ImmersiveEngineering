@@ -209,6 +209,9 @@ public class IEBlockEntities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FakeLightBlockEntity>> FAKE_LIGHT = REGISTER.register(
 			"fakelight", makeType(FakeLightBlockEntity::new, Misc.FAKE_LIGHT)
 	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PipeValveBlockEntity>> PIPE_VALVE = REGISTER.register(
+			"pipevalve", makeType(PipeValveBlockEntity::new, MetalDevices.PIPE_VALVE)
+	);
 
 	static
 	{
