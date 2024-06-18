@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-16T11:00:43.9335019	Item models
+// 1.20.4	2024-06-18T20:02:29.784741	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -214,6 +214,7 @@ f30be4a54e80607ac186f2ae3ea12583324e0d46 assets/immersiveengineering/models/item
 e271459883491689f206178f2c86e43b57d5f5e0 assets/immersiveengineering/models/item/nugget_copper.json
 7d19e7894f5cbd58809a27848c3a23da9596b173 assets/immersiveengineering/models/item/nugget_electrum.json
 f961a506455c4c4ee35e58990b2d4e1954ec88bd assets/immersiveengineering/models/item/nugget_lead.json
+e7a4ecfc3d24c7df2b0a50d96d9744e95fe43454 assets/immersiveengineering/models/item/nugget_netherite.json
 1d3deb299c157ca78e36efcd8c703ca38440ec12 assets/immersiveengineering/models/item/nugget_nickel.json
 f6f3889fd7bb4982f7f6949cfe956473c1f8f724 assets/immersiveengineering/models/item/nugget_silver.json
 3404811db2db381f1867e740a52d13acf2b54ba4 assets/immersiveengineering/models/item/nugget_steel.json

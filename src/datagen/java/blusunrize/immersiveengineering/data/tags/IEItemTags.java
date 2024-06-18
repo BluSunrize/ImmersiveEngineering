@@ -97,6 +97,8 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.steelRod).add(Ingredients.STICK_STEEL.get());
 		tag(IETags.aluminumRod).add(Ingredients.STICK_ALUMINUM.get());
 		tag(IETags.netheriteRod).add(Ingredients.STICK_NETHERITE.get());
+		tag(IETags.netheriteNugget).add(Ingredients.NUGGET_NETHERITE.asItem());
+		tag(Tags.Items.NUGGETS).add(Ingredients.NUGGET_NETHERITE.asItem());
 		tag(IETags.fiberHemp).add(Ingredients.HEMP_FIBER.get());
 		tag(IETags.fabricHemp).add(Ingredients.HEMP_FABRIC.get());
 		tag(IETags.coalCoke).add(Ingredients.COAL_COKE.get());

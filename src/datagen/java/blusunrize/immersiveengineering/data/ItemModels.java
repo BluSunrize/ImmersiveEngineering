@@ -236,6 +236,7 @@ public class ItemModels extends TRSRItemModelProvider
 				Ingredients.LIGHT_BULB, Ingredients.ELECTRON_TUBE, Ingredients.CIRCUIT_BOARD,
 				Ingredients.DUROPLAST_PLATE, Ingredients.COMPONENT_ELECTRONIC, Ingredients.COMPONENT_ELECTRONIC_ADV
 		);
+		addItemModels("metal_", Ingredients.NUGGET_NETHERITE);
 
 		addItemModels(
 				"tool_", mcLoc("item/handheld"), Tools.HAMMER, Tools.WIRECUTTER, Tools.SCREWDRIVER,
