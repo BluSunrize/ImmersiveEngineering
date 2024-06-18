@@ -610,7 +610,7 @@ public final class IEBlocks
 				"electromagnet", DEFAULT_METAL_PROPERTIES, p -> new AnyFacingEntityBlock<>(IEBlockEntities.ELECTROMAGNET, p)
 		);
 		public static final BlockEntry<PipeValveBlock> PIPE_VALVE = new BlockEntry<>(
-				"pipe_valve", METAL_PROPERTIES_DYNAMIC, PipeValveBlock::new
+				"pipe_valve", METAL_PROPERTIES_NO_OCCLUSION, PipeValveBlock::new
 		);
 
 		private static void init()

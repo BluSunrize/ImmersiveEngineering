@@ -8,15 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
-import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
+import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,17 +23,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
-import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
+import java.util.Map;
 
 public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional
 {
+	public FluidTank tank = new FluidTank(FluidType.BUCKET_VOLUME, this::isFluidValid);
+	public final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> blockFluidHandlers = IEBlockCapabilityCaches.allNeighbors(
+			FluidHandler.BLOCK, this
+	);
+
 	public PipeValveBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.PIPE_VALVE.get(), pos, state);
@@ -55,74 +59,96 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
+		this.readTank(nbt);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
+		this.writeTank(nbt, false);
 	}
 
-	private final Map<Direction, IFluidHandler> sidedFluidHandler = new HashMap<>();
-
+	public void readTank(CompoundTag nbt)
 	{
-		sidedFluidHandler.put(Direction.DOWN, new SidedFluidHandler(this, Direction.DOWN));
-		sidedFluidHandler.put(Direction.UP, new SidedFluidHandler(this, Direction.UP));
-		sidedFluidHandler.put(null, new SidedFluidHandler(this, null));
+		tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
-	public static void registerCapabilities(BECapabilityRegistrar<? extends WoodenBarrelBlockEntity> registrar)
+	public void writeTank(CompoundTag nbt, boolean toItem)
+	{
+		boolean write = tank.getFluidAmount() > 0;
+		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
+		if(!toItem||write)
+			nbt.put("tank", tankTag);
+	}
+
+	public boolean isFluidValid(FluidStack fluid)
+	{
+		return true;
+	}
+
+	private SidedFluidHandler getFluidHandler(Direction facing, @Nullable Direction side) {
+		if (side!=null&&facing.getAxis().equals(side.getAxis())) return new SidedFluidHandler(this, side);
+		else return new SidedFluidHandler(this, null);
+	}
+
+	public static void registerCapabilities(BECapabilityRegistrar<? extends PipeValveBlockEntity> registrar)
 	{
 		registrar.register(
 				FluidHandler.BLOCK,
-				(be, side) -> ((WoodenBarrelBlockEntity)be).sidedFluidHandler.getOrDefault(side, null)
+				(be, side) -> ((PipeValveBlockEntity)be).getFluidHandler(be.getFacing(), side)
 		);
 	}
 
 	static class SidedFluidHandler implements IFluidHandler
 	{
-		WoodenBarrelBlockEntity barrel;
+		PipeValveBlockEntity valve;
 		@Nullable
-		Direction facing;
+		Direction side;
 
-		SidedFluidHandler(WoodenBarrelBlockEntity barrel, @Nullable Direction facing)
+		SidedFluidHandler(PipeValveBlockEntity valve, @Nullable Direction side)
 		{
-			this.barrel = barrel;
-			this.facing = facing;
+			this.valve = valve;
+			this.side = side;
 		}
 
 		@Override
 		public int fill(FluidStack resource, FluidAction doFill)
 		{
-			if(resource.isEmpty()||(facing!=null&&barrel.sideConfig.get(facing)!=IOSideConfig.INPUT)||!barrel.isFluidValid(resource))
-				return 0;
-
-			int i = barrel.tank.fill(resource, doFill);
-			if(i > 0&&doFill.execute())
-			{
-				barrel.setChanged();
-				barrel.markContainingBlockForUpdate(null);
+			if(resource.isEmpty()||side==null||(!side.equals(valve.getFacing().getOpposite()))) return 0;
+			//Try to pass fluid through immediately
+			IEBlockCapabilityCache<IFluidHandler> capRef = valve.blockFluidHandlers.get(side);
+			IFluidHandler handler = capRef.getCapability();
+			int filled = 0;
+			if(handler!=null) filled = handler.fill(resource, doFill);
+			//If passing the fluid through fails, instead store it in the internal tank
+			if (filled == 0) {
+				int i = valve.tank.fill(resource, doFill);
+				if(i > 0&&doFill.execute())
+				{
+					valve.setChanged();
+					valve.markContainingBlockForUpdate(null);
+				}
+				return i;
 			}
-			return i;
+			return filled;
 		}
 
 		@Override
 		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
-			if(resource.isEmpty())
-				return FluidStack.EMPTY;
+			if(resource.isEmpty()||side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
 			return this.drain(resource.getAmount(), doDrain);
 		}
 
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
-			if(facing!=null&&barrel.sideConfig.get(facing)!=OUTPUT)
-				return FluidStack.EMPTY;
-			FluidStack f = barrel.tank.drain(maxDrain, doDrain);
+			if(side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
+			FluidStack f = valve.tank.drain(maxDrain, doDrain);
 			if(!f.isEmpty())
 			{
-				barrel.setChanged();
-				barrel.markContainingBlockForUpdate(null);
+				valve.setChanged();
+				valve.markContainingBlockForUpdate(null);
 			}
 			return f;
 		}
@@ -137,13 +163,13 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		@Override
 		public FluidStack getFluidInTank(int tank)
 		{
-			return barrel.tank.getFluidInTank(tank);
+			return valve.tank.getFluidInTank(tank);
 		}
 
 		@Override
 		public int getTankCapacity(int tank)
 		{
-			return barrel.tank.getTankCapacity(tank);
+			return valve.tank.getTankCapacity(tank);
 		}
 
 		@Override
