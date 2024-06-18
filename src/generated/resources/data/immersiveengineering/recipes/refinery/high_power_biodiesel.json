@@ -13,7 +13,7 @@
     "tag": "forge:potion"
   },
   "result": {
-    "Amount": 16,
+    "Amount": 100,
     "FluidName": "immersiveengineering:high_power_biodiesel"
   }
 }

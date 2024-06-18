@@ -1,3 +1,6 @@
+##### Version 1.20.4-11.4.1-pre
+- Fix incorrect output on high-cetane diesel recipe (BluSunrize)
+
 ##### Version 1.20.4-11.4.0-175
 - Add upgrades for the Engineering's Skyhook (BluSunrize)
     - High Torque Motor makes it faster to go up slopes

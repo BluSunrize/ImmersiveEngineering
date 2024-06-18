@@ -577,7 +577,7 @@ public class MultiblockRecipes extends IERecipeProvider
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		RefineryRecipeBuilder.builder()
-				.output(IEFluids.HIGH_POWER_BIODIESEL.getStill(), 16)
+				.output(IEFluids.HIGH_POWER_BIODIESEL.getStill(), 100)
 				.input(IETags.fluidBiodiesel, 95)
 				.input(PotionHelper.getFluidTagForType(Potions.STRENGTH, 5))
 				.setEnergy(80)

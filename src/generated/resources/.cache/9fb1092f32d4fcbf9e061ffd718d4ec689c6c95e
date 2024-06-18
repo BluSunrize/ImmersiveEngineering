@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-17T18:22:48.6483229	Recipes
+// 1.20.4	2024-06-18T17:49:55.0225172	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -1522,7 +1522,7 @@ a235842806ec4ba9e6a23932e8da91317656ee11 data/immersiveengineering/recipes/potio
 0c4102c15145c435fd00bf14ad044e30bab6567c data/immersiveengineering/recipes/powerpack_attach.json
 c51201e0350dc26b20acd77fa8b08270ca2c83ba data/immersiveengineering/recipes/refinery/acetaldehyde.json
 cdb9649ab5c373741c41a2dee10884e638dde48c data/immersiveengineering/recipes/refinery/biodiesel.json
-3b3cdca7d9c2c0d937d73ac02ef776acadf87e37 data/immersiveengineering/recipes/refinery/high_power_biodiesel.json
+7b4e864f2766d0caca1019486f8e51c16d3e7e0a data/immersiveengineering/recipes/refinery/high_power_biodiesel.json
 733771d4ee58adcd3b7101893737bb39fcb3eb2e data/immersiveengineering/recipes/refinery/resin.json
 5017cb4d2d655eec9e0c16e9c2f312e6f8ffb531 data/immersiveengineering/recipes/revolver_cycle.json
 2f0ed7ff77a2f2e66bdeadf697e6ed9b68cc8653 data/immersiveengineering/recipes/sawmill/acacia_door.json
