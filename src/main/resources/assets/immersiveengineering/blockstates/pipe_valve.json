@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveengineering:block/metal_device/pipe_valve",
+      "y": 0
+    },
+    "facing=south": { "model": "immersiveengineering:block/metal_device/pipe_valve",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/metal_device/pipe_valve",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/metal_device/pipe_valve",
+      "y": 90
+    },
+    "facing=up": {
+      "model": "immersiveengineering:block/metal_device/pipe_valve",
+      "x": -90
+    },
+    "facing=down": {
+      "model": "immersiveengineering:block/metal_device/pipe_valve",
+      "x": 90
+    }
+  }
+}
