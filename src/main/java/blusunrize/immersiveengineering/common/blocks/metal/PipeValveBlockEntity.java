@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -34,7 +35,6 @@ import java.util.Map;
 
 public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional
 {
-	public FluidTank tank = new FluidTank(FluidType.BUCKET_VOLUME, this::isFluidValid);
 	public final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> blockFluidHandlers = IEBlockCapabilityCaches.allNeighbors(
 			FluidHandler.BLOCK, this
 	);
@@ -53,50 +53,26 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 	@Override
 	public PlacementLimitation getFacingLimitation()
 	{
-		return PlacementLimitation.PISTON_LIKE;
+		return PlacementLimitation.SIDE_CLICKED_INVERTED;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
-	{
-		this.readTank(nbt);
-	}
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket) { }
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
-	{
-		this.writeTank(nbt, false);
-	}
-
-	public void readTank(CompoundTag nbt)
-	{
-		tank.readFromNBT(nbt.getCompound("tank"));
-	}
-
-	public void writeTank(CompoundTag nbt, boolean toItem)
-	{
-		boolean write = tank.getFluidAmount() > 0;
-		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
-		if(!toItem||write)
-			nbt.put("tank", tankTag);
-	}
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket) { }
 
 	public boolean isFluidValid(FluidStack fluid)
 	{
 		return true;
 	}
 
-	private SidedFluidHandler getFluidHandler(Direction facing, @Nullable Direction side) {
-		if (side!=null&&facing.getAxis().equals(side.getAxis())) return new SidedFluidHandler(this, side);
-		else return new SidedFluidHandler(this, null);
-	}
+	public final IFluidHandler inputCap = new SidedFluidHandler(this, getFacing().getOpposite());
+	public final IFluidHandler outputCap = new SidedFluidHandler(this, getFacing());
 
 	public static void registerCapabilities(BECapabilityRegistrar<? extends PipeValveBlockEntity> registrar)
 	{
-		registrar.register(
-				FluidHandler.BLOCK,
-				(be, side) -> ((PipeValveBlockEntity)be).getFluidHandler(be.getFacing(), side)
-		);
+		registrar.register(FluidHandler.BLOCK, (be, side) -> (side==be.getFacing()?be.outputCap:side==be.getFacing().getOpposite()?be.inputCap:null));
 	}
 
 	static class SidedFluidHandler implements IFluidHandler
@@ -115,21 +91,11 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		public int fill(FluidStack resource, FluidAction doFill)
 		{
 			if(resource.isEmpty()||side==null||(!side.equals(valve.getFacing().getOpposite()))) return 0;
-			//Try to pass fluid through immediately
-			IEBlockCapabilityCache<IFluidHandler> capRef = valve.blockFluidHandlers.get(side);
+			//Try to pass fluid through immediately, if we can't do this then don't bother
+			IEBlockCapabilityCache<IFluidHandler> capRef = valve.blockFluidHandlers.get(valve.getFacing());
 			IFluidHandler handler = capRef.getCapability();
 			int filled = 0;
 			if(handler!=null) filled = handler.fill(resource, doFill);
-			//If passing the fluid through fails, instead store it in the internal tank
-			if (filled == 0) {
-				int i = valve.tank.fill(resource, doFill);
-				if(i > 0&&doFill.execute())
-				{
-					valve.setChanged();
-					valve.markContainingBlockForUpdate(null);
-				}
-				return i;
-			}
 			return filled;
 		}
 
@@ -137,20 +103,18 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
 			if(resource.isEmpty()||side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
-			return this.drain(resource.getAmount(), doDrain);
+			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing().getOpposite()).getCapability();
+			if(input!=null) return input.drain(resource, doDrain);
+			else return FluidStack.EMPTY;
 		}
 
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
 			if(side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
-			FluidStack f = valve.tank.drain(maxDrain, doDrain);
-			if(!f.isEmpty())
-			{
-				valve.setChanged();
-				valve.markContainingBlockForUpdate(null);
-			}
-			return f;
+			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing()).getCapability();
+			if(input!=null) return input.drain(maxDrain, doDrain);
+			else return FluidStack.EMPTY;
 		}
 
 		@Override
@@ -163,13 +127,13 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		@Override
 		public FluidStack getFluidInTank(int tank)
 		{
-			return valve.tank.getFluidInTank(tank);
+			return FluidStack.EMPTY;
 		}
 
 		@Override
 		public int getTankCapacity(int tank)
 		{
-			return valve.tank.getTankCapacity(tank);
+			return 0;
 		}
 
 		@Override

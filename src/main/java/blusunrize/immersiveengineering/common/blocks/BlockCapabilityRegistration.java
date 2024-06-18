@@ -66,6 +66,7 @@ public class BlockCapabilityRegistration
 		ThermoelectricGenBlockEntity.registerCapabilities(forType(event, IEBlockEntities.THERMOELECTRIC_GEN));
 		TurretChemBlockEntity.registerCapabilities(forType(event, IEBlockEntities.TURRET_CHEM));
 		TurretGunBlockEntity.registerCapabilities(forType(event, IEBlockEntities.TURRET_GUN));
+		PipeValveBlockEntity.registerCapabilities(forType(event, IEBlockEntities.PIPE_VALVE));
 
 		// Wood
 		CircuitTableBlockEntity.registerCapabilities(forType(event, IEBlockEntities.CIRCUIT_TABLE));
