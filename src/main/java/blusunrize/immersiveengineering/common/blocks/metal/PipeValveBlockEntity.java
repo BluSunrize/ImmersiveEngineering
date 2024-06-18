@@ -112,7 +112,8 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
 			if(side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
-			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing()).getCapability();
+			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing().getOpposite()).getCapability();
+			System.out.println(input);
 			if(input!=null) return input.drain(maxDrain, doDrain);
 			else return FluidStack.EMPTY;
 		}
