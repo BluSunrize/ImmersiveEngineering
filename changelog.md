@@ -1,4 +1,4 @@
-##### Version 1.20.4-11.4.1-pre
+##### Version 1.20.4-11.4.1-176
 - Add a netherite nugget (BluSunrize)
     - This is to allow recycling outputs of nuggets
 - Fix incorrect output on high-cetane diesel recipe (BluSunrize)
