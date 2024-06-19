@@ -48,8 +48,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -66,8 +66,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -380,6 +378,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 				"immersiveengineering:block/metal_decoration/aluminum_scaffolding_top_grate_top",
 				"immersiveengineering:block/metal_decoration/aluminum_scaffolding"
 		);
+
+		createDoor(WoodenDecoration.DOOR, "block/wooden_decoration/treated_door");
+		createDoor(WoodenDecoration.DOOR_FRAMED, "block/wooden_decoration/treated_door_framed");
+
 
 		createHorizontalRotatedBlock(StoneDecoration.CORESAMPLE, obj("block/coresample.obj"));
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete/concrete0");
@@ -797,6 +799,13 @@ public class BlockStates extends ExtendedBlockstateProvider
 		return models().withExistingParent(out, modLoc("block/ie_three_quarter_block"))
 				.texture("texture", texture);
 	}
+
+
+	private void createDoor(Supplier<? extends DoorBlock> block, String texture)
+	{
+		doorBlockWithRenderType(block.get(), rl(texture+"_bottom"), rl(texture+"_top"), "cutout");
+	}
+
 
 	private void createHemp()
 	{

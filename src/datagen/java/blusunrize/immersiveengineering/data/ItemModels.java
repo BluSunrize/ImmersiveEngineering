@@ -191,6 +191,9 @@ public class ItemModels extends TRSRItemModelProvider
 		obj(WoodenDecoration.TREATED_POST, modLoc("block/wooden_device/wooden_post_inv.obj"))
 				.texture("post", modLoc("block/wooden_decoration/post"))
 				.transforms(modLoc("item/post"));
+		addItemModel("door_treated", WoodenDecoration.DOOR);
+		addItemModel("door_treated_framed", WoodenDecoration.DOOR_FRAMED);
+
 		obj(WoodenDevices.WORKBENCH, rl("block/wooden_device/workbench.obj.ie"))
 				.transforms(rl("item/workbench"));
 		obj(WoodenDevices.CIRCUIT_TABLE, rl("block/wooden_device/circuit_table.obj"))

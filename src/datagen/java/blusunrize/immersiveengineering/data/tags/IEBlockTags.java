@@ -365,6 +365,8 @@ public class IEBlockTags extends BlockTagsProvider
 				WoodenDecoration.WINDOW,
 				WoodenDecoration.CATWALK,
 				WoodenDecoration.CATWALK_STAIRS,
+				WoodenDecoration.DOOR,
+				WoodenDecoration.DOOR_FRAMED,
 				Cloth.SHADER_BANNER,
 				Cloth.SHADER_BANNER_WALL
 		);

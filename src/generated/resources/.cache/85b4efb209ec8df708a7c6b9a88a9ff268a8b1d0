@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-18T20:02:29.784741	Item models
+// 1.20.4	2024-06-19T16:13:53.6774137	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -327,6 +327,8 @@ b188d4b6c0a01cd12b6632c682481d9976f2ed55 assets/immersiveengineering/models/item
 c7e11cccde35d3d810e1327d87b10a4ad2c7d920 assets/immersiveengineering/models/item/toolupgrade_skyhook_slope.json
 898146ee7a12a78c5c596ceba1a03d59205c814c assets/immersiveengineering/models/item/transformer.json
 0a664e994f6616f557a3fafbbdcbfc1d762f0938 assets/immersiveengineering/models/item/transformer_hv.json
+0e58741605052cc0e23a904f63b25971cfed3370 assets/immersiveengineering/models/item/treated_door.json
+2f0b63912314bcb989ec2717bd44d5ac91001407 assets/immersiveengineering/models/item/treated_door_framed.json
 ba5a8f4553d82898e14f46721459addc541747a6 assets/immersiveengineering/models/item/treated_post.json
 0f79d8bce551951d85d59aa4fd1cd829fa36340a assets/immersiveengineering/models/item/treated_wallmount.json
 c02c30968f09058d53fedaf8877f41405429c062 assets/immersiveengineering/models/item/turret_chem.json

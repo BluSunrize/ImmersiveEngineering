@@ -1,4 +1,5 @@
 ##### Version 1.20.4-11.4.2-pre
+- Add treated wood doors (BluSunrize)
 - Do partial datagen for language files (BluSunrize)
     - This way we don't forget about localizing the countless banner variations anymore
 

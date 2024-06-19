@@ -174,6 +174,15 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.CATWALK)));
 		addStairs(WoodenDecoration.CATWALK, WoodenDecoration.CATWALK_STAIRS, out);
+
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, WoodenDecoration.DOOR, 3)
+				.pattern("ww")
+				.pattern("ww")
+				.pattern("ww")
+				.define('w', IETags.getItemTag(IETags.treatedWood))
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.DOOR)));
+		addVariationChain(out, WoodenDecoration.DOOR, WoodenDecoration.DOOR_FRAMED);
 	}
 
 	private void stoneDecoration(RecipeOutput out)
@@ -653,5 +662,17 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("sss")
 				.unlockedBy("has_"+toPath(block), has(block))
 				.save(out, toRL(toPath(stairs)));
+	}
+
+	private void addVariationChain(RecipeOutput out, ItemLike... items)
+	{
+		for(int from = 0; from < items.length; from++)
+		{
+			int to = (from+1)%items.length;
+			shapelessMisc(items[to])
+					.requires(items[from])
+					.unlockedBy("has_"+toPath(items[from]), has(items[from]))
+					.save(out, toRL(toPath(items[to])+"_from_"+toPath(items[from])));
+		}
 	}
 }

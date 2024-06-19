@@ -419,6 +419,8 @@
   "block.immersiveengineering.transformer_hv": "HV Transformer",
   "block.immersiveengineering.treated_catwalk": "Treated Wood Catwalk",
   "block.immersiveengineering.treated_catwalk_stairs": "Treated Wood Catwalk Stairs",
+  "block.immersiveengineering.treated_door": "Treated Wood Door",
+  "block.immersiveengineering.treated_door_framed": "Treated Wood Door",
   "block.immersiveengineering.treated_fence": "Treated Wood Fence",
   "block.immersiveengineering.treated_post": "Wooden Post",
   "block.immersiveengineering.treated_scaffold": "Treated Wood Scaffolding",

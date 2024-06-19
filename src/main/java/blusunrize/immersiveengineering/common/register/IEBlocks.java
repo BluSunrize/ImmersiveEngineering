@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
@@ -365,6 +366,13 @@ public final class IEBlocks
 
 		public static final BlockEntry<IEBaseBlock> CATWALK_STAIRS = new BlockEntry<>(
 				"treated_catwalk_stairs", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, false)
+		);
+
+		public static final BlockEntry<DoorBlock> DOOR = new BlockEntry<>(
+				"treated_door", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new DoorBlock(new BlockSetType("treated_wood"), blockProps)
+		);
+		public static final BlockEntry<DoorBlock> DOOR_FRAMED = new BlockEntry<>(
+				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new DoorBlock(new BlockSetType("treated_wood"), blockProps)
 		);
 
 		private static void init()
