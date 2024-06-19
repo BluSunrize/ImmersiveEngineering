@@ -60,6 +60,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new DynamicModels(multiblocks, output, exHelper));
 			gen.addProvider(true, new LootModifierProvider(output));
+			gen.addProvider(true, new Language(output, exHelper, "en_us"));
 			for(final DataProvider provider : WorldGenerationProvider.makeProviders(output, lookup, exHelper))
 				gen.addProvider(true, provider);
 			ManualDataGenerator.addProviders(gen, exHelper);

@@ -1,3 +1,7 @@
+##### Version 1.20.4-11.4.2-pre
+- Do partial datagen for language files (BluSunrize)
+    - This way we don't forget about localizing the countless banner variations anymore
+
 ##### Version 1.20.4-11.4.1-176
 - Add a netherite nugget (BluSunrize)
     - This is to allow recycling outputs of nuggets
