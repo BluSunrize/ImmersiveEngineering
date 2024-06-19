@@ -100,7 +100,8 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	}
 
 	private static final List<BooleanProperty> DEFAULT_OFF = ImmutableList.of(
-			IEProperties.MULTIBLOCKSLAVE, IEProperties.ACTIVE, IEProperties.MIRRORED
+			IEProperties.MULTIBLOCKSLAVE, IEProperties.ACTIVE, IEProperties.MIRRORED,
+			IEProperties.UP, IEProperties.DOWN, IEProperties.NORTH, IEProperties.SOUTH, IEProperties.WEST, IEProperties.EAST
 	);
 
 	@Override

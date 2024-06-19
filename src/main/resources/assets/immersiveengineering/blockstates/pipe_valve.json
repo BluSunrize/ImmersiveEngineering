@@ -60,7 +60,7 @@
         "y": 0
       },
       "when": {
-        "facing_secondary": "north"
+        "north": "true"
       }
     },
     {
@@ -69,7 +69,7 @@
         "y": 180
       },
       "when": {
-        "facing_secondary": "south"
+        "south": "true"
       }
     },
     {
@@ -78,7 +78,7 @@
         "y": 270
       },
       "when": {
-        "facing_secondary": "west"
+        "west": "true"
       }
     },
     {
@@ -87,7 +87,7 @@
         "y": 90
       },
       "when": {
-        "facing_secondary": "east"
+        "east": "true"
       }
     },
     {
@@ -96,7 +96,7 @@
         "x": -90
       },
       "when": {
-        "facing_secondary": "up"
+        "up": "true"
       }
     },
     {
@@ -105,7 +105,7 @@
         "x": 90
       },
       "when": {
-        "facing_secondary": "down"
+        "down": "true"
       }
     }
   ]

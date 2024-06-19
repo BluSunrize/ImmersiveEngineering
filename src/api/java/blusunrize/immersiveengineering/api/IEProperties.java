@@ -16,15 +16,11 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -35,58 +31,18 @@ public class IEProperties
 	public static final DirectionProperty FACING_ALL = DirectionProperty.create("facing", DirectionUtils.VALUES);
 	public static final DirectionProperty FACING_HORIZONTAL = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	public static final DirectionProperty FACING_TOP_DOWN = DirectionProperty.create("facing", Direction.UP, Direction.DOWN);
-	public enum DirectionNoneProperty implements StringRepresentable
-	{
-		NONE(null),
-		DOWN(Direction.DOWN),
-		UP(Direction.UP),
-		NORTH(Direction.NORTH),
-		SOUTH(Direction.SOUTH),
-		WEST(Direction.WEST),
-		EAST(Direction.EAST);
-
-		private final Direction facing;
-
-		DirectionNoneProperty(@Nullable Direction facing)
-		{
-			this.facing = facing;
-		}
-
-		@Override
-		@Nonnull
-		public String getSerializedName()
-		{
-			if (this.facing!=null) return this.facing.toString();
-			else return "none";
-		}
-
-		@Nullable
-		public Direction getDirection()
-		{
-			return this.facing;
-		}
-
-		public DirectionNoneProperty fromDirection(Direction dir)
-		{
-			switch(dir)
-			{
-				case DOWN -> { return DOWN; }
-				case UP -> { return UP; }
-				case NORTH -> { return NORTH; }
-				case SOUTH -> { return SOUTH; }
-				case WEST -> { return WEST; }
-				case EAST -> { return EAST; }
-			}
-
-			return NONE;
-		}
-	}
-	public static final EnumProperty<DirectionNoneProperty> FACING_SECONDARY_NONE = EnumProperty.create("facing_secondary", DirectionNoneProperty.class);
-
 
 	public static final BooleanProperty MULTIBLOCKSLAVE = BooleanProperty.create("multiblockslave");
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	public static final BooleanProperty MIRRORED = BooleanProperty.create("mirrored");
+
+	public static final BooleanProperty UP = BooleanProperty.create("up");
+	public static final BooleanProperty DOWN = BooleanProperty.create("down");
+	public static final BooleanProperty NORTH = BooleanProperty.create("north");
+	public static final BooleanProperty SOUTH = BooleanProperty.create("south");
+	public static final BooleanProperty WEST = BooleanProperty.create("west");
+	public static final BooleanProperty EAST = BooleanProperty.create("east");
+
 
 	public static final IntegerProperty INT_16 = IntegerProperty.create("int_16", 0, 15);
 	public static final IntegerProperty INT_32 = IntegerProperty.create("int_32", 0, 31);
