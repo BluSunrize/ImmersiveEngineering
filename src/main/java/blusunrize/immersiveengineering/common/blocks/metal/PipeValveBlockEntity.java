@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -35,7 +36,7 @@ import javax.annotation.Nullable;
 
 import java.util.Map;
 
-public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IBlockBounds
+public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IBlockBounds, IFluidPipe
 {
 	public final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> blockFluidHandlers = IEBlockCapabilityCaches.allNeighbors(
 			FluidHandler.BLOCK, this
@@ -89,22 +90,22 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 	}
 
 	@Override
+	public boolean canOutputPressurized(boolean consumePower)
+	{
+		return true;
+	}
+
+	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket) { }
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket) { }
 
-	public boolean isFluidValid(FluidStack fluid)
-	{
-		return true;
-	}
-
-	public final IFluidHandler inputCap = new SidedFluidHandler(this, getFacing().getOpposite());
-	public final IFluidHandler outputCap = new SidedFluidHandler(this, getFacing());
-
 	public static void registerCapabilities(BECapabilityRegistrar<? extends PipeValveBlockEntity> registrar)
 	{
-		registrar.register(FluidHandler.BLOCK, (be, side) -> (side==be.getFacing()?be.outputCap:side==be.getFacing().getOpposite()?be.inputCap:null));
+		registrar.register(FluidHandler.BLOCK, (be, side) ->
+				(side==be.getFacing()? new SidedFluidHandler(be, be.getFacing()):
+				(side==be.getFacing().getOpposite()? new SidedFluidHandler(be, be.getFacing().getOpposite()):null)));
 	}
 
 	static class SidedFluidHandler implements IFluidHandler
