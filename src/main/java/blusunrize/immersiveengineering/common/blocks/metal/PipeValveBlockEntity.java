@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
@@ -22,22 +22,42 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.Map;
 
-public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional
+public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IBlockBounds
 {
 	public final Map<Direction, IEBlockCapabilityCache<IFluidHandler>> blockFluidHandlers = IEBlockCapabilityCaches.allNeighbors(
 			FluidHandler.BLOCK, this
 	);
+	VoxelShape SHAPE_X = Shapes.join(Shapes.box(0f, 0.125f, 0.125f, 0.125f, 0.875f, 0.875f),
+						 Shapes.join(Shapes.box(0.125f, 0.25f, 0.25f, 0.3125f, 0.75f, 0.75f),
+						 Shapes.join(Shapes.box(0.3125f, 0.1875, 0.1875, 0.6875f, 0.8125f, 0.8125f),
+						 Shapes.join(Shapes.box(0.6875f, 0.25f, 0.25f, 0.875f, 0.75f, 0.75f),
+									 Shapes.box(0.875f, 0.125f, 0.125f, 1f, 0.875f, 0.875f),
+									 BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
+	VoxelShape SHAPE_Y = Shapes.join(Shapes.box(0.125f, 0f, 0.125f, 0.875f, 0.125f, 0.875f),
+						 Shapes.join(Shapes.box(0.25f, 0.125f, 0.25f, 0.75f, 0.3125f, 0.75f),
+						 Shapes.join(Shapes.box(0.1875f, 0.3125f, 0.1875, 0.8125f, 0.6875f, 0.8125f),
+						 Shapes.join(Shapes.box(0.25f, 0.6875f, 0.25f, 0.75f, 0.875f, 0.75f),
+									 Shapes.box(0.125f, 0.875f, 0.125f, 0.875f, 1f, 0.875f),
+									 BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
+	VoxelShape SHAPE_Z = Shapes.join(Shapes.box(0.125f, 0.125f, 0f, 0.875f, 0.875f, 0.125f),
+						 Shapes.join(Shapes.box(0.25f, 0.25f, 0.125f, 0.75f, 0.75f, 0.3125f),
+						 Shapes.join(Shapes.box(0.1875, 0.1875, 0.3125f, 0.8125f, 0.8125f, 0.6875f),
+						 Shapes.join(Shapes.box(0.25f, 0.25f, 0.6875f, 0.75f, 0.75f, 0.875f),
+									 Shapes.box(0.125f, 0.125f, 0.875f, 0.875f, 0.875f, 1f),
+									 BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
 
 	public PipeValveBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -54,6 +74,18 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 	public PlacementLimitation getFacingLimitation()
 	{
 		return PlacementLimitation.SIDE_CLICKED_INVERTED;
+	}
+
+	@Override
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
+	{
+		if(ctx==null) return Shapes.block();
+		return switch(getFacing().getAxis())
+		{
+			case X -> SHAPE_X;
+			case Y -> SHAPE_Y;
+			case Z -> SHAPE_Z;
+		};
 	}
 
 	@Override
@@ -113,7 +145,6 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		{
 			if(side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
 			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing().getOpposite()).getCapability();
-			System.out.println(input);
 			if(input!=null) return input.drain(maxDrain, doDrain);
 			else return FluidStack.EMPTY;
 		}
