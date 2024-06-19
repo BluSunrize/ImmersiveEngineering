@@ -106,6 +106,86 @@
     ],
     "subtitle": "subtitle.immersiveengineering.skyhook"
   },
+  "drill_idle": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:drill_idle",
+        "attenuation_distance": 22
+	  }
+    ],
+    "subtitle": "subtitle.immersiveengineering.drill_motor"
+  },
+  "drill_busy": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:drill_busy",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.drill_motor"
+  },
+  "drill_attack": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:drill_attack",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.drill_attack"
+  },
+  "drill_harvest": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "immersiveengineering:drill_harvest",
+        "attenuation_distance": 28
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.drill_harvest"
+  },
+  "buzzsaw_idle": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:buzzsaw_idle",
+        "attenuation_distance": 22
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_motor"
+  },
+  "buzzsaw_busy": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:buzzsaw_busy",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_motor"
+  },
+  "buzzsaw_attack": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:buzzsaw_attack",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_attack"
+  },
+  "buzzsaw_harvest": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "immersiveengineering:buzzsaw_harvest",
+        "attenuation_distance": 28
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_sawing"
+  },
 	"tesla": {
 		"category": "block",
 		"sounds": [

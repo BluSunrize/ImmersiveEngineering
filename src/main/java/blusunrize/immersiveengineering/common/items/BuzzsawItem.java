@@ -19,11 +19,13 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwhee
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
@@ -292,6 +294,30 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		ItemStack sawblade = getHead(stack);
 		return !sawblade.isEmpty()?sawblade.getDamageValue(): 0;
+	}
+
+	@Override
+	public Holder<SoundEvent> getIdleSound()
+	{
+		return IESounds.buzzsaw_idle;
+	}
+
+	@Override
+	public Holder<SoundEvent> getBusySound()
+	{
+		return IESounds.buzzsaw_busy;
+	}
+
+	@Override
+	public Holder<SoundEvent> getAttackSound()
+	{
+		return IESounds.buzzsaw_attack;
+	}
+
+	@Override
+	public Holder<SoundEvent> getHarvestSound()
+	{
+		return IESounds.buzzsaw_harvest;
 	}
 
 	@Override
