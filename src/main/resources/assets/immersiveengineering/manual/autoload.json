@@ -35,6 +35,7 @@
       "item_batcher",
       "fluid_pipes",
       "fluid_pump",
+      "pipe_valve",
       "fluid_router",
       "fluid_outlet"
     ]
