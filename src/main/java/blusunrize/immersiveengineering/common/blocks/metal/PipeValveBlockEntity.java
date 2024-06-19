@@ -122,7 +122,7 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		@Override
 		public int fill(FluidStack resource, FluidAction doFill)
 		{
-			if(resource.isEmpty()||side==null||(!side.equals(valve.getFacing().getOpposite()))) return 0;
+			if(valve.isRSPowered()||resource.isEmpty()||side==null||(!side.equals(valve.getFacing().getOpposite()))) return 0;
 			//Try to pass fluid through immediately, if we can't do this then don't bother
 			IEBlockCapabilityCache<IFluidHandler> capRef = valve.blockFluidHandlers.get(valve.getFacing());
 			IFluidHandler handler = capRef.getCapability();
@@ -134,7 +134,7 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		@Override
 		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
-			if(resource.isEmpty()||side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
+			if(valve.isRSPowered()||resource.isEmpty()||side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
 			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing().getOpposite()).getCapability();
 			if(input!=null) return input.drain(resource, doDrain);
 			else return FluidStack.EMPTY;
@@ -143,7 +143,7 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
-			if(side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
+			if(valve.isRSPowered()||side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
 			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing().getOpposite()).getCapability();
 			if(input!=null) return input.drain(maxDrain, doDrain);
 			else return FluidStack.EMPTY;
