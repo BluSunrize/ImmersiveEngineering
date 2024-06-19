@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
+import blusunrize.immersiveengineering.api.tool.INoisyTool;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -53,7 +54,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem
+public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem, INoisyTool
 {
 	protected static final int CAPACITY = 2*FluidType.BUCKET_VOLUME;
 
@@ -246,11 +247,18 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 
 	public abstract int getHeadDamage(ItemStack stack);
 
+	@Override
 	public abstract Holder<SoundEvent> getIdleSound();
 
+	@Override
 	public abstract Holder<SoundEvent> getBusySound();
 
+	@Override
 	public abstract Holder<SoundEvent> getAttackSound();
 
+	@Override
 	public abstract Holder<SoundEvent> getHarvestSound();
+
+	@Override
+	public abstract boolean ableToMakeNoise(ItemStack stack);
 }

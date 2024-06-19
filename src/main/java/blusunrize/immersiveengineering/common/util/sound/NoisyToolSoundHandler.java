@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.util.sound;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.items.DieselToolItem;
-import blusunrize.immersiveengineering.common.network.MessageDieselToolAttack;
-import blusunrize.immersiveengineering.common.network.MessageDieselToolHarvestUpdate;
+import blusunrize.immersiveengineering.api.tool.INoisyTool;
+import blusunrize.immersiveengineering.common.network.MessageNoisyToolAttack;
+import blusunrize.immersiveengineering.common.network.MessageNoisyToolHarvestUpdate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -33,23 +33,21 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
-public class DieselToolSoundHandler
+public class NoisyToolSoundHandler
 {
-	private static Map<LivingEntity, Map<EquipmentSlot, DieselToolSoundGroup>> dieselToolSoundGroups = new HashMap<>();
+	private static Map<LivingEntity, Map<EquipmentSlot, NoisyToolSoundGroup>> noisyToolSoundGroups = new HashMap<>();
 
-	private static Map<EquipmentSlot, DieselToolSoundGroup> getSafeDTSGs(LivingEntity entity)
+	private static Map<EquipmentSlot, NoisyToolSoundGroup> getSafeNTSGs(LivingEntity entity)
 	{
-		Map<EquipmentSlot, DieselToolSoundGroup> result = dieselToolSoundGroups.get(entity);
+		Map<EquipmentSlot, NoisyToolSoundGroup> result = noisyToolSoundGroups.get(entity);
 		if(result!=null)
 			return result;
-		if(isUsableDieselItem(entity.getMainHandItem()) || isUsableDieselItem(entity.getOffhandItem()))
+		if(INoisyTool.isAbleNoisyTool(entity.getMainHandItem())||INoisyTool.isAbleNoisyTool(entity.getOffhandItem()))
 		{
-			result = new HashMap<EquipmentSlot, DieselToolSoundGroup>();
-			dieselToolSoundGroups.put(entity, result);
+			result = new HashMap<EquipmentSlot, NoisyToolSoundGroup>();
+			noisyToolSoundGroups.put(entity, result);
 		}
 		return result;
 	}
@@ -57,20 +55,20 @@ public class DieselToolSoundHandler
 	/**
 	 * For the given entity and slot: creates or returns an existing sound group, or null, if there should be none.
 	 * Turns off sound groups that are obsolete and removes them from the mapping.
-	 * This should generally be the only point where DieselToolSoundGroups are accessed through.
+	 * This should generally be the only point where NoisyToolSoundGroups are accessed through.
 	 *
 	 * @param entity
 	 * @param slot
-	 * @return a DieselToolSoundGroup for the given slot or null, if the provided slot does not hold a suitable item
+	 * @return a NoisyToolSoundGroup for the given slot or null, if the provided slot does not hold a suitable item
 	 */
 	@Nullable
-	public static DieselToolSoundGroup getSafeDTSG(LivingEntity entity, EquipmentSlot slot)
+	public static NoisyToolSoundGroup getSafeNTSG(LivingEntity entity, EquipmentSlot slot)
 	{
 		assert slot.getType().equals(Type.HAND);
-		Map<EquipmentSlot, DieselToolSoundGroup> dtsgs = getSafeDTSGs(entity);
-		if (dtsgs == null)
+		Map<EquipmentSlot, NoisyToolSoundGroup> ntsgs = getSafeNTSGs(entity);
+		if(ntsgs==null)
 			return null;
-		DieselToolSoundGroup soundGroup = dtsgs.get(slot);
+		NoisyToolSoundGroup soundGroup = ntsgs.get(slot);
 
 		ItemStack handItem = entity.getItemBySlot(slot);
 
@@ -78,16 +76,16 @@ public class DieselToolSoundHandler
 		{
 			if(!soundGroup.checkItemMatch(handItem))
 			{
-				dtsgs.remove(slot);
+				ntsgs.remove(slot);
 				soundGroup = null;
-				if(dtsgs.isEmpty())
-					dieselToolSoundGroups.remove(entity);
+				if(ntsgs.isEmpty())
+					noisyToolSoundGroups.remove(entity);
 			}
 		}
-		else if(handItem.getItem() instanceof DieselToolItem dieselItem&&dieselItem.canToolBeUsed(handItem))
+		else if(handItem.getItem() instanceof INoisyTool noisyTool&&noisyTool.ableToMakeNoise(handItem))
 		{
-			soundGroup = new DieselToolSoundGroup(dieselItem, entity);
-			dtsgs.put(slot, soundGroup);
+			soundGroup = new NoisyToolSoundGroup(noisyTool, entity);
+			ntsgs.put(slot, soundGroup);
 		}
 
 		return soundGroup;
@@ -95,21 +93,21 @@ public class DieselToolSoundHandler
 
 	public static void handleHarvestAction(LivingEntity holder, LeftClickBlock.Action action, BlockPos targetBlockPos)
 	{
-		DieselToolSoundGroup dtsg = getSafeDTSG(holder, EquipmentSlot.MAINHAND);
+		NoisyToolSoundGroup ntsg = getSafeNTSG(holder, EquipmentSlot.MAINHAND);
 
-		if(dtsg!=null)
+		if(ntsg!=null)
 		{
 			switch(action)
 			{
 				case START:
-					dtsg.updateHarvestState(targetBlockPos);
+					ntsg.updateHarvestState(targetBlockPos);
 					break;
 				case STOP: // stop and abort fire only on the server / are sent from the server, and are non-client-main-player events
 				case ABORT:
-					dtsg.updateHarvestState(null);
+					ntsg.updateHarvestState(null);
 					break;
 				case CLIENT_HOLD: // fires only on the client
-					dtsg.updateHarvestState(targetBlockPos);
+					ntsg.updateHarvestState(targetBlockPos);
 					break;
 			}
 		}
@@ -117,17 +115,10 @@ public class DieselToolSoundHandler
 
 	public static void handleAttack(LivingEntity holder)
 	{
-		DieselToolSoundGroup dtsg = getSafeDTSG(holder, EquipmentSlot.MAINHAND);
+		NoisyToolSoundGroup ntsg = getSafeNTSG(holder, EquipmentSlot.MAINHAND);
 
-		if(dtsg!=null)
-			dtsg.triggerMotorAttack();
-	}
-
-	public static boolean isUsableDieselItem(ItemStack candidate)
-	{
-		if(candidate.getItem() instanceof DieselToolItem dieselToolItem&&dieselToolItem.canToolBeUsed(candidate))
-			return true;
-		return false;
+		if(ntsg!=null)
+			ntsg.triggerAttack();
 	}
 
 	@SubscribeEvent
@@ -138,29 +129,29 @@ public class DieselToolSoundHandler
 		if(!holder.level().isClientSide()) // client side only
 			return;
 
-		DieselToolSoundGroup dtsgMain = DieselToolSoundHandler.getSafeDTSG(holder, EquipmentSlot.MAINHAND);
-		DieselToolSoundGroup dtsgOff = DieselToolSoundHandler.getSafeDTSG(holder, EquipmentSlot.OFFHAND);
+		NoisyToolSoundGroup ntsgMainHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.MAINHAND);
+		NoisyToolSoundGroup ntsgOffHand = NoisyToolSoundHandler.getSafeNTSG(holder, EquipmentSlot.OFFHAND);
 
-		if(dtsgMain!=null)
-			dtsgMain.switchMotorOnOff(true);
-		if(dtsgOff!=null)
-			dtsgOff.switchMotorOnOff(true);
+		if(ntsgMainHand!=null)
+			ntsgMainHand.switchMotorOnOff(true);
+		if(ntsgOffHand!=null)
+			ntsgOffHand.switchMotorOnOff(true);
 	}
 
 	@SubscribeEvent
 	public static void harvestCheck(LeftClickBlock ev)
 	{
-		if(isUsableDieselItem(ev.getItemStack()))
+		if(INoisyTool.isAbleNoisyTool(ev.getItemStack()))
 		{
 			LivingEntity holder = ev.getEntity();
-			if (holder instanceof Player player && player.isCreative()) // skip for creative players, remote creative players don't send stop/abort on block break
+			if(holder instanceof Player player&&player.isCreative()) // skip for creative players, remote creative players don't send stop/abort on block break
 				return;
 			BlockPos targetPos = ev.getPos();
 			if(ev.getLevel().isClientSide()&&holder.equals(Minecraft.getInstance().player))
 				handleHarvestAction(holder, ev.getAction(), targetPos);
 			else
 			{
-				PacketDistributor.TRACKING_ENTITY.with(holder).send(new MessageDieselToolHarvestUpdate(holder, ev.getAction(), targetPos));
+				PacketDistributor.TRACKING_ENTITY.with(holder).send(new MessageNoisyToolHarvestUpdate(holder, ev.getAction(), targetPos));
 			}
 		}
 	}
@@ -168,7 +159,7 @@ public class DieselToolSoundHandler
 	@SubscribeEvent
 	public static void attackCheck(LivingAttackEvent ev)
 	{
-		if(ev.getSource()!=null&&ev.getSource().getEntity() instanceof LivingEntity holder&&isUsableDieselItem(holder.getItemBySlot(EquipmentSlot.MAINHAND)))
+		if(ev.getSource()!=null&&ev.getSource().getEntity() instanceof LivingEntity holder&&INoisyTool.isAbleNoisyTool(holder.getItemBySlot(EquipmentSlot.MAINHAND)))
 		{
 			if(holder.level().isClientSide()&&holder.equals(Minecraft.getInstance().player))
 			{
@@ -176,7 +167,7 @@ public class DieselToolSoundHandler
 			}
 			else
 			{
-				PacketDistributor.TRACKING_ENTITY.with(holder).send(new MessageDieselToolAttack(holder));
+				PacketDistributor.TRACKING_ENTITY.with(holder).send(new MessageNoisyToolAttack(holder));
 			}
 		}
 	}
@@ -184,18 +175,19 @@ public class DieselToolSoundHandler
 	/**
 	 * handles stopping the sound instances and unlisting the sound group when the entity is removed
 	 * consider checking entity.isRemoved() in the ticking sound instances (see MinecartSoundInstance.tick())
+	 *
 	 * @param ev
 	 */
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void stopLeavingSoundSource(EntityLeaveLevelEvent ev)
 	{
-		Map<EquipmentSlot, DieselToolSoundGroup> dtsgs;
-		if(ev.getLevel().isClientSide() && ev.getEntity() instanceof LivingEntity livingEntity && (dtsgs=dieselToolSoundGroups.remove(livingEntity))!=null)
+		Map<EquipmentSlot, NoisyToolSoundGroup> ntsgs;
+		if(ev.getLevel().isClientSide()&&ev.getEntity() instanceof LivingEntity livingEntity&&(ntsgs = noisyToolSoundGroups.remove(livingEntity))!=null)
 		{
-			for (DieselToolSoundGroup dtsg : dtsgs.values())
+			for(NoisyToolSoundGroup ntsg : ntsgs.values())
 			{
-				dtsg.switchMotorOnOff(false);
+				ntsg.switchMotorOnOff(false);
 			}
 		}
 	}

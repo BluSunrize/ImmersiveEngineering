@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
-import blusunrize.immersiveengineering.common.items.DieselToolItem;
+import blusunrize.immersiveengineering.api.tool.INoisyTool;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -21,10 +21,10 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class DieselToolSoundGroup
+public class NoisyToolSoundGroup
 {
 	private static final int attackDuration = 7-1;
-	private final DieselToolItem dieselToolItem;
+	private final INoisyTool noisyToolItem;
 	private final LivingEntity holder;
 	private final int harvestTimeoutGrace;
 
@@ -33,9 +33,9 @@ public class DieselToolSoundGroup
 	private BlockPos currentTargetPos = null;
 	private long lastTick = 0;
 
-	public DieselToolSoundGroup(DieselToolItem dieselToolItem, LivingEntity holder)
+	public NoisyToolSoundGroup(INoisyTool noisyToolItem, LivingEntity holder)
 	{
-		this.dieselToolItem = dieselToolItem;
+		this.noisyToolItem = noisyToolItem;
 		this.holder = holder;
 		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?0: 2400; // shut off remote player's harvesting sound after 2 minutes
 	}
@@ -45,14 +45,14 @@ public class DieselToolSoundGroup
 		Minecraft.getInstance().getSoundManager().queueTickingSound(soundInstance);
 	}
 
-	public DieselToolItem getItem()
+	public INoisyTool getItem()
 	{
-		return dieselToolItem;
+		return noisyToolItem;
 	}
 
 	public boolean checkItemMatch(ItemStack handItem)
 	{
-		if(this.dieselToolItem!=handItem.getItem()||!dieselToolItem.canToolBeUsed(handItem))
+		if(this.noisyToolItem!=handItem.getItem()||!noisyToolItem.ableToMakeNoise(handItem))
 		{
 			switchMotorOnOff(false);
 			return false;
@@ -69,7 +69,7 @@ public class DieselToolSoundGroup
 		ATTACK_END
 	}
 
-	public boolean triggerMotorAttack()
+	public boolean triggerAttack()
 	{
 		return switchMotorState(true, true, true);
 	}
@@ -95,16 +95,16 @@ public class DieselToolSoundGroup
 					updateHarvestState(null, false);
 				break;
 			case IDLE:
-				play(new DieselToolMotorSound(dieselToolItem.getIdleSound().value(), newMotorState, true));
+				play(new DieselToolMotorSound(noisyToolItem.getIdleSound().value(), newMotorState, true));
 				break;
 			case BUSY:
-				play(new DieselToolMotorSound(dieselToolItem.getBusySound().value(), newMotorState, true));
+				play(new DieselToolMotorSound(noisyToolItem.getBusySound().value(), newMotorState, true));
 				break;
 			case ATTACK:
 				if(propagate)
 					updateHarvestState(null, false);
 				lastTick = holder.level().getGameTime()+attackDuration;
-				play(new DieselToolMotorSound(dieselToolItem.getAttackSound().value(), newMotorState, false));
+				play(new DieselToolMotorSound(noisyToolItem.getAttackSound().value(), newMotorState, false));
 				break;
 		}
 		return true;
@@ -162,7 +162,7 @@ public class DieselToolSoundGroup
 
 					if(state==ToolMotorState.ATTACK) // only check if currentMotorState is still ATTACK
 					{
-						if(lastTick!=DieselToolSoundGroup.this.lastTick) //second attack happened. I hate this.
+						if(lastTick!=NoisyToolSoundGroup.this.lastTick) //second attack happened. I hate this.
 							this.stop();
 						else if(holder.level().getGameTime() > lastTick)
 							currentMotorState = ToolMotorState.ATTACK_END;
@@ -182,7 +182,7 @@ public class DieselToolSoundGroup
 
 		protected DieselToolHarvestSound(BlockPos targetBlockPos)
 		{
-			super(dieselToolItem.getHarvestSound().value(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());//ApiUtils.RANDOM_SOURCE);
+			super(noisyToolItem.getHarvestSound().value(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());//ApiUtils.RANDOM_SOURCE);
 
 			this.targetBlockPos = targetBlockPos;
 			this.x = targetBlockPos.getX()+0.5d;

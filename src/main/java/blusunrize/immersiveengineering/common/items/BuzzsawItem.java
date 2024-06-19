@@ -321,6 +321,12 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
+	public boolean ableToMakeNoise(ItemStack stack)
+	{
+		return canToolBeUsed(stack);
+	}
+
+	@Override
 	public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity living)
 	{
 		consumeDurability(stack, world, state, pos, living);

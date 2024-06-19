@@ -274,6 +274,12 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
+	public boolean ableToMakeNoise(ItemStack stack)
+	{
+		return canToolBeUsed(stack);
+	}
+
+	@Override
 	public Tier getHarvestLevel(ItemStack stack, @Nullable Player player)
 	{
 		ItemStack head = getHead(stack);
