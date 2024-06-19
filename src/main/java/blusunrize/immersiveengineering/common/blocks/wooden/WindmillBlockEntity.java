@@ -86,7 +86,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	{
 		rotation += getActualTurnSpeed();
 		rotation %= 1;
-		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, turnSpeed>0, 0.9f, 1f);
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, turnSpeed>0, 0.5f, 1f);
 	}
 
 
