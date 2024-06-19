@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.common.util.sound.DieselToolSoundHandler;
+import blusunrize.immersiveengineering.common.util.sound.NoisyToolSoundHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -18,17 +18,17 @@ import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
 import static net.minecraft.network.protocol.PacketFlow.CLIENTBOUND;
 
-public class MessageDieselToolAttack implements IMessage
+public class MessageNoisyToolAttack implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("diesel_tool_attack");
+	public static final ResourceLocation ID = IEApi.ieLoc("noisy_tool_attack");
 	private final int holderID;
 
-	public MessageDieselToolAttack(LivingEntity holder)
+	public MessageNoisyToolAttack(LivingEntity holder)
 	{
 		this.holderID = holder.getId();
 	}
 
-	public MessageDieselToolAttack(FriendlyByteBuf buf)
+	public MessageNoisyToolAttack(FriendlyByteBuf buf)
 	{
 		this.holderID = buf.readInt();
 	}
@@ -44,7 +44,7 @@ public class MessageDieselToolAttack implements IMessage
 	{
 		assert context.flow().equals(CLIENTBOUND); //todo: remove me?
 
-		DieselToolSoundHandler.handleAttack((LivingEntity)Minecraft.getInstance().level.getEntity(holderID));
+		NoisyToolSoundHandler.handleAttack((LivingEntity)Minecraft.getInstance().level.getEntity(holderID));
 	}
 
 	@Override
