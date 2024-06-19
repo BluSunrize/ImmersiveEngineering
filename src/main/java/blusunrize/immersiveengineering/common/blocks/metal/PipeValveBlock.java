@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.IEProperties.DirectionNoneProperty;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -29,5 +31,6 @@ public class PipeValveBlock extends IEEntityBlock<PipeValveBlockEntity>
 		super.createBlockStateDefinition(builder);
 		builder.add(BlockStateProperties.WATERLOGGED);
 		builder.add(IEProperties.FACING_ALL);
+		builder.add(IEProperties.FACING_SECONDARY_NONE);
 	}
 }

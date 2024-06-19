@@ -1,27 +1,112 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "immersiveengineering:block/metal_device/pipe_valve",
-      "y": 0
+  "multipart": [
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve",
+        "y": 0
+      },
+      "when": {
+        "facing": "north"
+      }
     },
-    "facing=south": { "model": "immersiveengineering:block/metal_device/pipe_valve",
-      "y": 180
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
     },
-    "facing=west": {
-      "model": "immersiveengineering:block/metal_device/pipe_valve",
-      "y": 270
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
     },
-    "facing=east": {
-      "model": "immersiveengineering:block/metal_device/pipe_valve",
-      "y": 90
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
     },
-    "facing=up": {
-      "model": "immersiveengineering:block/metal_device/pipe_valve",
-      "x": -90
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve",
+        "x": -90
+      },
+      "when": {
+        "facing": "up"
+      }
     },
-    "facing=down": {
-      "model": "immersiveengineering:block/metal_device/pipe_valve",
-      "x": 90
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve",
+        "x": 90
+      },
+      "when": {
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve_connector",
+        "y": 0
+      },
+      "when": {
+        "facing_secondary": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve_connector",
+        "y": 180
+      },
+      "when": {
+        "facing_secondary": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve_connector",
+        "y": 270
+      },
+      "when": {
+        "facing_secondary": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve_connector",
+        "y": 90
+      },
+      "when": {
+        "facing_secondary": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve_connector",
+        "x": -90
+      },
+      "when": {
+        "facing_secondary": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/metal_device/pipe_valve_connector",
+        "x": 90
+      },
+      "when": {
+        "facing_secondary": "down"
+      }
     }
-  }
+  ]
 }
