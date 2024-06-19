@@ -112,7 +112,6 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	@Override
 	public void tickServer()
 	{
-		tickClient();
 		if(level.getGameTime()%128==((getBlockPos().getX()^getBlockPos().getZ())&127))
 		{
 			final float oldTurnSpeed = turnSpeed;
