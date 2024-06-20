@@ -4,11 +4,14 @@
     - There's also matching trapdoors
 - Add the redstone-controlled pipe valve from Engineer's Decor (voidsong-dragonfly)
     - Thank you wilechaote for giving us permission to include these blocks in the mod <3
+- Add a recipe for armor-piercing cartridges using netherite nuggets (BluSunrize)
 - Change language files to partially use datageneration (BluSunrize)
     - This way we don't forget about localizing the countless banner variations anymore
 - Change mixer to always place mixed fluid on bottom (voidsong-dragonfly)
 - Change fluids to actually have density (voidsong-dragonfly)
 - Change the survey tools to work on even more overworld blocks (voidsong-dragonfly)
+- Change rendering for two-block high flowers in the cloche (voidsong-dragonfly)
+- Change reinforced crates to require steel (BluSunrize)
 - Fix creative tab not being translatable(voidsong-dragonfly)
 - Fix diesel generator producing energy on low fluid amounts (voidsong-dragonfly)
 - Fix Toolboxes getting emptied when replacing grass blocks (voidsong-dragonfly)

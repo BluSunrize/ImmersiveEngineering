@@ -10,10 +10,10 @@
         "item": "immersiveengineering:crate"
       },
       "p": {
-        "tag": "forge:plates/iron"
+        "tag": "forge:plates/steel"
       },
       "r": {
-        "tag": "forge:rods/iron"
+        "tag": "forge:rods/steel"
       },
       "w": {
         "tag": "forge:treated_wood"

@@ -171,6 +171,13 @@ public class MiscRecipes extends IERecipeProvider
 				.build(out, toRL("blueprint/bullet_armorpiercing"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING), 4))
+				.input(BulletHandler.emptyCasing, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.netheriteNugget, 3)
+				.build(out, toRL("blueprint/bullet_armorpiercing_netherite"));
+		BlueprintCraftingRecipeBuilder.builder()
+				.category("bullet")
 				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.SILVER), 4))
 				.input(BulletHandler.emptyCasing, 4)
 				.input(Tags.Items.GUNPOWDER)

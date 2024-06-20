@@ -81,8 +81,8 @@ public class DeviceRecipes extends IERecipeProvider
 				.pattern("rcr")
 				.pattern("wpw")
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('p', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('r', IETags.ironRod)
+				.define('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('r', IETags.steelRod)
 				.define('c', IEBlocks.WoodenDevices.CRATE)
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<ShapedRecipe>(
@@ -680,10 +680,14 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('c', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_"+toPath(Ingredients.COMPONENT_ELECTRONIC), has(Ingredients.COMPONENT_ELECTRONIC))
 				.save(out, toRL(toPath(MetalDevices.ELECTROMAGNET)));
-		shapelessMisc(MetalDevices.PIPE_VALVE)
-				.requires(Ingredient.of(MetalDevices.FLUID_PIPE))
-				.requires(Ingredient.of(Ingredients.COMPONENT_STEEL))
-				.requires(Ingredient.of(Connectors.CONNECTOR_REDSTONE))
+
+		shapedMisc(MetalDevices.PIPE_VALVE)
+				.pattern("pc")
+				.pattern("sr")
+				.define('p',MetalDevices.FLUID_PIPE)
+				.define('c',Ingredients.COMPONENT_IRON)
+				.define('s',IETags.ironRod)
+				.define('r',Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_fluid_pipe", has(MetalDevices.FLUID_PIPE))
 				.save(out, toRL(toPath(MetalDevices.PIPE_VALVE)));
 	}
