@@ -14,8 +14,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.BreakDoorGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
@@ -28,6 +34,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
+import java.util.function.Predicate;
 
 public class IEDoorBlock extends DoorBlock
 {
@@ -97,5 +104,14 @@ public class IEDoorBlock extends DoorBlock
 		}
 		else
 			super.neighborChanged(blockState, level, pos, block, fromPos, isMoving);
+	}
+
+	@Override
+	public boolean canEntityDestroy(BlockState state, BlockGetter level, BlockPos pos, Entity entity)
+	{
+		// prevent mobs with door breaking goals from getting through steel doors
+		if(entity instanceof Mob mob&&mob.goalSelector.getRunningGoals().anyMatch(wrappedGoal -> wrappedGoal.getGoal() instanceof BreakDoorGoal))
+			return this.type()!=STEEL;
+		return super.canEntityDestroy(state, level, pos, entity);
 	}
 }
