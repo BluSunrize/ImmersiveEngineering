@@ -175,6 +175,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 			{
 				for(int i = 0; i < inv.getSlots(); i++)
 					inventory.set(i, inv.getStackInSlot(i));
+				this.setChanged();
 			}
 
 			if(stack.hasCustomHoverName())
