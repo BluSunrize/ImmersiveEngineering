@@ -82,9 +82,9 @@ public class NoisyToolSoundHandler
 					noisyToolSoundGroups.remove(entity);
 			}
 		}
-		else if(handItem.getItem() instanceof INoisyTool noisyTool&&noisyTool.ableToMakeNoise(handItem))
+		else if(INoisyTool.isAbleNoisyTool(handItem))
 		{
-			soundGroup = new NoisyToolSoundGroup(noisyTool, entity);
+			soundGroup = new NoisyToolSoundGroup(handItem, entity);
 			ntsgs.put(slot, soundGroup);
 		}
 

@@ -66,7 +66,8 @@ public class IESounds
 	public static final Holder<SoundEvent> buzzsaw_idle = registerSound("buzzsaw_idle");
 	public static final Holder<SoundEvent> buzzsaw_busy = registerSound("buzzsaw_busy");
 	public static final Holder<SoundEvent> buzzsaw_attack = registerSound("buzzsaw_attack");
-	public static final Holder<SoundEvent> buzzsaw_harvest = registerSound("buzzsaw_harvest");
+	public static final Holder<SoundEvent> buzzsaw_harvest_saw = registerSound("buzzsaw_harvest_saw");
+	public static final Holder<SoundEvent> buzzsaw_harvest_grind = registerSound("buzzsaw_harvest_grind");
 
 
 	public static void init(IEventBus modBus)

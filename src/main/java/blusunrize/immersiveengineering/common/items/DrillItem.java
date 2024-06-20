@@ -250,25 +250,25 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public Holder<SoundEvent> getIdleSound()
+	public Holder<SoundEvent> getIdleSound(ItemStack stack)
 	{
 		return IESounds.drill_idle;
 	}
 
 	@Override
-	public Holder<SoundEvent> getBusySound()
+	public Holder<SoundEvent> getBusySound(ItemStack stack)
 	{
 		return IESounds.drill_busy;
 	}
 
 	@Override
-	public Holder<SoundEvent> getAttackSound()
+	public Holder<SoundEvent> getAttackSound(ItemStack stack)
 	{
 		return IESounds.drill_attack;
 	}
 
 	@Override
-	public Holder<SoundEvent> getHarvestSound()
+	public Holder<SoundEvent> getHarvestSound(ItemStack stack)
 	{
 		return IESounds.drill_harvest;
 	}

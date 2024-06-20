@@ -297,27 +297,30 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public Holder<SoundEvent> getIdleSound()
+	public Holder<SoundEvent> getIdleSound(ItemStack stack)
 	{
 		return IESounds.buzzsaw_idle;
 	}
 
 	@Override
-	public Holder<SoundEvent> getBusySound()
+	public Holder<SoundEvent> getBusySound(ItemStack stack)
 	{
 		return IESounds.buzzsaw_busy;
 	}
 
 	@Override
-	public Holder<SoundEvent> getAttackSound()
+	public Holder<SoundEvent> getAttackSound(ItemStack stack)
 	{
 		return IESounds.buzzsaw_attack;
 	}
 
 	@Override
-	public Holder<SoundEvent> getHarvestSound()
+	public Holder<SoundEvent> getHarvestSound(ItemStack stack)
 	{
-		return IESounds.buzzsaw_harvest;
+		Item headitem = getHead(stack).getItem();
+		if (headitem instanceof GrindingDiskItem || headitem instanceof RockcutterItem)
+			return IESounds.buzzsaw_harvest_grind;
+		return IESounds.buzzsaw_harvest_saw;
 	}
 
 	@Override
