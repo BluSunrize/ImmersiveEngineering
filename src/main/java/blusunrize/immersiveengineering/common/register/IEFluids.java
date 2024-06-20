@@ -67,19 +67,24 @@ public class IEFluids
 	public static final Set<BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
 
 	public static final FluidEntry CREOSOTE = FluidEntry.make(
-			"creosote", 800, rl("block/fluid/creosote_still"), rl("block/fluid/creosote_flow")
+			"creosote", 800, rl("block/fluid/creosote_still"), rl("block/fluid/creosote_flow"),
+			createBuilder(1230, 2000)
 	);
 	public static final FluidEntry PLANTOIL = FluidEntry.make(
-			"plantoil", rl("block/fluid/plantoil_still"), rl("block/fluid/plantoil_flow")
+			"plantoil", rl("block/fluid/plantoil_still"), rl("block/fluid/plantoil_flow"),
+			createBuilder(920, 1000)
 	);
 	public static final FluidEntry ETHANOL = FluidEntry.make(
-			"ethanol", rl("block/fluid/ethanol_still"), rl("block/fluid/ethanol_flow")
+			"ethanol", rl("block/fluid/ethanol_still"), rl("block/fluid/ethanol_flow"),
+			createBuilder(790, 1000)
 	);
 	public static final FluidEntry BIODIESEL = FluidEntry.make(
-			"biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow")
+			"biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow"),
+			createBuilder(880, 1000)
 	);
 	public static final FluidEntry HIGH_POWER_BIODIESEL = FluidEntry.make(
-			"high_power_biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow")
+			"high_power_biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow"),
+			createBuilder(910, 1000)
 	);
 	public static final FluidEntry CONCRETE = FluidEntry.make(
 			"concrete", rl("block/fluid/concrete_still"), rl("block/fluid/concrete_flow"),
@@ -87,10 +92,12 @@ public class IEFluids
 			ImmutableList.of(IEProperties.INT_32)
 	);
 	public static final FluidEntry HERBICIDE = FluidEntry.make(
-			"herbicide", rl("block/fluid/herbicide_still"), rl("block/fluid/herbicide_flow")
+			"herbicide", rl("block/fluid/herbicide_still"), rl("block/fluid/herbicide_flow"),
+			createBuilder(1100, 1000)
 	);
 	public static final FluidEntry REDSTONE_ACID = FluidEntry.make(
-			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
+			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow"),
+			createBuilder(1200, 1000)
 	);
 	public static final Holder<FluidType> POTION_TYPE = TYPE_REGISTER.register("potion", PotionFluid.PotionFluidType::new);
 	public static final DeferredHolder<Fluid, PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
