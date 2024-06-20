@@ -198,7 +198,8 @@ public class PotionFluid extends Fluid
 		{
 			super(Properties.create()
 					.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY));
+					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+					.density(1300));
 		}
 
 		@Override
