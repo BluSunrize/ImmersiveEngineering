@@ -84,23 +84,23 @@ public class DieselGeneratorLogic
 			);
 			if(recipe != null &&
 			   !presentOutputs.isEmpty() &&
-			   EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
+			   EnergyHelper.distributeFlux(presentOutputs, output, true) < output)
 			{
 				state.consumeTick--;
 				if(state.consumeTick <= 0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
 				{
-					int burnTime = recipe.getBurnTime();
-					int fluidConsumed = (10*FluidType.BUCKET_VOLUME)/burnTime;
-					if(state.tank.getFluidAmount() >= fluidConsumed)
+					int toConsume = (10*FluidType.BUCKET_VOLUME)/recipe.getBurnTime();
+					float fluidConsumed;
+					if((fluidConsumed = state.tank.drain(toConsume, FluidAction.EXECUTE).getAmount())>0)
 					{
 						if(!active)
 							active = true;
-						state.tank.drain(fluidConsumed, FluidAction.EXECUTE);
-						state.consumeTick = 10;
+						state.consumeTick = 10*(int)(fluidConsumed/toConsume);
 					}
 					else if(active)
 						active = false;
 				}
+				EnergyHelper.distributeFlux(presentOutputs, output, false);
 			}
 		}
 		else if(active)

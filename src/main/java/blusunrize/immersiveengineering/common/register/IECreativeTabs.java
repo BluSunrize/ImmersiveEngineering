@@ -41,7 +41,7 @@ public class IECreativeTabs
 			// TODO what am I supposed to do with the row/col args
 			() -> new CreativeModeTab.Builder(Row.TOP, 0)
 					.icon(() -> IEItems.Misc.WIRE_COILS.get(WireType.COPPER).get().getDefaultInstance())
-					.title(Component.literal(ImmersiveEngineering.MODNAME))
+					.title(Component.translatable("itemGroup.immersiveengineering"))
 					.displayItems(IECreativeTabs::fillIETab)
 					.build()
 	);
