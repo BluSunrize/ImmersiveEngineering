@@ -25,8 +25,11 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.network.*;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -133,7 +136,7 @@ public class ImmersiveEngineering
 		// IE Tools
 		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof HammerItem
 				||stack instanceof WirecutterItem||stack instanceof ScrewdriverItem
-				||stack instanceof DrillheadItem);
+				||stack instanceof DrillheadItem||stack instanceof JerrycanItem);
 		// Molds
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				Molds.MOLD_PLATE, Molds.MOLD_GEAR, Molds.MOLD_ROD, Molds.MOLD_BULLET_CASING, Molds.MOLD_WIRE,
@@ -154,26 +157,26 @@ public class ImmersiveEngineering
 
 		// Decoration blocks & Sheetmetal
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
-				MetalDecoration.ENGINEERING_RS, MetalDecoration.ENGINEERING_LIGHT, MetalDecoration.ENGINEERING_HEAVY,
-				MetalDecoration.GENERATOR, MetalDecoration.RADIATOR
-		));
-		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDecoration.ALU_WALLMOUNT, MetalDecoration.STEEL_WALLMOUNT, MetalDecoration.STEEL_SLOPE,
-				MetalDecoration.ALU_SLOPE, MetalDecoration.ALU_POST, MetalDecoration.STEEL_POST
+				MetalDecoration.ALU_SLOPE, MetalDecoration.ALU_POST, MetalDecoration.STEEL_POST,
+				MetalDecoration.STEEL_TRAPDOOR, MetalDecoration.STEEL_DOOR,
+				MetalDecoration.ALU_CATWALK, MetalDecoration.ALU_CATWALK_STAIRS,
+				MetalDecoration.STEEL_CATWALK, MetalDecoration.STEEL_CATWALK_STAIRS
 		));
 		for(EnumMetals metal : EnumMetals.values())
 			ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.getTagsFor(metal).sheetmetal));
 		ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.sheetmetalSlabs));
-		// Metal devices & Chutes
+		// Metal devices, Connectors, & Chutes
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
-				MetalDevices.RAZOR_WIRE, MetalDevices.BARREL, MetalDevices.FLUID_PIPE
+				MetalDevices.RAZOR_WIRE, MetalDevices.BARREL, MetalDevices.FLUID_PIPE, MetalDevices.PIPE_VALVE,
+				Connectors.CONNECTOR_STRUCTURAL
 		));
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> MetalDevices.CHUTES.values().stream());
 
 		// Vanilla Metals
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.LIGHT_WEIGHTED_PRESSURE_PLATE,
-				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON,
+				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON, Items.CHAIN,
 				Items.MINECART, Items.ANVIL, Items.CHIPPED_ANVIL, Items.DAMAGED_ANVIL, Items.LIGHTNING_ROD
 		));
 
