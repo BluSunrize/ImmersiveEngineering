@@ -14,13 +14,13 @@ import net.minecraft.world.item.ItemStack;
 
 public interface INoisyTool
 {
-	public Holder<SoundEvent> getIdleSound();
+	public Holder<SoundEvent> getIdleSound(ItemStack stack);
 
-	public Holder<SoundEvent> getBusySound();
+	public Holder<SoundEvent> getBusySound(ItemStack stack);
 
-	public Holder<SoundEvent> getAttackSound();
+	public Holder<SoundEvent> getAttackSound(ItemStack stack);
 
-	public Holder<SoundEvent> getHarvestSound();
+	public Holder<SoundEvent> getHarvestSound(ItemStack stack);
 
 	public boolean ableToMakeNoise(ItemStack stack);
 

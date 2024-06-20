@@ -25,6 +25,7 @@ public class NoisyToolSoundGroup
 {
 	private static final int attackDuration = 7-1;
 	private final INoisyTool noisyToolItem;
+	private final ItemStack noisyToolStack;
 	private final LivingEntity holder;
 	private final int harvestTimeoutGrace;
 
@@ -33,9 +34,10 @@ public class NoisyToolSoundGroup
 	private BlockPos currentTargetPos = null;
 	private long lastTick = 0;
 
-	public NoisyToolSoundGroup(INoisyTool noisyToolItem, LivingEntity holder)
+	public NoisyToolSoundGroup(ItemStack noisyToolStack, LivingEntity holder)
 	{
-		this.noisyToolItem = noisyToolItem;
+		this.noisyToolStack = noisyToolStack;
+		this.noisyToolItem = (INoisyTool)noisyToolStack.getItem();
 		this.holder = holder;
 		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?0: 2400; // shut off remote player's harvesting sound after 2 minutes
 	}
@@ -95,16 +97,16 @@ public class NoisyToolSoundGroup
 					updateHarvestState(null, false);
 				break;
 			case IDLE:
-				play(new DieselToolMotorSound(noisyToolItem.getIdleSound().value(), newMotorState, true));
+				play(new DieselToolMotorSound(noisyToolItem.getIdleSound(noisyToolStack).value(), newMotorState, true));
 				break;
 			case BUSY:
-				play(new DieselToolMotorSound(noisyToolItem.getBusySound().value(), newMotorState, true));
+				play(new DieselToolMotorSound(noisyToolItem.getBusySound(noisyToolStack).value(), newMotorState, true));
 				break;
 			case ATTACK:
 				if(propagate)
 					updateHarvestState(null, false);
 				lastTick = holder.level().getGameTime()+attackDuration;
-				play(new DieselToolMotorSound(noisyToolItem.getAttackSound().value(), newMotorState, false));
+				play(new DieselToolMotorSound(noisyToolItem.getAttackSound(noisyToolStack).value(), newMotorState, false));
 				break;
 		}
 		return true;
@@ -182,7 +184,7 @@ public class NoisyToolSoundGroup
 
 		protected DieselToolHarvestSound(BlockPos targetBlockPos)
 		{
-			super(noisyToolItem.getHarvestSound().value(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());//ApiUtils.RANDOM_SOURCE);
+			super(noisyToolItem.getHarvestSound(noisyToolStack).value(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());//ApiUtils.RANDOM_SOURCE);
 
 			this.targetBlockPos = targetBlockPos;
 			this.x = targetBlockPos.getX()+0.5d;

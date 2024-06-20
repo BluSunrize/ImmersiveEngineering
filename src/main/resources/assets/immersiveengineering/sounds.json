@@ -176,15 +176,25 @@
     ],
     "subtitle": "subtitle.immersiveengineering.buzzsaw_attack"
   },
-  "buzzsaw_harvest": {
+  "buzzsaw_harvest_saw": {
     "category": "block",
     "sounds": [
       {
-        "name": "immersiveengineering:buzzsaw_harvest",
+        "name": "immersiveengineering:buzzsaw_harvest_saw",
         "attenuation_distance": 28
       }
     ],
     "subtitle": "subtitle.immersiveengineering.buzzsaw_sawing"
+  },
+  "buzzsaw_harvest_grind": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "immersiveengineering:buzzsaw_harvest_grind",
+        "attenuation_distance": 28
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_grinding"
   },
 	"tesla": {
 		"category": "block",
