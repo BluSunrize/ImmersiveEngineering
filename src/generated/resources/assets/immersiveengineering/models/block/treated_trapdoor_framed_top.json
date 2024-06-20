@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_orientable_trapdoor_top",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "texture": "immersiveengineering:block/wooden_decoration/treated_trapdoor_framed"
+  }
+}

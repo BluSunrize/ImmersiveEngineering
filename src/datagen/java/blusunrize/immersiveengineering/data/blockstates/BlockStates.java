@@ -50,6 +50,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -382,6 +383,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createDoor(WoodenDecoration.DOOR, "block/wooden_decoration/treated_door");
 		createDoor(WoodenDecoration.DOOR_FRAMED, "block/wooden_decoration/treated_door_framed");
 		createDoor(MetalDecoration.STEEL_DOOR, "block/metal_decoration/steel_door");
+		createTrapdoor(WoodenDecoration.TRAPDOOR, "block/wooden_decoration/treated_trapdoor");
+		createTrapdoor(WoodenDecoration.TRAPDOOR_FRAMED, "block/wooden_decoration/treated_trapdoor_framed");
+		createTrapdoor(MetalDecoration.STEEL_TRAPDOOR, "block/metal_decoration/steel_trapdoor");
 
 
 		createHorizontalRotatedBlock(StoneDecoration.CORESAMPLE, obj("block/coresample.obj"));
@@ -806,7 +810,11 @@ public class BlockStates extends ExtendedBlockstateProvider
 	{
 		doorBlockWithRenderType(block.get(), rl(texture+"_bottom"), rl(texture+"_top"), "cutout");
 	}
-
+	private void createTrapdoor(Supplier<? extends TrapDoorBlock> block, String texture)
+	{
+		trapdoorBlockWithRenderType(block.get(), rl(texture), true,"cutout");
+		itemModel(block, models().getExistingFile(rl(BuiltInRegistries.BLOCK.getKey(block.get()).getPath()+"_bottom")));
+	}
 
 	private void createHemp()
 	{
