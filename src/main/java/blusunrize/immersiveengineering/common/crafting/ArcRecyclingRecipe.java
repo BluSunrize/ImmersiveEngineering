@@ -19,7 +19,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
@@ -51,7 +50,12 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		this.defaultOutputs = Util.make(() -> {
 			List<TagOutput> ret = new ArrayList<>();
 			for(Pair<TagOutput, Double> e : outputs)
-				addTagOutputToList(ret, e);
+			{
+				if(e.getSecond()>=1) ret.add(new TagOutput(e.getFirst().get().copyWithCount((int)(e.getSecond().doubleValue()))));
+				String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getFirst().get(), "ingots");
+				if(type!=null&&e.getSecond()%1>0.11)
+					ret.add(new TagOutput(TagUtils.createItemWrapper(IETags.getNugget(type[1])), (int)(9*e.getSecond()%1)));
+			}
 			return new TagOutputList(ret);
 		});
 	}
@@ -101,24 +105,6 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 				ItemStack nuggets = IEApi.getPreferredTagStack(tags.get(), TagUtils.createItemWrapper(IETags.getNugget(type[1])));
 				if(!nuggets.isEmpty())
 					outs.add(ItemHandlerHelper.copyStackWithSize(nuggets, nuggetOut));
-			}
-		}
-	}
-
-	private void addTagOutputToList(@Nonnull List<TagOutput> outs, Pair<TagOutput, Double> e)
-	{
-		//Noone likes nuggets anyway >_>
-		if(e.getSecond() >= 1)
-			outs.add(TagOutput.newWithAmount(e.getFirst(), (int)e.getSecond().doubleValue()));
-		int nuggetOut = (int)((e.getSecond()-(int)e.getSecond().doubleValue())*9);
-		if(nuggetOut > 0)
-		{
-			String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getFirst().get(), "ingots");
-			if(type!=null)
-			{
-				ItemStack nuggets = IEApi.getPreferredTagStack(tags.get(), TagUtils.createItemWrapper(IETags.getNugget(type[1])));
-				if(!nuggets.isEmpty())
-					outs.add(new TagOutput(nuggets.copyWithCount(nuggetOut)));
 			}
 		}
 	}

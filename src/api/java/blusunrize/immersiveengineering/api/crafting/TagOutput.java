@@ -78,8 +78,4 @@ public class TagOutput
 			);
 		return cachedStack;
 	}
-
-	public static TagOutput newWithAmount(TagOutput input, int amount) {
-		return new TagOutput(input.get().copyWithCount(amount));
-	}
 }
