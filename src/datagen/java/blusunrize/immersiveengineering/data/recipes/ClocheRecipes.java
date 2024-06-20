@@ -112,10 +112,10 @@ public class ClocheRecipes extends IERecipeProvider
 		flower(out, Blocks.LILY_OF_THE_VALLEY);
 		flower(out, Blocks.CORNFLOWER);
 		flower(out, Blocks.BLUE_ORCHID, Blocks.MUD);
-		flower(out, Blocks.LILAC);
-		flower(out, Blocks.SUNFLOWER);
-		flower(out, Blocks.ROSE_BUSH);
-		flower(out, Blocks.PEONY);
+		doubleFlower(out, Blocks.LILAC);
+		doubleFlower(out, Blocks.SUNFLOWER);
+		doubleFlower(out, Blocks.ROSE_BUSH);
+		doubleFlower(out, Blocks.PEONY);
 		flower(out, Blocks.WITHER_ROSE, Blocks.SOUL_SOIL);
 	}
 
@@ -129,10 +129,24 @@ public class ClocheRecipes extends IERecipeProvider
 				.setRender(new RenderFunctionGeneric(flowerBlock))
 				.build(out, toRL("cloche/"+flowerBlock.builtInRegistryHolder().key().location().getPath()));
 	}
+	private void doubleFlower(RecipeOutput out, Block flowerBlock, ItemLike soil)
+	{
+		ClocheRecipeBuilder.builder()
+				.output(flowerBlock)
+				.seed(flowerBlock)
+				.soil(soil)
+				.setTime(480)
+				.setRender(new RenderFunctionDoubleFlower(flowerBlock))
+				.build(out, toRL("cloche/"+flowerBlock.builtInRegistryHolder().key().location().getPath()));
+	}
 
 	private void flower(RecipeOutput out, Block flowerBlock)
 	{
 		flower(out, flowerBlock, Blocks.DIRT);
+	}
+	private void doubleFlower(RecipeOutput out, Block flowerBlock)
+	{
+		doubleFlower(out, flowerBlock, Blocks.DIRT);
 	}
 
 	private void mushrooms(RecipeOutput out)
