@@ -139,6 +139,22 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 			}
 		this.fluids.add(Utils.copyFluidStackWithAmount(resource, toFill, true));
 		return toFill;
+	}
+
+	public int fillRecipe(FluidStack resource, FluidAction action)
+	{
+		int space = this.capacity-getFluidAmount();
+		int toFill = Math.min(resource.getAmount(), space);
+		if(action.simulate())
+			return toFill;
+		for(FluidStack fs : this.fluids)
+			if(fs.isFluidEqual(resource))
+			{
+				fs.grow(toFill);
+				return toFill;
+			}
+		this.fluids.add(0, Utils.copyFluidStackWithAmount(resource, toFill, true));
+		return toFill;
 
 	}
 

@@ -94,7 +94,7 @@ public class MixingProcess extends MultiblockProcessInMachine<MixerRecipe>
 					FluidStack output = levelData.recipe().getFluidOutput(drained, components);
 
 					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
-					this.tank.fill(fs, FluidAction.EXECUTE);
+					this.tank.fillRecipe(fs, FluidAction.EXECUTE);
 				}
 			}
 			processPre++;
