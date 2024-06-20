@@ -149,6 +149,7 @@ public class NoisyToolSoundGroup
 			this.state = state;
 			this.looping = looping;
 			this.lastTick = looping?0: holder.level().getGameTime()+attackDuration;
+			this.volume = INoisyTool.TEST_VOLUME_ADJUSTMENT; //TODO: remove me
 		}
 
 		@Override
@@ -191,6 +192,7 @@ public class NoisyToolSoundGroup
 			this.y = targetBlockPos.getY()+0.5d;
 			this.z = targetBlockPos.getZ()+0.5d;
 			this.looping = true;
+			this.volume = INoisyTool.TEST_VOLUME_ADJUSTMENT; //TODO: remove me
 		}
 
 		@Override
