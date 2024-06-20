@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
@@ -32,7 +31,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
