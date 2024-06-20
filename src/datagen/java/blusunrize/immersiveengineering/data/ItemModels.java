@@ -97,6 +97,7 @@ public class ItemModels extends TRSRItemModelProvider
 		obj(MetalDecoration.ALU_POST, modLoc("block/wooden_device/wooden_post_inv.obj"))
 				.texture("post", modLoc("block/metal_decoration/aluminum_post"))
 				.transforms(modLoc("item/post"));
+		addItemModel("door_steel", MetalDecoration.STEEL_DOOR);
 
 		obj(MetalDevices.CLOCHE, rl("block/metal_device/cloche.obj.ie"))
 				.transforms(rl("item/cloche"))

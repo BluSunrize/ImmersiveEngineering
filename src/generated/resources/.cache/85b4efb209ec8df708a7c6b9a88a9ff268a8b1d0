@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-19T16:13:53.6774137	Item models
+// 1.20.4	2024-06-20T16:59:57.589248	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -281,6 +281,7 @@ f937d63276dda06964f5d741f8807c5f79a821da assets/immersiveengineering/models/item
 67578ae1c0e9ce09301b1702c8f58b08d42046a2 assets/immersiveengineering/models/item/silver.json
 7519bb7b2dc14463b69e7b1b61dc4c8e532b3050 assets/immersiveengineering/models/item/slag.json
 c75b8fd4c9f5f1a9b3abc2a4634fe87c54200127 assets/immersiveengineering/models/item/squeezer.json
+68fb145a1b76fe75f19deae31afd83f11b4b40d3 assets/immersiveengineering/models/item/steel_door.json
 2be9807a9082852a5faef857f9328b6d4e70a502 assets/immersiveengineering/models/item/steel_post.json
 61096eb2e6c47c4292b960365a2f99d969a5afa2 assets/immersiveengineering/models/item/steel_wallmount.json
 e38a2ac03d1e6217da3868f7e043fea7e104f562 assets/immersiveengineering/models/item/stick_aluminum.json
