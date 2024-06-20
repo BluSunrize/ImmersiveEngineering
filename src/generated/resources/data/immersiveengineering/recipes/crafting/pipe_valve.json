@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:fluid_pipe"
+    },
+    {
+      "item": "immersiveengineering:component_steel"
+    },
+    {
+      "item": "immersiveengineering:connector_redstone"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:pipe_valve"
+  }
+}

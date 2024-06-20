@@ -1,0 +1,6 @@
+Pipe Valve
+Cannot Count To Three
+<&pump_recipe>Pipe valves are redsto- mechanical devices that control fluid flow to runs of <link;fluid_pipes;pipe>.<br>
+Valves will not accept flow against their orientation, marked by the arrow on the central valve segment.<br>
+When a redstone signal is applied, the valve mechanism in the pipe will shut off all flow across the pump.<br>
+Pipe valves will connect to redstone acceptors such as <link;redstone_wiring;connectors> or levers, allowing them to be placed against the valve face.

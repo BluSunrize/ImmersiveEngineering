@@ -1,0 +1,6 @@
+{
+  "pump_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/pipe_valve"
+  }
+}
