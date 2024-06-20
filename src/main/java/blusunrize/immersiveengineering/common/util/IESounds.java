@@ -61,10 +61,12 @@ public class IESounds
 	public static final Holder<SoundEvent> electromagnet = registerSound("electromagnet");
 	public static final Holder<SoundEvent> drill_idle = registerSound("drill_idle");
 	public static final Holder<SoundEvent> drill_busy = registerSound("drill_busy");
+	public static final Holder<SoundEvent> drill_fade = registerSound("drill_fade");
 	public static final Holder<SoundEvent> drill_attack = registerSound("drill_attack");
 	public static final Holder<SoundEvent> drill_harvest = registerSound("drill_harvest");
 	public static final Holder<SoundEvent> buzzsaw_idle = registerSound("buzzsaw_idle");
 	public static final Holder<SoundEvent> buzzsaw_busy = registerSound("buzzsaw_busy");
+	public static final Holder<SoundEvent> buzzsaw_fade = registerSound("buzzsaw_fade");
 	public static final Holder<SoundEvent> buzzsaw_attack = registerSound("buzzsaw_attack");
 	public static final Holder<SoundEvent> buzzsaw_harvest_saw = registerSound("buzzsaw_harvest_saw");
 	public static final Holder<SoundEvent> buzzsaw_harvest_grind = registerSound("buzzsaw_harvest_grind");

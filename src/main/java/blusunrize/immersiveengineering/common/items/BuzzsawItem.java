@@ -309,6 +309,12 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
+	public Holder<SoundEvent> getFadingSound(ItemStack stack)
+	{
+		return IESounds.buzzsaw_fade;
+	}
+
+	@Override
 	public Holder<SoundEvent> getAttackSound(ItemStack stack)
 	{
 		return IESounds.buzzsaw_attack;

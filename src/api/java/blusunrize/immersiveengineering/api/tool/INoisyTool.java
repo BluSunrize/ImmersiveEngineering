@@ -20,6 +20,8 @@ public interface INoisyTool
 
 	public Holder<SoundEvent> getBusySound(ItemStack stack);
 
+	public Holder<SoundEvent> getFadingSound(ItemStack stack);
+
 	public Holder<SoundEvent> getAttackSound(ItemStack stack);
 
 	public Holder<SoundEvent> getHarvestSound(ItemStack stack);

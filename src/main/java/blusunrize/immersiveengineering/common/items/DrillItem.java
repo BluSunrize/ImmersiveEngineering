@@ -262,6 +262,13 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
+	public Holder<SoundEvent> getFadingSound(ItemStack stack)
+	{
+		return IESounds.drill_fade;
+	}
+
+
+	@Override
 	public Holder<SoundEvent> getAttackSound(ItemStack stack)
 	{
 		return IESounds.drill_attack;

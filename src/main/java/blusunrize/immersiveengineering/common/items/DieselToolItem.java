@@ -254,6 +254,9 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	public abstract Holder<SoundEvent> getBusySound(ItemStack stack);
 
 	@Override
+	public abstract Holder<SoundEvent> getFadingSound(ItemStack stack);
+
+	@Override
 	public abstract Holder<SoundEvent> getAttackSound(ItemStack stack);
 
 	@Override
