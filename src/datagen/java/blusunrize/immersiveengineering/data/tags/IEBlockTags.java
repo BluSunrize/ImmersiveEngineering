@@ -227,10 +227,37 @@ public class IEBlockTags extends BlockTagsProvider
 				.addOptionalTag(new ResourceLocation("dynamictrees", "branches"))
 				.addOptionalTag(new ResourceLocation("dynamictrees", "leaves"));
 		tag(IETags.surveyToolTargets)
+				//Overworld stones
+				.addTag(Tags.Blocks.STONE)
+				.add(Blocks.DRIPSTONE_BLOCK)
+				.add(Blocks.CALCITE)
+				.add(Blocks.SANDSTONE)
+				.add(Blocks.RED_SANDSTONE)
+				//Overworld soils
 				.addTag(BlockTags.DIRT)
+				.remove(Blocks.MOSS_BLOCK)
 				.addTag(Tags.Blocks.GRAVEL)
 				.addTag(Tags.Blocks.SAND)
-				.add(Blocks.CLAY);
+				.add(Blocks.CLAY)
+				//Overworld terracotta
+				.add(Blocks.TERRACOTTA)
+				.add(Blocks.WHITE_TERRACOTTA)
+				.add(Blocks.LIGHT_GRAY_TERRACOTTA)
+				.add(Blocks.GRAY_TERRACOTTA)
+				.add(Blocks.BROWN_TERRACOTTA)
+				.add(Blocks.RED_TERRACOTTA)
+				.add(Blocks.ORANGE_TERRACOTTA)
+				.add(Blocks.YELLOW_TERRACOTTA)
+				//Nether stones
+				.addTag(Tags.Blocks.NETHERRACK)
+				.add(Blocks.BASALT)
+				.add(Blocks.BLACKSTONE)
+				//Nether soils
+				.addTag(BlockTags.NYLIUM)
+				.add(Blocks.SOUL_SAND)
+				.add(Blocks.SOUL_SOIL)
+				//End Stones
+				.add(Blocks.END_STONE);
 		checkAllRegisteredForBreaking();
 
 		for(BlockEntry<?> treatedWood : WoodenDecoration.TREATED_WOOD.values())

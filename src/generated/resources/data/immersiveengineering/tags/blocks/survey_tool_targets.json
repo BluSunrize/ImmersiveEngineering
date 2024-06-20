@@ -1,8 +1,31 @@
 {
+  "remove": [
+    "minecraft:moss_block"
+  ],
   "values": [
+    "#forge:stone",
+    "minecraft:dripstone_block",
+    "minecraft:calcite",
+    "minecraft:sandstone",
+    "minecraft:red_sandstone",
     "#minecraft:dirt",
     "#forge:gravel",
     "#forge:sand",
-    "minecraft:clay"
+    "minecraft:clay",
+    "minecraft:terracotta",
+    "minecraft:white_terracotta",
+    "minecraft:light_gray_terracotta",
+    "minecraft:gray_terracotta",
+    "minecraft:brown_terracotta",
+    "minecraft:red_terracotta",
+    "minecraft:orange_terracotta",
+    "minecraft:yellow_terracotta",
+    "#forge:netherrack",
+    "minecraft:basalt",
+    "minecraft:blackstone",
+    "#minecraft:nylium",
+    "minecraft:soul_sand",
+    "minecraft:soul_soil",
+    "minecraft:end_stone"
   ]
 }

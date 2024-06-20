@@ -51,27 +51,7 @@ public class SurveyToolsItem extends IEBaseItem
 	public SurveyToolsItem()
 	{
 		super(new Properties().stacksTo(1).defaultDurability(300));
-		// earthen materials
 		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(IETags.surveyToolTargets));
-		// Stone, Diorite, Andesite, etc.
-		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(Tags.Blocks.STONE));
-		// Nether materials
-		CAN_USE_ON.add((world, pos) -> {
-			BlockState state = world.getBlockState(pos);
-			Block block = state.getBlock();
-			return state.is(Tags.Blocks.NETHERRACK)
-					||block==Blocks.SOUL_SAND
-					||block==Blocks.SOUL_SOIL
-					||block==Blocks.BLACKSTONE
-					||block==Blocks.BASALT
-					||block==Blocks.CRIMSON_NYLIUM
-					||block==Blocks.WARPED_NYLIUM;
-		});
-		// soft rocks
-		CAN_USE_ON.add((world, pos) -> {
-			BlockState state = world.getBlockState(pos);
-			return state.is(Tags.Blocks.STONE)&&state.getDestroySpeed(world, pos) < 0.5;
-		});
 	}
 
 	@Override
