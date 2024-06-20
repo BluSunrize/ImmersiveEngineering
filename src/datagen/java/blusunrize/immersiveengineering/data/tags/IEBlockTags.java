@@ -492,6 +492,7 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDevices.TURRET_GUN,
 				MetalDevices.CLOCHE,
 				MetalDevices.ELECTROMAGNET,
+				MetalDevices.PIPE_VALVE,
 				MetalDecoration.LV_COIL,
 				MetalDecoration.MV_COIL,
 				MetalDecoration.HV_COIL,
