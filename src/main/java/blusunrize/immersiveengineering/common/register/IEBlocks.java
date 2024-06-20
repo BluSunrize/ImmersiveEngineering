@@ -373,6 +373,12 @@ public final class IEBlocks
 		public static final BlockEntry<DoorBlock> DOOR_FRAMED = new BlockEntry<>(
 				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
+		public static final BlockEntry<TrapDoorBlock> TRAPDOOR = new BlockEntry<>(
+				"treated_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+		);
+		public static final BlockEntry<TrapDoorBlock> TRAPDOOR_FRAMED = new BlockEntry<>(
+				"treated_trapdoor_framed", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+		);
 
 		private static void init()
 		{
@@ -510,6 +516,9 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<DoorBlock> STEEL_DOOR = new BlockEntry<>(
 				"steel_door", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
+		);
+		public static final BlockEntry<TrapDoorBlock> STEEL_TRAPDOOR = new BlockEntry<>(
+				"steel_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
 		);
 
 		private static void init()

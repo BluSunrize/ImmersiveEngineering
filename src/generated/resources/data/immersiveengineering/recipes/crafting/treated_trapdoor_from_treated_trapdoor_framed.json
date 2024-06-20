@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:treated_trapdoor_framed"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:treated_trapdoor"
+  }
+}

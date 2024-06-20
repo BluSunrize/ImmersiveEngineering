@@ -394,6 +394,8 @@ public class IEBlockTags extends BlockTagsProvider
 				WoodenDecoration.CATWALK_STAIRS,
 				WoodenDecoration.DOOR,
 				WoodenDecoration.DOOR_FRAMED,
+				WoodenDecoration.TRAPDOOR,
+				WoodenDecoration.TRAPDOOR_FRAMED,
 				Cloth.SHADER_BANNER,
 				Cloth.SHADER_BANNER_WALL
 		);
@@ -545,6 +547,7 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.ALU_CATWALK,
 				MetalDecoration.ALU_CATWALK_STAIRS,
 				MetalDecoration.STEEL_DOOR,
+				MetalDecoration.STEEL_TRAPDOOR,
 				Connectors.CONNECTOR_STRUCTURAL,
 				Connectors.TRANSFORMER,
 				Connectors.POST_TRANSFORMER,

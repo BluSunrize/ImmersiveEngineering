@@ -183,6 +183,13 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.DOOR)));
 		addVariationChain(out, WoodenDecoration.DOOR, WoodenDecoration.DOOR_FRAMED);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, WoodenDecoration.TRAPDOOR, 3)
+				.pattern("www")
+				.pattern("www")
+				.define('w', IETags.getItemTag(IETags.treatedWood))
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.TRAPDOOR)));
+		addVariationChain(out, WoodenDecoration.TRAPDOOR, WoodenDecoration.TRAPDOOR_FRAMED);
 	}
 
 	private void stoneDecoration(RecipeOutput out)
@@ -654,6 +661,12 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_DOOR)));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.STEEL_TRAPDOOR, 3)
+				.pattern("iii")
+				.pattern("iii")
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_TRAPDOOR)));
 	}
 
 	private void addStairs(ItemLike block, RecipeOutput out)
