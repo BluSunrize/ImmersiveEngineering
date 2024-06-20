@@ -231,6 +231,8 @@ public class IEBlockTags extends BlockTagsProvider
 				.addTag(Tags.Blocks.STONE)
 				.add(Blocks.DRIPSTONE_BLOCK)
 				.add(Blocks.CALCITE)
+				.add(Blocks.SANDSTONE)
+				.add(Blocks.RED_SANDSTONE)
 				//Overworld soils
 				.addTag(BlockTags.DIRT)
 				.remove(Blocks.MOSS_BLOCK)
