@@ -23,7 +23,8 @@ import java.util.Objects;
 
 public class NoisyToolSoundGroup
 {
-	private static final int attackDuration = 7-1;
+	private static final int ATTACK_DURATION = 7-1;
+	private static final int FADE_DURATION = 20-1;
 	private final INoisyTool noisyToolItem;
 	private final ItemStack noisyToolStack;
 	private final LivingEntity holder;
@@ -67,8 +68,9 @@ public class NoisyToolSoundGroup
 		OFF,
 		IDLE,
 		BUSY,
+		FADING,
 		ATTACK,
-		ATTACK_END
+		TRANSITION // transient helper state to bridge away from timed sounds associated with FADING and ATTACK, cause transitioning directly gives a tick of no sound with current implementation
 	}
 
 	public boolean triggerAttack()
@@ -83,7 +85,7 @@ public class NoisyToolSoundGroup
 
 	private boolean switchMotorState(boolean motorOn, boolean attack, boolean propagate)
 	{
-		ToolMotorState newMotorState = motorOn?(attack?(ToolMotorState.ATTACK): (currentTargetPos==null?ToolMotorState.IDLE: ToolMotorState.BUSY)): ToolMotorState.OFF;
+		ToolMotorState newMotorState = motorOn?(attack?(ToolMotorState.ATTACK): (currentTargetPos==null?(currentMotorState==ToolMotorState.BUSY||currentMotorState==ToolMotorState.FADING?ToolMotorState.FADING: ToolMotorState.IDLE): ToolMotorState.BUSY)): ToolMotorState.OFF;
 
 		if((currentMotorState==newMotorState||(propagate&&currentMotorState==ToolMotorState.ATTACK))&&newMotorState!=ToolMotorState.ATTACK)
 			return false;
@@ -102,10 +104,14 @@ public class NoisyToolSoundGroup
 			case BUSY:
 				play(new DieselToolMotorSound(noisyToolItem.getBusySound(noisyToolStack).value(), newMotorState, true));
 				break;
+			case FADING:
+				lastTick = holder.level().getGameTime()+FADE_DURATION;
+				play(new DieselToolMotorSound(noisyToolItem.getFadingSound(noisyToolStack).value(), newMotorState, false));
+				break;
 			case ATTACK:
 				if(propagate)
 					updateHarvestState(null, false);
-				lastTick = holder.level().getGameTime()+attackDuration;
+				lastTick = holder.level().getGameTime()+ATTACK_DURATION;
 				play(new DieselToolMotorSound(noisyToolItem.getAttackSound(noisyToolStack).value(), newMotorState, false));
 				break;
 		}
@@ -147,8 +153,8 @@ public class NoisyToolSoundGroup
 			this.y = holder.getY()+0.5d; //todo: get tool coordinates?
 			this.z = holder.getZ();
 			this.state = state;
-			this.looping = looping;
-			this.lastTick = looping?0: holder.level().getGameTime()+attackDuration;
+			this.looping = true; //until such a time thar the end of the non-looping sounds is detectable
+			this.lastTick = looping?0: holder.level().getGameTime()+(state==ToolMotorState.FADING?FADE_DURATION: ATTACK_DURATION);
 			this.volume = INoisyTool.TEST_VOLUME_ADJUSTMENT; //TODO: remove me
 		}
 
@@ -163,12 +169,12 @@ public class NoisyToolSoundGroup
 					this.y = holder.getY()+0.5d;
 					this.z = holder.getZ();
 
-					if(state==ToolMotorState.ATTACK) // only check if currentMotorState is still ATTACK
+					if(state==ToolMotorState.ATTACK||state==ToolMotorState.FADING) // only check if currentMotorState==state
 					{
 						if(lastTick!=NoisyToolSoundGroup.this.lastTick) //second attack happened. I hate this.
 							this.stop();
 						else if(holder.level().getGameTime() > lastTick)
-							currentMotorState = ToolMotorState.ATTACK_END;
+							currentMotorState = ToolMotorState.TRANSITION;
 					}
 				}
 				else

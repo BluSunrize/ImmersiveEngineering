@@ -126,6 +126,16 @@
     ],
     "subtitle": "subtitle.immersiveengineering.drill_motor"
   },
+  "drill_fade": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:drill_fade",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.drill_motor"
+  },
   "drill_attack": {
     "category": "neutral",
     "sounds": [
@@ -161,6 +171,16 @@
     "sounds": [
       {
         "name": "immersiveengineering:buzzsaw_busy",
+        "attenuation_distance": 24
+      }
+    ],
+    "subtitle": "subtitle.immersiveengineering.buzzsaw_motor"
+  },
+  "buzzsaw_fade": {
+    "category": "neutral",
+    "sounds": [
+      {
+        "name": "immersiveengineering:buzzsaw_fade",
         "attenuation_distance": 24
       }
     ],
