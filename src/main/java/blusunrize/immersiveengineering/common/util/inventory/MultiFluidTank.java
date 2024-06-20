@@ -137,7 +137,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 				fs.grow(toFill);
 				return toFill;
 			}
-		this.fluids.add(Utils.copyFluidStackWithAmount(resource, toFill, true));
+		this.fluids.add(0, Utils.copyFluidStackWithAmount(resource, toFill, true));
 		return toFill;
 	}
 
@@ -153,7 +153,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 				fs.grow(toFill);
 				return toFill;
 			}
-		this.fluids.add(0, Utils.copyFluidStackWithAmount(resource, toFill, true));
+		this.fluids.add(Utils.copyFluidStackWithAmount(resource, toFill, true));
 		return toFill;
 
 	}
