@@ -38,7 +38,9 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -109,6 +111,9 @@ public class BlockLoot implements LootTableSubProvider
 		register(WoodenDevices.WOODEN_BARREL, tileDrop());
 		register(WoodenDevices.LOGIC_UNIT, tileDrop());
 		register(MetalDevices.BARREL, tileDrop());
+
+		registerDoor(WoodenDecoration.DOOR);
+		registerDoor(WoodenDecoration.DOOR_FRAMED);
 
 		registerMultiblocks();
 
@@ -293,6 +298,15 @@ public class BlockLoot implements LootTableSubProvider
 				)
 		);
 		register(oreBlock, ret);
+	}
+
+	private void registerDoor(Supplier<? extends Block> b)
+	{
+		LootPool.Builder ret = createPoolBuilder().setRolls(ConstantValue.exactly(1.0F))
+				.add(LootItem.lootTableItem(b.get()).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b.get()).setProperties(
+						StatePropertiesPredicate.Builder.properties().hasProperty(DoorBlock.HALF, DoubleBlockHalf.LOWER))
+				));
+		register(b, ret);
 	}
 
 	private void registerSawdust()
