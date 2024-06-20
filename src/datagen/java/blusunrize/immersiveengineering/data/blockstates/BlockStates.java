@@ -381,6 +381,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 		createDoor(WoodenDecoration.DOOR, "block/wooden_decoration/treated_door");
 		createDoor(WoodenDecoration.DOOR_FRAMED, "block/wooden_decoration/treated_door_framed");
+		createDoor(MetalDecoration.STEEL_DOOR, "block/metal_decoration/steel_door");
 
 
 		createHorizontalRotatedBlock(StoneDecoration.CORESAMPLE, obj("block/coresample.obj"));

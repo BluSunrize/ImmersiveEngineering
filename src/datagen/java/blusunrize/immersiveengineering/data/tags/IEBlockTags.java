@@ -516,6 +516,7 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.STEEL_CATWALK_STAIRS,
 				MetalDecoration.ALU_CATWALK,
 				MetalDecoration.ALU_CATWALK_STAIRS,
+				MetalDecoration.STEEL_DOOR,
 				Connectors.CONNECTOR_STRUCTURAL,
 				Connectors.TRANSFORMER,
 				Connectors.POST_TRANSFORMER,

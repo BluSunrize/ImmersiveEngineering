@@ -646,6 +646,14 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingAlu)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.ALU_CATWALK)));
 		addStairs(MetalDecoration.ALU_CATWALK, MetalDecoration.ALU_CATWALK_STAIRS, out);
+
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.STEEL_DOOR, 3)
+				.pattern("ii")
+				.pattern("ii")
+				.pattern("ii")
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_DOOR)));
 	}
 
 	private void addStairs(ItemLike block, RecipeOutput out)

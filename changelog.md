@@ -1,5 +1,6 @@
 ##### Version 1.20.4-11.4.2-pre
-- Add treated wood doors (BluSunrize)
+- Add treated wood & steel doors (BluSunrize)
+    - Steel doors can only be opened by hand and will be locked by an applied redstone signal
 - Do partial datagen for language files (BluSunrize)
     - This way we don't forget about localizing the countless banner variations anymore
 

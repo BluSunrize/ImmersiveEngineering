@@ -41,7 +41,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
@@ -369,10 +368,10 @@ public final class IEBlocks
 		);
 
 		public static final BlockEntry<DoorBlock> DOOR = new BlockEntry<>(
-				"treated_door", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new DoorBlock(new BlockSetType("treated_wood"), blockProps)
+				"treated_door", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<DoorBlock> DOOR_FRAMED = new BlockEntry<>(
-				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new DoorBlock(new BlockSetType("treated_wood"), blockProps)
+				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 
 		private static void init()
@@ -508,6 +507,9 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<IEBaseBlock> ALU_CATWALK_STAIRS = new BlockEntry<>(
 				"alu_catwalk_stairs", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, true)
+		);
+		public static final BlockEntry<DoorBlock> STEEL_DOOR = new BlockEntry<>(
+				"steel_door", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
 		);
 
 		private static void init()
