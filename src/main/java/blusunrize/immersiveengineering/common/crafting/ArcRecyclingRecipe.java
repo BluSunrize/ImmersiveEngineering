@@ -22,7 +22,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -53,8 +52,10 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 			{
 				if(e.getSecond()>=1) ret.add(new TagOutput(e.getFirst().get().copyWithCount((int)(e.getSecond().doubleValue()))));
 				String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getFirst().get(), "ingots");
-				if(type!=null&&e.getSecond()%1>0.11)
-					ret.add(new TagOutput(TagUtils.createItemWrapper(IETags.getNugget(type[1])), (int)(9*e.getSecond()%1)));
+				if(type!=null&&((e.getSecond()%1)>0.11))
+				{
+					ret.add(new TagOutput(TagUtils.createItemWrapper(IETags.getNugget(type[1])), (int)(9*(e.getSecond()%1))));
+				}
 			}
 			return new TagOutputList(ret);
 		});
