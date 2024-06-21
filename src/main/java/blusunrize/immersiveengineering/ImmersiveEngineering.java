@@ -137,11 +137,6 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof HammerItem
 				||stack instanceof WirecutterItem||stack instanceof ScrewdriverItem
 				||stack instanceof DrillheadItem||stack instanceof JerrycanItem);
-		// Molds
-		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
-				Molds.MOLD_PLATE, Molds.MOLD_GEAR, Molds.MOLD_ROD, Molds.MOLD_BULLET_CASING, Molds.MOLD_WIRE,
-				Molds.MOLD_PACKING_4, Molds.MOLD_PACKING_9, Molds.MOLD_UNPACKING
-		));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
 		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("rods/");
@@ -169,13 +164,13 @@ public class ImmersiveEngineering
 		// Metal devices, Connectors, & Chutes
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDevices.RAZOR_WIRE, MetalDevices.BARREL, MetalDevices.FLUID_PIPE, MetalDevices.PIPE_VALVE,
-				Connectors.CONNECTOR_STRUCTURAL
+				MetalDevices.FLUID_PLACER, Connectors.CONNECTOR_STRUCTURAL
 		));
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> MetalDevices.CHUTES.values().stream());
 
 		// Vanilla Metals
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
-				Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.LIGHT_WEIGHTED_PRESSURE_PLATE,
+				Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.LIGHT_WEIGHTED_PRESSURE_PLATE, Items.HOPPER,
 				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON, Items.CHAIN,
 				Items.MINECART, Items.ANVIL, Items.CHIPPED_ANVIL, Items.DAMAGED_ANVIL, Items.LIGHTNING_ROD
 		));
