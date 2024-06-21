@@ -21,6 +21,8 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+import static blusunrize.immersiveengineering.common.util.sound.NoisyToolSoundGroup.ToolMotorState.*;
+
 public class NoisyToolSoundGroup
 {
 	private static final int ATTACK_DURATION = 7-1;
@@ -30,22 +32,25 @@ public class NoisyToolSoundGroup
 	private final LivingEntity holder;
 	private final int harvestTimeoutGrace;
 
-	private ToolMotorState currentMotorState = ToolMotorState.OFF;
+	private ToolMotorState currentMotorState = OFF;
 	@Nullable
 	private BlockPos currentTargetPos = null;
-	private long lastTick = 0;
+	private long groupLastTickHelper = 0;
 
 	public NoisyToolSoundGroup(ItemStack noisyToolStack, LivingEntity holder)
 	{
 		this.noisyToolStack = noisyToolStack;
 		this.noisyToolItem = (INoisyTool)noisyToolStack.getItem();
 		this.holder = holder;
-		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?0: 2400; // shut off remote player's harvesting sound after 2 minutes
+		// shut off remote player's harvesting sound after 2 minutes
+		// grace for local player to deal with hard 5 tick delay between LeftClickBlock.START and .CLIENT_HOLD action
+		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?(5-1): 2400;
 	}
 
 	private static void play(AbstractTickableSoundInstance soundInstance)
 	{
-		Minecraft.getInstance().getSoundManager().queueTickingSound(soundInstance);
+		//Minecraft.getInstance().getSoundManager().queueTickingSound(soundInstance);
+		Minecraft.getInstance().getSoundManager().play(soundInstance);
 	}
 
 	public INoisyTool getItem()
@@ -85,9 +90,19 @@ public class NoisyToolSoundGroup
 
 	private boolean switchMotorState(boolean motorOn, boolean attack, boolean propagate)
 	{
-		ToolMotorState newMotorState = motorOn?(attack?(ToolMotorState.ATTACK): (currentTargetPos==null?(currentMotorState==ToolMotorState.BUSY||currentMotorState==ToolMotorState.FADING?ToolMotorState.FADING: ToolMotorState.IDLE): ToolMotorState.BUSY)): ToolMotorState.OFF;
+		/* @formatter:off */
+		ToolMotorState newMotorState = motorOn?
+			(attack?
+				ATTACK
+				: (currentTargetPos==null?
+					(currentMotorState==BUSY||currentMotorState==FADING?
+						FADING
+						: IDLE)
+					: BUSY))
+			: OFF;
+		/* @formatter:on */
 
-		if((currentMotorState==newMotorState||(propagate&&currentMotorState==ToolMotorState.ATTACK))&&newMotorState!=ToolMotorState.ATTACK)
+		if((currentMotorState==newMotorState||(propagate&&currentMotorState==ATTACK))&&newMotorState!=ATTACK)
 			return false;
 
 		currentMotorState = newMotorState;
@@ -99,20 +114,18 @@ public class NoisyToolSoundGroup
 					updateHarvestState(null, false);
 				break;
 			case IDLE:
-				play(new DieselToolMotorSound(noisyToolItem.getIdleSound(noisyToolStack).value(), newMotorState, true));
+				play(new NoisyToolMotorSoundLooping(noisyToolItem.getIdleSound(noisyToolStack).value(), newMotorState));
 				break;
 			case BUSY:
-				play(new DieselToolMotorSound(noisyToolItem.getBusySound(noisyToolStack).value(), newMotorState, true));
+				play(new NoisyToolMotorSoundLooping(noisyToolItem.getBusySound(noisyToolStack).value(), newMotorState));
 				break;
 			case FADING:
-				lastTick = holder.level().getGameTime()+FADE_DURATION;
-				play(new DieselToolMotorSound(noisyToolItem.getFadingSound(noisyToolStack).value(), newMotorState, false));
+				play(new NoisyToolMotorSoundFinite(noisyToolItem.getFadingSound(noisyToolStack).value(), newMotorState, FADE_DURATION));
 				break;
 			case ATTACK:
 				if(propagate)
-					updateHarvestState(null, false);
-				lastTick = holder.level().getGameTime()+ATTACK_DURATION;
-				play(new DieselToolMotorSound(noisyToolItem.getAttackSound(noisyToolStack).value(), newMotorState, false));
+					updateHarvestState(null, false); // todo: check if this is really necessary. Not that it hurts.
+				play(new NoisyToolMotorSoundFinite(noisyToolItem.getAttackSound(noisyToolStack).value(), newMotorState, ATTACK_DURATION));
 				break;
 		}
 		return true;
@@ -125,7 +138,10 @@ public class NoisyToolSoundGroup
 
 	private boolean updateHarvestState(@Nullable BlockPos newTargetPos, boolean propagate)
 	{
-		lastTick = holder.level().getGameTime()+harvestTimeoutGrace;
+		groupLastTickHelper = holder.level().getGameTime();
+		if(currentMotorState==IDLE)
+			groupLastTickHelper += harvestTimeoutGrace; //initial start needs grace period before stopping for remote AND local players
+
 		if(Objects.equals(currentTargetPos, newTargetPos))
 			return false;
 
@@ -135,27 +151,46 @@ public class NoisyToolSoundGroup
 		{
 			if(propagate)
 				switchMotorState(true, false, false);
-			play(new DieselToolHarvestSound(newTargetPos));
+			play(new NoisyToolHarvestSound(newTargetPos));
 		}
 		return true;
 	}
 
-	public class DieselToolMotorSound extends AbstractTickableSoundInstance
+	private abstract class NoisyToolSound extends AbstractTickableSoundInstance
 	{
-		private final ToolMotorState state;
-		private final long lastTick;
 
-		protected DieselToolMotorSound(SoundEvent sound, ToolMotorState state, boolean looping)
+		protected NoisyToolSound(SoundEvent sound)
 		{
 			super(sound, SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
+		}
+
+		@Override
+		public boolean canStartSilent()
+		{
+			return true;
+		}
+	}
+
+	private abstract class NoisyToolMotorSound extends NoisyToolSound
+	{
+		protected final ToolMotorState state;
+
+		protected NoisyToolMotorSound(SoundEvent sound, ToolMotorState state)
+		{
+			super(sound);
 
 			this.x = holder.getX();
 			this.y = holder.getY()+0.5d; //todo: get tool coordinates?
 			this.z = holder.getZ();
 			this.state = state;
-			this.looping = true; //until such a time thar the end of the non-looping sounds is detectable
-			this.lastTick = looping?0: holder.level().getGameTime()+(state==ToolMotorState.FADING?FADE_DURATION: ATTACK_DURATION);
 			this.volume = INoisyTool.TEST_VOLUME_ADJUSTMENT; //TODO: remove me
+		}
+
+		protected void updateCoordinates()
+		{
+			this.x = holder.getX();
+			this.y = holder.getY()+0.5d;
+			this.z = holder.getZ();
 		}
 
 		@Override
@@ -165,17 +200,7 @@ public class NoisyToolSoundGroup
 			{
 				if(currentMotorState==state)
 				{
-					this.x = holder.getX();
-					this.y = holder.getY()+0.5d;
-					this.z = holder.getZ();
-
-					if(state==ToolMotorState.ATTACK||state==ToolMotorState.FADING) // only check if currentMotorState==state
-					{
-						if(lastTick!=NoisyToolSoundGroup.this.lastTick) //second attack happened. I hate this.
-							this.stop();
-						else if(holder.level().getGameTime() > lastTick)
-							currentMotorState = ToolMotorState.TRANSITION;
-					}
+					updateCoordinates();
 				}
 				else
 				{
@@ -185,13 +210,51 @@ public class NoisyToolSoundGroup
 		}
 	}
 
-	public class DieselToolHarvestSound extends AbstractTickableSoundInstance
+	private class NoisyToolMotorSoundLooping extends NoisyToolMotorSound
+	{
+
+		protected NoisyToolMotorSoundLooping(SoundEvent sound, ToolMotorState state)
+		{
+			super(sound, state);
+
+			looping = true;
+		}
+	}
+
+	private class NoisyToolMotorSoundFinite extends NoisyToolMotorSound
+	{
+		private final long thisSoundsLastTick;
+
+		protected NoisyToolMotorSoundFinite(SoundEvent sound, ToolMotorState state, int duration)
+		{
+			super(sound, state);
+			this.thisSoundsLastTick = holder.level().getGameTime()+duration;
+			groupLastTickHelper = thisSoundsLastTick;
+
+		}
+
+		@Override
+		public void updateCoordinates()
+		{
+			super.updateCoordinates();
+
+			if(state==ATTACK||state==FADING) // only check if currentMotorState==state
+			{
+				if(thisSoundsLastTick!=NoisyToolSoundGroup.this.groupLastTickHelper) //second attack happened. I hate this.
+					this.stop();
+				else if(holder.level().getGameTime() > thisSoundsLastTick)
+					currentMotorState = ToolMotorState.TRANSITION;
+			}
+		}
+	}
+
+	private class NoisyToolHarvestSound extends NoisyToolSound
 	{
 		private final BlockPos targetBlockPos;
 
-		protected DieselToolHarvestSound(BlockPos targetBlockPos)
+		protected NoisyToolHarvestSound(BlockPos targetBlockPos)
 		{
-			super(noisyToolItem.getHarvestSound(noisyToolStack).value(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());//ApiUtils.RANDOM_SOURCE);
+			super(noisyToolItem.getHarvestSound(noisyToolStack).value());//ApiUtils.RANDOM_SOURCE);
 
 			this.targetBlockPos = targetBlockPos;
 			this.x = targetBlockPos.getX()+0.5d;
@@ -206,7 +269,7 @@ public class NoisyToolSoundGroup
 		{
 			if(!isStopped())
 			{
-				if(holder.level().getGameTime() > lastTick||holder.level().getBlockState(currentTargetPos).isAir()) // air check is slapped on addition, because ofc creative
+				if(holder.level().getGameTime() > groupLastTickHelper||holder.level().getBlockState(currentTargetPos).isAir()) // air check is slapped on addition, because of creative insta break
 					currentTargetPos = null;
 				if(currentTargetPos==null||!Objects.equals(targetBlockPos, currentTargetPos))
 					this.stop();

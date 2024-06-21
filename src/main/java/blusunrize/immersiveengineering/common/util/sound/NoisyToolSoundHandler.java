@@ -148,7 +148,9 @@ public class NoisyToolSoundHandler
 				return;
 			BlockPos targetPos = ev.getPos();
 			if(ev.getLevel().isClientSide()&&holder.equals(Minecraft.getInstance().player))
+			{
 				handleHarvestAction(holder, ev.getAction(), targetPos);
+			}
 			else
 			{
 				PacketDistributor.TRACKING_ENTITY.with(holder).send(new MessageNoisyToolHarvestUpdate(holder, ev.getAction(), targetPos));
