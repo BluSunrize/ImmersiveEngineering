@@ -139,7 +139,7 @@ public class NoisyToolSoundGroup
 	private boolean updateHarvestState(@Nullable BlockPos newTargetPos, boolean propagate)
 	{
 		groupLastTickHelper = holder.level().getGameTime();
-		if(currentMotorState==IDLE)
+		if(currentMotorState!=BUSY)
 			groupLastTickHelper += harvestTimeoutGrace; //initial start needs grace period before stopping for remote AND local players
 
 		if(Objects.equals(currentTargetPos, newTargetPos))
