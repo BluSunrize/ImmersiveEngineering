@@ -19,9 +19,7 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class IEBannerPatterns
@@ -51,7 +49,7 @@ public class IEBannerPatterns
 		ItemRegObject<BannerPatternItem> item = IEItems.register("bannerpattern_"+name, () -> new BannerPatternItem(
 				tag, new Properties()
 		));
-		BannerEntry result = new BannerEntry(pattern, tag, item);
+		BannerEntry result = new BannerEntry(name, pattern, tag, item);
 		for(String design : subdesigns)
 			result.patterns().add(
 					REGISTER.register(name+"_"+design, () -> new BannerPattern("ie_"+hashName+"_"+design))
@@ -61,14 +59,15 @@ public class IEBannerPatterns
 	}
 
 	public record BannerEntry(
+			String name,
 			List<Holder<BannerPattern>> patterns,
 			TagKey<BannerPattern> tag,
 			IEItems.ItemRegObject<BannerPatternItem> item
 	)
 	{
-		public BannerEntry(Holder<BannerPattern> pattern, TagKey<BannerPattern> tag, ItemRegObject<BannerPatternItem> item)
+		public BannerEntry(String name, Holder<BannerPattern> pattern, TagKey<BannerPattern> tag, ItemRegObject<BannerPatternItem> item)
 		{
-			this(new ArrayList<>(), tag, item);
+			this(name, new ArrayList<>(), tag, item);
 			this.patterns.add(pattern);
 		}
 	}

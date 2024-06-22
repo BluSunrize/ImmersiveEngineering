@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.Cove
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.SteelArmorItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -269,13 +270,8 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
 		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);
 		addItemModels("", IEItems.Misc.FERTILIZER);
-		addItemModel("banner_pattern", IEBannerPatterns.HAMMER.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WIRECUTTER.item());
-		addItemModel("banner_pattern", IEBannerPatterns.BEVELS.item());
-		addItemModel("banner_pattern", IEBannerPatterns.ORNATE.item());
-		addItemModel("banner_pattern", IEBannerPatterns.TREATED_WOOD.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WINDMILL.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WOLF.item());
+		for(BannerEntry holder : IEBannerPatterns.ALL_BANNERS)
+			addItemModel("banner_pattern_"+holder.name(), holder.item());
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
 				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
 
