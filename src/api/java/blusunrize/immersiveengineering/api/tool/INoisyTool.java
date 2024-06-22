@@ -14,11 +14,11 @@ import net.minecraft.world.item.ItemStack;
 
 public interface INoisyTool
 {
-	public static final float TEST_VOLUME_ADJUSTMENT = 1.0f; //temporary measure, remove after settling on a volume for the PR and re-adjusting the sounds themselves
+	static final float TEST_VOLUME_ADJUSTMENT = 1.0f; //temporary measure, remove after settling on a volume for the PR and re-adjusting the sounds themselves
 
-	public Holder<SoundEvent> getIdleSound(ItemStack stack);
+	Holder<SoundEvent> getIdleSound(ItemStack stack);
 
-	public Holder<SoundEvent> getBusySound(ItemStack stack);
+	Holder<SoundEvent> getBusySound(ItemStack stack);
 
 	/**
 	 * Due to lacking information on sound duration, the duration is hard coded. Any Fading sounds need to be <b>more</b> than <b>1.0s</b> in duration.
@@ -27,7 +27,7 @@ public interface INoisyTool
 	 * @param stack
 	 * @return fading sound
 	 */
-	public Holder<SoundEvent> getFadingSound(ItemStack stack);
+	Holder<SoundEvent> getFadingSound(ItemStack stack);
 
 	/**
 	 * Due to lacking information on sound duration, the duration is hard coded. Any Attack sounds need to be <b>more</b> than <b>0.35s</b> in duration.
@@ -36,14 +36,40 @@ public interface INoisyTool
 	 * @param stack
 	 * @return attack sound
 	 */
-	public Holder<SoundEvent> getAttackSound(ItemStack stack);
+	Holder<SoundEvent> getAttackSound(ItemStack stack);
 
-	public Holder<SoundEvent> getHarvestSound(ItemStack stack);
+	Holder<SoundEvent> getHarvestSound(ItemStack stack);
 
-	public boolean ableToMakeNoise(ItemStack stack);
+	boolean ableToMakeNoise(ItemStack stack);
 
-	public static boolean isAbleNoisyTool(ItemStack stack)
+	static boolean isAbleNoisyTool(ItemStack stack)
 	{
 		return stack.getItem() instanceof INoisyTool noisyTool&&noisyTool.ableToMakeNoise(stack);
+	}
+
+	/**
+	 * When an ItemStack gets modified server side (i.e. takes damage, changes tags (i.e. uses fuel), etc.), it creates a new ItemStack on the client side.
+	 * There is no unreasonably involved way to check if the new ItemStack is actually just the old ItemStack, but modified.
+	 * So this for these cases, this checks the next best thing: Item equality and sound equality.
+	 *
+	 * @param mainStack
+	 * @param otherStack
+	 * @return true if stacks are identical or if stacks  produce the same sounds.
+	 */
+	static boolean acceptableSameStack(ItemStack mainStack, ItemStack otherStack)
+	{
+		// not making this a single line return..
+		if(mainStack==otherStack)
+			return true;
+
+		if(mainStack.getItem() instanceof INoisyTool noisyTool&&noisyTool.equals(otherStack.getItem()))
+		{
+			return noisyTool.getIdleSound(mainStack).equals(noisyTool.getIdleSound(otherStack))
+					&&noisyTool.getBusySound(mainStack).equals(noisyTool.getBusySound(otherStack))
+					&&noisyTool.getFadingSound(mainStack).equals(noisyTool.getFadingSound(otherStack))
+					&&noisyTool.getAttackSound(mainStack).equals(noisyTool.getAttackSound(otherStack))
+					&&noisyTool.getHarvestSound(mainStack).equals(noisyTool.getHarvestSound(otherStack));
+		}
+		return false;
 	}
 }

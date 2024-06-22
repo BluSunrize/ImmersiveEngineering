@@ -29,6 +29,7 @@ public class NoisyToolSoundGroup
 	private static final int FADE_DURATION = 20-1;
 	private final INoisyTool noisyToolItem;
 	private final ItemStack noisyToolStack;
+	private final int hotbarSlot;
 	private final LivingEntity holder;
 	private final int harvestTimeoutGrace;
 
@@ -37,11 +38,12 @@ public class NoisyToolSoundGroup
 	private BlockPos currentTargetPos = null;
 	private long groupLastTickHelper = 0;
 
-	public NoisyToolSoundGroup(ItemStack noisyToolStack, LivingEntity holder)
+	public NoisyToolSoundGroup(ItemStack noisyToolStack, LivingEntity holder, int hotbarSlot)
 	{
 		this.noisyToolStack = noisyToolStack;
 		this.noisyToolItem = (INoisyTool)noisyToolStack.getItem();
 		this.holder = holder;
+		this.hotbarSlot = hotbarSlot;
 		// shut off remote player's harvesting sound after 2 minutes
 		// grace for local player to deal with hard 5 tick delay between LeftClickBlock.START and .CLIENT_HOLD action
 		this.harvestTimeoutGrace = holder.equals(Minecraft.getInstance().player)?(5-1): 2400;
@@ -49,7 +51,6 @@ public class NoisyToolSoundGroup
 
 	private static void play(AbstractTickableSoundInstance soundInstance)
 	{
-		//Minecraft.getInstance().getSoundManager().queueTickingSound(soundInstance);
 		Minecraft.getInstance().getSoundManager().play(soundInstance);
 	}
 
@@ -58,9 +59,9 @@ public class NoisyToolSoundGroup
 		return noisyToolItem;
 	}
 
-	public boolean checkItemMatch(ItemStack handItem)
+	public boolean checkItemMatch(ItemStack handItemStack, int hotbarSlot)
 	{
-		if(this.noisyToolStack!=handItem||!noisyToolItem.ableToMakeNoise(handItem))
+		if(this.hotbarSlot!=hotbarSlot||!INoisyTool.acceptableSameStack(noisyToolStack, handItemStack)||!noisyToolItem.ableToMakeNoise(handItemStack))
 		{
 			switchMotorOnOff(false);
 			return false;
@@ -90,17 +91,15 @@ public class NoisyToolSoundGroup
 
 	private boolean switchMotorState(boolean motorOn, boolean attack, boolean propagate)
 	{
-		/* @formatter:off */
 		ToolMotorState newMotorState = motorOn?
-			(attack?
-				ATTACK
-				: (currentTargetPos==null?
-					(currentMotorState==BUSY||currentMotorState==FADING?
-						FADING
-						: IDLE)
-					: BUSY))
-			: OFF;
-		/* @formatter:on */
+				(attack?
+						ATTACK
+						: (currentTargetPos==null?
+						(currentMotorState==BUSY||currentMotorState==FADING?
+								FADING
+								: IDLE)
+						: BUSY))
+				: OFF;
 
 		if((currentMotorState==newMotorState||(propagate&&currentMotorState==ATTACK))&&newMotorState!=ATTACK)
 			return false;
@@ -269,7 +268,7 @@ public class NoisyToolSoundGroup
 		{
 			if(!isStopped())
 			{
-				if(currentTargetPos != null && (holder.level().getGameTime() > groupLastTickHelper||holder.level().getBlockState(currentTargetPos).isAir())) // air check is slapped on addition, because of creative insta break
+				if(currentTargetPos!=null&&(holder.level().getGameTime() > groupLastTickHelper||holder.level().getBlockState(currentTargetPos).isAir())) // air check is slapped on addition, because of creative insta break
 					currentTargetPos = null;
 				if(currentTargetPos==null||!Objects.equals(targetBlockPos, currentTargetPos))
 					this.stop();

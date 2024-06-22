@@ -68,13 +68,14 @@ public class NoisyToolSoundHandler
 		Map<EquipmentSlot, NoisyToolSoundGroup> ntsgs = getSafeNTSGs(entity);
 		if(ntsgs==null)
 			return null;
-		NoisyToolSoundGroup soundGroup = ntsgs.get(slot);
 
+		NoisyToolSoundGroup soundGroup = ntsgs.get(slot);
 		ItemStack handItem = entity.getItemBySlot(slot);
+		int hotbarSlot = slot.equals(EquipmentSlot.MAINHAND) && entity instanceof Player player ? player.getInventory().selected : -1;
 
 		if(soundGroup!=null)
 		{
-			if(!soundGroup.checkItemMatch(handItem))
+			if(!soundGroup.checkItemMatch(handItem, hotbarSlot))
 			{
 				ntsgs.remove(slot);
 				soundGroup = null;
@@ -84,7 +85,7 @@ public class NoisyToolSoundHandler
 		}
 		else if(INoisyTool.isAbleNoisyTool(handItem))
 		{
-			soundGroup = new NoisyToolSoundGroup(handItem, entity);
+			soundGroup = new NoisyToolSoundGroup(handItem, entity, hotbarSlot);
 			ntsgs.put(slot, soundGroup);
 		}
 
