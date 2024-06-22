@@ -131,7 +131,6 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 		if (player==null) return InteractionResult.FAIL;
 		if(type!=CoverType.NONE&&player.isShiftKeyDown())
 		{
-			System.out.println(state.getValue(IEProperties.ACTIVE));
 			boolean b = world.setBlockAndUpdate(pos, state.setValue(IEProperties.ACTIVE, !state.getValue(IEProperties.ACTIVE)));
 			if(b)
 				return InteractionResult.SUCCESS;
