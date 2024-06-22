@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
@@ -350,16 +351,32 @@ public class IEBlockTags extends BlockTagsProvider
 		// scaffolding
 		tag.addTag(IETags.scaffoldingSteel);
 		tag.addTag(IETags.scaffoldingAlu);
-		tag.add(MetalDecoration.ALU_FENCE.get(), MetalDecoration.ALU_POST.get(), MetalDecoration.ALU_WALLMOUNT.get(), MetalDecoration.ALU_SLOPE.get());
-		tag.add(MetalDecoration.STEEL_FENCE.get(), MetalDecoration.STEEL_POST.get(), MetalDecoration.STEEL_WALLMOUNT.get(), MetalDecoration.STEEL_SLOPE.get());
+		// decorations including catwalks
+		tag.add(MetalDecoration.LANTERN.get(), MetalDecoration.STEEL_DOOR.get(), MetalDecoration.STEEL_TRAPDOOR.get(), MetalDecoration.REINFORCED_WINDOW.get());
+		tag.add(MetalDecoration.ALU_FENCE.get(), MetalDecoration.ALU_POST.get(), MetalDecoration.ALU_WALLMOUNT.get(), MetalDecoration.ALU_SLOPE.get(),
+				MetalDecoration.ALU_CATWALK.get(), MetalDecoration.ALU_CATWALK_STAIRS.get(), MetalDecoration.ALU_WINDOW.get());
+		tag.add(MetalDecoration.STEEL_FENCE.get(), MetalDecoration.STEEL_POST.get(), MetalDecoration.STEEL_WALLMOUNT.get(), MetalDecoration.STEEL_SLOPE.get(),
+				MetalDecoration.STEEL_CATWALK.get(), MetalDecoration.STEEL_CATWALK_STAIRS.get(), MetalDecoration.STEEL_WINDOW.get());
 		MetalDecoration.METAL_LADDER.values().forEach(entry -> tag.add(entry.get()));
 		// chutes
 		MetalDevices.CHUTES.values().forEach(entry -> tag.add(entry.get()));
 		// fluid machines
-		tag.add(MetalDevices.BARREL.get(), MetalDevices.FLUID_PUMP.get(), MetalDevices.FLUID_PIPE.get(), MetalDevices.FLUID_PLACER.get());
+		tag.add(MetalDevices.BARREL.get(), MetalDevices.FLUID_PUMP.get(), MetalDevices.FLUID_PIPE.get(), MetalDevices.FLUID_PLACER.get(), MetalDevices.PIPE_VALVE.get());
+		// other machines
+		tag.add(MetalDevices.BLAST_FURNACE_PREHEATER.get(), MetalDevices.FURNACE_HEATER.get(), MetalDevices.DYNAMO.get(), MetalDevices.THERMOELECTRIC_GEN.get(),
+				MetalDevices.ELECTRIC_LANTERN.get(), MetalDevices.SAMPLE_DRILL.get(), MetalDevices.FLOODLIGHT.get(), MetalDevices.ELECTROMAGNET.get());
+		// wire connected machines
+		tag.add(Connectors.CONNECTOR_STRUCTURAL.get(), Connectors.TRANSFORMER.get(), Connectors.TRANSFORMER_HV.get(), Connectors.BREAKER_SWITCH.get(),
+				Connectors.REDSTONE_BREAKER.get(), Connectors.CURRENT_TRANSFORMER.get(), Connectors.POST_TRANSFORMER.get());
 		// multiblock components
 		tag.add(MetalDecoration.LV_COIL.get(), MetalDecoration.MV_COIL.get(), MetalDecoration.MV_COIL.get());
 		tag.add(MetalDecoration.ENGINEERING_RS.get(), MetalDecoration.ENGINEERING_LIGHT.get(), MetalDecoration.ENGINEERING_HEAVY.get(), MetalDecoration.RADIATOR.get(), MetalDecoration.GENERATOR.get());
+		// multiblock blocks?
+		tag.add(IEMultiblocks.CRUSHER.getBlock(), IEMultiblocks.SAWMILL.getBlock(), IEMultiblocks.ARC_FURNACE.getBlock(), IEMultiblocks.ASSEMBLER.getBlock(),
+				IEMultiblocks.AUTO_WORKBENCH.getBlock(), IEMultiblocks.BOTTLING_MACHINE.getBlock(), IEMultiblocks.BUCKET_WHEEL.getBlock(),
+				IEMultiblocks.DIESEL_GENERATOR.getBlock(), IEMultiblocks.EXCAVATOR.getBlock(), IEMultiblocks.FERMENTER.getBlock(), IEMultiblocks.LIGHTNING_ROD.getBlock(),
+				IEMultiblocks.METAL_PRESS.getBlock(), IEMultiblocks.MIXER.getBlock(), IEMultiblocks.REFINERY.getBlock(), IEMultiblocks.SHEETMETAL_TANK.getBlock(),
+				IEMultiblocks.SILO.getBlock(), IEMultiblocks.SQUEEZER.getBlock());
 	}
 
 	private void registerAxeMineable()
