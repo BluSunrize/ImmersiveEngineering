@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -24,8 +26,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,8 +36,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
@@ -310,7 +308,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			owner = nbt.getString("owner");
 		else
 			owner = null;
-		this.config = TurretConfig.CODEC.decode(NbtOps.INSTANCE, nbt.get("config")).getOrThrow().getFirst();
+		this.config = TurretConfig.CODECS.codec().decode(NbtOps.INSTANCE, nbt.get("config")).getOrThrow().getFirst();
 
 		target = null;
 		if(nbt.contains("target", Tag.TAG_STRING))
@@ -325,7 +323,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(owner!=null)
 			nbt.putString("owner", owner);
 
-		nbt.put("config", TurretConfig.CODEC.encodeStart(NbtOps.INSTANCE, config).getOrThrow());
+		nbt.put("config", TurretConfig.CODECS.codec().encodeStart(NbtOps.INSTANCE, config).getOrThrow());
 
 		if(target!=null)
 			nbt.putString("target", target.getUUID().toString());
@@ -558,21 +556,13 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			boolean redstoneControlInverted
 	)
 	{
-		public static final Codec<TurretConfig> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				Codec.STRING.listOf().fieldOf("targetList").forGetter(TurretConfig::targetList),
-				Codec.BOOL.fieldOf("whitelist").forGetter(TurretConfig::whitelist),
-				Codec.BOOL.fieldOf("attackAnimals").forGetter(TurretConfig::attackAnimals),
-				Codec.BOOL.fieldOf("attackPlayers").forGetter(TurretConfig::attackPlayers),
-				Codec.BOOL.fieldOf("attackNeutrals").forGetter(TurretConfig::attackNeutrals),
-				Codec.BOOL.fieldOf("redstoneControlInverted").forGetter(TurretConfig::redstoneControlInverted)
-		).apply(inst, TurretConfig::new));
-		public static final StreamCodec<ByteBuf, TurretConfig> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), TurretConfig::targetList,
-				ByteBufCodecs.BOOL, TurretConfig::whitelist,
-				ByteBufCodecs.BOOL, TurretConfig::attackAnimals,
-				ByteBufCodecs.BOOL, TurretConfig::attackPlayers,
-				ByteBufCodecs.BOOL, TurretConfig::attackNeutrals,
-				ByteBufCodecs.BOOL, TurretConfig::redstoneControlInverted,
+		public static final DualCodec<ByteBuf, TurretConfig> CODECS = DualCodecs.composite(
+				DualCodecs.STRING.listOf().fieldOf("targetList"), TurretConfig::targetList,
+				DualCodecs.BOOL.fieldOf("whitelist"), TurretConfig::whitelist,
+				DualCodecs.BOOL.fieldOf("attackAnimals"), TurretConfig::attackAnimals,
+				DualCodecs.BOOL.fieldOf("attackPlayers"), TurretConfig::attackPlayers,
+				DualCodecs.BOOL.fieldOf("attackNeutrals"), TurretConfig::attackNeutrals,
+				DualCodecs.BOOL.fieldOf("redstoneControlInverted"), TurretConfig::redstoneControlInverted,
 				TurretConfig::new
 		);
 		public static final TurretConfig DEFAULT = new TurretConfig(

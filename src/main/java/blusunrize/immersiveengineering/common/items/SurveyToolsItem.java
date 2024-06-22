@@ -13,16 +13,13 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -226,32 +223,21 @@ public class SurveyToolsItem extends IEBaseItem
 
 	private record HintedPosition(int x, int z, Component hintText)
 	{
-		public static final Codec<HintedPosition> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				Codec.INT.fieldOf("x").forGetter(HintedPosition::x),
-				Codec.INT.fieldOf("z").forGetter(HintedPosition::z),
-				ComponentSerialization.CODEC.fieldOf("hintText").forGetter(HintedPosition::hintText)
-		).apply(inst, HintedPosition::new));
-		public static final StreamCodec<RegistryFriendlyByteBuf, HintedPosition> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.VAR_INT, HintedPosition::x,
-				ByteBufCodecs.VAR_INT, HintedPosition::z,
-				ComponentSerialization.TRUSTED_STREAM_CODEC, HintedPosition::hintText,
+		public static final DualCodec<RegistryFriendlyByteBuf, HintedPosition> CODECS = DualCodecs.composite(
+				DualCodecs.INT.fieldOf("x"), HintedPosition::x,
+				DualCodecs.INT.fieldOf("z"), HintedPosition::z,
+				DualCodecs.CHAT_COMPONENT.fieldOf("hintText"), HintedPosition::hintText,
 				HintedPosition::new
 		);
 	}
 
 	public record VeinEntry(int x, int z, ResourceKey<Level> level, List<HintedPosition> hinted)
 	{
-		public static final Codec<VeinEntry> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				Codec.INT.fieldOf("x").forGetter(VeinEntry::x),
-				Codec.INT.fieldOf("z").forGetter(VeinEntry::z),
-				Level.RESOURCE_KEY_CODEC.fieldOf("level").forGetter(VeinEntry::level),
-				HintedPosition.CODEC.listOf().fieldOf("hinted").forGetter(VeinEntry::hinted)
-		).apply(inst, VeinEntry::new));
-		public static final StreamCodec<RegistryFriendlyByteBuf, VeinEntry> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.VAR_INT, VeinEntry::x,
-				ByteBufCodecs.VAR_INT, VeinEntry::z,
-				ResourceKey.streamCodec(Registries.DIMENSION), VeinEntry::level,
-				HintedPosition.STREAM_CODEC.apply(ByteBufCodecs.list()), VeinEntry::hinted,
+		public static final DualCodec<RegistryFriendlyByteBuf, VeinEntry> CODECS = DualCodecs.composite(
+				DualCodecs.INT.fieldOf("x"), VeinEntry::x,
+				DualCodecs.INT.fieldOf("z"), VeinEntry::z,
+				DualCodecs.resourceKey(Registries.DIMENSION).fieldOf("level"), VeinEntry::level,
+				HintedPosition.CODECS.listOf().fieldOf("hinted"), VeinEntry::hinted,
 				VeinEntry::new
 		);
 	}

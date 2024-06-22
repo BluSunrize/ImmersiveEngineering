@@ -53,7 +53,7 @@ public class IECodecs
 		return p_320272_ -> collection($ -> NonNullList.create(), p_320272_);
 	}
 
-	public static <T> StreamCodec<ByteBuf, TagKey<T>> tagCodec(ResourceKey<Registry<T>> key)
+	public static <T> StreamCodec<ByteBuf, TagKey<T>> tagCodec(ResourceKey<? extends Registry<T>> key)
 	{
 		return ResourceLocation.STREAM_CODEC.map(rl -> TagKey.create(key, rl), TagKey::location);
 	}
@@ -69,7 +69,7 @@ public class IECodecs
 	}
 
 	public static <E extends Enum<E>, B extends ByteBuf, T>
-	StreamCodec<B, EnumMap<E, T>> enumMapStreamCodec(E[] keys, StreamCodec<B, T> valueCodec)
+	StreamCodec<B, EnumMap<E, T>> enumMapStreamCodec(E[] keys, StreamCodec<? super B, T> valueCodec)
 	{
 		final var keyCodec = enumStreamCodec(keys);
 		return StreamCodec.<B, Pair<E, T>, E, T>composite(

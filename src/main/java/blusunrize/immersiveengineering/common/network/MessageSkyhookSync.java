@@ -31,7 +31,7 @@ public record MessageSkyhookSync(
 	public static final StreamCodec<ByteBuf, MessageSkyhookSync> CODEC = StreamCodec.composite(
 			SyncedConnection.CODEC, MessageSkyhookSync::connection,
 			ByteBufCodecs.INT, MessageSkyhookSync::entityID,
-			ConnectionPoint.STREAM_CODEC, MessageSkyhookSync::start,
+			ConnectionPoint.CODECS.streamCodec(), MessageSkyhookSync::start,
 			ByteBufCodecs.DOUBLE, MessageSkyhookSync::linePos,
 			ByteBufCodecs.DOUBLE, MessageSkyhookSync::speed,
 			MessageSkyhookSync::new

@@ -66,7 +66,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		containedSample = ItemData.CODEC.decode(NbtOps.INSTANCE, nbt.get("containedSample"))
+		containedSample = ItemData.CODECS.codec().decode(NbtOps.INSTANCE, nbt.get("containedSample"))
 				.result()
 				.orElseThrow()
 				.getFirst();
@@ -75,7 +75,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		nbt.put("coresample", ItemData.CODEC.encodeStart(NbtOps.INSTANCE, containedSample).getOrThrow());
+		nbt.put("coresample", ItemData.CODECS.codec().encodeStart(NbtOps.INSTANCE, containedSample).getOrThrow());
 	}
 
 	@Override

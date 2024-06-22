@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.utils.IECodecs;
-import com.mojang.serialization.Codec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
@@ -26,8 +25,7 @@ public class IEEnums
 		OUTPUT("out");
 
 		public static final IOSideConfig[] VALUES = values();
-		public static final Codec<IOSideConfig> CODEC = IECodecs.enumCodec(VALUES);
-		public static final StreamCodec<ByteBuf, IOSideConfig> STREAM_CODEC = IECodecs.enumStreamCodec(VALUES);
+		public static final DualCodec<ByteBuf, IOSideConfig> CODECS = DualCodecs.forEnum(VALUES);
 
 		final String texture;
 

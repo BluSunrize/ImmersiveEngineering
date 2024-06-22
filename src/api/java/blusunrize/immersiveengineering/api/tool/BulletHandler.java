@@ -8,12 +8,15 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.datafixers.util.Unit;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -88,7 +91,7 @@ public class BulletHandler
 
 	public interface IBullet<StackData>
 	{
-		CodecPair<StackData> getCodec();
+		CodecsAndDefault<StackData> getCodec();
 
 		/**
 		 * @return whether this cartridge should appear as an item and should be fired from revolver. Return false if this is a bullet the player can't get access to
@@ -164,7 +167,7 @@ public class BulletHandler
 
 	public static class DamagingBullet<StackData> implements IBullet<StackData>
 	{
-		private final CodecPair<StackData> codec;
+		private final CodecsAndDefault<StackData> codec;
 		private final DamageSourceProvider damageSourceGetter;
 		private final DoubleSupplier damage;
 		private final boolean resetHurt;
@@ -172,22 +175,22 @@ public class BulletHandler
 		private final Supplier<ItemStack> casing;
 		private final ResourceLocation[] textures;
 
-		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, float damage, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecsAndDefault<StackData> codec, DamageSourceProvider damageSourceGetter, float damage, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
 			this(codec, damageSourceGetter, damage, false, false, casing, textures);
 		}
 
-		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, DoubleSupplier damage, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecsAndDefault<StackData> codec, DamageSourceProvider damageSourceGetter, DoubleSupplier damage, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
 			this(codec, damageSourceGetter, damage, false, false, casing, textures);
 		}
 
-		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecsAndDefault<StackData> codec, DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
 			this(codec, damageSourceGetter, () -> damage, resetHurt, setFire, casing, textures);
 		}
 
-		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, DoubleSupplier damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecsAndDefault<StackData> codec, DamageSourceProvider damageSourceGetter, DoubleSupplier damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
 			this.codec = codec;
 			this.damageSourceGetter = damageSourceGetter;
@@ -250,7 +253,7 @@ public class BulletHandler
 		}
 
 		@Override
-		public CodecPair<StackData> getCodec()
+		public CodecsAndDefault<StackData> getCodec()
 		{
 			return codec;
 		}
@@ -259,5 +262,10 @@ public class BulletHandler
 		{
 			DamageSource getSource(Entity projectile, Entity shooter, Entity hit);
 		}
+	}
+
+	public record CodecsAndDefault<T>(DualCodec<? super RegistryFriendlyByteBuf, T> codecs, T defaultValue)
+	{
+		public static final CodecsAndDefault<Unit> UNIT = new CodecsAndDefault<>(DualCodecs.unit(Unit.INSTANCE), Unit.INSTANCE);
 	}
 }

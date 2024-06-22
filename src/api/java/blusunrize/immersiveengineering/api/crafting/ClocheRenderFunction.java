@@ -9,15 +9,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,7 +48,7 @@ public interface ClocheRenderFunction
 
 	}
 
-	MapCodec<? extends ClocheRenderFunction> codec();
+	DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec();
 
 	/**
 	 * A map of factories for render functions, used to display blocks inside the cloche.
@@ -59,24 +58,9 @@ public interface ClocheRenderFunction
 	 * "stem", builds a render function for stem-grown plants like melon or pumpkin
 	 * "generic", builds a render function for any block, making it grow in size, like mushrooms
 	 */
-	BiMap<ResourceLocation, MapCodec<? extends ClocheRenderFunction>> RENDER_FUNCTION_FACTORIES = HashBiMap.create();
+	BiMap<ResourceLocation, DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction>> RENDER_FUNCTION_FACTORIES = HashBiMap.create();
 
-	Codec<ClocheRenderFunction> CODEC = ResourceLocation.CODEC.dispatch(
+	DualCodec<RegistryFriendlyByteBuf, ClocheRenderFunction> CODECS = DualCodecs.RESOURCE_LOCATION.<RegistryFriendlyByteBuf>castStream().dispatch(
 			f -> RENDER_FUNCTION_FACTORIES.inverse().get(f.codec()), RENDER_FUNCTION_FACTORIES::get
 	);
-
-	StreamCodec<ByteBuf, ClocheRenderFunction> STREAM_CODEC = ResourceLocation.STREAM_CODEC.map(
-			key -> (ClocheRenderFunction)RENDER_FUNCTION_FACTORIES.get(key),
-			f -> RENDER_FUNCTION_FACTORIES.inverse().get(f.codec())
-	);
-
-	static void write(FriendlyByteBuf buffer, ClocheRenderFunction f)
-	{
-		buffer.writeJsonWithCodec(CODEC, f);
-	}
-
-	static ClocheRenderFunction read(FriendlyByteBuf buffer)
-	{
-		return buffer.readJsonWithCodec(CODEC);
-	}
 }

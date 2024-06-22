@@ -13,19 +13,16 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import com.google.common.collect.Sets;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -207,13 +204,9 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 
 	public record EarmuffData(float volumeMod, Set<String> affectedCategories)
 	{
-		public static final Codec<EarmuffData> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				Codec.FLOAT.fieldOf("volumeMod").forGetter(EarmuffData::volumeMod),
-				IECodecs.setOf(Codec.STRING).fieldOf("affectedCategories").forGetter(EarmuffData::affectedCategories)
-		).apply(inst, EarmuffData::new));
-		public static final StreamCodec<ByteBuf, EarmuffData> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.FLOAT, EarmuffData::volumeMod,
-				IECodecs.setOf(ByteBufCodecs.STRING_UTF8), EarmuffData::affectedCategories,
+		public static final DualCodec<ByteBuf, EarmuffData> CODECS = DualCodecs.composite(
+				DualCodecs.FLOAT.fieldOf("volumeMod"), EarmuffData::volumeMod,
+				DualCodecs.STRING.setOf().fieldOf("affectedCategories"), EarmuffData::affectedCategories,
 				EarmuffData::new
 		);
 		public static final EarmuffData DEFAULT = new EarmuffData(

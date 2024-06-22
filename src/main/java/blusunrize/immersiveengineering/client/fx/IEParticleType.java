@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.fx;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -28,6 +29,11 @@ public class IEParticleType<T extends ParticleOptions> extends ParticleType<T>
 		super(alwaysShow);
 		this.codec = codec;
 		this.streamCodec = streamCodec;
+	}
+
+	public IEParticleType(boolean alwaysShow, DualMapCodec<? super RegistryFriendlyByteBuf, T> codecs)
+	{
+		this(alwaysShow, codecs.mapCodec(), codecs.streamCodec());
 	}
 
 	@Override

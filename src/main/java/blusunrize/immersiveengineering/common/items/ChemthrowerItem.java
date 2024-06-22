@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
@@ -21,14 +23,10 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFl
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -289,17 +287,11 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			boolean ignite, FluidStack mainFluid, FluidStack fluid1, FluidStack fluid2
 	)
 	{
-		public static final Codec<ChemthrowerData> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				Codec.BOOL.fieldOf("ignite").forGetter(ChemthrowerData::ignite),
-				FluidStack.CODEC.fieldOf("mainFluid").forGetter(ChemthrowerData::mainFluid),
-				FluidStack.CODEC.fieldOf("fluid1").forGetter(ChemthrowerData::fluid1),
-				FluidStack.CODEC.fieldOf("fluid2").forGetter(ChemthrowerData::fluid2)
-		).apply(inst, ChemthrowerData::new));
-		public static final StreamCodec<RegistryFriendlyByteBuf, ChemthrowerData> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.BOOL, ChemthrowerData::ignite,
-				FluidStack.STREAM_CODEC, ChemthrowerData::mainFluid,
-				FluidStack.STREAM_CODEC, ChemthrowerData::fluid1,
-				FluidStack.STREAM_CODEC, ChemthrowerData::fluid2,
+		public static final DualCodec<RegistryFriendlyByteBuf, ChemthrowerData> CODECS = DualCodecs.composite(
+				DualCodecs.BOOL.fieldOf("ignite"), ChemthrowerData::ignite,
+				DualCodecs.FLUID_STACK.fieldOf("mainFluid"), ChemthrowerData::mainFluid,
+				DualCodecs.FLUID_STACK.fieldOf("fluid1"), ChemthrowerData::fluid1,
+				DualCodecs.FLUID_STACK.fieldOf("fluid2"), ChemthrowerData::fluid2,
 				ChemthrowerData::new
 		);
 		public static final ChemthrowerData DEFAULT = new ChemthrowerData(

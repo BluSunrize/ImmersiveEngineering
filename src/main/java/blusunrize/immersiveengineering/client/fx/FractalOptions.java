@@ -10,39 +10,25 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEParticles;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
 public record FractalOptions(
 		Vec3 direction, double scale, int maxAge, int points, Color4 colourOut, Color4 colourIn
 ) implements ParticleOptions
 {
-	public static MapCodec<FractalOptions> CODEC = RecordCodecBuilder.mapCodec(
-			instance -> instance.group(
-					Vec3.CODEC.fieldOf("direction").forGetter(d -> d.direction),
-					Codec.DOUBLE.fieldOf("scale").forGetter(d -> d.scale),
-					Codec.INT.fieldOf("maxAge").forGetter(d -> d.maxAge),
-					Codec.INT.fieldOf("points").forGetter(d -> d.points),
-					Color4.CODEC.fieldOf("outerColor").forGetter(d -> d.colourOut),
-					Color4.CODEC.fieldOf("innerColor").forGetter(d -> d.colourIn)
-			).apply(instance, FractalOptions::new)
-	);
-	public static StreamCodec<ByteBuf, FractalOptions> STREAM_CODEC = StreamCodec.composite(
-			IECodecs.VEC3_STREAM_CODEC, FractalOptions::direction,
-			ByteBufCodecs.DOUBLE, FractalOptions::scale,
-			ByteBufCodecs.INT, FractalOptions::maxAge,
-			ByteBufCodecs.INT, FractalOptions::points,
-			Color4.STREAM_CODEC, FractalOptions::colourOut,
-			Color4.STREAM_CODEC, FractalOptions::colourIn,
+	public static DualMapCodec<ByteBuf, FractalOptions> CODECS = DualMapCodec.composite(
+			DualCodecs.VEC3.fieldOf("direction"), d -> d.direction,
+			DualCodecs.DOUBLE.fieldOf("scale"), d -> d.scale,
+			DualCodecs.INT.fieldOf("maxAge"), d -> d.maxAge,
+			DualCodecs.INT.fieldOf("points"), d -> d.points,
+			Color4.CODECS.fieldOf("outerColor"), d -> d.colourOut,
+			Color4.CODECS.fieldOf("innerColor"), d -> d.colourIn,
 			FractalOptions::new
 	);
 

@@ -12,44 +12,27 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.TagOutputList;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 {
-	public static final MapCodec<ClocheRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			TagOutputList.CODEC.fieldOf("results").forGetter(r -> r.outputs),
-			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.seed),
-			Ingredient.CODEC.fieldOf("soil").forGetter(r -> r.soil),
-			Codec.INT.fieldOf("time").forGetter(r -> r.time),
-			ClocheRenderFunction.CODEC.fieldOf("render").forGetter(r -> r.renderFunction)
-	).apply(inst, ClocheRecipe::new));
-	public static final StreamCodec<RegistryFriendlyByteBuf, ClocheRecipe> STREAM_CODEC = StreamCodec.composite(
-			TagOutputList.STREAM_CODEC, r -> r.outputs,
-			Ingredient.CONTENTS_STREAM_CODEC, r -> r.seed,
-			Ingredient.CONTENTS_STREAM_CODEC, r -> r.soil,
-			ByteBufCodecs.INT, r -> r.time,
-			ClocheRenderFunction.STREAM_CODEC, r -> r.renderFunction,
+	public static final DualMapCodec<RegistryFriendlyByteBuf, ClocheRecipe> CODEC = DualMapCodec.composite(
+			TagOutputList.CODEC.fieldOf("results"), r -> r.outputs,
+			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.seed,
+			DualCodecs.INGREDIENT.fieldOf("soil"), r -> r.soil,
+			DualCodecs.INT.fieldOf("time"), r -> r.time,
+			ClocheRenderFunction.CODECS.fieldOf("render"), r -> r.renderFunction,
 			ClocheRecipe::new
 	);
 
 	@Override
-	public MapCodec<ClocheRecipe> codec()
+	protected DualMapCodec<RegistryFriendlyByteBuf, ClocheRecipe> codecs()
 	{
 		return CODEC;
-	}
-
-	@Override
-	public StreamCodec<RegistryFriendlyByteBuf, ClocheRecipe> streamCodec()
-	{
-		return STREAM_CODEC;
 	}
 
 	@Override

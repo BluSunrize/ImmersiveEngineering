@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -38,17 +39,12 @@ public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 			ByteBufCodecs.INT, GeneratorFuel::getBurnTime,
 			GeneratorFuel::new
 	);
+	public static final DualMapCodec<RegistryFriendlyByteBuf, GeneratorFuel> CODECS = new DualMapCodec<>(CODEC, STREAM_CODEC);
 
 	@Override
-	public MapCodec<GeneratorFuel> codec()
+	protected DualMapCodec<RegistryFriendlyByteBuf, GeneratorFuel> codecs()
 	{
-		return CODEC;
-	}
-
-	@Override
-	public StreamCodec<RegistryFriendlyByteBuf, GeneratorFuel> streamCodec()
-	{
-		return STREAM_CODEC;
+		return CODECS;
 	}
 
 	@Override

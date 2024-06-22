@@ -8,16 +8,14 @@
 
 package blusunrize.immersiveengineering.common.items.components;
 
-import com.mojang.serialization.Codec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 public record AttachedItem(ItemStack attached)
 {
-	public static final Codec<AttachedItem> CODEC = ItemStack.CODEC
-			.xmap(AttachedItem::new, AttachedItem::attached);
-	public static final StreamCodec<RegistryFriendlyByteBuf, AttachedItem> STREAM_CODEC = ItemStack.STREAM_CODEC
+	public static final DualCodec<RegistryFriendlyByteBuf, AttachedItem> CODECS = DualCodecs.ITEM_STACK
 			.map(AttachedItem::new, AttachedItem::attached);
 
 	public AttachedItem

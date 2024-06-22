@@ -14,7 +14,8 @@ import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -30,14 +31,12 @@ import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
-import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -287,10 +286,9 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 	public record CapacitorState(EnumMap<Direction, IOSideConfig> sideConfig)
 	{
-		public static final Codec<CapacitorState> CODEC = IECodecs.enumMapCodec(Direction.values(), IOSideConfig.CODEC)
-				.xmap(CapacitorState::new, CapacitorState::sideConfig);
-		public static final StreamCodec<ByteBuf, CapacitorState> STREAM_CODEC = IECodecs.enumMapStreamCodec(Direction.values(), IOSideConfig.STREAM_CODEC)
-				.map(CapacitorState::new, CapacitorState::sideConfig);
+		public static final DualCodec<ByteBuf, CapacitorState> CODECS = DualCodecs.forEnumMap(
+				Direction.values(), IOSideConfig.CODECS
+		).map(CapacitorState::new, CapacitorState::sideConfig);
 
 		public CapacitorState
 		{

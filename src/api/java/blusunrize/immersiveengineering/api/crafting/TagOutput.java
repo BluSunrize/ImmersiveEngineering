@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,12 +23,11 @@ import java.util.function.Function;
 
 public class TagOutput
 {
-	public static final Codec<TagOutput> CODEC = Codec.either(
-			IngredientWithSize.CODEC, ItemStack.CODEC
-	).xmap(TagOutput::new, out -> out.rawData);
 	public static final TagOutput EMPTY = new TagOutput(new IngredientWithSize(Ingredient.EMPTY));
-	public static final StreamCodec<RegistryFriendlyByteBuf, TagOutput> STREAM_CODEC = ItemStack.STREAM_CODEC
-			.map(TagOutput::new, TagOutput::get);
+	public static final DualCodec<RegistryFriendlyByteBuf, TagOutput> CODECS = new DualCodec<>(
+			Codec.either(IngredientWithSize.CODEC, ItemStack.CODEC).xmap(TagOutput::new, out -> out.rawData),
+			ItemStack.STREAM_CODEC.map(TagOutput::new, TagOutput::get)
+	);
 
 	private final Either<IngredientWithSize, ItemStack> rawData;
 	private ItemStack cachedStack;

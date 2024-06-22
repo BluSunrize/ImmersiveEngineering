@@ -8,24 +8,19 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import com.mojang.serialization.Codec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public class TagOutputList
 {
-	public static final Codec<TagOutputList> CODEC = TagOutput.CODEC.listOf().xmap(
+	public static final DualCodec<RegistryFriendlyByteBuf, TagOutputList> CODEC = TagOutput.CODECS.listOf().map(
 			TagOutputList::new, TagOutputList::getLazyList
 	);
 	public static TagOutputList EMPTY = new TagOutputList(List.of());
-	public static final StreamCodec<RegistryFriendlyByteBuf, TagOutputList> STREAM_CODEC = TagOutput.STREAM_CODEC
-			.apply(ByteBufCodecs.list())
-			.map(TagOutputList::new, TagOutputList::getLazyList);
 
 	private final List<TagOutput> lazyList;
 	private NonNullList<ItemStack> eagerList;

@@ -9,9 +9,9 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import com.google.common.base.Preconditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,19 +25,12 @@ import java.util.List;
 
 public record StackWithChance(TagOutput stack, float chance, List<ICondition> conditions)
 {
-	public static final Codec<StackWithChance> CODEC = RecordCodecBuilder.create(
-			inst -> inst.group(
-					TagOutput.CODEC.fieldOf("output").forGetter(StackWithChance::stack),
-					Codec.FLOAT.fieldOf("chance").forGetter(StackWithChance::chance),
-					ICondition.LIST_CODEC.fieldOf("conditions").forGetter(StackWithChance::conditions)
-			).apply(inst, StackWithChance::new)
-	);
-	public static final StreamCodec<RegistryFriendlyByteBuf, StackWithChance> STREAM_CODEC = StreamCodec.composite(
-			TagOutput.STREAM_CODEC, StackWithChance::stack,
-			ByteBufCodecs.FLOAT, StackWithChance::chance,
+	public static final DualCodec<RegistryFriendlyByteBuf, StackWithChance> CODECS = DualCodecs.composite(
+			TagOutput.CODECS.fieldOf("output"), StackWithChance::stack,
+			DualCodecs.FLOAT.fieldOf("chance"), StackWithChance::chance,
 			StackWithChance::new
 	);
-	public static final StreamCodec<RegistryFriendlyByteBuf, List<StackWithChance>> STREAM_LIST = STREAM_CODEC.apply(ByteBufCodecs.list());
+	public static final StreamCodec<RegistryFriendlyByteBuf, List<StackWithChance>> STREAM_LIST = CODECS.streamCodec().apply(ByteBufCodecs.list());
 
 	public StackWithChance
 	{

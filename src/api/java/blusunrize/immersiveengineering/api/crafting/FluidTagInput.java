@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -64,6 +65,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 			ByteBufCodecs.COMPOUND_TAG, t -> t.nbtTag,
 			(names, amount, tag) -> new FluidTagInput(Either.right(names), amount, tag)
 	);
+	public static final DualCodec<RegistryFriendlyByteBuf, FluidTagInput> CODECS = new DualCodec<>(CODEC, STREAM_CODEC);
 
 	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;

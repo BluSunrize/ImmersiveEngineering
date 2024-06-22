@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.items.bullets;
 
-import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotHomingEntity;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
@@ -25,7 +25,7 @@ public class HomingBullet extends BulletHandler.DamagingBullet<Unit>
 	public HomingBullet(DoubleSupplier damage, ResourceLocation... textures)
 	{
 		super(
-				CodecPair.UNIT,
+				CodecsAndDefault.UNIT,
 				(projectile, shooter, hit) -> IEDamageSources.causeHomingDamage((RevolvershotEntity)projectile, shooter),
 				damage,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),

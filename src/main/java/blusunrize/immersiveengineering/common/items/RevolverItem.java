@@ -17,8 +17,9 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
-import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -33,14 +34,11 @@ import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -736,10 +734,8 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public record Perks(EnumMap<RevolverPerk, Double> perks)
 	{
-		public static final Codec<Perks> CODEC = IECodecs.enumMapCodec(RevolverPerk.values(), Codec.DOUBLE)
-				.xmap(Perks::new, Perks::perks);
-		public static final StreamCodec<ByteBuf, Perks> STREAM_CODEC = IECodecs.enumMapStreamCodec(
-				RevolverPerk.values(), ByteBufCodecs.DOUBLE
+		public static final DualCodec<ByteBuf, Perks> CODECS = DualCodecs.forEnumMap(
+				RevolverPerk.values(), DualCodecs.DOUBLE
 		).map(Perks::new, Perks::perks);
 	}
 }

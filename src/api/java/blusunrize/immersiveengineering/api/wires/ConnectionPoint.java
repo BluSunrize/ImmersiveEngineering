@@ -8,26 +8,20 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 
 import javax.annotation.Nonnull;
 
 public record ConnectionPoint(@Nonnull BlockPos position, int index) implements Comparable<ConnectionPoint>
 {
-	public static final Codec<ConnectionPoint> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-			BlockPos.CODEC.fieldOf("position").forGetter(ConnectionPoint::position),
-			Codec.INT.fieldOf("index").forGetter(ConnectionPoint::index)
-	).apply(inst, ConnectionPoint::new));
-	public static final StreamCodec<ByteBuf, ConnectionPoint> STREAM_CODEC = StreamCodec.composite(
-			BlockPos.STREAM_CODEC, ConnectionPoint::position,
-			ByteBufCodecs.INT, ConnectionPoint::index,
+	public static final DualCodec<ByteBuf, ConnectionPoint> CODECS = DualCodecs.composite(
+			DualCodecs.BLOCK_POS.fieldOf("position"), ConnectionPoint::position,
+			DualCodecs.INT.fieldOf("index"), ConnectionPoint::index,
 			ConnectionPoint::new
 	);
 

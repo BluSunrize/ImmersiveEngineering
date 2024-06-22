@@ -9,29 +9,28 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.crafting.RGBColourationRecipe;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class RGBRecipeSerializer implements RecipeSerializer<RGBColourationRecipe>
 {
-	public static final MapCodec<RGBColourationRecipe> CODEC = Ingredient.CODEC.fieldOf("target")
-			.xmap(RGBColourationRecipe::new, RGBColourationRecipe::target);
-	public static final StreamCodec<RegistryFriendlyByteBuf, RGBColourationRecipe> STREAM_CODEC = Ingredient.CONTENTS_STREAM_CODEC
+	public static final DualMapCodec<RegistryFriendlyByteBuf, RGBColourationRecipe> CODEC = DualCodecs.INGREDIENT.fieldOf("target")
 			.map(RGBColourationRecipe::new, RGBColourationRecipe::target);
 
 	@Override
 	public MapCodec<RGBColourationRecipe> codec()
 	{
-		return CODEC;
+		return CODEC.mapCodec();
 	}
 
 	@Override
 	public StreamCodec<RegistryFriendlyByteBuf, RGBColourationRecipe> streamCodec()
 	{
-		return STREAM_CODEC;
+		return CODEC.streamCodec();
 	}
 }

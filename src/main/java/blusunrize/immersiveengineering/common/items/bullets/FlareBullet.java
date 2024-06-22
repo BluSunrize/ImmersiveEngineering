@@ -9,9 +9,10 @@
 package blusunrize.immersiveengineering.common.items.bullets;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.RevolvershotFlareEntity;
 import com.mojang.serialization.Codec;
@@ -32,14 +33,14 @@ import java.util.UUID;
 public class FlareBullet implements BulletHandler.IBullet<Integer>
 {
 	static ResourceLocation[] textures = {IEApi.ieLoc("item/bullet_flare"), IEApi.ieLoc("item/bullet_flare_layer")};
-	private static final CodecPair<Integer> CODEC = new CodecPair<>(Codec.INT, ByteBufCodecs.VAR_INT, 0xcc2e06);
+	private static final CodecsAndDefault<Integer> CODEC = new CodecsAndDefault<>(DualCodecs.INT, 0xcc2e06);
 
 	public FlareBullet()
 	{
 	}
 
 	@Override
-	public CodecPair<Integer> getCodec()
+	public CodecsAndDefault<Integer> getCodec()
 	{
 		return CODEC;
 	}

@@ -9,8 +9,9 @@
 package blusunrize.immersiveengineering.common.items.bullets;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -34,8 +35,8 @@ import java.util.UUID;
 public class FireworkBullet implements BulletHandler.IBullet<Fireworks>
 {
 	static ResourceLocation[] textures = {IEApi.ieLoc("item/bullet_firework")};
-	private static final CodecPair<Fireworks> CODEC = new CodecPair<>(
-			Fireworks.CODEC, Fireworks.STREAM_CODEC, new Fireworks(1, List.of())
+	private static final CodecsAndDefault<Fireworks> CODEC = new CodecsAndDefault<>(
+			new DualCodec<>(Fireworks.CODEC, Fireworks.STREAM_CODEC), new Fireworks(1, List.of())
 	);
 
 	public FireworkBullet()
@@ -43,7 +44,7 @@ public class FireworkBullet implements BulletHandler.IBullet<Fireworks>
 	}
 
 	@Override
-	public CodecPair<Fireworks> getCodec()
+	public CodecsAndDefault<Fireworks> getCodec()
 	{
 		return CODEC;
 	}

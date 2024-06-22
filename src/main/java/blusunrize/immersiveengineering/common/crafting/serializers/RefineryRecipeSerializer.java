@@ -12,47 +12,30 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Optional;
 
 public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 {
-	public static final MapCodec<RefineryRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			FluidStack.CODEC.fieldOf("result").forGetter(r -> r.output),
-			FluidTagInput.CODEC.fieldOf("input0").forGetter(r -> r.input0),
-			FluidTagInput.CODEC.optionalFieldOf("input1").forGetter(r -> Optional.ofNullable(r.input1)),
-			Ingredient.CODEC.optionalFieldOf("catalyst", Ingredient.EMPTY).forGetter(r -> r.catalyst),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy)
-	).apply(inst, RefineryRecipe::new));
-	public static final StreamCodec<RegistryFriendlyByteBuf, RefineryRecipe> STREAM_CODEC = StreamCodec.composite(
-			FluidStack.STREAM_CODEC, r -> r.output,
-			FluidTagInput.STREAM_CODEC, r -> r.input0,
-			ByteBufCodecs.optional(FluidTagInput.STREAM_CODEC), r -> Optional.ofNullable(r.input1),
-			Ingredient.CONTENTS_STREAM_CODEC, r -> r.catalyst,
-			ByteBufCodecs.INT, MultiblockRecipe::getBaseEnergy,
+	public static final DualMapCodec<RegistryFriendlyByteBuf, RefineryRecipe> CODECS = DualMapCodec.composite(
+			DualCodecs.FLUID_STACK.fieldOf("result"), r -> r.output,
+			FluidTagInput.CODECS.fieldOf("input0"), r -> r.input0,
+			FluidTagInput.CODECS.optionalFieldOf("input1"), r -> Optional.ofNullable(r.input1),
+			DualCodecs.INGREDIENT.optionalFieldOf("catalyst", Ingredient.EMPTY), r -> r.catalyst,
+			DualCodecs.INT.fieldOf("energy"), MultiblockRecipe::getBaseEnergy,
 			RefineryRecipe::new
 	);
 
 	@Override
-	public MapCodec<RefineryRecipe> codec()
+	protected DualMapCodec<RegistryFriendlyByteBuf, RefineryRecipe> codecs()
 	{
-		return CODEC;
-	}
-
-	@Override
-	public StreamCodec<RegistryFriendlyByteBuf, RefineryRecipe> streamCodec()
-	{
-		return STREAM_CODEC;
+		return CODECS;
 	}
 
 	@Override

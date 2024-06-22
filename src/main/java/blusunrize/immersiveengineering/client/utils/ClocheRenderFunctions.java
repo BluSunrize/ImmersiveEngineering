@@ -12,6 +12,8 @@ package blusunrize.immersiveengineering.client.utils;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.mixin.accessors.CropBlockAccess;
@@ -19,9 +21,8 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -53,20 +54,22 @@ public class ClocheRenderFunctions
 		register("chorus", RenderFunctionChorus.CODEC);
 	}
 
-	private static void register(String path, MapCodec<? extends ClocheRenderFunction> codec)
+	private static void register(String path, DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec)
 	{
 		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put(IEApi.ieLoc(path), codec);
 	}
 
 	private static <F extends ClocheRenderFunction>
-	MapCodec<F> byBlockCodec(Function<F, Block> getBlock, Function<Block, F> make)
+	DualMapCodec<? super RegistryFriendlyByteBuf, F> byBlockCodec(Function<F, Block> getBlock, Function<Block, F> make)
 	{
-		return BuiltInRegistries.BLOCK.byNameCodec().xmap(make, getBlock).fieldOf("block");
+		return DualCodecs.registry(BuiltInRegistries.BLOCK)
+				.map(make, getBlock)
+				.fieldOf("block");
 	}
 
 	public static class RenderFunctionCrop implements ClocheRenderFunction
 	{
-		public static final MapCodec<RenderFunctionCrop> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionCrop::new);
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionCrop> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionCrop::new);
 
 		final Block cropBlock;
 		int maxAge;
@@ -120,7 +123,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public MapCodec<? extends ClocheRenderFunction> codec()
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -128,7 +131,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionStacking implements ClocheRenderFunction
 	{
-		public static final MapCodec<RenderFunctionStacking> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionStacking::new);
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionStacking> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionStacking::new);
 
 		final Block cropBlock;
 
@@ -154,7 +157,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public MapCodec<? extends ClocheRenderFunction> codec()
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -164,11 +167,12 @@ public class ClocheRenderFunctions
 			Block cropBlock, Block stemBlock, Block attachedStemBlock
 	) implements ClocheRenderFunction
 	{
-		public static final MapCodec<RenderFunctionStem> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("crop").forGetter(f -> f.cropBlock),
-				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("stem").forGetter(f -> f.stemBlock),
-				BuiltInRegistries.BLOCK.byNameCodec().fieldOf("attachedStem").forGetter(f -> f.attachedStemBlock)
-		).apply(inst, RenderFunctionStem::new));
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionStem> CODEC = DualMapCodec.composite(
+				DualCodecs.registry(BuiltInRegistries.BLOCK).fieldOf("crop"), f -> f.cropBlock,
+				DualCodecs.registry(BuiltInRegistries.BLOCK).fieldOf("stem"), f -> f.stemBlock,
+				DualCodecs.registry(BuiltInRegistries.BLOCK).fieldOf("attachedStem"), f -> f.attachedStemBlock,
+				RenderFunctionStem::new
+		);
 
 		@Override
 		public float getScale(ItemStack seed, float growth)
@@ -205,7 +209,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public MapCodec<? extends ClocheRenderFunction> codec()
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -213,7 +217,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionGeneric implements ClocheRenderFunction
 	{
-		public static final MapCodec<RenderFunctionGeneric> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionGeneric::new);
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionGeneric> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionGeneric::new);
 
 		final Block cropBlock;
 
@@ -237,7 +241,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public MapCodec<? extends ClocheRenderFunction> codec()
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -245,7 +249,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionChorus implements ClocheRenderFunction
 	{
-		public static final MapCodec<RenderFunctionChorus> CODEC = MapCodec.unit(new RenderFunctionChorus());
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionChorus> CODEC = DualMapCodec.unit(new RenderFunctionChorus());
 
 		@Override
 		public float getScale(ItemStack seed, float growth)
@@ -268,7 +272,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public MapCodec<? extends ClocheRenderFunction> codec()
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}
@@ -276,7 +280,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionHemp implements ClocheRenderFunction
 	{
-		public static final MapCodec<RenderFunctionHemp> CODEC = MapCodec.unit(new RenderFunctionHemp());
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionHemp> CODEC = DualMapCodec.unit(new RenderFunctionHemp());
 
 		@Override
 		public float getScale(ItemStack seed, float growth)
@@ -300,7 +304,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public MapCodec<? extends ClocheRenderFunction> codec()
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}

@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import com.google.common.base.Preconditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -19,8 +19,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.DyeColor;
 
 import javax.annotation.Nullable;
@@ -43,10 +41,7 @@ public class LogicCircuitHandler
 		IMPLY(2, args -> (!args[0])|args[1], 2),
 		NIMPLY(2, args -> args[0]&!args[1], 3);
 
-		public static final Codec<LogicCircuitOperator> CODEC = Codec.intRange(0, values().length-1)
-				.xmap(i -> values()[i], LogicCircuitOperator::ordinal);
-		public static final StreamCodec<ByteBuf, LogicCircuitOperator> STREAM_CODEC = ByteBufCodecs.INT
-				.map(i -> values()[i], LogicCircuitOperator::ordinal);
+		public static final DualCodec<ByteBuf, LogicCircuitOperator> CODECS = DualCodecs.forEnum(values());
 
 		private final int argumentCount;
 		private final Predicate<boolean[]> operator;
@@ -101,10 +96,7 @@ public class LogicCircuitHandler
 		// Plus 8 internal storages
 		R0, R1, R2, R3, R4, R5, R6, R7;
 
-		public static final Codec<LogicCircuitRegister> CODEC = Codec.intRange(0, values().length-1)
-				.xmap(i -> values()[i], LogicCircuitRegister::ordinal);
-		public static final StreamCodec<ByteBuf, LogicCircuitRegister> STREAM_CODEC = ByteBufCodecs.INT
-				.map(i -> values()[i], LogicCircuitRegister::ordinal);
+		public static final DualCodec<ByteBuf, LogicCircuitRegister> CODECS = DualCodecs.forEnum(values());
 
 		public MutableComponent getDescription()
 		{
@@ -117,19 +109,12 @@ public class LogicCircuitHandler
 
 	public static final class LogicCircuitInstruction
 	{
-		public static final Codec<LogicCircuitInstruction> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				LogicCircuitOperator.CODEC.fieldOf("operator").forGetter(i -> i.operator),
-				LogicCircuitRegister.CODEC.fieldOf("output").forGetter(i -> i.output),
-				LogicCircuitRegister.CODEC.listOf()
-						.xmap(l -> l.toArray(new LogicCircuitRegister[0]), Arrays::asList)
-						.fieldOf("inputs").forGetter(i -> i.inputs)
-		).apply(inst, LogicCircuitInstruction::new));
-
-		public static final StreamCodec<ByteBuf, LogicCircuitInstruction> STREAM_CODEC = StreamCodec.composite(
-				LogicCircuitOperator.STREAM_CODEC, i -> i.operator,
-				LogicCircuitRegister.STREAM_CODEC, i -> i.output,
-				LogicCircuitRegister.STREAM_CODEC.apply(ByteBufCodecs.list())
-						.map(l -> l.toArray(new LogicCircuitRegister[0]), Arrays::asList), i -> i.inputs,
+		public static final DualCodec<ByteBuf, LogicCircuitInstruction> CODECS = DualCodecs.composite(
+				LogicCircuitOperator.CODECS.fieldOf("operator"), i -> i.operator,
+				LogicCircuitRegister.CODECS.fieldOf("output"), i -> i.output,
+				LogicCircuitRegister.CODECS.listOf()
+						.map(l -> l.toArray(new LogicCircuitRegister[0]), Arrays::asList)
+						.fieldOf("inputs"), i -> i.inputs,
 				LogicCircuitInstruction::new
 		);
 

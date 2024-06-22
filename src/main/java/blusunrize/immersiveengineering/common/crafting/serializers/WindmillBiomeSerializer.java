@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -46,17 +47,12 @@ public class WindmillBiomeSerializer extends IERecipeSerializer<WindmillBiome>
 			ByteBufCodecs.FLOAT, r -> r.modifier,
 			(e, m) -> new WindmillBiome(FastEither.fromDFU(e), m)
 	);
+	public static final DualMapCodec<RegistryFriendlyByteBuf, WindmillBiome> CODECS = new DualMapCodec<>(CODEC, STREAM_CODEC);
 
 	@Override
-	public MapCodec<WindmillBiome> codec()
+	protected DualMapCodec<RegistryFriendlyByteBuf, WindmillBiome> codecs()
 	{
-		return CODEC;
-	}
-
-	@Override
-	public StreamCodec<RegistryFriendlyByteBuf, WindmillBiome> streamCodec()
-	{
-		return STREAM_CODEC;
+		return CODECS;
 	}
 
 	@Override

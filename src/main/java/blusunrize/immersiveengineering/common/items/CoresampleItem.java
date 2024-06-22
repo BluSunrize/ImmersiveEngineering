@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.client.utils.TimestampFormat;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -26,8 +26,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ColumnPos;
@@ -168,15 +166,10 @@ public class CoresampleItem extends IEBaseItem
 
 	public record ItemData(SamplePosition position, List<VeinSample> veins, long timestamp)
 	{
-		public static final Codec<ItemData> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				SamplePosition.CODEC.fieldOf("position").forGetter(ItemData::position),
-				VeinSample.CODEC.listOf().fieldOf("veins").forGetter(ItemData::veins),
-				Codec.LONG.fieldOf("timestamp").forGetter(ItemData::timestamp)
-		).apply(inst, ItemData::new));
-		public static final StreamCodec<ByteBuf, ItemData> STREAM_CODEC = StreamCodec.composite(
-				SamplePosition.STREAM_CODEC, ItemData::position,
-				VeinSample.STREAM_CODEC.apply(ByteBufCodecs.list()), ItemData::veins,
-				ByteBufCodecs.VAR_LONG, ItemData::timestamp,
+		public static final DualCodec<ByteBuf, ItemData> CODECS = DualCodecs.composite(
+				SamplePosition.CODECS.fieldOf("position"), ItemData::position,
+				VeinSample.CODECS.listOf().fieldOf("veins"), ItemData::veins,
+				DualCodecs.LONG.fieldOf("timestamp"), ItemData::timestamp,
 				ItemData::new
 		);
 		public static final ItemData EMPTY = new ItemData(SamplePosition.NONE, List.of(), 0);
@@ -189,32 +182,21 @@ public class CoresampleItem extends IEBaseItem
 			double percentageInTotalSample
 	)
 	{
-		public static final Codec<VeinSample> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				ResourceLocation.CODEC.fieldOf("mineral").forGetter(VeinSample::mineral),
-				Codec.INT.fieldOf("depletion").forGetter(VeinSample::depletion),
-				Codec.DOUBLE.fieldOf("saturation").forGetter(VeinSample::saturation),
-				Codec.DOUBLE.fieldOf("percentage").forGetter(VeinSample::percentageInTotalSample)
-		).apply(inst, VeinSample::new));
-		public static final StreamCodec<ByteBuf, VeinSample> STREAM_CODEC = StreamCodec.composite(
-				ResourceLocation.STREAM_CODEC, VeinSample::mineral,
-				ByteBufCodecs.INT, VeinSample::depletion,
-				ByteBufCodecs.DOUBLE, VeinSample::saturation,
-				ByteBufCodecs.DOUBLE, VeinSample::percentageInTotalSample,
+		public static final DualCodec<ByteBuf, VeinSample> CODECS = DualCodecs.composite(
+				DualCodecs.RESOURCE_LOCATION.fieldOf("mineral"), VeinSample::mineral,
+				DualCodecs.INT.fieldOf("depletion"), VeinSample::depletion,
+				DualCodecs.DOUBLE.fieldOf("saturation"), VeinSample::saturation,
+				DualCodecs.DOUBLE.fieldOf("percentage"), VeinSample::percentageInTotalSample,
 				VeinSample::new
 		);
 	}
 
 	public record SamplePosition(ResourceKey<Level> dimension, int x, int z)
 	{
-		public static final Codec<SamplePosition> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(SamplePosition::dimension),
-				Codec.INT.fieldOf("x").forGetter(SamplePosition::x),
-				Codec.INT.fieldOf("z").forGetter(SamplePosition::z)
-		).apply(inst, SamplePosition::new));
-		public static final StreamCodec<ByteBuf, SamplePosition> STREAM_CODEC = StreamCodec.composite(
-				ResourceKey.streamCodec(Registries.DIMENSION), SamplePosition::dimension,
-				ByteBufCodecs.INT, SamplePosition::x,
-				ByteBufCodecs.INT, SamplePosition::z,
+		public static final DualCodec<ByteBuf, SamplePosition> CODECS = DualCodecs.composite(
+				DualCodecs.resourceKey(Registries.DIMENSION).fieldOf("dimension"), SamplePosition::dimension,
+				DualCodecs.INT.fieldOf("x"), SamplePosition::x,
+				DualCodecs.INT.fieldOf("z"), SamplePosition::z,
 				SamplePosition::new
 		);
 		public static final SamplePosition NONE = new SamplePosition(

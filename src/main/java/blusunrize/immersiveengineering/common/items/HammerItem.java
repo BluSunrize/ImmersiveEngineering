@@ -15,14 +15,14 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrig
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.orientation.RotationUtil;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -34,8 +34,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -265,13 +263,9 @@ public class HammerItem extends IEBaseItem
 			Optional<List<ResourceLocation>> forbidden
 	)
 	{
-		public static final Codec<MultiblockRestriction> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				ResourceLocation.CODEC.listOf().optionalFieldOf("allowed").forGetter(MultiblockRestriction::allowed),
-				ResourceLocation.CODEC.listOf().optionalFieldOf("forbidden").forGetter(MultiblockRestriction::forbidden)
-		).apply(inst, MultiblockRestriction::new));
-		public static final StreamCodec<ByteBuf, MultiblockRestriction> STREAM_CODEC = StreamCodec.composite(
-				ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list())), MultiblockRestriction::allowed,
-				ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list())), MultiblockRestriction::forbidden,
+		public static final DualCodec<ByteBuf, MultiblockRestriction> CODECS = DualCodecs.composite(
+				DualCodecs.RESOURCE_LOCATION.listOf().optionalFieldOf("allowed"), MultiblockRestriction::allowed,
+				DualCodecs.RESOURCE_LOCATION.listOf().optionalFieldOf("forbidden"), MultiblockRestriction::forbidden,
 				MultiblockRestriction::new
 		);
 		public static final MultiblockRestriction DEFAULT = new MultiblockRestriction(

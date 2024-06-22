@@ -9,10 +9,12 @@
 package blusunrize.immersiveengineering.common.items.bullets;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.DamagingBullet;
 import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.bullets.PotionBullet.Data;
@@ -45,7 +47,7 @@ public class PotionBullet extends DamagingBullet<Data>
 	public PotionBullet()
 	{
 		super(
-				new CodecPair<>(Data.CODEC, Data.STREAM_CODEC, Data.EMPTY),
+				new CodecsAndDefault<>(Data.CODECS, Data.EMPTY),
 				(projectile, shooter, hit) -> IEDamageSources.causePotionDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Potion::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
@@ -159,13 +161,9 @@ public class PotionBullet extends DamagingBullet<Data>
 
 	public record Data(PotionContents contents, PotionType type)
 	{
-		public static final Codec<Data> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-				PotionContents.CODEC.fieldOf("contents").forGetter(Data::contents),
-				PotionType.CODEC.fieldOf("type").forGetter(Data::type)
-		).apply(inst, Data::new));
-		public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-				PotionContents.STREAM_CODEC, Data::contents,
-				PotionType.STREAM_CODEC, Data::type,
+		public static final DualCodec<RegistryFriendlyByteBuf, Data> CODECS = DualCodecs.composite(
+				DualCodecs.POTION_CONTENTS.fieldOf("contents"), Data::contents,
+				PotionType.CODECS.fieldOf("type"), Data::type,
 				Data::new
 		);
 		public static final Data EMPTY = new Data(PotionContents.EMPTY, PotionType.DEFAULT);
@@ -189,7 +187,6 @@ public class PotionBullet extends DamagingBullet<Data>
 		LINGERING,
 		DEFAULT;
 
-		public static final Codec<PotionType> CODEC = IECodecs.enumCodec(values());
-		public static final StreamCodec<ByteBuf, PotionType> STREAM_CODEC = IECodecs.enumStreamCodec(values());
+		public static final DualCodec<ByteBuf, PotionType> CODECS = DualCodecs.forEnum(values());
 	}
 }

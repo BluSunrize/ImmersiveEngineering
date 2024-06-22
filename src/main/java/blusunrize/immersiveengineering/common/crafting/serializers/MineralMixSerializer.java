@@ -12,35 +12,26 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.excavator.MineralMix.BiomeTagPredicate;
-import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import com.mojang.datafixers.util.Function6;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 {
-	public static final Codec<BiomeTagPredicate> BIOME_TAG_PREDICATE_CODEC = NeoForgeExtraCodecs.setOf(TagKey.codec(Registries.BIOME))
-			.xmap(BiomeTagPredicate::new, BiomeTagPredicate::tags);
-	public static final StreamCodec<ByteBuf, BiomeTagPredicate> BIOME_TAG_PREDICATE_STREAM_CODEC = IECodecs.tagCodec(Registries.BIOME)
-			.apply(ByteBufCodecs.<ByteBuf, TagKey<Biome>, Set<TagKey<Biome>>>collection($ -> new HashSet<>()))
+	public static final DualCodec<ByteBuf, BiomeTagPredicate> BIOME_TAG_PREDICATE_CODECS = DualCodecs.tag(Registries.BIOME)
+			.setOf()
 			.map(BiomeTagPredicate::new, BiomeTagPredicate::tags);
 	private static final Function6<List<StackWithChance>, List<StackWithChance>, Integer, Float, Set<BiomeTagPredicate>, Block, MineralMix>
 			FROM_CODEC_DATA = (ores, spoils, weight, failChance, biomes, background) -> {
@@ -51,34 +42,20 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		return new MineralMix(ores, spoils, weight, failChance, biomes, background);
 	};
 
-	private static final MapCodec<MineralMix> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			CHANCE_LIST_CODEC.fieldOf("ores").forGetter(r -> r.outputs),
-			CHANCE_LIST_CODEC.fieldOf("spoils").forGetter(r -> r.spoils),
-			Codec.INT.fieldOf("weight").forGetter(r -> r.weight),
-			Codec.FLOAT.optionalFieldOf("fail_chance", 0f).forGetter(r -> r.failChance),
-			NeoForgeExtraCodecs.setOf(BIOME_TAG_PREDICATE_CODEC).fieldOf("biome_predicates").forGetter(r -> r.biomeTagPredicates),
-			BuiltInRegistries.BLOCK.byNameCodec().optionalFieldOf("sample_background", Blocks.STONE).forGetter(r -> r.background)
-	).apply(inst, FROM_CODEC_DATA));
-	private static final StreamCodec<RegistryFriendlyByteBuf, MineralMix> STREAM_CODEC = StreamCodec.composite(
-			StackWithChance.STREAM_LIST, r -> r.outputs,
-			StackWithChance.STREAM_LIST, r -> r.spoils,
-			ByteBufCodecs.INT, r -> r.weight,
-			ByteBufCodecs.FLOAT, r -> r.failChance,
-			BIOME_TAG_PREDICATE_STREAM_CODEC.apply(ByteBufCodecs.collection($ -> new HashSet<>())), r -> r.biomeTagPredicates,
-			ByteBufCodecs.registry(Registries.BLOCK), r -> r.background,
+	private static final DualMapCodec<RegistryFriendlyByteBuf, MineralMix> CODECS = DualMapCodec.composite(
+			CHANCE_LIST_CODECS.fieldOf("ores"), r -> r.outputs,
+			CHANCE_LIST_CODECS.fieldOf("spoils"), r -> r.spoils,
+			DualCodecs.INT.fieldOf("weight"), r -> r.weight,
+			DualCodecs.FLOAT.optionalFieldOf("fail_chance", 0f), r -> r.failChance,
+			BIOME_TAG_PREDICATE_CODECS.setOf().fieldOf("biome_predicates"), r -> r.biomeTagPredicates,
+			DualCodecs.registry(BuiltInRegistries.BLOCK).optionalFieldOf("sample_background", Blocks.STONE), r -> r.background,
 			FROM_CODEC_DATA
 	);
 
 	@Override
-	public MapCodec<MineralMix> codec()
+	protected DualMapCodec<RegistryFriendlyByteBuf, MineralMix> codecs()
 	{
-		return CODEC;
-	}
-
-	@Override
-	public StreamCodec<RegistryFriendlyByteBuf, MineralMix> streamCodec()
-	{
-		return STREAM_CODEC;
+		return CODECS;
 	}
 
 	@Override

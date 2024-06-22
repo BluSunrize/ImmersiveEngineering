@@ -11,43 +11,30 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.crafting.LazyShapelessRecipe;
 import blusunrize.immersiveengineering.common.register.IEItems;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 
 public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShapelessRecipe>
 {
-	private final MapCodec<LazyShapelessRecipe> codec = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			TagOutput.CODEC.fieldOf("result").forGetter(LazyShapelessRecipe::getResult),
-			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.getIngredients().get(0))
-	).apply(inst, (result, input) -> new LazyShapelessRecipe(
-			"", result, NonNullList.of(Ingredient.EMPTY, input, Ingredient.of(IEItems.Tools.HAMMER)), this
-	)));
-	private final StreamCodec<RegistryFriendlyByteBuf, LazyShapelessRecipe> streamCodec = StreamCodec.composite(
-			TagOutput.STREAM_CODEC, LazyShapelessRecipe::getResult,
-			Ingredient.CONTENTS_STREAM_CODEC, r -> r.getIngredients().get(0),
+	private final DualMapCodec<RegistryFriendlyByteBuf, LazyShapelessRecipe> codecs = DualMapCodec.composite(
+			TagOutput.CODECS.fieldOf("result"), LazyShapelessRecipe::getResult,
+			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.getIngredients().get(0),
 			(result, input) -> new LazyShapelessRecipe(
 					"", result, NonNullList.of(Ingredient.EMPTY, input, Ingredient.of(IEItems.Tools.HAMMER)), this
 			)
 	);
 
 	@Override
-	public MapCodec<LazyShapelessRecipe> codec()
+	protected DualMapCodec<RegistryFriendlyByteBuf, LazyShapelessRecipe> codecs()
 	{
-		return codec;
-	}
-
-	@Override
-	public StreamCodec<RegistryFriendlyByteBuf, LazyShapelessRecipe> streamCodec()
-	{
-		return streamCodec;
+		return codecs;
 	}
 
 	@Override

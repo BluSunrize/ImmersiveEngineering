@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items.components;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
@@ -20,9 +21,7 @@ import net.minecraft.network.codec.StreamCodec;
  */
 public record DirectNBT(CompoundTag tag)
 {
-	public static final Codec<DirectNBT> CODEC = CompoundTag.CODEC
-			.xmap(DirectNBT::new, DirectNBT::tag);
-	public static final StreamCodec<ByteBuf, DirectNBT> STREAM_CODEC = ByteBufCodecs.COMPOUND_TAG
+	public static final DualCodec<ByteBuf, DirectNBT> CODECS = new DualCodec<>(CompoundTag.CODEC, ByteBufCodecs.COMPOUND_TAG)
 			.map(DirectNBT::new, DirectNBT::tag);
 
 	public DirectNBT

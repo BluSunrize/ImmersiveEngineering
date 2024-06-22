@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -47,6 +48,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 			ByteBufCodecs.INT, i -> i.count,
 			IngredientWithSize::new
 	);
+	public static final DualCodec<RegistryFriendlyByteBuf, IngredientWithSize> CODECS = new DualCodec<>(CODEC, STREAM_CODEC);
 
 	protected final Ingredient basePredicate;
 	protected final int count;

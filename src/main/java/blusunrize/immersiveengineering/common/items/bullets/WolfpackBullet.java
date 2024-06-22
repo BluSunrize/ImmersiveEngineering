@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.items.bullets;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.entities.WolfpackShotEntity;
@@ -32,7 +32,7 @@ public class WolfpackBullet extends BulletHandler.DamagingBullet<Unit>
 	public WolfpackBullet()
 	{
 		super(
-				CodecPair.UNIT,
+				CodecsAndDefault.UNIT,
 				(projectile, shooter, hit) -> IEDamageSources.causeWolfpackDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Wolfpack::get,
 				() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),

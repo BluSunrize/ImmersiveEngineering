@@ -8,45 +8,32 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
-import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.TagOutput;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
 
 public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 {
-	public static final MapCodec<CrusherRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-			TagOutput.CODEC.fieldOf("result").forGetter(r -> r.output),
-			Ingredient.CODEC.fieldOf("input").forGetter(r -> r.input),
-			Codec.INT.fieldOf("energy").forGetter(MultiblockRecipe::getBaseEnergy),
-			CHANCE_LIST_CODEC.optionalFieldOf("secondaries", List.of()).forGetter(r -> r.secondaryOutputs)
-	).apply(inst, CrusherRecipe::new));
-	public static final StreamCodec<RegistryFriendlyByteBuf, CrusherRecipe> STREAM_CODEC = StreamCodec.composite(
-			TagOutput.STREAM_CODEC, r -> r.output,
-			Ingredient.CONTENTS_STREAM_CODEC, r -> r.input,
-			ByteBufCodecs.INT, MultiblockRecipe::getBaseEnergy,
-			StackWithChance.STREAM_CODEC.apply(ByteBufCodecs.list()), r -> r.secondaryOutputs,
+	public static final DualMapCodec<RegistryFriendlyByteBuf, CrusherRecipe> CODECS = DualMapCodec.composite(
+			TagOutput.CODECS.fieldOf("result"), r -> r.output,
+			DualCodecs.INGREDIENT.fieldOf("input"), r -> r.input,
+			DualCodecs.INT.fieldOf("energy"), MultiblockRecipe::getBaseEnergy,
+			CHANCE_LIST_CODECS.optionalFieldOf("secondaries", List.of()), r -> r.secondaryOutputs,
 			CrusherRecipe::new
 	);
 
 	@Override
-	public MapCodec<CrusherRecipe> codec()
+	protected DualMapCodec<RegistryFriendlyByteBuf, CrusherRecipe> codecs()
 	{
-		return CODEC;
-	}
-
-	@Override
-	public StreamCodec<RegistryFriendlyByteBuf, CrusherRecipe> streamCodec()
-	{
-		return STREAM_CODEC;
+		return CODECS;
 	}
 
 	@Override

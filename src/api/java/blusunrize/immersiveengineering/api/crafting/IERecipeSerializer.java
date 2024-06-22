@@ -8,10 +8,16 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -28,45 +34,69 @@ import java.util.function.Function;
 public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeSerializer<R>
 {
 	public static final Codec<List<StackWithChance>> CHANCE_LIST_CODEC = makeChanceOutputCodec();
+	public static final DualCodec<RegistryFriendlyByteBuf, List<StackWithChance>> CHANCE_LIST_CODECS = new DualCodec<>(
+			CHANCE_LIST_CODEC, StackWithChance.STREAM_LIST
+	);
 
-	public static MapCodec<TagOutput> optionalItemOutput(String name)
+	public static DualMapCodec<RegistryFriendlyByteBuf, TagOutput> optionalItemOutput(String name)
 	{
-		return TagOutput.CODEC.optionalFieldOf(name, TagOutput.EMPTY);
+		return TagOutput.CODECS.optionalFieldOf(name, TagOutput.EMPTY);
 	}
 
-	public static MapCodec<FluidStack> optionalFluidOutput(String name)
+	public static DualMapCodec<RegistryFriendlyByteBuf, FluidStack> optionalFluidOutput(String name)
 	{
-		return FluidStack.CODEC.optionalFieldOf(name, FluidStack.EMPTY);
+		return DualCodecs.FLUID_STACK.optionalFieldOf(name, FluidStack.EMPTY);
 	}
 
 	public abstract ItemStack getIcon();
 
-	protected static <T> MapCodec<Optional<List<T>>> maybeListOrSingle(Codec<T> singleCodec, String key)
+	protected abstract DualMapCodec<RegistryFriendlyByteBuf, R> codecs();
+
+	@Override
+	public final MapCodec<R> codec()
 	{
-		return Codec.mapEither(listOrSingle(singleCodec, key), Codec.EMPTY).xmap(
-				e -> e.map(Optional::of, $ -> Optional.empty()),
-				o -> o.isPresent()?Either.left(o.get()): Either.right(Unit.INSTANCE)
+		return codecs().mapCodec();
+	}
+
+	@Override
+	public final StreamCodec<RegistryFriendlyByteBuf, R> streamCodec()
+	{
+		return codecs().streamCodec();
+	}
+
+	protected static <S extends ByteBuf, T> DualMapCodec<S, Optional<List<T>>> maybeListOrSingle(DualCodec<S, T> singleCodec, String key)
+	{
+		var listOrSingle = listOrSingle(singleCodec, key);
+		return new DualMapCodec<S, Optional<List<T>>>(
+				Codec.mapEither(listOrSingle.mapCodec(), Codec.EMPTY).<Optional<List<T>>>xmap(
+						e -> e.map(Optional::of, $ -> Optional.empty()),
+						o -> o.isPresent()?Either.left(o.get()): Either.right(Unit.INSTANCE)
+				),
+				listOrSingle.streamCodec().map(Optional::of, Optional::orElseThrow)
 		);
 	}
 
-	protected static <T> MapCodec<List<T>> listOrSingle(Codec<T> singleCodec, String key)
+	protected static <S extends ByteBuf, T> DualMapCodec<S, List<T>> listOrSingle(DualCodec<S, T> singleCodec, String key)
 	{
 		return listOrSingle(singleCodec, key, key);
 	}
 
-	protected static <T> MapCodec<List<T>> listOrSingle(Codec<T> singleCodec, String singleKey, String listKey)
+	protected static <S extends ByteBuf, T> DualMapCodec<S, List<T>> listOrSingle(DualCodec<S, T> singleCodec, String singleKey, String listKey)
 	{
-		return Codec.mapEither(
-				singleCodec.fieldOf(singleKey), singleCodec.listOf().fieldOf(listKey)
-		).xmap(
-				e -> e.map(List::of, Function.identity()),
-				l -> l.size()==1?Either.left(l.get(0)): Either.right(l)
+		return new DualMapCodec<>(
+				Codec.mapEither(
+						singleCodec.codec().fieldOf(singleKey), singleCodec.codec().listOf().fieldOf(listKey)
+				).xmap(
+						e -> e.map(List::of, Function.identity()),
+						l -> l.size()==1?Either.left(l.get(0)): Either.right(l)
+				),
+				singleCodec.listOf().streamCodec()
 		);
 	}
 
 	private static Codec<List<StackWithChance>> makeChanceOutputCodec()
 	{
-		Codec<List<StackWithChance>> baseCodec = StackWithChance.CODEC.listOf();
+		Codec<List<StackWithChance>> baseCodec = StackWithChance.CODECS.codec().listOf();
 		Decoder<List<StackWithChance>> conditionalDecoder = new Decoder<>()
 		{
 			@Override

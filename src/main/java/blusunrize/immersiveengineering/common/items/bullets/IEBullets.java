@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.items.bullets;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.CodecsAndDefault;
 import blusunrize.immersiveengineering.api.tool.ShieldDisablingHandler;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
@@ -49,21 +49,21 @@ public class IEBullets
 	public static void initBullets()
 	{
 		BulletHandler.registerBullet(CASULL, new BulletHandler.DamagingBullet<>(
-				CodecPair.UNIT,
+				CodecsAndDefault.UNIT,
 				(projectile, shooter, hit) -> IEDamageSources.causeCasullDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Casull::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				IEApi.ieLoc("item/bullet_casull")));
 
 		BulletHandler.registerBullet(ARMOR_PIERCING, new BulletHandler.DamagingBullet<>(
-				CodecPair.UNIT,
+				CodecsAndDefault.UNIT,
 				(projectile, shooter, hit) -> IEDamageSources.causePiercingDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_AP::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				IEApi.ieLoc("item/bullet_armor_piercing")));
 
 		BulletHandler.registerBullet(BUCKSHOT, new BulletHandler.DamagingBullet<>(
-				CodecPair.UNIT,
+				CodecsAndDefault.UNIT,
 				(projectile, shooter, hit) -> IEDamageSources.causeBuckshotDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Buck::get,
 				true,
@@ -88,7 +88,7 @@ public class IEBullets
 		});
 
 		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet<>(
-				CodecPair.UNIT, null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), IEApi.ieLoc("item/bullet_he")
+				CodecsAndDefault.UNIT, null, 0, () -> BulletHandler.emptyCasing.asItem().getDefaultInstance(), IEApi.ieLoc("item/bullet_he")
 		)
 		{
 			@Override
@@ -119,7 +119,7 @@ public class IEBullets
 		});
 
 		BulletHandler.registerBullet(SILVER, new BulletHandler.DamagingBullet<>(
-				CodecPair.UNIT,
+				CodecsAndDefault.UNIT,
 				(projectile, shooter, hit) -> IEDamageSources.causeSilverDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Silver::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
@@ -136,7 +136,7 @@ public class IEBullets
 		});
 
 		BulletHandler.registerBullet(DRAGONS_BREATH, new BulletHandler.DamagingBullet<>(
-				CodecPair.UNIT,
+				CodecsAndDefault.UNIT,
 				(projectile, shooter, hit) -> IEDamageSources.causeDragonsbreathDamage((RevolvershotEntity)projectile, shooter),
 				IEServerConfig.TOOLS.bulletDamage_Dragon::get,
 				true,
