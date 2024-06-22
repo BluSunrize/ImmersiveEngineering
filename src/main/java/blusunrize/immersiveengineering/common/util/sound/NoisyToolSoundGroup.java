@@ -60,7 +60,7 @@ public class NoisyToolSoundGroup
 
 	public boolean checkItemMatch(ItemStack handItem)
 	{
-		if(this.noisyToolItem!=handItem.getItem()||!noisyToolItem.ableToMakeNoise(handItem))
+		if(this.noisyToolStack!=handItem||!noisyToolItem.ableToMakeNoise(handItem))
 		{
 			switchMotorOnOff(false);
 			return false;
