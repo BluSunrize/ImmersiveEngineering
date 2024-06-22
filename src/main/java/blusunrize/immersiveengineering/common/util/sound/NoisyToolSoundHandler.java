@@ -75,7 +75,7 @@ public class NoisyToolSoundHandler
 
 		if(soundGroup!=null)
 		{
-			if(!soundGroup.checkItemMatch(handItem, hotbarSlot))
+			if(!soundGroup.checkItemValid(handItem, hotbarSlot))
 			{
 				ntsgs.remove(slot);
 				soundGroup = null;

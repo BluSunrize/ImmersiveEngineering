@@ -28,7 +28,7 @@ public class NoisyToolSoundGroup
 	private static final int ATTACK_DURATION = 7-1;
 	private static final int FADE_DURATION = 20-1;
 	private final INoisyTool noisyToolItem;
-	private final ItemStack noisyToolStack;
+	private ItemStack noisyToolStack;
 	private final int hotbarSlot;
 	private final LivingEntity holder;
 	private final int harvestTimeoutGrace;
@@ -59,14 +59,28 @@ public class NoisyToolSoundGroup
 		return noisyToolItem;
 	}
 
-	public boolean checkItemMatch(ItemStack handItemStack, int hotbarSlot)
+	public boolean checkItemValid(ItemStack handItemStack, int hotbarSlot)
 	{
-		if(this.hotbarSlot!=hotbarSlot||!INoisyTool.acceptableSameStack(noisyToolStack, handItemStack)||!noisyToolItem.ableToMakeNoise(handItemStack))
+		if(this.hotbarSlot!=hotbarSlot||!checkItemMatch(handItemStack)||!noisyToolItem.ableToMakeNoise(handItemStack))
 		{
 			switchMotorOnOff(false);
 			return false;
 		}
 		return true;
+	}
+
+	private boolean checkItemMatch(ItemStack handItemStack)
+	{
+		if (noisyToolStack == handItemStack)
+		{
+			return true;
+		}
+		else if (noisyToolItem.noisySameStack(noisyToolStack, handItemStack))
+		{
+			noisyToolStack = handItemStack;
+			return true;
+		}
+		return false;
 	}
 
 	public enum ToolMotorState

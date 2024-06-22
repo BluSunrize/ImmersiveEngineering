@@ -324,7 +324,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public Holder<SoundEvent> getHarvestSound(ItemStack stack)
 	{
 		Item headitem = getHead(stack).getItem();
-		if (headitem instanceof GrindingDiskItem || headitem instanceof RockcutterItem)
+		if(headitem instanceof GrindingDiskItem||headitem instanceof RockcutterItem)
 			return IESounds.buzzsaw_harvest_grind;
 		return IESounds.buzzsaw_harvest_saw;
 	}
@@ -333,6 +333,12 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public boolean ableToMakeNoise(ItemStack stack)
 	{
 		return canToolBeUsed(stack);
+	}
+
+	@Override
+	public boolean noisySameStack(ItemStack mainStack, ItemStack otherStack)
+	{
+		return mainStack.getItem() instanceof BuzzsawItem buzzsawItem&&buzzsawItem.equals(otherStack.getItem())&&getHead(mainStack).getItem().equals(getHead(otherStack).getItem());
 	}
 
 	@Override

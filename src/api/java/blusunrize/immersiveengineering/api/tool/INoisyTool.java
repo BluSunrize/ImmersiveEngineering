@@ -50,26 +50,23 @@ public interface INoisyTool
 	/**
 	 * When an ItemStack gets modified server side (i.e. takes damage, changes tags (i.e. uses fuel), etc.), it creates a new ItemStack on the client side.
 	 * There is no unreasonably involved way to check if the new ItemStack is actually just the old ItemStack, but modified.
-	 * So this for these cases, this checks the next best thing: Item equality and sound equality.
+	 * So this for these cases, this default implementation checks the next best thing: Item equality and sound equality.
+	 *
+	 * It is encouraged to override this with a simpler check.
+	 *
+	 * This check also assumes, that it has already been checked and confirmed, that the stacks are not identical
 	 *
 	 * @param mainStack
 	 * @param otherStack
-	 * @return true if stacks are identical or if stacks  produce the same sounds.
+	 * @return true if stacks are considered the same stack. By default: if stacks  produce the same sounds.
 	 */
-	static boolean acceptableSameStack(ItemStack mainStack, ItemStack otherStack)
+	default boolean noisySameStack(ItemStack mainStack, ItemStack otherStack)
 	{
-		// not making this a single line return..
-		if(mainStack==otherStack)
-			return true;
-
-		if(mainStack.getItem() instanceof INoisyTool noisyTool&&noisyTool.equals(otherStack.getItem()))
-		{
-			return noisyTool.getIdleSound(mainStack).equals(noisyTool.getIdleSound(otherStack))
-					&&noisyTool.getBusySound(mainStack).equals(noisyTool.getBusySound(otherStack))
-					&&noisyTool.getFadingSound(mainStack).equals(noisyTool.getFadingSound(otherStack))
-					&&noisyTool.getAttackSound(mainStack).equals(noisyTool.getAttackSound(otherStack))
-					&&noisyTool.getHarvestSound(mainStack).equals(noisyTool.getHarvestSound(otherStack));
-		}
-		return false;
+		return mainStack.getItem() instanceof INoisyTool noisyTool&&noisyTool.equals(otherStack.getItem())
+				&&noisyTool.getIdleSound(mainStack).equals(noisyTool.getIdleSound(otherStack))
+				&&noisyTool.getBusySound(mainStack).equals(noisyTool.getBusySound(otherStack))
+				&&noisyTool.getFadingSound(mainStack).equals(noisyTool.getFadingSound(otherStack))
+				&&noisyTool.getAttackSound(mainStack).equals(noisyTool.getAttackSound(otherStack))
+				&&noisyTool.getHarvestSound(mainStack).equals(noisyTool.getHarvestSound(otherStack));
 	}
 }
