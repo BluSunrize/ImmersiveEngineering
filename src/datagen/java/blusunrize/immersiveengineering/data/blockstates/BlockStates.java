@@ -292,21 +292,33 @@ public class BlockStates extends ExtendedBlockstateProvider
 		));
 
 		{
-			ModelFile noneModel = createMetalLadder("metal_ladder", null, null);
+			ModelFile noneModel = createMetalLadder("metal_ladder", null, null, null);
 			ModelFile aluModel = createMetalLadder(
 					"metal_ladder_alu",
 					rl("block/metal_decoration/aluminum_scaffolding_open"),
-					rl("block/metal_decoration/aluminum_scaffolding"));
+					rl("block/metal_decoration/aluminum_scaffolding"),
+					null);
+			ModelFile aluModelOpen = createMetalLadder(
+					"metal_ladder_alu_open",
+					rl("block/metal_decoration/aluminum_scaffolding_open_u"),
+					rl("block/metal_decoration/aluminum_scaffolding"),
+					rl("block/metal_decoration/aluminum_scaffolding_open_sides"));
 			ModelFile steelModel = createMetalLadder(
 					"metal_ladder_steel",
 					rl("block/metal_decoration/steel_scaffolding_open"),
-					rl("block/metal_decoration/steel_scaffolding"));
+					rl("block/metal_decoration/steel_scaffolding"),
+					null);
+			ModelFile steelModelOpen = createMetalLadder(
+					"metal_ladder_steel_open",
+					rl("block/metal_decoration/steel_scaffolding_open_u"),
+					rl("block/metal_decoration/steel_scaffolding"),
+					rl("block/metal_decoration/steel_scaffolding_open_sides"));
 			BlockEntry<MetalLadderBlock> steel = MetalDecoration.METAL_LADDER.get(CoverType.STEEL);
 			BlockEntry<MetalLadderBlock> alu = MetalDecoration.METAL_LADDER.get(CoverType.ALU);
 			BlockEntry<MetalLadderBlock> none = MetalDecoration.METAL_LADDER.get(CoverType.NONE);
 			createDirectionalBlock(none, IEProperties.FACING_HORIZONTAL, noneModel);
-			createDirectionalBlock(alu, IEProperties.FACING_HORIZONTAL, aluModel);
-			createDirectionalBlock(steel, IEProperties.FACING_HORIZONTAL, steelModel);
+			createLadderBlock(alu, aluModel, aluModelOpen);
+			createLadderBlock(steel, steelModel, steelModelOpen);
 			itemModel(alu, aluModel);
 			itemModel(steel, steelModel);
 		}
@@ -660,17 +672,23 @@ public class BlockStates extends ExtendedBlockstateProvider
 				));
 	}
 
-	public ModelFile createMetalLadder(String name, @Nullable ResourceLocation bottomTop, @Nullable ResourceLocation sides)
+	public ModelFile createMetalLadder(String name, @Nullable ResourceLocation bottomTop, @Nullable ResourceLocation sides, @Nullable ResourceLocation front)
 	{
 		Map<String, ResourceLocation> textures = new HashMap<>();
 		ResourceLocation parent;
 		if(bottomTop!=null)
 		{
 			Preconditions.checkNotNull(sides);
-			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_scaffoldladder");
 			textures.put("top", bottomTop);
 			textures.put("bottom", bottomTop);
 			textures.put("side", sides);
+			if(front!=null)
+			{
+				parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_scaffoldladder_open");
+				textures.put("front", front);
+			}
+			else
+				parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_scaffoldladder");
 		}
 		else
 			parent = new ResourceLocation(ImmersiveEngineering.MODID, "block/ie_ladder");
@@ -689,6 +707,22 @@ public class BlockStates extends ExtendedBlockstateProvider
 			builder.partialState()
 					.with(prop, d)
 					.setModels(new ConfiguredModel(model, 0, getAngle(d, 180), true));
+	}
+
+	private void createLadderBlock(Supplier<? extends Block> b, ModelFile model, ModelFile modelOpen)
+	{
+		VariantBlockStateBuilder builder = getVariantBuilder(b.get());
+		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
+		{
+			builder.partialState()
+					.with(IEProperties.FACING_HORIZONTAL, d)
+					.with(IEProperties.ACTIVE, false)
+					.setModels(new ConfiguredModel(model, 0, getAngle(d, 180), true));
+			builder.partialState()
+					.with(IEProperties.FACING_HORIZONTAL, d)
+					.with(IEProperties.ACTIVE, true)
+					.setModels(new ConfiguredModel(modelOpen, 0, getAngle(d, 180), false));
+		}
 	}
 
 	private void createWallmount(Supplier<? extends Block> b, ResourceLocation texture)
