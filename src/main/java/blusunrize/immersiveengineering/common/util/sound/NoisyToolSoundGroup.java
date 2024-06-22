@@ -269,7 +269,7 @@ public class NoisyToolSoundGroup
 		{
 			if(!isStopped())
 			{
-				if(holder.level().getGameTime() > groupLastTickHelper||holder.level().getBlockState(currentTargetPos).isAir()) // air check is slapped on addition, because of creative insta break
+				if(currentTargetPos != null && (holder.level().getGameTime() > groupLastTickHelper||holder.level().getBlockState(currentTargetPos).isAir())) // air check is slapped on addition, because of creative insta break
 					currentTargetPos = null;
 				if(currentTargetPos==null||!Objects.equals(targetBlockPos, currentTargetPos))
 					this.stop();
