@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -37,6 +38,8 @@ import java.util.Map;
 
 public class MetalLadderBlock extends LadderBlock implements IHammerBlockInteraction
 {
+	public static final BooleanProperty OPEN = BooleanProperty.create("open");
+
 	private static final Map<Direction, VoxelShape> FRAMES = new EnumMap<>(Direction.class);
 	private static final Map<Direction, VoxelShape> FRAMES_OPEN = new EnumMap<>(Direction.class);
 
@@ -94,7 +97,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 		else
 		{
 			Direction ladderSide = state.getValue(LadderBlock.FACING);
-			return state.getValue(IEProperties.OPEN) ? Shapes.joinUnoptimized(base, FRAMES_OPEN.get(ladderSide), BooleanOp.OR) : Shapes.joinUnoptimized(base, FRAMES.get(ladderSide), BooleanOp.OR);
+			return state.getValue(OPEN) ? Shapes.joinUnoptimized(base, FRAMES_OPEN.get(ladderSide), BooleanOp.OR) : Shapes.joinUnoptimized(base, FRAMES.get(ladderSide), BooleanOp.OR);
 		}
 	}
 
@@ -104,7 +107,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 	{
 		BlockState baseState = super.getStateForPlacement(ctx);
 		if(baseState==null) return baseState;
-		baseState = baseState.setValue(IEProperties.OPEN, false);
+		baseState = baseState.setValue(OPEN, false);
 		if(type==CoverType.NONE)
 			return baseState;
 		else
@@ -122,7 +125,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state) {
-		state.add(FACING, WATERLOGGED, IEProperties.OPEN);
+		state.add(FACING, WATERLOGGED, OPEN);
 	}
 
 	@Override
@@ -131,7 +134,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 		if (player==null) return InteractionResult.FAIL;
 		if(type!=CoverType.NONE&&player.isShiftKeyDown())
 		{
-			boolean b = world.setBlockAndUpdate(pos, state.setValue(IEProperties.OPEN, !state.getValue(IEProperties.OPEN)));
+			boolean b = world.setBlockAndUpdate(pos, state.setValue(OPEN, !state.getValue(OPEN)));
 			if(b)
 				return InteractionResult.SUCCESS;
 			else
