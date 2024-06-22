@@ -312,6 +312,8 @@ public class IEBlockTags extends BlockTagsProvider
 			if(block instanceof ConnectorBlock<?>||block instanceof ConveyorBlock)
 				tag.add(block);
 		}
+		//Razor wire should only be broken by wirecutters, and its addition is accidental
+		tag.remove(MetalDevices.RAZOR_WIRE.get());
 	}
 
 	private void registerRockcutterMineable()
