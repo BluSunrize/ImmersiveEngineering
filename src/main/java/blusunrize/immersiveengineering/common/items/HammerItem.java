@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerBlockInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -163,6 +164,10 @@ public class HammerItem extends IEBaseItem
 				return InteractionResult.SUCCESS;
 			else
 				return InteractionResult.FAIL;
+		}
+		else if (world.getBlockState(pos).getBlock() instanceof IHammerBlockInteraction block)
+		{
+			return block.useHammer(world.getBlockState(pos), world, pos, player);
 		}
 		else
 		{

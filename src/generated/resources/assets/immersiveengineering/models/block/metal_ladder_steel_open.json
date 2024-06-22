@@ -1,0 +1,11 @@
+{
+  "parent": "immersiveengineering:block/ie_scaffoldladder_open",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "immersiveengineering:block/metal_decoration/steel_scaffolding_open_u",
+    "front": "immersiveengineering:block/metal_decoration/steel_scaffolding_open_sides",
+    "ladder": "immersiveengineering:block/metal_decoration/metal_ladder",
+    "side": "immersiveengineering:block/metal_decoration/steel_scaffolding",
+    "top": "immersiveengineering:block/metal_decoration/steel_scaffolding_open_u"
+  }
+}
