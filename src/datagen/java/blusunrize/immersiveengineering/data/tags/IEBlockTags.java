@@ -357,7 +357,7 @@ public class IEBlockTags extends BlockTagsProvider
 	private void registerGrindingDiskMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(IETags.grindingDiskHarvestable);
-		// storage and sheetmetal
+		// storage and remove rocklike storage, sheetmetal
 		tag.addTag(Tags.Blocks.STORAGE_BLOCKS);
 		tag.addTag(IETags.sheetmetals);
 		// storage and sheetmetal slabs
@@ -370,6 +370,10 @@ public class IEBlockTags extends BlockTagsProvider
 		tag.addTag(IETags.cutCopperBlocks);
 		tag.addTag(IETags.cutCopperSlabs);
 		tag.addTag(IETags.cutCopperStairs);
+		// vanilla blocks
+		tag.add(Blocks.ANVIL, Blocks.CHIPPED_ANVIL, Blocks.DAMAGED_ANVIL);
+		tag.add(Blocks.CHAIN, Blocks.IRON_BARS, Blocks.IRON_DOOR, Blocks.IRON_TRAPDOOR, Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE, Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE,
+				Blocks.HOPPER, Blocks.CAULDRON, Blocks.LAVA_CAULDRON, Blocks.WATER_CAULDRON, Blocks.POWDER_SNOW_CAULDRON, Blocks.LIGHTNING_ROD);
 		// scaffolding
 		tag.addTag(IETags.scaffoldingSteel);
 		tag.addTag(IETags.scaffoldingAlu);
