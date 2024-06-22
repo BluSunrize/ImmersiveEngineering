@@ -94,7 +94,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 		else
 		{
 			Direction ladderSide = state.getValue(LadderBlock.FACING);
-			return state.getValue(IEProperties.ACTIVE) ? Shapes.joinUnoptimized(base, FRAMES_OPEN.get(ladderSide), BooleanOp.OR) : Shapes.joinUnoptimized(base, FRAMES.get(ladderSide), BooleanOp.OR);
+			return state.getValue(IEProperties.OPEN) ? Shapes.joinUnoptimized(base, FRAMES_OPEN.get(ladderSide), BooleanOp.OR) : Shapes.joinUnoptimized(base, FRAMES.get(ladderSide), BooleanOp.OR);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 	{
 		BlockState baseState = super.getStateForPlacement(ctx);
 		if(baseState==null) return baseState;
-		baseState = baseState.setValue(IEProperties.ACTIVE, false);
+		baseState = baseState.setValue(IEProperties.OPEN, false);
 		if(type==CoverType.NONE)
 			return baseState;
 		else
@@ -122,7 +122,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state) {
-		state.add(FACING, WATERLOGGED, IEProperties.ACTIVE);
+		state.add(FACING, WATERLOGGED, IEProperties.OPEN);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 		if (player==null) return InteractionResult.FAIL;
 		if(type!=CoverType.NONE&&player.isShiftKeyDown())
 		{
-			boolean b = world.setBlockAndUpdate(pos, state.setValue(IEProperties.ACTIVE, !state.getValue(IEProperties.ACTIVE)));
+			boolean b = world.setBlockAndUpdate(pos, state.setValue(IEProperties.OPEN, !state.getValue(IEProperties.OPEN)));
 			if(b)
 				return InteractionResult.SUCCESS;
 			else

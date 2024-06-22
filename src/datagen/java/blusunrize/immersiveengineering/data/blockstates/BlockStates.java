@@ -716,11 +716,11 @@ public class BlockStates extends ExtendedBlockstateProvider
 		{
 			builder.partialState()
 					.with(IEProperties.FACING_HORIZONTAL, d)
-					.with(IEProperties.ACTIVE, false)
+					.with(IEProperties.OPEN, false)
 					.setModels(new ConfiguredModel(model, 0, getAngle(d, 180), true));
 			builder.partialState()
 					.with(IEProperties.FACING_HORIZONTAL, d)
-					.with(IEProperties.ACTIVE, true)
+					.with(IEProperties.OPEN, true)
 					.setModels(new ConfiguredModel(modelOpen, 0, getAngle(d, 180), false));
 		}
 	}
