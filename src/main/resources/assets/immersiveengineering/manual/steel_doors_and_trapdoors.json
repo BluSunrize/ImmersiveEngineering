@@ -1,0 +1,9 @@
+{
+  "recipes": {
+    "type": "crafting",
+    "recipes": [
+      "crafting/steel_door",
+      "crafting/steel_trapdoor"
+    ]
+  }
+}

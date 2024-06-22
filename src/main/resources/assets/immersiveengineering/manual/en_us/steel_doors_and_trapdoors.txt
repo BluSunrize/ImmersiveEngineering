@@ -1,0 +1,5 @@
+Steel Doors & Trapdoors
+Vitrified 06/15/1961
+<&recipes>Steel Doors and Trapdoors are a more secure variant of iron doors, suitable for uses in high-security factories.<br>
+Unlike iron doors, they respond to normal opening procedures instead of only opening when a redstone signal is applied.<br>
+When a redstone signal is applied, a locking mechanism activates and the door cannot be opened until the signal is disabled.
