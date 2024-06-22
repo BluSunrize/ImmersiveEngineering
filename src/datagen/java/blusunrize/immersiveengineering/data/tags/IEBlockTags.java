@@ -318,16 +318,36 @@ public class IEBlockTags extends BlockTagsProvider
 
 	private void registerRockcutterMineable()
 	{
+		/*
+		 * Current design philosophy for the rockcutter is as follows:
+		 * The rockcutter is not here to break synthetic stone blocks, it's here to break worldgen blocks + silktouchables
+		 * Thus, no stairs or slabs or similar, and the exclusion of prismarine
+		 * Just the stone blocks common in every dimension along with ores and other similar blocks
+		 */
 		IntrinsicTagAppender<Block> tag = tag(IETags.rockcutterHarvestable);
-		// stones & ores
+		// overworld stones & ores
 		tag.addTag(Tags.Blocks.COBBLESTONE);
 		tag.addTag(Tags.Blocks.STONE);
+		tag.addTag(Tags.Blocks.SANDSTONE);
 		tag.addTag(Tags.Blocks.ORES);
-		// glass, ice, glowing blocks
+		tag.add(Blocks.CALCITE, Blocks.DRIPSTONE_BLOCK, Blocks.POINTED_DRIPSTONE);
+		// specialty stones and stone-alikes
+		tag.addTag(Tags.Blocks.NETHERRACK);
+		tag.add(Blocks.BASALT, Blocks.SMOOTH_BASALT);
+		tag.add(Blocks.BLACKSTONE);
+		tag.add(Blocks.END_STONE);
+		tag.add(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN);
+		tag.add(Blocks.BONE_BLOCK);
+		// glass, ice, amethyst, glowing blocks, gilded blackstone
 		tag.addTag(Tags.Blocks.GLASS);
 		tag.addTag(BlockTags.ICE);
+		tag.add(Blocks.AMETHYST_BLOCK, Blocks.BUDDING_AMETHYST, Blocks.AMETHYST_CLUSTER, Blocks.LARGE_AMETHYST_BUD, Blocks.MEDIUM_AMETHYST_BUD, Blocks.SMALL_AMETHYST_BUD);
 		tag.add(Blocks.GLOWSTONE);
 		tag.add(Blocks.SEA_LANTERN);
+		tag.add(Blocks.GILDED_BLACKSTONE);
+		// coral, first alive by tag and then dead by block - silktouchable and pickaxe-needed + the dead ones for consistency
+		tag.addTag(BlockTags.CORAL_BLOCKS);
+		tag.add(Blocks.DEAD_BRAIN_CORAL_BLOCK, Blocks.DEAD_BUBBLE_CORAL_BLOCK, Blocks.DEAD_FIRE_CORAL_BLOCK, Blocks.DEAD_HORN_CORAL_BLOCK, Blocks.DEAD_TUBE_CORAL_BLOCK);
 		// enderchest
 		tag.addTag(Tags.Blocks.CHESTS_ENDER);
 		// skulk, but intentionally only some of them
