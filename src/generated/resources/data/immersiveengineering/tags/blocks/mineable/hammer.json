@@ -1,4 +1,7 @@
 {
+  "remove": [
+    "immersiveengineering:razor_wire"
+  ],
   "values": [
     "immersiveengineering:metal_ladder_none",
     "immersiveengineering:metal_ladder_alu",
