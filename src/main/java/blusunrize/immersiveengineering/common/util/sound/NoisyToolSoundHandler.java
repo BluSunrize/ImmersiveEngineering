@@ -28,6 +28,7 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.neoforged.neoforge.event.level.LevelEvent.Unload;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -46,7 +47,7 @@ public class NoisyToolSoundHandler
 			return result;
 		if(INoisyTool.isAbleNoisyTool(entity.getMainHandItem())||INoisyTool.isAbleNoisyTool(entity.getOffhandItem()))
 		{
-			result = new HashMap<EquipmentSlot, NoisyToolSoundGroup>();
+			result = new HashMap<>();
 			noisyToolSoundGroups.put(entity, result);
 		}
 		return result;
@@ -71,7 +72,7 @@ public class NoisyToolSoundHandler
 
 		NoisyToolSoundGroup soundGroup = ntsgs.get(slot);
 		ItemStack handItem = entity.getItemBySlot(slot);
-		int hotbarSlot = slot.equals(EquipmentSlot.MAINHAND) && entity instanceof Player player ? player.getInventory().selected : -1;
+		int hotbarSlot = slot.equals(EquipmentSlot.MAINHAND)&&entity instanceof Player player?player.getInventory().selected: -1;
 
 		if(soundGroup!=null)
 		{
@@ -193,5 +194,12 @@ public class NoisyToolSoundHandler
 				ntsg.switchMotorOnOff(false);
 			}
 		}
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent
+	public static void leaveLevel(Unload ev)
+	{
+		noisyToolSoundGroups.clear();
 	}
 }
