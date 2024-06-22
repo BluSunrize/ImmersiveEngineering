@@ -1,0 +1,25 @@
+{
+  "parent": "immersiveengineering:main/craft_drop_conveyor",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.chute_bonk.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:chute_iron"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.chute_bonk"
+    }
+  },
+  "requirements": [
+    [
+      "code_trigger"
+    ]
+  ]
+}

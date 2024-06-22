@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "item": "immersiveengineering:wooden_grip"
+    },
+    "h": {
+      "item": "immersiveengineering:heavy_engineering"
+    },
+    "r": {
+      "tag": "forge:rods/steel"
+    }
+  },
+  "pattern": [
+    "  g",
+    "rhg",
+    "r  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:buzzsaw"
+  }
+}

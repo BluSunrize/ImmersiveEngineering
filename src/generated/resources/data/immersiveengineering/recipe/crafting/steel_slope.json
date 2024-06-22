@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "immersiveengineering:steel_scaffolding_standard"
+    }
+  },
+  "pattern": [
+    "sss",
+    "ss ",
+    "s  "
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:steel_slope"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:alu_scaffolding_grate_top"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:alu_scaffolding_wooden_top"
+  }
+}

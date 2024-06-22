@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:raw_block_uranium"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "immersiveengineering:raw_uranium"
+  }
+}

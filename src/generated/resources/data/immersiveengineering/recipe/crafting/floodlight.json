@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "e": {
+      "item": "immersiveengineering:light_bulb"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "p": {
+      "tag": "c:glass_panes"
+    },
+    "s": {
+      "tag": "forge:plates/silver"
+    }
+  },
+  "pattern": [
+    "sii",
+    "pes",
+    "sci"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:floodlight"
+  }
+}

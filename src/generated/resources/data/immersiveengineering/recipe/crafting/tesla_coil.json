@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "e": {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
+    "h": {
+      "item": "immersiveengineering:capacitor_hv"
+    },
+    "i": {
+      "tag": "forge:plates/aluminum"
+    },
+    "l": {
+      "item": "immersiveengineering:coil_mv"
+    }
+  },
+  "pattern": [
+    "iii",
+    " l ",
+    "ehc"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:tesla_coil"
+  }
+}

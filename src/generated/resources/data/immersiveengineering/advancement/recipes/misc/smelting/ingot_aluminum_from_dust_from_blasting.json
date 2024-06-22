@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dust_aluminum": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:dust_aluminum"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/ingot_aluminum_from_dust_from_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dust_aluminum"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/ingot_aluminum_from_dust_from_blasting"
+    ]
+  }
+}

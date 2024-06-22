@@ -1,0 +1,24 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:beetroot_seeds"
+  },
+  "render": {
+    "type": "immersiveengineering:crop",
+    "block": "minecraft:beetroots"
+  },
+  "results": [
+    {
+      "count": 2,
+      "id": "minecraft:beetroot"
+    },
+    {
+      "count": 1,
+      "id": "minecraft:beetroot_seeds"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 800
+}

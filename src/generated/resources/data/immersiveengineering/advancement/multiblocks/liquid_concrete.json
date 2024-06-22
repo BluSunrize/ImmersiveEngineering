@@ -1,0 +1,30 @@
+{
+  "parent": "immersiveengineering:multiblocks/mb_mixer",
+  "criteria": {
+    "concrete_feet": {
+      "conditions": {
+        "effects": {
+          "immersiveengineering:concrete_feet": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.liquid_concrete.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:concrete_bucket"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.liquid_concrete"
+    }
+  },
+  "requirements": [
+    [
+      "concrete_feet"
+    ]
+  ]
+}

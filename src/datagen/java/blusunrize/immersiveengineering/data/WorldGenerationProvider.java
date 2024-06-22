@@ -17,12 +17,14 @@ import blusunrize.immersiveengineering.common.world.IECountPlacement;
 import blusunrize.immersiveengineering.common.world.IEHeightProvider;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
+import blusunrize.immersiveengineering.data.tags.BannerTags;
 import blusunrize.immersiveengineering.data.tags.DamageTypeTagProvider;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.*;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.RegistrySetBuilder.PatchedRegistries;
@@ -82,10 +84,13 @@ public class WorldGenerationProvider
 		registryBuilder.add(Registries.PLACED_FEATURE, ctx -> bootstrapPlacedFeatures(ctx, registrations));
 		registryBuilder.add(Keys.BIOME_MODIFIERS, ctx -> bootstrapBiomeModifiers(ctx, registrations));
 		registryBuilder.add(Registries.DAMAGE_TYPE, DamageTypeProvider::bootstrap);
+		registryBuilder.add(Registries.BANNER_PATTERN, BannerTags::bootstrap);
 
+		CompletableFuture<Provider> combinedRegistries = append(vanillaRegistries, registryBuilder);
 		return List.of(
 				new DatapackBuiltinEntriesProvider(output, vanillaRegistries, registryBuilder, Set.of(Lib.MODID)),
-				new DamageTypeTagProvider(output, append(vanillaRegistries, registryBuilder), exFiles)
+				new DamageTypeTagProvider(output, combinedRegistries, exFiles),
+				new BannerTags(output, combinedRegistries, exFiles)
 		);
 	}
 

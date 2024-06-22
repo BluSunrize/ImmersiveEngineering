@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "forge:dusts/copper"
+    },
+    {
+      "tag": "forge:dusts/nickel"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "immersiveengineering:dust_constantan"
+  }
+}

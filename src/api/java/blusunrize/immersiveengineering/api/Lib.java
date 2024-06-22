@@ -147,7 +147,7 @@ public class Lib
 		@Override
 		public TagKey<Block> getIncorrectBlocksForDrops()
 		{
-			throw new UnsupportedOperationException("TODO implement");
+			return IETags.incorrectDropsSteel;
 		}
 
 		@Override

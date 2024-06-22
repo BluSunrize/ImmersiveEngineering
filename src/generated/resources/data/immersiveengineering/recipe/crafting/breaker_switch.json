@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "immersiveengineering:connector_insulator"
+    },
+    "i": {
+      "tag": "forge:ingots/copper"
+    },
+    "l": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    " l ",
+    "cic"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:breaker_switch"
+  }
+}

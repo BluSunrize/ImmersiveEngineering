@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "bullet",
+  "inputs": [
+    {
+      "basePredicate": {
+        "item": "immersiveengineering:empty_casing"
+      },
+      "count": 4
+    },
+    {
+      "basePredicate": {
+        "tag": "c:gunpowders"
+      },
+      "count": 2
+    },
+    {
+      "basePredicate": {
+        "tag": "forge:nuggets/lead"
+      },
+      "count": 2
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:casull"
+  }
+}

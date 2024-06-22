@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:connector_redstone"
+    },
+    "w": {
+      "tag": "forge:wires/aluminum"
+    }
+  },
+  "pattern": [
+    " w ",
+    "wcw",
+    " w "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:connector_bundled"
+  }
+}

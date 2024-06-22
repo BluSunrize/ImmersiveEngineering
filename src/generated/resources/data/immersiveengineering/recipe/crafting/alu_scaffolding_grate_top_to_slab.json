@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "immersiveengineering:alu_scaffolding_grate_top"
+    }
+  },
+  "pattern": [
+    "sss"
+  ],
+  "result": {
+    "count": 6,
+    "id": "immersiveengineering:slab_alu_scaffolding_grate_top"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:nugget_nickel"
+    },
+    "s": {
+      "tag": "forge:nuggets/nickel"
+    }
+  },
+  "pattern": [
+    "sss",
+    "sis",
+    "sss"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:ingot_nickel"
+  }
+}

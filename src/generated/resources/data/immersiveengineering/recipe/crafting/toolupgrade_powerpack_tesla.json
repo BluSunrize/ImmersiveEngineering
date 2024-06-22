@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "e": {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
+    "f": {
+      "item": "immersiveengineering:treated_fence"
+    },
+    "i": {
+      "tag": "forge:plates/aluminum"
+    },
+    "w": {
+      "item": "immersiveengineering:wirecoil_electrum"
+    }
+  },
+  "pattern": [
+    "iii",
+    "wfw",
+    "wew"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_powerpack_tesla"
+  }
+}

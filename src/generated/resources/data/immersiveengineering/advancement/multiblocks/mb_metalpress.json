@@ -1,0 +1,31 @@
+{
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
+  "criteria": {
+    "form_multiblock": {
+      "conditions": {
+        "hammer": {
+          "items": "immersiveengineering:hammer"
+        },
+        "multiblock": "immersiveengineering:multiblocks/metal_press"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_metalpress.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:metal_press"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_metalpress"
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

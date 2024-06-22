@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:connector_redstone"
+    },
+    "g": {
+      "tag": "c:glass_panes"
+    },
+    "p": {
+      "item": "immersiveengineering:component_electronic"
+    }
+  },
+  "pattern": [
+    " c ",
+    "gpg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:connector_probe"
+  }
+}

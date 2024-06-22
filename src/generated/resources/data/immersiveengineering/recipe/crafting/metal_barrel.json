@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "immersiveengineering:slab_sheetmetal_iron"
+    },
+    "w": {
+      "tag": "forge:sheetmetals/iron"
+    }
+  },
+  "pattern": [
+    "sss",
+    "w w",
+    "www"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:metal_barrel"
+  }
+}

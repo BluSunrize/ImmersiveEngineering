@@ -1,0 +1,62 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "minecraft:is_mountain"
+    ]
+  ],
+  "fail_chance": 0.05,
+  "ores": [
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "tag": "c:ores/iron"
+      }
+    },
+    {
+      "chance": 0.45,
+      "conditions": [],
+      "output": {
+        "tag": "c:ores/copper"
+      }
+    },
+    {
+      "chance": 0.05,
+      "conditions": [],
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      }
+    }
+  ],
+  "spoils": [
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:cobblestone"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:cobbled_deepslate"
+      }
+    }
+  ],
+  "weight": 25
+}

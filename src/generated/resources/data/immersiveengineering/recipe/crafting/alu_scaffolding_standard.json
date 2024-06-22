@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "s": {
+      "tag": "forge:rods/aluminum"
+    }
+  },
+  "pattern": [
+    "iii",
+    " s ",
+    "s s"
+  ],
+  "result": {
+    "count": 6,
+    "id": "immersiveengineering:alu_scaffolding_standard"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.3,
+  "ingredient": {
+    "item": "immersiveengineering:deepslate_ore_aluminum"
+  },
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:ingot_aluminum"
+  }
+}

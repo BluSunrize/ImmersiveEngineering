@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_armor_steel_leggings": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:armor_steel_leggings"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/nugget_steel_recycle_steel_leggings_from_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_armor_steel_leggings"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/nugget_steel_recycle_steel_leggings_from_blasting"
+    ]
+  }
+}

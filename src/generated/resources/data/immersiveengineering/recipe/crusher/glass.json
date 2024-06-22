@@ -1,0 +1,10 @@
+{
+  "type": "immersiveengineering:crusher",
+  "energy": 3200,
+  "input": {
+    "tag": "c:glass_blocks"
+  },
+  "result": {
+    "item": "minecraft:sand"
+  }
+}

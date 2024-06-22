@@ -1,13 +1,13 @@
-// 1.20.4	2023-12-13T14:40:08.934860004	Tags for minecraft:fluid mod id immersiveengineering
-c5781aa5b63208deaa5f0bcc78b2452af10a864f data/forge/tags/fluids/acetaldehyde.json
-4f21d0f22cb48289678cb453e31b4bc7030946dc data/forge/tags/fluids/biodiesel.json
-cd3d1bc4cb9578a1ae687a7aa1154eb556ac3204 data/forge/tags/fluids/concrete.json
-261522c374b3312c2ab2fa78de8c9dd125b773a9 data/forge/tags/fluids/creosote.json
-0b11359b7398eeebb3b17cad8cf7f8ba098a2a6c data/forge/tags/fluids/ethanol.json
-c5781aa5b63208deaa5f0bcc78b2452af10a864f data/forge/tags/fluids/gaseous.json
-d97ab8cbd34d238a33c3f0d855ae8c08b2b43c5e data/forge/tags/fluids/herbicide.json
-c0d5ce4da9cc4b8610970e0f1a00d43185eda528 data/forge/tags/fluids/phenolic_resin.json
-a2cf243d5c79442e6cc7e134a0552f0f294b2129 data/forge/tags/fluids/plantoil.json
-728d018ef95c8cfbdf22b0d5d61d7e4a1c438405 data/forge/tags/fluids/potion.json
-9f8a8b07d796c1ffc98eabca3af313dfb8c33b16 data/forge/tags/fluids/redstone_acid.json
-1f3a288da36519bd8572dbbf73074e335dec50c1 data/immersiveengineering/tags/fluids/drill_fuel.json
+// 1.21	2024-06-22T14:16:19.824500757	Tags for minecraft:fluid mod id immersiveengineering
+c5781aa5b63208deaa5f0bcc78b2452af10a864f data/c/tags/fluid/gaseous.json
+c5781aa5b63208deaa5f0bcc78b2452af10a864f data/forge/tags/fluid/acetaldehyde.json
+4f21d0f22cb48289678cb453e31b4bc7030946dc data/forge/tags/fluid/biodiesel.json
+cd3d1bc4cb9578a1ae687a7aa1154eb556ac3204 data/forge/tags/fluid/concrete.json
+261522c374b3312c2ab2fa78de8c9dd125b773a9 data/forge/tags/fluid/creosote.json
+0b11359b7398eeebb3b17cad8cf7f8ba098a2a6c data/forge/tags/fluid/ethanol.json
+d97ab8cbd34d238a33c3f0d855ae8c08b2b43c5e data/forge/tags/fluid/herbicide.json
+c0d5ce4da9cc4b8610970e0f1a00d43185eda528 data/forge/tags/fluid/phenolic_resin.json
+a2cf243d5c79442e6cc7e134a0552f0f294b2129 data/forge/tags/fluid/plantoil.json
+728d018ef95c8cfbdf22b0d5d61d7e4a1c438405 data/forge/tags/fluid/potion.json
+9f8a8b07d796c1ffc98eabca3af313dfb8c33b16 data/forge/tags/fluid/redstone_acid.json
+1f3a288da36519bd8572dbbf73074e335dec50c1 data/immersiveengineering/tags/fluid/drill_fuel.json

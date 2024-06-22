@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "components",
+  "inputs": [
+    {
+      "basePredicate": {
+        "tag": "forge:plates/steel"
+      },
+      "count": 2
+    },
+    {
+      "tag": "forge:ingots/copper"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:component_steel"
+  }
+}

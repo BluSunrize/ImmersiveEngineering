@@ -1,0 +1,33 @@
+{
+  "parent": "immersiveengineering:tools/craft_revolver",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:wolfpack"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_wolfpack.desc"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:wolfpack"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_wolfpack"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

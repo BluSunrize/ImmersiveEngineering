@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:turn_and_copy",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:wires/aluminum"
+    },
+    "s": {
+      "tag": "c:rods/wooden"
+    },
+    "w": {
+      "tag": "forge:wires/steel"
+    }
+  },
+  "pattern": [
+    " w ",
+    "asa",
+    " w "
+  ],
+  "quarter_turn": true,
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:wirecoil_steel"
+  }
+}

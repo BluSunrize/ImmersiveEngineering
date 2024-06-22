@@ -1,0 +1,20 @@
+{
+  "type": "immersiveengineering:crusher",
+  "energy": 1600,
+  "input": {
+    "item": "minecraft:charcoal"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:black_dye"
+  },
+  "secondaries": [
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "item": "minecraft:gray_dye"
+      }
+    }
+  ]
+}

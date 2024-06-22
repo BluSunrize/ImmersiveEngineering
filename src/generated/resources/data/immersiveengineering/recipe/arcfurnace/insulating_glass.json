@@ -1,0 +1,24 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "additives": [
+    {
+      "tag": "forge:dusts/iron"
+    }
+  ],
+  "energy": 51200,
+  "input": {
+    "basePredicate": {
+      "tag": "c:glass_blocks"
+    },
+    "count": 2
+  },
+  "results": [
+    {
+      "basePredicate": {
+        "item": "immersiveengineering:insulating_glass"
+      },
+      "count": 2
+    }
+  ],
+  "time": 100
+}

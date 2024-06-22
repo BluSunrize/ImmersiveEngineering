@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "minecraft:bucket"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
+    }
+  },
+  "pattern": [
+    " ii",
+    "ibb",
+    "ibb"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:jerrycan"
+  }
+}

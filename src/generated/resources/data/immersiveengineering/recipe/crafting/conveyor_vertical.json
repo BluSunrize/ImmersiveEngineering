@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:conveyor_basic"
+    },
+    "i": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    "ci",
+    "c ",
+    "ci"
+  ],
+  "result": {
+    "count": 3,
+    "id": "immersiveengineering:conveyor_vertical"
+  }
+}

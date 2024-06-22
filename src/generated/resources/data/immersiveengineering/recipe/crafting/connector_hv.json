@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "immersiveengineering:connector_insulator"
+    },
+    "i": {
+      "tag": "forge:ingots/aluminum"
+    }
+  },
+  "pattern": [
+    " i ",
+    "cic",
+    "cic"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:connector_hv"
+  }
+}

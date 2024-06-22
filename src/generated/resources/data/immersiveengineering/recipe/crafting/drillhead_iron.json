@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "tag": "c:storage_blocks/iron"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    "  i",
+    "ii ",
+    "bi "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:drillhead_iron"
+  }
+}

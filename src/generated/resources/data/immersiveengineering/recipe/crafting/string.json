@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "forge:fiber_hemp"
+    },
+    {
+      "tag": "forge:fiber_hemp"
+    },
+    {
+      "tag": "forge:fiber_hemp"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:string"
+  }
+}

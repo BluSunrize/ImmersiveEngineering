@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:crimson_fungus"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:crimson_fungus"
+  },
+  "results": [
+    {
+      "item": "minecraft:crimson_fungus"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:crimson_nylium"
+  },
+  "time": 560
+}

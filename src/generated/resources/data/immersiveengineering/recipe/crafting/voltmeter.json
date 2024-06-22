@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "forge:ingots/copper"
+    },
+    "p": {
+      "item": "minecraft:compass"
+    },
+    "s": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    " p ",
+    "scs"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:voltmeter"
+  }
+}

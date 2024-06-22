@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:gravels"
+    },
+    {
+      "tag": "c:sands/colorless"
+    },
+    {
+      "tag": "c:sands/colorless"
+    },
+    {
+      "tag": "c:sands/colorless"
+    },
+    {
+      "tag": "c:sands/colorless"
+    }
+  ],
+  "result": {
+    "count": 5,
+    "id": "immersiveengineering:grit_sand"
+  }
+}

@@ -46,6 +46,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -297,9 +298,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 			BlockEntry<MetalLadderBlock> steel = MetalDecoration.METAL_LADDER.get(CoverType.STEEL);
 			BlockEntry<MetalLadderBlock> alu = MetalDecoration.METAL_LADDER.get(CoverType.ALU);
 			BlockEntry<MetalLadderBlock> none = MetalDecoration.METAL_LADDER.get(CoverType.NONE);
-			createDirectionalBlock(none, IEProperties.FACING_HORIZONTAL, noneModel);
-			createDirectionalBlock(alu, IEProperties.FACING_HORIZONTAL, aluModel);
-			createDirectionalBlock(steel, IEProperties.FACING_HORIZONTAL, steelModel);
+			createDirectionalBlock(none, LadderBlock.FACING, noneModel);
+			createDirectionalBlock(alu, LadderBlock.FACING, aluModel);
+			createDirectionalBlock(steel, LadderBlock.FACING, steelModel);
 			itemModel(alu, aluModel);
 			itemModel(steel, steelModel);
 		}

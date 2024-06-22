@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:cactus"
+  },
+  "render": {
+    "type": "immersiveengineering:stacking",
+    "block": "minecraft:cactus"
+  },
+  "results": [
+    {
+      "item": "minecraft:cactus"
+    }
+  ],
+  "soil": {
+    "tag": "c:sands"
+  },
+  "time": 560
+}

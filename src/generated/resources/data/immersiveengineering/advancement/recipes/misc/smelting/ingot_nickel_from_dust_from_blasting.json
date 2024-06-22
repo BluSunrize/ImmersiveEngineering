@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dust_nickel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:dust_nickel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/ingot_nickel_from_dust_from_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dust_nickel"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/ingot_nickel_from_dust_from_blasting"
+    ]
+  }
+}

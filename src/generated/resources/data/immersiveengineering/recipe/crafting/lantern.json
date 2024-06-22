@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:dusts/glowstone"
+    },
+    "I": {
+      "tag": "forge:plates/iron"
+    },
+    "P": {
+      "item": "minecraft:glass_pane"
+    }
+  },
+  "pattern": [
+    " I ",
+    "PGP",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:lantern"
+  }
+}

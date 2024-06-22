@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "immersiveengineering:crate"
+    },
+    "C": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "pattern": [
+    "B",
+    "C"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:minecart_woodencrate"
+  }
+}

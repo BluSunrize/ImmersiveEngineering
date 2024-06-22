@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:concrete"
+    },
+    {
+      "tag": "forge:plates/lead"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:concrete_leaded"
+  }
+}

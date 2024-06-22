@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:empty_casing"
+    },
+    "d": {
+      "tag": "c:dyes/blue"
+    },
+    "g": {
+      "tag": "c:gunpowders"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    "gcg",
+    "ddd",
+    "ppp"
+  ],
+  "result": {
+    "components": {
+      "immersiveengineering:blueprint": "bullet"
+    },
+    "count": 1,
+    "id": "immersiveengineering:blueprint"
+  },
+  "show_notification": false
+}

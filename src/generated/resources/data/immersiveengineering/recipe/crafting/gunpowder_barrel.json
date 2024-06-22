@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "item": "immersiveengineering:wooden_barrel"
+    },
+    "f": {
+      "item": "immersiveengineering:hemp_fiber"
+    },
+    "g": {
+      "tag": "c:gunpowders"
+    }
+  },
+  "pattern": [
+    "gfg",
+    "gbg"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:gunpowder_barrel"
+  }
+}

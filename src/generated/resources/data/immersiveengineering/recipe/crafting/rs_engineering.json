@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:turn_and_copy",
+  "category": "misc",
+  "eight_turn": true,
+  "key": {
+    "c": {
+      "tag": "forge:ingots/copper"
+    },
+    "i": {
+      "tag": "forge:sheetmetals/iron"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "iri",
+    "rcr",
+    "iri"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:rs_engineering"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:allium"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:allium"
+  },
+  "results": [
+    {
+      "item": "minecraft:allium"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

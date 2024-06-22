@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:coil_mv"
+    },
+    "g": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "i": {
+      "tag": "forge:sheetmetals/steel"
+    }
+  },
+  "pattern": [
+    "ici",
+    "cgc",
+    "ici"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:generator"
+  }
+}

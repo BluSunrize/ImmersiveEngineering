@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:nugget_steel"
+    },
+    "s": {
+      "tag": "forge:nuggets/steel"
+    }
+  },
+  "pattern": [
+    "sss",
+    "sis",
+    "sss"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:ingot_steel"
+  }
+}

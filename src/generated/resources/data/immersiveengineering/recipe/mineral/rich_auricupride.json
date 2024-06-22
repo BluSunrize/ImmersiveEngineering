@@ -1,0 +1,55 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ],
+    [
+      "minecraft:is_badlands"
+    ]
+  ],
+  "fail_chance": 0.1,
+  "ores": [
+    {
+      "chance": 0.6,
+      "conditions": [],
+      "output": {
+        "tag": "c:ores/gold"
+      }
+    },
+    {
+      "chance": 0.4,
+      "conditions": [],
+      "output": {
+        "tag": "c:ores/copper"
+      }
+    }
+  ],
+  "spoils": [
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:cobblestone"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:cobbled_deepslate"
+      }
+    }
+  ],
+  "weight": 20
+}

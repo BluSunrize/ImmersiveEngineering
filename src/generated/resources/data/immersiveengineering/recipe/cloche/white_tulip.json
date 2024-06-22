@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:white_tulip"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:white_tulip"
+  },
+  "results": [
+    {
+      "item": "minecraft:white_tulip"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

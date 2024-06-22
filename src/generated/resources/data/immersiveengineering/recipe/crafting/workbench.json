@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:craftingtable"
+    },
+    "f": {
+      "item": "immersiveengineering:treated_fence"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "s": {
+      "tag": "forge:treated_wood_slab"
+    }
+  },
+  "pattern": [
+    "iss",
+    "c f"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:workbench"
+  }
+}

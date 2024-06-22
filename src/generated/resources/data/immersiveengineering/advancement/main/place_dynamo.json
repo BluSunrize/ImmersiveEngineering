@@ -1,0 +1,33 @@
+{
+  "parent": "immersiveengineering:main/connect_wire",
+  "criteria": {
+    "place_block": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:dynamo",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.place_dynamo.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:dynamo"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.place_dynamo"
+    }
+  },
+  "requirements": [
+    [
+      "place_block"
+    ]
+  ]
+}

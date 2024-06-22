@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:mixer",
+  "energy": 3200,
+  "fluid": {
+    "amount": 500,
+    "tag": "minecraft:water"
+  },
+  "inputs": [
+    {
+      "basePredicate": {
+        "tag": "c:sands"
+      },
+      "count": 2
+    },
+    {
+      "tag": "c:gravels"
+    },
+    {
+      "tag": "forge:clay"
+    }
+  ],
+  "result": {
+    "amount": 500,
+    "id": "immersiveengineering:concrete"
+  }
+}

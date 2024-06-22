@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "c:ingots/iron"
+    },
+    "w": {
+      "item": "immersiveengineering:wirecoil_electrum"
+    }
+  },
+  "pattern": [
+    "www",
+    "wiw",
+    "www"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:coil_mv"
+  }
+}

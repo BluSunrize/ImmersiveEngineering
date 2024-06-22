@@ -23,5 +23,5 @@ public interface ChatComponentAccess
 	List<GuiMessage> getAllMessages();
 
 	@Invoker
-	void invokeRefreshTrimmedMessage();
+	void invokeRefreshTrimmedMessages();
 }

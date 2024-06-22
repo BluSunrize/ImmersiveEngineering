@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "f": {
+      "item": "minecraft:flint"
+    },
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
+    }
+  },
+  "pattern": [
+    "iif",
+    " s "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:gunpart_hammer"
+  }
+}

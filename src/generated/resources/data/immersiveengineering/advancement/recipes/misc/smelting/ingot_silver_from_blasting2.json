@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_deepslate_ore_silver": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:deepslate_ore_silver"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/ingot_silver_from_blasting2"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_deepslate_ore_silver"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/ingot_silver_from_blasting2"
+    ]
+  }
+}

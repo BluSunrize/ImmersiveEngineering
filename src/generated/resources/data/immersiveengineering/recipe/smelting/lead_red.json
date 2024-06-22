@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": {
+    "tag": "forge:nuggets/lead"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:red_dye"
+  }
+}

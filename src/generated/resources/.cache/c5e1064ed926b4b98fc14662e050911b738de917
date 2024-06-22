@@ -1,3 +1,2 @@
-// 1.20.4	2023-12-13T14:40:08.929052071	IE tile tags
-a2fb9948d83593c083991e7922e99f85bd85ffda data/forge/tags/block_entity_type/immovable.json
-a2fb9948d83593c083991e7922e99f85bd85ffda data/forge/tags/block_entity_type/relocation_not_supported.json
+// 1.21	2024-06-22T14:16:19.822966849	IE tile tags
+97ff80af0f4794b3a9aeacba355f029078a01d4c data/c/tags/block/relocation_not_supported.json

@@ -5,7 +5,7 @@
       "type": "minecraft:height_range",
       "height": {
         "type": "immersiveengineering:ie_range",
-        "value": 3
+        "veinType": 3
       }
     },
     {
@@ -13,7 +13,7 @@
     },
     {
       "type": "immersiveengineering:ie_count",
-      "value": 3
+      "veinType": 3
     }
   ]
 }

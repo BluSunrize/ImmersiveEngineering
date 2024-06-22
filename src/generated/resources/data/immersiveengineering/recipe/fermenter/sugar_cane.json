@@ -1,0 +1,11 @@
+{
+  "type": "immersiveengineering:fermenter",
+  "energy": 6400,
+  "fluid": {
+    "amount": 80,
+    "id": "immersiveengineering:ethanol"
+  },
+  "input": {
+    "item": "minecraft:sugar_cane"
+  }
+}

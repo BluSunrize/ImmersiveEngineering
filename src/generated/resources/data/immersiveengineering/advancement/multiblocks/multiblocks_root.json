@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:ingot_steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png",
+    "description": {
+      "translate": "advancement.immersiveengineering.multiblocks_root.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:steel_scaffolding_standard"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.immersiveengineering.multiblocks_root"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

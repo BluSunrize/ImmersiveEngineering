@@ -1,0 +1,16 @@
+{
+  "type": "immersiveengineering:refinery",
+  "energy": 240,
+  "input0": {
+    "amount": 12,
+    "tag": "forge:acetaldehyde"
+  },
+  "input1": {
+    "amount": 8,
+    "tag": "forge:creosote"
+  },
+  "result": {
+    "amount": 8,
+    "id": "immersiveengineering:phenolic_resin"
+  }
+}

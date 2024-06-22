@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "tag": "minecraft:banners"
+    },
+    "d": {
+      "tag": "c:dyes/blue"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    " b ",
+    "ddd",
+    "ppp"
+  ],
+  "result": {
+    "components": {
+      "immersiveengineering:blueprint": "bannerpatterns"
+    },
+    "count": 1,
+    "id": "immersiveengineering:blueprint"
+  },
+  "show_notification": false
+}

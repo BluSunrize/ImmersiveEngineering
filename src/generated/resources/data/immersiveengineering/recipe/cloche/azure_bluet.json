@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:azure_bluet"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:azure_bluet"
+  },
+  "results": [
+    {
+      "item": "minecraft:azure_bluet"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

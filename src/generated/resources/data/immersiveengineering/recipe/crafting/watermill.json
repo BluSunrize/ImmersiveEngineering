@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "p": {
+      "item": "immersiveengineering:waterwheel_segment"
+    }
+  },
+  "pattern": [
+    " p ",
+    "pip",
+    " p "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:watermill"
+  }
+}

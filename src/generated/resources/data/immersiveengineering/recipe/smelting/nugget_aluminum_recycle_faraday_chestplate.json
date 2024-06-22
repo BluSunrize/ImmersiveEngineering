@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.1,
+  "ingredient": {
+    "item": "immersiveengineering:armor_faraday_chestplate"
+  },
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:nugget_aluminum"
+  }
+}

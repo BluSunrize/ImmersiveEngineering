@@ -1,7 +1,9 @@
 {
   "type": "immersiveengineering:ie_ore",
   "config": {
-    "type": 0,
+    "type": {
+      "veinType": 0
+    },
     "targets": [
       {
         "state": {

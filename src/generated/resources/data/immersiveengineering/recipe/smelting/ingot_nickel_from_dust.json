@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "immersiveengineering:dust_nickel"
+  },
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:ingot_nickel"
+  }
+}

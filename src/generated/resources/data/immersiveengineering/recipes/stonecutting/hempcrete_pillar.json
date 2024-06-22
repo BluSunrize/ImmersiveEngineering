@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 1,
-  "ingredient": {
-    "item": "immersiveengineering:hempcrete"
-  },
-  "result": "immersiveengineering:hempcrete_pillar"
-}

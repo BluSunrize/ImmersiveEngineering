@@ -1,0 +1,42 @@
+# @file neoforge.mods.toml
+# @spec TOML v0.5.0 (https://github.com/toml-lang/toml)
+#
+modLoader="javafml"
+loaderVersion="[1,)"
+issueTrackerURL="https://github.com/BluSunrize/ImmersiveEngineering/issues"
+license="Blu's License of Common Sense"
+
+[[mods]]
+modId = "immersiveengineering"
+version = "${ie_version}"
+displayName = "Immersive Engineering"
+description = "A tech based mod focused on realism."
+authors = "BluSunrize and Damien A.W. Hazard"
+updateJSONURL = "https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineering/${mc_version}/changelog.json"
+displayURL = "https://minecraft.curseforge.com/projects/immersive-engineering/"
+logoFile = "logo.png"
+credits = "All the great other Git Contributors, and the nerds on IRC!"
+
+[[dependencies.immersiveengineering]]
+  modId="neoforge"
+type = "required"
+  versionRange="[${forge_version},)"
+  ordering="NONE"
+  side="BOTH"
+
+[[dependencies.immersiveengineering]]
+  modId="minecraft"
+type = "required"
+  versionRange="[${mc_version}]"
+  ordering="NONE"
+  side="BOTH"
+
+[[dependencies.immersiveengineering]]
+  modId="jei"
+type = "optional"
+  versionRange="[${jei_version},)"
+  ordering="NONE"
+  side="BOTH"
+
+[[mixins]]
+  config="immersiveengineering.mixins.json"

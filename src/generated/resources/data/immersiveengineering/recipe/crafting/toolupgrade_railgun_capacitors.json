@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "p": {
+      "tag": "forge:plates/constantan"
+    }
+  },
+  "pattern": [
+    "p  ",
+    "ip ",
+    " ip"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_railgun_capacitors"
+  }
+}

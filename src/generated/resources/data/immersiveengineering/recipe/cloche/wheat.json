@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:wheat_seeds"
+  },
+  "render": {
+    "type": "immersiveengineering:crop",
+    "block": "minecraft:wheat"
+  },
+  "results": [
+    {
+      "basePredicate": {
+        "item": "minecraft:wheat"
+      },
+      "count": 2
+    },
+    {
+      "item": "minecraft:wheat_seeds"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 640
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "e": {
+      "item": "immersiveengineering:light_bulb"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
+    },
+    "p": {
+      "tag": "c:glass_panes"
+    },
+    "w": {
+      "tag": "forge:wires/copper"
+    }
+  },
+  "pattern": [
+    " i ",
+    "pep",
+    " w "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:electric_lantern"
+  }
+}

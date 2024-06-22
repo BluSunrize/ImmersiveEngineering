@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:steel_scaffolding_wooden_top"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:steel_scaffolding_standard"
+  }
+}

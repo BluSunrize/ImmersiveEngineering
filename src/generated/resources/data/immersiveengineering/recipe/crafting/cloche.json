@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "e": {
+      "item": "immersiveengineering:light_bulb"
+    },
+    "g": {
+      "tag": "c:glass_blocks"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    }
+  },
+  "pattern": [
+    "geg",
+    "g g",
+    "wcw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:cloche"
+  }
+}

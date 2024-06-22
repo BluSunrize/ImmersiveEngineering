@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.mixin.coremods.client;
 
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -29,10 +29,8 @@ public class LevelRendererMixin
 			args = {"ldc=destroyProgress"}
 	))
 	public void afterTESRRender(
-			PoseStack matrixStackIn, float partialTicks, long finishTimeNano, boolean drawBlockOutline,
-			Camera activeRenderInfoIn, GameRenderer gameRendererIn, LightTexture lightmapIn,
-			Matrix4f projectionIn, CallbackInfo ci
-	)
+			DeltaTracker p_348530_, boolean p_109603_, Camera p_109604_, GameRenderer p_109605_, LightTexture p_109606_,
+			Matrix4f p_254120_, Matrix4f p_323920_, CallbackInfo ci)
 	{
 		VertexBufferHolder.afterTERRendering();
 	}

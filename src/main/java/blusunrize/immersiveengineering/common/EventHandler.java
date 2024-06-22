@@ -125,7 +125,7 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onItemPickup(ItemEntityPickupEvent event)
+	public void onItemPickup(ItemEntityPickupEvent.Post event)
 	{
 		Player player = event.getPlayer();
 		ItemStack stack = event.getItemEntity().getItem();

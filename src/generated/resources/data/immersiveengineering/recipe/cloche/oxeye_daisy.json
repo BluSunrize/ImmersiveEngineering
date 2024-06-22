@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:oxeye_daisy"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:oxeye_daisy"
+  },
+  "results": [
+    {
+      "item": "minecraft:oxeye_daisy"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

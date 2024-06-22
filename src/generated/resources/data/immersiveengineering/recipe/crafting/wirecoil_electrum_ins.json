@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "forge:fabric_hemp"
+    },
+    "m": {
+      "tag": "forge:fabric_hemp"
+    },
+    "s": {
+      "item": "immersiveengineering:wirecoil_electrum"
+    }
+  },
+  "pattern": [
+    "csc",
+    "sms",
+    "csc"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:wirecoil_electrum_ins"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "parent": "immersiveengineering:main/main_root",
+  "criteria": {
+    "conveyor_basic": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_basic",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "conveyor_dropper": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_dropper",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "conveyor_extract": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_extract",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "conveyor_redstone": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_redstone",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "conveyor_splitter": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_splitter",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "conveyor_vertical": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:conveyor_vertical",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.place_conveyor.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:conveyor_basic"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.place_conveyor"
+    }
+  },
+  "requirements": [
+    [
+      "conveyor_basic",
+      "conveyor_dropper",
+      "conveyor_extract",
+      "conveyor_redstone",
+      "conveyor_splitter",
+      "conveyor_vertical"
+    ]
+  ]
+}

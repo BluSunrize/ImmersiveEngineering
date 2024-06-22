@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:no_container_item",
+  "baseRecipe": {
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+      "c": {
+        "item": "immersiveengineering:wirecutter"
+      },
+      "f": {
+        "tag": "forge:fabric_hemp"
+      },
+      "s": {
+        "item": "immersiveengineering:screwdriver"
+      }
+    },
+    "pattern": [
+      "sc ",
+      "fff"
+    ],
+    "result": {
+      "count": 1,
+      "id": "immersiveengineering:maintenance_kit"
+    }
+  }
+}

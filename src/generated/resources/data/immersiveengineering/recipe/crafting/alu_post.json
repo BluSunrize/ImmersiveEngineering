@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "f": {
+      "item": "immersiveengineering:alu_fence"
+    },
+    "s": {
+      "item": "minecraft:stone_bricks"
+    }
+  },
+  "pattern": [
+    "f",
+    "f",
+    "s"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:alu_post"
+  }
+}

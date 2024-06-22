@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "forge:plates/iron"
+    },
+    "d": {
+      "tag": "c:dyes/blue"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    }
+  },
+  "pattern": [
+    " P ",
+    "ddd",
+    "ppp"
+  ],
+  "result": {
+    "components": {
+      "immersiveengineering:blueprint": "molds"
+    },
+    "count": 1,
+    "id": "immersiveengineering:blueprint"
+  },
+  "show_notification": false
+}

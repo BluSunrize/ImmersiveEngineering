@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/conveyor_vertical_covered"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_vertical_conveyor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:conveyor_vertical"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_vertical_conveyor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/conveyor_vertical_covered"
+    ]
+  }
+}

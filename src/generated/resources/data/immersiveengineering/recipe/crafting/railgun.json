@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:coil_mv"
+    },
+    "g": {
+      "item": "immersiveengineering:wooden_grip"
+    },
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "p": {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
+    "v": {
+      "item": "immersiveengineering:capacitor_hv"
+    }
+  },
+  "pattern": [
+    " vg",
+    "icp",
+    "ci "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:railgun"
+  }
+}

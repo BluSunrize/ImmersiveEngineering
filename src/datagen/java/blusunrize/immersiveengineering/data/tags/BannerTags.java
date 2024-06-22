@@ -15,6 +15,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -25,16 +26,25 @@ public class BannerTags extends TagsProvider<BannerPattern>
 {
 	public BannerTags(PackOutput output, CompletableFuture<Provider> provider, @Nullable ExistingFileHelper existingFileHelper)
 	{
-		super(
-				output, Registries.BANNER_PATTERN, provider,
-				Lib.MODID, existingFileHelper
-		);
+		super(output, Registries.BANNER_PATTERN, provider, Lib.MODID, existingFileHelper);
 	}
 
 	@Override
 	protected void addTags(Provider p_256380_)
 	{
 		for(BannerEntry entry : IEBannerPatterns.ALL_BANNERS)
-			tag(entry.tag()).add(entry.pattern().unwrapKey().orElseThrow());
+			tag(entry.tag()).add(entry.key());
+	}
+
+	public static void bootstrap(BootstrapContext<BannerPattern> ctx)
+	{
+		for(BannerEntry entry : IEBannerPatterns.ALL_BANNERS)
+		{
+			var key = entry.key();
+			ctx.register(
+					key,
+					new BannerPattern(key.location(), "block.minecraft.banner."+key.location().toShortLanguageKey())
+			);
+		}
 	}
 }

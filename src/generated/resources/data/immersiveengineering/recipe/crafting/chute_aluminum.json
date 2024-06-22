@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "tag": "forge:sheetmetals/aluminum"
+    }
+  },
+  "pattern": [
+    "s s",
+    "s s",
+    "s s"
+  ],
+  "result": {
+    "count": 12,
+    "id": "immersiveengineering:chute_aluminum"
+  }
+}

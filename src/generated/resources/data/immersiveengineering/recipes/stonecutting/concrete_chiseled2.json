@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:stonecutting",
-  "count": 1,
-  "ingredient": {
-    "item": "immersiveengineering:concrete_tile"
-  },
-  "result": "immersiveengineering:concrete_chiseled"
-}

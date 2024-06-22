@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "item": "immersiveengineering:sword_steel"
+    },
+    "w": {
+      "tag": "forge:wires/copper"
+    }
+  },
+  "pattern": [
+    "ws",
+    "iw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_revolver_bayonet"
+  }
+}

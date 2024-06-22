@@ -37,7 +37,7 @@ public record MessageNoSpamChat(Component message) implements IMessage
 			final ChatComponentAccess chatAccess = ((ChatComponentAccess)chat);
 			final List<GuiMessage> allMessages = chatAccess.getAllMessages();
 			allMessages.removeIf(guiMessage -> Objects.equals(guiMessage.signature(), ChatUtils.NO_SPAM_SIGNATURE));
-			chatAccess.invokeRefreshTrimmedMessage();
+			chatAccess.invokeRefreshTrimmedMessages();
 			chat.addMessage(message, ChatUtils.NO_SPAM_SIGNATURE, null);
 		});
 	}

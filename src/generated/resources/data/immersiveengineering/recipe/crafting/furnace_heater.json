@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "p": {
+      "tag": "forge:plates/copper"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    },
+    "s": {
+      "tag": "forge:sheetmetals/iron"
+    },
+    "w": {
+      "item": "immersiveengineering:wirecoil_copper"
+    }
+  },
+  "pattern": [
+    "pwp",
+    "wsw",
+    "prp"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:furnace_heater"
+  }
+}

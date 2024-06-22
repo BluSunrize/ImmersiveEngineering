@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:rods/steel"
+    },
+    "p": {
+      "tag": "c:glass_panes"
+    },
+    "s": {
+      "item": "minecraft:spyglass"
+    }
+  },
+  "pattern": [
+    "  p",
+    " si",
+    "pi "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_railgun_scope"
+  }
+}

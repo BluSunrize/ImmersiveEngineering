@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:blue_orchid"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:blue_orchid"
+  },
+  "results": [
+    {
+      "item": "minecraft:blue_orchid"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:mud"
+  },
+  "time": 480
+}

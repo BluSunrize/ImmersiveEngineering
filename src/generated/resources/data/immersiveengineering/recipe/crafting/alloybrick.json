@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "tag": "c:bricks"
+    },
+    "s": {
+      "tag": "c:sandstone/blocks"
+    }
+  },
+  "pattern": [
+    "sb",
+    "bs"
+  ],
+  "result": {
+    "count": 2,
+    "id": "immersiveengineering:alloybrick"
+  }
+}

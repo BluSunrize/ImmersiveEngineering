@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "ingredient": {
+    "item": "immersiveengineering:raw_uranium"
+  },
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:ingot_uranium"
+  }
+}

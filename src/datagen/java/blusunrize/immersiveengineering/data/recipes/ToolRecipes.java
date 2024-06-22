@@ -57,10 +57,11 @@ public class ToolRecipes extends IERecipeProvider
 		addStandardSmeltingBlastingRecipe(Tools.STEEL_SWORD, Metals.NUGGETS.get(EnumMetals.STEEL), 0.1F, out, "_recycle_sword");
 
 		for(ArmorItem.Type slot : ArmorItem.Type.values())
-		{
-			addStandardSmeltingBlastingRecipe(Tools.STEEL_ARMOR.get(slot), Metals.NUGGETS.get(EnumMetals.STEEL), 0.1F, out, "_recycle_steel_"+slot.getName());
-			addStandardSmeltingBlastingRecipe(Misc.FARADAY_SUIT.get(slot), Metals.NUGGETS.get(EnumMetals.ALUMINUM), 0.1F, out, "_recycle_faraday_"+slot.getName());
-		}
+			if(slot!=Type.BODY)
+			{
+				addStandardSmeltingBlastingRecipe(Tools.STEEL_ARMOR.get(slot), Metals.NUGGETS.get(EnumMetals.STEEL), 0.1F, out, "_recycle_steel_"+slot.getName());
+				addStandardSmeltingBlastingRecipe(Misc.FARADAY_SUIT.get(slot), Metals.NUGGETS.get(EnumMetals.ALUMINUM), 0.1F, out, "_recycle_faraday_"+slot.getName());
+			}
 
 		SpecialRecipeBuilder.special(SpeedloaderLoadRecipe::new)
 				.save(out, ImmersiveEngineering.MODID+":speedloader_load");

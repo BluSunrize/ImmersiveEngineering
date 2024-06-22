@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:workbench"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png",
+    "description": {
+      "translate": "advancement.immersiveengineering.tools_root.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:workbench"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.immersiveengineering.tools_root"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

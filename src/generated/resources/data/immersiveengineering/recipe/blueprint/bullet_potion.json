@@ -1,0 +1,18 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "specialBullet",
+  "inputs": [
+    {
+      "item": "immersiveengineering:empty_casing"
+    },
+    {
+      "tag": "c:gunpowders"
+    },
+    {
+      "item": "minecraft:glass_bottle"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:potion"
+  }
+}

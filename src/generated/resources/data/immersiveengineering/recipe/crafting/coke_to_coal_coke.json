@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:coke"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "immersiveengineering:coal_coke"
+  }
+}

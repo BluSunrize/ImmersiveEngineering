@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:pink_tulip"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:pink_tulip"
+  },
+  "results": [
+    {
+      "item": "minecraft:pink_tulip"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

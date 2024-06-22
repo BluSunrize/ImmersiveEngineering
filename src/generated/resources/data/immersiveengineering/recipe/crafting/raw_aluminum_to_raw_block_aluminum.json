@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:raw_aluminum"
+    },
+    "s": {
+      "tag": "forge:raw_materials/aluminum"
+    }
+  },
+  "pattern": [
+    "sss",
+    "sis",
+    "sss"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:raw_block_aluminum"
+  }
+}

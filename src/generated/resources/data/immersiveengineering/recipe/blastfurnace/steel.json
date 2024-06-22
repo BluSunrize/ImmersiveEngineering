@@ -1,0 +1,13 @@
+{
+  "type": "immersiveengineering:blast_furnace",
+  "input": {
+    "tag": "c:ingots/iron"
+  },
+  "result": {
+    "tag": "forge:ingots/steel"
+  },
+  "slag": {
+    "tag": "forge:slag"
+  },
+  "time": 1200
+}

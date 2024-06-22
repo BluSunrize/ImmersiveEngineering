@@ -1,0 +1,74 @@
+{
+  "type": "immersiveengineering:mineral_mix",
+  "biome_predicates": [
+    [
+      "minecraft:is_overworld"
+    ]
+  ],
+  "fail_chance": 0.05,
+  "ores": [
+    {
+      "chance": 0.6,
+      "conditions": [],
+      "output": {
+        "tag": "forge:ores/aluminum"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "tag": "c:ores/iron"
+      }
+    },
+    {
+      "chance": 0.1,
+      "conditions": [],
+      "output": {
+        "tag": "forge:ores/nickel"
+      }
+    },
+    {
+      "chance": 0.1,
+      "conditions": [
+        {
+          "type": "neoforge:not",
+          "value": {
+            "type": "neoforge:tag_empty",
+            "tag": "forge:ores/titanium"
+          }
+        }
+      ],
+      "output": {
+        "tag": "forge:ores/titanium"
+      }
+    }
+  ],
+  "spoils": [
+    {
+      "chance": 0.2,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:gravel"
+      }
+    },
+    {
+      "chance": 0.5,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:cobblestone"
+      }
+    },
+    {
+      "chance": 0.3,
+      "conditions": [],
+      "output": {
+        "count": 1,
+        "id": "minecraft:cobbled_deepslate"
+      }
+    }
+  ],
+  "weight": 20
+}

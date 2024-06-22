@@ -1,0 +1,32 @@
+{
+  "values": [
+    "immersiveengineering:railgun",
+    "immersiveengineering:chemthrower",
+    "immersiveengineering:revolver",
+    "immersiveengineering:speedloader",
+    "immersiveengineering:manual",
+    "immersiveengineering:wirecutter",
+    "immersiveengineering:buzzsaw",
+    "immersiveengineering:drill",
+    "immersiveengineering:hammer",
+    "immersiveengineering:screwdriver",
+    "immersiveengineering:survey_tools",
+    "immersiveengineering:voltmeter",
+    "immersiveengineering:earmuffs",
+    "immersiveengineering:skyhook",
+    "#forge:tools",
+    "minecraft:spyglass",
+    "minecraft:clock",
+    "minecraft:compass",
+    "minecraft:flint_and_steel",
+    "minecraft:fishing_rod",
+    {
+      "id": "#c:buckets/empty",
+      "required": false
+    },
+    {
+      "id": "#c:tools/wrenches",
+      "required": false
+    }
+  ]
+}

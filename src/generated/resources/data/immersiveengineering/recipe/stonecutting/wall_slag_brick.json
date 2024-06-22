@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "immersiveengineering:slag_brick"
+  },
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:wall_slag_brick"
+  }
+}

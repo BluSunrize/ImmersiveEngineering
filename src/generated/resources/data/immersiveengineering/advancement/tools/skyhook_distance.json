@@ -1,0 +1,25 @@
+{
+  "parent": "immersiveengineering:tools/tools_root",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.skyhook_distance.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:skyhook"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.skyhook_distance"
+    }
+  },
+  "requirements": [
+    [
+      "code_trigger"
+    ]
+  ]
+}

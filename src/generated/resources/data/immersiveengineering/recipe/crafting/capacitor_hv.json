@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "tag": "forge:plates/aluminum"
+    },
+    "c": {
+      "tag": "forge:ingots/hop_graphite"
+    },
+    "e": {
+      "type": "immersiveengineering:fluid_stack",
+      "amount": 1000,
+      "tag": "forge:redstone_acid"
+    },
+    "f": {
+      "tag": "forge:ingots/steel"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    }
+  },
+  "pattern": [
+    "waw",
+    "fef",
+    "wcw"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:capacitor_hv"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "immersiveengineering:no_container_item",
+  "baseRecipe": {
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+      "b": {
+        "item": "minecraft:glass_bottle"
+      },
+      "c": {
+        "item": "minecraft:writable_book"
+      },
+      "f": {
+        "tag": "forge:fabric_hemp"
+      },
+      "h": {
+        "item": "immersiveengineering:hammer"
+      }
+    },
+    "pattern": [
+      "cbh",
+      "fff"
+    ],
+    "result": {
+      "count": 1,
+      "id": "immersiveengineering:survey_tools"
+    }
+  }
+}

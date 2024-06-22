@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:plates/steel"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
+    }
+  },
+  "pattern": [
+    " i ",
+    "isi",
+    " i "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:gunpart_drum"
+  }
+}

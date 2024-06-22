@@ -1,0 +1,28 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "specialBullet",
+  "inputs": [
+    {
+      "basePredicate": {
+        "item": "immersiveengineering:empty_shell"
+      },
+      "count": 4
+    },
+    {
+      "basePredicate": {
+        "tag": "c:gunpowders"
+      },
+      "count": 2
+    },
+    {
+      "basePredicate": {
+        "tag": "forge:dusts/aluminum"
+      },
+      "count": 4
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:dragons_breath"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:conveyor_basic"
+    },
+    "s": {
+      "tag": "immersiveengineering:scaffoldings/steel"
+    }
+  },
+  "pattern": [
+    "s",
+    "c"
+  ],
+  "result": {
+    "components": {
+      "immersiveengineering:default_cover": "immersiveengineering:steel_scaffolding_standard"
+    },
+    "count": 1,
+    "id": "immersiveengineering:conveyor_basic"
+  },
+  "show_notification": false
+}

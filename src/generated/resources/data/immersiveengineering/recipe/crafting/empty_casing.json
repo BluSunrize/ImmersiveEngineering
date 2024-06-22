@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "forge:plates/copper"
+    }
+  },
+  "pattern": [
+    "c c",
+    "c c",
+    " c "
+  ],
+  "result": {
+    "count": 5,
+    "id": "immersiveengineering:empty_casing"
+  }
+}

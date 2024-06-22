@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "immersiveengineering:dust_aluminum"
+  },
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:ingot_aluminum"
+  }
+}

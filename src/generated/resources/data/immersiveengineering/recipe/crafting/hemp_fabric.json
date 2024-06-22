@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "f": {
+      "tag": "forge:fiber_hemp"
+    },
+    "s": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "fff",
+    "fsf",
+    "fff"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:hemp_fabric"
+  }
+}

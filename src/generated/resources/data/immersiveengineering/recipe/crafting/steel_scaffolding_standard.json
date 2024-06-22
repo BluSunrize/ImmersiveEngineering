@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
+    }
+  },
+  "pattern": [
+    "iii",
+    " s ",
+    "s s"
+  ],
+  "result": {
+    "count": 6,
+    "id": "immersiveengineering:steel_scaffolding_standard"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
+  "criteria": {
+    "form_multiblock": {
+      "conditions": {
+        "hammer": {
+          "items": "immersiveengineering:hammer"
+        },
+        "multiblock": "immersiveengineering:multiblocks/crusher"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_crusher.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:crusher"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_crusher"
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

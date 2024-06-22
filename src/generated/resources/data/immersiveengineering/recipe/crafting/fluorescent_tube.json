@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_blocks"
+    },
+    "e": {
+      "item": "immersiveengineering:graphite_electrode"
+    },
+    "g": {
+      "tag": "c:dusts/glowstone"
+    }
+  },
+  "pattern": [
+    "GeG",
+    "GgG",
+    "GgG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:fluorescent_tube"
+  }
+}

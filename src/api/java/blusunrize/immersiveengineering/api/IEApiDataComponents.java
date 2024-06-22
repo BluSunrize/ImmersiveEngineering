@@ -16,17 +16,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.function.Supplier;
+
 public class IEApiDataComponents
 {
-	static {
-		if (true)
-			throw new IllegalStateException("Need to be registered!");
-	}
-
-	public static DataComponentType<WireLink> WIRE_LINK;
-	public static DataComponentType<String> BLUEPRINT_TYPE;
-	public static DataComponentType<ResourceLocation> SHADER_TYPE;
-	public static DataComponentType<Unit> FLUID_PRESSURIZED;
+	public static Supplier<DataComponentType<WireLink>> WIRE_LINK;
+	public static Supplier<DataComponentType<String>> BLUEPRINT_TYPE;
+	public static Supplier<DataComponentType<ResourceLocation>> SHADER_TYPE;
+	public static Supplier<DataComponentType<Unit>> FLUID_PRESSURIZED;
 
 	public record CodecPair<T>(
 			Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec, T defaultValue

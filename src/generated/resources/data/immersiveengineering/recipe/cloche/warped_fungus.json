@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:warped_fungus"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:warped_fungus"
+  },
+  "results": [
+    {
+      "item": "minecraft:warped_fungus"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:warped_nylium"
+  },
+  "time": 560
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "c:dyes/red"
+    },
+    "i": {
+      "tag": "forge:plates/steel"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    }
+  },
+  "pattern": [
+    "pi ",
+    "idi",
+    " id"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_drill_capacity"
+  }
+}

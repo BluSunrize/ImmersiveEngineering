@@ -1,0 +1,33 @@
+{
+  "parent": "immersiveengineering:main/mb_blastfurnace",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:ingot_steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.make_steel.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:ingot_steel"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.make_steel"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

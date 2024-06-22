@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:connector_lv"
+    },
+    "r": {
+      "tag": "forge:rods/aluminum"
+    },
+    "w": {
+      "tag": "forge:wires/aluminum"
+    }
+  },
+  "pattern": [
+    "www",
+    "rww",
+    "c  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_powerpack_antenna"
+  }
+}

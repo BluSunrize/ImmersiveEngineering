@@ -149,7 +149,7 @@ public class IEContent
 		IERecipeTypes.init(modBus);
 		IELootFunctions.init(modBus);
 		IEArgumentTypes.init(modBus);
-		IEBannerPatterns.init(modBus);
+		IEBannerPatterns.init();
 		IEArmorMaterials.init(modBus);
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;

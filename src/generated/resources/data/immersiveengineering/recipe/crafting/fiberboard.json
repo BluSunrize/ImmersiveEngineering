@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:shaped_fluid",
+  "category": "misc",
+  "key": {
+    "b": {
+      "type": "immersiveengineering:fluid_stack",
+      "amount": 1000,
+      "tag": "forge:phenolic_resin"
+    },
+    "w": {
+      "tag": "forge:dusts/wood"
+    }
+  },
+  "pattern": [
+    "www",
+    "wbw",
+    "www"
+  ],
+  "result": {
+    "count": 8,
+    "id": "immersiveengineering:fiberboard"
+  }
+}

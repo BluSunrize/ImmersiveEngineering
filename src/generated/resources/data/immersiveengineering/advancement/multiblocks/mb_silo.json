@@ -1,0 +1,31 @@
+{
+  "parent": "immersiveengineering:multiblocks/craft_sheetmetal",
+  "criteria": {
+    "form_multiblock": {
+      "conditions": {
+        "hammer": {
+          "items": "immersiveengineering:hammer"
+        },
+        "multiblock": "immersiveengineering:multiblocks/silo"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_silo.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:silo"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_silo"
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

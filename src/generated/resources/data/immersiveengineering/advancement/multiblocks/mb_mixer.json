@@ -1,0 +1,31 @@
+{
+  "parent": "immersiveengineering:multiblocks/mb_fermenter",
+  "criteria": {
+    "form_multiblock": {
+      "conditions": {
+        "hammer": {
+          "items": "immersiveengineering:hammer"
+        },
+        "multiblock": "immersiveengineering:multiblocks/mixer"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_mixer.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:mixer"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_mixer"
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

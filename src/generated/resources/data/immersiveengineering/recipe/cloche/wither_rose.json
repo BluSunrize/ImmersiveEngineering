@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:wither_rose"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:wither_rose"
+  },
+  "results": [
+    {
+      "item": "minecraft:wither_rose"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:soul_soil"
+  },
+  "time": 480
+}

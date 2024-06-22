@@ -1,0 +1,32 @@
+{
+  "parent": "immersiveengineering:tools/tools_root",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:chemthrower"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_chemthrower.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:chemthrower"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_chemthrower"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:manual"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png",
+    "description": {
+      "translate": "advancement.immersiveengineering.main_root.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:manual"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.main_root"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

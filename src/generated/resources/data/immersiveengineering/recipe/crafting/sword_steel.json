@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    }
+  },
+  "pattern": [
+    "i",
+    "i",
+    "s"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:sword_steel"
+  }
+}

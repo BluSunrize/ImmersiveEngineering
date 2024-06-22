@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:ingot_uranium"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "immersiveengineering:nugget_uranium"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:sugar_cane"
+  },
+  "render": {
+    "type": "immersiveengineering:stacking",
+    "block": "minecraft:sugar_cane"
+  },
+  "results": [
+    {
+      "item": "minecraft:sugar_cane"
+    }
+  ],
+  "soil": {
+    "tag": "c:sands"
+  },
+  "time": 560
+}

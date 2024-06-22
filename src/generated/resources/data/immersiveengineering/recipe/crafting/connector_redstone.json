@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "b": {
+      "tag": "immersiveengineering:connector_insulator"
+    },
+    "i": {
+      "tag": "forge:nuggets/electrum"
+    },
+    "r": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "iii",
+    "brb"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:connector_redstone"
+  }
+}

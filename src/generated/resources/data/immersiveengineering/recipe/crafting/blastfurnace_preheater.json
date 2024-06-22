@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "h": {
+      "item": "immersiveengineering:furnace_heater"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    },
+    "s": {
+      "tag": "forge:sheetmetals/iron"
+    }
+  },
+  "pattern": [
+    "ss",
+    "ss",
+    "ph"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:blastfurnace_preheater"
+  }
+}

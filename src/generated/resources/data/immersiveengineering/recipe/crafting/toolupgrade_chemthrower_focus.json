@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "i": {
+      "tag": "forge:plates/steel"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    }
+  },
+  "pattern": [
+    "p  ",
+    " pi",
+    " ic"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_chemthrower_focus"
+  }
+}

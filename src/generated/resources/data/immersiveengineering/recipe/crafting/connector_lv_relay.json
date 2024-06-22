@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "immersiveengineering:connector_insulator"
+    },
+    "i": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "pattern": [
+    " i ",
+    "cic"
+  ],
+  "result": {
+    "count": 8,
+    "id": "immersiveengineering:connector_lv_relay"
+  }
+}

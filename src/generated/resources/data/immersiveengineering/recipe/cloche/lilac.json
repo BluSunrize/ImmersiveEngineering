@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:lilac"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:lilac"
+  },
+  "results": [
+    {
+      "item": "minecraft:lilac"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

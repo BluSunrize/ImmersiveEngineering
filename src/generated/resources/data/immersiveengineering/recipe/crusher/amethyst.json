@@ -1,0 +1,13 @@
+{
+  "type": "immersiveengineering:crusher",
+  "energy": 3200,
+  "input": {
+    "item": "minecraft:amethyst_block"
+  },
+  "result": {
+    "basePredicate": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "count": 4
+  }
+}

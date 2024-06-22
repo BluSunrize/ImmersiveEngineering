@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:shaped_fluid",
+  "category": "misc",
+  "key": {
+    "c": {
+      "type": "immersiveengineering:fluid_stack",
+      "amount": 1000,
+      "tag": "forge:creosote"
+    },
+    "s": {
+      "tag": "c:rods/wooden"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "wc ",
+    "sss"
+  ],
+  "result": {
+    "count": 12,
+    "id": "minecraft:torch"
+  }
+}

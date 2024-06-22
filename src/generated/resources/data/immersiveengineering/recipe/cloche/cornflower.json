@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:cornflower"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:cornflower"
+  },
+  "results": [
+    {
+      "item": "minecraft:cornflower"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 480
+}

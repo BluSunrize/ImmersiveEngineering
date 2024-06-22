@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "forge:ingots/copper"
+    },
+    "g": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "i": {
+      "tag": "forge:sheetmetals/iron"
+    }
+  },
+  "pattern": [
+    "igi",
+    "gcg",
+    "igi"
+  ],
+  "result": {
+    "count": 4,
+    "id": "immersiveengineering:light_engineering"
+  }
+}

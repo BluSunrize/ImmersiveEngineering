@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:moss_block"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "block": "minecraft:moss_carpet"
+  },
+  "results": [
+    {
+      "item": "minecraft:moss_block"
+    }
+  ],
+  "soil": {
+    "tag": "c:cobblestones"
+  },
+  "time": 1200
+}

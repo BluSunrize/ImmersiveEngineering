@@ -45,7 +45,7 @@ public class DynamicModel
 	public DynamicModel(String desc)
 	{
 		// TODO does this work?
-		this.name = new ModelResourceLocation(IEApi.ieLoc("dynamic/"+desc), "");
+		this.name = new ModelResourceLocation(IEApi.ieLoc("dynamic/"+desc), "standalone");
 		MODELS.add(this.name);
 	}
 

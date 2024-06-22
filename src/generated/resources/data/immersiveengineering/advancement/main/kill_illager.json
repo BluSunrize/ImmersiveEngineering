@@ -1,0 +1,135 @@
+{
+  "parent": "immersiveengineering:main/villager",
+  "criteria": {
+    "chemthrower_kill": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "#minecraft:raiders"
+            }
+          }
+        ],
+        "killing_blow": {
+          "direct_entity": {
+            "type": "immersiveengineering:chemthrower_shot"
+          }
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    },
+    "railgun_kill": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "#minecraft:raiders"
+            }
+          }
+        ],
+        "killing_blow": {
+          "source_entity": {
+            "equipment": {
+              "mainhand": {
+                "items": "immersiveengineering:railgun"
+              }
+            }
+          },
+          "tags": [
+            {
+              "expected": true,
+              "id": "minecraft:is_projectile"
+            }
+          ]
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    },
+    "revolver_kill": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "#minecraft:raiders"
+            }
+          }
+        ],
+        "killing_blow": {
+          "direct_entity": {
+            "type": "immersiveengineering:revolver_shot"
+          }
+        }
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.kill_illager.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "components": {
+        "minecraft:banner_patterns": [
+          {
+            "color": "cyan",
+            "pattern": "minecraft:rhombus"
+          },
+          {
+            "color": "light_gray",
+            "pattern": "minecraft:stripe_bottom"
+          },
+          {
+            "color": "gray",
+            "pattern": "minecraft:stripe_center"
+          },
+          {
+            "color": "light_gray",
+            "pattern": "minecraft:border"
+          },
+          {
+            "color": "black",
+            "pattern": "minecraft:stripe_middle"
+          },
+          {
+            "color": "light_gray",
+            "pattern": "minecraft:half_horizontal"
+          },
+          {
+            "color": "light_gray",
+            "pattern": "minecraft:circle"
+          },
+          {
+            "color": "black",
+            "pattern": "minecraft:border"
+          }
+        ],
+        "minecraft:hide_additional_tooltip": {},
+        "minecraft:item_name": "{\"color\":\"gold\",\"translate\":\"block.minecraft.ominous_banner\"}"
+      },
+      "count": 1,
+      "id": "minecraft:white_banner"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.kill_illager"
+    }
+  },
+  "requirements": [
+    [
+      "revolver_kill",
+      "railgun_kill",
+      "chemthrower_kill"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "immersiveengineering:advancements/shader_rare"
+    ]
+  }
+}

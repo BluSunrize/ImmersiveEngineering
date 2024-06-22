@@ -8,11 +8,14 @@
 
 package blusunrize.immersiveengineering.common.register;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
+import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.api.utils.Color4;
+import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity.TurretConfig;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerData;
@@ -80,12 +83,6 @@ public class IEDataComponents
 			"coresample_data", () -> DataComponentType.<CoresampleItem.ItemData>builder()
 					.persistent(CoresampleItem.ItemData.CODEC)
 					.networkSynchronized(CoresampleItem.ItemData.STREAM_CODEC)
-					.build()
-	);
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<String>> BLUEPRINT = REGISTER.register(
-			"blueprint", () -> DataComponentType.<String>builder()
-					.persistent(Codec.STRING)
-					.networkSynchronized(ByteBufCodecs.STRING_UTF8)
 					.build()
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Color4>> COLOR = REGISTER.register(
@@ -174,7 +171,10 @@ public class IEDataComponents
 
 	// TODO probably just a massive hack? Does this need to be persistent?
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> JERRYCAN_DRAIN = REGISTER.register(
-			"jerrycan_drain", () -> DataComponentType.<Integer>builder().build()
+			"jerrycan_drain", () -> DataComponentType.<Integer>builder()
+					.persistent(Codec.INT)
+					.networkSynchronized(ByteBufCodecs.INT)
+					.build()
 	);
 
 	public static void init(IEventBus bus)
@@ -187,6 +187,22 @@ public class IEDataComponents
 			var codecs = bullet.getCodec();
 			BULLETS.put(bullet, REGISTER.register(path, codecs::makeDataComponentType));
 		}
+		IEApiDataComponents.WIRE_LINK = REGISTER.register("wire_link", () -> DataComponentType.<WireLink>builder()
+				.persistent(WireLink.CODEC)
+				.networkSynchronized(WireLink.STREAM_CODEC)
+				.build()
+		);
+		IEApiDataComponents.BLUEPRINT_TYPE = REGISTER.register("blueprint", () -> DataComponentType.<String>builder()
+				.persistent(Codec.STRING)
+				.networkSynchronized(ByteBufCodecs.STRING_UTF8)
+				.build()
+		);
+		IEApiDataComponents.SHADER_TYPE = REGISTER.register("shader", () -> DataComponentType.<ResourceLocation>builder()
+				.persistent(ResourceLocation.CODEC)
+				.networkSynchronized(ResourceLocation.STREAM_CODEC)
+				.build()
+		);
+		IEApiDataComponents.FLUID_PRESSURIZED = REGISTER.register("fluid_pressurized", CodecPair.UNIT::makeDataComponentType);
 	}
 
 	@SuppressWarnings("unchecked")

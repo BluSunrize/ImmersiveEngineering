@@ -50,8 +50,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBloc
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
-import blusunrize.immersiveengineering.common.register.*;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
+import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.immersiveengineering.mixin.accessors.client.GuiSubtitleOverlayAccess;
@@ -63,7 +66,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.resources.PlayerSkin.Model;
@@ -200,7 +202,7 @@ public class ClientProxy extends CommonProxy
 
 		IEManual.addIEManualEntries();
 		// TODO is this necessary? Is this enough?
-		IEBannerPatterns.ALL_BANNERS.forEach(entry -> Sheets.getBannerMaterial(entry.pattern()));
+		// IEBannerPatterns.ALL_BANNERS.forEach(entry -> Sheets.getBannerMaterial(entry.pattern()));
 	}
 
 	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(

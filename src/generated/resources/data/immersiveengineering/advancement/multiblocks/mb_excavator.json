@@ -1,0 +1,32 @@
+{
+  "parent": "immersiveengineering:multiblocks/mb_crusher",
+  "criteria": {
+    "form_multiblock": {
+      "conditions": {
+        "hammer": {
+          "items": "immersiveengineering:hammer"
+        },
+        "multiblock": "immersiveengineering:multiblocks/excavator"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_excavator.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:excavator"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_excavator"
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

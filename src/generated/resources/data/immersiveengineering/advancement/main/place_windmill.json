@@ -1,0 +1,33 @@
+{
+  "parent": "immersiveengineering:main/place_dynamo",
+  "criteria": {
+    "place_block": {
+      "conditions": {
+        "location": [
+          {
+            "block": "immersiveengineering:windmill",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.place_windmill.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:windmill"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.place_windmill"
+    }
+  },
+  "requirements": [
+    [
+      "place_block"
+    ]
+  ]
+}

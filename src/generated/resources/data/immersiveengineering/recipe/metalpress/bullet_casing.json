@@ -1,0 +1,12 @@
+{
+  "type": "immersiveengineering:metal_press",
+  "energy": 2400,
+  "input": {
+    "tag": "forge:ingots/copper"
+  },
+  "mold": "immersiveengineering:mold_bullet_casing",
+  "result": {
+    "count": 2,
+    "id": "immersiveengineering:empty_casing"
+  }
+}

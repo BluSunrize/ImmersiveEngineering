@@ -1,0 +1,13 @@
+{
+  "type": "immersiveengineering:crusher",
+  "energy": 3200,
+  "input": {
+    "item": "minecraft:quartz_block"
+  },
+  "result": {
+    "basePredicate": {
+      "item": "minecraft:quartz"
+    },
+    "count": 4
+  }
+}

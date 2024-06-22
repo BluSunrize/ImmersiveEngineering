@@ -10,12 +10,10 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 public class GraphiteElectrodeItem extends IEBaseItem
@@ -28,7 +26,7 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
-		float integrity = getRelativeBarWidth(stack)*100f;
+		float integrity = 1-getDamage(stack)/(float)getMaxDamage(stack);
 		list.add(Component.translatable(Lib.DESC_INFO+"electrodeIntegrity", String.format("%.2f", integrity)));
 	}
 
@@ -45,37 +43,8 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	}
 
 	@Override
-	public int getBarWidth(@Nonnull ItemStack stack)
-	{
-		return Math.round(MAX_BAR_WIDTH*getRelativeBarWidth(stack));
-	}
-
-	private float getRelativeBarWidth(@Nonnull ItemStack stack)
-	{
-		return 1-ItemNBTHelper.getInt(stack, "graphDmg")/(float)IEServerConfig.getOrDefault(IEServerConfig.MACHINES.arcfurnace_electrodeDamage);
-	}
-
-	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
 		return IEServerConfig.getOrDefault(IEServerConfig.MACHINES.arcfurnace_electrodeDamage);
-	}
-
-	@Override
-	public boolean isDamaged(ItemStack stack)
-	{
-		return ItemNBTHelper.getInt(stack, "graphDmg") > 0;
-	}
-
-	@Override
-	public int getDamage(ItemStack stack)
-	{
-		return ItemNBTHelper.getInt(stack, "graphDmg");
-	}
-
-	@Override
-	public void setDamage(ItemStack stack, int damage)
-	{
-		ItemNBTHelper.putInt(stack, "graphDmg", damage);
 	}
 }

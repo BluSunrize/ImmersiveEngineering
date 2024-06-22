@@ -28,6 +28,7 @@ import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -142,12 +143,13 @@ public class IEItemTags extends ItemTagsProvider
 		tag(Tags.Items.TOOLS_SHIELDS).add(Misc.SHIELD.get());
 
 		for(var slot : ArmorItem.Type.values())
-		{
-			tag(Tags.Items.ARMORS)
-					.add(Tools.STEEL_ARMOR.get(slot).asItem())
-					.add(Misc.FARADAY_SUIT.get(slot).asItem());
-			tag(ItemTags.TRIMMABLE_ARMOR).add(Tools.STEEL_ARMOR.get(slot).asItem());
-		}
+			if(slot!=Type.BODY)
+			{
+				tag(Tags.Items.ARMORS)
+						.add(Tools.STEEL_ARMOR.get(slot).asItem())
+						.add(Misc.FARADAY_SUIT.get(slot).asItem());
+				tag(ItemTags.TRIMMABLE_ARMOR).add(Tools.STEEL_ARMOR.get(slot).asItem());
+			}
 		tag(ItemTags.HEAD_ARMOR)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.HELMET).asItem())
 				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.HELMET).asItem());

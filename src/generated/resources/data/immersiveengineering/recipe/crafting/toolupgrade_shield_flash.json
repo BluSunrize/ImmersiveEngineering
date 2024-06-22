@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "e": {
+      "item": "immersiveengineering:light_bulb"
+    },
+    "p": {
+      "tag": "forge:plates/silver"
+    }
+  },
+  "pattern": [
+    " p ",
+    "pep"
+  ],
+  "result": {
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_shield_flash"
+  }
+}

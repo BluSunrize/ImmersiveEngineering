@@ -213,9 +213,10 @@ public final class IEItems
 		private static void init()
 		{
 			for(var slot : ArmorItem.Type.values())
-				STEEL_ARMOR.put(slot, register(
-						"armor_steel_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new SteelArmorItem(slot)
-				));
+				if(slot!=Type.BODY)
+					STEEL_ARMOR.put(slot, register(
+							"armor_steel_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new SteelArmorItem(slot)
+					));
 		}
 	}
 
@@ -320,9 +321,10 @@ public final class IEItems
 						"toolupgrade_"+upgrade.name().toLowerCase(Locale.US), () -> new ToolUpgradeItem(upgrade)
 				));
 			for(Type slot : Type.values())
-				IEItems.Misc.FARADAY_SUIT.put(slot, register(
-						"armor_faraday_"+slot.name().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
-				));
+				if(slot!=Type.BODY)
+					IEItems.Misc.FARADAY_SUIT.put(slot, register(
+							"armor_faraday_"+slot.name().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
+					));
 		}
 
 		public static void registerShaderBags()

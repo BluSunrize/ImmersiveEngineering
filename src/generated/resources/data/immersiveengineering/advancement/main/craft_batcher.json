@@ -1,0 +1,33 @@
+{
+  "parent": "immersiveengineering:main/craft_router",
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "immersiveengineering:item_batcher"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_batcher.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "immersiveengineering:item_batcher"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_batcher"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}
