@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-22T15:52:36.083633644	Tags for minecraft:block mod id immersiveengineering
+// 1.20.4	2024-06-22T15:55:19.466854633	Tags for minecraft:block mod id immersiveengineering
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -53,7 +53,7 @@ a512013e18e15e72a03d9d066e8c87ca591ed9cd data/immersiveengineering/tags/blocks/c
 3e4fc91069da2d49ed9c3bd132c947b9879bdd0c data/immersiveengineering/tags/blocks/cut_slabs/copper.json
 240d783ca901747689edbff6ec068e1ebafd3dc6 data/immersiveengineering/tags/blocks/cut_stairs/copper.json
 f7dc293929a2176bc6e428c765f6bf49fbeccdb5 data/immersiveengineering/tags/blocks/mineable/drill.json
-b04c525ea267d5dd35a5328e717277d2e2e8e5b7 data/immersiveengineering/tags/blocks/mineable/grinding_disk.json
+df59740a45d81e46667fe6be8276f38bfad83c07 data/immersiveengineering/tags/blocks/mineable/grinding_disk.json
 4c5243b0031eaa087fae83b917f458e007e938ef data/immersiveengineering/tags/blocks/mineable/hammer.json
 257302a3aa4c7c0535a097da79937172a08f7e84 data/immersiveengineering/tags/blocks/mineable/rockcutter.json
 22c291dd8a303b2f6629a7430880a0678e679ac4 data/immersiveengineering/tags/blocks/mineable/wirecutter.json

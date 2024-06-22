@@ -1,4 +1,13 @@
 {
+  "remove": [
+    "minecraft:amethyst_block",
+    "minecraft:quartz_block",
+    "minecraft:lapis_block",
+    "minecraft:redstone_block",
+    "minecraft:diamond_block",
+    "minecraft:emerald_block",
+    "minecraft:coal_block"
+  ],
   "values": [
     "#forge:storage_blocks",
     "#forge:sheetmetals",

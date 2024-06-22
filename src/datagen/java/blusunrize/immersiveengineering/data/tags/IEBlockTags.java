@@ -359,6 +359,7 @@ public class IEBlockTags extends BlockTagsProvider
 		IntrinsicTagAppender<Block> tag = tag(IETags.grindingDiskHarvestable);
 		// storage and remove rocklike storage, sheetmetal
 		tag.addTag(Tags.Blocks.STORAGE_BLOCKS);
+		tag.remove(Blocks.AMETHYST_BLOCK, Blocks.QUARTZ_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.COAL_BLOCK);
 		tag.addTag(IETags.sheetmetals);
 		// storage and sheetmetal slabs
 		for(EnumMetals metal : EnumMetals.values())
