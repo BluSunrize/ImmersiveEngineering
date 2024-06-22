@@ -49,8 +49,14 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		this.defaultOutputs = Util.make(() -> {
 			List<TagOutput> ret = new ArrayList<>();
 			for(Pair<TagOutput, Double> e : outputs)
-				// TODO scaling?
-				ret.add(e.getFirst());
+			{
+				if(e.getSecond()>=1) ret.add(new TagOutput(e.getFirst().get().copyWithCount((int)(e.getSecond().doubleValue()))));
+				String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getFirst().get(), "ingots");
+				if(type!=null&&((e.getSecond()%1)>0.11))
+				{
+					ret.add(new TagOutput(TagUtils.createItemWrapper(IETags.getNugget(type[1])), (int)(9*(e.getSecond()%1))));
+				}
+			}
 			return new TagOutputList(ret);
 		});
 	}
