@@ -79,11 +79,10 @@ public class VertexBufferHolder implements IVertexBufferHolder
 					VertexBuffer vb = new VertexBuffer(Usage.STATIC);
 					RenderSystem.setShader(IEGLShaders::getVboShader);
 					Tesselator tes = Tesselator.getInstance();
-					BufferBuilder bb = tes.getBuilder();
-					bb.begin(Mode.QUADS, BUFFER_FORMAT);
+					BufferBuilder bb = tes.begin(Mode.QUADS, BUFFER_FORMAT);
 					this.renderer.render(bb, new PoseStack(), 0, 0);
 					vb.bind();
-					vb.upload(bb.end());
+					vb.upload(bb.buildOrThrow());
 					VertexBuffer.unbind();
 					return vb;
 				},

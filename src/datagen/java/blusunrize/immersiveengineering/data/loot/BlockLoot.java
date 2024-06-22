@@ -24,12 +24,12 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import blusunrize.immersiveengineering.common.util.loot.*;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.advancements.critereon.EnchantmentPredicate;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.critereon.*;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -60,22 +60,31 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.data.loot.GeneralLoot.key;
+
 public class BlockLoot implements LootTableSubProvider
 {
-	private final Set<ResourceLocation> generatedTables = new HashSet<>();
-	private BiConsumer<ResourceLocation, LootTable.Builder> out;
+	private final Set<ResourceKey<LootTable>> generatedTables = new HashSet<>();
+	private BiConsumer<ResourceKey<LootTable>, LootTable.Builder> out;
+	private final Provider provider;
 
-	private ResourceLocation toTableLoc(ResourceLocation in)
+	public BlockLoot(Provider p)
 	{
-		return in.withPath("blocks/"+in.getPath());
+		this.provider = p;
+	}
+
+	private ResourceKey<LootTable> toTableLoc(ResourceLocation in)
+	{
+		return key("blocks/"+in.getPath());
 	}
 
 	@Override
-	public void generate(BiConsumer<ResourceLocation, Builder> out)
+	public void generate(BiConsumer<ResourceKey<LootTable>, Builder> out)
 	{
 		this.out = out;
 		registerHemp();
@@ -221,7 +230,7 @@ public class BlockLoot implements LootTableSubProvider
 
 	private void register(ResourceLocation name, LootTable.Builder table)
 	{
-		ResourceLocation loc = toTableLoc(name);
+		var loc = toTableLoc(name);
 		if(!generatedTables.add(loc))
 			throw new IllegalStateException("Duplicate loot table "+name);
 		out.accept(loc, table.setParamSet(LootContextParamSets.BLOCK));
@@ -256,13 +265,13 @@ public class BlockLoot implements LootTableSubProvider
 		LootTable.Builder ret = LootTable.lootTable()
 				.withPool(singleItem(Misc.HEMP_SEEDS));
 		ret.withPool(
-				binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.BLOCK_FORTUNE, 4/8f, 3).when(
+				binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.FORTUNE, 4/8f, 3).when(
 						LootItemBlockStatePropertyCondition.hasBlockStateProperties(IEBlocks.Misc.HEMP_PLANT.get())
 								.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(HempBlock.AGE, 4))
 				)
 		);
 		ret.withPool(
-				binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.BLOCK_FORTUNE, 5/8f, 3).when(
+				binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.FORTUNE, 5/8f, 3).when(
 						LootItemBlockStatePropertyCondition.hasBlockStateProperties(IEBlocks.Misc.HEMP_PLANT.get())
 								.setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(HempBlock.TOP, true))
 				)
@@ -279,15 +288,20 @@ public class BlockLoot implements LootTableSubProvider
 
 	private void registerOre(EnumMetals metal, BlockEntry<?> oreBlock)
 	{
+		final var enchantments = this.provider.lookupOrThrow(Registries.ENCHANTMENT);
 		ItemRegObject<Item> rawOre = IEItems.Metals.RAW_ORES.get(metal);
 		LootTable.Builder ret = LootTable.lootTable().withPool(LootPool.lootPool()
 				.setRolls(ConstantValue.exactly(1.0F))
 				.add(LootItem.lootTableItem(oreBlock)
 						// if silk touch
-						.when(MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1)))))
+						.when(MatchTool.toolMatches(ItemPredicate.Builder.item().withSubPredicate(
+								ItemSubPredicates.ENCHANTMENTS,
+								ItemEnchantmentsPredicate.enchantments(
+										List.of(new EnchantmentPredicate(enchantments.getOrThrow(Enchantments.SILK_TOUCH), MinMaxBounds.Ints.atLeast(1))))
+						)))
 						// else
 						.otherwise(LootItem.lootTableItem(rawOre)
-								.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
+								.apply(ApplyBonusCount.addOreBonusCount(enchantments.getOrThrow(Enchantments.FORTUNE)))
 								.apply(ApplyExplosionDecay.explosionDecay())
 						)
 				)
@@ -303,11 +317,12 @@ public class BlockLoot implements LootTableSubProvider
 		register(WoodenDecoration.SAWDUST, ret);
 	}
 
-	private LootPool.Builder binBonusLootPool(ItemLike item, Enchantment ench, float prob, int extra)
+	private LootPool.Builder binBonusLootPool(ItemLike item, ResourceKey<Enchantment> ench, float prob, int extra)
 	{
+		final var enchantments = this.provider.lookupOrThrow(Registries.ENCHANTMENT);
 		return createPoolBuilder()
 				.add(LootItem.lootTableItem(item))
-				.apply(ApplyBonusCount.addBonusBinomialDistributionCount(ench, prob, extra));
+				.apply(ApplyBonusCount.addBonusBinomialDistributionCount(enchantments.getOrThrow(ench), prob, extra));
 	}
 
 	private <T extends Comparable<T> & StringRepresentable> LootItemCondition.Builder propertyIs(

@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -207,7 +208,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public void finishUpgradeRecalculation(ItemStack stack)
+	public void finishUpgradeRecalculation(ItemStack stack, RegistryAccess registries)
 	{
 		final var data = getData(stack);
 		FluidStack fs = data.mainFluid.copy();

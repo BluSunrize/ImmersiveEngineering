@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
@@ -49,6 +48,8 @@ import org.joml.Vector3f;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+
+import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.GAME)
 public class LevelStageRenders
@@ -111,22 +112,22 @@ public class LevelStageRenders
 			return;
 		final Pair<PoseStack, BufferSource> context = prepare(event);
 		final PoseStack transform = context.getFirst();
-		ResourceKey<Level> dimension = ClientUtils.mc().player.getCommandSenderWorld().dimension();
-		List<ResourceLocation> keyList = new ArrayList<>(MineralMix.RECIPES.getRecipeNames(ClientUtils.mc().level));
+		ResourceKey<Level> dimension = mc().player.getCommandSenderWorld().dimension();
+		List<ResourceLocation> keyList = new ArrayList<>(MineralMix.RECIPES.getRecipeNames(mc().level));
 		keyList.sort(Comparator.comparing(ResourceLocation::toString));
-		BlockPos feetPos = ClientUtils.mc().player.blockPosition();
+		BlockPos feetPos = mc().player.blockPosition();
 		final ColumnPos playerCol = new ColumnPos(feetPos.getX(), feetPos.getZ());
 		// 24: very roughly 16 * sqrt(2)
-		final long maxDistance = ClientUtils.mc().options.renderDistance().get()*24L;
+		final long maxDistance = mc().options.renderDistance().get()*24L;
 		final long maxDistanceSq = maxDistance*maxDistance;
 		Multimap<ResourceKey<Level>, MineralVein> minerals;
-		final var minHeight = ClientUtils.mc().level.getMinBuildHeight();
-		final var maxHeight = ClientUtils.mc().level.getMaxBuildHeight();
+		final var minHeight = mc().level.getMinBuildHeight();
+		final var maxHeight = mc().level.getMaxBuildHeight();
 		synchronized(minerals = ExcavatorHandler.getMineralVeinList())
 		{
 			for(MineralVein vein : minerals.get(dimension))
 			{
-				MineralMix mineral = vein.getMineral(ClientUtils.mc().level);
+				MineralMix mineral = vein.getMineral(mc().level);
 				if(mineral==null)
 					continue;
 				ColumnPos pos = vein.getPos();
@@ -233,7 +234,7 @@ public class LevelStageRenders
 		transform.pushPose();
 		final Vec3 cameraPos = event.getCamera().getPosition();
 		transform.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+		MultiBufferSource.BufferSource buffers = mc().renderBuffers().bufferSource();
 		return Pair.of(transform, buffers);
 	}
 

@@ -10,14 +10,14 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.Lib.DamageTypes;
 import blusunrize.immersiveengineering.api.Lib.TurretDamageType;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.damagesource.DamageType;
 
 public class DamageTypeProvider
 {
 	private static final float DEFAULT_EXHAUSTION = 0.1f;
 
-	public static void bootstrap(BootstapContext<DamageType> ctx)
+	public static void bootstrap(BootstrapContext<DamageType> ctx)
 	{
 		registerTurretCapable(ctx, DamageTypes.REVOLVER_CASULL, "ieRevolver_casull");
 		registerTurretCapable(ctx, DamageTypes.REVOLVER_ARMORPIERCING, "ieRevolver_armorPiercing");
@@ -39,7 +39,7 @@ public class DamageTypeProvider
 		ctx.register(DamageTypes.WIRE_SHOCK, new DamageType("ieWireShock", DEFAULT_EXHAUSTION));
 	}
 
-	private static void registerTurretCapable(BootstapContext<DamageType> ctx, TurretDamageType type, String path)
+	private static void registerTurretCapable(BootstrapContext<DamageType> ctx, TurretDamageType type, String path)
 	{
 		ctx.register(type.playerType(), new DamageType(path, DEFAULT_EXHAUSTION));
 		ctx.register(type.turretType(), new DamageType(path+".turret", DEFAULT_EXHAUSTION));

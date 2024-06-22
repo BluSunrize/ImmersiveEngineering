@@ -88,4 +88,24 @@ public class ItemUtils
 			// Damageable, same item => same if damage matches
 			return stackA.getDamageValue()==stackB.getDamageValue();
 	}
+
+	public static ItemStack damageCopy(ItemStack tool, int amount)
+	{
+		ItemStack copy = tool.copy();
+		damageDirect(copy, amount);
+		return copy;
+	}
+
+	public static void damageDirect(ItemStack tool, int amount)
+	{
+		final int maxDamage = tool.getMaxDamage();
+		final int newDamage = tool.getDamageValue()+amount;
+		if(newDamage > maxDamage)
+		{
+			tool.setDamageValue(0);
+			tool.shrink(1);
+		}
+		else
+			tool.setDamageValue(newDamage);
+	}
 }

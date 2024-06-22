@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.ClocheCallbacks.Key;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import org.joml.Vector4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -109,11 +109,11 @@ public class ClocheCallbacks implements BlockCallback<Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Vector4f original)
+	public Color4 getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Color4 original)
 	{
 		ItemStack soil = key.soil().stack;
 		if(!soil.isEmpty()&&"farmland".equals(material)&&Utils.isFluidRelatedItemStack(soil))
-			return Utils.vec4fFromInt(
+			return new Color4(
 					FluidUtil.getFluidContained(soil)
 							.map(fs -> IClientFluidTypeExtensions.of(fs.getFluid()).getTintColor(fs))
 							.orElse(0xffffffff)

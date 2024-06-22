@@ -11,9 +11,10 @@ package blusunrize.immersiveengineering.data.manual.icon;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.DeltaTracker.Timer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.Timer;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -112,7 +113,6 @@ public class MinecraftInstanceManager
 	private void initializeRenderSystem()
 	{
 		RenderSystem.initRenderThread();
-		RenderSystem.initGameThread(false);
 	}
 
 	private void initializeResourceManager(final ReloadableResourceManager resourceManager)

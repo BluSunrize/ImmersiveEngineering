@@ -20,7 +20,6 @@ import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
@@ -47,7 +46,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		this.setTickLimit(400);
 	}
 
-	public RevolvershotFlareEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
+	public RevolvershotFlareEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
 		super(IEEntityTypes.FLARE_REVOLVERSHOT.get(), world, living, ax, ay, az, type);
 		this.setTickLimit(400);

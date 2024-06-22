@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.render;
 import blusunrize.immersiveengineering.api.client.ieobj.DefaultCallback;
 import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.models.obj.GlobalTempData;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
@@ -33,7 +34,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -110,11 +110,11 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			boolean bright = callback.areGroupsFullbright(stack, groups);
 			RenderType baseType;
 			ResourceLocation atlas = InventoryMenu.BLOCK_ATLAS;
-			Vector4f color = quadsForLayer.layer().getColor();
+			Color4 color = quadsForLayer.layer().getColor();
 			List<RenderType> renderTypes = model.getRenderTypes(stack, Minecraft.useFancyGraphics());
 			if(bright)
 				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
-			else if(quadsForLayer.layer().isTranslucent()||color.w() < 1)
+			else if(quadsForLayer.layer().isTranslucent()||color.a() < 1)
 				baseType = RenderType.entityTranslucent(atlas);
 			else if(!renderTypes.isEmpty())
 				baseType = renderTypes.get(0);
@@ -123,7 +123,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			RenderType actualType = quadsForLayer.layer().getRenderType(baseType);
 			VertexConsumer builder = buffer.getBuffer(actualType);
 			for(BakedQuad quad : quadsForLayer.quadsInLayer())
-				builder.putBulkData(matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay, false);
+				builder.putBulkData(matrix.last(), quad, color.r(), color.g(), color.b(), color.a(), light, overlay, false);
 			matrix.scale(1.0005F, 1.0005F, 1.0005F);
 		}
 		matrix.popPose();

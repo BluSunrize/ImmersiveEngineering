@@ -52,10 +52,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.FireworkExplosion.Shape;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -198,9 +195,11 @@ public class Utils
 
 	public static String getHarvestLevelName(Tier lvl)
 	{
-		//TODO localize (or talk to Forge about generic localization)
-		// return I18n.get(Lib.DESC_INFO+"mininglvl."+TierSortingRegistry.getName(lvl));
-		return Utils.toCamelCase(TierSortingRegistry.getName(lvl).getPath());
+		// TODO this is terrible
+		if(lvl instanceof Tiers named)
+			return named.name();
+		else
+			return lvl.toString();
 	}
 
 	public static String getModName(String modid)

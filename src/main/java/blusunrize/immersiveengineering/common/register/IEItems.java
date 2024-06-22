@@ -223,7 +223,7 @@ public final class IEItems
 	{
 		public static final ItemRegObject<RevolverItem> REVOLVER = register("revolver", RevolverItem::new);
 		public static final ItemRegObject<SpeedloaderItem> SPEEDLOADER = register("speedloader", SpeedloaderItem::new);
-		public static final Map<IBullet, ItemRegObject<BulletItem>> BULLETS = new IdentityHashMap<>();
+		public static final Map<IBullet<?>, ItemRegObject<BulletItem<?>>> BULLETS = new IdentityHashMap<>();
 		public static final ItemRegObject<ChemthrowerItem> CHEMTHROWER = register("chemthrower", ChemthrowerItem::new);
 		public static final ItemRegObject<RailgunItem> RAILGUN = register("railgun", RailgunItem::new);
 
@@ -231,13 +231,13 @@ public final class IEItems
 		{
 			for(ResourceLocation bulletType : BulletHandler.getAllKeys())
 			{
-				IBullet bullet = BulletHandler.getBullet(bulletType);
+				IBullet<?> bullet = BulletHandler.getBullet(bulletType);
 				if(bullet.isProperCartridge())
-					BULLETS.put(bullet, register(nameFor(bullet), () -> new BulletItem(bullet)));
+					BULLETS.put(bullet, register(nameFor(bullet), () -> new BulletItem<>(bullet)));
 			}
 		}
 
-		private static String nameFor(IBullet bullet)
+		private static String nameFor(IBullet<?> bullet)
 		{
 			ResourceLocation name = BulletHandler.findRegistryName(bullet);
 			if(name.getNamespace().equals(ImmersiveEngineering.MODID))

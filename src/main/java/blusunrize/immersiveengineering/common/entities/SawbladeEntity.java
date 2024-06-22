@@ -18,6 +18,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.SynchedEntityData.Builder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -104,7 +105,8 @@ public class SawbladeEntity extends IEProjectileEntity
 	{
 		int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
 		Entity shooter = getOwner();
-		getAmmo().hurtAndBreak(dmg, level().random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null, this::discard);
+		if(level() instanceof ServerLevel serverLevel)
+			getAmmo().hurtAndBreak(dmg, serverLevel, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null, i -> discard());
 	}
 
 	@Override

@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.api.client.ieobj;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import com.mojang.math.Transformation;
-import org.joml.Vector4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -43,7 +43,7 @@ public interface IEOBJCallback<Key>
 		return transform;
 	}
 
-	default Vector4f getRenderColor(Key object, String group, String material, ShaderCase shaderCase, Vector4f original)
+	default Color4 getRenderColor(Key object, String group, String material, ShaderCase shaderCase, Color4 original)
 	{
 		return original;
 	}

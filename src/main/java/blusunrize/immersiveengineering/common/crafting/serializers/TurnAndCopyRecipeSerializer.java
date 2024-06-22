@@ -22,34 +22,26 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopyRecipe>
 {
-	private record AdditionalData(List<Integer> copySlots, boolean quarter, boolean eights, Optional<String> predicate)
+	private record AdditionalData(List<Integer> copySlots, boolean quarter, boolean eights)
 	{
 		private static final MapCodec<AdditionalData> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 				Codec.INT.listOf().optionalFieldOf("copyNBT", List.of()).forGetter(AdditionalData::copySlots),
 				Codec.BOOL.optionalFieldOf("quarter_turn", false).forGetter(AdditionalData::quarter),
-				Codec.BOOL.optionalFieldOf("eight_turn", false).forGetter(AdditionalData::eights),
-				Codec.STRING.optionalFieldOf("copy_nbt_predicate").forGetter(AdditionalData::predicate)
+				Codec.BOOL.optionalFieldOf("eight_turn", false).forGetter(AdditionalData::eights)
 		).apply(inst, AdditionalData::new));
 		private static final StreamCodec<ByteBuf, AdditionalData> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.INT.apply(ByteBufCodecs.list()), AdditionalData::copySlots,
 				ByteBufCodecs.BOOL, AdditionalData::quarter,
 				ByteBufCodecs.BOOL, AdditionalData::eights,
-				ByteBufCodecs.optional(ByteBufCodecs.stringUtf8(512)), AdditionalData::predicate,
 				AdditionalData::new
 		);
 
 		public AdditionalData(TurnAndCopyRecipe recipe)
 		{
-			this(
-					recipe.getCopyTargets(),
-					recipe.isQuarterTurn(),
-					recipe.isEightTurn(),
-					Optional.ofNullable(recipe.getBufferPredicate())
-			);
+			this(recipe.getCopyTargets(), recipe.isQuarterTurn(), recipe.isEightTurn());
 		}
 
 		public TurnAndCopyRecipe apply(ShapedRecipe base)
@@ -59,8 +51,6 @@ public class TurnAndCopyRecipeSerializer implements RecipeSerializer<TurnAndCopy
 				result.allowQuarterTurn();
 			if(eights())
 				result.allowEighthTurn();
-			if(predicate().isPresent())
-				result.setNBTCopyPredicate(predicate().get());
 			return result;
 		}
 	}

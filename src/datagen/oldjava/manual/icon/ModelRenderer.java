@@ -28,6 +28,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 import org.lwjgl.BufferUtils;
 
 import javax.imageio.ImageIO;
@@ -84,8 +85,8 @@ public class ModelRenderer implements AutoCloseable
         Matrix4f matrix4f = new Matrix4f().setOrtho(0, viewSize, 0, viewSize, -200, 3000);
         RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
 
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
+        Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushMatrix();
         modelViewStack.translate(viewSize/2, viewSize/2, 100);
         modelViewStack.scale(1, -1, 1);
         modelViewStack.scale(16, 16, 16);

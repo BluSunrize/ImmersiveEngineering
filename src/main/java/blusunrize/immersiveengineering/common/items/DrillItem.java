@@ -15,14 +15,15 @@ import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -33,9 +34,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -55,18 +56,19 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static blusunrize.immersiveengineering.common.register.IEDataComponents.DRILL_SINGLEBLOCK;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
 public class DrillItem extends DieselToolItem
 {
 	public DrillItem()
 	{
-		super(new Properties().stacksTo(1), "DRILL");
+		super(new Properties().stacksTo(1).component(DRILL_SINGLEBLOCK, false), "DRILL");
 	}
 
 	@Override
@@ -107,11 +109,24 @@ public class DrillItem extends DieselToolItem
 
 
 	@Override
-	public void finishUpgradeRecalculation(ItemStack stack)
+	public void finishUpgradeRecalculation(ItemStack stack, RegistryAccess registries)
 	{
-		super.finishUpgradeRecalculation(stack);
-		Map<Enchantment, Integer> enchants = getUpgradesStatic(stack).getBoolean("fortune")?Collections.singletonMap(Enchantments.BLOCK_FORTUNE, 3):Collections.emptyMap();
-		EnchantmentHelper.setEnchantments(enchants, stack);
+		super.finishUpgradeRecalculation(stack, registries);
+		final var fortune = registries.registryOrThrow(Registries.ENCHANTMENT)
+				.getHolder(Enchantments.FORTUNE)
+				.orElseThrow();
+		final var newEnchantments = new ItemEnchantments.Mutable(
+				stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY)
+		);
+		if(getUpgradesStatic(stack).getBoolean("fortune"))
+		{
+			newEnchantments.set(fortune, 3);
+		}
+		else
+		{
+			newEnchantments.removeIf(Predicate.isEqual(fortune));
+		}
+		EnchantmentHelper.setEnchantments(stack, newEnchantments.toImmutable());
 	}
 
 	@Override
@@ -171,7 +186,7 @@ public class DrillItem extends DieselToolItem
 	/* ------------- DIGGING ------------- */
 	public static boolean isSingleBlockMode(ItemStack stack)
 	{
-		return ItemNBTHelper.getBoolean(stack, "singleBlockMode");
+		return stack.getOrDefault(DRILL_SINGLEBLOCK, false);
 	}
 
 	@Override
@@ -181,7 +196,7 @@ public class DrillItem extends DieselToolItem
 		if(player.isShiftKeyDown())
 		{
 			boolean mode = !isSingleBlockMode(stack);
-			stack.getOrCreateTag().putBoolean("singleBlockMode", mode);
+			stack.set(DRILL_SINGLEBLOCK, mode);
 			player.displayClientMessage(
 					Component.translatable(Lib.CHAT_INFO+"drill_mode."+(mode?"single": "multi")), true
 			);
@@ -279,7 +294,8 @@ public class DrillItem extends DieselToolItem
 		return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
 	}
 
-	@Override
+	// TODO fix this!
+	//  @Override
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, Player player)
 	{
 		Level world = player.level();
@@ -305,8 +321,10 @@ public class DrillItem extends DieselToolItem
 			{
 				if(!this.canBreakExtraBlock(world, pos, state, player, stack, head))
 					continue;
-				int xpDropEvent = CommonHooks.onBlockBreakEvent(world, ((ServerPlayer)player).gameMode.getGameModeForPlayer(), (ServerPlayer)player, pos);
-				if(xpDropEvent < 0)
+				var event = CommonHooks.fireBlockBreak(
+						world, ((ServerPlayer)player).gameMode.getGameModeForPlayer(), (ServerPlayer)player, pos, state
+				);
+				if(event.isCanceled())
 					continue;
 
 				if(player.getAbilities().instabuild)
@@ -323,8 +341,9 @@ public class DrillItem extends DieselToolItem
 					{
 						block.destroy(world, pos, state);
 						block.playerDestroy(world, player, pos, state, te, stack);
-						if(world instanceof ServerLevel)
-							block.popExperience((ServerLevel)world, pos, xpDropEvent);
+						// TODO
+						//if(world instanceof ServerLevel)
+						//	block.popExperience((ServerLevel)world, pos, xpDropEvent);
 					}
 				}
 				world.levelEvent(2001, pos, Block.getId(state));

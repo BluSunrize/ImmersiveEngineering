@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+// TODO replace by TransformingVertexPipeline for most things?
 public class TransformingVertexBuilder implements VertexConsumer
 {
 	private final VertexConsumer base;
@@ -109,7 +110,8 @@ public class TransformingVertexBuilder implements VertexConsumer
 		return this;
 	}
 
-	@Override
+	//TODO
+	// @Override
 	public void endVertex()
 	{
 		for(VertexFormatElement element : format.getElements())

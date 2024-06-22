@@ -20,12 +20,15 @@ public class CollectingVertexBuilder implements VertexConsumer
 {
 	protected final List<Vertex> vertices = new ArrayList<>();
 	private final List<Vertex> pool = new ArrayList<>();
-	private Vertex currentVertex = makeVertex();
+	private Vertex currentVertex = null;
 
 	@Nonnull
 	@Override
 	public VertexConsumer addVertex(float x, float y, float z)
 	{
+		if(currentVertex!=null)
+			this.endVertex();
+		currentVertex = makeVertex();
 		currentVertex.order.add(Element.POSITION);
 		currentVertex.position[0] = x;
 		currentVertex.position[1] = y;
@@ -86,15 +89,15 @@ public class CollectingVertexBuilder implements VertexConsumer
 		return this;
 	}
 
-	@Override
-	public void endVertex()
+	protected void endVertex()
 	{
-		vertices.add(currentVertex);
-		currentVertex = makeVertex();
+		if(currentVertex!=null)
+			vertices.add(currentVertex);
 	}
 
 	public void pipeAndClear(VertexConsumer out)
 	{
+		endVertex();
 		for(Vertex v : vertices)
 			v.pipe(out);
 		clear();
@@ -103,6 +106,8 @@ public class CollectingVertexBuilder implements VertexConsumer
 	protected void clear()
 	{
 		pool.addAll(vertices);
+		pool.add(this.currentVertex);
+		this.currentVertex = null;
 		vertices.clear();
 	}
 

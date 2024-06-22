@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import org.joml.Vector4f;
+import blusunrize.immersiveengineering.api.utils.Color4;
 
 import java.util.function.BiFunction;
 
-public class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vector4f>
+public class MaterialColorGetter<T> implements BiFunction<String, Color4, Color4>
 {
 	private final String groupName;
 	private final IEOBJCallback<T> callback;
@@ -43,9 +43,9 @@ public class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vect
 	}
 
 	@Override
-	public Vector4f apply(String material, Vector4f originalColor)
+	public Color4 apply(String material, Color4 originalColor)
 	{
-		Vector4f color = originalColor;
+		Color4 color = originalColor;
 		if(callback!=null)
 			color = callback.getRenderColor(callbackObject, groupName, material, shaderCase, color);
 		if(shaderCase!=null)

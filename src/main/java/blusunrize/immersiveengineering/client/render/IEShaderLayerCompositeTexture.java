@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -64,7 +63,7 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 				if(!texPath.endsWith(".png"))
 					texPath += ".png";
 				String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
-				Vector4f colour = this.layers[layer].getColor();
+				var colour = this.layers[layer].getColor();
 
 				Resource iresource1 = resourceManager.getResource(ResourceLocation.parse(texture)).orElseThrow();
 				try(
@@ -73,7 +72,7 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 				)
 				{
 
-					float[] mod = new float[]{colour.x(), colour.y(), colour.z(), colour.w()};
+					float[] mod = new float[]{colour.r(), colour.g(), colour.b(), colour.a()};
 					if(mod[3] < 0.2)
 						mod[3] *= 2.5f;
 

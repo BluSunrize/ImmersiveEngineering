@@ -15,6 +15,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.DyeColor;
 
 public record Color4(float r, float g, float b, float a)
 {
@@ -36,6 +37,14 @@ public record Color4(float r, float g, float b, float a)
 	public Color4(int rgba)
 	{
 		this(((rgba>>16)&255)/255f, ((rgba>>8)&255)/255f, (rgba&255)/255f, ((rgba>>24)&255)/255f);
+	}
+
+	public static Color4 from(DyeColor dyeColor)
+	{
+		if(dyeColor==null)
+			return new Color4(1, 1, 1, 1);
+		int rgb = dyeColor.getTextureDiffuseColor();
+		return new Color4(((rgb>>16)&255)/255f, ((rgb>>8)&255)/255f, (rgb&255)/255f, 1);
 	}
 
 	public static Color4 load(Tag nbt)

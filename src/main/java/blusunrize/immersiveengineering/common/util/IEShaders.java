@@ -16,12 +16,12 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseDrill;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector4f;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -191,7 +191,7 @@ public class IEShaders
 		entry.getCase(ieLoc("banner")).addLayers(new ShaderLayer(ieLoc("block/shaders/banner_"+texture), colour));
 	}
 
-	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, final Consumer<Boolean> func_modifyRender, boolean translucent)
+	private static void addDynamicLayer(ShaderRegistryEntry entry, String texture, int colour, final BiFunction<ShaderLayer, Color4, Color4> func_getColour, final Consumer<Boolean> func_modifyRender, boolean translucent)
 	{
 		if(!ImmersiveEngineering.DIST.isClient())
 			return;
@@ -213,12 +213,12 @@ public class IEShaders
 
 	private static class InternalDynamicShaderLayer extends DynamicShaderLayer
 	{
-		private final BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour;
+		private final BiFunction<ShaderLayer, Color4, Color4> func_getColour;
 		// TODO direct render layer?
 		private final Consumer<Boolean> func_modifyRender;
 		private final boolean translucent;
 
-		public InternalDynamicShaderLayer(ResourceLocation texture, int colour, BiFunction<ShaderLayer, Vector4f, Vector4f> func_getColour, Consumer<Boolean> func_modifyRender, boolean translucent)
+		public InternalDynamicShaderLayer(ResourceLocation texture, int colour, BiFunction<ShaderLayer, Color4, Color4> func_getColour, Consumer<Boolean> func_modifyRender, boolean translucent)
 		{
 			super(texture, colour);
 			this.func_getColour = func_getColour;
@@ -227,7 +227,7 @@ public class IEShaders
 		}
 
 		@Override
-		public Vector4f getColor()
+		public Color4 getColor()
 		{
 			if(func_getColour!=null)
 				return func_getColour.apply(this, super.getColor());

@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -182,7 +181,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 			{
 				ShaderLayer[] layers = sCase.getLayers();
 				if(pass < layers.length&&layers[pass]!=null)
-					return Utils.intFromRGBA(layers[pass].getColor());
+					return layers[pass].getColor().toInt();
 				return 0xffffffff;
 			}
 		}

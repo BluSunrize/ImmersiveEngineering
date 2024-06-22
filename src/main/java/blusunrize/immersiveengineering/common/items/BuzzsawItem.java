@@ -17,9 +17,9 @@ import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -28,19 +28,19 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -113,29 +113,29 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	public ItemStack getUpgradeAfterRemoval(ItemStack stack, ItemStack upgrade)
 	{
-		forEachSpareBlade(stack, upgrade, (i, sawblade) -> {
-			if(sawblade.isEmpty())
-				ItemNBTHelper.remove(upgrade, "sawblade"+i);
-			else
-				ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade);
-		});
+		if(isSpareBladeUpgrade(upgrade))
+		{
+			List<ItemStack> spares = Arrays.asList(new ItemStack[2]);
+			forEachSpareBlade(stack, spares::set);
+			upgrade.set(IEDataComponents.GENERIC_ITEMS, ItemContainerContents.fromItems(spares));
+		}
 		return upgrade;
 	}
 
 	@Override
 	public void removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
 	{
-		forEachSpareBlade(stack, upgrade, (i, $) -> setSawblade(stack, ItemStack.EMPTY, i));
+		if(isSpareBladeUpgrade(upgrade))
+			forEachSpareBlade(stack, (i, $) -> setSawblade(stack, ItemStack.EMPTY, i));
 	}
 
-	private void forEachSpareBlade(ItemStack stack, ItemStack upgrade, BiConsumer<Integer, ItemStack> onBlade)
+	private void forEachSpareBlade(ItemStack stack, BiConsumer<Integer, ItemStack> onBlade)
 	{
-		if(upgrade.getItem()==Misc.TOOL_UPGRADES.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
-			for(int i = 1; i <= 2; i++)
-			{
-				ItemStack sawblade = getSawblade(stack, i);
-				onBlade.accept(i, sawblade);
-			}
+		for(int i = 1; i <= 2; i++)
+		{
+			ItemStack sawblade = getSawblade(stack, i);
+			onBlade.accept(i, sawblade);
+		}
 	}
 
 	@Override
@@ -151,18 +151,22 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		super.recalculateUpgrades(stack, w, player);
 		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
-		if(inv!=null)
+		if(inv instanceof IItemHandlerModifiable modifiable)
 			for(int iUpgrade = 1; iUpgrade <= 2; iUpgrade++)
 			{
-				ItemStack upgrade = inv.getStackInSlot(iUpgrade);
-				if(upgrade.getItem()==Misc.TOOL_UPGRADES.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
-					for(int i = 1; i <= 2; i++)
-						if(ItemNBTHelper.hasKey(upgrade, "sawblade"+i))
-						{
-							ItemStack sawblade = ItemNBTHelper.getItemStack(upgrade, "sawblade"+i);
-							setSawblade(stack, sawblade, i);
-							ItemNBTHelper.remove(upgrade, "sawblade"+i);
-						}
+				ItemStack upgrade = inv.getStackInSlot(iUpgrade).copy();
+				if(!isSpareBladeUpgrade(upgrade))
+					continue;
+				var upgradeInventory = upgrade.remove(IEDataComponents.GENERIC_ITEMS);
+				if(upgradeInventory==null)
+					continue;
+				for(int i = 1; i <= 2; i++)
+				{
+					var blade = upgradeInventory.getStackInSlot(i-1);
+					if(!blade.isEmpty())
+						setSawblade(stack, blade, i);
+				}
+				modifiable.setStackInSlot(iUpgrade, upgrade);
 			}
 	}
 
@@ -199,9 +203,14 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment)
 	{
-		// Not ideal, but anything faster has a lot of code duplication. And getting the sawblade isn't the fastest
-		// thing in the world anyway.
-		return getAllEnchantments(stack).getLevel(enchantment);
+		ItemStack sawblade = getSawblade(stack, 0);
+		if(sawblade.getItem() instanceof SawbladeItem blade)
+		{
+			final Integer levelOverride = blade.getExtraEnchantments().get(enchantment.unwrapKey().orElseThrow());
+			if(levelOverride!=null)
+				return levelOverride;
+		}
+		return super.getEnchantmentLevel(stack, enchantment);
 	}
 
 	@Override
@@ -212,7 +221,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		if(sawblade.getItem() instanceof SawbladeItem blade)
 		{
 			ItemEnchantments.Mutable mutable = new Mutable(superEnchants);
-			blade.modifyEnchants(mutable, lookup);
+			blade.getExtraEnchantments();
 			return mutable.toImmutable();
 		}
 		else
@@ -318,7 +327,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	protected void damageHead(ItemStack head, int amount, LivingEntity living)
 	{
-		head.hurtAndBreak(amount, living, entity -> entity.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+		head.hurtAndBreak(amount, living, EquipmentSlot.MAINHAND);
 	}
 
 	@Override
@@ -554,11 +563,13 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		{
 			BlockPos pos = closedList.pollFirst();
 
-			int xpDropEvent = CommonHooks.onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
-			if(xpDropEvent < 0)
+			// Roughly mirror ServerPlayerGameMode.destroyBlock here
+			BlockState state = world.getBlockState(pos);
+
+			var eventResult = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, pos, state);
+			if(eventResult.isCanceled())
 				continue;
 
-			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
 			if(!state.isAir()&&state.getDestroyProgress(player, world, pos)!=0)
@@ -576,8 +587,9 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 					{
 						block.destroy(world, pos, state);
 						block.playerDestroy(world, player, pos, state, te, stack);
-						if(world instanceof ServerLevel)
-							block.popExperience((ServerLevel)world, pos, xpDropEvent);
+						// TODO
+						//if(world instanceof ServerLevel)
+						//	block.popExperience((ServerLevel)world, pos, xpDropEvent);
 					}
 				}
 				world.levelEvent(2001, pos, Block.getId(state));
@@ -595,5 +607,10 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		Item item = stack.getItem();
 		return item instanceof SawbladeItem&&SAWBLADES.contains(item);
+	}
+
+	private static boolean isSpareBladeUpgrade(ItemStack upgrade)
+	{
+		return upgrade.getItem()!=Misc.TOOL_UPGRADES.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem();
 	}
 }

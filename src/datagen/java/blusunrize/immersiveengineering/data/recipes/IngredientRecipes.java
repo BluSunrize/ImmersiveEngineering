@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data.recipes;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
@@ -21,20 +22,24 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import java.util.concurrent.CompletableFuture;
+
 public class IngredientRecipes extends IERecipeProvider
 {
-	public IngredientRecipes(PackOutput p_248933_)
+	public IngredientRecipes(PackOutput p_248933_, CompletableFuture<Provider> provider)
 	{
-		super(p_248933_);
+		super(p_248933_, provider);
 	}
 
 	@Override
@@ -172,7 +177,7 @@ public class IngredientRecipes extends IERecipeProvider
 				.pattern(" i ")
 				.pattern("ioi")
 				.pattern(" ip")
-				.define('o', new IngredientFluidStack(IETags.fluidPlantoil, FluidType.BUCKET_VOLUME))
+				.define('o', new Ingredient(new IngredientFluidStack(IETags.fluidPlantoil, FluidType.BUCKET_VOLUME)))
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).plate)
 				.define('p', MetalDevices.FLUID_PIPE)
 				.unlockedBy("has_drill", has(Tools.DRILL))
@@ -191,7 +196,7 @@ public class IngredientRecipes extends IERecipeProvider
 				.pattern("ai ")
 				.pattern("iai")
 				.pattern("ppc")
-				.define('a', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
+				.define('a', new Ingredient(new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME)))
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
 				.define('p', MetalDevices.FLUID_PIPE)
 				.define('c', Ingredients.COMPONENT_STEEL)
@@ -290,7 +295,7 @@ public class IngredientRecipes extends IERecipeProvider
 				.pattern("lc ")
 				.pattern("lil")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('l', Tags.Items.LEATHER)
+				.define('l', Tags.Items.LEATHERS)
 				.define('c', MetalDecoration.LV_COIL)
 				.unlockedBy("has_shield", has(Misc.SHIELD))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.SHIELD_MAGNET))));
@@ -414,7 +419,7 @@ public class IngredientRecipes extends IERecipeProvider
 				.pattern("gcg")
 				.pattern("ddd")
 				.pattern("ppp")
-				.define('g', Tags.Items.GUNPOWDER)
+				.define('g', Tags.Items.GUNPOWDERS)
 				.define('c', Ingredients.EMPTY_CASING)
 				.define('d', Tags.Items.DYES_BLUE)
 				//TODO tag?
@@ -436,7 +441,7 @@ public class IngredientRecipes extends IERecipeProvider
 	private RecipeOutput buildBlueprint(RecipeOutput out, String blueprint)
 	{
 		ItemStack blueprintItem = new ItemStack(Misc.BLUEPRINT);
-		blueprintItem.getOrCreateTag().putString("blueprint", blueprint);
+		blueprintItem.set(IEApiDataComponents.BLUEPRINT_TYPE, blueprint);
 		return WrappingRecipeOutput.replaceShapedOutput(out, blueprintItem);
 	}
 }

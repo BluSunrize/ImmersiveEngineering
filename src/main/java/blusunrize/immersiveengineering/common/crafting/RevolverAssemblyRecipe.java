@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
-import blusunrize.immersiveengineering.common.items.RevolverItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
+import blusunrize.immersiveengineering.common.items.RevolverItem.RevolverPerk;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nonnull;
+import java.util.EnumMap;
 import java.util.List;
 
 public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
@@ -35,26 +35,16 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 		if(nbtCopyTargetSlot!=null)
 		{
 			ItemStack out = getResultItem(access).copy();
-			CompoundTag tag = new CompoundTag();
+			EnumMap<RevolverPerk, Double> mergedPerks = new EnumMap<>(RevolverPerk.class);
 			for(int targetSlot : nbtCopyTargetSlot)
 			{
 				ItemStack s = matrix.getItem(targetSlot);
-				if(!s.isEmpty()&&s.hasTag())
-				{
-					CompoundTag perks = ItemNBTHelper.getTagCompound(s, "perks");
-					for(String key : perks.getAllKeys())
-						if(perks.getTagType(key)==Tag.TAG_DOUBLE)
-						{
-							RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
-							if(!tag.contains(key))
-								tag.putDouble(key, perks.getDouble(key));
-							else
-								tag.putDouble(key, perk.concat(tag.getDouble(key), perks.getDouble(key)));
-						}
-				}
+				var perks = s.get(IEDataComponents.REVOLVER_PERKS);
+				if(perks!=null)
+					for(var entry : perks.perks().entrySet())
+						mergedPerks.merge(entry.getKey(), entry.getValue(), Double::sum);
 			}
-			if(!tag.isEmpty())
-				ItemNBTHelper.setTagCompound(out, "perks", tag);
+			out.set(IEDataComponents.REVOLVER_PERKS, new Perks(mergedPerks));
 			return out;
 		}
 		else

@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.loot.LootModifierProvider;
-import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import blusunrize.immersiveengineering.data.recipes.RootRecipeProvider;
 import blusunrize.immersiveengineering.data.tags.*;
 import net.minecraft.data.DataGenerator;
@@ -43,13 +42,13 @@ public class IEDataGenerator
 			gen.addProvider(true, blockTags);
 			gen.addProvider(true, new IEItemTags(output, lookup, blockTags.contentsGetter(), exHelper));
 			gen.addProvider(true, new FluidTags(output, lookup, exHelper));
-			gen.addProvider(true, new BlockEntityTags(output, lookup, exHelper));
+			gen.addProvider(true, new MovableTags(output, lookup, exHelper));
 			gen.addProvider(true, new BannerTags(output, lookup, exHelper));
 			gen.addProvider(true, new PoiTags(output, lookup, exHelper));
 			gen.addProvider(true, new EntityTypeTags(output, lookup, exHelper));
 			gen.addProvider(true, new BiomeTags(output, lookup, exHelper));
-			gen.addProvider(true, new RootRecipeProvider(output));
-			gen.addProvider(true, new AllLoot(output));
+			gen.addProvider(true, new RootRecipeProvider(output, lookup));
+			gen.addProvider(true, new AllLoot(output, lookup));
 			gen.addProvider(true, new BlockStates(output, exHelper));
 			MultiblockStates multiblocks = new MultiblockStates(output, exHelper);
 			gen.addProvider(true, multiblocks);
@@ -59,10 +58,10 @@ public class IEDataGenerator
 			gen.addProvider(true, new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new DynamicModels(multiblocks, output, exHelper));
-			gen.addProvider(true, new LootModifierProvider(output));
+			gen.addProvider(true, new LootModifierProvider(output, lookup));
 			for(final DataProvider provider : WorldGenerationProvider.makeProviders(output, lookup, exHelper))
 				gen.addProvider(true, provider);
-			ManualDataGenerator.addProviders(gen, exHelper);
+			// TODO ManualDataGenerator.addProviders(gen, exHelper);
 		}
 	}
 }

@@ -11,10 +11,9 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BalloonCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.cloth.BalloonBlockEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
-import org.joml.Vector4f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -43,23 +42,23 @@ public class BalloonCallbacks implements BlockCallback<Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Vector4f original)
+	public Color4 getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Color4 original)
 	{
 		if(shaderCase!=null)
 			return original;
 		if(key.style()==0)
 		{
 			if(group.startsWith("balloon1_"))
-				return Utils.vec4fFromDye(key.color1());
+				return Color4.from(key.color1());
 			if(group.startsWith("balloon0_"))
-				return Utils.vec4fFromDye(key.color0());
+				return Color4.from(key.color0());
 		}
 		else
 		{
 			if(group.endsWith("_1"))
-				return Utils.vec4fFromDye(key.color1());
+				return Color4.from(key.color1());
 			if(group.endsWith("_0"))
-				return Utils.vec4fFromDye(key.color0());
+				return Color4.from(key.color0());
 		}
 		return original;
 	}

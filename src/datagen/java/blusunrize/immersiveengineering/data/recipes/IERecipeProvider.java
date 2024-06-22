@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data.recipes;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
@@ -36,9 +38,9 @@ public abstract class IERecipeProvider extends RecipeProvider
 
 	private final HashMap<String, Integer> pathCount = new HashMap<>();
 
-	public IERecipeProvider(PackOutput p_248933_)
+	public IERecipeProvider(PackOutput p_248933_, CompletableFuture<Provider> provider)
 	{
-		super(p_248933_);
+		super(p_248933_, provider);
 	}
 
 	protected ResourceLocation toRL(String s)

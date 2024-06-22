@@ -48,6 +48,7 @@ import blusunrize.immersiveengineering.common.entities.illager.Commando;
 import blusunrize.immersiveengineering.common.entities.illager.EngineerIllager;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
@@ -103,7 +104,7 @@ public class IEContent
 	public static void modConstruction(IEventBus modBus)
 	{
 		/*BULLETS*/
-		BulletItem.initBullets();
+		IEBullets.initBullets();
 		/*WIRES*/
 		IEWireTypes.modConstruction();
 		/*CONVEYORS*/
@@ -127,6 +128,7 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
 		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
+		IEDataComponents.init(modBus);
 		IEFluids.REGISTER.register(modBus);
 		IEFluids.TYPE_REGISTER.register(modBus);
 		IEPotions.REGISTER.register(modBus);
@@ -287,7 +289,7 @@ public class IEContent
 		WirecoilUtils.COIL_USE.setValue(WireCoilItem::doCoilUse);
 		AssemblerHandler.registerRecipeAdapter(Recipe.class, defaultAdapter);
 		BulletHandler.GET_BULLET_ITEM.setValue(b -> {
-			ItemRegObject<BulletItem> regObject = Weapons.BULLETS.get(b);
+			ItemRegObject<BulletItem<?>> regObject = Weapons.BULLETS.get(b);
 			if(regObject!=null)
 				return regObject.asItem();
 			else

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.entities.illager;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.entities.ai.RevolverAttackGoal;
-import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -129,11 +129,11 @@ public class Commando extends EngineerIllager
 		this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
 		float rng = level.getRandom().nextFloat();
 		if(rng < .02f) // 2% chance for a funny joke
-			this.revolverAmmo = BulletHandler.getBulletStack(BulletItem.FIREWORK);
+			this.revolverAmmo = BulletHandler.getBulletStack(IEBullets.FIREWORK);
 		else if(rng < .12f) // 10% chance for a commando that will oneshot you
-			this.revolverAmmo = BulletHandler.getBulletStack(BulletItem.DRAGONS_BREATH);
+			this.revolverAmmo = BulletHandler.getBulletStack(IEBullets.DRAGONS_BREATH);
 		else // and the rest are just normal guys
-			this.revolverAmmo = BulletHandler.getBulletStack(BulletItem.CASULL);
+			this.revolverAmmo = BulletHandler.getBulletStack(IEBullets.CASULL);
 		return super.finalizeSpawn(level, difficulty, reason, spawnData);
 	}
 

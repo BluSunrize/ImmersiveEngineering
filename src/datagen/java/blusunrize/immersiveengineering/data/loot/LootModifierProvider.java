@@ -11,11 +11,14 @@ package blusunrize.immersiveengineering.data.loot;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.AddDropModifier;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.neoforged.neoforge.common.Tags.Items;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
+
+import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.advancements.critereon.ItemPredicate.Builder.item;
 import static net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition.invert;
@@ -24,9 +27,9 @@ import static net.minecraft.world.level.storage.loot.predicates.MatchTool.toolMa
 
 public class LootModifierProvider extends GlobalLootModifierProvider
 {
-	public LootModifierProvider(PackOutput output)
+	public LootModifierProvider(PackOutput output, CompletableFuture<Provider> provider)
 	{
-		super(output, Lib.MODID);
+		super(output, provider, Lib.MODID);
 	}
 
 	@Override
@@ -35,13 +38,13 @@ public class LootModifierProvider extends GlobalLootModifierProvider
 		add("hemp_from_grass", new AddDropModifier(
 				Misc.HEMP_SEEDS,
 				randomChance(0.1f),
-				invert(toolMatches(item().of(Items.SHEARS))),
+				invert(toolMatches(item().of(Items.TOOLS_SHEARS))),
 				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.SHORT_GRASS)
 		));
 		add("hemp_from_tall_grass", new AddDropModifier(
 				Misc.HEMP_SEEDS,
 				randomChance(0.1f),
-				invert(toolMatches(item().of(Items.SHEARS))),
+				invert(toolMatches(item().of(Items.TOOLS_SHEARS))),
 				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.TALL_GRASS)
 		));
 	}

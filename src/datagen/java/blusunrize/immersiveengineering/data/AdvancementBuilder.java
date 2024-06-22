@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.data;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrigger;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
@@ -17,8 +18,10 @@ import net.minecraft.advancements.*;
 import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.advancements.critereon.ItemUsedOnLocationTrigger.TriggerInstance;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -138,7 +141,7 @@ public class AdvancementBuilder
 	{
 		this.builder.rewards(new AdvancementRewards(
 				0,
-				List.of(IEApi.ieLoc("advancements/"+lootPath)),
+				List.of(ResourceKey.create(Registries.LOOT_TABLE, IEApi.ieLoc("advancements/"+lootPath))),
 				List.of(),
 				Optional.empty())
 		);

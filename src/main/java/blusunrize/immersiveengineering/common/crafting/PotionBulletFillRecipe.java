@@ -10,13 +10,14 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -95,7 +96,7 @@ public class PotionBulletFillRecipe extends CustomRecipe
 
 	private boolean isPotionBullet(ItemStack stack)
 	{
-		return stack.getItem() instanceof BulletItem&&
-				((BulletItem)stack.getItem()).getType()==BulletHandler.getBullet(BulletItem.POTION);
+		return stack.getItem() instanceof BulletItem<?> bulletItem&&
+				bulletItem.getType()==BulletHandler.getBullet(IEBullets.POTION);
 	}
 }

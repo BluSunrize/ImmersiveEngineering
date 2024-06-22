@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.mixin.accessors.DamageSourcesAccess;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -128,7 +129,7 @@ public class RailgunProjectiles
 			{
 				if(shooter!=null)
 				{
-					ammo.hurtAndBreak(1, shooter, (player) -> player.broadcastBreakEvent(shooter.getUsedItemHand()));
+					ammo.hurtAndBreak(1, shooter, EquipmentSlot.MAINHAND);
 					ThrownTrident trident = new ThrownTrident(shooter.level(), shooter, ammo);
 					trident.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 5F, 0F);
 					if(shooter.getAbilities().instabuild)

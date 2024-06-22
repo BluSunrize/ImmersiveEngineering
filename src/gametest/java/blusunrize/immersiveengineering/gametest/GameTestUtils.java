@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,7 +31,7 @@ public class GameTestUtils
 {
 	public static void formMultiblock(IMultiblock multiblock, GameTestHelper helper)
 	{
-		Player player = helper.makeMockPlayer();
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 		ItemStack hammer = new ItemStack(Tools.HAMMER);
 		player.setItemInHand(InteractionHand.MAIN_HAND, hammer);
 		BlockPos triggerRelative = multiblock.getTriggerOffset().above();

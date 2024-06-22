@@ -22,41 +22,29 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.wires.IWireCoil;
-import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.api.wires.utils.WireLink;
-import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
-import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font.DisplayMode;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -76,7 +64,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.Item;
@@ -312,6 +299,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 	}
 
+	/*
 	@SubscribeEvent
 	// TODO RegisterGuiLayersEvent
 	public void onRenderOverlayPre(RenderGuiOverlayEvent.Pre event)
@@ -510,6 +498,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			}
 		}
 	}
+	 */
 
 	private <S extends IMultiblockState> boolean renderMultiblockOverlay(
 			IMultiblockBE<S> be, boolean hammer, PoseStack transform, int scaledWidth, int scaledHeight
@@ -807,7 +796,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
 		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart)
-			// TODO split into 2 messages?
-			PacketDistributor.sendToServer(new MessageMinecartShaderSync(event.getEntity()));
+			PacketDistributor.sendToServer(new MessageMinecartShaderSync(event.getEntity().getId(), ItemStack.EMPTY));
 	}
 }

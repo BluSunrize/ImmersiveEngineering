@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFl
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,9 +92,9 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	}
 
 	@Override
-	public void finishUpgradeRecalculation(ItemStack stack)
+	public void finishUpgradeRecalculation(ItemStack stack, RegistryAccess registries)
 	{
-		super.finishUpgradeRecalculation(stack);
+		super.finishUpgradeRecalculation(stack, registries);
 		FluidStack fs = getFluid(stack);
 		if(fs!=null&&fs.getAmount() > getCapacity(stack, CAPACITY))
 		{
@@ -136,7 +137,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 		Tier tier = getHarvestLevel(stack, null);
 		if(tier==null)
 			return false;
-		return isEffective(stack, state)&&canToolBeUsed(stack)&&TierSortingRegistry.isCorrectTierForDrops(tier, state);
+		return isEffective(stack, state)&&canToolBeUsed(stack)&&!state.is(tier.getIncorrectBlocksForDrops());
 	}
 
 	@Override

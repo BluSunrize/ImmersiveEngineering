@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
@@ -32,10 +33,14 @@ import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -267,11 +272,12 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
 										world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), b));
-								setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack), true);
+								var bulletList = getContainedItems(stack).stream().collect(ListUtils.collector());
+								setBullets(revolver, bulletList, true);
 								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.getInventory().setChanged();
 								if(player instanceof ServerPlayer)
-									PacketDistributor.PLAYER.with((ServerPlayer)player).send(new MessageSpeedloaderSync(i, hand));
+									PacketDistributor.sendToPlayer((ServerPlayer)player, new MessageSpeedloaderSync(i, hand));
 
 								ItemNBTHelper.putInt(revolver, "reload", 60);
 								return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
@@ -295,7 +301,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								if(noise > .2f)
 								{
 									// anything louder than default is considered an explosion
-									GameEvent eventTriggered = noise > 0.5?GameEvent.EXPLODE: GameEvent.PROJECTILE_SHOOT;
+									var eventTriggered = noise > 0.5?GameEvent.EXPLODE: GameEvent.PROJECTILE_SHOOT;
 									world.gameEvent(eventTriggered, player.position(), GameEvent.Context.of(player));
 								}
 							}
@@ -386,7 +392,9 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	@Override
 	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
+		return getContainedItems(revolver).stream()
+				.limit(getBulletCount(revolver))
+				.collect(ListUtils.collector());
 	}
 
 	/* ------------- BULLET UTILITY ------------- */
@@ -724,5 +732,14 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 			return perkCompound;
 		}
+	}
+
+	public record Perks(EnumMap<RevolverPerk, Double> perks)
+	{
+		public static final Codec<Perks> CODEC = IECodecs.enumMapCodec(RevolverPerk.values(), Codec.DOUBLE)
+				.xmap(Perks::new, Perks::perks);
+		public static final StreamCodec<ByteBuf, Perks> STREAM_CODEC = IECodecs.enumMapStreamCodec(
+				RevolverPerk.values(), ByteBufCodecs.DOUBLE
+		).map(Perks::new, Perks::perks);
 	}
 }

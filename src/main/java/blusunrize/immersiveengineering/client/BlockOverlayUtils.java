@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAcces
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -70,7 +69,7 @@ public class BlockOverlayUtils
 	public static void drawBlockOverlayText(PoseStack transform, Iterable<Component> text, int scaledWidth, int scaledHeight)
 	{
 		int i = 0;
-		MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+		MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
 		for(Component s : text)
 			if(s!=null)
 				ClientUtils.font().drawInBatch(
@@ -302,8 +301,8 @@ public class BlockOverlayUtils
 		ItemStack frameItem = frameEntity.getItem();
 		if(frameItem.getItem()!=Items.FILLED_MAP)
 			return;
-		MapItemSavedData mapData = MapItem.getSavedData(frameItem, world);
 		Level world = frameEntity.getCommandSenderWorld();
+		MapItemSavedData mapData = MapItem.getSavedData(frameItem, world);
 		if(mapData!=null)
 		{
 			Font font = ClientUtils.font();

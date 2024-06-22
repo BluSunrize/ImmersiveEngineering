@@ -30,7 +30,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.registries.RegistryPatchGenerator;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -90,7 +90,7 @@ public class WorldGenerationProvider
 	}
 
 	private static void bootstrapConfiguredFeatures(
-			BootstapContext<ConfiguredFeature<?, ?>> ctx, Registrations registrations
+			BootstrapContext<ConfiguredFeature<?, ?>> ctx, Registrations registrations
 	)
 	{
 		final TagMatchTest replaceDeepslate = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
@@ -112,7 +112,7 @@ public class WorldGenerationProvider
 		);
 	}
 
-	private static void bootstrapPlacedFeatures(BootstapContext<PlacedFeature> ctx, Registrations registrations)
+	private static void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> ctx, Registrations registrations)
 	{
 		for(final Entry<VeinType, FeatureRegistration> entry : registrations.oreFeatures.entrySet())
 		{
@@ -127,7 +127,7 @@ public class WorldGenerationProvider
 		registrations.mineralVeins.registerPlaced(ctx, List.of());
 	}
 
-	private static void bootstrapBiomeModifiers(BootstapContext<BiomeModifier> ctx, Registrations registrations)
+	private static void bootstrapBiomeModifiers(BootstrapContext<BiomeModifier> ctx, Registrations registrations)
 	{
 		final HolderGetter<Biome> biomeReg = ctx.lookup(Registries.BIOME);
 		for(final FeatureRegistration entry : registrations.allFeatures)
@@ -171,13 +171,13 @@ public class WorldGenerationProvider
 		}
 
 		private void registerConfigured(
-				BootstapContext<ConfiguredFeature<?, ?>> ctx, ConfiguredFeature<?, ?> configured
+				BootstrapContext<ConfiguredFeature<?, ?>> ctx, ConfiguredFeature<?, ?> configured
 		)
 		{
 			this.configured = ctx.register(ResourceKey.create(Registries.CONFIGURED_FEATURE, this.name), configured);
 		}
 
-		private void registerPlaced(BootstapContext<PlacedFeature> ctx, List<PlacementModifier> placement)
+		private void registerPlaced(BootstrapContext<PlacedFeature> ctx, List<PlacementModifier> placement)
 		{
 			this.placed = ctx.register(
 					ResourceKey.create(Registries.PLACED_FEATURE, this.name), new PlacedFeature(configured, placement)

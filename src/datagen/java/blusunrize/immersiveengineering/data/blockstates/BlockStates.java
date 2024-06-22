@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
@@ -640,7 +641,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.HEMP_PLANT.get());
 		// Top
 		ModelFile model = models()
-				.withExistingParent("block/hemp/top", new ResourceLocation("block/crop"))
+				.withExistingParent("block/hemp/top", ResourceLocation.withDefaultNamespace("block/crop"))
 				.texture("crop", IEApi.ieLoc("block/hemp/top0"))
 				.renderType(ModelProviderUtils.getName(cutout()));
 		builder.partialState().with(HempBlock.TOP, true).setModels(new ConfiguredModel(model));
@@ -649,7 +650,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(int i = 0; i <= 4; i++)
 		{
 			model = models()
-					.withExistingParent("block/hemp/bottom"+i, new ResourceLocation("block/crop"))
+					.withExistingParent("block/hemp/bottom"+i, ResourceLocation.withDefaultNamespace("block/crop"))
 					.texture("crop", IEApi.ieLoc("block/hemp/bottom"+i))
 					.renderType(ModelProviderUtils.getName(cutout()));
 			builder.partialState().with(HempBlock.TOP, false).with(HempBlock.AGE, i).setModels(new ConfiguredModel(model));
@@ -670,7 +671,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 			else
 			{
 				int height = layer*2-1;
-				model = models().withExistingParent(name, new ResourceLocation("block/thin_block"))
+				model = models().withExistingParent(name, ResourceLocation.withDefaultNamespace("block/thin_block"))
 						.texture("particle", sawdustTexture)
 						.texture("texture", sawdustTexture)
 						.element().from(0, 0, 0).to(16, height, 16).allFaces((direction, faceBuilder) -> {
@@ -696,10 +697,8 @@ public class BlockStates extends ExtendedBlockstateProvider
 	{
 		BlockModelBuilder builder = models().withExistingParent(outName, modLoc("block/ie_six_sides"));
 		for(Direction d : DirectionUtils.VALUES)
-			builder.texture(d.getSerializedName(), new ResourceLocation(baseTexName.getNamespace(),
-					baseTexName.getPath()+"_"+d.ordinal()));
-		builder.texture("particle", new ResourceLocation(baseTexName.getNamespace(),
-				baseTexName.getPath()+"_0"));
+			builder.texture(d.getSerializedName(), baseTexName.withSuffix("_"+d.ordinal()));
+		builder.texture("particle", baseTexName.withSuffix("_0"));
 		return builder;
 	}
 }

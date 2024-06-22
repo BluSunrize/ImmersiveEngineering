@@ -10,12 +10,10 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe.MatchLocation;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.mixin.accessors.ShapedPatternAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ShapedRecipeAccess;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -26,7 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 {
@@ -34,7 +31,6 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 	protected boolean allowEighth;
 	@Nonnull
 	protected final List<Integer> nbtCopyTargetSlot;
-	protected Pattern nbtCopyPredicate = null;
 
 	public TurnAndCopyRecipe(ShapedRecipe vanilla)
 	{
@@ -65,25 +61,14 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 		return this;
 	}
 
-	public void setNBTCopyPredicate(String pattern)
-	{
-		this.nbtCopyPredicate = Pattern.compile(pattern);
-	}
-
 	@Nonnull
 	@Override
 	public ItemStack assemble(@Nonnull CraftingInput matrix, Provider access)
 	{
 		ItemStack out = super.assemble(matrix, access);
-		CompoundTag tag = new CompoundTag();
 		for(int targetSlot : nbtCopyTargetSlot)
-		{
-			ItemStack s = matrix.getItem(targetSlot);
-			if(!s.isEmpty()&&s.hasTag())
-				tag = ItemNBTHelper.combineTags(tag, s.getOrCreateTag(), nbtCopyPredicate);
-		}
-		if(!tag.isEmpty())
-			out.setTag(tag);
+			// TODO this really needs filtering to specific components!
+			out.applyComponents(matrix.getItem(targetSlot).getComponents());
 		return out;
 	}
 
@@ -91,8 +76,8 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 	@Override
 	protected MatchLocation findMatch(CraftingInput inv)
 	{
-		for(int xOffset = 0; xOffset <= inv.getWidth()-this.getWidth(); ++xOffset)
-			for(int yOffset = 0; yOffset <= inv.getHeight()-this.getHeight(); ++yOffset)
+		for(int xOffset = 0; xOffset <= inv.width()-this.getWidth(); ++xOffset)
+			for(int yOffset = 0; yOffset <= inv.height()-this.getHeight(); ++yOffset)
 				for(boolean mirror : BOOLEANS)
 					for(Rotation rot : Rotation.values())
 					{
@@ -107,8 +92,8 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	private boolean checkMatchDo(CraftingInput inv, MatchLocation loc)
 	{
-		for(int x = 0; x < inv.getWidth(); x++)
-			for(int y = 0; y < inv.getHeight(); y++)
+		for(int x = 0; x < inv.width(); x++)
+			for(int y = 0; y < inv.height(); y++)
 			{
 				Ingredient target = Ingredient.EMPTY;
 
@@ -116,7 +101,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 				if(index >= 0)
 					target = getIngredients().get(index);
 
-				ItemStack slot = inv.getItem(x+y*inv.getWidth());
+				ItemStack slot = inv.getItem(x+y*inv.width());
 				if(!target.test(slot))
 					return false;
 			}
@@ -143,19 +128,6 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 	public List<Integer> getCopyTargets()
 	{
 		return nbtCopyTargetSlot;
-	}
-
-	public boolean hasCopyPredicate()
-	{
-		return nbtCopyPredicate!=null;
-	}
-
-	public String getBufferPredicate()
-	{
-		if(nbtCopyPredicate!=null)
-			return nbtCopyPredicate.pattern();
-		else
-			return null;
 	}
 
 	public static class MatchLocation implements AbstractFluidAwareRecipe.IMatchLocation

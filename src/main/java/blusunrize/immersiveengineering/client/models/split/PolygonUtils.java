@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.split;
 
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.utils.BakedQuadBuilder;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -73,7 +74,7 @@ public class PolygonUtils
 		}
 		return new Polygon<>(vertices, new ExtraQuadData(
 				quad.getSprite(),
-				new Vector4f((color&255)/255f, ((color >> 8)&255)/255f, ((color >> 16)&255)/255f, (color >> 24)/255f))
+				new Color4((color&255)/255f, ((color>>8)&255)/255f, ((color>>16)&255)/255f, (color>>24)/255f))
 		);
 	}
 
@@ -107,7 +108,7 @@ public class PolygonUtils
 					new Vec3(normal),
 					absoluteUV?v.uv().u(): data.sprite().getU((float)v.uv().u()),
 					absoluteUV?v.uv().v(): data.sprite().getV((float)(1-v.uv().v())),
-					new float[]{data.color.x(), data.color.y(), data.color.z(), data.color.w()},
+					new float[]{data.color.r(), data.color.g(), data.color.b(), data.color.a()},
 					1
 			);
 		}
@@ -124,7 +125,7 @@ public class PolygonUtils
 		return ret;
 	}
 
-	public record ExtraQuadData(TextureAtlasSprite sprite, Vector4f color)
+	public record ExtraQuadData(TextureAtlasSprite sprite, Color4 color)
 	{
 	}
 }

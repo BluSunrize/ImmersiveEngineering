@@ -68,7 +68,7 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private ResourceLocation forgeLoc(String s)
 	{
-		return new ResourceLocation("neoforge", s);
+		return ResourceLocation.fromNamespaceAndPath("neoforge", s);
 	}
 
 	@Override
@@ -248,7 +248,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Misc.TOOL_UPGRADES.values().toArray(new ItemLike[0]));
 		addItemModels("", Molds.MOLD_PLATE, Molds.MOLD_GEAR, Molds.MOLD_ROD, Molds.MOLD_BULLET_CASING, Molds.MOLD_WIRE, Molds.MOLD_PACKING_4, Molds.MOLD_PACKING_9, Molds.MOLD_UNPACKING);
 		addItemModels("bullet_", Ingredients.EMPTY_CASING, Ingredients.EMPTY_SHELL);
-		for(Entry<IBullet, ItemRegObject<BulletItem>> bullet : Weapons.BULLETS.entrySet())
+		for(Entry<IBullet<?>, ItemRegObject<BulletItem<?>>> bullet : Weapons.BULLETS.entrySet())
 			addLayeredItemModel(bullet.getValue().asItem(), bullet.getKey().getTextures());
 		addItemModels("", IEItems.Misc.FARADAY_SUIT.values());
 //		addItemModels("", IEItems.Tools.STEEL_ARMOR.values());
@@ -275,9 +275,9 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
 				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
 
-		withExistingParent(name(SpawnEggs.EGG_FUSILIER), new ResourceLocation("minecraft:item/template_spawn_egg"));
-		withExistingParent(name(SpawnEggs.EGG_COMMANDO), new ResourceLocation("minecraft:item/template_spawn_egg"));
-		withExistingParent(name(SpawnEggs.EGG_BULWARK), new ResourceLocation("minecraft:item/template_spawn_egg"));
+		withExistingParent(name(SpawnEggs.EGG_FUSILIER), ResourceLocation.withDefaultNamespace("item/template_spawn_egg"));
+		withExistingParent(name(SpawnEggs.EGG_COMMANDO), ResourceLocation.withDefaultNamespace("item/template_spawn_egg"));
+		withExistingParent(name(SpawnEggs.EGG_BULWARK), ResourceLocation.withDefaultNamespace("item/template_spawn_egg"));
 
 		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));
@@ -533,7 +533,7 @@ public class ItemModels extends TRSRItemModelProvider
 			TRSRModelBuilder trimModel = this.withExistingParent(name, mcLoc("item/generated"))
 					.texture("layer0", baseTexture)
 					.texture("layer1", trimTexture);
-			modelBuilder.override(trimModel, new ResourceLocation("trim_type"), trim.getItemModelIndex());
+			modelBuilder.override(trimModel, ResourceLocation.withDefaultNamespace("trim_type"), trim.getItemModelIndex());
 		}
 	}
 }

@@ -9,18 +9,22 @@
 package blusunrize.immersiveengineering.data.loot;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Metals;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction;
 import blusunrize.immersiveengineering.common.world.Villages;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.component.TypedDataComponent;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -31,20 +35,23 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer.Builder;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.function.BiConsumer;
 
-import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
-
 public class GeneralLoot implements LootTableSubProvider
 {
+	public GeneralLoot(Provider p)
+	{
+	}
+
 	@Override
-	public void generate(BiConsumer<ResourceLocation, LootTable.Builder> out)
+	public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> out)
 	{
 		LootPool.Builder mainPool = LootPool.lootPool();
 		mainPool
@@ -68,24 +75,24 @@ public class GeneralLoot implements LootTableSubProvider
 				.add(createBlueprint("electrode", 4));
 		LootTable.Builder builder = LootTable.lootTable();
 		builder.withPool(mainPool);
-		out.accept(rl("chests/engineers_house"), builder);
+		out.accept(key("chests/engineers_house"), builder);
 
 		/* Add Advancement Loot Tables */
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Misc.SHADER_BAG.get(Rarity.RARE), 1, 1, 1)));
-		out.accept(rl("advancements/shader_rare"), builder);
+		out.accept(key("advancements/shader_rare"), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Misc.SHADER_BAG.get(Rarity.EPIC), 1, 1, 1)));
-		out.accept(rl("advancements/shader_epic"), builder);
+		out.accept(key("advancements/shader_epic"), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK), 1, 1, 1)));
-		out.accept(rl("advancements/shader_masterwork"), builder);
+		out.accept(key("advancements/shader_masterwork"), builder);
 
 		/* Add Hero of the Village Loot Tables */
 
@@ -94,13 +101,13 @@ public class GeneralLoot implements LootTableSubProvider
 				.add(createEntry(Ingredients.STICK_TREATED))
 				.add(createEntry(Ingredients.STICK_IRON))
 				.add(createEntry(Ingredients.STICK_STEEL)));
-		out.accept(rl("gameplay/hero_of_the_village/"+Villages.ENGINEER.getPath()), builder);
+		out.accept(key("gameplay/hero_of_the_village/"+Villages.ENGINEER.getPath()), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
 				.add(createEntry(Ingredients.COMPONENT_IRON))
 				.add(createEntry(Ingredients.COMPONENT_STEEL)));
-		out.accept(rl("gameplay/hero_of_the_village/"+Villages.MACHINIST.getPath()), builder);
+		out.accept(key("gameplay/hero_of_the_village/"+Villages.MACHINIST.getPath()), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
@@ -108,7 +115,7 @@ public class GeneralLoot implements LootTableSubProvider
 				.add(createEntry(Misc.FARADAY_SUIT.get(Type.CHESTPLATE)))
 				.add(createEntry(Misc.FARADAY_SUIT.get(Type.LEGGINGS)))
 				.add(createEntry(Misc.FARADAY_SUIT.get(Type.BOOTS))));
-		out.accept(rl("gameplay/hero_of_the_village/"+Villages.ELECTRICIAN.getPath()), builder);
+		out.accept(key("gameplay/hero_of_the_village/"+Villages.ELECTRICIAN.getPath()), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
@@ -117,15 +124,15 @@ public class GeneralLoot implements LootTableSubProvider
 				.add(createEntry(Items.GREEN_BANNER))
 				.add(createEntry(Misc.SHADER_BAG.get(Rarity.RARE)))
 				.add(createEntry(Misc.SHADER_BAG.get(Rarity.EPIC))));
-		out.accept(rl("gameplay/hero_of_the_village/"+Villages.OUTFITTER.getPath()), builder);
+		out.accept(key("gameplay/hero_of_the_village/"+Villages.OUTFITTER.getPath()), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(createEntry(BulletHandler.getBulletItem(BulletItem.SILVER)))
-				.add(createEntry(BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH)))
-				.add(createEntry(BulletHandler.getBulletItem(BulletItem.HOMING)))
+				.add(createEntry(BulletHandler.getBulletItem(IEBullets.SILVER)))
+				.add(createEntry(BulletHandler.getBulletItem(IEBullets.DRAGONS_BREATH)))
+				.add(createEntry(BulletHandler.getBulletItem(IEBullets.HOMING)))
 				.add(createEntry(Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_MAGAZINE))));
-		out.accept(rl("gameplay/hero_of_the_village/"+Villages.GUNSMITH.getPath()), builder);
+		out.accept(key("gameplay/hero_of_the_village/"+Villages.GUNSMITH.getPath()), builder);
 	}
 
 	private LootPoolEntryContainer.Builder<?> createEntry(ItemLike item)
@@ -152,8 +159,18 @@ public class GeneralLoot implements LootTableSubProvider
 	{
 		Builder<?> ret = LootItem.lootTableItem(item.getItem())
 				.setWeight(weight);
-		if(item.hasTag())
-			ret.apply(SetNbtFunction.setTag(item.getOrCreateTag()));
+		for(var component : item.getComponents())
+			ret.apply(setComponent(component));
 		return ret;
+	}
+
+	private static <T> LootItemConditionalFunction.Builder<?> setComponent(TypedDataComponent<T> component)
+	{
+		return SetComponentsFunction.setComponent(component.type(), component.value());
+	}
+
+	static ResourceKey<LootTable> key(String path)
+	{
+		return ResourceKey.create(Registries.LOOT_TABLE, IEApi.ieLoc(path));
 	}
 }

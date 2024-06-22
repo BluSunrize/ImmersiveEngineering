@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client;
 
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.mixin.accessors.client.FontResourceManagerAccess;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecraftAccess;
@@ -143,12 +144,12 @@ public class ClientUtils
 		return ret;
 	}
 
-	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)
+	public static Color4 pulseRGBAlpha(Color4 rgba, int tickrate, float min, float max)
 	{
 		float f_alpha = mc().player.tickCount%(tickrate*2)/(float)tickrate;
 		if(f_alpha > 1)
 			f_alpha = 2-f_alpha;
-		return new Vector4f(rgba.x(), rgba.y(), rgba.z(), Mth.clamp(f_alpha, min, max));
+		return new Color4(rgba.r(), rgba.g(), rgba.b(), Mth.clamp(f_alpha, min, max));
 	}
 
 	public static int findOffset(VertexFormat vf, Usage u, Type t)

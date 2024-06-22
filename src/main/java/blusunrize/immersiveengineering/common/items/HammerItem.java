@@ -8,13 +8,13 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrigger;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -29,6 +29,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -44,7 +46,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -196,11 +197,7 @@ public class HammerItem extends IEBaseItem
 	@Override
 	public ItemStack getCraftingRemainingItem(@Nonnull ItemStack stack)
 	{
-		ItemStack container = stack.copy();
-		if(container.hurt(1, ApiUtils.RANDOM_SOURCE, null))
-			return ItemStack.EMPTY;
-		else
-			return container;
+		return ItemUtils.damageCopy(stack, 1);
 	}
 
 	@Override
@@ -224,14 +221,14 @@ public class HammerItem extends IEBaseItem
 	@Override
 	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
 	{
-		return EnchantmentHelper.getEnchantments(book).keySet().stream()
-				.allMatch(enchantment -> canApplyAtEnchantingTable(stack, enchantment));
+		var enchantments = book.get(DataComponents.ENCHANTMENTS);
+		return enchantments.keySet().stream()
+				.allMatch(HammerItem::canApplyAtEnchantingTable);
 	}
 
-	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
+	public static boolean canApplyAtEnchantingTable(Holder<Enchantment> enchantment)
 	{
-		return enchantment==Enchantments.BLOCK_EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
+		return enchantment.is(Enchantments.EFFICIENCY)||enchantment.is(Enchantments.UNBREAKING)||enchantment.is(Enchantments.MENDING);
 	}
 
 	@Override

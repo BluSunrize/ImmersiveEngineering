@@ -123,6 +123,7 @@ public class Lib
 		}
 	}
 
+	// TODO SimpleTier
 	public static final Tier MATERIAL_Steel = new Tier()
 	{
 		@Override

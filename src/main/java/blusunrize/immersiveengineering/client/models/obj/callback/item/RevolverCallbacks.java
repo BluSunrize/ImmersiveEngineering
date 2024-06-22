@@ -134,7 +134,7 @@ public class RevolverCallbacks implements ItemCallback<Key>
 			boolean left = cameraItemDisplayContext==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||cameraItemDisplayContext==ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
 			if(key.fancyAnimation()&&main)
 			{
-				float f = player.getAttackStrengthScale(ClientUtils.mc().getFrameTime());
+				float f = player.getAttackStrengthScale(ClientUtils.mc().getTimer().getGameTimeDeltaTicks());
 				if(f < 1)
 				{
 					float angle = f*-6.28318f;

@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
-import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEItems;
@@ -326,17 +326,17 @@ public class Villages
 				trades.get(1).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, Ingredients.WOODEN_GRIP, new PriceInterval(2, 4), 1, 12).setMultiplier(0.2f));
 
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("bullet"), new PriceInterval(3, 6), 1, 25));
-				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.CASULL), new PriceInterval(2, 4), 12, 5));
-				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.BUCKSHOT), new PriceInterval(2, 6), 12, 5));
+				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(IEBullets.CASULL), new PriceInterval(2, 4), 12, 5));
+				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(IEBullets.BUCKSHOT), new PriceInterval(2, 6), 12, 5));
 				trades.get(2).add(new RevolverPieceForEmeralds());
 
 				trades.get(3).add(new RevolverPieceForEmeralds());
-				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.FLARE), new PriceInterval(1, 2), 12, 10));
+				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(IEBullets.FLARE), new PriceInterval(1, 2), 12, 10));
 				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new PriceInterval(5, 9), 1, 30).setMultiplier(0.2f));
 
 				trades.get(4).add(new RevolverPieceForEmeralds());
-				trades.get(4).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.SILVER), new PriceInterval(1, 4), 8, 15));
-				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BulletHandler.getBulletStack(BulletItem.HIGH_EXPLOSIVE), new PriceInterval(2, 4), 8, 15));
+				trades.get(4).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(IEBullets.SILVER), new PriceInterval(1, 4), 8, 15));
+				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BulletHandler.getBulletStack(IEBullets.HIGH_EXPLOSIVE), new PriceInterval(2, 4), 8, 15));
 
 				trades.get(5).add(new RevolverPieceForEmeralds());
 				trades.get(5).add(new RevolverPieceForEmeralds());

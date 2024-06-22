@@ -20,6 +20,7 @@ import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,7 +48,7 @@ public class TestMultiblocks
 
 	private static void formAndDisassemble(GameTestHelper helper, IETemplateMultiblock multiblock)
 	{
-		Player player = helper.makeMockPlayer();
+		Player player = helper.makeMockPlayer(GameType.SURVIVAL);
 		BlockPos triggerRelative = multiblock.getTriggerOffset().above();
 		BlockPos triggerAbsolute = helper.absolutePos(triggerRelative);
 		BlockPos testRelative = Util.make(() -> {

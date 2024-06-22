@@ -36,25 +36,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.ibm.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 public class IEBlockTags extends BlockTagsProvider
 {
@@ -165,7 +158,7 @@ public class IEBlockTags extends BlockTagsProvider
 
 		tag(IETags.coalCokeBlock)
 				.add(StoneDecoration.COKE.get());
-		tag(Tags.Blocks.GRAVEL)
+		tag(Tags.Blocks.GRAVELS)
 				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
@@ -206,11 +199,11 @@ public class IEBlockTags extends BlockTagsProvider
 				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
 		tag(IETags.buzzsawTreeBlacklist)
-				.addOptionalTag(new ResourceLocation("dynamictrees", "branches"))
-				.addOptionalTag(new ResourceLocation("dynamictrees", "leaves"));
+				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("dynamictrees", "branches"))
+				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("dynamictrees", "leaves"));
 		tag(IETags.surveyToolTargets)
 				.addTag(BlockTags.DIRT)
-				.addTag(Tags.Blocks.GRAVEL)
+				.addTag(Tags.Blocks.GRAVELS)
 				.add(Blocks.GRASS_BLOCK)
 				.add(Blocks.CLAY);
 		checkAllRegisteredForBreaking();
@@ -230,9 +223,9 @@ public class IEBlockTags extends BlockTagsProvider
 		/* MOD COMPAT STARTS HERE */
 
 		// TConstruct
-		tag(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
+		tag(TagUtils.createBlockWrapper(ResourceLocation.fromNamespaceAndPath("tconstruct", "harvestable/stackable")))
 				.add(Misc.HEMP_PLANT.get());
-		tag(TagUtils.createBlockWrapper(new ResourceLocation("chiselsandbits:chiselable/forced")))
+		tag(TagUtils.createBlockWrapper(ResourceLocation.fromNamespaceAndPath("chiselsandbits", "chiselable/forced")))
 				.add(StoneDecoration.INSULATING_GLASS.get())
 				.add(WoodenDevices.WOODEN_BARREL.get())
 				.add(WoodenDevices.TURNTABLE.get())
@@ -272,11 +265,11 @@ public class IEBlockTags extends BlockTagsProvider
 	{
 		IntrinsicTagAppender<Block> tag = tag(IETags.rockcutterHarvestable);
 		// stones & ores
-		tag.addTag(Tags.Blocks.COBBLESTONE);
-		tag.addTag(Tags.Blocks.STONE);
+		tag.addTag(Tags.Blocks.COBBLESTONES);
+		tag.addTag(Tags.Blocks.STONES);
 		tag.addTag(Tags.Blocks.ORES);
 		// glass, ice, glowing blocks
-		tag.addTag(Tags.Blocks.GLASS);
+		tag.addTag(Tags.Blocks.GLASS_BLOCKS);
 		tag.addTag(BlockTags.ICE);
 		tag.add(Blocks.GLOWSTONE);
 		tag.add(Blocks.SEA_LANTERN);

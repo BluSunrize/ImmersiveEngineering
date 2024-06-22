@@ -27,6 +27,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.data.recipes.builder.*;
 import blusunrize.immersiveengineering.data.resources.RecipeWoods;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
@@ -42,6 +43,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.api.IETags.getItemTag;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
@@ -54,9 +56,9 @@ public class MultiblockRecipes extends IERecipeProvider
 	private static final int quarter_bucket = FluidType.BUCKET_VOLUME/4;
 	private static final int eighth_bucket = FluidType.BUCKET_VOLUME/8;
 
-	public MultiblockRecipes(PackOutput p_248933_)
+	public MultiblockRecipes(PackOutput p_248933_, CompletableFuture<Provider> provider)
 	{
-		super(p_248933_);
+		super(p_248933_, provider);
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class MultiblockRecipes extends IERecipeProvider
 	{
 		AlloyRecipeBuilder.builder()
 				.output(new ItemStack(StoneDecoration.INSULATING_GLASS.asItem(), 2))
-				.input(new IngredientWithSize(Tags.Items.GLASS, 2))
+				.input(new IngredientWithSize(Tags.Items.GLASS_BLOCKS, 2))
 				.input(IETags.getTagsFor(EnumMetals.IRON).dust)
 				.build(out, toRL("alloysmelter/"+toPath(StoneDecoration.INSULATING_GLASS)));
 	}
@@ -139,7 +141,7 @@ public class MultiblockRecipes extends IERecipeProvider
 
 		ArcFurnaceRecipeBuilder.builder()
 				.output(StoneDecoration.INSULATING_GLASS.asItem(), 2)
-				.input(new IngredientWithSize(Tags.Items.GLASS, 2))
+				.input(new IngredientWithSize(Tags.Items.GLASS_BLOCKS, 2))
 				.additive(IETags.getTagsFor(EnumMetals.IRON).dust)
 				.setTime(100)
 				.setEnergy(51200)
@@ -213,13 +215,13 @@ public class MultiblockRecipes extends IERecipeProvider
 	{
 		CrusherRecipeBuilder.builder()
 				.output(Items.GRAVEL)
-				.input(Tags.Items.COBBLESTONE)
+				.input(Tags.Items.COBBLESTONES)
 				.setEnergy(1600)
 				.build(out, toRL("crusher/cobblestone"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.SAND)
 				.addSecondary(Items.FLINT, .1f)
-				.input(Tags.Items.GRAVEL)
+				.input(Tags.Items.GRAVELS)
 				.setEnergy(1600)
 				.build(out, toRL("crusher/gravel"));
 		CrusherRecipeBuilder.builder()
@@ -229,7 +231,7 @@ public class MultiblockRecipes extends IERecipeProvider
 				.build(out, toRL("crusher/slag"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.SAND)
-				.input(Tags.Items.GLASS)
+				.input(Tags.Items.GLASS_BLOCKS)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/glass"));
 		CrusherRecipeBuilder.builder()
@@ -251,12 +253,14 @@ public class MultiblockRecipes extends IERecipeProvider
 				.build(out, toRL("crusher/clay"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.AMETHYST_SHARD, 4)
-				.input(Tags.Items.STORAGE_BLOCKS_AMETHYST)
+				// TODO .input(Tags.Items.STORAGE_BLOCKS_AMETHYST)
+				.input(Items.AMETHYST_BLOCK)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/amethyst"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.QUARTZ, 4)
-				.input(Tags.Items.STORAGE_BLOCKS_QUARTZ)
+				// TODO .input(Tags.Items.STORAGE_BLOCKS_QUARTZ)
+				.input(Items.QUARTZ_BLOCK)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/quartz"));
 		CrusherRecipeBuilder.builder()
@@ -576,8 +580,8 @@ public class MultiblockRecipes extends IERecipeProvider
 		MixerRecipeBuilder.builder()
 				.output(concrete, half_bucket)
 				.fluidInput(FluidTags.WATER, half_bucket)
-				.input(new IngredientWithSize(Tags.Items.SAND, 2))
-				.input(Tags.Items.GRAVEL)
+				.input(new IngredientWithSize(Tags.Items.SANDS, 2))
+				.input(Tags.Items.GRAVELS)
 				.input(IETags.clay)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/concrete"));

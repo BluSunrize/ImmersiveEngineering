@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.client.ieobj.IEOBJCallback;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.models.mirror.MirroredModelLoader;
 import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.GroupKey;
@@ -47,7 +48,6 @@ import net.neoforged.neoforge.client.model.geometry.UnbakedGeometryHelper;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -273,7 +273,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			TextureAtlasSprite texture = spriteGetter.apply(
 					mat.name(), UnbakedGeometryHelper.resolveDirtyMaterial(mat.map_Kd(), owner)
 			);
-			Vector4f colorTint = colorGetter.apply(mat.name(), new Vector4f(1, 1, 1, 1));
+			Color4 colorTint = colorGetter.apply(mat.name(), Color4.WHITE);
 
 			Polygon<OBJMaterial> remappedFace = coordinateRemapper.remapCoord(face);
 			if(remappedFace!=null)

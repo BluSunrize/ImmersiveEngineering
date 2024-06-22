@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
@@ -17,6 +19,7 @@ import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerD
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem.EarmuffData;
 import blusunrize.immersiveengineering.common.items.HammerItem.MultiblockRestriction;
+import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
 import blusunrize.immersiveengineering.common.items.SurveyToolsItem.VeinEntry;
 import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import blusunrize.immersiveengineering.common.items.components.DirectNBT;
@@ -25,17 +28,21 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IEDataComponents
 {
-	public static final DeferredRegister<DataComponentType<?>> REGISTER = DeferredRegister.create(
+	private static final DeferredRegister<DataComponentType<?>> REGISTER = DeferredRegister.create(
 			Registries.DATA_COMPONENT_TYPE, Lib.MODID
 	);
 
@@ -135,26 +142,18 @@ public class IEDataComponents
 					.networkSynchronized(VeinEntry.STREAM_CODEC.apply(ByteBufCodecs.list()))
 					.build()
 	);
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> FLUID_SORTER_DATA = REGISTER.register(
-			"fluid_sorter_nbt", () -> DataComponentType.<DirectNBT>builder()
-					.persistent(DirectNBT.CODEC)
-					.networkSynchronized(DirectNBT.STREAM_CODEC)
-					.build()
-	);
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> LOGIC_UNIT_DATA = REGISTER.register(
-			"logic_unit_nbt", () -> DataComponentType.<DirectNBT>builder()
-					.persistent(DirectNBT.CODEC)
-					.networkSynchronized(DirectNBT.STREAM_CODEC)
-					.build()
-	);
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> SORTER_DATA = REGISTER.register(
-			"sorter_nbt", () -> DataComponentType.<DirectNBT>builder()
-					.persistent(DirectNBT.CODEC)
-					.networkSynchronized(DirectNBT.STREAM_CODEC)
-					.build()
-	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> FLUID_SORTER_DATA = directNBT("fluid_sorter_nbt");
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> LOGIC_UNIT_DATA = directNBT("logic_unit_nbt");
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> SORTER_DATA = directNBT("sorter_nbt");
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> UPGRADE_DATA = directNBT("upgrade_nbt");
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SKYHOOK_SPEED_LIMIT = REGISTER.register(
 			"speed_limit", () -> DataComponentType.<Boolean>builder()
+					.persistent(Codec.BOOL)
+					.networkSynchronized(ByteBufCodecs.BOOL)
+					.build()
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DRILL_SINGLEBLOCK = REGISTER.register(
+			"drill_singleblock", () -> DataComponentType.<Boolean>builder()
 					.persistent(Codec.BOOL)
 					.networkSynchronized(ByteBufCodecs.BOOL)
 					.build()
@@ -165,9 +164,45 @@ public class IEDataComponents
 					.networkSynchronized(MultiblockRestriction.STREAM_CODEC)
 					.build()
 	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<Perks>> REVOLVER_PERKS = REGISTER.register(
+			"revolver_perks", () -> DataComponentType.<Perks>builder()
+					.persistent(Perks.CODEC)
+					.networkSynchronized(Perks.STREAM_CODEC)
+					.build()
+	);
+	private static final Map<IBullet<?>, DeferredHolder<DataComponentType<?>, DataComponentType<?>>> BULLETS = new IdentityHashMap<>();
 
 	// TODO probably just a massive hack? Does this need to be persistent?
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> JERRYCAN_DRAIN = REGISTER.register(
 			"jerrycan_drain", () -> DataComponentType.<Integer>builder().build()
 	);
+
+	public static void init(IEventBus bus)
+	{
+		REGISTER.register(bus);
+		for(ResourceLocation name : BulletHandler.getAllKeys())
+		{
+			IBullet<?> bullet = BulletHandler.getBullet(name);
+			var path = (name.getNamespace().equals(Lib.MODID)?"": name.getNamespace()+"_")+name.getPath();
+			var codecs = bullet.getCodec();
+			BULLETS.put(bullet, REGISTER.register(path, codecs::makeDataComponentType));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> DataComponentType<T> getBulletData(IBullet<T> bullet)
+	{
+		return (DataComponentType<T>)BULLETS.get(bullet).get();
+	}
+
+	@Deprecated
+	private static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> directNBT(String name)
+	{
+		return REGISTER.register(
+				name, () -> DataComponentType.<DirectNBT>builder()
+						.persistent(DirectNBT.CODEC)
+						.networkSynchronized(DirectNBT.STREAM_CODEC)
+						.build()
+		);
+	}
 }

@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -40,12 +41,13 @@ import net.neoforged.neoforge.fluids.FluidType;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 
 public class DeviceRecipes extends IERecipeProvider
 {
-	public DeviceRecipes(PackOutput p_248933_)
+	public DeviceRecipes(PackOutput p_248933_, CompletableFuture<Provider> provider)
 	{
-		super(p_248933_);
+		super(p_248933_, provider);
 	}
 
 	@Override
@@ -171,7 +173,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.pattern("gfg")
 				.pattern("gbg")
 				.define('f', Ingredients.HEMP_FIBER)
-				.define('g', Tags.Items.GUNPOWDER)
+				.define('g', Tags.Items.GUNPOWDERS)
 				.define('b', WoodenDevices.WOODEN_BARREL)
 				.unlockedBy("has_"+toPath(WoodenDevices.WOODEN_BARREL), has(WoodenDevices.WOODEN_BARREL))
 				.save(out, toRL(toPath(WoodenDevices.GUNPOWDER_BARREL)));
@@ -386,7 +388,7 @@ public class DeviceRecipes extends IERecipeProvider
 		shapedMisc(basic, 8)
 				.pattern("lll")
 				.pattern("iri")
-				.define('l', Tags.Items.LEATHER)
+				.define('l', Tags.Items.LEATHERS)
 				.define('i', Tags.Items.INGOTS_IRON)
 				.define('r', Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_leather", has(Items.LEATHER))
@@ -457,7 +459,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('w', IETags.getItemTag(IETags.treatedWood))
 				.define('f', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('a', IETags.getTagsFor(EnumMetals.LEAD).plate)
-				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
+				.define('e', new Ingredient(new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_lead_ingot", has(IETags.getTagsFor(EnumMetals.LEAD).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(MetalDevices.CAPACITOR_LV)));
@@ -469,7 +471,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('f', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.define('a', IETags.getTagsFor(EnumMetals.NICKEL).plate)
 				.define('c', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
+				.define('e', new Ingredient(new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_nickel_ingot", has(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
@@ -482,7 +484,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('f', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.define('a', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
 				.define('c', IETags.hopGraphiteIngot)
-				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
+				.define('e', new Ingredient(new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_nickel_ingot", has(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
@@ -559,7 +561,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('t', Ingredients.ELECTRON_TUBE)
 				.define('w', IETags.getItemTag(IETags.treatedWood))
 				.define('l', MetalDecoration.LV_COIL)
-				.define('g', Tags.Items.GLASS)
+				.define('g', Tags.Items.GLASS_BLOCKS)
 				.unlockedBy("has_"+toPath(MetalDecoration.LV_COIL), has(MetalDecoration.LV_COIL))
 				.save(out, toRL(toPath(MetalDevices.CHARGING_STATION)));
 		shapedMisc(MetalDevices.FLUID_PIPE, 8)
@@ -630,7 +632,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.pattern("geg")
 				.pattern("g g")
 				.pattern("wcw")
-				.define('g', Tags.Items.GLASS)
+				.define('g', Tags.Items.GLASS_BLOCKS)
 				.define('w', IETags.getItemTag(IETags.treatedWood))
 				.define('e', Ingredients.LIGHT_BULB)
 				.define('c', Ingredients.COMPONENT_IRON)

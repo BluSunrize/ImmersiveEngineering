@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -48,17 +49,15 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
-
-import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
+import java.util.concurrent.CompletableFuture;
 
 public class DecorationRecipes extends IERecipeProvider
 {
-	public DecorationRecipes(PackOutput p_248933_)
+	public DecorationRecipes(PackOutput p_248933_, CompletableFuture<Provider> provider)
 	{
-		super(p_248933_);
+		super(p_248933_, provider);
 	}
 
 	@Override
@@ -132,7 +131,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("wbw")
 				.pattern("www")
 				.define('w', ItemTags.PLANKS)
-				.define('b', new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME))
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
 				.save(
 						new WrappingRecipeOutput<>(out, BasicShapedRecipe::new),
@@ -152,7 +151,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("wbw")
 				.pattern("www")
 				.define('w', IETags.sawdust)
-				.define('b', new IngredientFluidStack(IETags.fluidResin, FluidType.BUCKET_VOLUME))
+				.define('b', new Ingredient(new IngredientFluidStack(IETags.fluidResin, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_resin", has(IEFluids.PHENOLIC_RESIN.getBucket()))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.FIBERBOARD)));
 	}
@@ -161,14 +160,14 @@ public class DecorationRecipes extends IERecipeProvider
 	{
 		addCornerStraightMiddle(StoneDecoration.COKEBRICK, 3,
 				makeIngredient(IETags.clay),
-				makeIngredient(Tags.Items.INGOTS_BRICK),
-				makeIngredient(Tags.Items.SANDSTONE),
+				makeIngredient(Tags.Items.BRICKS),
+				makeIngredient(Tags.Items.SANDSTONE_BLOCKS),
 				has(IETags.clay), out);
 		addCornerStraightMiddle(StoneDecoration.BLASTBRICK, 3,
-				makeIngredient(Tags.Items.INGOTS_NETHER_BRICK),
-				makeIngredient(Tags.Items.INGOTS_BRICK),
+				makeIngredient(Tags.Items.BRICKS_NETHER),
+				makeIngredient(Tags.Items.BRICKS),
 				makeIngredient(Blocks.MAGMA_BLOCK),
-				has(Tags.Items.INGOTS_BRICK), out);
+				has(Tags.Items.BRICKS), out);
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, StoneDecoration.SLAG_BRICK, 4)
 				.pattern("ss")
 				.pattern("ss")
@@ -270,9 +269,9 @@ public class DecorationRecipes extends IERecipeProvider
 		shapedMisc(StoneDecoration.ALLOYBRICK, 2)
 				.pattern("sb")
 				.pattern("bs")
-				.define('s', Tags.Items.SANDSTONE)
-				.define('b', Tags.Items.INGOTS_BRICK)
-				.unlockedBy("has_brick", has(Tags.Items.INGOTS_BRICK))
+				.define('s', Tags.Items.SANDSTONE_BLOCKS)
+				.define('b', Tags.Items.BRICKS)
+				.unlockedBy("has_brick", has(Tags.Items.BRICKS))
 				.save(out, toRL(toPath(StoneDecoration.ALLOYBRICK)));
 		shapelessMisc(StoneDecoration.BLASTBRICK_REINFORCED)
 				.requires(StoneDecoration.BLASTBRICK)
@@ -285,13 +284,13 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("scs")
 				.pattern("gbg")
 				.pattern("scs")
-				.define('s', Tags.Items.SAND)
+				.define('s', Tags.Items.SANDS)
 				.define('c', IETags.clay)
-				.define('g', Tags.Items.GRAVEL)
-				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
+				.define('g', Tags.Items.GRAVELS)
+				.define('b', new Ingredient(new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_clay", has(IETags.clay))
 				.save(new WrappingRecipeOutput<ShapedRecipe>(
-						out, r -> new TurnAndCopyRecipe(r, List.of()).allowQuarterTurn()
+						out, r -> new TurnAndCopyRecipe(r).allowQuarterTurn()
 				), toRL("concrete"));
 		shapedMisc(StoneDecoration.CONCRETE_TILE, 4)
 				.group("ie_concrete")
@@ -323,7 +322,7 @@ public class DecorationRecipes extends IERecipeProvider
 	{
 		for(DyeColor dye : DyeColor.values())
 		{
-			TagKey<Item> dyeTag = createItemWrapper(new ResourceLocation("forge", "dyes/"+dye.getName()));
+			TagKey<Item> dyeTag = dye.getTag();
 			Block coloredSheetmetal = MetalDecoration.COLORED_SHEETMETAL.get(dye).get();
 			shapedMisc(coloredSheetmetal, 8)
 					.pattern("sss")
@@ -487,7 +486,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("ici")
 				.define('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
 				.define('c', IETags.getTagsFor(EnumMetals.CONSTANTAN).plate)
-				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
+				.define('b', new Ingredient(new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_steel_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.unlockedBy("has_water_bucket", has(Items.WATER_BUCKET))
 				.unlockedBy("has_constantan_ingot", has(IETags.getTagsFor(EnumMetals.CONSTANTAN).ingot))

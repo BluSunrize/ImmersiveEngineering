@@ -14,12 +14,13 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
-import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -38,12 +39,13 @@ import net.neoforged.neoforge.common.Tags;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class ToolRecipes extends IERecipeProvider
 {
-	public ToolRecipes(PackOutput p_248933_)
+	public ToolRecipes(PackOutput p_248933_, CompletableFuture<Provider> provider)
 	{
-		super(p_248933_);
+		super(p_248933_, provider);
 	}
 
 	@Override
@@ -86,7 +88,7 @@ public class ToolRecipes extends IERecipeProvider
 				.pattern("s  ")
 				.define('s', Tags.Items.RODS_WOODEN)
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('f', Tags.Items.STRING)
+				.define('f', Tags.Items.STRINGS)
 				.unlockedBy("has_iron_ingot", has(IETags.getTagsFor(EnumMetals.IRON).ingot))
 				.save(out, toRL(toPath(Tools.HAMMER)));
 		shapedMisc(Tools.WIRECUTTER)
@@ -358,7 +360,7 @@ public class ToolRecipes extends IERecipeProvider
 				.unlockedBy("has_coppper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.save(out, toRL(toPath(BulletHandler.emptyCasing)));
 
-		shapedMisc(BulletHandler.getBulletItem(BulletItem.FIREWORK))
+		shapedMisc(BulletHandler.getBulletItem(IEBullets.FIREWORK))
 				.pattern("f")
 				.pattern("c")
 				.define('f', Items.FIREWORK_ROCKET)
@@ -369,7 +371,7 @@ public class ToolRecipes extends IERecipeProvider
 								//Since this isn't relative positioning, we have to account for the top 6 slots >_>
 								out, r -> new TurnAndCopyRecipe(r, List.of(0, 1, 2, 3, 4, 5, 6))
 						),
-						toRL(toPath(BulletHandler.getBulletItem(BulletItem.FIREWORK)))
+						toRL(toPath(BulletHandler.getBulletItem(IEBullets.FIREWORK)))
 				);
 	}
 

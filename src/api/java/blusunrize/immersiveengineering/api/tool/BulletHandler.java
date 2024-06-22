@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents.CodecPair;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
@@ -45,25 +46,25 @@ import java.util.function.Function;
 
 public class BulletHandler
 {
-	public static final SetRestrictedField<Function<IBullet, Item>> GET_BULLET_ITEM = SetRestrictedField.common();
+	public static final SetRestrictedField<Function<IBullet<?>, Item>> GET_BULLET_ITEM = SetRestrictedField.common();
 	public static ItemLike emptyCasing = Items.AIR;
 	public static ItemLike emptyShell = Items.AIR;
 
-	private final static BiMap<ResourceLocation, IBullet> REGISTRY = HashBiMap.create();
+	private final static BiMap<ResourceLocation, IBullet<?>> REGISTRY = HashBiMap.create();
 
-	public static void registerBullet(ResourceLocation name, IBullet bullet)
+	public static void registerBullet(ResourceLocation name, IBullet<?> bullet)
 	{
 		Preconditions.checkState(!REGISTRY.containsKey(name), name+" is already registered");
 		Preconditions.checkState(!REGISTRY.containsValue(bullet));
 		REGISTRY.put(name, bullet);
 	}
 
-	public static IBullet getBullet(ResourceLocation name)
+	public static IBullet<?> getBullet(ResourceLocation name)
 	{
 		return REGISTRY.get(name);
 	}
 
-	public static ResourceLocation findRegistryName(IBullet bullet)
+	public static ResourceLocation findRegistryName(IBullet<?> bullet)
 	{
 		if(bullet!=null)
 			return REGISTRY.inverse().get(bullet);
@@ -85,13 +86,10 @@ public class BulletHandler
 		return REGISTRY.keySet();
 	}
 
-	public static Collection<IBullet> getAllValues()
-	{
-		return REGISTRY.values();
-	}
-
 	public interface IBullet<StackData>
 	{
+		CodecPair<StackData> getCodec();
+
 		/**
 		 * @return whether this cartridge should appear as an item and should be fired from revolver. Return false if this is a bullet the player can't get access to
 		 */
@@ -166,30 +164,32 @@ public class BulletHandler
 
 	public static class DamagingBullet<StackData> implements IBullet<StackData>
 	{
-		final DamageSourceProvider damageSourceGetter;
-		final DoubleSupplier damage;
-		boolean resetHurt = false;
-		boolean setFire = false;
-		Supplier<ItemStack> casing;
-		ResourceLocation[] textures;
+		private final CodecPair<StackData> codec;
+		private final DamageSourceProvider damageSourceGetter;
+		private final DoubleSupplier damage;
+		private final boolean resetHurt;
+		private final boolean setFire;
+		private final Supplier<ItemStack> casing;
+		private final ResourceLocation[] textures;
 
-		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, float damage, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
-			this(damageSourceGetter, damage, false, false, casing, textures);
+			this(codec, damageSourceGetter, damage, false, false, casing, textures);
 		}
 
-		public DamagingBullet(DamageSourceProvider damageSourceGetter, DoubleSupplier damage, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, DoubleSupplier damage, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
-			this(damageSourceGetter, damage, false, false, casing, textures);
+			this(codec, damageSourceGetter, damage, false, false, casing, textures);
 		}
 
-		public DamagingBullet(DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, float damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
-			this(damageSourceGetter, () -> damage, resetHurt, setFire, casing, textures);
+			this(codec, damageSourceGetter, () -> damage, resetHurt, setFire, casing, textures);
 		}
 
-		public DamagingBullet(DamageSourceProvider damageSourceGetter, DoubleSupplier damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
+		public DamagingBullet(CodecPair<StackData> codec, DamageSourceProvider damageSourceGetter, DoubleSupplier damage, boolean resetHurt, boolean setFire, Supplier<ItemStack> casing, ResourceLocation... textures)
 		{
+			this.codec = codec;
 			this.damageSourceGetter = damageSourceGetter;
 			this.damage = damage;
 			this.resetHurt = resetHurt;
@@ -247,6 +247,12 @@ public class BulletHandler
 		public boolean isValidForTurret()
 		{
 			return true;
+		}
+
+		@Override
+		public CodecPair<StackData> getCodec()
+		{
+			return codec;
 		}
 
 		public interface DamageSourceProvider

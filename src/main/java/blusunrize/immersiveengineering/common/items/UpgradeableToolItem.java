@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.items.components.DirectNBT;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -43,17 +45,18 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 
 	public static CompoundTag getUpgradesStatic(ItemStack stack)
 	{
-		return ItemNBTHelper.getTagCompound(stack, "upgrades");
+		final var data = stack.get(IEDataComponents.UPGRADE_DATA);
+		return data!=null?data.tag(): new CompoundTag();
 	}
 
 	@Override
 	public void clearUpgrades(ItemStack stack)
 	{
-		ItemNBTHelper.remove(stack, "upgrades");
+		stack.remove(IEDataComponents.UPGRADE_DATA);
 	}
 
 	@Override
-	public void finishUpgradeRecalculation(ItemStack stack)
+	public void finishUpgradeRecalculation(ItemStack stack, RegistryAccess registries)
 	{
 	}
 
@@ -77,8 +80,8 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 						upg.applyUpgrades(stack, u, upgradeTag);
 				}
 			}
-			ItemNBTHelper.setTagCompound(stack, "upgrades", upgradeTag);
-			finishUpgradeRecalculation(stack);
+			stack.set(IEDataComponents.UPGRADE_DATA, new DirectNBT(upgradeTag));
+			finishUpgradeRecalculation(stack, w.registryAccess());
 		}
 	}
 

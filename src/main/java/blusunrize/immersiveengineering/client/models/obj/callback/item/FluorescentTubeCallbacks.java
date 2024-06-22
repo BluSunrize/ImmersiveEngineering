@@ -12,13 +12,13 @@ package blusunrize.immersiveengineering.client.models.obj.callback.item;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.FluorescentTubeCallbacks.Key;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Vector4f;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class FluorescentTubeCallbacks implements ItemCallback<Key>
 		float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F: 0);
 		float mult = min+(lit?ApiUtils.RANDOM.nextFloat()*Mth.clamp(1-min, 0, .1F): 0);
 		float[] colors = getRGBFloat(object, mult);
-		return new Key(new Vector4f(colors[0], colors[1], colors[2], colors[3]));
+		return new Key(new Color4(colors[0], colors[1], colors[2], colors[3]));
 	}
 
 	private static final List<List<String>> special = List.of(List.of("tube"));
@@ -53,21 +53,21 @@ public class FluorescentTubeCallbacks implements ItemCallback<Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key object, String group, String material, ShaderCase shaderCase, Vector4f original)
+	public Color4 getRenderColor(Key object, String group, String material, ShaderCase shaderCase, Color4 original)
 	{
 		if("tube".equals(group))
 			return object.color();
 		else
-			return new Vector4f(.067f, .067f, .067f, 1);
+			return new Color4(.067f, .067f, .067f, 1);
 	}
 
 	@Override
 	public Key getDefaultKey()
 	{
-		return new Key(new Vector4f(1, 1, 1, 1));
+		return new Key(new Color4(1, 1, 1, 1));
 	}
 
-	public record Key(Vector4f color)
+	public record Key(Color4 color)
 	{
 	}
 }

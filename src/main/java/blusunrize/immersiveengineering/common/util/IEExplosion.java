@@ -21,10 +21,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -210,7 +208,7 @@ public class IEExplosion extends Explosion
 						double d14 = getSeenPercent(vec3, entity);
 						double d10 = (1.0D-d12)*d14;
 						entity.hurt(entity.damageSources().explosion(this), (float)((int)((d10*d10+d10)/2.0D*8.0D*(double)f3+1.0D)));
-						double d11 = entity instanceof LivingEntity?ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity)entity, d10): d10;
+						double d11 = d10;//TODO // entity instanceof LivingEntity?ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity)entity, d10): d10;
 						entity.setDeltaMovement(entity.getDeltaMovement().add(d5*d11,
 								d7*d11,
 								d9*d11));

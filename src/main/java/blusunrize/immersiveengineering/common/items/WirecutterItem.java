@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -29,8 +29,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -58,15 +56,7 @@ public class WirecutterItem extends IEBaseItem
 	@Override
 	public ItemStack getCraftingRemainingItem(@Nonnull ItemStack stack)
 	{
-		ItemStack container = stack.copy();
-		final var damage = container.getOrDefault(DataComponents.DAMAGE, 0);
-		if(damage >= container.getMaxDamage())
-			return ItemStack.EMPTY;
-		else
-		{
-			container.set(DataComponents.DAMAGE, damage+1);
-			return container;
-		}
+		return ItemUtils.damageCopy(stack, 1);
 	}
 
 	@Override
@@ -88,9 +78,10 @@ public class WirecutterItem extends IEBaseItem
 	}
 
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
 	{
-		return enchantment==Enchantments.EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
+		var enchantments = book.get(DataComponents.ENCHANTMENTS);
+		return enchantments.keySet().stream().allMatch(HammerItem::canApplyAtEnchantingTable);
 	}
 
 	@Override
@@ -104,8 +95,9 @@ public class WirecutterItem extends IEBaseItem
 	public boolean mineBlock(ItemStack itemstack, Level pLevel, BlockState state, BlockPos pPos, LivingEntity pEntityLiving)
 	{
 		boolean effective = state.is(IETags.wirecutterHarvestable);
-		itemstack.hurtAndBreak(1, ApiUtils.RANDOM_SOURCE, null, () -> {
-		});
+		if(pLevel instanceof ServerLevel serverLevel)
+			itemstack.hurtAndBreak(1, serverLevel, null, i -> {
+			});
 		return effective;
 	}
 
@@ -161,7 +153,7 @@ public class WirecutterItem extends IEBaseItem
 					cut.set(true);
 				});
 				if(cut.get())
-					damageStack(stack, player, context.getHand());
+					ItemUtils.damageDirect(stack, 1);
 			}
 		}
 		else if(player!=null)
@@ -183,21 +175,9 @@ public class WirecutterItem extends IEBaseItem
 			if(target!=null)
 			{
 				GlobalWireNetwork.getNetwork(world).removeInsertAndDropConnection(target, player, world);
-				damageStack(stack, player, hand);
+				ItemUtils.damageDirect(stack, 1);
 			}
 		}
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-	}
-
-	private void damageStack(ItemStack stack, Player player, InteractionHand hand)
-	{
-		int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
-		if(nbtDamage < IEServerConfig.TOOLS.cutterDurabiliy.get())
-			ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
-		else
-		{
-			player.broadcastBreakEvent(hand);
-			player.setItemInHand(hand, ItemStack.EMPTY);
-		}
 	}
 }

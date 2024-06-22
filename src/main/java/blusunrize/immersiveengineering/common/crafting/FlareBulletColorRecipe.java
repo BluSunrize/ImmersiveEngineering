@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -130,7 +131,7 @@ public class FlareBulletColorRecipe extends CustomRecipe
 
 	private boolean isFlareBullet(ItemStack stack)
 	{
-		return stack.getItem() instanceof BulletItem&&
-				((BulletItem)stack.getItem()).getType()==BulletHandler.getBullet(BulletItem.FLARE);
+		return stack.getItem() instanceof BulletItem<?> bulletItem&&
+				bulletItem.getType()==BulletHandler.getBullet(IEBullets.FLARE);
 	}
 }

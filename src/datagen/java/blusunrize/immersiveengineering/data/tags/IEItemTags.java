@@ -27,11 +27,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -90,7 +86,7 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.seedsHemp).add(Misc.HEMP_SEEDS.get());
 		tag(Tags.Items.RODS_WOODEN).add(Ingredients.STICK_TREATED.get());
 		tag(ItemTags.COALS).add(Ingredients.COAL_COKE.get());
-		tag(Tags.Items.LEATHER).add(Ingredients.ERSATZ_LEATHER.get());
+		tag(Tags.Items.LEATHERS).add(Ingredients.ERSATZ_LEATHER.get());
 		tag(IETags.treatedStick).add(Ingredients.STICK_TREATED.get());
 		tag(IETags.slag).add(Ingredients.SLAG.get());
 		tag(IETags.ironRod).add(Ingredients.STICK_IRON.get());
@@ -152,22 +148,22 @@ public class IEItemTags extends ItemTagsProvider
 					.add(Misc.FARADAY_SUIT.get(slot).asItem());
 			tag(ItemTags.TRIMMABLE_ARMOR).add(Tools.STEEL_ARMOR.get(slot).asItem());
 		}
-		tag(Tags.Items.ARMORS_HELMETS)
+		tag(ItemTags.HEAD_ARMOR)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.HELMET).asItem())
 				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.HELMET).asItem());
-		tag(Tags.Items.ARMORS_CHESTPLATES)
+		tag(ItemTags.CHEST_ARMOR)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.CHESTPLATE).asItem())
 				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.CHESTPLATE).asItem());
-		tag(Tags.Items.ARMORS_LEGGINGS)
+		tag(ItemTags.LEG_ARMOR)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.LEGGINGS).asItem())
 				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.LEGGINGS).asItem());
-		tag(Tags.Items.ARMORS_BOOTS)
+		tag(ItemTags.FOOT_ARMOR)
 				.add(Tools.STEEL_ARMOR.get(ArmorItem.Type.BOOTS).asItem())
 				.add(Misc.FARADAY_SUIT.get(ArmorItem.Type.BOOTS).asItem());
 
 		tag(IETags.recyclingIgnoredComponents)
 				// Ignore bricks for outputting
-				.addTag(Tags.Items.INGOTS_BRICK)
+				.addTag(Tags.Items.BRICKS)
 				// Prevent tools used during crafting to be recycled as components
 				.add(Tools.HAMMER.get())
 				.add(Tools.SCREWDRIVER.get())
@@ -176,9 +172,9 @@ public class IEItemTags extends ItemTagsProvider
 		/* MOD COMPAT STARTS HERE */
 
 		// Curios
-		tag(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
+		tag(TagUtils.createItemWrapper(ResourceLocation.fromNamespaceAndPath("curios", "back")))
 				.add(Misc.POWERPACK.asItem());
-		tag(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))
+		tag(TagUtils.createItemWrapper(ResourceLocation.fromNamespaceAndPath("curios", "head")))
 				.add(Misc.EARMUFFS.asItem());
 	}
 
@@ -205,8 +201,8 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Items.COMPASS)
 				.add(Items.FLINT_AND_STEEL)
 				.add(Items.FISHING_ROD)
-				.addOptionalTag(new ResourceLocation("forge", "buckets/empty"))
-				.addOptionalTag(new ResourceLocation("forge", "tools/wrench"))
+				.addOptionalTag(Tags.Items.BUCKETS_EMPTY)
+				.addOptionalTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "tools/wrenches")))
 		;
 		for(ItemRegObject<WireCoilItem> wirecoil : Misc.WIRE_COILS.values())
 			tag(IETags.toolboxWiring).add(wirecoil.asItem());

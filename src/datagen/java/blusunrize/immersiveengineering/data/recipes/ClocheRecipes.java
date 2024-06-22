@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.data.recipes.builder.ClocheFertilizerBuilder;
 import blusunrize.immersiveengineering.data.recipes.builder.ClocheRecipeBuilder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
@@ -24,11 +25,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
+import java.util.concurrent.CompletableFuture;
+
 public class ClocheRecipes extends IERecipeProvider
 {
-	public ClocheRecipes(PackOutput p_248933_)
+	public ClocheRecipes(PackOutput p_248933_, CompletableFuture<Provider> provider)
 	{
-		super(p_248933_);
+		super(p_248933_, provider);
 	}
 
 	@Override
@@ -150,7 +153,7 @@ public class ClocheRecipes extends IERecipeProvider
 		ClocheRecipeBuilder.builder()
 				.output(Items.MOSS_BLOCK)
 				.seed(Items.MOSS_BLOCK)
-				.soil(Tags.Items.COBBLESTONE)
+				.soil(Tags.Items.COBBLESTONES)
 				.setTime(1200)
 				.setRender(new RenderFunctionGeneric(Blocks.MOSS_CARPET))
 				.build(out, toRL("cloche/moss"));
@@ -161,14 +164,14 @@ public class ClocheRecipes extends IERecipeProvider
 		ClocheRecipeBuilder.builder()
 				.output(Items.SUGAR_CANE)
 				.seed(Items.SUGAR_CANE)
-				.soil(Tags.Items.SAND)
+				.soil(Tags.Items.SANDS)
 				.setTime(560)
 				.setRender(new RenderFunctionStacking(Blocks.SUGAR_CANE))
 				.build(out, toRL("cloche/sugar_cane"));
 		ClocheRecipeBuilder.builder()
 				.output(Items.CACTUS)
 				.seed(Items.CACTUS)
-				.soil(Tags.Items.SAND)
+				.soil(Tags.Items.SANDS)
 				.setTime(560)
 				.setRender(new RenderFunctionStacking(Blocks.CACTUS))
 				.build(out, toRL("cloche/cactus"));

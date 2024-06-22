@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.PipeCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity.ConnectionStyle;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.math.Transformation;
 import net.minecraft.Util;
@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -337,10 +336,10 @@ public class PipeCallbacks implements BlockCallback<Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Vector4f original)
+	public Color4 getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Color4 original)
 	{
 		if(key.color()!=null)
-			return Utils.vec4fFromDye(key.color);
+			return Color4.from(key.color);
 		return original;
 	}
 

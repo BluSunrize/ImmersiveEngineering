@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -34,7 +35,7 @@ public interface IUpgradeableTool
 
 	void clearUpgrades(ItemStack stack);
 
-	void finishUpgradeRecalculation(ItemStack stack);
+	void finishUpgradeRecalculation(ItemStack stack, RegistryAccess registries);
 
 	/**
 	 * Iterate through the stored items and apply upgrades. For an example implementation, see ItemUpgradeableTool in the IE source

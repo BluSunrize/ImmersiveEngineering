@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -61,7 +62,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 {
 	public RailgunItem()
 	{
-		super(new Properties().stacksTo(1), "RAILGUN");
+		super(new Properties().stacksTo(1).component(IEDataComponents.GENERIC_ENERGY, 0), "RAILGUN");
 	}
 
 	@Override
@@ -96,18 +97,21 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
 		super.recalculateUpgrades(stack, w, player);
-		IEnergyStorage energy = Objects.requireNonNull(stack.getCapability(EnergyStorage.ITEM));
-		if(energy.getEnergyStored() > getMaxEnergyStored(stack))
-			ItemNBTHelper.putInt(stack, "energy", getMaxEnergyStored(stack));
+		capStoredEnergyAtMaximum(stack);
 	}
 
 	@Override
 	public void clearUpgrades(ItemStack stack)
 	{
 		super.clearUpgrades(stack);
-		IEnergyStorage energy = Objects.requireNonNull(stack.getCapability(EnergyStorage.ITEM));
-		if(energy.getEnergyStored() > getMaxEnergyStored(stack))
-			ItemNBTHelper.putInt(stack, "energy", getMaxEnergyStored(stack));
+		capStoredEnergyAtMaximum(stack);
+	}
+
+	private void capStoredEnergyAtMaximum(ItemStack stack)
+	{
+		var energy = stack.getOrDefault(IEDataComponents.GENERIC_ENERGY, 0);
+		if(energy > getMaxEnergyStored(stack))
+			stack.set(IEDataComponents.GENERIC_ENERGY, getMaxEnergyStored(stack));
 	}
 
 	@Override

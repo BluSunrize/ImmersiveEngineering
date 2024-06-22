@@ -129,7 +129,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	{
 		ResourceLocation[] textures = new ResourceLocation[8];
 		for (int i=0;i<8;i++)
-			textures[i] = new ResourceLocation(texture.toString()+i);
+			textures[i] = texture.withSuffix(Integer.toString(i));
 		multiCubeAll(b, textures);
 	}
 
@@ -179,7 +179,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	{
 		ResourceLocation[] textures = new ResourceLocation[8];
 		for (int i=0;i<8;i++)
-			textures[i] = new ResourceLocation(texture.toString()+i);
+			textures[i] = texture.withSuffix(Integer.toString(i));
 		slabForMultiAll(b, textures);
 	}
 
@@ -240,7 +240,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	{
 		ResourceLocation[] textures = new ResourceLocation[8];
 		for (int i=0;i<8;i++)
-			textures[i] = new ResourceLocation(texture.toString()+i);
+			textures[i] = texture.withSuffix(Integer.toString(i));
 		stairsForMultiAll(b, textures);
 	}
 
@@ -300,9 +300,9 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		ResourceLocation[] topTextures = new ResourceLocation[8];
 		for (int i=0;i<8;i++)
 		{
-			bottomTextures[i] = new ResourceLocation(bottomTexture.toString()+i);
-			sideTextures[i] = new ResourceLocation(sideTexture.toString()+i);
-			topTextures[i] = new ResourceLocation(topTexture.toString()+i);
+			bottomTextures[i] = bottomTexture.withSuffix(Integer.toString(i));
+			sideTextures[i] = sideTexture.withSuffix(Integer.toString(i));
+			topTextures[i] = topTexture.withSuffix(Integer.toString(i));
 		}
 		wallForMultiMany(b, bottomTextures, sideTextures, topTextures);
 	}
@@ -369,14 +369,9 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		}
 	}
 
-	protected ResourceLocation forgeLoc(String path)
-	{
-		return "forge",path);
-	}
-
 	protected ResourceLocation addModelsPrefix(ResourceLocation in)
 	{
-		return new ResourceLocation(in.withPath("models/"+in.getPath());
+		return in.withPath("models/"+in.getPath());
 	}
 
 	protected void itemModel(Supplier<? extends Block> block, ModelFile model)

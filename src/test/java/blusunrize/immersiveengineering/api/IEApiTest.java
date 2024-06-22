@@ -42,6 +42,6 @@ public class IEApiTest extends TestCase
 
 	private ResourceLocation rl(String namespace, String path)
 	{
-		return new ResourceLocation(namespace, path);
+		return ResourceLocation.fromNamespaceAndPath(namespace, path);
 	}
 }

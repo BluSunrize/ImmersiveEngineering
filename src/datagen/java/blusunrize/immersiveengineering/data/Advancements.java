@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyo
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ExtractConveyor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
@@ -26,20 +26,17 @@ import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.register.IEPotions;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.world.Villages;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.raid.Raid;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
@@ -112,16 +109,21 @@ public class Advancements extends AdvancementProvider
 						Misc.SHADER_BAG.get(Rarity.RARE)
 				))).save(consumer);
 
-		CompoundTag displayTag = new CompoundTag();
-		displayTag.putString("Name", Component.Serializer.toJson(Component.translatable("item.immersiveengineering.map_orevein")));
-		CompoundTag mapNBT = new CompoundTag();
-		mapNBT.put("display", displayTag);
-		AdvancementHolder oremap = AdvancementBuilder.child("buy_oremap", villagers).icon(Items.FILLED_MAP)
-				.addCriterion("buy_oremap", tradedForItem(
-						ItemPredicate.Builder.item().of(Items.FILLED_MAP).hasNbt(mapNBT)
-				)).save(consumer);
+		// TODO
+		//CompoundTag displayTag = new CompoundTag();
+		//displayTag.putString("Name", Component.Serializer.toJson(
+		//		Component.translatable("item.immersiveengineering.map_orevein"), lookup
+		//));
+		//CompoundTag mapNBT = new CompoundTag();
+		//mapNBT.put("display", displayTag);
+		//AdvancementHolder oremap = AdvancementBuilder.child("buy_oremap", villagers).icon(Items.FILLED_MAP)
+		//		.addCriterion("buy_oremap", tradedForItem(
+		//				ItemPredicate.Builder.item().of(Items.FILLED_MAP).hasNbt(mapNBT)
+		//		)).save(consumer);
 
-		AdvancementHolder illager = AdvancementBuilder.child("kill_illager", villagers).goal().icon(Raid.getLeaderBannerInstance())
+		AdvancementHolder illager = AdvancementBuilder.child("kill_illager", villagers).goal().icon(Raid.getLeaderBannerInstance(
+						lookup.lookupOrThrow(Registries.BANNER_PATTERN)
+				))
 				.orRequirements()
 				.addCriterion("revolver_kill", KilledTrigger.TriggerInstance.playerKilledEntity(
 						EntityPredicate.Builder.entity().of(EntityTypeTags.RAIDERS),
@@ -165,7 +167,7 @@ public class Advancements extends AdvancementProvider
 		AdvancementHolder mixer = AdvancementBuilder.child("mb_mixer", fermenter).multiblock(IEMultiblocks.MIXER).save(consumer);
 		AdvancementHolder concrete = AdvancementBuilder.child("liquid_concrete", mixer).icon(IEFluids.CONCRETE.getBucket())
 				.addCriterion("concrete_feet", EffectsChangedTrigger.TriggerInstance.hasEffects(
-						MobEffectsPredicate.Builder.effects().and(IEPotions.CONCRETE_FEET.value()))
+						MobEffectsPredicate.Builder.effects().and(IEPotions.CONCRETE_FEET))
 				).save(consumer);
 		AdvancementHolder refinery = AdvancementBuilder.child("mb_refinery", fermenter).multiblock(IEMultiblocks.REFINERY).save(consumer);
 		AdvancementHolder plastic = AdvancementBuilder.child("craft_duroplast", refinery).goal().getItem(Ingredients.DUROPLAST_PLATE).save(consumer);
@@ -182,42 +184,45 @@ public class Advancements extends AdvancementProvider
 
 		AdvancementHolder revolver = AdvancementBuilder.child("craft_revolver", tools).getItem(Weapons.REVOLVER).save(consumer);
 
-		ItemStack upgradedRevolver = new ItemStack(Weapons.REVOLVER);
-		CompoundTag upgrades = new CompoundTag();
-		upgrades.putInt("bullets", 6);
-		upgrades.putBoolean("electro", true);
-		ItemNBTHelper.setTagCompound(upgradedRevolver, "upgrades", upgrades);
-		AdvancementHolder upgradeRevolver = AdvancementBuilder.child("upgrade_revolver", revolver).challenge()
-				.icon(upgradedRevolver).codeTriggered().loot("shader_rare").save(consumer);
+		// TODO
+		//ItemStack upgradedRevolver = new ItemStack(Weapons.REVOLVER);
+		//CompoundTag upgrades = new CompoundTag();
+		//upgrades.putInt("bullets", 6);
+		//upgrades.putBoolean("electro", true);
+		//ItemNBTHelper.setTagCompound(upgradedRevolver, "upgrades", upgrades);
+		//AdvancementHolder upgradeRevolver = AdvancementBuilder.child("upgrade_revolver", revolver).challenge()
+		//		.icon(upgradedRevolver).codeTriggered().loot("shader_rare").save(consumer);
 
 		AdvancementHolder wolfpack = AdvancementBuilder.child("craft_wolfpack", revolver).hidden()
-				.getItem(BulletHandler.getBulletItem(BulletItem.WOLFPACK)).save(consumer);
+				.getItem(BulletHandler.getBulletItem(IEBullets.WOLFPACK)).save(consumer);
 
 		AdvancementHolder drill = AdvancementBuilder.child("craft_drill", tools).getItem(Tools.DRILL).save(consumer);
 
-		ItemStack upgradedDrill = new ItemStack(Tools.DRILL);
-		upgrades = new CompoundTag();
-		upgrades.putInt("damage", 3);
-		upgrades.putBoolean("waterproof", true);
-		upgrades.putBoolean("oiled", true);
-		upgrades.putFloat("speed", 6.0f);
-		ItemNBTHelper.setTagCompound(upgradedDrill, "upgrades", upgrades);
-		ItemNBTHelper.setItemStack(upgradedDrill, "head", new ItemStack(Tools.DRILLHEAD_STEEL));
-		AdvancementHolder upgradeDrill = AdvancementBuilder.child("upgrade_drill", drill).challenge()
-				.icon(upgradedDrill).codeTriggered().loot("shader_rare").save(consumer);
+		//TODO
+		//ItemStack upgradedDrill = new ItemStack(Tools.DRILL);
+		//upgrades = new CompoundTag();
+		//upgrades.putInt("damage", 3);
+		//upgrades.putBoolean("waterproof", true);
+		//upgrades.putBoolean("oiled", true);
+		//upgrades.putFloat("speed", 6.0f);
+		//ItemNBTHelper.setTagCompound(upgradedDrill, "upgrades", upgrades);
+		//ItemNBTHelper.setItemStack(upgradedDrill, "head", new ItemStack(Tools.DRILLHEAD_STEEL));
+		//AdvancementHolder upgradeDrill = AdvancementBuilder.child("upgrade_drill", drill).challenge()
+		//		.icon(upgradedDrill).codeTriggered().loot("shader_rare").save(consumer);
 
 		AdvancementHolder buzzsaw = AdvancementBuilder.child("craft_buzzsaw", tools).getItem(Tools.BUZZSAW).save(consumer);
 
-		ItemStack upgradedBuzzsaw = new ItemStack(Tools.BUZZSAW);
-		upgrades = new CompoundTag();
-		upgrades.putBoolean("oiled", true);
-		upgrades.putBoolean("spareblades", true);
-		ItemNBTHelper.setTagCompound(upgradedBuzzsaw, "upgrades", upgrades);
-		ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade", new ItemStack(Tools.SAWBLADE));
-		ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare1", new ItemStack(Tools.SAWBLADE));
-		ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare2", new ItemStack(Tools.SAWBLADE));
-		AdvancementHolder upgradeBuzzsaw = AdvancementBuilder.child("upgrade_buzzsaw", buzzsaw).challenge()
-				.icon(upgradedBuzzsaw).codeTriggered().loot("shader_rare").save(consumer);
+		// TODO
+		//ItemStack upgradedBuzzsaw = new ItemStack(Tools.BUZZSAW);
+		//upgrades = new CompoundTag();
+		//upgrades.putBoolean("oiled", true);
+		//upgrades.putBoolean("spareblades", true);
+		//ItemNBTHelper.setTagCompound(upgradedBuzzsaw, "upgrades", upgrades);
+		//ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade", new ItemStack(Tools.SAWBLADE));
+		//ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare1", new ItemStack(Tools.SAWBLADE));
+		//ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare2", new ItemStack(Tools.SAWBLADE));
+		//AdvancementHolder upgradeBuzzsaw = AdvancementBuilder.child("upgrade_buzzsaw", buzzsaw).challenge()
+		//		.icon(upgradedBuzzsaw).codeTriggered().loot("shader_rare").save(consumer);
 
 		AdvancementHolder skyhook = AdvancementBuilder.child("skyhook_distance", tools).icon(Misc.SKYHOOK).codeTriggered().save(consumer);
 
@@ -225,32 +230,35 @@ public class Advancements extends AdvancementProvider
 
 		AdvancementHolder railgun = AdvancementBuilder.child("craft_railgun", tools).getItem(Weapons.RAILGUN).save(consumer);
 
-		ItemStack upgradedRailgun = new ItemStack(Weapons.RAILGUN);
-		upgrades = new CompoundTag();
-		upgrades.putBoolean("scope", true);
-		upgrades.putFloat("speed", 1f);
-		ItemNBTHelper.setTagCompound(upgradedRailgun, "upgrades", upgrades);
-		AdvancementHolder upgradeRailgun = AdvancementBuilder.child("upgrade_railgun", railgun).challenge()
-				.icon(upgradedRailgun).codeTriggered().loot("shader_rare").save(consumer);
+		// TODO
+		//ItemStack upgradedRailgun = new ItemStack(Weapons.RAILGUN);
+		//upgrades = new CompoundTag();
+		//upgrades.putBoolean("scope", true);
+		//upgrades.putFloat("speed", 1f);
+		//ItemNBTHelper.setTagCompound(upgradedRailgun, "upgrades", upgrades);
+		//AdvancementHolder upgradeRailgun = AdvancementBuilder.child("upgrade_railgun", railgun).challenge()
+		//		.icon(upgradedRailgun).codeTriggered().loot("shader_rare").save(consumer);
 
 		AdvancementHolder powerpack = AdvancementBuilder.child("craft_powerpack", tools).getItem(Misc.POWERPACK).save(consumer);
 
-		ItemStack upgradedPowerpack = new ItemStack(Misc.POWERPACK);
-		upgrades = new CompoundTag();
-		upgrades.putBoolean("antenna", true);
-		upgrades.putBoolean("induction", true);
-		ItemNBTHelper.setTagCompound(upgradedPowerpack, "upgrades", upgrades);
-		AdvancementHolder upgradePowerpack = AdvancementBuilder.child("upgrade_powerpack", powerpack).challenge()
-				.icon(upgradedPowerpack).codeTriggered().loot("shader_rare").save(consumer);
+		// TODO
+		//ItemStack upgradedPowerpack = new ItemStack(Misc.POWERPACK);
+		//upgrades = new CompoundTag();
+		//upgrades.putBoolean("antenna", true);
+		//upgrades.putBoolean("induction", true);
+		//ItemNBTHelper.setTagCompound(upgradedPowerpack, "upgrades", upgrades);
+		//AdvancementHolder upgradePowerpack = AdvancementBuilder.child("upgrade_powerpack", powerpack).challenge()
+		//		.icon(upgradedPowerpack).codeTriggered().loot("shader_rare").save(consumer);
 
-		AdvancementHolder birthdayparty = AdvancementBuilder.child("secret_birthdayparty", upgradeRevolver).challenge().hidden()
-				.icon(Misc.ICON_BIRTHDAY).codeTriggered().loot("shader_masterwork").save(consumer);
-		AdvancementHolder drillbreak = AdvancementBuilder.child("secret_drillbreak", upgradeDrill).challenge().hidden()
-				.icon(Misc.ICON_DRILLBREAK).codeTriggered().loot("shader_masterwork").save(consumer);
-		AdvancementHolder ravenholm = AdvancementBuilder.child("secret_ravenholm", upgradeRailgun).challenge().hidden()
-				.icon(Misc.ICON_RAVENHOLM).codeTriggered().loot("shader_masterwork").save(consumer);
-		AdvancementHolder bttf = AdvancementBuilder.child("secret_bttf", upgradePowerpack).challenge().hidden()
-				.icon(Misc.ICON_BTTF).codeTriggered().loot("shader_masterwork").save(consumer);
+		// TODO
+		//AdvancementHolder birthdayparty = AdvancementBuilder.child("secret_birthdayparty", upgradeRevolver).challenge().hidden()
+		//		.icon(Misc.ICON_BIRTHDAY).codeTriggered().loot("shader_masterwork").save(consumer);
+		//AdvancementHolder drillbreak = AdvancementBuilder.child("secret_drillbreak", upgradeDrill).challenge().hidden()
+		//		.icon(Misc.ICON_DRILLBREAK).codeTriggered().loot("shader_masterwork").save(consumer);
+		//AdvancementHolder ravenholm = AdvancementBuilder.child("secret_ravenholm", upgradeRailgun).challenge().hidden()
+		//		.icon(Misc.ICON_RAVENHOLM).codeTriggered().loot("shader_masterwork").save(consumer);
+		//AdvancementHolder bttf = AdvancementBuilder.child("secret_bttf", upgradePowerpack).challenge().hidden()
+		//		.icon(Misc.ICON_BTTF).codeTriggered().loot("shader_masterwork").save(consumer);
 	}
 
 	private static Path createPath(Path pathIn, AdvancementHolder advancementIn)
