@@ -9,16 +9,14 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerBlockInteraction;
+import blusunrize.immersiveengineering.common.util.orientation.RotationUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -27,9 +25,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,7 +35,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MetalLadderBlock extends LadderBlock
+public class MetalLadderBlock extends LadderBlock implements IHammerBlockInteraction
 {
 	private static final Map<Direction, VoxelShape> FRAMES = new EnumMap<>(Direction.class);
 	private static final Map<Direction, VoxelShape> FRAMES_OPEN = new EnumMap<>(Direction.class);
@@ -64,12 +60,12 @@ public class MetalLadderBlock extends LadderBlock
 			VoxelShape forDir = Shapes.empty();
 			if(dir.getAxis()==Axis.Z)
 			{
-				forDir = merge(forDir, new AABB(0, 0, .9375, 1, 1, 1));
 				forDir = merge(forDir, new AABB(.9375, 0, 0, 1, 1, 1));
+				forDir = merge(forDir, new AABB(0, 0, 0, .0625, 1, 1));
 			}
 			else
 			{
-				forDir = merge(forDir, new AABB(0, 0, 0, .0625, 1, 1));
+				forDir = merge(forDir, new AABB(0, 0, .9375, 1, 1, 1));
 				forDir = merge(forDir, new AABB(0, 0, 0, 1, 1, .0625));
 			}
 			FRAMES_OPEN.put(dir, forDir);
@@ -130,11 +126,10 @@ public class MetalLadderBlock extends LadderBlock
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+	public InteractionResult useHammer(BlockState state, Level world, BlockPos pos, Player player)
 	{
-		ItemStack activeStack = player.getItemInHand(hand);
-		if(type!=CoverType.NONE&&activeStack.is(IETags.hammers))
+		if (player==null) return InteractionResult.FAIL;
+		if(type!=CoverType.NONE&&player.isShiftKeyDown())
 		{
 			System.out.println(state.getValue(IEProperties.ACTIVE));
 			boolean b = world.setBlockAndUpdate(pos, state.setValue(IEProperties.ACTIVE, !state.getValue(IEProperties.ACTIVE)));
@@ -144,7 +139,12 @@ public class MetalLadderBlock extends LadderBlock
 				return InteractionResult.FAIL;
 		}
 		else
-			return super.use(state, world, pos, player, hand, hit);
+		{
+			if(RotationUtil.rotateBlock(world, pos, false))
+				return InteractionResult.SUCCESS;
+			else
+				return InteractionResult.FAIL;
+		}
 	}
 
 	public enum CoverType
