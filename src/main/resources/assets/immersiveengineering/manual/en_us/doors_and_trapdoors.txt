@@ -1,0 +1,7 @@
+Doors & Trapdoors
+Vitrified 06/15/1961
+<&treated_wood>Treated Wood Doors and Trapdoors are nothing special, only a fancier version of the standard wooden door.<br>
+They are made with treated wood planks and come in steel-framed and wooden variants.
+<&steel>Steel Doors and Trapdoors are a more secure variant of iron doors, suitable for uses in high-security facilities.<br>
+Unlike iron doors, they respond to normal opening procedures instead of only opening when a redstone signal is applied.<br>
+When a redstone signal is applied, a locking mechanism activates and the door cannot be opened until the signal is disabled.

@@ -1,0 +1,34 @@
+{
+  "treated_wood": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/treated_door"
+        },
+        {
+          "recipe": "crafting/treated_trapdoor"
+        },
+        {
+          "recipe": "crafting/treated_door_framed_from_treated_door"
+        },
+        {
+          "recipe": "crafting/treated_trapdoor_framed_from_treated_trapdoor"
+        }
+      ]
+    ]
+  },
+  "steel": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/steel_door"
+        },
+        {
+          "recipe": "crafting/steel_trapdoor"
+        }
+      ]
+    ]
+  }
+}
