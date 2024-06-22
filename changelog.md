@@ -1,4 +1,4 @@
-##### Version 1.20.4-11.4.2-pre
+##### Version 1.20.4-11.4.2-177
 - Add treated wood & steel doors (BluSunrize)
     - Steel doors can only be opened by hand and will be locked by an applied redstone signal
     - There's also matching trapdoors
