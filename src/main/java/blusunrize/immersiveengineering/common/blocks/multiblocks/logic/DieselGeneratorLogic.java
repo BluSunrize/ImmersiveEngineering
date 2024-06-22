@@ -101,7 +101,8 @@ public class DieselGeneratorLogic
 						active = false;
 				}
 				EnergyHelper.distributeFlux(presentOutputs, output, false);
-			}
+			} else if(active)
+				active = false;
 		}
 		else if(active)
 			active = false;

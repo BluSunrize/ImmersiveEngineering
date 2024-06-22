@@ -221,7 +221,6 @@ public class Villages
 				trades.get(1).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, Cloth.BALLOON, new PriceInterval(1, 3), 12, 2));
 
 				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.ironRod, new PriceInterval(4, 8), 16, 10));
-				trades.get(2).add(new TradeListing(EMERALD_FOR_ITEM, IETags.ironRod, new PriceInterval(4, 8), 16, 10));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(2, 4), 12, 5));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, MetalDecoration.ALU_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(2, 4), 12, 5));
 
