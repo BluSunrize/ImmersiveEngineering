@@ -72,7 +72,7 @@ public abstract class CrateScreen<C extends CrateMenu> extends IEContainerScreen
 	public boolean keyPressed(int key, int scancode, int p_keyPressed_3_)
 	{
 		if(this.nameField.isFocused() && key!=GLFW.GLFW_KEY_ESCAPE)
-			if(this.nameField.keyPressed(key, scancode, p_keyPressed_3_))
+			if(this.nameField.keyPressed(key, scancode, p_keyPressed_3_) || this.nameField.canConsumeInput())
 				return true;
 		return super.keyPressed(key, scancode, p_keyPressed_3_);
 	}

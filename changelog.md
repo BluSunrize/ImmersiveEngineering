@@ -1,5 +1,6 @@
 ##### Version 1.20.4-11.4.3-pre
 - Fix arc recycling preventing joining multiplayer servers (BluSunrize)
+- Fix wooden crates closing their GUI when using your inventory key in their name (BluSunrize)
 
 ##### Version 1.20.4-11.4.2-177
 - Add treated wood & steel doors (BluSunrize)
