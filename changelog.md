@@ -1,4 +1,4 @@
-##### Version 1.20.4-11.4.3-pre
+##### Version 1.20.4-11.4.3-178
 - Change scaffolding blocks to have more descriptive names (AriaElidove)
 - Change translations for fluid blocks so Jade shows them properly (AriaElidove)
 - Fix arc recycling preventing joining multiplayer servers (BluSunrize)
