@@ -69,6 +69,7 @@ processResources {
         expand version_replaces
     }
     exclude ".cache"
+    exclude "assets/immersiveengineering/lang_base"
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
