@@ -184,13 +184,13 @@
   "subtitle.immersiveengineering.birthdayParty": "Yaaay, party!",
   "subtitle.immersiveengineering.revolverFire": "Gunshot",
   "subtitle.immersiveengineering.revolverReload": "Reload",
-  "subtitle.immersiveengineering.spray": "Fluid spray",
-  "subtitle.immersiveengineering.sprayFire": "Flaming fluid spray",
+  "subtitle.immersiveengineering.spray": "Fluid sprays",
+  "subtitle.immersiveengineering.sprayFire": "Flaming fluid sprays",
   "subtitle.immersiveengineering.chargeFast": "Charging capacitors",
   "subtitle.immersiveengineering.chargeSlow": "Charging capacitors",
   "subtitle.immersiveengineering.spark": "Electrical sparks",
   "subtitle.immersiveengineering.railgunFire": "Railgun fire",
-  "subtitle.immersiveengineering.tesla": "Tesla Coil zapping",
+  "subtitle.immersiveengineering.tesla": "Tesla Coil zaps",
   "subtitle.immersiveengineering.direSwitch": "Direwolf20 imitating a knife switch",
   "subtitle.immersiveengineering.skyhook": "Skyhook slides along a wire",
   "subtitle.immersiveengineering.chute": "Item clunks through chute",
@@ -198,13 +198,13 @@
   "subtitle.immersiveengineering.assembler": "Rhythmic Assembler clockwork",
   "subtitle.immersiveengineering.refinery": "Refinery whirrs",
   "subtitle.immersiveengineering.bottling": "Bottling Machine fills a container",
-  "subtitle.immersiveengineering.saw_startup": "Sawmill blade spins up",
+  "subtitle.immersiveengineering.saw_startup": "Sawmill blade spins up", 
   "subtitle.immersiveengineering.saw_empty": "Sawmill whines without wood",
   "subtitle.immersiveengineering.saw_full": "Sawmill shrieks cutting wood",
   "subtitle.immersiveengineering.mixer": "Mixer churns and scrapes",
   "subtitle.immersiveengineering.saw_shutdown": "Sawmill blade spins down",
   "subtitle.immersiveengineering.fermenter": "Fermenter whirrs",
-  "subtitle.immersiveengineering.preheater": "Preheated air wooshes",
+  "subtitle.immersiveengineering.preheater": "Preheater blasts air",
   "subtitle.immersiveengineering.arc_furnace": "Arc Furnace causes lightning",
   "subtitle.immersiveengineering.ore_conveyor": "Excavator transports ore",
   "subtitle.immersiveengineering.ore_dump": "Excavator dumps ore into hopper",
@@ -1390,8 +1390,6 @@
 
   "modifier.thermalinversion.name": "Thermal Inversion",
   "modifier.thermalinversion.desc": "§oHot & Cold!§r\nHitting an enemy in a hot or cold environment will chill or burn them.",
-
-  "tile.harvesterTrolley.ieCrop.name": "Industrial Hemp Harvester Trolley",
 
   "immersiveengineering.optifinePoseStackWarning": "Immersive Engineering detected an incompatible version of Optifine. Due to Optifine's patching process, this version of Optifine removes Forge-added methods which are used, directly or indirectly, by Immersive Engineering and many other mods. As a result, you will probably experience a crash at virtually random times, e.g. when a search matches certain items. It is recommended that you do not use Optifine until this is fixed."
 }
