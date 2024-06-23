@@ -1,3 +1,6 @@
+##### Version 1.20.4-11.4.3-pre
+- Fix arc recycling preventing joining multiplayer servers (BluSunrize)
+
 ##### Version 1.20.4-11.4.2-177
 - Add treated wood & steel doors (BluSunrize)
     - Steel doors can only be opened by hand and will be locked by an applied redstone signal
