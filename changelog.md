@@ -1,4 +1,5 @@
 ##### Version 1.20.4-11.4.3-pre
+- Change scaffolding blocks to have more descriptive names (AriaElidove)
 - Fix arc recycling preventing joining multiplayer servers (BluSunrize)
 - Fix wooden crates closing their GUI when using your inventory key in their name (BluSunrize)
 
