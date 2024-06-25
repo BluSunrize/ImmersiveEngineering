@@ -136,11 +136,11 @@ public abstract class IESlot extends Slot
 			if(handler.getTanks() <= 0)
 				return false;
 			return switch(filter)
-			{
-				case ANY -> true;
-				case EMPTY -> handler.getFluidInTank(0).isEmpty();
-				case FULL -> !handler.getFluidInTank(0).isEmpty();
-			};
+					{
+						case ANY -> true;
+						case EMPTY -> handler.getFluidInTank(0).isEmpty();
+						case FULL -> !handler.getFluidInTank(0).isEmpty();
+					};
 		}
 
 		public enum Filter
@@ -538,7 +538,7 @@ public abstract class IESlot extends Slot
 		private final Container inputInventory;
 		public final BlueprintCraftingRecipe recipe;
 
-		public BlueprintOutput(AbstractContainerMenu container, BlueprintInventory inv, Container inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
+		public BlueprintOutput(ModWorkbenchContainer container, BlueprintInventory inv, Container inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
 		{
 			super(container, inv, id, x, y);
 			this.inputInventory = inputInventory;
@@ -551,11 +551,21 @@ public abstract class IESlot extends Slot
 			return false;
 		}
 
+		public boolean isOnPage()
+		{
+			return ((ModWorkbenchContainer)this.containerMenu).isOutputSlotOnPage(this);
+		}
 
 		@Override
 		public boolean isActive()
 		{
-			return this.hasItem();
+			return this.hasItem()&&isOnPage();
+		}
+
+		@Override
+		public boolean mayPickup(Player player)
+		{
+			return isOnPage();
 		}
 
 		@Override
