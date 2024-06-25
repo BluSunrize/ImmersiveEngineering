@@ -1,3 +1,6 @@
+##### Version 1.20.4-11.5.0-pre
+- Remove raw ore blocks from the list of blocks dug by the grinding disk  (voidsong-dragonfly)
+
 ##### Version 1.20.4-11.4.3-178
 - Change scaffolding blocks to have more descriptive names (AriaElidove)
 - Change translations for fluid blocks so Jade shows them properly (AriaElidove)
