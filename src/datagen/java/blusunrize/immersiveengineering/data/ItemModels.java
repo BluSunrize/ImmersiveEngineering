@@ -16,9 +16,11 @@ import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleL
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.SteelArmorItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
@@ -99,6 +101,14 @@ public class ItemModels extends TRSRItemModelProvider
 				.texture("post", modLoc("block/metal_decoration/aluminum_post"))
 				.transforms(modLoc("item/post"));
 		addItemModel("door_steel", MetalDecoration.STEEL_DOOR);
+
+		for(Entry<WarningSignIcon, BlockEntry<IEBaseBlock>> warningSign : MetalDecoration.WARNING_SIGNS.entrySet())
+		{
+			addLayeredItemModel(warningSign.getValue().asItem(),
+					rl("block/metal_decoration/sign/base_front"),
+					rl("block/metal_decoration/sign/icon_"+warningSign.getKey().getSerializedName())
+			);
+		}
 
 		obj(MetalDevices.CLOCHE, rl("block/metal_device/cloche.obj.ie"))
 				.transforms(rl("item/cloche"))

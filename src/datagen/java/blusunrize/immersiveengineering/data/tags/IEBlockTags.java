@@ -614,6 +614,7 @@ public class IEBlockTags extends BlockTagsProvider
 		registerMineable(tag, MetalDecoration.METAL_LADDER);
 		registerMineable(tag, MetalDecoration.STEEL_SCAFFOLDING);
 		registerMineable(tag, MetalDecoration.ALU_SCAFFOLDING);
+		registerMineable(tag, MetalDecoration.WARNING_SIGNS);
 		registerMineable(tag, MetalDevices.CHUTES);
 		registerMineable(tag, Connectors.ENERGY_CONNECTORS);
 		registerMineable(tag, MetalDevices.CONVEYORS);

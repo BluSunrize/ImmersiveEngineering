@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.*;
 import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleBlockEntity;
@@ -520,6 +521,7 @@ public final class IEBlocks
 		public static final BlockEntry<TrapDoorBlock> STEEL_TRAPDOOR = new BlockEntry<>(
 				"steel_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
 		);
+		public static final Map<WarningSignIcon, BlockEntry<IEBaseBlock>> WARNING_SIGNS = new EnumMap<>(WarningSignIcon.class);
 
 		private static void init()
 		{
@@ -549,6 +551,10 @@ public final class IEBlocks
 				registerStairs(steelBlock);
 				registerStairs(aluBlock);
 			}
+			for(WarningSignIcon icon : WarningSignIcon.values())
+				WARNING_SIGNS.put(icon, new BlockEntry<>(
+						"warning_sign_"+icon.getSerializedName(), METAL_PROPERTIES_NO_OVERLAY, blockProps -> new WarningSignBlock(icon, blockProps)
+				));
 		}
 	}
 

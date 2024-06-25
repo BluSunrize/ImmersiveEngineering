@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import blusunrize.immersiveengineering.common.crafting.NoContainersShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.RGBColourationRecipe;
@@ -312,6 +313,14 @@ public class MiscRecipes extends IERecipeProvider
 				.input(Items.PAPER)
 				.input(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf"));
+
+		for(WarningSignIcon icon : WarningSignIcon.values())
+			BlueprintCraftingRecipeBuilder.builder()
+					.category("warning_sign")
+					.output(MetalDecoration.WARNING_SIGNS.get(icon))
+					.input(IETags.plates)
+					.input(Tags.Items.DYES_YELLOW)
+					.build(out, toRL("blueprint/"+toPath(MetalDecoration.WARNING_SIGNS.get(icon))));
 	}
 
 	private void mineralMixes(RecipeOutput out)

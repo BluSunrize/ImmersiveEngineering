@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "immersiveengineering:block/metal_decoration/sign/base_front",
+    "layer1": "immersiveengineering:block/metal_decoration/sign/icon_fire"
+  }
+}

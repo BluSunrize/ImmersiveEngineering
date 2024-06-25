@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:block/warning_sign_ear_defenders",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/warning_sign_ear_defenders"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/warning_sign_ear_defenders",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/warning_sign_ear_defenders",
+      "y": 270
+    }
+  }
+}

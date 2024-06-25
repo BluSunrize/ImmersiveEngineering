@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.client.render.tile.TurretRenderer;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.CatwalkBlock;
@@ -23,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BlueprintShelfBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
@@ -399,6 +401,14 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createTrapdoor(WoodenDecoration.TRAPDOOR_FRAMED, "block/wooden_decoration/treated_trapdoor_framed");
 		createTrapdoor(MetalDecoration.STEEL_TRAPDOOR, "block/metal_decoration/steel_trapdoor");
 
+		for(Entry<WarningSignIcon, BlockEntry<IEBaseBlock>> warningSign : MetalDecoration.WARNING_SIGNS.entrySet())
+		{
+			String name = warningSign.getKey().getSerializedName();
+			ModelFile model = models()
+					.withExistingParent("warning_sign_"+name, modLoc("block/warning_sign"))
+					.texture("icon", rl("block/metal_decoration/sign/icon_"+name));
+			createHorizontalRotatedBlock(warningSign.getValue(), model);
+		}
 
 		createHorizontalRotatedBlock(StoneDecoration.CORESAMPLE, obj("block/coresample.obj"));
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete/concrete0");
@@ -844,9 +854,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 	{
 		doorBlockWithRenderType(block.get(), rl(texture+"_bottom"), rl(texture+"_top"), "cutout");
 	}
+
 	private void createTrapdoor(Supplier<? extends TrapDoorBlock> block, String texture)
 	{
-		trapdoorBlockWithRenderType(block.get(), rl(texture), true,"cutout");
+		trapdoorBlockWithRenderType(block.get(), rl(texture), true, "cutout");
 		itemModel(block, models().getExistingFile(rl(BuiltInRegistries.BLOCK.getKey(block.get()).getPath()+"_bottom")));
 	}
 

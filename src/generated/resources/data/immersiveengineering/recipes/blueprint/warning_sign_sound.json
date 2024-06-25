@@ -1,0 +1,15 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "warning_sign",
+  "inputs": [
+    {
+      "tag": "forge:plates"
+    },
+    {
+      "tag": "forge:dyes/yellow"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:warning_sign_sound"
+  }
+}
