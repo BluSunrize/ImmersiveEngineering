@@ -340,6 +340,7 @@ public class IEBlockTags extends BlockTagsProvider
 		tag.add(Blocks.BONE_BLOCK);
 		// glass, ice, amethyst, glowing blocks, gilded blackstone
 		tag.addTag(Tags.Blocks.GLASS);
+		tag.addTag(Tags.Blocks.GLASS_PANES);
 		tag.addTag(BlockTags.ICE);
 		tag.add(Blocks.AMETHYST_BLOCK, Blocks.BUDDING_AMETHYST, Blocks.AMETHYST_CLUSTER, Blocks.LARGE_AMETHYST_BUD, Blocks.MEDIUM_AMETHYST_BUD, Blocks.SMALL_AMETHYST_BUD);
 		tag.add(Blocks.GLOWSTONE);
@@ -359,13 +360,17 @@ public class IEBlockTags extends BlockTagsProvider
 		IntrinsicTagAppender<Block> tag = tag(IETags.grindingDiskHarvestable);
 		// storage and remove rocklike storage, sheetmetal
 		tag.addTag(Tags.Blocks.STORAGE_BLOCKS);
-		tag.remove(Blocks.AMETHYST_BLOCK, Blocks.QUARTZ_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.COAL_BLOCK);
 		tag.addTag(IETags.sheetmetals);
 		// storage and sheetmetal slabs
 		for(EnumMetals metal : EnumMetals.values())
 			if(!metal.isVanillaMetal())
 				tag.add(IEBlocks.TO_SLAB.get(Metals.STORAGE.get(metal).getId()).get());
 		tag.addTag(IETags.sheetmetalSlabs);
+		// remove blocks the grinding disc shouldn't cut
+		tag.remove(Blocks.AMETHYST_BLOCK, Blocks.QUARTZ_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.COAL_BLOCK);
+		tag.remove(Tags.Blocks.STORAGE_BLOCKS_RAW_COPPER, Tags.Blocks.STORAGE_BLOCKS_RAW_IRON, Tags.Blocks.STORAGE_BLOCKS_RAW_GOLD);
+		for (BlockEntry raw_storage : Metals.RAW_ORES.values())
+			tag.remove(raw_storage.get());
 		// copper
 		tag.addTag(IETags.copperBlocks);
 		tag.addTag(IETags.cutCopperBlocks);

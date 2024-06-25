@@ -6,7 +6,18 @@
     "minecraft:redstone_block",
     "minecraft:diamond_block",
     "minecraft:emerald_block",
-    "minecraft:coal_block"
+    "minecraft:coal_block",
+    "#forge:storage_blocks/raw_copper",
+    "#forge:storage_blocks/raw_iron",
+    "#forge:storage_blocks/raw_gold",
+    "minecraft:raw_copper_block",
+    "immersiveengineering:raw_block_aluminum",
+    "immersiveengineering:raw_block_lead",
+    "immersiveengineering:raw_block_silver",
+    "immersiveengineering:raw_block_nickel",
+    "immersiveengineering:raw_block_uranium",
+    "minecraft:raw_iron_block",
+    "minecraft:raw_gold_block"
   ],
   "values": [
     "#forge:storage_blocks",
