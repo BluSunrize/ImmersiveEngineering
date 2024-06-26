@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-26T14:05:44.9665779	Loot Tables
+// 1.20.4	2024-06-26T18:01:58.8840947	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -25,7 +25,7 @@ c30d60bf940fb7abcd398e3c89036693140d43a4 data/immersiveengineering/loot_tables/b
 129a09d27a498d629382050d7bed1d7050f8c56f data/immersiveengineering/loot_tables/blocks/blastbrick_reinforced.json
 6403d4f76dc81b1b319f972c19a16b2535e44c8f data/immersiveengineering/loot_tables/blocks/blastfurnace_preheater.json
 86a4fb8dc0205e91a2e13d0cc14c23bf9e3c7e22 data/immersiveengineering/loot_tables/blocks/blast_furnace.json
-68dc3df6b139089ea47eae759145db0fd37a5f54 data/immersiveengineering/loot_tables/blocks/blueprint_shelf.json
+f818fe30659725544ecb8d2351e8b8f0430f288b data/immersiveengineering/loot_tables/blocks/blueprint_shelf.json
 28d0b224d1aaf80c2fb62f1547844163ecd6526d data/immersiveengineering/loot_tables/blocks/bottling_machine.json
 11040f25d84a797c85c4dd82d115a2a969dd18ff data/immersiveengineering/loot_tables/blocks/breaker_switch.json
 c4c697d3468c0a19f62e5882f76b2dfc93f02794 data/immersiveengineering/loot_tables/blocks/bucket_wheel.json

@@ -8,6 +8,7 @@
     - This only works on villagers acquired AFTER this update!
 - Fix villagers being unable to interact with IE doors (BluSunrize)
 - Fix steel doors dropping twice (BluSunrize)
+- Fix blueprint shelves not dropping blueprints when broken (BluSunrize)
 
 ##### Version 1.20.4-11.4.3-178
 - Change scaffolding blocks to have more descriptive names (AriaElidove)
