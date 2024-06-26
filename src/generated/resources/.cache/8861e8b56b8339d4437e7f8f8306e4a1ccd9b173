@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-25T22:38:28.2000371	Tags for minecraft:block mod id immersiveengineering
+// 1.20.4	2024-06-26T08:35:07.8818932	Tags for minecraft:block mod id immersiveengineering
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -70,6 +70,7 @@ b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/blocks/s
 3cd6a3f387dbdf003ef362dd1a6c26b1d8322e17 data/minecraft/tags/blocks/climbable.json
 570f4747fd57b1bd476af0e54e7c4b0542ec975d data/minecraft/tags/blocks/crops.json
 a2a8f45efe8798f97765aeee47cf9da51ffd3c30 data/minecraft/tags/blocks/dead_bush_may_place_on.json
+c442b7d04f34628fbc7be64ecfe622b236e62f12 data/minecraft/tags/blocks/doors.json
 0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/blocks/fences.json
 1e227ef3a7c211db28ed17222728fdae19bba054 data/minecraft/tags/blocks/flower_pots.json
 230a39c628365d5a3bc1576facebbe33127b2c7d data/minecraft/tags/blocks/mineable/axe.json
@@ -82,9 +83,12 @@ da83d2c4f2c93e3c8b94aaa7391d094b109192f9 data/minecraft/tags/blocks/planks.json
 13e61703d17f2edebaa53906f2ff9a3beb4709f1 data/minecraft/tags/blocks/slabs.json
 252c5620ae4ddfd7acb69280b47ec9bd69b60bc9 data/minecraft/tags/blocks/snow_layer_cannot_survive_on.json
 bbd9a9fd5180792793e77d07c66775c573ddbaee data/minecraft/tags/blocks/stairs.json
+46c5600ed93fc7d8c77be69bf583cd3e973a4b2c data/minecraft/tags/blocks/trapdoors.json
 f2e46da923535264a360a5df809786a310ea3a99 data/minecraft/tags/blocks/walls.json
 e56e6d646c605a7b25c35712343a261c49707d0b data/minecraft/tags/blocks/wither_immune.json
+078e5b168cce6b9b501cc2b5efe7cc0898b6f58e data/minecraft/tags/blocks/wooden_doors.json
 31aec3619b657eb55bc44a76ed1dba40e168472b data/minecraft/tags/blocks/wooden_fences.json
 485ca26048e0c430a7ab442ed9e5b1a1ea596bb5 data/minecraft/tags/blocks/wooden_slabs.json
 fcdf4c2b6abbfbd23b9e637503dacf20f77a9105 data/minecraft/tags/blocks/wooden_stairs.json
+f5ea1aefe3c8e9006c589fbcfe6d9868d3c87883 data/minecraft/tags/blocks/wooden_trapdoors.json
 570f4747fd57b1bd476af0e54e7c4b0542ec975d data/tconstruct/tags/blocks/harvestable/stackable.json

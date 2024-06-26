@@ -70,6 +70,20 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(WoodenDecoration.TREATED_FENCE.get());
 		tag(BlockTags.WOODEN_FENCES)
 				.add(WoodenDecoration.TREATED_FENCE.get());
+		tag(BlockTags.DOORS)
+				.add(MetalDecoration.STEEL_DOOR.get())
+				.add(WoodenDecoration.DOOR.get())
+				.add(WoodenDecoration.DOOR_FRAMED.get());
+		tag(BlockTags.WOODEN_DOORS)
+				.add(WoodenDecoration.DOOR.get())
+				.add(WoodenDecoration.DOOR_FRAMED.get());
+		tag(BlockTags.TRAPDOORS)
+				.add(MetalDecoration.STEEL_TRAPDOOR.get())
+				.add(WoodenDecoration.TRAPDOOR.get())
+				.add(WoodenDecoration.TRAPDOOR_FRAMED.get());
+		tag(BlockTags.WOODEN_TRAPDOORS)
+				.add(WoodenDecoration.TRAPDOOR.get())
+				.add(WoodenDecoration.TRAPDOOR_FRAMED.get());
 		tag(BlockTags.PLANKS).add(WoodenDecoration.FIBERBOARD.get());
 		tag(IETags.fencesSteel)
 				.add(MetalDecoration.STEEL_FENCE.get());
