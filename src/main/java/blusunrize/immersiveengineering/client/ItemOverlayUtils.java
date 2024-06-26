@@ -58,50 +58,9 @@ public class ItemOverlayUtils
 			float dy = scaledHeight-64;
 			PoseStack transform = graphics.pose();
 			transform.pushPose();
-			transform.pushPose();
 			transform.translate(dx, dy, 0);
 			transform.scale(.5f, .5f, 1);
 			RevolverScreen.drawExternalGUI(bullets, bulletAmount, graphics);
-			transform.popPose();
-
-			if(equipped.getItem() instanceof RevolverItem)
-			{
-				int cd = ((RevolverItem)equipped.getItem()).getShootCooldown(equipped);
-				float cdMax = ((RevolverItem)equipped.getItem()).getMaxShootCooldown(equipped);
-				float cooldown = 1-cd/cdMax;
-				if(cooldown > 0)
-				{
-					transform.translate(scaledWidth/2+(right?1: -6), scaledHeight/2-7, 0);
-
-					float h1 = cooldown > .33?.5f: cooldown*1.5f;
-					float h2 = cooldown;
-					float x2 = cooldown < .75?1: 4*(1-cooldown);
-
-					float uMin = (88+(right?0: 7*x2))/256f;
-					float uMax = (88+(right?7*x2: 0))/256f;
-					float vMin1 = (112+(right?h1: h2)*15)/256f;
-					float vMin2 = (112+(right?h2: h1)*15)/256f;
-
-					VertexConsumer builder = getHudElementsBuilder(buffer);
-					Matrix4f mat = transform.last().pose();
-					builder.vertex(mat, (right?0: 1-x2)*7, 15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMin, 127/256f)
-							.endVertex();
-					builder.vertex(mat, (right?x2: 1)*7, 15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMax, 127/256f)
-							.endVertex();
-					builder.vertex(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMax, vMin2)
-							.endVertex();
-					builder.vertex(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0)
-							.color(1F, 1F, 1F, 1F)
-							.uv(uMin, vMin1)
-							.endVertex();
-				}
-			}
 			transform.popPose();
 		}
 	}

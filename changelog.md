@@ -6,6 +6,8 @@
 - Change villager trades for revolver pieces and mineral deposit maps to re-roll (BluSunrize)
     - After buying the item, the trade will be replaced with a new one
     - This only works on villagers acquired AFTER this update!
+- Change revolvers to use the vanilla cooldown system (BluSunrize)
+    - This does unfortunately make dualwielding less powerful, because cooldowns affect all revolvers
 - Prevent crates from being opened after being sealed (BluSunrize)
 - Fix villagers being unable to interact with IE doors (BluSunrize)
 - Fix steel doors dropping twice (BluSunrize)
