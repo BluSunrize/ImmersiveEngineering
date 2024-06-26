@@ -219,6 +219,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	private void transferPower()
 	{
+		int blargl = 0;
 		updateSourcesAndSinks();
 		for(SinkPathsFromSource sourceData : transferPaths)
 		{
@@ -251,21 +252,28 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				double atSource = allowedFactor*entry.amount();
 				double availableFactor = 1;
 				ConnectionPoint currentPoint = sourceCp;
+				Object2DoubleOpenHashMap<Connection> connectionsToLimits = new Object2DoubleOpenHashMap<>();
+				double availableRecent = atSource;
 				for(Connection c : path.conns)
 				{
 					currentPoint = c.getOtherEnd(currentPoint);
 					// We use exponential loss here so there is still some power at arbitrarily far distances
-					availableFactor *= (1-getBasicLoss(c));
-					double availableAtPoint = atSource*availableFactor;
-					transferredNextTick.addTo(c, availableAtPoint);
-					if(!currentPoint.equals(path.end))
+					availableRecent*=(1-getBasicLoss(c));
+					IImmersiveConnectable iic = localNet.getConnector(currentPoint);
+					if(!currentPoint.equals(path.end) && iic instanceof EnergyConnector connector)
+						connector.onEnergyPassedThrough(availableRecent);
+					// This is so transformers can limit total power running through them
+					if (iic instanceof LimitingEnergyConnector limiting && transferredNextTick != null)
 					{
-						IImmersiveConnectable iic = localNet.getConnector(currentPoint);
-						if(iic instanceof EnergyConnector)
-							((EnergyConnector)iic).onEnergyPassedThrough(availableAtPoint);
+						double limit = (Math.max(limiting.getPowerLimit()-transferredNextTick.getDouble(c), 0)/availableFactor);
+						connectionsToLimits.put(c, limit);
+						availableRecent = Math.min(availableRecent, limit);
+						System.out.println(blargl + " " + connectionsToLimits.getDouble(c));
 					}
+					transferredNextTick.addTo(c, availableRecent);
 				}
 				entry.output.insertEnergy(ceilIfClose(atSource*availableFactor));
+				blargl+=1;
 			}
 			if(allowedFactor < 1)
 				source.extractEnergy(available);
@@ -408,6 +416,11 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		default void onEnergyPassedThrough(double amount)
 		{
 		}
+	}
+
+	public interface LimitingEnergyConnector extends EnergyConnector
+	{
+		int getPowerLimit();
 	}
 
 	private record SinkPath(ConnectionPoint sinkCP, EnergyConnector sinkConnector, Path pathTo)
