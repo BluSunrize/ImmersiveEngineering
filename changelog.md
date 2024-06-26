@@ -7,6 +7,7 @@
     - After buying the item, the trade will be replaced with a new one
     - This only works on villagers acquired AFTER this update!
 - Fix villagers being unable to interact with IE doors (BluSunrize)
+- Fix steel doors dropping twice (BluSunrize)
 
 ##### Version 1.20.4-11.4.3-178
 - Change scaffolding blocks to have more descriptive names (AriaElidove)

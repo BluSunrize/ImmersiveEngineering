@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-25T22:38:28.1660372	Loot Tables
+// 1.20.4	2024-06-26T14:05:44.9665779	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -273,7 +273,7 @@ fb4183bd37ce32373ba648054115c57b70fe8e21 data/immersiveengineering/loot_tables/b
 035d99108d323e16631c93d8ef618d2eafdbecaa data/immersiveengineering/loot_tables/blocks/stairs_treated_wood_vertical.json
 5a14e3523b374e7d9b3f541417cc3f7a8927eba8 data/immersiveengineering/loot_tables/blocks/steel_catwalk.json
 7544acab1ba803662f14a7762b95136c61badc48 data/immersiveengineering/loot_tables/blocks/steel_catwalk_stairs.json
-6ed6e2717c54d1188d3392e462c9c238382ca2e5 data/immersiveengineering/loot_tables/blocks/steel_door.json
+caf157df32cf3a8a2de2f81899181d7bbe7cf4f0 data/immersiveengineering/loot_tables/blocks/steel_door.json
 fe312bc0ca49419a7c4cde6bb7afdf514e84623d data/immersiveengineering/loot_tables/blocks/steel_fence.json
 1b7e08dc2f4ecbc224db19811d1f225592e94ef9 data/immersiveengineering/loot_tables/blocks/steel_post.json
 4954e57533b5b6ac99f50aff4cdfa0468aa86800 data/immersiveengineering/loot_tables/blocks/steel_scaffolding_grate_top.json

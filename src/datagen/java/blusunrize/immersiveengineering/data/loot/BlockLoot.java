@@ -114,6 +114,7 @@ public class BlockLoot implements LootTableSubProvider
 
 		registerDoor(WoodenDecoration.DOOR);
 		registerDoor(WoodenDecoration.DOOR_FRAMED);
+		registerDoor(MetalDecoration.STEEL_DOOR);
 
 		registerMultiblocks();
 
