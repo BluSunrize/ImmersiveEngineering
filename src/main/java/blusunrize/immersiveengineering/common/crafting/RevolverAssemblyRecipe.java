@@ -11,12 +11,13 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nonnull;
@@ -27,6 +28,13 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 	public RevolverAssemblyRecipe(ShapedRecipe vanilla, List<Integer> copyNBT)
 	{
 		super(vanilla, copyNBT);
+	}
+
+	@Nonnull
+	@Override
+	public RecipeSerializer<?> getSerializer()
+	{
+		return RecipeSerializers.REVOLVER_ASSEMBLY_SERIALIZER.get();
 	}
 
 	@Nonnull

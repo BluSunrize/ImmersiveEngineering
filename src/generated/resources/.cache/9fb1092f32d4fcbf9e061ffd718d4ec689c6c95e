@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-25T22:38:28.1850365	Recipes
+// 1.20.4	2024-06-26T20:20:37.270849	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -1070,7 +1070,7 @@ d4d878d62d1d7dc498b66dec2d666b9e2b73c5e4 data/immersiveengineering/recipes/craft
 2fc7a103eff01fb3490fdd5b1524b3d8c694557b data/immersiveengineering/recipes/crafting/redstone_breaker.json
 2259707c81b1c76f7180f49e32d82ed312912cf4 data/immersiveengineering/recipes/crafting/reinforced_crate.json
 df07acebfd81a1cb74c2fdc5950e26d2c236f0e2 data/immersiveengineering/recipes/crafting/reinforced_window.json
-ee42aae33c01137e1933be69c197ea5169c6c2be data/immersiveengineering/recipes/crafting/revolver.json
+e32452b273627f4f56d465bb75678f61b2df92b9 data/immersiveengineering/recipes/crafting/revolver.json
 2d2d39b6592d2798b5805e4a8997f562c4cdf086 data/immersiveengineering/recipes/crafting/rockcutter.json
 92df568da83b5e3b10fb5c421b0abd6f08e34243 data/immersiveengineering/recipes/crafting/rs_engineering.json
 480e811dfc033636cdddf97a7053d7371560f397 data/immersiveengineering/recipes/crafting/sample_drill.json
