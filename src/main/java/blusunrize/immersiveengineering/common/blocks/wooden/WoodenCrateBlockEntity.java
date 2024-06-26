@@ -211,6 +211,12 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		}
 	}
 
+	@Override
+	public boolean canOpen(Player player)
+	{
+		return super.canOpen(player)&&!isSealed();
+	}
+
 	public boolean isSealed()
 	{
 		return sealingProgress >= HITS_TO_SEAL;
