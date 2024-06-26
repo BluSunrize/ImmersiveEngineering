@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.world.Villages.RerollingItemListing.GenerateOffer;
 import blusunrize.immersiveengineering.mixin.accessors.HeroGiftsTaskAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplatePoolAccess;
 import com.google.common.collect.ImmutableSet;
@@ -36,6 +37,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +51,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
@@ -66,20 +69,20 @@ import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent.UpdateCause;
+import net.neoforged.neoforge.event.entity.player.TradeWithVillagerEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Holder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -232,9 +235,9 @@ public class Villages
 				trades.get(4).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, WoodenDecoration.TREATED_POST, new PriceInterval(2, 3), 8, 20));
 				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, StoneDecoration.INSULATING_GLASS, new PriceInterval(2, 6), 16, 10));
 				trades.get(4).add(new TradeListing(EMERALD_FOR_ITEM, StoneDecoration.DUROPLAST, new PriceInterval(2, 6), 16, 10));
-				trades.get(4).add(new OreveinMapForEmeralds());
+				trades.get(4).add(OreveinMapForEmeralds.INSTANCE);
 
-				trades.get(5).add(new OreveinMapForEmeralds());
+				trades.get(5).add(OreveinMapForEmeralds.INSTANCE);
 			}
 			else if(MACHINIST.equals(typeName))
 			{
@@ -330,19 +333,37 @@ public class Villages
 				trades.get(2).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("bullet"), new PriceInterval(3, 6), 1, 25));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.CASULL), new PriceInterval(2, 4), 12, 5));
 				trades.get(2).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.BUCKSHOT), new PriceInterval(2, 6), 12, 5));
-				trades.get(2).add(new RevolverPieceForEmeralds());
+				trades.get(2).add(RevolverPieceForEmeralds.INSTANCE);
 
-				trades.get(3).add(new RevolverPieceForEmeralds());
+				trades.get(3).add(RevolverPieceForEmeralds.INSTANCE);
 				trades.get(3).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.FLARE), new PriceInterval(1, 2), 12, 10));
 				trades.get(3).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new PriceInterval(5, 9), 1, 30).setMultiplier(0.2f));
 
-				trades.get(4).add(new RevolverPieceForEmeralds());
+				trades.get(4).add(RevolverPieceForEmeralds.INSTANCE);
 				trades.get(4).add(new TradeListing(ITEMS_FOR_ONE_EMERALD, BulletHandler.getBulletStack(BulletItem.SILVER), new PriceInterval(1, 4), 8, 15));
 				trades.get(4).add(new TradeListing(ONE_ITEM_FOR_EMERALDS, BulletHandler.getBulletStack(BulletItem.HIGH_EXPLOSIVE), new PriceInterval(2, 4), 8, 15));
 
-				trades.get(5).add(new RevolverPieceForEmeralds());
-				trades.get(5).add(new RevolverPieceForEmeralds());
-				trades.get(5).add(new RevolverPieceForEmeralds());
+				trades.get(5).add(RevolverPieceForEmeralds.INSTANCE);
+				trades.get(5).add(RevolverPieceForEmeralds.INSTANCE);
+				trades.get(5).add(RevolverPieceForEmeralds.INSTANCE);
+			}
+		}
+
+
+		@SubscribeEvent
+		public static void onTrade(TradeWithVillagerEvent ev)
+		{
+			AbstractVillager villager = ev.getAbstractVillager();
+			CompoundTag randomizedOffers = villager.getPersistentData().getCompound(RerollingItemListing.RANDOMIZED_OFFERS_KEY);
+			int offerIndex = villager.getOffers().indexOf(ev.getMerchantOffer());
+			String offerIndexS = String.valueOf(offerIndex);
+			if(randomizedOffers.contains(offerIndexS))
+			{
+				System.out.println("Regenerate offer");
+				GenerateOffer offerFunction = RerollingItemListing.OFFER_FUNCTIONS.get(randomizedOffers.getString(offerIndexS));
+				MerchantOffer offer = offerFunction.generateOffer(villager, ev.getEntity(), villager.getRandom());
+				offer.increaseUses();
+				villager.getOffers().set(offerIndex, offer);
 			}
 		}
 	}
@@ -395,25 +416,54 @@ public class Villages
 		}
 	}
 
-	private static class OreveinMapForEmeralds implements ItemListing
+	public static record RerollingItemListing(String functionKey) implements ItemListing
 	{
-		public PriceInterval value;
-		private static final int SEARCH_RADIUS = 16*16;
-		private static final String TRADER_SOLD_KEY = "immersiveengineering:mapped_veins";
+		private static final String RANDOMIZED_OFFERS_KEY = "immersiveengineering:randomized_offers";
+		private static final Map<String, GenerateOffer> OFFER_FUNCTIONS = new HashMap<>();
 
-		public OreveinMapForEmeralds()
+		public static RerollingItemListing register(String key, GenerateOffer function)
 		{
+			OFFER_FUNCTIONS.put(key, function);
+			return new RerollingItemListing(key);
 		}
 
 		@Override
-		@Nullable
-		public MerchantOffer getOffer(@Nullable Entity trader, @Nonnull RandomSource random)
+		public MerchantOffer getOffer(Entity trader, @Nonnull RandomSource random)
 		{
+			Player player = null;
+			if(trader instanceof AbstractVillager villager)
+			{
+				player = villager.getTradingPlayer();
+
+				// make note that this is a randomized trade
+				CompoundTag traderData = trader.getPersistentData();
+				CompoundTag randomizedOffers = traderData.getCompound(RANDOMIZED_OFFERS_KEY);
+				int offerIndex = villager.getOffers().size();
+				randomizedOffers.putString(String.valueOf(offerIndex), this.functionKey);
+				traderData.put(RANDOMIZED_OFFERS_KEY, randomizedOffers);
+			}
+			return OFFER_FUNCTIONS.get(functionKey).generateOffer(trader, player, random);
+		}
+
+		@FunctionalInterface
+		public interface GenerateOffer
+		{
+			MerchantOffer generateOffer(Entity trader, @Nullable Player player, @Nonnull RandomSource random);
+		}
+
+	}
+
+	private static class OreveinMapForEmeralds
+	{
+		private static final int SEARCH_RADIUS = 16*16;
+		private static final String TRADER_SOLD_KEY = "immersiveengineering:mapped_veins";
+
+		public static RerollingItemListing INSTANCE = RerollingItemListing.register("orevein_map", (trader, player, random) -> {
 			if(trader==null)
 				return null;
 			Level world = trader.getCommandSenderWorld();
 			BlockPos merchantPos = trader.blockPosition();
-			// extract list of already sold veins from the rader
+			// extract list of already sold veins from the trader
 			CompoundTag traderData = trader.getPersistentData();
 			List<Long> soldMaps = new ArrayList<>();
 			if(traderData.contains(TRADER_SOLD_KEY))
@@ -444,34 +494,24 @@ public class Villages
 				);
 			}
 			return null;
-		}
+		});
 	}
 
-	private static class RevolverPieceForEmeralds implements ItemListing
+	private static class RevolverPieceForEmeralds
 	{
-		public RevolverPieceForEmeralds()
-		{
-		}
-
-		@Override
-		public MerchantOffer getOffer(Entity trader, @Nonnull RandomSource random)
-		{
+		public static RerollingItemListing INSTANCE = RerollingItemListing.register("revolver_piece", (trader, player, random) -> {
 			int part = random.nextInt(3);
 
 			ItemStack stack = new ItemStack(part==0?Ingredients.GUNPART_BARREL: part==1?Ingredients.GUNPART_DRUM: Ingredients.GUNPART_HAMMER);
 
-			float luck = 1;
-			if(trader instanceof AbstractVillager villager&&villager.isTrading())
-			{
-				luck = villager.getTradingPlayer().getLuck();
-			}
+			float luck = player==null?0: player.getLuck();
 			CompoundTag perksTag = RevolverItem.RevolverPerk.generatePerkSet(random, luck);
 			ItemNBTHelper.setTagCompound(stack, "perks", perksTag);
 			int tier = Math.max(1, RevolverItem.RevolverPerk.calculateTier(perksTag));
 
 			ItemNBTHelper.putBoolean(stack, "generatePerks", true);
 			return new MerchantOffer(new ItemStack(Items.EMERALD, 5*tier+random.nextInt(5)), stack, 1, 45, 0.25F);
-		}
+		});
 	}
 
 	/**

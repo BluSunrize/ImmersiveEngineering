@@ -3,6 +3,9 @@
     - Textures kindly provided by AriaElidove, thank you!
 - Remove raw ore blocks from the list of blocks dug by the grinding disk  (voidsong-dragonfly)
 - Change workbench to be able to handle blueprints with more than 9 recipes (BluSunrize)
+- Change villager trades for revolver pieces and mineral deposit maps to re-roll (BluSunrize)
+    - After buying the item, the trade will be replaced with a new one
+    - This only works on villagers acquired AFTER this update!
 - Fix villagers being unable to interact with IE doors (BluSunrize)
 
 ##### Version 1.20.4-11.4.3-178
