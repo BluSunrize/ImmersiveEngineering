@@ -182,7 +182,7 @@ public interface IConveyorBelt
 	{
 		if(!isActive()||!entity.isAlive())
 			return;
-		if(entity instanceof Player&&entity.isShiftKeyDown())
+		if(entity instanceof Player player&&(player.isShiftKeyDown()||player.getAbilities().flying))
 			return;
 		PlayerUtils.resetFloatingState(entity);
 		ConveyorDirection conveyorDirection = getConveyorDirection();
