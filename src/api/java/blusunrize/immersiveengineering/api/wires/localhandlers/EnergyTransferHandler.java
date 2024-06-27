@@ -41,6 +41,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
 	private final List<SinkPathsFromSource> transferPaths = new ArrayList<>();
 	private boolean sourceSinkMapInitialized = true;
+	Object2DoubleOpenHashMap<Connection> connectionsToLimits = new Object2DoubleOpenHashMap<>();
 
 	public EnergyTransferHandler(LocalWireNetwork net, GlobalWireNetwork global)
 	{
@@ -119,6 +120,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		sources.clear();
 		transferPaths.clear();
 		sourceSinkMapInitialized = false;
+		connectionsToLimits.clear();;
 	}
 
 	public Map<ConnectionPoint, EnergyConnector> getSources()
@@ -219,10 +221,10 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	private void transferPower()
 	{
-		int blargl = 0;
 		updateSourcesAndSinks();
 		for(SinkPathsFromSource sourceData : transferPaths)
 		{
+			connectionsToLimits.clear();
 			ConnectionPoint sourceCp = sourceData.sourceCP();
 			EnergyConnector source = sourceData.sourceConnector();
 			int available = source.getAvailableEnergy();
@@ -252,10 +254,10 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				double atSource = allowedFactor*entry.amount();
 				double availableFactor = 1;
 				ConnectionPoint currentPoint = sourceCp;
-				Object2DoubleOpenHashMap<Connection> connectionsToLimits = new Object2DoubleOpenHashMap<>();
 				double availableRecent = atSource;
-				for(Connection c : path.conns)
+				for(int conn=0;conn<path.conns.length;conn++)
 				{
+					Connection c = path.conns[conn];
 					currentPoint = c.getOtherEnd(currentPoint);
 					// We use exponential loss here so there is still some power at arbitrarily far distances
 					availableRecent*=(1-getBasicLoss(c));
@@ -265,15 +267,32 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					// This is so transformers can limit total power running through them
 					if (iic instanceof LimitingEnergyConnector limiting && transferredNextTick != null)
 					{
+						// Get the limit and update the connection
 						double limit = (Math.max(limiting.getPowerLimit()-transferredNextTick.getDouble(c), 0)/availableFactor);
-						connectionsToLimits.put(c, limit);
+						if ((int)limit<(int)availableRecent)
+						{
+							double factor = 1;
+							connectionsToLimits.put(c, limit);
+							for(int back=0;back<conn;back++)
+							{
+								Connection c2 = path.conns[back];
+								factor*=(1-getBasicLoss(c2));
+								transferredNextTick.addTo(c2, -(entry.amount-limit)*factor);
+							}
+						}
 						availableRecent = Math.min(availableRecent, limit);
-						System.out.println(blargl + " " + connectionsToLimits.getDouble(c));
 					}
 					transferredNextTick.addTo(c, availableRecent);
 				}
 				entry.output.insertEnergy(ceilIfClose(atSource*availableFactor));
-				blargl+=1;
+				if (!connectionsToLimits.isEmpty())
+				{
+					double lowest = Double.MAX_VALUE;
+					for(Double d : connectionsToLimits.values())
+						lowest = Math.min(lowest, d);
+					maxSum = maxSum - (entry.amount-lowest);
+					allowedFactor = Math.min(1, available/maxSum);
+				}
 			}
 			if(allowedFactor < 1)
 				source.extractEnergy(available);
