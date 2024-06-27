@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-27T11:36:04.6395039	Recipes
+// 1.20.4	2024-06-27T19:48:00.3193967	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -732,6 +732,7 @@ cdbc3528b557b3c6f27438fdc73301aeecf81a47 data/immersiveengineering/recipes/bluep
 6807360107cea250ae12a5c4bf19f6f5e598f2be data/immersiveengineering/recipes/blueprint/banner_ornate.json
 9b94a3e2eead4b242b0e8c458fc4fec91e85a473 data/immersiveengineering/recipes/blueprint/banner_screwdriver.json
 d1e7a20434d901e76b65d4154c0ff78d9401b855 data/immersiveengineering/recipes/blueprint/banner_treatedwood.json
+99a20a52275866ea8e90b36550f723822560a752 data/immersiveengineering/recipes/blueprint/banner_warning.json
 01726f5a47d980081af66de42fc00626a18b3f77 data/immersiveengineering/recipes/blueprint/banner_windmill.json
 8ff00573b6bccad77711e2cf5298e6c5eea94db1 data/immersiveengineering/recipes/blueprint/banner_wirecutter.json
 f0cf5f3ff4cc78cc62bbda18666a823e88761894 data/immersiveengineering/recipes/blueprint/banner_wolf.json

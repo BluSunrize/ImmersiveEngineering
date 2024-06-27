@@ -1,0 +1,83 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "bannerpatterns",
+  "inputs": [
+    {
+      "item": "minecraft:paper"
+    },
+    [
+      {
+        "item": "immersiveengineering:warning_sign_attention"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_magnet"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_cold"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_electric"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_hot"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_fire"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_falling"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_sound"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_ear_defenders"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_cat"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_villager"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_turret"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_creeper"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_shrieker"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_warden"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_up"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_down"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_left"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_right"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_double_up"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_double_down"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_double_left"
+      },
+      {
+        "item": "immersiveengineering:warning_sign_arrow_double_right"
+      }
+    ]
+  ],
+  "result": {
+    "item": "immersiveengineering:bannerpattern_warning"
+  }
+}

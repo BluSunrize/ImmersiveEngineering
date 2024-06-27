@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -20,6 +21,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IEBannerPatterns
@@ -28,13 +30,19 @@ public class IEBannerPatterns
 			Registries.BANNER_PATTERN, Lib.MODID
 	);
 	public static final List<BannerEntry> ALL_BANNERS = new ArrayList<>();
-	public static final BannerEntry HAMMER = addBanner("hammer", "hmr", "head","grip");
-	public static final BannerEntry WIRECUTTER = addBanner("wirecutter", "wct", "head","grip");
-	public static final BannerEntry SCREWDRIVER = addBanner("screwdriver", "scd", "head","grip");
+	public static final BannerEntry HAMMER = addBanner("hammer", "hmr", "head", "grip");
+	public static final BannerEntry WIRECUTTER = addBanner("wirecutter", "wct", "head", "grip");
+	public static final BannerEntry SCREWDRIVER = addBanner("screwdriver", "scd", "head", "grip");
 	public static final BannerEntry BEVELS = addBanner("bevels", "bvl");
 	public static final BannerEntry ORNATE = addBanner("ornate", "orn");
 	public static final BannerEntry TREATED_WOOD = addBanner("treated_wood", "twd");
 	public static final BannerEntry WINDMILL = addBanner("windmill", "wnd");
+	public static final BannerEntry WARNING = addBanner("warning", "wrn",
+			Arrays.stream(WarningSignIcon.values())
+					.filter(WarningSignIcon::hasBanner)
+					.map(WarningSignIcon::getSerializedName)
+					.toArray(String[]::new)
+	);
 	public static final BannerEntry WOLF = addBanner("wolf", "wlf", "r", "l");
 
 	public static void init(IEventBus modBus)

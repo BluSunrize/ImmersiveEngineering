@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.data.recipes;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
@@ -35,11 +34,9 @@ import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.data.recipes.builder.BlueprintCraftingRecipeBuilder;
 import blusunrize.immersiveengineering.data.recipes.builder.MineralMixBuilder;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
 import net.minecraft.world.item.Item;
@@ -51,8 +48,6 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -307,6 +302,12 @@ public class MiscRecipes extends IERecipeProvider
 				.input(Items.PAPER)
 				.input(WoodenDevices.WINDMILL)
 				.build(out, toRL("blueprint/banner_windmill"));
+		BlueprintCraftingRecipeBuilder.builder()
+				.category("bannerpatterns")
+				.output(IEBannerPatterns.WARNING.item())
+				.input(Items.PAPER)
+				.input(Ingredient.fromValues(MetalDecoration.WARNING_SIGNS.values().stream().map(b -> new Ingredient.ItemValue(new ItemStack(b)))))
+				.build(out, toRL("blueprint/banner_warning"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WOLF.item())

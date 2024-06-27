@@ -64,29 +64,41 @@ public class WarningSignBlock extends IEBaseBlock
 
 	public enum WarningSignIcon implements StringRepresentable
 	{
-		ATTENTION,
-		MAGNET,
-		COLD,
-		ELECTRIC,
-		HOT,
-		FIRE,
-		FALLING,
-		SOUND,
-		EAR_DEFENDERS,
-		CAT,
-		VILLAGER,
-		TURRET,
-		CREEPER,
-		SHRIEKER,
-		WARDEN,
-		ARROW_UP,
-		ARROW_DOWN,
-		ARROW_LEFT,
-		ARROW_RIGHT,
-		ARROW_DOUBLE_UP,
-		ARROW_DOUBLE_DOWN,
-		ARROW_DOUBLE_LEFT,
-		ARROW_DOUBLE_RIGHT;
+		ATTENTION(false),
+		MAGNET(true),
+		COLD(true),
+		ELECTRIC(true),
+		HOT(true),
+		FIRE(true),
+		FALLING(true),
+		SOUND(true),
+		EAR_DEFENDERS(true),
+		CAT(true),
+		VILLAGER(true),
+		TURRET(true),
+		CREEPER(false),
+		SHRIEKER(true),
+		WARDEN(true),
+		ARROW_UP(false),
+		ARROW_DOWN(false),
+		ARROW_LEFT(false),
+		ARROW_RIGHT(false),
+		ARROW_DOUBLE_UP(false),
+		ARROW_DOUBLE_DOWN(false),
+		ARROW_DOUBLE_LEFT(false),
+		ARROW_DOUBLE_RIGHT(false);
+
+		private final boolean hasBanner;
+
+		WarningSignIcon(boolean hasBanner)
+		{
+			this.hasBanner = hasBanner;
+		}
+
+		public boolean hasBanner()
+		{
+			return hasBanner;
+		}
 
 		@Override
 		public String getSerializedName()

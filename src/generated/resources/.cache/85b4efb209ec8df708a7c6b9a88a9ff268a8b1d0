@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-27T11:43:53.9639777	Item models
+// 1.20.4	2024-06-27T19:48:00.3113971	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -63,6 +63,7 @@ afbca8e53deaedb21bda1622e7647f53218578be assets/immersiveengineering/models/item
 83d518ad86acc68ba9406e88d6f07d3a97c2223f assets/immersiveengineering/models/item/bannerpattern_ornate.json
 aa0bed9f4f7331e13b7f6077d555f26bf4168c30 assets/immersiveengineering/models/item/bannerpattern_screwdriver.json
 bcb79baef2fbc204d2cd16ff225c173d42f0daf1 assets/immersiveengineering/models/item/bannerpattern_treated_wood.json
+53e4d749c5509f7ab65f806bfa53a19f98d17465 assets/immersiveengineering/models/item/bannerpattern_warning.json
 7c48f2f172be90da804b7a210a0563b5970777b5 assets/immersiveengineering/models/item/bannerpattern_windmill.json
 12021b8c9d628219230021fc18127591f7f539a1 assets/immersiveengineering/models/item/bannerpattern_wirecutter.json
 584e71c823d796c2e17f1e1a1f1f93932495d3ed assets/immersiveengineering/models/item/bannerpattern_wolf.json
