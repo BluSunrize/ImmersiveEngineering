@@ -30,16 +30,16 @@
   "tag":"earthshaker","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
 {
-  "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6","f34afdfb-996b-4020-b8a2-b740e2937b29"],
+  "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6"],
   "tag":"oblivion","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
 {
-  "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6"],
+  "uuid":["c2024e2a-dd76-4bc9-9ea3-b771f18f23b6","f34afdfb-996b-4020-b8a2-b740e2937b29"],
   "tag":"oathkeeper","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
 
 {
-  "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29"],
+  "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29", "30829481-579d-46a8-9d2e-265b8731e163"],
   "tag":"rose","flavour":"","baseUpgrades":{"melee":10.0},"renderAdditions":["bayonet_attachment","dev_bayonet"]
 }
 
@@ -69,6 +69,21 @@
 }
 
 {
+  "uuid":["bdff5065-8ce0-4386-9c79-3a0680202e1d",
+    "f34afdfb-996b-4020-b8a2-b740e2937b29",
+    "e39bb7aa-2d78-4ed1-989d-4041de14e036"
+  ],
+  "tag":"einhorn_0","flavour":"","baseUpgrades":{"barrel_snub":true},"renderAdditions":[]
+}
+
+{
+  "uuid":["bdff5065-8ce0-4386-9c79-3a0680202e1d",
+    "e39bb7aa-2d78-4ed1-989d-4041de14e036"
+  ],
+  "tag":"einhorn_1","flavour":"","baseUpgrades":{},"renderAdditions":[]
+}
+
+{
   "uuid":["07c11943-628b-4671-a331-84899d08e538",
     "58d506e2-7ee7-4774-8b22-c7a57eda488b",
     "d3442da1-5173-4cc0-af9f-4af5cf296886",
@@ -84,6 +99,8 @@
 {
   "uuid":["f34afdfb-996b-4020-b8a2-b740e2937b29",
     "4f1b6e70-4a7d-45e0-a69e-3550d528cd89",
+    "ee64800c-2dd5-468e-9cda-914f07592c4b",
+    "7b4bdbb7-8ef7-48cf-aee4-8f27f00086d2",
     "3c9b9448-d532-4745-9aac-509f38ff81d5",
     "139ee5b6-6715-4f8b-a47a-ee39850a818a"
   ],
@@ -97,10 +114,7 @@
     "434bf509-ce83-4787-8176-32d202f8c6f6",
     "c2320ea5-f43f-4cc6-9aa9-d8336b177550",
     "e2453db9-9328-43c6-bc88-e9db4f3a9059",
-    "c3ea8486-38e1-46c1-8f42-b2479ac16ea8",
-    "5aee1e3d-3767-4987-a222-e7ce1fbdf88e",
-    "4d10396c-1676-4a77-8338-ec4125a276f0",
-    "6043e6ba-8232-41a7-ab67-0c47086c83fe"
+    "4d10396c-1676-4a77-8338-ec4125a276f0"
   ],
   "tag":"patreonBlu_1","flavour":"","baseUpgrades":{"fancyAnimation":true},"renderAdditions":["bayonet_attachment","dev_scope"]
 }
