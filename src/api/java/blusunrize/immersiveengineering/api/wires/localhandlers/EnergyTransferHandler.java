@@ -268,9 +268,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				double availableFactor = 1;
 				ConnectionPoint currentPoint = sourceCp;
 				double availableRecent = atSource;
-				for(int conn=0;conn<path.conns.length;conn++)
+				for(Connection c : path.conns)
 				{
-					Connection c = path.conns[conn];
 					currentPoint = c.getOtherEnd(currentPoint);
 					// We use exponential loss here so there is still some power at arbitrarily far distances
 					availableRecent*=(1-getBasicLoss(c));
