@@ -83,6 +83,7 @@ public class IEItemTags extends ItemTagsProvider
 
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);
+		tag(IETags.paper).add(Items.PAPER);
 
 		tag(ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
 		tag(ItemTags.BOOKSHELF_BOOKS).add(Tools.MANUAL.get());

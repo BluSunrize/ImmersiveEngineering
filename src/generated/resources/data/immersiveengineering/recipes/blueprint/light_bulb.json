@@ -8,7 +8,7 @@
     {
       "basePredicate": [
         {
-          "item": "minecraft:paper"
+          "tag": "forge:paper"
         },
         {
           "item": "minecraft:bamboo"

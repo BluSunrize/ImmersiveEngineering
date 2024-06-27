@@ -12,7 +12,7 @@
       "tag": "forge:gunpowder"
     },
     "p": {
-      "item": "minecraft:paper"
+      "tag": "forge:paper"
     }
   },
   "pattern": [

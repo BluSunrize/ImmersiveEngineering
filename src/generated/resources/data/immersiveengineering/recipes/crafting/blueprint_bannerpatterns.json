@@ -9,7 +9,7 @@
       "tag": "forge:dyes/blue"
     },
     "p": {
-      "item": "minecraft:paper"
+      "tag": "forge:paper"
     }
   },
   "pattern": [

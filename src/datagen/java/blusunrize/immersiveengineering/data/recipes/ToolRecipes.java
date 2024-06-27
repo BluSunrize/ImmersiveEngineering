@@ -344,7 +344,7 @@ public class ToolRecipes extends IERecipeProvider
 				.pattern("prp")
 				.pattern("prp")
 				.pattern(" c ")
-				.define('p', Items.PAPER)
+				.define('p', IETags.paper)
 				.define('r', Tags.Items.DYES_RED)
 				.define('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.unlockedBy("has_coppper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))

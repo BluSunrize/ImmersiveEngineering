@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-27T22:00:59.7342946	Tags for minecraft:item mod id immersiveengineering
+// 1.20.4	2024-06-27T22:34:11.5656508	Tags for minecraft:item mod id immersiveengineering
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/forge/tags/items/armors.json
@@ -62,6 +62,7 @@ e10e19eb1ecd0d4fbd2270995a9c4b14c981af49 data/forge/tags/items/ores/uranium.json
 ad7cc89e6b8ad6b0c7c3544c0abd3446c612060c data/forge/tags/items/ores_in_ground/deepslate.json
 81467f7c9399b301ac496bf424b8c8b807db752a data/forge/tags/items/ores_in_ground/stone.json
 03803ad3e358573f495ef5a2b28fff69483d9903 data/forge/tags/items/ore_rates/singular.json
+886e5e1db1abef8583882d996f8600275f839c37 data/forge/tags/items/paper.json
 25979f85ffe3a60f6a6ff1a9393146fa407f233c data/forge/tags/items/plates.json
 acf6b113ec54a56762cde07b98764c3b8ae28754 data/forge/tags/items/plates/aluminum.json
 4070924cacbdf8cd04656525b43f3dbe1b43e009 data/forge/tags/items/plates/constantan.json

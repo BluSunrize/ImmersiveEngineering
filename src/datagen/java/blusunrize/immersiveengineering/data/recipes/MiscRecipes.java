@@ -51,6 +51,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import java.util.stream.Stream;
+
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 import static net.minecraft.data.recipes.SimpleCookingRecipeBuilder.smelting;
@@ -122,7 +124,7 @@ public class MiscRecipes extends IERecipeProvider
 				.category("components")
 				.output(new ItemStack(Ingredients.LIGHT_BULB, 3))
 				.input(Tags.Items.GLASS)
-				.input(Ingredient.of(Items.PAPER, Items.BAMBOO), 3)
+				.input(Ingredient.fromValues(Stream.of(new Ingredient.TagValue(IETags.paper), new Ingredient.ItemValue(Items.BAMBOO.getDefaultInstance()))), 3)
 				.input(IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.build(out, toRL("blueprint/light_bulb"));
 		BlueprintCraftingRecipeBuilder.builder()
@@ -263,55 +265,55 @@ public class MiscRecipes extends IERecipeProvider
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.HAMMER.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(Tools.HAMMER)
 				.build(out, toRL("blueprint/banner_hammer"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WIRECUTTER.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(Tools.WIRECUTTER)
 				.build(out, toRL("blueprint/banner_wirecutter"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.SCREWDRIVER.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(Tools.SCREWDRIVER)
 				.build(out, toRL("blueprint/banner_screwdriver"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.BEVELS.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(IETags.plates)
 				.build(out, toRL("blueprint/banner_bevels"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.ORNATE.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(IETags.getTagsFor(EnumMetals.SILVER).dust)
 				.build(out, toRL("blueprint/banner_ornate"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.TREATED_WOOD.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(IETags.getItemTag(IETags.treatedWood))
 				.build(out, toRL("blueprint/banner_treatedwood"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WINDMILL.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(WoodenDevices.WINDMILL)
 				.build(out, toRL("blueprint/banner_windmill"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WARNING.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(Ingredient.fromValues(MetalDecoration.WARNING_SIGNS.values().stream().map(b -> new Ingredient.ItemValue(new ItemStack(b)))))
 				.build(out, toRL("blueprint/banner_warning"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WOLF.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf"));
 

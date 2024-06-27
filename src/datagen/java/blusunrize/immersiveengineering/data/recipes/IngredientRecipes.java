@@ -431,9 +431,8 @@ public class IngredientRecipes extends IERecipeProvider
 				.define('l', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('k', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
 				.define('d', Tags.Items.DYES_BLUE)
-				//TODO tag?
-				.define('p', Items.PAPER)
-				.unlockedBy("has_"+toPath(Items.PAPER), has(Items.PAPER))
+				.define('p', IETags.paper)
+				.unlockedBy("has_paper", has(IETags.paper))
 				.save(buildBlueprint(out, "components"), toRL("blueprint_components"));
 		shapedMisc(Misc.BLUEPRINT)
 				.pattern(" P ")
@@ -441,9 +440,8 @@ public class IngredientRecipes extends IERecipeProvider
 				.pattern("ppp")
 				.define('P', IETags.getTagsFor(EnumMetals.IRON).plate)
 				.define('d', Tags.Items.DYES_BLUE)
-				//TODO tag?
-				.define('p', Items.PAPER)
-				.unlockedBy("has_"+toPath(Items.PAPER), has(Items.PAPER))
+				.define('p', IETags.paper)
+				.unlockedBy("has_paper", has(IETags.paper))
 				.save(buildBlueprint(out, "molds"), toRL("blueprint_molds"));
 		shapedMisc(Misc.BLUEPRINT)
 				.pattern("gcg")
@@ -452,9 +450,8 @@ public class IngredientRecipes extends IERecipeProvider
 				.define('g', Tags.Items.GUNPOWDER)
 				.define('c', Ingredients.EMPTY_CASING)
 				.define('d', Tags.Items.DYES_BLUE)
-				//TODO tag?
-				.define('p', Items.PAPER)
-				.unlockedBy("has_"+toPath(Items.PAPER), has(Items.PAPER))
+				.define('p', IETags.paper)
+				.unlockedBy("has_paper", has(IETags.paper))
 				.save(buildBlueprint(out, "bullet"), toRL("blueprint_bullets"));
 		shapedMisc(Misc.BLUEPRINT)
 				.pattern(" b ")
@@ -462,9 +459,8 @@ public class IngredientRecipes extends IERecipeProvider
 				.pattern("ppp")
 				.define('b', ItemTags.BANNERS)
 				.define('d', Tags.Items.DYES_BLUE)
-				//TODO tag?
-				.define('p', Items.PAPER)
-				.unlockedBy("has_"+toPath(Items.PAPER), has(Items.PAPER))
+				.define('p', IETags.paper)
+				.unlockedBy("has_paper", has(IETags.paper))
 				.save(buildBlueprint(out, "bannerpatterns"), toRL("blueprint_bannerpatterns"));
 	}
 

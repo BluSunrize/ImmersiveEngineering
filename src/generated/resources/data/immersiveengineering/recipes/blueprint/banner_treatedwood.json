@@ -3,7 +3,7 @@
   "category": "bannerpatterns",
   "inputs": [
     {
-      "item": "minecraft:paper"
+      "tag": "forge:paper"
     },
     {
       "tag": "forge:treated_wood"

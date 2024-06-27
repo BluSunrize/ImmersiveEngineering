@@ -62,6 +62,7 @@ public class IETags
 	public static final TagKey<Item> clay = createItemWrapper(forgeLoc("clay"));
 	public static final TagKey<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
 	public static final TagKey<Item> charCoal = createItemWrapper(forgeLoc("charcoal"));
+	public static final TagKey<Item> paper = createItemWrapper(forgeLoc("paper"));
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final TagKey<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
 	public static final TagKey<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
