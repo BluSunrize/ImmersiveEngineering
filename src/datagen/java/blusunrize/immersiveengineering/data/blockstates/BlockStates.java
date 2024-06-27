@@ -280,6 +280,15 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.texture("particle", rl("block/metal/sheetmetal_"+chute.getKey().tagName()));
 			simpleBlock(chute.getValue().get(), model);
 		}
+		for(Entry<DyeColor, BlockEntry<ChuteBlock>> chute : MetalDevices.DYED_CHUTES.entrySet())
+		{
+			ModelFile model = ieObjBuilder("block/metal_device/chute_colored_"+chute.getKey().getName(), rl("block/metal_device/chute.obj.ie"))
+					.callback(ChuteCallbacks.INSTANCE)
+					.end()
+					.texture("texture", rl("block/metal/sheetmetal_"+chute.getKey().getName()))
+					.texture("particle", rl("block/metal/sheetmetal_"+chute.getKey().getName()));
+			simpleBlock(chute.getValue().get(), model);
+		}
 
 		simpleBlock(Misc.FAKE_LIGHT.get(), EMPTY_MODEL);
 

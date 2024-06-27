@@ -28,9 +28,12 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient.ItemValue;
+import net.minecraft.world.item.crafting.Ingredient.Value;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -38,8 +41,11 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class DeviceRecipes extends IERecipeProvider
 {
@@ -670,6 +676,32 @@ public class DeviceRecipes extends IERecipeProvider
 					.define('s', IETags.getItemTag(IETags.getTagsFor(chute.getKey()).sheetmetal))
 					.unlockedBy("has_plate", has(IETags.getTagsFor(chute.getKey()).plate))
 					.save(out, toRL(toPath(chute.getValue())));
+
+		Ingredient anyDyeableChute = Ingredient.fromValues(
+				Stream.concat(
+						MetalDevices.CHUTES.values().stream(),
+						MetalDevices.DYED_CHUTES.values().stream()
+				).map((Function<BlockEntry<ChuteBlock>, Value>)b -> new ItemValue(new ItemStack(b)))
+		);
+		for(Entry<DyeColor, BlockEntry<ChuteBlock>> chute : MetalDevices.DYED_CHUTES.entrySet())
+		{
+			shapedMisc(chute.getValue(), 12)
+					.pattern("s s")
+					.pattern("s s")
+					.pattern("s s")
+					.define('s', MetalDecoration.COLORED_SHEETMETAL.get(chute.getKey()))
+					.unlockedBy("has_sheetmetal", has(MetalDecoration.COLORED_SHEETMETAL.get(chute.getKey())))
+					.save(out, toRL(toPath(chute.getValue())));
+			shapedMisc(chute.getValue(), 8)
+					.pattern("ccc")
+					.pattern("cdc")
+					.pattern("ccc")
+					.define('c', anyDyeableChute)
+					.define('d', chute.getKey().getTag())
+					.unlockedBy("has_sheetmetal", has(MetalDecoration.COLORED_SHEETMETAL.get(chute.getKey())))
+					.save(out, toRL(toPath(chute.getValue())+"_dyeing"));
+		}
+
 		shapedMisc(MetalDevices.ELECTROMAGNET)
 				.pattern("pcp")
 				.pattern("wiw")
@@ -684,10 +716,10 @@ public class DeviceRecipes extends IERecipeProvider
 		shapedMisc(MetalDevices.PIPE_VALVE)
 				.pattern("pc")
 				.pattern("sr")
-				.define('p',MetalDevices.FLUID_PIPE)
-				.define('c',Ingredients.COMPONENT_IRON)
-				.define('s',IETags.ironRod)
-				.define('r',Tags.Items.DUSTS_REDSTONE)
+				.define('p', MetalDevices.FLUID_PIPE)
+				.define('c', Ingredients.COMPONENT_IRON)
+				.define('s', IETags.ironRod)
+				.define('r', Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_fluid_pipe", has(MetalDevices.FLUID_PIPE))
 				.save(out, toRL(toPath(MetalDevices.PIPE_VALVE)));
 	}

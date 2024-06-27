@@ -2,6 +2,7 @@
 - Add warning signs (BluSunrize)
     - Textures kindly provided by AriaElidove, thank you!
 - Add fence gates for treated wood, steel and aluminium (BluSunrize)
+- Add colored sheetmetal chutes (BluSunrize)
 - Remove raw ore blocks from the list of blocks dug by the grinding disk  (voidsong-dragonfly)
 - Change workbench to be able to handle blueprints with more than 9 recipes (BluSunrize)
 - Change villager trades for revolver pieces and mineral deposit maps to re-roll (BluSunrize)

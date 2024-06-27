@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:chute_colored_light_gray"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "immersiveengineering:blocks/chute_colored_light_gray"
+}

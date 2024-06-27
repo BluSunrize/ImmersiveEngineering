@@ -410,6 +410,7 @@ public class IEBlockTags extends BlockTagsProvider
 		MetalDecoration.METAL_LADDER.values().forEach(entry -> tag.add(entry.get()));
 		// chutes
 		MetalDevices.CHUTES.values().forEach(entry -> tag.add(entry.get()));
+		MetalDevices.DYED_CHUTES.values().forEach(entry -> tag.add(entry.get()));
 		// fluid machines
 		tag.add(MetalDevices.BARREL.get(), MetalDevices.FLUID_PUMP.get(), MetalDevices.FLUID_PIPE.get(), MetalDevices.FLUID_PLACER.get(), MetalDevices.PIPE_VALVE.get());
 		// other machines
@@ -637,6 +638,7 @@ public class IEBlockTags extends BlockTagsProvider
 		registerMineable(tag, MetalDecoration.ALU_SCAFFOLDING);
 		registerMineable(tag, MetalDecoration.WARNING_SIGNS);
 		registerMineable(tag, MetalDevices.CHUTES);
+		registerMineable(tag, MetalDevices.DYED_CHUTES);
 		registerMineable(tag, Connectors.ENERGY_CONNECTORS);
 		registerMineable(tag, MetalDevices.CONVEYORS);
 		setOreMiningLevel(EnumMetals.COPPER, Tiers.STONE);

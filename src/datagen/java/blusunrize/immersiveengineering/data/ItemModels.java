@@ -44,6 +44,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorItem.Type;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
@@ -118,6 +119,10 @@ public class ItemModels extends TRSRItemModelProvider
 		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.CHUTES.entrySet())
 			obj(chute.getValue(), rl("block/metal_device/chute_inv.obj"))
 					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().tagName()))
+					.transforms(rl("item/block"));
+		for(Entry<DyeColor, BlockEntry<ChuteBlock>> chute : MetalDevices.DYED_CHUTES.entrySet())
+			obj(chute.getValue(), rl("block/metal_device/chute_inv.obj"))
+					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().getName()))
 					.transforms(rl("item/block"));
 
 

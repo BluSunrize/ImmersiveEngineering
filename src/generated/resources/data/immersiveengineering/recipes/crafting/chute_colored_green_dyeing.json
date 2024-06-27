@@ -1,0 +1,80 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": [
+      {
+        "item": "immersiveengineering:chute_copper"
+      },
+      {
+        "item": "immersiveengineering:chute_aluminum"
+      },
+      {
+        "item": "immersiveengineering:chute_steel"
+      },
+      {
+        "item": "immersiveengineering:chute_iron"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_white"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_orange"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_magenta"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_light_blue"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_yellow"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_lime"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_pink"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_gray"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_light_gray"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_cyan"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_purple"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_blue"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_brown"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_green"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_red"
+      },
+      {
+        "item": "immersiveengineering:chute_colored_black"
+      }
+    ],
+    "d": {
+      "tag": "forge:dyes/green"
+    }
+  },
+  "pattern": [
+    "ccc",
+    "cdc",
+    "ccc"
+  ],
+  "result": {
+    "count": 8,
+    "item": "immersiveengineering:chute_colored_green"
+  }
+}

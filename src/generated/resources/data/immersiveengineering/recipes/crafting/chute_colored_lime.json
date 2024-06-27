@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "immersiveengineering:sheetmetal_colored_lime"
+    }
+  },
+  "pattern": [
+    "s s",
+    "s s",
+    "s s"
+  ],
+  "result": {
+    "count": 12,
+    "item": "immersiveengineering:chute_colored_lime"
+  }
+}
