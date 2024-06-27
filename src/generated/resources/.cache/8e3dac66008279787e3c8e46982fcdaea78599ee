@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-27T21:52:38.0269079	Tags for minecraft:item mod id immersiveengineering
+// 1.20.4	2024-06-27T22:00:59.7342946	Tags for minecraft:item mod id immersiveengineering
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/forge/tags/items/armors.json
@@ -162,13 +162,17 @@ abd64977cb7f9a82733f5a615230b150179a2123 data/immersiveengineering/tags/items/to
 ca80813f3c36ca4d7cd3b091a242dffa5652499d data/minecraft/tags/items/bookshelf_books.json
 36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/minecraft/tags/items/cluster_max_harvestables.json
 721903046c1e90c28d2fede7814f04994baaf913 data/minecraft/tags/items/coals.json
+c442b7d04f34628fbc7be64ecfe622b236e62f12 data/minecraft/tags/items/doors.json
 0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/items/fences.json
 afc31b5afe5324de1c6097c0f400298aba7add70 data/minecraft/tags/items/fence_gates.json
 ca80813f3c36ca4d7cd3b091a242dffa5652499d data/minecraft/tags/items/lectern_books.json
 da83d2c4f2c93e3c8b94aaa7391d094b109192f9 data/minecraft/tags/items/planks.json
 13e61703d17f2edebaa53906f2ff9a3beb4709f1 data/minecraft/tags/items/slabs.json
 bbd9a9fd5180792793e77d07c66775c573ddbaee data/minecraft/tags/items/stairs.json
+46c5600ed93fc7d8c77be69bf583cd3e973a4b2c data/minecraft/tags/items/trapdoors.json
 5cdff4e8babeb2f2fb75067ceb0b6bfc37ec6c4e data/minecraft/tags/items/trimmable_armor.json
+078e5b168cce6b9b501cc2b5efe7cc0898b6f58e data/minecraft/tags/items/wooden_doors.json
 31aec3619b657eb55bc44a76ed1dba40e168472b data/minecraft/tags/items/wooden_fences.json
 485ca26048e0c430a7ab442ed9e5b1a1ea596bb5 data/minecraft/tags/items/wooden_slabs.json
 fcdf4c2b6abbfbd23b9e637503dacf20f77a9105 data/minecraft/tags/items/wooden_stairs.json
+f5ea1aefe3c8e9006c589fbcfe6d9868d3c87883 data/minecraft/tags/items/wooden_trapdoors.json
