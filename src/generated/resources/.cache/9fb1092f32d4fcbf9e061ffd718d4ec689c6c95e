@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-27T22:34:11.5716517	Recipes
+// 1.20.4	2024-06-27T22:50:54.8028257	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -42,6 +42,7 @@ c5d89d9e231e88534df351ad929fee23850fac1f data/immersiveengineering/advancements/
 6db7d9646f788f23c52950c05b0aa7995497bd74 data/immersiveengineering/advancements/recipes/misc/crafting/blueprint_components.json
 f2e176191c6c26cc58fcd4f5c6aea92a6bb08c30 data/immersiveengineering/advancements/recipes/misc/crafting/blueprint_molds.json
 bcea2ed7fea46970f210b7b2fb0da00148354c5d data/immersiveengineering/advancements/recipes/misc/crafting/blueprint_shelf.json
+7bbf9eedbf5c129a388b6777eb33bcc1e88ae28d data/immersiveengineering/advancements/recipes/misc/crafting/blueprint_warning_sign.json
 66becadce33bd9740e6e155c17e714cb22f1fb48 data/immersiveengineering/advancements/recipes/misc/crafting/breaker_switch.json
 41855b9b40196970078a5d413dfd2d72e92fa78a data/immersiveengineering/advancements/recipes/misc/crafting/buzzsaw.json
 5c9610aec5db5ee626a2de24d7a3c6004fc766ea data/immersiveengineering/advancements/recipes/misc/crafting/capacitor_hv.json
@@ -883,6 +884,7 @@ d763d1d6180a6ed8f67ca9813bbd92bf5f90c9ef data/immersiveengineering/recipes/craft
 c4b2857d6a9cc8c77f7487a4bc5c611e757df903 data/immersiveengineering/recipes/crafting/blueprint_components.json
 59c6916f99008173f21f2aef6582dc1a549fe212 data/immersiveengineering/recipes/crafting/blueprint_molds.json
 f0b29c324a21ee256cd8e7af90dc83e2f2716df7 data/immersiveengineering/recipes/crafting/blueprint_shelf.json
+fe2d8443549d224b5ca57cdb486601b7ad6a790e data/immersiveengineering/recipes/crafting/blueprint_warning_sign.json
 ed8a7347f3b540ec879f700774cac7650e3595fb data/immersiveengineering/recipes/crafting/breaker_switch.json
 a413a19f70582fbd5c6466ec62768c8fb4ed95b6 data/immersiveengineering/recipes/crafting/buzzsaw.json
 c8ec33f36fbdc2f4d87ed6330f6ca5d27586df53 data/immersiveengineering/recipes/crafting/capacitor_hv.json

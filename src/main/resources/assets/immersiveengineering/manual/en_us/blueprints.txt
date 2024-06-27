@@ -3,4 +3,5 @@ Back to the drawing board
 The following pages feature all the Engineer's Blueprints that can be crafted by normal means. Other specialized Blueprints may need to be acquired from villagers or found in the world.<br>
 All of these blueprints, including specialized ones, can be used in an <link;engineers_workbench;Engineer's Workbench> to craft the items they describe.
 <&molds_components>
-<&banners_projectiles>
+<&banners_signs>
+<&projectiles>

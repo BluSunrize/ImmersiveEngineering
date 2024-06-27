@@ -6,10 +6,16 @@
       "crafting/blueprint_molds"
     ]
   },
-  "banners_projectiles": {
+  "banners_signs": {
     "type": "crafting",
     "recipes": [
       "crafting/blueprint_bannerpatterns",
+      "crafting/blueprint_warning_sign"
+    ]
+  },
+  "projectiles": {
+    "type": "crafting",
+    "recipes": [
       "crafting/blueprint_bullets"
     ]
   }

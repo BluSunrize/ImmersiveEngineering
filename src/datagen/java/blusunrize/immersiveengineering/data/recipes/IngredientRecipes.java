@@ -444,6 +444,16 @@ public class IngredientRecipes extends IERecipeProvider
 				.unlockedBy("has_paper", has(IETags.paper))
 				.save(buildBlueprint(out, "molds"), toRL("blueprint_molds"));
 		shapedMisc(Misc.BLUEPRINT)
+				.pattern("yby")
+				.pattern("ddd")
+				.pattern("ppp")
+				.define('y', Tags.Items.DYES_YELLOW)
+				.define('b', Tags.Items.DYES_BLACK)
+				.define('d', Tags.Items.DYES_BLUE)
+				.define('p', IETags.paper)
+				.unlockedBy("has_paper", has(IETags.paper))
+				.save(buildBlueprint(out, "warning_sign"), toRL("blueprint_warning_sign"));
+		shapedMisc(Misc.BLUEPRINT)
 				.pattern("gcg")
 				.pattern("ddd")
 				.pattern("ppp")
