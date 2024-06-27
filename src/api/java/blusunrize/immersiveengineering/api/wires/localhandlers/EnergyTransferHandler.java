@@ -41,7 +41,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
 	private final List<SinkPathsFromSource> transferPaths = new ArrayList<>();
 	private boolean sourceSinkMapInitialized = true;
-	Object2DoubleOpenHashMap<Connection> connectionsToLimits = new Object2DoubleOpenHashMap<>();
+	HashMap<Connection, List<Double>> limits = new HashMap<>();
 
 	public EnergyTransferHandler(LocalWireNetwork net, GlobalWireNetwork global)
 	{
@@ -120,7 +120,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		sources.clear();
 		transferPaths.clear();
 		sourceSinkMapInitialized = false;
-		connectionsToLimits.clear();;
+		limits.clear();;
 	}
 
 	public Map<ConnectionPoint, EnergyConnector> getSources()
@@ -165,6 +165,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					sinks.put(cp, energyIIC);
 				if(energyIIC.isSource(cp))
 					sources.put(cp, energyIIC);
+				if(energyIIC instanceof LimitingEnergyConnector limiting)
+					for(Connection c : localNet.getConnections(cp))
+						limits.put(c, Arrays.asList((double)limiting.getPowerLimit(), (double)limiting.getPowerLimit()));
 			}
 		}
 		for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
@@ -222,9 +225,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void transferPower()
 	{
 		updateSourcesAndSinks();
+		resetLimits();
 		for(SinkPathsFromSource sourceData : transferPaths)
 		{
-			connectionsToLimits.clear();
 			ConnectionPoint sourceCp = sourceData.sourceCP();
 			EnergyConnector source = sourceData.sourceConnector();
 			int available = source.getAvailableEnergy();
@@ -237,11 +240,21 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			List<OutputData> maxOut = new ArrayList<>(sourceData.paths().size());
 			for(SinkPath sinkEntry : sourceData.paths())
 			{
+				double limit = Double.MAX_VALUE;
+				Connection conn = null;
+				for(Connection c : sinkEntry.pathTo().conns)
+					if (limits.containsKey(c))
+					{
+						limit = limits.get(c).get(1);
+						conn = c;
+					}
 				EnergyConnector sink = sinkEntry.sinkConnector();
-				int requested = sink.getRequestedEnergy();
+				int requested = (int)Math.min(sink.getRequestedEnergy(), limit*(1-sinkEntry.pathTo().loss));
 				if(requested <= 0)
 					continue;
 				double requiredAtSource = Math.min(requested/(1-sinkEntry.pathTo().loss), available);
+				if(conn!=null)
+					limits.put(conn, Arrays.asList(limits.get(conn).get(0), limit-requiredAtSource));
 				maxOut.add(new OutputData(requiredAtSource, sinkEntry.pathTo(), sink));
 				maxSum += requiredAtSource;
 			}
@@ -264,35 +277,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					IImmersiveConnectable iic = localNet.getConnector(currentPoint);
 					if(!currentPoint.equals(path.end) && iic instanceof EnergyConnector connector)
 						connector.onEnergyPassedThrough(availableRecent);
-					// This is so transformers can limit total power running through them
-					if (iic instanceof LimitingEnergyConnector limiting && transferredNextTick != null)
-					{
-						// Get the limit and update the connection
-						double limit = (Math.max(limiting.getPowerLimit()-transferredNextTick.getDouble(c), 0)/availableFactor);
-						if ((int)limit<(int)availableRecent)
-						{
-							double factor = 1;
-							connectionsToLimits.put(c, limit);
-							for(int back=0;back<conn;back++)
-							{
-								Connection c2 = path.conns[back];
-								factor*=(1-getBasicLoss(c2));
-								transferredNextTick.addTo(c2, -(entry.amount-limit)*factor);
-							}
-						}
-						availableRecent = Math.min(availableRecent, limit);
-					}
 					transferredNextTick.addTo(c, availableRecent);
 				}
 				entry.output.insertEnergy(ceilIfClose(atSource*availableFactor));
-				if (!connectionsToLimits.isEmpty())
-				{
-					double lowest = Double.MAX_VALUE;
-					for(Double d : connectionsToLimits.values())
-						lowest = Math.min(lowest, d);
-					maxSum = maxSum - (entry.amount-lowest);
-					allowedFactor = Math.min(1, available/maxSum);
-				}
 			}
 			if(allowedFactor < 1)
 				source.extractEnergy(available);
@@ -329,6 +316,12 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			return energyWire.getBasicLossRate(c);
 		else
 			return Double.POSITIVE_INFINITY;
+	}
+
+	private void resetLimits()
+	{
+		if (limits.isEmpty()) return;
+		limits.replaceAll((p, v) -> Arrays.asList(limits.get(p).get(0), limits.get(p).get(0)));
 	}
 
 	public static class Path
