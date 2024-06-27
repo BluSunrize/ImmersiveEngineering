@@ -9,7 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.Connection;
+import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.LimitingEnergyConnector;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
