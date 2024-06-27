@@ -49,6 +49,9 @@ public class IETags
 		toItemTag.put(BlockTags.SLABS, ItemTags.SLABS);
 		toItemTag.put(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
 		toItemTag.put(BlockTags.STAIRS, ItemTags.STAIRS);
+		toItemTag.put(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES);
+		toItemTag.put(BlockTags.FENCES, ItemTags.FENCES);
+		toItemTag.put(BlockTags.FENCE_GATES, ItemTags.FENCE_GATES);
 	}
 
 	//Vanilla
