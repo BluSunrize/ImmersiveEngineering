@@ -14,6 +14,54 @@
         },
         {
           "recipe": "crafting/chute_steel"
+        },
+        {
+          "recipe": "crafting/chute_colored_white"
+        },
+        {
+          "recipe": "crafting/chute_colored_orange"
+        },
+        {
+          "recipe": "crafting/chute_colored_magenta"
+        },
+        {
+          "recipe": "crafting/chute_colored_light_blue"
+        },
+        {
+          "recipe": "crafting/chute_colored_yellow"
+        },
+        {
+          "recipe": "crafting/chute_colored_lime"
+        },
+        {
+          "recipe": "crafting/chute_colored_pink"
+        },
+        {
+          "recipe": "crafting/chute_colored_gray"
+        },
+        {
+          "recipe": "crafting/chute_colored_light_gray"
+        },
+        {
+          "recipe": "crafting/chute_colored_cyan"
+        },
+        {
+          "recipe": "crafting/chute_colored_purple"
+        },
+        {
+          "recipe": "crafting/chute_colored_blue"
+        },
+        {
+          "recipe": "crafting/chute_colored_brown"
+        },
+        {
+          "recipe": "crafting/chute_colored_green"
+        },
+        {
+          "recipe": "crafting/chute_colored_red"
+        },
+        {
+          "recipe": "crafting/chute_colored_black"
         }
       ]
     ]
