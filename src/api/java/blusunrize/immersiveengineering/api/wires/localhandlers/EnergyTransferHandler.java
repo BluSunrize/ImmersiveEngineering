@@ -167,7 +167,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					sources.put(cp, energyIIC);
 				if(energyIIC instanceof LimitingEnergyConnector limiting)
 					for(Connection c : localNet.getConnections(cp))
-						limits.put(c, Arrays.asList((double)limiting.getPowerLimit(), (double)limiting.getPowerLimit()));
+						limits.put(c, Arrays.asList(limiting.getPowerLimit(), limiting.getPowerLimit()));
 			}
 		}
 		for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
@@ -432,7 +432,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 
 	public interface LimitingEnergyConnector extends EnergyConnector
 	{
-		int getPowerLimit();
+		double getPowerLimit();
 	}
 
 	private record SinkPath(ConnectionPoint sinkCP, EnergyConnector sinkConnector, Path pathTo)

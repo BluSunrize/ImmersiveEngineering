@@ -75,7 +75,7 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	}
 
 	@Override
-	public int getPowerLimit() {
+	public double getPowerLimit() {
 		if (leftType==null||rightType==null) return 0;
 		return Math.min(((IEnergyWire)leftType).getTransferRate(), ((IEnergyWire)rightType).getTransferRate());
 	}
