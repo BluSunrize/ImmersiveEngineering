@@ -22,6 +22,9 @@
           "recipe": "crafting/treated_fence"
         },
         {
+          "recipe": "crafting/treated_fence_gate"
+        },
+        {
           "recipe": "crafting/treated_scaffold"
         }
       ],

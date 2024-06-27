@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "s": {
+      "tag": "forge:rods/aluminum"
+    }
+  },
+  "pattern": [
+    "sis",
+    "sis"
+  ],
+  "result": {
+    "item": "immersiveengineering:alu_fence_gate"
+  }
+}

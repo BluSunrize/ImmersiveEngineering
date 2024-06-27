@@ -68,6 +68,10 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(MetalDecoration.ALU_FENCE.get())
 				.add(MetalDecoration.STEEL_FENCE.get())
 				.add(WoodenDecoration.TREATED_FENCE.get());
+		tag(BlockTags.FENCE_GATES)
+				.add(MetalDecoration.ALU_FENCE.get())
+				.add(MetalDecoration.STEEL_FENCE.get())
+				.add(WoodenDecoration.TREATED_FENCE.get());
 		tag(BlockTags.WOODEN_FENCES)
 				.add(WoodenDecoration.TREATED_FENCE.get());
 		tag(BlockTags.DOORS)
@@ -448,6 +452,7 @@ public class IEBlockTags extends BlockTagsProvider
 				WoodenDevices.LOGIC_UNIT,
 				WoodenDevices.MACHINE_INTERFACE,
 				WoodenDecoration.TREATED_FENCE,
+				WoodenDecoration.TREATED_FENCE_GATE,
 				WoodenDecoration.TREATED_SCAFFOLDING,
 				WoodenDecoration.TREATED_POST,
 				WoodenDecoration.SAWDUST,
@@ -594,7 +599,9 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.GENERATOR,
 				MetalDecoration.RADIATOR,
 				MetalDecoration.STEEL_FENCE,
+				MetalDecoration.STEEL_FENCE_GATE,
 				MetalDecoration.ALU_FENCE,
+				MetalDecoration.ALU_FENCE_GATE,
 				MetalDecoration.STEEL_WALLMOUNT,
 				MetalDecoration.ALU_WALLMOUNT,
 				MetalDecoration.STEEL_POST,

@@ -118,6 +118,15 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_treated_sticks", has(IETags.treatedStick))
 				.save(out, toRL(toPath(WoodenDecoration.TREATED_FENCE)));
 
+		shapedMisc(WoodenDecoration.TREATED_FENCE_GATE)
+				.pattern("sis")
+				.pattern("sis")
+				.define('i', IETags.getItemTag(IETags.treatedWood))
+				.define('s', IETags.treatedStick)
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.unlockedBy("has_treated_sticks", has(IETags.treatedStick))
+				.save(out, toRL(toPath(WoodenDecoration.TREATED_FENCE_GATE)));
+
 		shapedMisc(WoodenDecoration.TREATED_POST)
 				.pattern("f")
 				.pattern("f")
@@ -464,6 +473,23 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.unlockedBy("has_steel_sticks", has(IETags.steelRod))
 				.save(out, toRL(toPath(MetalDecoration.STEEL_FENCE)));
+
+		shapedMisc(MetalDecoration.ALU_FENCE_GATE)
+				.pattern("sis")
+				.pattern("sis")
+				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
+				.define('s', IETags.aluminumRod)
+				.unlockedBy("has_alu_ingot", has(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
+				.unlockedBy("has_alu_sticks", has(IETags.aluminumRod))
+				.save(out, toRL(toPath(MetalDecoration.ALU_FENCE_GATE)));
+		shapedMisc(MetalDecoration.STEEL_FENCE_GATE)
+				.pattern("sis")
+				.pattern("sis")
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.define('s', IETags.steelRod)
+				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.unlockedBy("has_steel_sticks", has(IETags.steelRod))
+				.save(out, toRL(toPath(MetalDecoration.STEEL_FENCE_GATE)));
 
 		shapedMisc(MetalDecoration.LV_COIL)
 				.pattern("www")

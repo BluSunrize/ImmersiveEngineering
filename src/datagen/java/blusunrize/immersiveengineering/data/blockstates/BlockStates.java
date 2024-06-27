@@ -49,10 +49,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.FenceBlock;
-import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -156,6 +153,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 		fenceBlock(WoodenDecoration.TREATED_FENCE, TREATED_FENCE_TEXTURE);
 		fenceBlock(MetalDecoration.STEEL_FENCE, STEEL_FENCE_TEXTURE);
 		fenceBlock(MetalDecoration.ALU_FENCE, ALU_FENCE_TEXTURE);
+		fenceGateBlock(WoodenDecoration.TREATED_FENCE_GATE, TREATED_FENCE_TEXTURE);
+		fenceGateBlock(MetalDecoration.STEEL_FENCE_GATE, STEEL_FENCE_TEXTURE);
+		fenceGateBlock(MetalDecoration.ALU_FENCE_GATE, ALU_FENCE_TEXTURE);
 
 		cubeAll(StoneDecoration.COKEBRICK, rl("block/stone_decoration/cokebrick"));
 		cubeAll(StoneDecoration.BLASTBRICK, rl("block/stone_decoration/blastbrick"));
@@ -657,6 +657,11 @@ public class BlockStates extends ExtendedBlockstateProvider
 		itemModel(b,
 				models().withExistingParent(BuiltInRegistries.BLOCK.getKey(b.get()).getPath()+"_inventory", mcLoc("block/fence_inventory"))
 						.texture("texture", texture));
+	}
+	public void fenceGateBlock(Supplier<? extends FenceGateBlock> b, ResourceLocation texture)
+	{
+		super.fenceGateBlock(b.get(), texture);
+		itemModel(b, models().getExistingFile(rl("block/"+BuiltInRegistries.BLOCK.getKey(b.get()).getPath())));
 	}
 
 	private void createMultistateSingleModel(Supplier<? extends Block> block, ConfiguredModel model)

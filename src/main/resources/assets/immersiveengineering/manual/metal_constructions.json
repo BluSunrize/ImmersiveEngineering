@@ -140,6 +140,12 @@
           },
           {
             "recipe": "crafting/alu_fence"
+          },
+          {
+            "recipe": "crafting/steel_fence_gate"
+          },
+          {
+            "recipe": "crafting/alu_fence_gate"
           }
         ]
       ]

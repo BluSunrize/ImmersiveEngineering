@@ -35,6 +35,7 @@ import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -337,6 +338,11 @@ public final class IEBlocks
 	{
 		public static final Map<TreatedWoodStyles, BlockEntry<IEBaseBlock>> TREATED_WOOD = new EnumMap<>(TreatedWoodStyles.class);
 		public static final BlockEntry<FenceBlock> TREATED_FENCE = BlockEntry.fence("treated_fence", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
+		public static final BlockEntry<FenceGateBlock> TREATED_FENCE_GATE = new BlockEntry<>(
+				"treated_fence_gate",
+				STANDARD_WOOD_PROPERTIES_NO_OVERLAY,
+				blockProps -> new FenceGateBlock(blockProps, SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE)
+		);
 		public static final BlockEntry<ScaffoldingBlock> TREATED_SCAFFOLDING = BlockEntry.scaffolding("treated_scaffold", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION);
 		public static final BlockEntry<PostBlock> TREATED_POST = BlockEntry.post("treated_post", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<SawdustBlock> SAWDUST = new BlockEntry<>(
@@ -469,7 +475,17 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> GENERATOR = BlockEntry.simple("generator", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<IEBaseBlock> RADIATOR = BlockEntry.simple("radiator", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<FenceBlock> STEEL_FENCE = BlockEntry.fence("steel_fence", METAL_PROPERTIES_NO_OVERLAY);
+		public static final BlockEntry<FenceGateBlock> STEEL_FENCE_GATE = new BlockEntry<>(
+				"steel_fence_gate",
+				METAL_PROPERTIES_NO_OVERLAY,
+				blockProps -> new FenceGateBlock(blockProps, SoundEvents.COPPER_DOOR_OPEN, SoundEvents.COPPER_DOOR_CLOSE)
+		);
 		public static final BlockEntry<FenceBlock> ALU_FENCE = BlockEntry.fence("alu_fence", METAL_PROPERTIES_NO_OVERLAY);
+		public static final BlockEntry<FenceGateBlock> ALU_FENCE_GATE = new BlockEntry<>(
+				"alu_fence_gate",
+				METAL_PROPERTIES_NO_OVERLAY,
+				blockProps -> new FenceGateBlock(blockProps, SoundEvents.COPPER_DOOR_OPEN, SoundEvents.COPPER_DOOR_CLOSE)
+		);
 		public static final BlockEntry<WallmountBlock> STEEL_WALLMOUNT = BlockEntry.wallmount("steel_wallmount", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<WallmountBlock> ALU_WALLMOUNT = BlockEntry.wallmount("alu_wallmount", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<PostBlock> STEEL_POST = BlockEntry.post("steel_post", METAL_PROPERTIES_NO_OVERLAY);
