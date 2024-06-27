@@ -267,19 +267,19 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				double atSource = allowedFactor*entry.amount();
 				double availableFactor = 1;
 				ConnectionPoint currentPoint = sourceCp;
-				double availableRecent = atSource;
 				for(Connection c : path.conns)
 				{
 					currentPoint = c.getOtherEnd(currentPoint);
 					// We use exponential loss here so there is still some power at arbitrarily far distances
-					availableRecent*=(1-getBasicLoss(c));
+					availableFactor *= (1-getBasicLoss(c));
+					double availableAtPoint = atSource*availableFactor;
+					transferredNextTick.addTo(c, availableAtPoint);
 					if(!currentPoint.equals(path.end))
 					{
 						IImmersiveConnectable iic = localNet.getConnector(currentPoint);
 						if(iic instanceof EnergyConnector)
-							((EnergyConnector)iic).onEnergyPassedThrough(availableRecent);
+							((EnergyConnector)iic).onEnergyPassedThrough(availableAtPoint);
 					}
-					transferredNextTick.addTo(c, availableRecent);
 				}
 				entry.output.insertEnergy(ceilIfClose(atSource*availableFactor));
 			}
