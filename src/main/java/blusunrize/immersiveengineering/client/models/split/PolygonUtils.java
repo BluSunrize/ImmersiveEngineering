@@ -79,10 +79,10 @@ public class PolygonUtils
 
 	public static BakedQuad toBakedQuad(Polygon<ExtraQuadData> poly, ModelState transform)
 	{
-		return toBakedQuad(poly.getPoints(), poly.getTexture(), transform.getRotation().blockCenterToCorner(), true);
+		return toBakedQuad(poly.getPoints(), poly.getTexture(), transform.getRotation().blockCenterToCorner(), true, true);
 	}
 
-	public static BakedQuad toBakedQuad(List<Vertex> points, ExtraQuadData data, Transformation rotation, boolean absoluteUV)
+	public static BakedQuad toBakedQuad(List<Vertex> points, ExtraQuadData data, Transformation rotation, boolean absoluteUV, boolean shade)
 	{
 		Preconditions.checkArgument(points.size()==4);
 		BakedQuadBuilder quadBuilder = new BakedQuadBuilder();
@@ -111,7 +111,7 @@ public class PolygonUtils
 					1
 			);
 		}
-		return quadBuilder.bake(-1, Direction.getNearest(normal.x(), normal.y(), normal.z()), data.sprite(), true);
+		return quadBuilder.bake(-1, Direction.getNearest(normal.x(), normal.y(), normal.z()), data.sprite(), shade);
 	}
 
 	private static float[] toArray(Vec3d vec, int length)
