@@ -130,6 +130,7 @@ public class ClientProxy extends CommonProxy
 		IEOBJCallbacks.register(rl("cloche"), ClocheCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("floodlight"), FloodlightCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("lantern"), LanternCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("cagelamp"), CagelampCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("logic_unit"), LogicUnitCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("pipe"), PipeCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("probe"), ProbeConnectorCallbacks.INSTANCE);

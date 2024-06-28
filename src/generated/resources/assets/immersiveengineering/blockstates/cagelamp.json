@@ -1,0 +1,58 @@
+{
+  "variants": {
+    "active=false,facing=down": {
+      "model": "immersiveengineering:block/cagelamp_off",
+      "x": 180
+    },
+    "active=false,facing=east": {
+      "model": "immersiveengineering:block/cagelamp_off",
+      "x": 270,
+      "y": 270
+    },
+    "active=false,facing=north": {
+      "model": "immersiveengineering:block/cagelamp_off",
+      "x": 270,
+      "y": 180
+    },
+    "active=false,facing=south": {
+      "model": "immersiveengineering:block/cagelamp_off",
+      "x": 270
+    },
+    "active=false,facing=up": {
+      "model": "immersiveengineering:block/cagelamp_off",
+      "x": 360
+    },
+    "active=false,facing=west": {
+      "model": "immersiveengineering:block/cagelamp_off",
+      "x": 270,
+      "y": 90
+    },
+    "active=true,facing=down": {
+      "model": "immersiveengineering:block/cagelamp_on",
+      "x": 180
+    },
+    "active=true,facing=east": {
+      "model": "immersiveengineering:block/cagelamp_on",
+      "x": 270,
+      "y": 270
+    },
+    "active=true,facing=north": {
+      "model": "immersiveengineering:block/cagelamp_on",
+      "x": 270,
+      "y": 180
+    },
+    "active=true,facing=south": {
+      "model": "immersiveengineering:block/cagelamp_on",
+      "x": 270
+    },
+    "active=true,facing=up": {
+      "model": "immersiveengineering:block/cagelamp_on",
+      "x": 360
+    },
+    "active=true,facing=west": {
+      "model": "immersiveengineering:block/cagelamp_on",
+      "x": 270,
+      "y": 90
+    }
+  }
+}

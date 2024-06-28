@@ -402,7 +402,7 @@ public class IEBlockTags extends BlockTagsProvider
 		tag.addTag(IETags.scaffoldingSteel);
 		tag.addTag(IETags.scaffoldingAlu);
 		// decorations including catwalks
-		tag.add(MetalDecoration.LANTERN.get(), MetalDecoration.STEEL_DOOR.get(), MetalDecoration.STEEL_TRAPDOOR.get(), MetalDecoration.REINFORCED_WINDOW.get());
+		tag.add(MetalDecoration.LANTERN.get(), MetalDecoration.CAGELAMP.get(), MetalDecoration.STEEL_DOOR.get(), MetalDecoration.STEEL_TRAPDOOR.get(), MetalDecoration.REINFORCED_WINDOW.get());
 		tag.add(MetalDecoration.ALU_FENCE.get(), MetalDecoration.ALU_POST.get(), MetalDecoration.ALU_WALLMOUNT.get(), MetalDecoration.ALU_SLOPE.get(),
 				MetalDecoration.ALU_CATWALK.get(), MetalDecoration.ALU_CATWALK_STAIRS.get(), MetalDecoration.ALU_WINDOW.get());
 		tag.add(MetalDecoration.STEEL_FENCE.get(), MetalDecoration.STEEL_POST.get(), MetalDecoration.STEEL_WALLMOUNT.get(), MetalDecoration.STEEL_SLOPE.get(),
@@ -608,6 +608,7 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.STEEL_POST,
 				MetalDecoration.ALU_POST,
 				MetalDecoration.LANTERN,
+				MetalDecoration.CAGELAMP,
 				MetalDecoration.STEEL_SLOPE,
 				MetalDecoration.ALU_SLOPE,
 				MetalDecoration.STEEL_WINDOW,

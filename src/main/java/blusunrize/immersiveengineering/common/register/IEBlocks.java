@@ -491,6 +491,7 @@ public final class IEBlocks
 		public static final BlockEntry<PostBlock> STEEL_POST = BlockEntry.post("steel_post", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<PostBlock> ALU_POST = BlockEntry.post("alu_post", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<LanternBlock> LANTERN = new BlockEntry<>("lantern", LanternBlock.PROPERTIES, LanternBlock::new);
+		public static final BlockEntry<CagelampBlock> CAGELAMP = new BlockEntry<>("cagelamp", CagelampBlock.PROPERTIES, CagelampBlock::new);
 		public static final BlockEntry<StructuralArmBlock> STEEL_SLOPE = new BlockEntry<>(
 				"steel_slope", METAL_PROPERTIES_DYNAMIC, StructuralArmBlock::new
 		);

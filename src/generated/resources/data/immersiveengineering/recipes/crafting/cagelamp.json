@@ -2,22 +2,25 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
+    "c": {
+      "tag": "forge:wires/copper"
+    },
     "g": {
       "tag": "forge:dusts/glowstone"
     },
     "i": {
       "tag": "forge:nuggets/iron"
     },
-    "p": {
-      "item": "minecraft:glass_pane"
+    "r": {
+      "tag": "forge:glass/red"
     }
   },
   "pattern": [
-    "iii",
-    "pgp",
-    "iii"
+    " c ",
+    "crc",
+    "igi"
   ],
   "result": {
-    "item": "immersiveengineering:lantern"
+    "item": "immersiveengineering:cagelamp"
   }
 }

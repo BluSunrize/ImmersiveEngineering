@@ -3,6 +3,10 @@
     "type": "crafting",
     "recipe": "crafting/lantern"
   },
+  "cagelamp": {
+    "type": "crafting",
+    "recipe": "crafting/cagelamp"
+  },
   "electric_lantern": {
     "type": "crafting",
     "recipe": "crafting/electric_lantern"

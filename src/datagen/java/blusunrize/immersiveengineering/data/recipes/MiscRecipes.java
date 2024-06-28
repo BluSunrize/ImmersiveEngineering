@@ -792,16 +792,6 @@ public class MiscRecipes extends IERecipeProvider
 				.unlockedBy("has_slag", has(IETags.slag))
 				.save(out, toRL(toPath(Misc.FERTILIZER)));
 
-		shapedMisc(MetalDecoration.LANTERN)
-				.pattern(" I ")
-				.pattern("PGP")
-				.pattern(" I ")
-				.define('I', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('G', Tags.Items.DUSTS_GLOWSTONE)
-				.define('P', Items.GLASS_PANE)
-				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
-				.save(out, toRL(toPath(MetalDecoration.LANTERN)));
-
 		shapedMisc(Minecarts.CART_WOODEN_CRATE)
 				.pattern("B")
 				.pattern("C")

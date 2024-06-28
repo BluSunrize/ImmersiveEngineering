@@ -34,6 +34,7 @@ public class IEProperties
 
 	public static final BooleanProperty MULTIBLOCKSLAVE = BooleanProperty.create("multiblockslave");
 	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+	public static final BooleanProperty INVERTED = BooleanProperty.create("inverted");
 	public static final BooleanProperty MIRRORED = BooleanProperty.create("mirrored");
 
 	public static final BooleanProperty UP = BooleanProperty.create("up");

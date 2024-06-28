@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "callbacks": "immersiveengineering:cagelamp",
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/cagelamp.obj",
+  "textures": {
+    "particle": "#texture",
+    "texture": "immersiveengineering:block/metal_decoration/cagelamp"
+  }
+}

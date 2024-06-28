@@ -301,6 +301,33 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createMultistateSingleModel(MetalDecoration.LANTERN, new ConfiguredModel(
 				ieObjBuilder("block/lantern.obj.ie").callback(LanternCallbacks.INSTANCE).end()
 		));
+		{
+//			BlockModelBuilder offModel = obj(
+//					"block/cagelamp_off", rl("block/cagelamp.obj"),
+//					ImmutableMap.of("texture", modLoc("block/metal_decoration/cagelamp")),
+//					models()
+//			);
+//			BlockModelBuilder onModel = obj(
+//					"block/cagelamp_on", rl("block/cagelamp.obj"),
+//					ImmutableMap.of("texture", modLoc("block/metal_decoration/cagelamp_on")),
+//					models()
+//			);
+
+			BlockModelBuilder offModel = ieObjBuilder(
+					"block/cagelamp_off", rl("block/cagelamp.obj")
+			).callback(CagelampCallbacks.INSTANCE).end().texture("texture", modLoc("block/metal_decoration/cagelamp"));
+			BlockModelBuilder onModel = ieObjBuilder(
+					"block/cagelamp_on", rl("block/cagelamp.obj")
+			).callback(CagelampCallbacks.INSTANCE).end().texture("texture", modLoc("block/metal_decoration/cagelamp_on"));
+
+			createRotatedBlock(
+					MetalDecoration.CAGELAMP,
+					state -> state.getSetStates().get(IEProperties.ACTIVE)==Boolean.TRUE?onModel: offModel,
+					IEProperties.FACING_ALL,
+					List.of(IEProperties.ACTIVE),
+					270, 0
+			);
+		}
 
 		{
 			ModelFile noneModel = createMetalLadder("metal_ladder", null, null, null);
@@ -667,6 +694,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 				models().withExistingParent(BuiltInRegistries.BLOCK.getKey(b.get()).getPath()+"_inventory", mcLoc("block/fence_inventory"))
 						.texture("texture", texture));
 	}
+
 	public void fenceGateBlock(Supplier<? extends FenceGateBlock> b, ResourceLocation texture)
 	{
 		super.fenceGateBlock(b.get(), texture);

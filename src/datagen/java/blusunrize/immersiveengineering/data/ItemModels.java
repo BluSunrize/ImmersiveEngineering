@@ -189,6 +189,9 @@ public class ItemModels extends TRSRItemModelProvider
 
 		obj(MetalDecoration.LANTERN, modLoc("block/lantern_inventory.obj"))
 				.transforms(modLoc("item/block"));
+		obj(MetalDecoration.CAGELAMP, rl("block/cagelamp.obj"))
+				.texture("texture", modLoc("block/metal_decoration/cagelamp"))
+				.transforms(rl("item/block"));
 		addLayeredItemModel(
 				MetalDecoration.METAL_LADDER.get(CoverType.NONE).asItem(),
 				rl("block/metal_decoration/metal_ladder")

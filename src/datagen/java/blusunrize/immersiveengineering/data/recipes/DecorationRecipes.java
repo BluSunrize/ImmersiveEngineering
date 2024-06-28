@@ -491,6 +491,26 @@ public class DecorationRecipes extends IERecipeProvider
 				.unlockedBy("has_steel_sticks", has(IETags.steelRod))
 				.save(out, toRL(toPath(MetalDecoration.STEEL_FENCE_GATE)));
 
+		shapedMisc(MetalDecoration.LANTERN)
+				.pattern("iii")
+				.pattern("pgp")
+				.pattern("iii")
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).nugget)
+				.define('g', Tags.Items.DUSTS_GLOWSTONE)
+				.define('p', Items.GLASS_PANE)
+				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
+				.save(out, toRL(toPath(MetalDecoration.LANTERN)));
+		shapedMisc(MetalDecoration.CAGELAMP)
+				.pattern(" c ")
+				.pattern("crc")
+				.pattern("igi")
+				.define('c', IETags.copperWire)
+				.define('r', Tags.Items.GLASS_RED)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).nugget)
+				.define('g', Tags.Items.DUSTS_GLOWSTONE)
+				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
+				.save(out, toRL(toPath(MetalDecoration.CAGELAMP)));
+
 		shapedMisc(MetalDecoration.LV_COIL)
 				.pattern("www")
 				.pattern("wiw")
