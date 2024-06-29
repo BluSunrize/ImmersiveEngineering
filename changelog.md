@@ -17,6 +17,7 @@
 - Fix steel doors dropping twice (BluSunrize)
 - Fix blueprint shelves not dropping blueprints when broken (BluSunrize)
 - Fix conveyors moving players while flying (BluSunrize)
+- Fix models for drill and buzzsaw not using translucent as a rendertype (BluSunrize)
 
 ##### Version 1.20.4-11.4.3-178
 - Change scaffolding blocks to have more descriptive names (AriaElidove)

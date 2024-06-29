@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-28T22:55:11.6045533	Item models
+// 1.20.4	2024-06-29T08:44:59.4276354	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -76,7 +76,7 @@ e3c4354a95715ebe9f1171c7a534a4d948b340e8 assets/immersiveengineering/models/item
 04379dcea92c2d3112947c7d7a1847905ed0bede assets/immersiveengineering/models/item/bucket_wheel.json
 5ecfb0b1a89f694a78469ee75aeed28529b6919c assets/immersiveengineering/models/item/buckshot.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/immersiveengineering/models/item/bulwark_spawn_egg.json
-8de10084fd698e39d0b0273b834fd30346edfe26 assets/immersiveengineering/models/item/buzzsaw.json
+7ee1e483f910f5d9f6ce81509f04b31e127e44b6 assets/immersiveengineering/models/item/buzzsaw.json
 3d414a3338d86d9c6aa9148de080064d9023b031 assets/immersiveengineering/models/item/cagelamp.json
 646d457d72cace4b34ffe35e121992b76494dd7a assets/immersiveengineering/models/item/casull.json
 9ad4f625a2ed90d06ed9243e9b688bc2a4759708 assets/immersiveengineering/models/item/chemthrower.json
@@ -140,7 +140,7 @@ fb3b26ad14160e47abf975bafcd3db5bbfaf4626 assets/immersiveengineering/models/item
 38666dc863c6bf098bcb396fbae22abbb3ce8136 assets/immersiveengineering/models/item/deepslate_ore_uranium.json
 f70d183e6a82f2ed0d5576829c449ffc9098af1c assets/immersiveengineering/models/item/diesel_generator.json
 793c94e318733c3b0cd1785bb9048c0e86601136 assets/immersiveengineering/models/item/dragons_breath.json
-88fd9f9a38f85ae0c7de24e385f83f3bd400837a assets/immersiveengineering/models/item/drill.json
+887c7442a8d60e103ccd64a66f0a7d7037417b38 assets/immersiveengineering/models/item/drill.json
 3ec916ab36fba8ca45ba19b3f77757d00067562b assets/immersiveengineering/models/item/drillhead_iron.json
 6887c75ae23e5d1fb34dd6d455ba726b574e87e7 assets/immersiveengineering/models/item/drillhead_steel.json
 62b6c5a4fa404b1b7abb0926e58137b411c32d53 assets/immersiveengineering/models/item/dust_aluminum.json

@@ -316,11 +316,13 @@ public class ItemModels extends TRSRItemModelProvider
 		ieObjBuilder(Tools.DRILL, modLoc("item/drill/drill_diesel.obj.ie"))
 				.dynamic(true)
 				.callback(DrillCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(modLoc("item/drill"));
 		ieObjBuilder(Tools.BUZZSAW, modLoc("item/buzzsaw_diesel.obj.ie"))
 				.dynamic(true)
 				.callback(BuzzsawCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(modLoc("item/buzzsaw"));
 		ieObjBuilder(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))
