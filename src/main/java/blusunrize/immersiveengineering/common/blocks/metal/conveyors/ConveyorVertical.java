@@ -32,6 +32,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
@@ -75,7 +76,10 @@ public class ConveyorVertical extends ConveyorBasic
 
 	boolean renderBottomBelt(TileEntity tile, EnumFacing facing)
 	{
-		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0));
+		World w = tile.getWorld();
+		if (w == null)
+			return false;
+		TileEntity te = w.getTileEntity(tile.getPos().add(0, -1, 0));
 		if(te instanceof IConveyorTile&&((IConveyorTile)te).getConveyorSubtype()!=null)
 			for(EnumFacing f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections(te, ((IConveyorTile)te).getFacing()))
 				if(f==EnumFacing.UP)

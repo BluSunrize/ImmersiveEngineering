@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 /**
  * @author BluSunrize - 20.08.2016
@@ -45,7 +46,10 @@ public class ConveyorBasic implements IConveyorBelt
 	@Override
 	public boolean isActive(TileEntity tile)
 	{
-		return tile.getWorld().getRedstonePowerFromNeighbors(tile.getPos()) <= 0;
+		World w = tile.getWorld();
+		if (w == null)
+			return true;
+		return w.getRedstonePowerFromNeighbors(tile.getPos()) <= 0;
 	}
 
 	@Override
