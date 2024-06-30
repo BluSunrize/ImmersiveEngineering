@@ -1,4 +1,4 @@
-##### Version 1.20.4-11.5.0-pre
+##### Version 1.20.4-11.5.0-179
 - Add warning signs (BluSunrize)
     - Textures kindly provided by AriaElidove, thank you!
     - You can also make a banner pattern with the signs and put (some) of the warnings on banners and shields!
