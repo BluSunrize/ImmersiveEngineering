@@ -96,7 +96,6 @@ import java.util.function.Predicate;
 
 public class EventHandler
 {
-	public static Map<Level, Set<IEExplosion>> currentExplosions = new WeakHashMap<>();
 	public static final Queue<Runnable> SERVER_TASKS = new ArrayDeque<>();
 
 	@SubscribeEvent
@@ -174,19 +173,6 @@ public class EventHandler
 			Runnable next = SERVER_TASKS.poll();
 			if(next!=null)
 				next.run();
-		}
-
-		final Set<IEExplosion> explosionsInLevel = currentExplosions.get(event.level);
-		if(explosionsInLevel!=null)
-		{
-			Iterator<IEExplosion> itExplosion = explosionsInLevel.iterator();
-			while(itExplosion.hasNext())
-			{
-				IEExplosion ex = itExplosion.next();
-				ex.doExplosionTick();
-				if(ex.isExplosionFinished)
-					itExplosion.remove();
-			}
 		}
 	}
 

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import blusunrize.immersiveengineering.common.util.IEExplosion;
+import blusunrize.immersiveengineering.common.util.DirectionalMiningExplosion;
 import blusunrize.immersiveengineering.mixin.accessors.TNTEntityAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,24 +35,23 @@ import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nonnull;
 
-public class IEExplosiveEntity extends PrimedTnt
+public class GunpowderBarrelEntity extends PrimedTnt
 {
 	private float size;
 	private Explosion.BlockInteraction mode = BlockInteraction.DESTROY;
 	private boolean isFlaming = false;
-	private float explosionDropChance;
 	public BlockState block;
 	private Component name;
 
-	private static final EntityDataAccessor<BlockState> dataMarker_block = SynchedEntityData.defineId(IEExplosiveEntity.class, EntityDataSerializers.BLOCK_STATE);
-	private static final EntityDataAccessor<Integer> dataMarker_fuse = SynchedEntityData.defineId(IEExplosiveEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<BlockState> dataMarker_block = SynchedEntityData.defineId(GunpowderBarrelEntity.class, EntityDataSerializers.BLOCK_STATE);
+	private static final EntityDataAccessor<Integer> dataMarker_fuse = SynchedEntityData.defineId(GunpowderBarrelEntity.class, EntityDataSerializers.INT);
 
-	public IEExplosiveEntity(EntityType<IEExplosiveEntity> type, Level world)
+	public GunpowderBarrelEntity(EntityType<GunpowderBarrelEntity> type, Level world)
 	{
 		super(type, world);
 	}
 
-	public IEExplosiveEntity(Level world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float size)
+	public GunpowderBarrelEntity(Level world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float size)
 	{
 		super(IEEntityTypes.EXPLOSIVE.get(), world);
 		this.setPos(pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5);
@@ -65,25 +64,18 @@ public class IEExplosiveEntity extends PrimedTnt
 		((TNTEntityAccess)this).setOwner(igniter);
 		this.size = size;
 		this.block = blockstate;
-		this.explosionDropChance = 1/size;
 		this.setBlockSynced();
 	}
 
-	public IEExplosiveEntity setMode(BlockInteraction smoke)
+	public GunpowderBarrelEntity setMode(BlockInteraction smoke)
 	{
 		this.mode = smoke;
 		return this;
 	}
 
-	public IEExplosiveEntity setFlaming(boolean fire)
+	public GunpowderBarrelEntity setFlaming(boolean fire)
 	{
 		this.isFlaming = fire;
-		return this;
-	}
-
-	public IEExplosiveEntity setDropChance(float chance)
-	{
-		this.explosionDropChance = chance;
 		return this;
 	}
 
@@ -175,9 +167,7 @@ public class IEExplosiveEntity extends PrimedTnt
 		if(newFuse <= 0)
 		{
 			this.discard();
-
-			Explosion explosion = new IEExplosion(level(), this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming, mode)
-					.setDropChance(explosionDropChance);
+			Explosion explosion = new DirectionalMiningExplosion(level(), this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming);
 			if(!EventHooks.onExplosionStart(level(), explosion))
 			{
 				explosion.explode();

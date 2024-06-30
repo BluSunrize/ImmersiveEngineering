@@ -15,6 +15,7 @@ import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -28,6 +29,7 @@ import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -41,94 +43,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class IEExplosion extends Explosion
+public class DirectionalMiningExplosion extends Explosion
 {
-	public float dropChance = 1;
-	private int blockDestroyInt = 0;
-	public int blocksPerTick = 8;
-	public boolean isExplosionFinished = false;
 	private final Level world;
 	private final float size;
-	private final BlockInteraction damagesTerrain;
+	private final Set<BlockPos> remove = new HashSet<>();
 
-	public IEExplosion(Level world, Entity igniter, double x, double y, double z, float size, boolean isFlaming, BlockInteraction damageTerrain)
+	public DirectionalMiningExplosion(Level world, Entity igniter, double x, double y, double z, float size, boolean isFlaming)
 	{
-		super(world, igniter, x, y, z, size, isFlaming, damageTerrain);
-		this.dropChance = 1/size;
+		super(world, igniter, x, y, z, size, isFlaming, BlockInteraction.KEEP);
 		this.world = world;
-		damagesTerrain = damageTerrain;
 		this.size = size;
 	}
-
-	public IEExplosion setDropChance(float chance)
-	{
-		this.dropChance = chance;
-		return this;
-	}
-
-	public void doExplosionTick()
-	{
-		ObjectArrayList<Pair<ItemStack, BlockPos>> objectarraylist = new ObjectArrayList<>();
-		int max = Math.min(blockDestroyInt+blocksPerTick, this.getToBlow().size());
-		for(; blockDestroyInt < max; blockDestroyInt++)
-		{
-			BlockPos pos = this.getToBlow().get(blockDestroyInt);
-			BlockState state = this.world.getBlockState(pos);
-			Block block = state.getBlock();
-
-//			if(spawnParticles)
-			{
-				var center = center();
-				double d0 = (float)pos.getX()+ApiUtils.RANDOM.nextFloat();
-				double d1 = (float)pos.getY()+ApiUtils.RANDOM.nextFloat();
-				double d2 = (float)pos.getZ()+ApiUtils.RANDOM.nextFloat();
-				double d3 = d0-center.x;
-				double d4 = d1-center.y;
-				double d5 = d2-center.z;
-				double d6 = Mth.sqrt((float)(d3*d3+d4*d4+d5*d5));
-				d3 = d3/d6;
-				d4 = d4/d6;
-				d5 = d5/d6;
-				double d7 = 0.5D/(d6/(double)this.size+0.1D);
-				d7 = d7*(double)(ApiUtils.RANDOM.nextFloat()*ApiUtils.RANDOM.nextFloat()+0.3F);
-				d3 = d3*d7;
-				d4 = d4*d7;
-				d5 = d5*d7;
-				this.world.addParticle(ParticleTypes.EXPLOSION, (d0+center.x*1.0D)/2.0D, (d1+center.y*1.0D)/2.0D, (d2+center.z*1.0D)/2.0D, d3, d4, d5);
-				this.world.addParticle(ParticleTypes.SMOKE, d0, d1, d2, d3, d4, d5);
-			}
-
-			if(!state.isAir())
-			{
-				if(this.world instanceof ServerLevel&&state.canDropFromExplosion(this.world, pos, this))
-				{
-					BlockEntity tile = this.world.getBlockEntity(pos);
-					LootParams.Builder lootCtx = new LootParams.Builder((ServerLevel)this.world)
-							.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-							.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-							.withOptionalParameter(LootContextParams.BLOCK_ENTITY, tile);
-					if(damagesTerrain==Explosion.BlockInteraction.DESTROY)
-						lootCtx.withParameter(LootContextParams.EXPLOSION_RADIUS, this.size);
-					state.getDrops(lootCtx).forEach((stack) -> {
-						ExplosionAccess.callAddOrAppendStack(objectarraylist, stack, pos);
-					});
-					state.onBlockExploded(world, pos, this);
-				}
-			}
-		}
-		for(Pair<ItemStack, BlockPos> pair : objectarraylist)
-		{
-			Block.popResource(this.world, pair.getSecond(), pair.getFirst());
-		}
-		if(blockDestroyInt >= this.getToBlow().size())
-			this.isExplosionFinished = true;
-	}
-
+/*
 	@Override
 	public void explode()
 	{
 		Set<BlockPos> set = Sets.newHashSet();
 		int i = 16;
+
+
 
 		for(int j = 0; j < 16; ++j)
 			for(int k = 0; k < 16; ++k)
@@ -220,6 +154,122 @@ public class IEExplosion extends Explosion
 				}
 			}
 		}
+	}*/
+
+	@Override
+	public void explode()
+	{
+		// variables used for the rest of the explosion
+		int power = (int)size;
+		Vec3 center = center();
+		BlockPos centerBlock = new BlockPos((int)(center.x)+(center.x<0?-1:0), (int)center.y, (int)(center.z)+(center.z<0?-1:0));
+
+		// variables collated during the iteration
+		Set<BlockPos> area = new HashSet<>();
+		double totalResistance = 0;
+		Vec3 weakestDirection = new Vec3(0,0, 0);
+		// to be used and reused in the iteration
+		BlockState cBlock;
+		FluidState cFluid;
+		// iterate over an area of size (2*power+1)^3 and collect the resistance of blocks in a sphere around our center
+		for (int x=-power;x<=power;x++)
+			for (int y=-power;y<=power;y++)
+				for (int z=-power;z<=power;z++)
+				{
+					BlockPos pos = centerBlock.offset(x, y, z);
+					area.add(pos);
+					if (new Vec3(x, y, z).length()<=power)
+					{
+						cBlock = world.getBlockState(pos);
+						cFluid = world.getFluidState(pos);
+						if(!cBlock.isAir()||!cFluid.isEmpty())
+						{
+							double resistance = cBlock.getExplosionResistance(world, pos, this)+cFluid.getExplosionResistance(world, pos, this);
+							totalResistance += resistance;
+							weakestDirection = weakestDirection.add(x==0?0:resistance/x, y==0?0:resistance/y, z==0?0:resistance/z);
+						}
+					}
+				}
+
+		// establish the weakest direction and the length of the explosive step we should be taking
+		weakestDirection = weakestDirection.reverse();
+		Vec3 step = weakestDirection.scale(30*size/totalResistance);
+
+		// offset center to be used in other calculations
+		BlockPos centerOffset;
+		// if step length is high we have a "surface burst" and the explosion dynamics should be different
+		if (step.length()>size*5)
+		{
+			// offset explosion by fixed distance proportional to size
+			step = step.normalize().scale(size/4);
+			centerOffset = centerBlock.offset((int)step.x, (int)step.y, (int)step.z);
+			int r = (int)(0.6f*power);
+			for(int x = -r; x <= r; x++)
+				for(int y = -r; y <= r; y++)
+					for(int z = -r; z <= r; z++)
+						addToRemoveRandom(centerOffset.offset(x, y, z), r-1, r, (new Vec3(x, y, z)).length(), 0.1f);
+		}
+		// otherwise proceed with embedded explosion dynamics
+		else
+		{
+			// if we have a step length greater than ~0.6 power we need to scale it down a little bit because we still have penetration
+			if (step.length()>size*0.6) step = step.scale(1.75/Math.pow(step.length(), 0.7f));
+			// if we have a step length smaller than ~0.225 power but aren't on a surface explosion, we should enhance it
+			else if (step.length()<size*0.225) step = step.scale(1.3f);
+			// delineate blocks to break from the first "stage", ie the explosion directly around the barrel
+			int r1 = (int)(0.4f*power);
+			for(int x = -r1; x <= r1; x++)
+				for(int y = -r1; y <= r1; y++)
+					for(int z = -r1; z <= r1; z++)
+						addToRemoveRandom(centerBlock.offset(x, y, z), r1-1, r1, (new Vec3(x, y, z)).length(), 0.05f);
+			// run the second and third stages, 'biased' explosions that are larger and make this a directional charge
+			centerOffset = centerBlock.offset((int)step.x, (int)step.y, (int)step.z);
+			int r2 = (int)(0.5f*power);
+			for(int x = -r2; x <= r2; x++)
+				for(int y = -r2; y <= r2; y++)
+					for(int z = -r2; z <= r2; z++)
+						addToRemoveRandom(centerOffset.offset(x, y, z), r2-1, r2, (new Vec3(x, y, z)).length(), 0.075f);
+			centerOffset = centerBlock.offset((int)step.x*2, (int)step.y*2, (int)step.z*2);
+			int r3 = (int)(0.6f*power);
+			for(int x = -r3; x <= r3; x++)
+				for(int y = -r3; y <= r3; y++)
+					for(int z = -r3; z <= r3; z++)
+						addToRemoveRandom(centerOffset.offset(x, y, z), r3-1, r3, (new Vec3(x, y, z)).length(), 0.1f);
+		}
+
+		// remove blocks
+		for (BlockPos pos : remove)
+			removeExplodedBlock(pos);
+	}
+
+	private void addToRemoveRandom(BlockPos pos, int inner, int outer, double radius, float chance)
+	{
+		if(radius<=inner+0.1f) remove.add(pos);
+		if(outer>radius&&radius>inner&&ApiUtils.RANDOM.nextFloat()>chance) remove.add(pos);
+	}
+
+	private void removeExplodedBlock(BlockPos pos)
+	{
+		ObjectArrayList<Pair<ItemStack, BlockPos>> objectarraylist = new ObjectArrayList<>();
+		BlockState state = this.world.getBlockState(pos);
+
+		if(!state.isAir())
+		{
+			if(this.world instanceof ServerLevel&&state.canDropFromExplosion(this.world, pos, this))
+			{
+				BlockEntity tile = this.world.getBlockEntity(pos);
+				LootParams.Builder lootCtx = new LootParams.Builder((ServerLevel)this.world)
+						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+						.withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+						.withOptionalParameter(LootContextParams.BLOCK_ENTITY, tile);
+				state.getDrops(lootCtx).forEach((stack) -> {
+					ExplosionAccess.callAddOrAppendStack(objectarraylist, stack, pos);
+				});
+				state.onBlockExploded(world, pos, this);
+			}
+		}
+		for(Pair<ItemStack, BlockPos> pair : objectarraylist)
+			Block.popResource(this.world, pair.getSecond(), pair.getFirst());
 	}
 
 	@Override
@@ -229,12 +279,9 @@ public class IEExplosion extends Explosion
 		if(this.world.isClientSide)
 			this.world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL, 4.0F, (1.0F+(ApiUtils.RANDOM.nextFloat()-ApiUtils.RANDOM.nextFloat())*0.2F)*0.7F, true);
 
-		if(this.size >= 2.0F&&this.damagesTerrain!=BlockInteraction.KEEP)
+		if(this.size >= 2.0F)
 			this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
 		else
 			this.world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
-
-		if(!this.world.isClientSide)
-			EventHandler.currentExplosions.computeIfAbsent(this.world, $ -> new HashSet<>()).add(this);
 	}
 }
