@@ -520,6 +520,9 @@ public class TileEntityFluidPipe extends TileEntityIEBase implements IFluidPipe,
 		if(connections!=3&&connections!=12&&connections!=48)
 			return 1;
 		//		TileEntity con = world.getTileEntity(xCoord+(connection==4?-1: connection==5?1: 0),yCoord+(connection==0?-1: connection==1?1: 0),zCoord+(connection==2?-1: connection==3?1: 0));
+		if (world == null)
+			return 1;
+		
 		TileEntity con = world.getTileEntity(getPos().offset(EnumFacing.byIndex(connection)));
 		if(con instanceof TileEntityFluidPipe)
 		{
