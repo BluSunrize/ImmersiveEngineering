@@ -1,6 +1,7 @@
 ##### Version 1.20.4-11.5.0-pre
 - Add warning signs (BluSunrize)
     - Textures kindly provided by AriaElidove, thank you!
+    - You can also make a banner pattern with the signs and put (some) of the warnings on banners and shields!
 - Add fence gates for treated wood, steel and aluminium (BluSunrize)
 - Add colored sheetmetal chutes (BluSunrize)
 - Add a new light: the cage lamp (BluSunrize)
@@ -12,11 +13,16 @@
     - This only works on villagers acquired AFTER this update!
 - Change revolvers to use the vanilla cooldown system (BluSunrize)
     - This does unfortunately make dualwielding less powerful, because cooldowns affect all revolvers
+- Change transformers nto not be worse than accumulators (voidsong-dragonfly)
+    - They now limit the energy flow properly, making them technically higher on throughput and reducing wire burnout
 - Prevent crates from being opened after being sealed (BluSunrize)
 - Fix villagers being unable to interact with IE doors (BluSunrize)
 - Fix steel doors dropping twice (BluSunrize)
 - Fix blueprint shelves not dropping blueprints when broken (BluSunrize)
 - Fix conveyors moving players while flying (BluSunrize)
+- Fix models for drill and buzzsaw not using translucent as a rendertype (BluSunrize)
+- Fix revolvers not combining their perks correctly when crafted (BluSunrize)
+- Fix revolver shots having impact sounds like an arrow (BluSunrize)
 - Fix models for drill and buzzsaw not using translucent as a rendertype (BluSunrize)
 
 ##### Version 1.20.4-11.4.3-178
