@@ -1,3 +1,6 @@
+##### Version 1.20.4-11.5.1-pre
+- Fix waterlogged posts not dropping items (BluSunrize)
+
 ##### Version 1.20.4-11.5.0-179
 - Add warning signs (BluSunrize)
     - Textures kindly provided by AriaElidove, thank you!
