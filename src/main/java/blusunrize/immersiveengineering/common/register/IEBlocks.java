@@ -123,7 +123,7 @@ public final class IEBlocks
 					.sound(SoundType.WOOD)
 					.strength(2, 5)
 					.isViewBlocking((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion().forceSolidOn();
 	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of()
 			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
