@@ -164,7 +164,7 @@ public class GunpowderBarrelEntity extends PrimedTnt
 		}
 		int newFuse = this.getFuse()-1;
 		this.setFuse(newFuse);
-		if(newFuse <= 0)
+		if(newFuse < 0)
 		{
 			this.discard();
 			Explosion explosion = new DirectionalMiningExplosion(level(), this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming);
