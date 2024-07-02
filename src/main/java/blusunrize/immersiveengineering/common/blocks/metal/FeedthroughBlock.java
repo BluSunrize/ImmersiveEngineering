@@ -20,16 +20,27 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.MapColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class FeedthroughBlock extends ConnectorBlock<FeedthroughBlockEntity>
 {
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of()
+			.mapColor(MapColor.METAL)
+			.sound(SoundType.METAL)
+			.strength(3.0F, 15.0F)
+			.noOcclusion()
+			.dynamicShape()
+			.forceSolidOn();
+
 	public FeedthroughBlock(Properties props)
 	{
 		super(props, IEBlockEntities.FEEDTHROUGH);
