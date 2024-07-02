@@ -2,6 +2,7 @@
 - Fix waterlogged posts not dropping items (BluSunrize)
 - Fix treated windows letting rain through (BluSunrize)
 - Fix crates not syncing their names to the client (BluSunrize)
+- Fix shader based particles breaking on servers (BluSunrize)
 
 ##### Version 1.20.4-11.5.0-179
 - Add warning signs (BluSunrize)

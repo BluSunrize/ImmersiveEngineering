@@ -12,6 +12,9 @@ import blusunrize.immersiveengineering.client.fx.FractalOptions;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -34,10 +37,18 @@ public class CommonProxy
 
 	public void spawnFractalFX(Level world, double x, double y, double z, Vec3 direction, double scale, int prefixColour, float[][] colour)
 	{
-		if(prefixColour >= 0)
-			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
-		FractalOptions particle = new FractalOptions(direction, scale, 10, 16, colour[0], colour[1]);
-		world.addParticle(particle, x, y, z, 0, 0, 0);
+		if(world instanceof ServerLevel serverLevel)
+		{
+			if(prefixColour >= 0)
+				colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
+			FractalOptions particle = new FractalOptions(direction, scale, 10, 16, colour[0], colour[1]);
+			serverLevel.sendParticles(
+					particle,
+					x,y,z,
+					1,
+					0,0,0, 0.075
+			);
+		}
 	}
 
 	public Level getClientWorld()
