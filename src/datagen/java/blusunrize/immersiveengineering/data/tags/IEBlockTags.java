@@ -40,7 +40,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -630,6 +629,7 @@ public class IEBlockTags extends BlockTagsProvider
 				Connectors.CONNECTOR_REDSTONE,
 				Connectors.CONNECTOR_PROBE,
 				Connectors.CONNECTOR_BUNDLED,
+				Connectors.REDSTONE_STATE_CELL,
 				Connectors.FEEDTHROUGH
 		);
 		registerMineable(tag, Metals.SHEETMETAL);

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:connector_redstone"
+    },
+    "t": {
+      "item": "immersiveengineering:electron_tube"
+    }
+  },
+  "pattern": [
+    "c",
+    "t"
+  ],
+  "result": {
+    "item": "immersiveengineering:redstone_state_cell"
+  }
+}

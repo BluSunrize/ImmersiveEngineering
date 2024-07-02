@@ -24,6 +24,7 @@
     "immersiveengineering:connector_redstone",
     "immersiveengineering:connector_probe",
     "immersiveengineering:connector_bundled",
+    "immersiveengineering:redstone_state_cell",
     "immersiveengineering:balloon",
     "immersiveengineering:razor_wire"
   ]

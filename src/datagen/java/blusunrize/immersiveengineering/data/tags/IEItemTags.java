@@ -27,11 +27,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -232,6 +228,7 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Connectors.CONNECTOR_REDSTONE.asItem())
 				.add(Connectors.CONNECTOR_PROBE.asItem())
 				.add(Connectors.CONNECTOR_BUNDLED.asItem())
+				.add(Connectors.REDSTONE_STATE_CELL.asItem())
 				.add(Cloth.BALLOON.asItem())
 				.add(MetalDevices.RAZOR_WIRE.asItem());
 	}

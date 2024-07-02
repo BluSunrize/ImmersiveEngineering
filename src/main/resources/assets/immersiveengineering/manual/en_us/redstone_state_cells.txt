@@ -1,0 +1,9 @@
+Redstone State Cell
+4-bit storage
+A state cell is a component for use with <link;redstone_wiring;Redstone Wires>. They store an input value and will then output that same value until they are reset.<br>
+Where previously, such setups required multiple comparator blocks or even pistons, it's now possible to store the value in a single <link;crafting_components;electron tube;tubes>.<np>
+Using the Engineer's Screwdriver on the state cell opens the screen to configure its Set, Reset and Output signal colours.<br>
+§lSet: §rA signal of this colour is stored in the state cell until it is reset.
+§lReset: §rA signal of this colour resets the state cell, allowing it to be set again.
+§lOutput: §rThis is the signal colour the cell is outputting its value on.<br>
+When the Set and Reset signals are configured to the same colour, the state cell will work as a toggle system, where every time a pulse of that colour is received, the cell switches between having an output or having none.

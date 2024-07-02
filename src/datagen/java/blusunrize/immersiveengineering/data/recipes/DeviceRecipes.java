@@ -231,7 +231,7 @@ public class DeviceRecipes extends IERecipeProvider
 
 	private void connectors(@Nonnull RecipeOutput out)
 	{
-		shapedMisc(IEBlocks.Connectors.BREAKER_SWITCH)
+		shapedMisc(Connectors.BREAKER_SWITCH)
 				.pattern(" l ")
 				.pattern("cic")
 				.define('l', Items.LEVER)
@@ -239,7 +239,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('c', IETags.connectorInsulator)
 				.unlockedBy("has_"+toPath(Misc.WIRE_COILS.get(WireType.COPPER)), has(Misc.WIRE_COILS.get(WireType.COPPER)))
 				.save(out, toRL(toPath(Connectors.BREAKER_SWITCH)));
-		shapedMisc(IEBlocks.Connectors.REDSTONE_BREAKER)
+		shapedMisc(Connectors.REDSTONE_BREAKER)
 				.pattern("hrh")
 				.pattern("ici")
 				.define('h', IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false))
@@ -249,7 +249,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_hv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.REDSTONE_BREAKER)));
 
-		shapedMisc(IEBlocks.Connectors.CURRENT_TRANSFORMER)
+		shapedMisc(Connectors.CURRENT_TRANSFORMER)
 				.pattern(" m ")
 				.pattern(" b ")
 				.pattern("iei")
@@ -260,7 +260,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_voltmeter", has(IEItems.Tools.VOLTMETER))
 				.save(out, toRL(toPath(Connectors.CURRENT_TRANSFORMER)));
 
-		shapedMisc(IEBlocks.Connectors.TRANSFORMER)
+		shapedMisc(Connectors.TRANSFORMER)
 				.pattern("lm")
 				.pattern("eb")
 				.pattern("ii")
@@ -271,7 +271,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.unlockedBy("has_mv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.MV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.TRANSFORMER)));
-		shapedMisc(IEBlocks.Connectors.TRANSFORMER_HV)
+		shapedMisc(Connectors.TRANSFORMER_HV)
 				.pattern("mh")
 				.pattern("eb")
 				.pattern("ii")
@@ -283,7 +283,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_hv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.TRANSFORMER_HV)));
 
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_STRUCTURAL, 8)
+		shapedMisc(Connectors.CONNECTOR_STRUCTURAL, 8)
 				.pattern("isi")
 				.pattern("i i")
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
@@ -291,7 +291,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_STRUCTURAL)));
 
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_REDSTONE, 4)
+		shapedMisc(Connectors.CONNECTOR_REDSTONE, 4)
 				.pattern("iii")
 				.pattern("brb")
 				.define('i', IETags.getTagsFor(EnumMetals.ELECTRUM).nugget)
@@ -299,7 +299,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('r', Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_electrum_nugget", has(IETags.getTagsFor(EnumMetals.ELECTRUM).nugget))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_REDSTONE)));
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_PROBE)
+		shapedMisc(Connectors.CONNECTOR_PROBE)
 				.pattern(" c ")
 				.pattern("gpg")
 				.define('c', Connectors.CONNECTOR_REDSTONE)
@@ -307,7 +307,14 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('p', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_PROBE)));
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_BUNDLED)
+		shapedMisc(Connectors.REDSTONE_STATE_CELL)
+				.pattern("c")
+				.pattern("t")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('t', Ingredients.ELECTRON_TUBE)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.REDSTONE_STATE_CELL)));
+		shapedMisc(Connectors.CONNECTOR_BUNDLED)
 				.pattern(" w ")
 				.pattern("wcw")
 				.pattern(" w ")

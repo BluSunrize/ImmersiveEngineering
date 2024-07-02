@@ -69,6 +69,7 @@
       "garden_cloche",
       "charging_station",
       "electromagnet",
+      "redstone_state_cells",
       "engineers_circuit_workbench",
       "logic_unit",
       "machine_interface"

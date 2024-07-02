@@ -409,6 +409,9 @@ public class ItemModels extends TRSRItemModelProvider
 				.renderType(ModelProviderUtils.getName(translucent()));
 		obj(Connectors.CONNECTOR_BUNDLED, rl("block/connector/connector_bundled.obj"))
 				.transforms(rl("item/connector"));
+		obj(Connectors.REDSTONE_STATE_CELL, rl("block/connector/redstone_state_cell.obj"))
+				.transforms(rl("item/connector"))
+				.renderType(ModelProviderUtils.getName(translucent()));
 		obj(Connectors.CONNECTOR_STRUCTURAL, rl("block/connector/connector_structural.obj.ie"))
 				.transforms(rl("item/connector"));
 		obj(Connectors.TRANSFORMER, rl("block/connector/transformer_mv_left.obj"))

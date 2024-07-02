@@ -90,6 +90,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 						.end()
 		);
 		createAllRotatedBlock(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj", cutout()));
+		createAllRotatedBlock(Connectors.REDSTONE_STATE_CELL, obj("block/connector/redstone_state_cell.obj", translucent()));
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();

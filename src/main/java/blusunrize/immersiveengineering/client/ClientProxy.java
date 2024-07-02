@@ -47,6 +47,7 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.RedstoneStateCellBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
@@ -370,6 +371,9 @@ public class ClientProxy extends CommonProxy
 
 		if(guiId.equals(Lib.GUIID_RedstoneProbe)&&tileEntity instanceof ConnectorProbeBlockEntity)
 			Minecraft.getInstance().setScreen(new RedstoneProbeScreen((ConnectorProbeBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
+		if(guiId.equals(Lib.GUIID_RedstoneStateCell)&&tileEntity instanceof RedstoneStateCellBlockEntity)
+			Minecraft.getInstance().setScreen(new RedstoneStateCellScreen((RedstoneStateCellBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 
 		if(guiId.equals(Lib.GUIID_MachineInterface)&&tileEntity instanceof MachineInterfaceBlockEntity)
 			Minecraft.getInstance().setScreen(new MachineInterfaceScreen((MachineInterfaceBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
