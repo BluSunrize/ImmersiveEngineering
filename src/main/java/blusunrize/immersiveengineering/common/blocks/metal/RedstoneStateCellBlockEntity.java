@@ -162,19 +162,19 @@ public class RedstoneStateCellBlockEntity extends ConnectorRedstoneBlockEntity
 	{
 		Direction side = getFacing().getOpposite();
 		double conRadius = type.getRenderDiameter()/2;
-		return new Vec3(.5+side.getStepX()*(.125-conRadius), .5+side.getStepY()*(.125-conRadius), .5+side.getStepZ()*(.125-conRadius));
+		return new Vec3(.5+side.getStepX()*(.25-conRadius), .5+side.getStepY()*(.25-conRadius), .5+side.getStepZ()*(.25-conRadius));
 	}
 
 	private static final Map<Direction, VoxelShape> SHAPES = Util.make(
 			new EnumMap<>(Direction.class), map -> {
 				final float wMin = .3125f;
 				final float wMax = .6875f;
-				map.put(Direction.NORTH, Shapes.box(wMin, wMin, 0, wMax, wMax, .75));
-				map.put(Direction.SOUTH, Shapes.box(wMin, wMin, .25, wMax, wMax, 1));
-				map.put(Direction.WEST, Shapes.box(0, wMin, wMin, .75, wMax, wMax));
-				map.put(Direction.EAST, Shapes.box(.25, wMin, wMin, 1, wMax, wMax));
-				map.put(Direction.DOWN, Shapes.box(wMin, 0, wMin, wMax, .75, wMax));
-				map.put(Direction.UP, Shapes.box(wMin, .25, wMin, wMax, 1, wMax));
+				map.put(Direction.NORTH, Shapes.box(wMin, wMin, 0, wMax, wMax, .875));
+				map.put(Direction.SOUTH, Shapes.box(wMin, wMin, .125, wMax, wMax, 1));
+				map.put(Direction.WEST, Shapes.box(0, wMin, wMin, .875, wMax, wMax));
+				map.put(Direction.EAST, Shapes.box(.125, wMin, wMin, 1, wMax, wMax));
+				map.put(Direction.DOWN, Shapes.box(wMin, 0, wMin, wMax, .875, wMax));
+				map.put(Direction.UP, Shapes.box(wMin, .125, wMin, wMax, 1, wMax));
 			}
 	);
 
