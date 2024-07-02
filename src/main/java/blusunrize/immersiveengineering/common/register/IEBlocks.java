@@ -123,7 +123,7 @@ public final class IEBlocks
 					.sound(SoundType.WOOD)
 					.strength(2, 5)
 					.isViewBlocking((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion().forceSolidOn();
 	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of()
 			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
@@ -698,7 +698,7 @@ public final class IEBlocks
 		public static final BlockEntry<BasicConnectorBlock<?>> CONNECTOR_BUNDLED = new BlockEntry<>(
 				"connector_bundled", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.CONNECTOR_BUNDLED)
 		);
-		public static final BlockEntry<FeedthroughBlock> FEEDTHROUGH = new BlockEntry<>("feedthrough", ConnectorBlock.PROPERTIES, FeedthroughBlock::new);
+		public static final BlockEntry<FeedthroughBlock> FEEDTHROUGH = new BlockEntry<>("feedthrough", FeedthroughBlock.PROPERTIES, FeedthroughBlock::new);
 
 		public static BlockEntry<BasicConnectorBlock<?>> getEnergyConnector(String cat, boolean relay)
 		{

@@ -277,9 +277,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 						GameEvent eventTriggered = noise > 0.5?GameEvent.EXPLODE: GameEvent.PROJECTILE_SHOOT;
 						player.gameEvent(eventTriggered);
 					}
-				}
-				else
-				{
+
 					// fancy particle effects for shaders
 					ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 					if(shader!=null)

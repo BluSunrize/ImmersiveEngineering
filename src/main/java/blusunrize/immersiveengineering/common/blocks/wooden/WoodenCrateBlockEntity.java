@@ -122,6 +122,15 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	}
 
 	@Override
+	public CompoundTag getUpdateTag()
+	{
+		CompoundTag nbt = super.getUpdateTag();
+		if(getCustomName()!=null)
+			nbt.putString("CustomName", Component.Serializer.toJson(getCustomName()));
+		return nbt;
+	}
+
+	@Override
 	protected Component getDefaultName()
 	{
 		Block b = getBlockState().getBlock();
