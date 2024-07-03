@@ -56,7 +56,7 @@ public class ChemTurretScreen extends TurretScreen<ChemTurretMenu>
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addRenderableWidget(new GuiButtonBoolean(leftPos+135, topPos+68, 14, 14, "", menu.ignite, TEXTURE, 176, 51, 0,
+		this.addRenderableWidget(new GuiButtonBoolean(leftPos+135, topPos+68, 14, 14, Component.empty(), menu.ignite, TEXTURE, 176, 51, 0,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;

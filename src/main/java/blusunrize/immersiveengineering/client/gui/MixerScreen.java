@@ -60,7 +60,7 @@ public class MixerScreen extends IEContainerScreen<MixerMenu>
 		super.init();
 		this.clearWidgets();
 		this.addRenderableWidget(new GuiButtonBoolean(
-				leftPos+106, topPos+61, 30, 16, "", menu.outputAll::get, TEXTURE, 176, 82, 1,
+				leftPos+106, topPos+61, 30, 16, Component.empty(), menu.outputAll::get, TEXTURE, 176, 82, 1,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					tag.putBoolean("outputAll", !menu.outputAll.get());

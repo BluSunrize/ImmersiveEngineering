@@ -120,7 +120,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 			GuiButtonBoolean[] buttons, int posX, int posY, Supplier<Boolean> active, DyeColor color, Consumer<GuiButtonBoolean> onClick
 	)
 	{
-		return new GuiButtonBoolean(posX, posY, 12, 12, "", active,
+		return new GuiButtonBoolean(posX, posY, 12, 12, Component.empty(), active,
 				TEXTURE, 194, 0, 1,
 				btn -> {
 					if(btn.getNextState())
