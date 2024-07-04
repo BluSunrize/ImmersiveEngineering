@@ -70,6 +70,7 @@
       "charging_station",
       "electromagnet",
       "redstone_state_cells",
+      "redstone_timer",
       "engineers_circuit_workbench",
       "logic_unit",
       "machine_interface"

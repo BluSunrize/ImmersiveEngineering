@@ -630,6 +630,7 @@ public class IEBlockTags extends BlockTagsProvider
 				Connectors.CONNECTOR_PROBE,
 				Connectors.CONNECTOR_BUNDLED,
 				Connectors.REDSTONE_STATE_CELL,
+				Connectors.REDSTONE_TIMER,
 				Connectors.FEEDTHROUGH
 		);
 		registerMineable(tag, Metals.SHEETMETAL);

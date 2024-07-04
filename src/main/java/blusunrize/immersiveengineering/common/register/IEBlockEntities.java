@@ -140,6 +140,9 @@ public class IEBlockEntities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneStateCellBlockEntity>> REDSTONE_STATE_CELL = REGISTER.register(
 			"redstonestatecell", makeType(RedstoneStateCellBlockEntity::new, Connectors.REDSTONE_STATE_CELL)
 	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneTimerBlockEntity>> REDSTONE_TIMER = REGISTER.register(
+			"redstonetimer", makeType(RedstoneTimerBlockEntity::new, Connectors.REDSTONE_TIMER)
+	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FeedthroughBlockEntity>> FEEDTHROUGH = REGISTER.register(
 			"feedthrough", makeType(FeedthroughBlockEntity::new, Connectors.FEEDTHROUGH)
 	);

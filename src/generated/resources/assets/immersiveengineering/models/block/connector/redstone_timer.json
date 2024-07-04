@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "callbacks": "immersiveengineering:connector_rs",
+  "layers": [
+    "translucent"
+  ],
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/connector/redstone_timer.obj.ie",
+  "textures": {
+    "particle": "immersiveengineering:block/connector/redstone_timer"
+  }
+}

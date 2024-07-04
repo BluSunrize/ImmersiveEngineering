@@ -91,6 +91,13 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		);
 		createAllRotatedBlock(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj", cutout()));
 		createAllRotatedBlock(Connectors.REDSTONE_STATE_CELL, obj("block/connector/redstone_state_cell.obj", translucent()));
+		createAllRotatedBlock(
+				Connectors.REDSTONE_TIMER,
+				ieObjBuilder("block/connector/redstone_timer.obj.ie")
+						.callback(RSConnectorCallbacks.INSTANCE)
+						.layer(translucent())
+						.end()
+		);
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();

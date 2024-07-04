@@ -1,5 +1,6 @@
 ##### Version 1.20.4-11.5.1-pre
 - Add the redstone state cell for storing signals (BluSunrize)
+- Add the redstone timer for emitting regular signals (BluSunrize)
 - Fix waterlogged posts not dropping items (BluSunrize)
 - Fix treated windows and feedthrough insulators letting rain through (BluSunrize, voidsong-dragonfly)
 - Fix crates not syncing their names to the client (BluSunrize)

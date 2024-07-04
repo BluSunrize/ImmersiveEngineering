@@ -314,6 +314,15 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('t', Ingredients.ELECTRON_TUBE)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.REDSTONE_STATE_CELL)));
+		shapedMisc(Connectors.REDSTONE_TIMER)
+				.pattern(" t ")
+				.pattern("te ")
+				.pattern("  c")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.define('t', Ingredients.ELECTRON_TUBE)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.REDSTONE_TIMER)));
 		shapedMisc(Connectors.CONNECTOR_BUNDLED)
 				.pattern(" w ")
 				.pattern("wcw")

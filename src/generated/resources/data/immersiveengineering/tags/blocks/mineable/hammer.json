@@ -24,6 +24,7 @@
     "immersiveengineering:connector_probe",
     "immersiveengineering:connector_bundled",
     "immersiveengineering:redstone_state_cell",
+    "immersiveengineering:redstone_timer",
     "immersiveengineering:feedthrough",
     "immersiveengineering:connector_lv",
     "immersiveengineering:connector_lv_relay",

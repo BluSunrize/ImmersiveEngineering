@@ -1,0 +1,5 @@
+Redstone Timer
+Tick tock, tick tock!
+The timer is a redstone device that uses an oscillating quartz crystal to output a signal at regular intervals.<br>
+Using the Engineer's Screwdriver on the timer allows configuring its interval and its output signal colour.<np>
+Additionally, the timer can be set to require a control signal, at which point it will not run without that signal being high.

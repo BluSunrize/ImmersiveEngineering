@@ -701,6 +701,9 @@ public final class IEBlocks
 		public static final BlockEntry<BasicConnectorBlock<?>> REDSTONE_STATE_CELL = new BlockEntry<>(
 				"redstone_state_cell", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.REDSTONE_STATE_CELL)
 		);
+		public static final BlockEntry<BasicConnectorBlock<?>> REDSTONE_TIMER = new BlockEntry<>(
+				"redstone_timer", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.REDSTONE_TIMER)
+		);
 		public static final BlockEntry<FeedthroughBlock> FEEDTHROUGH = new BlockEntry<>("feedthrough", FeedthroughBlock.PROPERTIES, FeedthroughBlock::new);
 
 		public static BlockEntry<BasicConnectorBlock<?>> getEnergyConnector(String cat, boolean relay)
