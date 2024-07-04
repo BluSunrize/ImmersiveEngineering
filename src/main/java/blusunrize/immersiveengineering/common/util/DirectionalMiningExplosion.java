@@ -9,27 +9,24 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.mixin.accessors.ExplosionAccess;
-import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -38,163 +35,90 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DirectionalMiningExplosion extends Explosion
 {
+	private static final int SIZE = 8;
+	private static final float BLASTING_LENGTH = 525;
+	private static final float SUBSURFACE_LENGTH = 700;
+	private static final float SUBSURFACE_RESISTANCE = 1500;
+	private static final int MIN_AIR = 3;
+	private static final float MAX_SHOCKWAVE_RESISTANCE = 0.4f;
+	private static final float MAX_SURFACE_RESISTANCE = 1.75f;
+	private static final float MAX_SUBSURFACE_RESISTANCE = 6f;
+	private static final float MAX_BLASTING_RESISTANCE = 25f;
+
 	private final Level world;
-	private final float size;
-	private final Set<BlockPos> remove = new HashSet<>();
+	private final DamageSource damageSource;
 
-	public DirectionalMiningExplosion(Level world, Entity igniter, double x, double y, double z, float size, boolean isFlaming)
+	/**
+	 * This explosion type is a bit special because it has a constant, tuned size to behave like a mining explosive.
+	 * It is NOT INTENDED for any other use than with the gunpowder barrel.
+	 * It WILL behave unpredictably with larger sizes, so user beware if they decide to customize it!
+	 */
+	public DirectionalMiningExplosion(Level world, Entity igniter, double x, double y, double z, boolean isFlaming)
 	{
-		super(world, igniter, x, y, z, size, isFlaming, BlockInteraction.KEEP);
+		super(world, igniter, x, y, z, SIZE, isFlaming, BlockInteraction.KEEP);
 		this.world = world;
-		this.size = size;
+		this.damageSource = world.damageSources().explosion(this);
 	}
-/*
-	@Override
-	public void explode()
-	{
-		Set<BlockPos> set = Sets.newHashSet();
-		int i = 16;
-
-
-
-		for(int j = 0; j < 16; ++j)
-			for(int k = 0; k < 16; ++k)
-				for(int l = 0; l < 16; ++l)
-					if(j==0||j==15||k==0||k==15||l==0||l==15)
-					{
-						double d0 = (float)j/15.0F*2.0F-1.0F;
-						double d1 = (float)k/15.0F*2.0F-1.0F;
-						double d2 = (float)l/15.0F*2.0F-1.0F;
-						double d3 = Math.sqrt(d0*d0+d1*d1+d2*d2);
-						d0 = d0/d3;
-						d1 = d1/d3;
-						d2 = d2/d3;
-						float f = this.size*(0.7F+ApiUtils.RANDOM.nextFloat()*0.6F);
-						double d4 = center().x;
-						double d6 = center().y;
-						double d8 = center().z;
-
-						for(float f1 = 0.3F; f > 0.0F; f -= 0.22500001F)
-						{
-							BlockPos blockpos = BlockPos.containing(d4, d6, d8);
-							BlockState iblockstate = this.world.getBlockState(blockpos);
-							FluidState ifluidstate = this.world.getFluidState(blockpos);
-							if(!iblockstate.isAir()||!ifluidstate.isEmpty())
-							{
-								float f2 = Math.max(iblockstate.getExplosionResistance(world, blockpos, this), ifluidstate.getExplosionResistance(world, blockpos, this));
-								if(this.getDirectSourceEntity()!=null)
-								{
-									f2 = this.getDirectSourceEntity().getBlockExplosionResistance(this, this.world, blockpos, iblockstate, ifluidstate, f2);
-								}
-
-								f -= (f2+0.3F)*0.3F;
-							}
-
-							if(f > 0.0F&&(this.getDirectSourceEntity()==null||this.getDirectSourceEntity().shouldBlockExplode(this, this.world, blockpos, iblockstate, f)))
-							{
-								set.add(blockpos);
-							}
-
-							d4 += d0*(double)0.3F;
-							d6 += d1*(double)0.3F;
-							d8 += d2*(double)0.3F;
-						}
-					}
-
-		this.getToBlow().addAll(set);
-		Vec3 center = center();
-		this.getToBlow().sort(Comparator.comparingDouble(pos -> pos.distToCenterSqr(center)));
-
-		float f3 = this.size*2.0F;
-		int k1 = Mth.floor(center.x-(double)f3-1.0D);
-		int l1 = Mth.floor(center.x+(double)f3+1.0D);
-		int i2 = Mth.floor(center.y-(double)f3-1.0D);
-		int i1 = Mth.floor(center.y+(double)f3+1.0D);
-		int j2 = Mth.floor(center.z-(double)f3-1.0D);
-		int j1 = Mth.floor(center.z+(double)f3+1.0D);
-		List<Entity> list = this.world.getEntities(this.getDirectSourceEntity(), new AABB(k1, i2, j2, l1, i1, j1));
-		net.neoforged.neoforge.event.EventHooks.onExplosionDetonate(this.world, this, list, f3);
-		Vec3 vec3 = new Vec3(center.x, center.y, center.z);
-
-		for(int k2 = 0; k2 < list.size(); ++k2)
-		{
-			Entity entity = list.get(k2);
-			if(!entity.ignoreExplosion(this))
-			{
-				double d12 = entity.position()
-						.distanceToSqr(center.x, center.y, center.z)/(double)f3;
-				if(d12 <= 1.0D)
-				{
-					double d5 = entity.getX()-center.x;
-					double d7 = entity.getY()+(double)entity.getEyeHeight()-center.y;
-					double d9 = entity.getZ()-center.z;
-					double d13 = Mth.sqrt((float)(d5*d5+d7*d7+d9*d9));
-					if(d13!=0.0D)
-					{
-						d5 = d5/d13;
-						d7 = d7/d13;
-						d9 = d9/d13;
-						double d14 = getSeenPercent(vec3, entity);
-						double d10 = (1.0D-d12)*d14;
-						entity.hurt(entity.damageSources().explosion(this), (float)((int)((d10*d10+d10)/2.0D*8.0D*(double)f3+1.0D)));
-						double d11 = entity instanceof LivingEntity?ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity)entity, d10): d10;
-						entity.setDeltaMovement(entity.getDeltaMovement().add(d5*d11,
-								d7*d11,
-								d9*d11));
-						if(entity instanceof Player&&!((Player)entity).getAbilities().invulnerable)
-							this.getHitPlayers().put((Player)entity, new Vec3(d5*d10, d7*d10, d9*d10));
-					}
-				}
-			}
-		}
-	}*/
 
 	@Override
 	public void explode()
 	{
 		// variables used for the rest of the explosion
-		int power = (int)size;
 		Vec3 center = center();
 		BlockPos centerBlock = new BlockPos((int)(center.x)+(center.x<0?-1:0), (int)center.y, (int)(center.z)+(center.z<0?-1:0));
-
+		// iteration to identify the basic characteristics of the explosion
 		// variables collated during the iteration
-		Set<BlockPos> area = new HashSet<>();
 		double totalResistance = 0;
-		Vec3 weakestDirection = new Vec3(0,0, 0);
-		// to be used and reused in the iteration
+		Vec3 weaknesses = new Vec3(0,0, 0);
 		BlockState cBlock;
 		FluidState cFluid;
 		// iterate over an area of size (2*power+1)^3 and collect the resistance of blocks in a sphere around our center
-		for (int x=-power;x<=power;x++)
-			for (int y=-power;y<=power;y++)
-				for (int z=-power;z<=power;z++)
+		for (int x=-SIZE;x<=SIZE;x++)
+			for (int y=-SIZE;y<=SIZE;y++)
+				for (int z=-SIZE;z<=SIZE;z++)
 				{
 					BlockPos pos = centerBlock.offset(x, y, z);
-					area.add(pos);
-					if (new Vec3(x, y, z).length()<=power)
+					if (new Vec3(x, y, z).length()<=SIZE)
 					{
 						cBlock = world.getBlockState(pos);
 						cFluid = world.getFluidState(pos);
 						if(!cBlock.isAir()||!cFluid.isEmpty())
 						{
-							double resistance = cBlock.getExplosionResistance(world, pos, this)+cFluid.getExplosionResistance(world, pos, this);
+							float resistance = cBlock.getExplosionResistance(world, pos, this)+cFluid.getExplosionResistance(world, pos, this);
 							totalResistance += resistance;
-							weakestDirection = weakestDirection.add(x==0?0:resistance/x, y==0?0:resistance/y, z==0?0:resistance/z);
+							weaknesses = weaknesses.add(x==0?0:resistance/x, y==0?0:resistance/y, z==0?0:resistance/z);
 						}
 					}
 				}
-
 		// establish the weakest direction and the length of the explosive step we should be taking
-		weakestDirection = weakestDirection.reverse();
-		Vec3 step = weakestDirection.scale(30*size/totalResistance);
+		weaknesses = weaknesses.reverse();
+		// handle explosion based on criteria for explosions: either surface, subsurface, or blasting
+		int air = checkAir(centerBlock);
+		if(air<MIN_AIR&&weaknesses.length()<BLASTING_LENGTH)
+			stagedExplosionDetonation(centerBlock, weaknesses.scale(30*SIZE/totalResistance), 0.4f*SIZE, 0.4f*SIZE, MAX_BLASTING_RESISTANCE, true);
+		else if(air<=MIN_AIR&&weaknesses.length()<SUBSURFACE_LENGTH&&totalResistance>=SUBSURFACE_RESISTANCE)
+			stagedExplosionDetonation(centerBlock, null, 3, SIZE*1.25f, MAX_SUBSURFACE_RESISTANCE, false);
+		else
+			stagedExplosionDetonation(centerBlock, null, 2, SIZE*2, MAX_SURFACE_RESISTANCE, false);
 
+
+
+
+
+		//Vec3 step = weaknesses.scale(30*size/totalResistance);
+/*
+		// find entities in range and set them into the list to damage them
+		// TODO: this should scale with 1/explosion radius
+		double shock = 0.75f*size;
+		List<Entity> damage = new ArrayList<>(world.getEntities(this.getDirectSourceEntity(),
+				new AABB(centerBlock.getX()-shock, centerBlock.getY()-shock, centerBlock.getZ()-shock,
+						centerBlock.getX()+shock, centerBlock.getY()+shock, centerBlock.getZ()+shock)));
+		// filter for radius, then filter out items
+		damage = damage.stream().filter(e -> center.distanceTo(e.position())<=shock).filter(e -> !(e instanceof ItemEntity)).toList();
 		// offset center to be used in other calculations
 		BlockPos centerOffset;
 		// if step length is high we have a "surface burst" and the explosion dynamics should be different
@@ -212,11 +136,11 @@ public class DirectionalMiningExplosion extends Explosion
 		// otherwise proceed with embedded explosion dynamics
 		else
 		{
-			// if we have a step length greater than ~0.6 power we need to scale it down a little bit because we still have penetration
+=			// if we have a step length greater than ~0.6 power we need to scale it down a little bit because we still have penetration
 			if (step.length()>size*0.6) step = step.scale(1.75/Math.pow(step.length(), 0.7f));
 			// if we have a step length smaller than ~0.225 power but aren't on a surface explosion, we should enhance it
 			else if (step.length()<size*0.225) step = step.scale(1.3f);
-			// delineate blocks to break from the first "stage", ie the explosion directly around the barrel
+=			// delineate blocks to break from the first "stage", ie the explosion directly around the barrel
 			int r1 = (int)(0.4f*power);
 			for(int x = -r1; x <= r1; x++)
 				for(int y = -r1; y <= r1; y++)
@@ -237,23 +161,77 @@ public class DirectionalMiningExplosion extends Explosion
 						addToRemoveRandom(centerOffset.offset(x, y, z), r3-1, r3, (new Vec3(x, y, z)).length(), 0.1f);
 		}
 
-		// remove blocks
+		// remove blocks & damage entities
+		damageEntities(damage, totalResistance);
 		for (BlockPos pos : remove)
-			removeExplodedBlock(pos);
+			removeExplodedBlock(pos);*/
 	}
 
-	private void addToRemoveRandom(BlockPos pos, int inner, int outer, double radius, float chance)
+	private void stagedExplosionDetonation(BlockPos center, Vec3 step, float crater, float shockwave, float resistance, boolean blasting)
 	{
-		if(radius<=inner+0.1f) remove.add(pos);
-		if(outer>radius&&radius>inner&&ApiUtils.RANDOM.nextFloat()>chance) remove.add(pos);
+		// handle shockwave and crater block damage that come with any explosion
+		int shock = (int)shockwave;
+		for(int x = -shock; x <= shock; x++)
+			for(int y = -shock; y <= shock; y++)
+				for(int z = -shock; z <= shock; z++)
+				{
+					double length = Math.sqrt(x*x+y*y+z*z);
+					if (length<crater-0.9f)
+						removeExplodedBlock(center.offset(x, y, z), resistance, 0f);
+					else if (length<crater)
+						removeExplodedBlock(center.offset(x, y, z), resistance, 0.1f);
+					else if(length<shock)
+						removeExplodedBlock(center.offset(x, y, z), MAX_SHOCKWAVE_RESISTANCE, 0f);
+				}
+		// handle entity damage from shockwave
+		List<Entity> damage = new ArrayList<>(world.getEntities(this.getDirectSourceEntity(),
+				new AABB(center.getX()-shock, center.getY()-shock, center.getZ()-shock,
+						 center.getX()+shock, center.getY()+shock, center.getZ()+shock)));
+		damage = damage.stream().filter(e -> center().distanceTo(e.position())<=shock).filter(e -> !(e instanceof ItemEntity)).toList();
+		damageEntities(damage, shockwave/SIZE);
+		// handle directional explosions that come with a buried explosive barrel
+		if(blasting)
+		{
+			//scale weakness shatter vector into something to 'step' explosions by
+			if (step.length()>SIZE*0.6)
+				step = step.scale(1.75/Math.pow(step.length(), 0.7f));
+			else if (step.length()<SIZE*0.225)
+				step = step.scale(1.3f);
+			// first explosion propagation sphere
+			BlockPos centerOffset = center.offset((int)step.x(), (int)step.y(), (int)step.z());
+			int blast1 = (int)(crater*1.25f);
+			for(int x = -blast1; x <= blast1; x++)
+				for(int y = -blast1; y <= blast1; y++)
+					for(int z = -blast1; z <= blast1; z++)
+					{
+						int length = (int)Math.sqrt(x*x+y*y+z*z);
+						if (length<blast1-0.9f)
+							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0f);
+						else if (length<blast1)
+							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0.1f);
+					}
+			// second explosion propagation sphere
+			centerOffset = center.offset((int)step.x()*2, (int)step.y()*2, (int)step.z()*2);
+			int blast2 = (int)(crater*1.5f);
+			for(int x = -blast2; x <= blast2; x++)
+				for(int y = -blast2; y <= blast2; y++)
+					for(int z = -blast2; z <= blast2; z++)
+					{
+						int length = (int)Math.sqrt(x*x+y*y+z*z);
+						if (length<blast2-0.9f)
+							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0f);
+						else if (length<blast2)
+							removeExplodedBlock(centerOffset.offset(x, y, z), resistance, 0.1f);
+					}
+		}
 	}
 
-	private void removeExplodedBlock(BlockPos pos)
+	private void removeExplodedBlock(BlockPos pos, float resistance, float chance)
 	{
 		ObjectArrayList<Pair<ItemStack, BlockPos>> objectarraylist = new ObjectArrayList<>();
 		BlockState state = this.world.getBlockState(pos);
 
-		if(!state.isAir())
+		if(!state.isAir()&&state.getExplosionResistance(world, pos, this)<=resistance&&ApiUtils.RANDOM.nextFloat()>chance)
 		{
 			if(this.world instanceof ServerLevel&&state.canDropFromExplosion(this.world, pos, this))
 			{
@@ -272,16 +250,47 @@ public class DirectionalMiningExplosion extends Explosion
 			Block.popResource(this.world, pair.getSecond(), pair.getFirst());
 	}
 
+	/*
+	 * This code is copied and modified from the base explosion class because I don't care about fine-tuning it for a mining explosive
+	 */
+	private void damageEntities(List<Entity> list, float intensity)
+	{
+		net.neoforged.neoforge.event.EventHooks.onExplosionDetonate(this.world, this, list, SIZE*2);
+		for(Entity entity : list)
+			if(!entity.ignoreExplosion(this))
+			{
+				// relative distance
+				double x = entity.getX()-center().x();
+				double y = entity.getY()+entity.getBbHeight()/2-center().y();
+				double z = entity.getZ()-center().z();
+				float length = (float)Math.sqrt(x*x+y*y+z*z);
+				x = (x/length)*(x/length);
+				y = (y/length)*(y/length);
+				z = (z/length)*(z/length);
+				// other useful variables
+				float exposed = getSeenPercent(center(), entity);
+				float damage = exposed*(float)((SIZE*SIZE*SIZE)/(4*Math.PI*length*length))*intensity;
+				double knockback = (entity instanceof LivingEntity living)?ProtectionEnchantment.getExplosionKnockbackAfterDampener(living, damage): damage;
+				// actually do damage & knockback
+				entity.hurt(damageSource, damage);
+				entity.setDeltaMovement(entity.getDeltaMovement().add(knockback/(x*x), knockback/(y*y), knockback/(z*z)));
+			}
+	}
+
+	private int checkAir(BlockPos pos)
+	{
+		int air = 0;
+		for (Direction direction : Direction.values())
+			air += world.getBlockState(pos.relative(direction)).getExplosionResistance(world, pos.relative(direction), this)<MAX_SHOCKWAVE_RESISTANCE?1:0;
+		return air;
+	}
+
 	@Override
 	public void finalizeExplosion(boolean spawnParticles)
 	{
 		Vec3 pos = center();
 		if(this.world.isClientSide)
 			this.world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL, 4.0F, (1.0F+(ApiUtils.RANDOM.nextFloat()-ApiUtils.RANDOM.nextFloat())*0.2F)*0.7F, true);
-
-		if(this.size >= 2.0F)
-			this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
-		else
-			this.world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
+		this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
 	}
 }
