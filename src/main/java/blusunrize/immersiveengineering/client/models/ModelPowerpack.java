@@ -89,7 +89,7 @@ public class ModelPowerpack
 	public static void render(
 			LivingEntity toRender, ItemStack powerpack,
 			EntityModel<?> baseModel, PoseStack matrixStackIn, MultiBufferSource buffers,
-			int packedLightIn, int packedOverlayIn,
+			int packedLightIn,
 			float limbSwing, float limbSwingAmount, float ageInTicks, float partialTicks, float netHeadYaw, float headPitch
 	)
 	{
@@ -211,7 +211,7 @@ public class ModelPowerpack
 						builder,
 						CATENARY_DATA_CACHE.getUnchecked(new CatenaryKey(arm, isCrouching, right, armHash)),
 						-.015625, 0xeda044,
-						packedLightIn, packedOverlayIn
+						packedLightIn
 				);
 				matrixStackIn.popPose();
 			}
@@ -242,7 +242,7 @@ public class ModelPowerpack
 			CatenaryData renderCat = Connection.makeCatenaryData(antennaBase, antennaTip, 1.0+distFromWire*0.005);
 			ConnectionRenderer.renderConnection(
 					new TransformingVertexBuilder(buffers, RenderType.entitySolid(InventoryMenu.BLOCK_ATLAS), matrixStackIn),
-					renderCat, -.03125, 0xa4afb0, packedLightIn, packedOverlayIn
+					renderCat, -.03125, 0xa4afb0, packedLightIn
 			);
 			matrixStackIn.popPose();
 		}

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -48,6 +49,7 @@ public class Connection
 			boolean internal
 	)
 	{
+		Preconditions.checkState(!endA.equals(endB));
 		this.type = type;
 		if(endA.compareTo(endB) < 0)
 		{

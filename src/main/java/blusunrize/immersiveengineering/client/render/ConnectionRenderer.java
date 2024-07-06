@@ -25,7 +25,6 @@ import malte0811.modelsplitter.model.UVCoords;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -122,7 +121,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 			if(i==0)
 				lastLight = getLight(connection, segment.offsetStart, level);
 			int nextLight = getLight(connection, segment.offsetEnd, level);
-			segment.render(lastLight, nextLight, OverlayTexture.NO_OVERLAY, out, transform);
+			segment.render(lastLight, nextLight, out, transform);
 			lastLight = nextLight;
 		}
 	}
@@ -130,7 +129,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 	public static void renderConnection(
 			VertexConsumer out,
 			CatenaryData catenaryData, double radius, int color,
-			int light, int overlay
+			int light
 	)
 	{
 		final List<RenderedSegment> section = SEGMENT_CACHE.getUnchecked(new SectionKey(
@@ -138,7 +137,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		));
 		final PoseStack transform = new PoseStack();
 		for(RenderedSegment renderedSegment : section)
-			renderedSegment.render(light, light, overlay, out, transform);
+			renderedSegment.render(light, light, out, transform);
 	}
 
 	private static List<RenderedSegment> renderSectionForCache(SectionKey key)
@@ -224,13 +223,12 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 
 	private record RenderedSegment(List<Vertex> vertices, Vec3i offsetStart, Vec3i offsetEnd)
 	{
-		public void render(int lightStart, int lightEnd, int overlay, VertexConsumer out, PoseStack transform)
+		public void render(int lightStart, int lightEnd, VertexConsumer out, PoseStack transform)
 		{
 			for(Vertex v : vertices)
-				out.addVertex(transform.last().pose(), v.posX, v.posY, v.posZ)
+				out.addVertex(transform.last(), v.posX, v.posY, v.posZ)
 						.setColor(v.red, v.green, v.blue, 1)
 						.setUv(v.texU, v.texV)
-						.setOverlay(overlay)
 						.setLight(v.lightForStart?lightStart: lightEnd)
 						.setNormal(transform.last(), v.normalX, v.normalY, v.normalZ);
 		}

@@ -32,7 +32,7 @@ public record SyncedConnection(
 	public SyncedConnection(Connection connection)
 	{
 		this(
-				connection.getEndA(), connection.getEndA(),
+				connection.getEndA(), connection.getEndB(),
 				connection.type,
 				connection.getEndAOffset(), connection.getEndBOffset()
 		);

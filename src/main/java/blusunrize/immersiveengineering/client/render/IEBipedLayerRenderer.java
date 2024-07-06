@@ -84,7 +84,7 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 		if(!powerpack.isEmpty())
 			ModelPowerpack.render(
 					living, powerpack, this.getParentModel(),
-					matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY,
+					matrixStackIn, bufferIn, packedLightIn,
 					limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch
 			);
 	}
