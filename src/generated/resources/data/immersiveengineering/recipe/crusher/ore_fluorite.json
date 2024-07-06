@@ -4,18 +4,18 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/fluorite"
+        "tag": "c:ores/fluorite"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/fluorite"
+    "tag": "c:ores/fluorite"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:gems/fluorite"
+      "tag": "c:gems/fluorite"
     },
     "count": 6
   }

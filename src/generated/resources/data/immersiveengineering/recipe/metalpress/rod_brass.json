@@ -4,26 +4,26 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/brass"
+        "tag": "c:ingots/brass"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:rods/brass"
+        "tag": "c:rods/brass"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/brass"
+    "tag": "c:ingots/brass"
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
     "basePredicate": {
-      "tag": "forge:rods/brass"
+      "tag": "c:rods/brass"
     },
     "count": 2
   }

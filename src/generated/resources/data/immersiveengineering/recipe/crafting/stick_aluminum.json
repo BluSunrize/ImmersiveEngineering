@@ -4,7 +4,7 @@
   "group": "sticks",
   "key": {
     "i": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     }
   },
   "pattern": [

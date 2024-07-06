@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/tungsten"
+        "tag": "c:ores/tungsten"
       }
     }
   ],
@@ -18,53 +18,32 @@
   "ores": [
     {
       "chance": 0.7,
-      "conditions": [],
       "output": {
-        "tag": "forge:ores/tungsten"
+        "tag": "c:ores/tungsten"
       }
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "tag": "c:ores/iron"
       }
     },
     {
       "chance": 0.3,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/manganese"
-          }
-        }
-      ],
       "output": {
-        "tag": "forge:ores/manganese"
+        "tag": "c:ores/manganese"
       }
     },
     {
       "chance": 0.3,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/tin"
-          }
-        }
-      ],
       "output": {
-        "tag": "forge:ores/tin"
+        "tag": "c:ores/tin"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:gravel"
@@ -72,7 +51,6 @@
     },
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobblestone"
@@ -80,7 +58,6 @@
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobbled_deepslate"

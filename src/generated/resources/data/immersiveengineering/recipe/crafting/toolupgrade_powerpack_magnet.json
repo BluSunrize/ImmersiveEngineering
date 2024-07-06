@@ -6,10 +6,10 @@
       "item": "immersiveengineering:component_electronic_adv"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "r": {
-      "tag": "forge:rods/steel"
+      "tag": "c:rods/steel"
     },
     "w": {
       "item": "immersiveengineering:wirecoil_copper"

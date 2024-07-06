@@ -4,11 +4,11 @@
     "tag": "c:storage_blocks/iron"
   },
   "result": {
-    "tag": "forge:storage_blocks/steel"
+    "tag": "c:storage_blocks/steel"
   },
   "slag": {
     "basePredicate": {
-      "tag": "forge:slag"
+      "tag": "c:slag"
     },
     "count": 9
   },

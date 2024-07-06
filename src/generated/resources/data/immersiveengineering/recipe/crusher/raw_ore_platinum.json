@@ -4,31 +4,30 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/platinum"
+        "tag": "c:dusts/platinum"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/platinum"
+        "tag": "c:raw_materials/platinum"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/platinum"
+    "tag": "c:raw_materials/platinum"
   },
   "result": {
-    "tag": "forge:dusts/platinum"
+    "tag": "c:dusts/platinum"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/platinum"
+        "tag": "c:dusts/platinum"
       }
     }
   ]

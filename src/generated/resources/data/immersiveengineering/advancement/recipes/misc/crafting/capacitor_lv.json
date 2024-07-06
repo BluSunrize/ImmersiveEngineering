@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/lead"
+            "items": "#c:ingots/lead"
           }
         ]
       },
@@ -21,7 +21,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:treated_wood"
+            "items": "#immersiveengineering:treated_wood"
           }
         ]
       },

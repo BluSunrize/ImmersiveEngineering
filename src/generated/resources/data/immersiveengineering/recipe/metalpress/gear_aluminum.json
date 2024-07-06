@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/aluminum"
+        "tag": "c:gears/aluminum"
       }
     }
   ],
@@ -12,12 +12,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/aluminum"
+    "tag": "c:gears/aluminum"
   }
 }

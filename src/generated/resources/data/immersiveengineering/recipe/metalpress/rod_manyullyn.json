@@ -4,26 +4,26 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/manyullyn"
+        "tag": "c:ingots/manyullyn"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:rods/manyullyn"
+        "tag": "c:rods/manyullyn"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/manyullyn"
+    "tag": "c:ingots/manyullyn"
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
     "basePredicate": {
-      "tag": "forge:rods/manyullyn"
+      "tag": "c:rods/manyullyn"
     },
     "count": 2
   }

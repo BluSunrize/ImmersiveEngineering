@@ -3,11 +3,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/steel"
+    "tag": "c:dusts/steel"
   },
   "results": [
     {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   ],
   "time": 100

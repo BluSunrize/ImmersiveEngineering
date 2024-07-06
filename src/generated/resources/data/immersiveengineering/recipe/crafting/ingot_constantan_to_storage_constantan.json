@@ -6,7 +6,7 @@
       "item": "immersiveengineering:ingot_constantan"
     },
     "s": {
-      "tag": "forge:ingots/constantan"
+      "tag": "c:ingots/constantan"
     }
   },
   "pattern": [

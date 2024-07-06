@@ -4,27 +4,27 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/rose_gold"
+        "tag": "c:ingots/rose_gold"
       }
     }
   ],
   "type": "immersiveengineering:arc_furnace",
   "additives": [
     {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     }
   ],
   "energy": 51200,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "count": 3
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/rose_gold"
+        "tag": "c:ingots/rose_gold"
       },
       "count": 4
     }

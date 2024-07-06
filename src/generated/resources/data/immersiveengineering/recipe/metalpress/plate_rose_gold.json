@@ -4,24 +4,24 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/rose_gold"
+        "tag": "c:ingots/rose_gold"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:plates/rose_gold"
+        "tag": "c:plates/rose_gold"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/rose_gold"
+    "tag": "c:ingots/rose_gold"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/rose_gold"
+    "tag": "c:plates/rose_gold"
   }
 }

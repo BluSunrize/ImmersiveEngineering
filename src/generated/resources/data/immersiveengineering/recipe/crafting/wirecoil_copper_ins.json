@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "c": {
-      "tag": "forge:fabric_hemp"
+      "tag": "c:fabric_hemp"
     },
     "m": {
-      "tag": "forge:fabric_hemp"
+      "tag": "c:fabric_hemp"
     },
     "s": {
       "item": "immersiveengineering:wirecoil_copper"

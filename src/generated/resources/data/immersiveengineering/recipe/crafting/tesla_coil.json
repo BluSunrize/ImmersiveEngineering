@@ -12,7 +12,7 @@
       "item": "immersiveengineering:capacitor_hv"
     },
     "i": {
-      "tag": "forge:plates/aluminum"
+      "tag": "c:plates/aluminum"
     },
     "l": {
       "item": "immersiveengineering:coil_mv"

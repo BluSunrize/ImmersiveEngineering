@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "s": {
-      "tag": "forge:treated_wood_slab"
+      "tag": "immersiveengineering:treated_wood_slab"
     },
     "w": {
-      "tag": "forge:treated_wood"
+      "tag": "immersiveengineering:treated_wood"
     }
   },
   "pattern": [

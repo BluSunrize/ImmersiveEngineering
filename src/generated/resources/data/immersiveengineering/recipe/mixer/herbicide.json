@@ -3,14 +3,14 @@
   "energy": 3200,
   "fluid": {
     "amount": 500,
-    "tag": "forge:ethanol"
+    "tag": "c:ethanol"
   },
   "inputs": [
     {
-      "tag": "forge:dusts/sulfur"
+      "tag": "c:dusts/sulfur"
     },
     {
-      "tag": "forge:dusts/copper"
+      "tag": "c:dusts/copper"
     }
   ],
   "result": {

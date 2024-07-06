@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/copper"
+            "items": "#c:ingots/copper"
           }
         ]
       },
@@ -25,7 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:sheetmetals/iron"
+            "items": "#c:sheetmetals/iron"
           }
         ]
       },

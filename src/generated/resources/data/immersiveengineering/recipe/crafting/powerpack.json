@@ -9,10 +9,10 @@
       "tag": "c:leathers"
     },
     "r": {
-      "tag": "forge:rods/steel"
+      "tag": "c:rods/steel"
     },
     "s": {
-      "tag": "forge:rods/treated_wood"
+      "tag": "c:rods/treated_wood"
     },
     "w": {
       "item": "immersiveengineering:wirecoil_copper_ins"

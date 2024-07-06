@@ -6,7 +6,7 @@
       "tag": "immersiveengineering:connector_insulator"
     },
     "i": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     }
   },
   "pattern": [

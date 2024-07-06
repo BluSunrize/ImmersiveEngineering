@@ -6,10 +6,10 @@
       "item": "immersiveengineering:component_iron"
     },
     "d": {
-      "tag": "forge:plates/plastic"
+      "tag": "c:plates/plastic"
     },
     "s": {
-      "tag": "forge:rods/iron"
+      "tag": "c:rods/iron"
     }
   },
   "pattern": [

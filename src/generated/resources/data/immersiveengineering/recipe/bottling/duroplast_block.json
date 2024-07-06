@@ -2,7 +2,7 @@
   "type": "immersiveengineering:bottling_machine",
   "fluid": {
     "amount": 4000,
-    "tag": "forge:phenolic_resin"
+    "tag": "c:phenolic_resin"
   },
   "input": {
     "item": "immersiveengineering:mold_packing_4"

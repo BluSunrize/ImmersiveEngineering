@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/tin"
+        "tag": "c:ingots/tin"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/tin"
+        "tag": "c:ores/tin"
       }
     }
   ],
@@ -19,18 +19,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/tin"
+    "tag": "c:ores/tin"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/tin"
+        "tag": "c:ingots/tin"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

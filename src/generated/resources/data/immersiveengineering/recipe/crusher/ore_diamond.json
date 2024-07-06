@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/diamond"
+    "tag": "c:ores/diamond"
   },
   "result": {
     "basePredicate": {

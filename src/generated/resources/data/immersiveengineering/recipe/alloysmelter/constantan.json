@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:alloy",
   "input0": {
-    "tag": "forge:ingots/copper"
+    "tag": "c:ingots/copper"
   },
   "input1": {
-    "tag": "forge:ingots/nickel"
+    "tag": "c:ingots/nickel"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:ingots/constantan"
+      "tag": "c:ingots/constantan"
     },
     "count": 2
   }

@@ -9,7 +9,7 @@
       "item": "immersiveengineering:component_electronic"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "l": {
       "item": "immersiveengineering:connector_lv"

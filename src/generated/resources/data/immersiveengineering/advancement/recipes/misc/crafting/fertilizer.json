@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:dusts/saltpeter"
+            "items": "#c:dusts/saltpeter"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:slag"
+            "items": "#c:slag"
           }
         ]
       },
@@ -25,7 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:dusts/sulfur"
+            "items": "#c:dusts/sulfur"
           }
         ]
       },

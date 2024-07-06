@@ -16,7 +16,7 @@
     },
     {
       "basePredicate": {
-        "tag": "forge:dusts/aluminum"
+        "tag": "c:dusts/aluminum"
       },
       "count": 4
     }

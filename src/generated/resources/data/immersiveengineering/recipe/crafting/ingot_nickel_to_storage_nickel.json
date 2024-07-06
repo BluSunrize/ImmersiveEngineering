@@ -6,7 +6,7 @@
       "item": "immersiveengineering:ingot_nickel"
     },
     "s": {
-      "tag": "forge:ingots/nickel"
+      "tag": "c:ingots/nickel"
     }
   },
   "pattern": [

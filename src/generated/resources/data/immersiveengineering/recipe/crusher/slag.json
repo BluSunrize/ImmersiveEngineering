@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "energy": 1600,
   "input": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "result": {
     "item": "immersiveengineering:slag_gravel"

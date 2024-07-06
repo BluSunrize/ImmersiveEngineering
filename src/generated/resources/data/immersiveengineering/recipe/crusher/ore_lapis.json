@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/lapis"
+    "tag": "c:ores/lapis"
   },
   "result": {
     "basePredicate": {
@@ -13,17 +13,8 @@
   "secondaries": [
     {
       "chance": 0.2,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:dusts/sulfur"
-          }
-        }
-      ],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "tag": "c:dusts/sulfur"
       }
     }
   ]

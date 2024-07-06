@@ -2,11 +2,11 @@
   "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
-    "tag": "forge:storage_blocks/raw_lead"
+    "tag": "c:storage_blocks/raw_lead"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/lead"
+      "tag": "c:dusts/lead"
     },
     "count": 12
   }

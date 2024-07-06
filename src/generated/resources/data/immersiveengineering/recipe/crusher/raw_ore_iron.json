@@ -2,17 +2,16 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/iron"
+    "tag": "c:raw_materials/iron"
   },
   "result": {
-    "tag": "forge:dusts/iron"
+    "tag": "c:dusts/iron"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/iron"
+        "tag": "c:dusts/iron"
       }
     }
   ]

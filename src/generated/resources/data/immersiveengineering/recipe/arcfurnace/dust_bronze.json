@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/bronze"
+        "tag": "c:ingots/bronze"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/bronze"
+        "tag": "c:dusts/bronze"
       }
     }
   ],
@@ -19,11 +19,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/bronze"
+    "tag": "c:dusts/bronze"
   },
   "results": [
     {
-      "tag": "forge:ingots/bronze"
+      "tag": "c:ingots/bronze"
     }
   ],
   "time": 100

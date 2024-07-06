@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:dusts/sulfur"
+            "items": "#c:dusts/sulfur"
           }
         ]
       },

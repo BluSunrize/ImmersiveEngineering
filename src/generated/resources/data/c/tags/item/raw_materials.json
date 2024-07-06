@@ -1,9 +1,9 @@
 {
   "values": [
-    "#forge:raw_materials/aluminum",
-    "#forge:raw_materials/lead",
-    "#forge:raw_materials/silver",
-    "#forge:raw_materials/nickel",
-    "#forge:raw_materials/uranium"
+    "#c:raw_materials/aluminum",
+    "#c:raw_materials/lead",
+    "#c:raw_materials/silver",
+    "#c:raw_materials/nickel",
+    "#c:raw_materials/uranium"
   ]
 }

@@ -4,23 +4,23 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/brass"
+        "tag": "c:dusts/brass"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/brass"
+        "tag": "c:ingots/brass"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/brass"
+    "tag": "c:ingots/brass"
   },
   "result": {
-    "tag": "forge:dusts/brass"
+    "tag": "c:dusts/brass"
   }
 }

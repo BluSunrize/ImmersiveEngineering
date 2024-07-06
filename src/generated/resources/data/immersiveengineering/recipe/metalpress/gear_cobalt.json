@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/cobalt"
+        "tag": "c:gears/cobalt"
       }
     }
   ],
@@ -19,12 +19,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/cobalt"
+      "tag": "c:ingots/cobalt"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/cobalt"
+    "tag": "c:gears/cobalt"
   }
 }

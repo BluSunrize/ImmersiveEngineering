@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/nickel"
+        "tag": "c:gears/nickel"
       }
     }
   ],
@@ -12,12 +12,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/nickel"
+      "tag": "c:ingots/nickel"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/nickel"
+    "tag": "c:gears/nickel"
   }
 }

@@ -4,23 +4,23 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/cobalt"
+        "tag": "c:dusts/cobalt"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/cobalt"
+    "tag": "c:ingots/cobalt"
   },
   "result": {
-    "tag": "forge:dusts/cobalt"
+    "tag": "c:dusts/cobalt"
   }
 }

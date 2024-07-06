@@ -9,60 +9,38 @@
   "ores": [
     {
       "chance": 0.65,
-      "conditions": [],
       "output": {
-        "tag": "forge:ores/nickel"
+        "tag": "c:ores/nickel"
       }
     },
     {
       "chance": 0.25,
-      "conditions": [],
       "output": {
         "tag": "c:ores/iron"
       }
     },
     {
       "chance": 0.1,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "tag": "c:dusts/sulfur"
       }
     },
     {
       "chance": 0.1,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/platinum"
-          }
-        }
-      ],
       "output": {
-        "tag": "forge:ores/platinum"
+        "tag": "c:ores/platinum"
       }
     },
     {
       "chance": 0.1,
-      "conditions": [
-        {
-          "type": "neoforge:not",
-          "value": {
-            "type": "neoforge:tag_empty",
-            "tag": "forge:ores/osmium"
-          }
-        }
-      ],
       "output": {
-        "tag": "forge:ores/osmium"
+        "tag": "c:ores/osmium"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:gravel"
@@ -70,7 +48,6 @@
     },
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobblestone"
@@ -78,7 +55,6 @@
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobbled_deepslate"

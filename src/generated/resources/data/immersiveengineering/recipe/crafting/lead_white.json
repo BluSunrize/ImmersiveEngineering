@@ -5,7 +5,7 @@
     {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
-      "tag": "forge:ethanol"
+      "tag": "c:ethanol"
     },
     {
       "item": "minecraft:rotten_flesh"
@@ -17,7 +17,7 @@
       "item": "minecraft:rotten_flesh"
     },
     {
-      "tag": "forge:dusts/lead"
+      "tag": "c:dusts/lead"
     }
   ],
   "result": {

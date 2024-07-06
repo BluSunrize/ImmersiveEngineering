@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/ardite"
+        "tag": "c:ingots/ardite"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/ardite"
+        "tag": "c:dusts/ardite"
       }
     }
   ],
@@ -19,11 +19,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/ardite"
+    "tag": "c:dusts/ardite"
   },
   "results": [
     {
-      "tag": "forge:ingots/ardite"
+      "tag": "c:ingots/ardite"
     }
   ],
   "time": 100

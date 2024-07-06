@@ -3,18 +3,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/aluminum"
+    "tag": "c:ores/aluminum"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/aluminum"
+        "tag": "c:ingots/aluminum"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

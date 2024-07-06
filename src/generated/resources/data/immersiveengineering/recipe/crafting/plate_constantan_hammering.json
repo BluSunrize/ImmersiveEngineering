@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:ingots/constantan"
+      "tag": "c:ingots/constantan"
     },
     {
       "item": "immersiveengineering:hammer"

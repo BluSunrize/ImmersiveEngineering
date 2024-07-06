@@ -4,21 +4,21 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/manyullyn"
+        "tag": "c:ingots/manyullyn"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     }
   ],
   "type": "immersiveengineering:alloy",
   "input0": {
     "basePredicate": {
-      "tag": "forge:ingots/cobalt"
+      "tag": "c:ingots/cobalt"
     },
     "count": 3
   },
@@ -27,7 +27,7 @@
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:ingots/manyullyn"
+      "tag": "c:ingots/manyullyn"
     },
     "count": 4
   }

@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/zinc"
+        "tag": "c:ingots/zinc"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/zinc"
+        "tag": "c:ores/zinc"
       }
     }
   ],
@@ -19,18 +19,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/zinc"
+    "tag": "c:ores/zinc"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/zinc"
+        "tag": "c:ingots/zinc"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

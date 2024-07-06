@@ -4,26 +4,26 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/invar"
+        "tag": "c:ingots/invar"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:rods/invar"
+        "tag": "c:rods/invar"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/invar"
+    "tag": "c:ingots/invar"
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
     "basePredicate": {
-      "tag": "forge:rods/invar"
+      "tag": "c:rods/invar"
     },
     "count": 2
   }

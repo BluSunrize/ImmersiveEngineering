@@ -6,7 +6,7 @@
       "item": "immersiveengineering:nugget_copper"
     },
     "s": {
-      "tag": "forge:nuggets/copper"
+      "tag": "c:nuggets/copper"
     }
   },
   "pattern": [

@@ -3,18 +3,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/lead"
+    "tag": "c:ores/lead"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/lead"
+        "tag": "c:ingots/lead"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

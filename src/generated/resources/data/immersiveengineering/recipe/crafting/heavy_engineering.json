@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "e": {
-      "tag": "forge:ingots/electrum"
+      "tag": "c:ingots/electrum"
     },
     "g": {
       "item": "immersiveengineering:component_steel"
     },
     "i": {
-      "tag": "forge:sheetmetals/steel"
+      "tag": "c:sheetmetals/steel"
     }
   },
   "pattern": [

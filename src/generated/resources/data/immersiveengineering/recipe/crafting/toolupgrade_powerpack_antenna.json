@@ -6,10 +6,10 @@
       "item": "immersiveengineering:connector_lv"
     },
     "r": {
-      "tag": "forge:rods/aluminum"
+      "tag": "c:rods/aluminum"
     },
     "w": {
-      "tag": "forge:wires/aluminum"
+      "tag": "c:wires/aluminum"
     }
   },
   "pattern": [

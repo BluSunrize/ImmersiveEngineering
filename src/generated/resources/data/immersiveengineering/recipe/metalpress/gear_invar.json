@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/invar"
+        "tag": "c:ingots/invar"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/invar"
+        "tag": "c:gears/invar"
       }
     }
   ],
@@ -19,12 +19,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/invar"
+      "tag": "c:ingots/invar"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/invar"
+    "tag": "c:gears/invar"
   }
 }

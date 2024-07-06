@@ -1,9 +1,9 @@
 {
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:raw_materials/copper"
+    "tag": "c:raw_materials/copper"
   },
   "result": {
-    "tag": "forge:dusts/copper"
+    "tag": "c:dusts/copper"
   }
 }

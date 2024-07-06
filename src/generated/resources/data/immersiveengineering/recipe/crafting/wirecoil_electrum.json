@@ -6,7 +6,7 @@
       "tag": "c:rods/wooden"
     },
     "w": {
-      "tag": "forge:wires/electrum"
+      "tag": "c:wires/electrum"
     }
   },
   "pattern": [

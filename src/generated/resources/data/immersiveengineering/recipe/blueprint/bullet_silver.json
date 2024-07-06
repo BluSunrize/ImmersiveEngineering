@@ -16,13 +16,13 @@
     },
     {
       "basePredicate": {
-        "tag": "forge:nuggets/lead"
+        "tag": "c:nuggets/lead"
       },
       "count": 2
     },
     {
       "basePredicate": {
-        "tag": "forge:nuggets/silver"
+        "tag": "c:nuggets/silver"
       },
       "count": 2
     }

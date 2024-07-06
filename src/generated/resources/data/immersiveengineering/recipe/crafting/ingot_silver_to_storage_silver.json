@@ -6,7 +6,7 @@
       "item": "immersiveengineering:ingot_silver"
     },
     "s": {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     }
   },
   "pattern": [

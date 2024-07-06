@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/iron"
+            "items": "#c:ingots/iron"
           }
         ]
       },

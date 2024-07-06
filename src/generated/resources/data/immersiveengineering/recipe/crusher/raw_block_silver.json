@@ -2,11 +2,11 @@
   "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
-    "tag": "forge:storage_blocks/raw_silver"
+    "tag": "c:storage_blocks/raw_silver"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/silver"
+      "tag": "c:dusts/silver"
     },
     "count": 12
   }

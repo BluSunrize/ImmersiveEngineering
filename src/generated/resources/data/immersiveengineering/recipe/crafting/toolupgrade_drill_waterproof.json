@@ -6,7 +6,7 @@
       "tag": "c:dyes/blue"
     },
     "i": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     },
     "p": {
       "item": "immersiveengineering:fluid_pipe"

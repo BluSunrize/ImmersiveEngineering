@@ -3,19 +3,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/silver"
+    "tag": "c:raw_materials/silver"
   },
   "results": [
     {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/silver"
+        "tag": "c:ingots/silver"
       }
     }
   ],

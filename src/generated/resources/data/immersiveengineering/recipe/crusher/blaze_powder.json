@@ -13,9 +13,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "tag": "c:dusts/sulfur"
       }
     }
   ]

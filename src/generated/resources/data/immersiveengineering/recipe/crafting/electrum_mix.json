@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:dusts/gold"
+      "tag": "c:dusts/gold"
     },
     {
-      "tag": "forge:dusts/silver"
+      "tag": "c:dusts/silver"
     }
   ],
   "result": {

@@ -4,34 +4,34 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/bronze"
+        "tag": "c:ingots/bronze"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/tin"
+        "tag": "c:ingots/tin"
       }
     }
   ],
   "type": "immersiveengineering:arc_furnace",
   "additives": [
     {
-      "tag": "forge:ingots/tin"
+      "tag": "c:ingots/tin"
     }
   ],
   "energy": 51200,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "count": 3
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/bronze"
+        "tag": "c:ingots/bronze"
       },
       "count": 4
     }

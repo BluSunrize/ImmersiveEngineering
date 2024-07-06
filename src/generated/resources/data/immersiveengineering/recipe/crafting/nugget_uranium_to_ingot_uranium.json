@@ -6,7 +6,7 @@
       "item": "immersiveengineering:nugget_uranium"
     },
     "s": {
-      "tag": "forge:nuggets/uranium"
+      "tag": "c:nuggets/uranium"
     }
   },
   "pattern": [

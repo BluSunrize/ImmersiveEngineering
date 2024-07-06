@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:plates/copper"
+      "tag": "c:plates/copper"
     },
     {
       "item": "immersiveengineering:wirecutter"

@@ -1,7 +1,7 @@
 {
   "type": "immersiveengineering:blast_furnace_fuel",
   "input": {
-    "tag": "forge:charcoal"
+    "tag": "c:charcoal"
   },
   "time": 300
 }

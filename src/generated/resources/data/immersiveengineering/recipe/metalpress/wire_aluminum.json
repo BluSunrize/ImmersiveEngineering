@@ -4,19 +4,19 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:wires/aluminum"
+        "tag": "c:wires/aluminum"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/aluminum"
+    "tag": "c:ingots/aluminum"
   },
   "mold": "immersiveengineering:mold_wire",
   "result": {
     "basePredicate": {
-      "tag": "forge:wires/aluminum"
+      "tag": "c:wires/aluminum"
     },
     "count": 2
   }

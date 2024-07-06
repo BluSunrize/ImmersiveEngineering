@@ -3,11 +3,11 @@
   "energy": 19200,
   "input": {
     "basePredicate": {
-      "tag": "forge:dusts/coal_coke"
+      "tag": "c:dusts/coal_coke"
     },
     "count": 8
   },
   "result": {
-    "tag": "forge:dusts/hop_graphite"
+    "tag": "c:dusts/hop_graphite"
   }
 }

@@ -2,17 +2,16 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/uranium"
+    "tag": "c:raw_materials/uranium"
   },
   "result": {
-    "tag": "forge:dusts/uranium"
+    "tag": "c:dusts/uranium"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/uranium"
+        "tag": "c:dusts/uranium"
       }
     }
   ]

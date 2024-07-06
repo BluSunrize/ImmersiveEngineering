@@ -4,31 +4,30 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/zinc"
+        "tag": "c:dusts/zinc"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/zinc"
+        "tag": "c:raw_materials/zinc"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/zinc"
+    "tag": "c:raw_materials/zinc"
   },
   "result": {
-    "tag": "forge:dusts/zinc"
+    "tag": "c:dusts/zinc"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/zinc"
+        "tag": "c:dusts/zinc"
       }
     }
   ]

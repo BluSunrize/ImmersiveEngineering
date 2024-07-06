@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/platinum"
+        "tag": "c:ingots/platinum"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/platinum"
+        "tag": "c:raw_materials/platinum"
       }
     }
   ],
@@ -19,19 +19,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/platinum"
+    "tag": "c:raw_materials/platinum"
   },
   "results": [
     {
-      "tag": "forge:ingots/platinum"
+      "tag": "c:ingots/platinum"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/platinum"
+        "tag": "c:ingots/platinum"
       }
     }
   ],

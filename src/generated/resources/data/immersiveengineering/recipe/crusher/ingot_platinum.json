@@ -4,23 +4,23 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/platinum"
+        "tag": "c:dusts/platinum"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/platinum"
+        "tag": "c:ingots/platinum"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/platinum"
+    "tag": "c:ingots/platinum"
   },
   "result": {
-    "tag": "forge:dusts/platinum"
+    "tag": "c:dusts/platinum"
   }
 }

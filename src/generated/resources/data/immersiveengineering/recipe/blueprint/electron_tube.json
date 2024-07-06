@@ -6,10 +6,10 @@
       "tag": "c:glass_blocks"
     },
     {
-      "tag": "forge:plates/nickel"
+      "tag": "c:plates/nickel"
     },
     {
-      "tag": "forge:wires/copper"
+      "tag": "c:wires/copper"
     },
     {
       "tag": "c:dusts/redstone"

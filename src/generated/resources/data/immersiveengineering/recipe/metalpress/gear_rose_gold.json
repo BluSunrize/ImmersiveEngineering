@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/rose_gold"
+        "tag": "c:ingots/rose_gold"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/rose_gold"
+        "tag": "c:gears/rose_gold"
       }
     }
   ],
@@ -19,12 +19,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/rose_gold"
+      "tag": "c:ingots/rose_gold"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/rose_gold"
+    "tag": "c:gears/rose_gold"
   }
 }

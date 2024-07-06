@@ -3,19 +3,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/aluminum"
+    "tag": "c:raw_materials/aluminum"
   },
   "results": [
     {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/aluminum"
+        "tag": "c:ingots/aluminum"
       }
     }
   ],

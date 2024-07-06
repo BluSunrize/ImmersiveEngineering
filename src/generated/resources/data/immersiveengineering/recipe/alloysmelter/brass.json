@@ -4,27 +4,27 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/brass"
+        "tag": "c:ingots/brass"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/zinc"
+        "tag": "c:ingots/zinc"
       }
     }
   ],
   "type": "immersiveengineering:alloy",
   "input0": {
-    "tag": "forge:ingots/copper"
+    "tag": "c:ingots/copper"
   },
   "input1": {
-    "tag": "forge:ingots/zinc"
+    "tag": "c:ingots/zinc"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:ingots/brass"
+      "tag": "c:ingots/brass"
     },
     "count": 2
   }

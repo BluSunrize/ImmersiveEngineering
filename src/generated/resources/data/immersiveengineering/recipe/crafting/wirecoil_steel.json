@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:wires/aluminum"
+      "tag": "c:wires/aluminum"
     },
     "s": {
       "tag": "c:rods/wooden"
     },
     "w": {
-      "tag": "forge:wires/steel"
+      "tag": "c:wires/steel"
     }
   },
   "pattern": [

@@ -4,22 +4,22 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/platinum"
+        "tag": "c:dusts/platinum"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/platinum"
+        "tag": "c:ores/platinum"
       }
     }
   ],
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:ores/platinum"
+    "tag": "c:ores/platinum"
   },
   "result": {
-    "tag": "forge:dusts/platinum"
+    "tag": "c:dusts/platinum"
   }
 }

@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/gold"
+        "tag": "c:gears/gold"
       }
     }
   ],
@@ -12,12 +12,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/gold"
+    "tag": "c:gears/gold"
   }
 }

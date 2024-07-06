@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/osmium"
+        "tag": "c:ingots/osmium"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/osmium"
+        "tag": "c:gears/osmium"
       }
     }
   ],
@@ -19,12 +19,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/osmium"
+    "tag": "c:gears/osmium"
   }
 }

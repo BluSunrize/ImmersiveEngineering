@@ -4,25 +4,25 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/cobalt"
+        "tag": "c:dusts/cobalt"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:storage_blocks/raw_cobalt"
+        "tag": "c:storage_blocks/raw_cobalt"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
-    "tag": "forge:storage_blocks/raw_cobalt"
+    "tag": "c:storage_blocks/raw_cobalt"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/cobalt"
+      "tag": "c:dusts/cobalt"
     },
     "count": 12
   }

@@ -2,9 +2,9 @@
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/aluminum"
+    "tag": "c:ingots/aluminum"
   },
   "result": {
-    "tag": "forge:dusts/aluminum"
+    "tag": "c:dusts/aluminum"
   }
 }

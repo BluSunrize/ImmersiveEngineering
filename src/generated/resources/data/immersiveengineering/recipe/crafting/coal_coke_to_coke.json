@@ -6,7 +6,7 @@
       "item": "immersiveengineering:coal_coke"
     },
     "s": {
-      "tag": "forge:coal_coke"
+      "tag": "c:coal_coke"
     }
   },
   "pattern": [

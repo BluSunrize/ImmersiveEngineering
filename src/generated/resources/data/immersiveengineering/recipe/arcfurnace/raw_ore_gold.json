@@ -3,19 +3,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/gold"
+    "tag": "c:raw_materials/gold"
   },
   "results": [
     {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/gold"
+        "tag": "c:ingots/gold"
       }
     }
   ],

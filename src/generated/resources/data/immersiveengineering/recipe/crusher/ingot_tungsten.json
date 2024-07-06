@@ -4,23 +4,23 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/tungsten"
+        "tag": "c:dusts/tungsten"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/tungsten"
+        "tag": "c:ingots/tungsten"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/tungsten"
+    "tag": "c:ingots/tungsten"
   },
   "result": {
-    "tag": "forge:dusts/tungsten"
+    "tag": "c:dusts/tungsten"
   }
 }

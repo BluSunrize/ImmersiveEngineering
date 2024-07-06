@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:nuggets/electrum"
+            "items": "#c:nuggets/electrum"
           }
         ]
       },

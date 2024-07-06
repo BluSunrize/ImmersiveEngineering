@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/electrum"
+            "items": "#c:ingots/electrum"
           }
         ]
       },
@@ -25,7 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:sheetmetals/steel"
+            "items": "#c:sheetmetals/steel"
           }
         ]
       },

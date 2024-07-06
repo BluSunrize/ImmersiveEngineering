@@ -3,7 +3,7 @@
   "energy": 4800,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/hop_graphite"
+      "tag": "c:ingots/hop_graphite"
     },
     "count": 4
   },

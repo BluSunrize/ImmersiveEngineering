@@ -1,6 +1,6 @@
 {
   "values": [
-    "#forge:wires/copper",
-    "#forge:wires/lead"
+    "#c:wires/copper",
+    "#c:wires/lead"
   ]
 }

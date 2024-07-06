@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/coal"
+        "tag": "c:dusts/coal"
       }
     }
   ],
@@ -14,6 +14,6 @@
     "item": "minecraft:coal"
   },
   "result": {
-    "tag": "forge:dusts/coal"
+    "tag": "c:dusts/coal"
   }
 }

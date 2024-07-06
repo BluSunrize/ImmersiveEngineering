@@ -9,7 +9,7 @@
       "item": "immersiveengineering:connector_hv"
     },
     "i": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     },
     "r": {
       "item": "minecraft:repeater"

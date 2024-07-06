@@ -2,17 +2,16 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/gold"
+    "tag": "c:raw_materials/gold"
   },
   "result": {
-    "tag": "forge:dusts/gold"
+    "tag": "c:dusts/gold"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/gold"
+        "tag": "c:dusts/gold"
       }
     }
   ]

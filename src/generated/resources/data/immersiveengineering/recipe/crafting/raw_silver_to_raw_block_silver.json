@@ -6,7 +6,7 @@
       "item": "immersiveengineering:raw_silver"
     },
     "s": {
-      "tag": "forge:raw_materials/silver"
+      "tag": "c:raw_materials/silver"
     }
   },
   "pattern": [

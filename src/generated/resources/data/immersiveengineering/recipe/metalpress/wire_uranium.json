@@ -4,19 +4,19 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:wires/uranium"
+        "tag": "c:wires/uranium"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/uranium"
+    "tag": "c:ingots/uranium"
   },
   "mold": "immersiveengineering:mold_wire",
   "result": {
     "basePredicate": {
-      "tag": "forge:wires/uranium"
+      "tag": "c:wires/uranium"
     },
     "count": 2
   }

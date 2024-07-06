@@ -1,15 +1,15 @@
 {
   "values": [
-    "#forge:dusts/copper",
-    "#forge:dusts/aluminum",
-    "#forge:dusts/lead",
-    "#forge:dusts/silver",
-    "#forge:dusts/nickel",
-    "#forge:dusts/uranium",
-    "#forge:dusts/constantan",
-    "#forge:dusts/electrum",
-    "#forge:dusts/steel",
-    "#forge:dusts/iron",
-    "#forge:dusts/gold"
+    "#c:dusts/copper",
+    "#c:dusts/aluminum",
+    "#c:dusts/lead",
+    "#c:dusts/silver",
+    "#c:dusts/nickel",
+    "#c:dusts/uranium",
+    "#c:dusts/constantan",
+    "#c:dusts/electrum",
+    "#c:dusts/steel",
+    "#c:dusts/iron",
+    "#c:dusts/gold"
   ]
 }

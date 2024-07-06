@@ -5,13 +5,13 @@
     "a": {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
-      "tag": "forge:redstone_acid"
+      "tag": "c:redstone_acid"
     },
     "c": {
       "item": "immersiveengineering:component_steel"
     },
     "i": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     },
     "p": {
       "item": "immersiveengineering:fluid_pipe"

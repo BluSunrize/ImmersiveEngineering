@@ -16,7 +16,7 @@
     },
     {
       "basePredicate": {
-        "tag": "forge:nuggets/lead"
+        "tag": "c:nuggets/lead"
       },
       "count": 2
     },

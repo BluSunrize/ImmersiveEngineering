@@ -9,7 +9,7 @@
       "tag": "c:rods/wooden"
     },
     "w": {
-      "tag": "forge:wires/aluminum"
+      "tag": "c:wires/aluminum"
     }
   },
   "pattern": [

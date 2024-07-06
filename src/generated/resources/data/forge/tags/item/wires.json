@@ -1,9 +1,0 @@
-{
-  "values": [
-    "#forge:wires/copper",
-    "#forge:wires/electrum",
-    "#forge:wires/aluminum",
-    "#forge:wires/steel",
-    "#forge:wires/lead"
-  ]
-}

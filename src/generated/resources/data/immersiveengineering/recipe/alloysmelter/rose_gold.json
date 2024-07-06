@@ -4,23 +4,23 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/rose_gold"
+        "tag": "c:ingots/rose_gold"
       }
     }
   ],
   "type": "immersiveengineering:alloy",
   "input0": {
     "basePredicate": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "count": 3
   },
   "input1": {
-    "tag": "forge:ingots/gold"
+    "tag": "c:ingots/gold"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:ingots/rose_gold"
+      "tag": "c:ingots/rose_gold"
     },
     "count": 4
   }

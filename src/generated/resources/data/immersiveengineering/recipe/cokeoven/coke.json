@@ -5,7 +5,7 @@
     "item": "minecraft:coal"
   },
   "result": {
-    "tag": "forge:coal_coke"
+    "tag": "c:coal_coke"
   },
   "time": 1800
 }

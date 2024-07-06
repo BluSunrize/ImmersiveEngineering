@@ -2,10 +2,10 @@
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/copper"
+    "tag": "c:ingots/copper"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/copper"
+    "tag": "c:plates/copper"
   }
 }

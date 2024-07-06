@@ -3,19 +3,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/iron"
+    "tag": "c:raw_materials/iron"
   },
   "results": [
     {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/iron"
+        "tag": "c:ingots/iron"
       }
     }
   ],

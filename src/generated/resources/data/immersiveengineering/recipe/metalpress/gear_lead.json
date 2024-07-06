@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/lead"
+        "tag": "c:gears/lead"
       }
     }
   ],
@@ -12,12 +12,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/lead"
+    "tag": "c:gears/lead"
   }
 }

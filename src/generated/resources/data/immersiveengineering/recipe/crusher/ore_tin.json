@@ -4,25 +4,25 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/tin"
+        "tag": "c:dusts/tin"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/tin"
+        "tag": "c:ores/tin"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/tin"
+    "tag": "c:ores/tin"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/tin"
+      "tag": "c:dusts/tin"
     },
     "count": 2
   }

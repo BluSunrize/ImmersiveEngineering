@@ -9,7 +9,7 @@
       "tag": "minecraft:water"
     },
     "c": {
-      "tag": "forge:clay"
+      "tag": "c:clay"
     },
     "g": {
       "tag": "c:gravels"

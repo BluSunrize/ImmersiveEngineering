@@ -4,10 +4,10 @@
   "eight_turn": true,
   "key": {
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "i": {
-      "tag": "forge:sheetmetals/iron"
+      "tag": "c:sheetmetals/iron"
     },
     "r": {
       "tag": "c:dusts/redstone"

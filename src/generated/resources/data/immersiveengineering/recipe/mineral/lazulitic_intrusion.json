@@ -9,30 +9,26 @@
   "ores": [
     {
       "chance": 0.75,
-      "conditions": [],
       "output": {
         "tag": "c:ores/lapis"
       }
     },
     {
       "chance": 0.15,
-      "conditions": [],
       "output": {
         "tag": "c:ores/gold"
       }
     },
     {
       "chance": 0.1,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "tag": "c:dusts/sulfur"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:gravel"
@@ -40,7 +36,6 @@
     },
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobblestone"
@@ -48,7 +43,6 @@
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobbled_deepslate"

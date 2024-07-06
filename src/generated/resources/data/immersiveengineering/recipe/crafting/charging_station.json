@@ -6,7 +6,7 @@
       "tag": "c:glass_blocks"
     },
     "i": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     },
     "l": {
       "item": "immersiveengineering:coil_lv"
@@ -15,7 +15,7 @@
       "item": "immersiveengineering:electron_tube"
     },
     "w": {
-      "tag": "forge:treated_wood"
+      "tag": "immersiveengineering:treated_wood"
     }
   },
   "pattern": [

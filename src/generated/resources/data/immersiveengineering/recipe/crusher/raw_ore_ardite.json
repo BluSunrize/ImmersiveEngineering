@@ -4,31 +4,30 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/ardite"
+        "tag": "c:dusts/ardite"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/ardite"
+        "tag": "c:raw_materials/ardite"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/ardite"
+    "tag": "c:raw_materials/ardite"
   },
   "result": {
-    "tag": "forge:dusts/ardite"
+    "tag": "c:dusts/ardite"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/ardite"
+        "tag": "c:dusts/ardite"
       }
     }
   ]

@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "g": {
       "item": "immersiveengineering:component_iron"
     },
     "i": {
-      "tag": "forge:sheetmetals/iron"
+      "tag": "c:sheetmetals/iron"
     }
   },
   "pattern": [

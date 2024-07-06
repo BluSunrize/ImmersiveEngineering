@@ -4,26 +4,26 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/platinum"
+        "tag": "c:ingots/platinum"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:wires/platinum"
+        "tag": "c:wires/platinum"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/platinum"
+    "tag": "c:ingots/platinum"
   },
   "mold": "immersiveengineering:mold_wire",
   "result": {
     "basePredicate": {
-      "tag": "forge:wires/platinum"
+      "tag": "c:wires/platinum"
     },
     "count": 2
   }

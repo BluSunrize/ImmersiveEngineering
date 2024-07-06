@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "e": {
-      "tag": "forge:plates/constantan"
+      "tag": "c:plates/constantan"
     },
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "l": {
       "item": "immersiveengineering:coil_lv"

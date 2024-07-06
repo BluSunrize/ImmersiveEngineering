@@ -4,26 +4,26 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:wires/cobalt"
+        "tag": "c:wires/cobalt"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/cobalt"
+    "tag": "c:ingots/cobalt"
   },
   "mold": "immersiveengineering:mold_wire",
   "result": {
     "basePredicate": {
-      "tag": "forge:wires/cobalt"
+      "tag": "c:wires/cobalt"
     },
     "count": 2
   }

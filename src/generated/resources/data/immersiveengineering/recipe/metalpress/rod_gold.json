@@ -4,19 +4,19 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:rods/gold"
+        "tag": "c:rods/gold"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/gold"
+    "tag": "c:ingots/gold"
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
     "basePredicate": {
-      "tag": "forge:rods/gold"
+      "tag": "c:rods/gold"
     },
     "count": 2
   }

@@ -4,31 +4,30 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/tungsten"
+        "tag": "c:dusts/tungsten"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/tungsten"
+        "tag": "c:raw_materials/tungsten"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/tungsten"
+    "tag": "c:raw_materials/tungsten"
   },
   "result": {
-    "tag": "forge:dusts/tungsten"
+    "tag": "c:dusts/tungsten"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/tungsten"
+        "tag": "c:dusts/tungsten"
       }
     }
   ]

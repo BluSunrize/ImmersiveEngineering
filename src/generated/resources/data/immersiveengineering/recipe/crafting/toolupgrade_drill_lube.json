@@ -3,12 +3,12 @@
   "category": "misc",
   "key": {
     "i": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     },
     "o": {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
-      "tag": "forge:plantoil"
+      "tag": "c:plantoil"
     },
     "p": {
       "item": "immersiveengineering:fluid_pipe"

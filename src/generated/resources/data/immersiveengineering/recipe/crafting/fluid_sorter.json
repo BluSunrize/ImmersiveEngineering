@@ -9,13 +9,13 @@
       "item": "immersiveengineering:component_iron"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "r": {
       "tag": "c:dusts/redstone"
     },
     "w": {
-      "tag": "forge:treated_wood"
+      "tag": "immersiveengineering:treated_wood"
     }
   },
   "pattern": [

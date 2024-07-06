@@ -2,6 +2,6 @@
   "type": "immersiveengineering:fertilizer",
   "growthModifier": 1.3,
   "input": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   }
 }

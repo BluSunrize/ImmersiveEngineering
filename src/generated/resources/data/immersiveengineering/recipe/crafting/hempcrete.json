@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "b": {
-      "tag": "forge:clay"
+      "tag": "c:clay"
     },
     "m": {
-      "tag": "forge:fiber_hemp"
+      "tag": "c:fiber_hemp"
     },
     "t": {
-      "tag": "forge:clay"
+      "tag": "c:clay"
     }
   },
   "pattern": [

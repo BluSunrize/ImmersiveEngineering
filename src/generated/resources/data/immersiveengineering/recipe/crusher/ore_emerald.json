@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/emerald"
+    "tag": "c:ores/emerald"
   },
   "result": {
     "basePredicate": {

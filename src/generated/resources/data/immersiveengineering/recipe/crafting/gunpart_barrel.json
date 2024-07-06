@@ -6,10 +6,10 @@
       "tag": "immersiveengineering:tools/hammers"
     },
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "s": {
-      "tag": "forge:rods/steel"
+      "tag": "c:rods/steel"
     }
   },
   "pattern": [

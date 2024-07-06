@@ -9,37 +9,32 @@
   "ores": [
     {
       "chance": 0.4,
-      "conditions": [],
       "output": {
-        "tag": "forge:ores/lead"
+        "tag": "c:ores/lead"
       }
     },
     {
       "chance": 0.25,
-      "conditions": [],
       "output": {
-        "tag": "forge:ores/silver"
+        "tag": "c:ores/silver"
       }
     },
     {
       "chance": 0.25,
-      "conditions": [],
       "output": {
         "tag": "c:ores/gold"
       }
     },
     {
       "chance": 0.1,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "tag": "c:dusts/sulfur"
       }
     }
   ],
   "spoils": [
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:gravel"
@@ -47,7 +42,6 @@
     },
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobblestone"
@@ -55,7 +49,6 @@
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobbled_deepslate"

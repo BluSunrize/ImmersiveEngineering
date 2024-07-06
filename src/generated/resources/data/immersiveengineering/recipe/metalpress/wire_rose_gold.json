@@ -4,26 +4,26 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/rose_gold"
+        "tag": "c:ingots/rose_gold"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:wires/rose_gold"
+        "tag": "c:wires/rose_gold"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/rose_gold"
+    "tag": "c:ingots/rose_gold"
   },
   "mold": "immersiveengineering:mold_wire",
   "result": {
     "basePredicate": {
-      "tag": "forge:wires/rose_gold"
+      "tag": "c:wires/rose_gold"
     },
     "count": 2
   }

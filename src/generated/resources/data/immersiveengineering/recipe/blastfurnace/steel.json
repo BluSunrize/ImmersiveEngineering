@@ -4,10 +4,10 @@
     "tag": "c:ingots/iron"
   },
   "result": {
-    "tag": "forge:ingots/steel"
+    "tag": "c:ingots/steel"
   },
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 1200
 }

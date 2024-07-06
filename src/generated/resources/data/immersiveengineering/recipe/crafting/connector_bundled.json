@@ -6,7 +6,7 @@
       "item": "immersiveengineering:connector_redstone"
     },
     "w": {
-      "tag": "forge:wires/aluminum"
+      "tag": "c:wires/aluminum"
     }
   },
   "pattern": [

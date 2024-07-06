@@ -6,7 +6,7 @@
       "tag": "c:strings"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "s": {
       "tag": "c:rods/wooden"

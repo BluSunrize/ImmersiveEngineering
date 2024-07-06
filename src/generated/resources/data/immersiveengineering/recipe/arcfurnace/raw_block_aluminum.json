@@ -3,12 +3,12 @@
   "additives": [],
   "energy": 230400,
   "input": {
-    "tag": "forge:storage_blocks/raw_aluminum"
+    "tag": "c:storage_blocks/raw_aluminum"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/aluminum"
+        "tag": "c:ingots/aluminum"
       },
       "count": 13
     }
@@ -16,9 +16,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/aluminum"
+        "tag": "c:ingots/aluminum"
       }
     }
   ],

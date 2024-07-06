@@ -2,11 +2,11 @@
   "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
-    "tag": "forge:storage_blocks/raw_aluminum"
+    "tag": "c:storage_blocks/raw_aluminum"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/aluminum"
+      "tag": "c:dusts/aluminum"
     },
     "count": 12
   }

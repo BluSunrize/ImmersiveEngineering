@@ -3,18 +3,18 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:plates/lead"
+      "tag": "c:plates/lead"
     },
     "e": {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
-      "tag": "forge:redstone_acid"
+      "tag": "c:redstone_acid"
     },
     "f": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "w": {
-      "tag": "forge:treated_wood"
+      "tag": "immersiveengineering:treated_wood"
     }
   },
   "pattern": [

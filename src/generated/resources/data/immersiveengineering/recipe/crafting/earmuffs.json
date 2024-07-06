@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "S": {
-      "tag": "forge:rods/iron"
+      "tag": "c:rods/iron"
     },
     "W": {
       "tag": "minecraft:wool"

@@ -3,11 +3,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/uranium"
+    "tag": "c:dusts/uranium"
   },
   "results": [
     {
-      "tag": "forge:ingots/uranium"
+      "tag": "c:ingots/uranium"
     }
   ],
   "time": 100

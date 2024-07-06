@@ -2,9 +2,9 @@
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/uranium"
+    "tag": "c:ingots/uranium"
   },
   "result": {
-    "tag": "forge:dusts/uranium"
+    "tag": "c:dusts/uranium"
   }
 }

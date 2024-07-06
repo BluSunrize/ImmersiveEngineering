@@ -4,23 +4,23 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/ardite"
+        "tag": "c:dusts/ardite"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/ardite"
+        "tag": "c:ingots/ardite"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/ardite"
+    "tag": "c:ingots/ardite"
   },
   "result": {
-    "tag": "forge:dusts/ardite"
+    "tag": "c:dusts/ardite"
   }
 }

@@ -6,10 +6,10 @@
       "item": "immersiveengineering:component_iron"
     },
     "i": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     },
     "w": {
-      "tag": "forge:wires/copper"
+      "tag": "c:wires/copper"
     }
   },
   "pattern": [

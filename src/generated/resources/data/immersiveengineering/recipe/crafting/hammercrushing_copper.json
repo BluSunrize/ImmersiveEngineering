@@ -1,9 +1,9 @@
 {
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:ores/copper"
+    "tag": "c:ores/copper"
   },
   "result": {
-    "tag": "forge:dusts/copper"
+    "tag": "c:dusts/copper"
   }
 }

@@ -2,9 +2,9 @@
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/electrum"
+    "tag": "c:ingots/electrum"
   },
   "result": {
-    "tag": "forge:dusts/electrum"
+    "tag": "c:dusts/electrum"
   }
 }

@@ -3,10 +3,10 @@
   "category": "components",
   "inputs": [
     {
-      "tag": "forge:plates/plastic"
+      "tag": "c:plates/plastic"
     },
     {
-      "tag": "forge:plates/copper"
+      "tag": "c:plates/copper"
     }
   ],
   "result": {

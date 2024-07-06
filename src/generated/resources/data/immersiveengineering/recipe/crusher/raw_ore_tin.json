@@ -4,31 +4,30 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/tin"
+        "tag": "c:dusts/tin"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/tin"
+        "tag": "c:raw_materials/tin"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/tin"
+    "tag": "c:raw_materials/tin"
   },
   "result": {
-    "tag": "forge:dusts/tin"
+    "tag": "c:dusts/tin"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/tin"
+        "tag": "c:dusts/tin"
       }
     }
   ]

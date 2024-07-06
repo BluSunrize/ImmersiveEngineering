@@ -2,7 +2,7 @@
   "type": "immersiveengineering:bottling_machine",
   "fluid": {
     "amount": 500,
-    "tag": "forge:phenolic_resin"
+    "tag": "c:phenolic_resin"
   },
   "inputs": [
     {
@@ -10,13 +10,13 @@
     },
     {
       "basePredicate": {
-        "tag": "forge:dusts/aluminum"
+        "tag": "c:dusts/aluminum"
       },
       "count": 6
     },
     {
       "basePredicate": {
-        "tag": "forge:fiber_hemp"
+        "tag": "c:fiber_hemp"
       },
       "count": 8
     }

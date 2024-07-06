@@ -3,19 +3,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/uranium"
+    "tag": "c:raw_materials/uranium"
   },
   "results": [
     {
-      "tag": "forge:ingots/uranium"
+      "tag": "c:ingots/uranium"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/uranium"
+        "tag": "c:ingots/uranium"
       }
     }
   ],

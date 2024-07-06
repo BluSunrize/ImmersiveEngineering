@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "c": {
-      "tag": "forge:clay"
+      "tag": "c:clay"
     },
     "m": {
       "tag": "c:sandstone/blocks"

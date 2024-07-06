@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "i": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     },
     "s": {
-      "tag": "forge:rods/aluminum"
+      "tag": "c:rods/aluminum"
     }
   },
   "pattern": [

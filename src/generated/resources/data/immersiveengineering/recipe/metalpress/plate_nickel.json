@@ -2,10 +2,10 @@
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/nickel"
+    "tag": "c:ingots/nickel"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/nickel"
+    "tag": "c:plates/nickel"
   }
 }

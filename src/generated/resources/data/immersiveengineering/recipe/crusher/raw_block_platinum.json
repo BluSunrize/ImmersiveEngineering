@@ -4,25 +4,25 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/platinum"
+        "tag": "c:dusts/platinum"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:storage_blocks/raw_platinum"
+        "tag": "c:storage_blocks/raw_platinum"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
-    "tag": "forge:storage_blocks/raw_platinum"
+    "tag": "c:storage_blocks/raw_platinum"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/platinum"
+      "tag": "c:dusts/platinum"
     },
     "count": 12
   }

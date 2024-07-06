@@ -6,7 +6,7 @@
       "tag": "c:dusts/glowstone"
     },
     "I": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     },
     "P": {
       "item": "minecraft:glass_pane"

@@ -4,19 +4,19 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:rods/electrum"
+        "tag": "c:rods/electrum"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/electrum"
+    "tag": "c:ingots/electrum"
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {
     "basePredicate": {
-      "tag": "forge:rods/electrum"
+      "tag": "c:rods/electrum"
     },
     "count": 2
   }

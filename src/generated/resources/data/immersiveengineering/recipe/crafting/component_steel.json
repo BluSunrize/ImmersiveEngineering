@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "i": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     }
   },
   "pattern": [

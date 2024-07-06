@@ -6,7 +6,7 @@
       "item": "immersiveengineering:ingot_steel"
     },
     "s": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     }
   },
   "pattern": [

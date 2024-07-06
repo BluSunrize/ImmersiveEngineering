@@ -4,19 +4,19 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:wires/steel"
+        "tag": "c:wires/steel"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/steel"
+    "tag": "c:ingots/steel"
   },
   "mold": "immersiveengineering:mold_wire",
   "result": {
     "basePredicate": {
-      "tag": "forge:wires/steel"
+      "tag": "c:wires/steel"
     },
     "count": 2
   }

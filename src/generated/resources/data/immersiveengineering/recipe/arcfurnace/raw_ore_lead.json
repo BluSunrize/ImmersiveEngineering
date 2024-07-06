@@ -3,19 +3,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/lead"
+    "tag": "c:raw_materials/lead"
   },
   "results": [
     {
-      "tag": "forge:ingots/lead"
+      "tag": "c:ingots/lead"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/lead"
+        "tag": "c:ingots/lead"
       }
     }
   ],

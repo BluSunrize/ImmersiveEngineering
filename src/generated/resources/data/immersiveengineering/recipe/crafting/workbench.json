@@ -9,10 +9,10 @@
       "item": "immersiveengineering:treated_fence"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "s": {
-      "tag": "forge:treated_wood_slab"
+      "tag": "immersiveengineering:treated_wood_slab"
     }
   },
   "pattern": [

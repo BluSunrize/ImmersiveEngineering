@@ -12,7 +12,7 @@
       "item": "immersiveengineering:connector_hv"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "m": {
       "item": "immersiveengineering:connector_mv"

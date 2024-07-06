@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:gears/silver"
+        "tag": "c:gears/silver"
       }
     }
   ],
@@ -12,12 +12,12 @@
   "energy": 2400,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/silver"
+      "tag": "c:ingots/silver"
     },
     "count": 4
   },
   "mold": "immersiveengineering:mold_gear",
   "result": {
-    "tag": "forge:gears/silver"
+    "tag": "c:gears/silver"
   }
 }

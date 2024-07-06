@@ -3,11 +3,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/constantan"
+    "tag": "c:dusts/constantan"
   },
   "results": [
     {
-      "tag": "forge:ingots/constantan"
+      "tag": "c:ingots/constantan"
     }
   ],
   "time": 100

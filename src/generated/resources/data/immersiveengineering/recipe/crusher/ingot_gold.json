@@ -2,9 +2,9 @@
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/gold"
+    "tag": "c:ingots/gold"
   },
   "result": {
-    "tag": "forge:dusts/gold"
+    "tag": "c:dusts/gold"
   }
 }

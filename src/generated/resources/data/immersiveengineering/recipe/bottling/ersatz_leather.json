@@ -2,14 +2,14 @@
   "type": "immersiveengineering:bottling_machine",
   "fluid": {
     "amount": 125,
-    "tag": "forge:plantoil"
+    "tag": "c:plantoil"
   },
   "inputs": [
     {
       "item": "immersiveengineering:mold_plate"
     },
     {
-      "tag": "forge:fabric_hemp"
+      "tag": "c:fabric_hemp"
     }
   ],
   "results": [

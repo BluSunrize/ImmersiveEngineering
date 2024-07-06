@@ -2,10 +2,10 @@
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/silver"
+    "tag": "c:ingots/silver"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/silver"
+    "tag": "c:plates/silver"
   }
 }

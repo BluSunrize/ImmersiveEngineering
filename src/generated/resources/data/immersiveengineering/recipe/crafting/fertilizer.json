@@ -3,13 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:dusts/saltpeter"
+      "tag": "c:dusts/saltpeter"
     },
     {
-      "tag": "forge:slag"
+      "tag": "c:slag"
     },
     {
-      "tag": "forge:dusts/sulfur"
+      "tag": "c:dusts/sulfur"
     },
     {
       "type": "immersiveengineering:fluid_stack",

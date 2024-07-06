@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:dusts/copper"
+      "tag": "c:dusts/copper"
     },
     {
-      "tag": "forge:dusts/nickel"
+      "tag": "c:dusts/nickel"
     }
   ],
   "result": {

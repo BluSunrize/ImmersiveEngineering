@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "i": {
-      "tag": "forge:plates/steel"
+      "tag": "c:plates/steel"
     },
     "s": {
-      "tag": "forge:rods/steel"
+      "tag": "c:rods/steel"
     }
   },
   "pattern": [

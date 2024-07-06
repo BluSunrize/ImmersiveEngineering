@@ -6,7 +6,7 @@
       "item": "immersiveengineering:raw_nickel"
     },
     "s": {
-      "tag": "forge:raw_materials/nickel"
+      "tag": "c:raw_materials/nickel"
     }
   },
   "pattern": [

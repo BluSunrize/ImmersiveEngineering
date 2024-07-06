@@ -1,13 +1,13 @@
 {
   "values": [
-    "#forge:nuggets/copper",
-    "#forge:nuggets/aluminum",
-    "#forge:nuggets/lead",
-    "#forge:nuggets/silver",
-    "#forge:nuggets/nickel",
-    "#forge:nuggets/uranium",
-    "#forge:nuggets/constantan",
-    "#forge:nuggets/electrum",
-    "#forge:nuggets/steel"
+    "#c:nuggets/copper",
+    "#c:nuggets/aluminum",
+    "#c:nuggets/lead",
+    "#c:nuggets/silver",
+    "#c:nuggets/nickel",
+    "#c:nuggets/uranium",
+    "#c:nuggets/constantan",
+    "#c:nuggets/electrum",
+    "#c:nuggets/steel"
   ]
 }

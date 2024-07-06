@@ -5,7 +5,7 @@
     "item": "minecraft:coal_block"
   },
   "result": {
-    "tag": "forge:storage_blocks/coal_coke"
+    "tag": "c:storage_blocks/coal_coke"
   },
   "time": 16200
 }

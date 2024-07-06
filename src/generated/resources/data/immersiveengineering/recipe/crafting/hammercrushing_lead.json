@@ -1,9 +1,9 @@
 {
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:ores/lead"
+    "tag": "c:ores/lead"
   },
   "result": {
-    "tag": "forge:dusts/lead"
+    "tag": "c:dusts/lead"
   }
 }

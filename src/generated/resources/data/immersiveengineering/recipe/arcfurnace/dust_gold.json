@@ -3,11 +3,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/gold"
+    "tag": "c:dusts/gold"
   },
   "results": [
     {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     }
   ],
   "time": 100

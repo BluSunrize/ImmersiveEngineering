@@ -9,13 +9,13 @@
       "item": "immersiveengineering:light_bulb"
     },
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "p": {
       "tag": "c:glass_panes"
     },
     "s": {
-      "tag": "forge:plates/silver"
+      "tag": "c:plates/silver"
     }
   },
   "pattern": [

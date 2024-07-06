@@ -12,7 +12,7 @@
   },
   "secondaryOutputs": [
     {
-      "tag": "forge:dusts/wood"
+      "tag": "c:dusts/wood"
     }
   ],
   "stripped": {
@@ -20,7 +20,7 @@
   },
   "strippingSecondaries": [
     {
-      "tag": "forge:dusts/wood"
+      "tag": "c:dusts/wood"
     }
   ]
 }

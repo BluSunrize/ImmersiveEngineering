@@ -13,7 +13,7 @@
   "secondaryOutputs": [],
   "strippingSecondaries": [
     {
-      "tag": "forge:dusts/wood"
+      "tag": "c:dusts/wood"
     }
   ]
 }

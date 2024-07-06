@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/osmium"
+        "tag": "c:ingots/osmium"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/osmium"
+        "tag": "c:raw_materials/osmium"
       }
     }
   ],
@@ -19,19 +19,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/osmium"
+    "tag": "c:raw_materials/osmium"
   },
   "results": [
     {
-      "tag": "forge:ingots/osmium"
+      "tag": "c:ingots/osmium"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/osmium"
+        "tag": "c:ingots/osmium"
       }
     }
   ],

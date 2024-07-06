@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/ardite"
+        "tag": "c:ingots/ardite"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:storage_blocks/raw_ardite"
+        "tag": "c:storage_blocks/raw_ardite"
       }
     }
   ],
@@ -19,12 +19,12 @@
   "additives": [],
   "energy": 230400,
   "input": {
-    "tag": "forge:storage_blocks/raw_ardite"
+    "tag": "c:storage_blocks/raw_ardite"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/ardite"
+        "tag": "c:ingots/ardite"
       },
       "count": 13
     }
@@ -32,9 +32,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/ardite"
+        "tag": "c:ingots/ardite"
       }
     }
   ],

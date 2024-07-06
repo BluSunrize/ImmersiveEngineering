@@ -4,7 +4,7 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/coal"
+        "tag": "c:dusts/coal"
       }
     }
   ],
@@ -15,7 +15,7 @@
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/coal"
+      "tag": "c:dusts/coal"
     },
     "count": 9
   }

@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/zinc"
+        "tag": "c:ingots/zinc"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/zinc"
+        "tag": "c:dusts/zinc"
       }
     }
   ],
@@ -19,11 +19,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/zinc"
+    "tag": "c:dusts/zinc"
   },
   "results": [
     {
-      "tag": "forge:ingots/zinc"
+      "tag": "c:ingots/zinc"
     }
   ],
   "time": 100

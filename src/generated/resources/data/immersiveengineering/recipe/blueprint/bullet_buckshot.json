@@ -16,7 +16,7 @@
     },
     {
       "basePredicate": {
-        "tag": "forge:dusts/steel"
+        "tag": "c:dusts/steel"
       },
       "count": 2
     }

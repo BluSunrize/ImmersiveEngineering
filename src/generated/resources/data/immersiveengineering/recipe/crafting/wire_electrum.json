@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:plates/electrum"
+      "tag": "c:plates/electrum"
     },
     {
       "item": "immersiveengineering:wirecutter"

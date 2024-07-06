@@ -9,7 +9,7 @@
       "item": "immersiveengineering:component_iron"
     },
     "i": {
-      "tag": "forge:sheetmetals/steel"
+      "tag": "c:sheetmetals/steel"
     }
   },
   "pattern": [

@@ -3,11 +3,11 @@
   "energy": 240,
   "input0": {
     "amount": 12,
-    "tag": "forge:acetaldehyde"
+    "tag": "c:acetaldehyde"
   },
   "input1": {
     "amount": 8,
-    "tag": "forge:creosote"
+    "tag": "c:creosote"
   },
   "result": {
     "amount": 8,

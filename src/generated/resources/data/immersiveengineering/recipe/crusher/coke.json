@@ -2,9 +2,9 @@
   "type": "immersiveengineering:crusher",
   "energy": 2400,
   "input": {
-    "tag": "forge:coal_coke"
+    "tag": "c:coal_coke"
   },
   "result": {
-    "tag": "forge:dusts/coal_coke"
+    "tag": "c:dusts/coal_coke"
   }
 }

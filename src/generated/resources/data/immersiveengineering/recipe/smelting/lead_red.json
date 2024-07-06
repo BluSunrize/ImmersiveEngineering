@@ -4,7 +4,7 @@
   "cookingtime": 200,
   "experience": 0.1,
   "ingredient": {
-    "tag": "forge:nuggets/lead"
+    "tag": "c:nuggets/lead"
   },
   "result": {
     "count": 1,

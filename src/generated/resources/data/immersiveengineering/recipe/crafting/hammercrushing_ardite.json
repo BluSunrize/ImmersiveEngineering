@@ -4,22 +4,22 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/ardite"
+        "tag": "c:dusts/ardite"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/ardite"
+        "tag": "c:ores/ardite"
       }
     }
   ],
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:ores/ardite"
+    "tag": "c:ores/ardite"
   },
   "result": {
-    "tag": "forge:dusts/ardite"
+    "tag": "c:dusts/ardite"
   }
 }

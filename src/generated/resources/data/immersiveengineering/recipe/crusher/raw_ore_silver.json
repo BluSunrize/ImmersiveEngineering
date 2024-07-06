@@ -2,17 +2,16 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/silver"
+    "tag": "c:raw_materials/silver"
   },
   "result": {
-    "tag": "forge:dusts/silver"
+    "tag": "c:dusts/silver"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/silver"
+        "tag": "c:dusts/silver"
       }
     }
   ]

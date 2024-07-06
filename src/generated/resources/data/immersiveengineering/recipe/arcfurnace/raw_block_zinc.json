@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/zinc"
+        "tag": "c:ingots/zinc"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:storage_blocks/raw_zinc"
+        "tag": "c:storage_blocks/raw_zinc"
       }
     }
   ],
@@ -19,12 +19,12 @@
   "additives": [],
   "energy": 230400,
   "input": {
-    "tag": "forge:storage_blocks/raw_zinc"
+    "tag": "c:storage_blocks/raw_zinc"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/zinc"
+        "tag": "c:ingots/zinc"
       },
       "count": 13
     }
@@ -32,9 +32,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/zinc"
+        "tag": "c:ingots/zinc"
       }
     }
   ],

@@ -2,9 +2,9 @@
   "type": "immersiveengineering:crusher",
   "energy": 3000,
   "input": {
-    "tag": "forge:ingots/lead"
+    "tag": "c:ingots/lead"
   },
   "result": {
-    "tag": "forge:dusts/lead"
+    "tag": "c:dusts/lead"
   }
 }

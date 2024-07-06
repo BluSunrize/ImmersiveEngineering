@@ -4,22 +4,22 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/zinc"
+        "tag": "c:dusts/zinc"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/zinc"
+        "tag": "c:raw_materials/zinc"
       }
     }
   ],
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:raw_materials/zinc"
+    "tag": "c:raw_materials/zinc"
   },
   "result": {
-    "tag": "forge:dusts/zinc"
+    "tag": "c:dusts/zinc"
   }
 }

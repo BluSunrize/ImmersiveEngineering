@@ -4,22 +4,22 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/cobalt"
+        "tag": "c:dusts/cobalt"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/cobalt"
+        "tag": "c:ores/cobalt"
       }
     }
   ],
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:ores/cobalt"
+    "tag": "c:ores/cobalt"
   },
   "result": {
-    "tag": "forge:dusts/cobalt"
+    "tag": "c:dusts/cobalt"
   }
 }

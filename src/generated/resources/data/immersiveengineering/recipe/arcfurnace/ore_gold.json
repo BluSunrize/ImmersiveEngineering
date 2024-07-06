@@ -3,18 +3,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/gold"
+    "tag": "c:ores/gold"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/gold"
+        "tag": "c:ingots/gold"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

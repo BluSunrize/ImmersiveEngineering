@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/copper"
+            "items": "#c:ingots/copper"
           }
         ]
       },
@@ -31,7 +31,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:rods/treated_wood"
+            "items": "#c:rods/treated_wood"
           }
         ]
       },

@@ -2,7 +2,7 @@
   "type": "immersiveengineering:bottling_machine",
   "fluid": {
     "amount": 125,
-    "tag": "forge:redstone_acid"
+    "tag": "c:redstone_acid"
   },
   "input": {
     "item": "minecraft:exposed_copper"

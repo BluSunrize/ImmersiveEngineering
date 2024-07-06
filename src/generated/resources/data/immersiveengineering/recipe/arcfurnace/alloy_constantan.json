@@ -2,17 +2,17 @@
   "type": "immersiveengineering:arc_furnace",
   "additives": [
     {
-      "tag": "forge:ingots/nickel"
+      "tag": "c:ingots/nickel"
     }
   ],
   "energy": 51200,
   "input": {
-    "tag": "forge:ingots/copper"
+    "tag": "c:ingots/copper"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/constantan"
+        "tag": "c:ingots/constantan"
       },
       "count": 2
     }

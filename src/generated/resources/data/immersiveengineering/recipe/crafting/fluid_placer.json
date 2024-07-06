@@ -6,7 +6,7 @@
       "item": "minecraft:iron_bars"
     },
     "i": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     }
   },
   "pattern": [

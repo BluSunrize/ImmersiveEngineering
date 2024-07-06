@@ -6,13 +6,13 @@
       "tag": "c:dyes/blue"
     },
     "j": {
-      "tag": "forge:ingots/copper"
+      "tag": "c:ingots/copper"
     },
     "k": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     },
     "l": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "p": {
       "item": "minecraft:paper"

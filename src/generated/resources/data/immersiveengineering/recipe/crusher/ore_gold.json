@@ -2,11 +2,11 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/gold"
+    "tag": "c:ores/gold"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/gold"
+      "tag": "c:dusts/gold"
     },
     "count": 2
   }

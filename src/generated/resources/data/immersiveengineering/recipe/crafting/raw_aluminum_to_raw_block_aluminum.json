@@ -6,7 +6,7 @@
       "item": "immersiveengineering:raw_aluminum"
     },
     "s": {
-      "tag": "forge:raw_materials/aluminum"
+      "tag": "c:raw_materials/aluminum"
     }
   },
   "pattern": [

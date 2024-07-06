@@ -6,10 +6,10 @@
       "item": "minecraft:crafting_table"
     },
     "r": {
-      "tag": "forge:rods/treated_wood"
+      "tag": "c:rods/treated_wood"
     },
     "s": {
-      "tag": "forge:treated_wood_slab"
+      "tag": "immersiveengineering:treated_wood_slab"
     }
   },
   "pattern": [

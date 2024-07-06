@@ -3,11 +3,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/electrum"
+    "tag": "c:dusts/electrum"
   },
   "results": [
     {
-      "tag": "forge:ingots/electrum"
+      "tag": "c:ingots/electrum"
     }
   ],
   "time": 100

@@ -2,11 +2,11 @@
   "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
-    "tag": "forge:storage_blocks/raw_nickel"
+    "tag": "c:storage_blocks/raw_nickel"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/nickel"
+      "tag": "c:dusts/nickel"
     },
     "count": 12
   }

@@ -4,24 +4,24 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/brass"
+        "tag": "c:ingots/brass"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:plates/brass"
+        "tag": "c:plates/brass"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/brass"
+    "tag": "c:ingots/brass"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/brass"
+    "tag": "c:plates/brass"
   }
 }

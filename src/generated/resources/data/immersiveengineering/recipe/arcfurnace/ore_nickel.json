@@ -3,18 +3,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/nickel"
+    "tag": "c:ores/nickel"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/nickel"
+        "tag": "c:ingots/nickel"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

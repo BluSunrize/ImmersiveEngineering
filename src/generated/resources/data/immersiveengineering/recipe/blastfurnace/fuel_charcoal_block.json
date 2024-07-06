@@ -4,13 +4,13 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:storage_blocks/charcoal"
+        "tag": "c:storage_blocks/charcoal"
       }
     }
   ],
   "type": "immersiveengineering:blast_furnace_fuel",
   "input": {
-    "tag": "forge:storage_blocks/charcoal"
+    "tag": "c:storage_blocks/charcoal"
   },
   "time": 3000
 }

@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     },
     {
       "item": "immersiveengineering:hammer"

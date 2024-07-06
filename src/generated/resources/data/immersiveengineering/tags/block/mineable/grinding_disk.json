@@ -1,7 +1,7 @@
 {
   "values": [
     "#c:storage_blocks",
-    "#forge:sheetmetals",
+    "#c:sheetmetals",
     "immersiveengineering:slab_storage_aluminum",
     "immersiveengineering:slab_storage_lead",
     "immersiveengineering:slab_storage_silver",
@@ -10,7 +10,7 @@
     "immersiveengineering:slab_storage_constantan",
     "immersiveengineering:slab_storage_electrum",
     "immersiveengineering:slab_storage_steel",
-    "#forge:sheetmetal_slabs",
+    "#c:sheetmetal_slabs",
     "#immersiveengineering:blocks/copper",
     "#immersiveengineering:cut_blocks/copper",
     "#immersiveengineering:cut_slabs/copper",

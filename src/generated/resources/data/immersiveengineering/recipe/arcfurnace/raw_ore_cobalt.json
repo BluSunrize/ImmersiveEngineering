@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:raw_materials/cobalt"
+        "tag": "c:raw_materials/cobalt"
       }
     }
   ],
@@ -19,19 +19,18 @@
   "additives": [],
   "energy": 25600,
   "input": {
-    "tag": "forge:raw_materials/cobalt"
+    "tag": "c:raw_materials/cobalt"
   },
   "results": [
     {
-      "tag": "forge:ingots/cobalt"
+      "tag": "c:ingots/cobalt"
     }
   ],
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     }
   ],

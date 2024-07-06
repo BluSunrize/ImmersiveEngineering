@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/platinum"
+        "tag": "c:ingots/platinum"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/platinum"
+        "tag": "c:dusts/platinum"
       }
     }
   ],
@@ -19,11 +19,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/platinum"
+    "tag": "c:dusts/platinum"
   },
   "results": [
     {
-      "tag": "forge:ingots/platinum"
+      "tag": "c:ingots/platinum"
     }
   ],
   "time": 100

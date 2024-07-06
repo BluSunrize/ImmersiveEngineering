@@ -3,7 +3,7 @@
   "category": "components",
   "inputs": [
     {
-      "tag": "forge:treated_wood_slab"
+      "tag": "immersiveengineering:treated_wood_slab"
     },
     {
       "tag": "c:gems/quartz"
@@ -12,7 +12,7 @@
       "tag": "c:dusts/redstone"
     },
     {
-      "tag": "forge:wires/electrum"
+      "tag": "c:wires/electrum"
     }
   ],
   "result": {

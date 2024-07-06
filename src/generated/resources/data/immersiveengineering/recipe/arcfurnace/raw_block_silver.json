@@ -3,12 +3,12 @@
   "additives": [],
   "energy": 230400,
   "input": {
-    "tag": "forge:storage_blocks/raw_silver"
+    "tag": "c:storage_blocks/raw_silver"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/silver"
+        "tag": "c:ingots/silver"
       },
       "count": 13
     }
@@ -16,9 +16,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/silver"
+        "tag": "c:ingots/silver"
       }
     }
   ],

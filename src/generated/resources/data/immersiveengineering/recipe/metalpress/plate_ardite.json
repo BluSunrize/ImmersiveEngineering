@@ -4,24 +4,24 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/ardite"
+        "tag": "c:ingots/ardite"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:plates/ardite"
+        "tag": "c:plates/ardite"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/ardite"
+    "tag": "c:ingots/ardite"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/ardite"
+    "tag": "c:plates/ardite"
   }
 }

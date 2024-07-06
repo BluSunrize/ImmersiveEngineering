@@ -3,18 +3,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/copper"
+    "tag": "c:ores/copper"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/copper"
+        "tag": "c:ingots/copper"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

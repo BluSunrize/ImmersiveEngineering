@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#c:wires/copper",
+    "#c:wires/electrum",
+    "#c:wires/aluminum",
+    "#c:wires/steel",
+    "#c:wires/lead"
+  ]
+}

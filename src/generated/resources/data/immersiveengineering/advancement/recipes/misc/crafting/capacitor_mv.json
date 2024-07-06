@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/nickel"
+            "items": "#c:ingots/nickel"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/steel"
+            "items": "#c:ingots/steel"
           }
         ]
       },
@@ -31,7 +31,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:treated_wood"
+            "items": "#immersiveengineering:treated_wood"
           }
         ]
       },

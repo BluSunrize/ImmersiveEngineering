@@ -3,12 +3,12 @@
   "additives": [],
   "energy": 230400,
   "input": {
-    "tag": "forge:storage_blocks/raw_copper"
+    "tag": "c:storage_blocks/raw_copper"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/copper"
+        "tag": "c:ingots/copper"
       },
       "count": 13
     }
@@ -16,9 +16,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/copper"
+        "tag": "c:ingots/copper"
       }
     }
   ],

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:sheetmetals"
+            "items": "#c:sheetmetals"
           }
         ]
       },

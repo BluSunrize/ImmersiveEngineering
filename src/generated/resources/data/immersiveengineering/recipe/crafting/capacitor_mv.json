@@ -3,21 +3,21 @@
   "category": "misc",
   "key": {
     "a": {
-      "tag": "forge:plates/nickel"
+      "tag": "c:plates/nickel"
     },
     "c": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     },
     "e": {
       "type": "immersiveengineering:fluid_stack",
       "amount": 1000,
-      "tag": "forge:redstone_acid"
+      "tag": "c:redstone_acid"
     },
     "f": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "w": {
-      "tag": "forge:treated_wood"
+      "tag": "immersiveengineering:treated_wood"
     }
   },
   "pattern": [

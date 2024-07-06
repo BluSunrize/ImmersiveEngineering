@@ -2,17 +2,16 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:raw_materials/lead"
+    "tag": "c:raw_materials/lead"
   },
   "result": {
-    "tag": "forge:dusts/lead"
+    "tag": "c:dusts/lead"
   },
   "secondaries": [
     {
       "chance": 0.33333334,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/lead"
+        "tag": "c:dusts/lead"
       }
     }
   ]

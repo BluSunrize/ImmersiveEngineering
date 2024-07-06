@@ -2,11 +2,11 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/aluminum"
+    "tag": "c:ores/aluminum"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/aluminum"
+      "tag": "c:dusts/aluminum"
     },
     "count": 2
   }

@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/electrum"
+            "items": "#c:ingots/electrum"
           }
         ]
       },

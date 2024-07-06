@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "forge:ingots/gold"
+      "tag": "c:ingots/gold"
     },
     {
       "item": "immersiveengineering:hammer"

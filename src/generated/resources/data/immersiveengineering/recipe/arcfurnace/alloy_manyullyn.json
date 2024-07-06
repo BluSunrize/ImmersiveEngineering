@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/manyullyn"
+        "tag": "c:ingots/manyullyn"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     }
   ],
@@ -24,14 +24,14 @@
   "energy": 51200,
   "input": {
     "basePredicate": {
-      "tag": "forge:ingots/cobalt"
+      "tag": "c:ingots/cobalt"
     },
     "count": 3
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/manyullyn"
+        "tag": "c:ingots/manyullyn"
       },
       "count": 4
     }

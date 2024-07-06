@@ -9,7 +9,6 @@
   "ores": [
     {
       "chance": 0.6,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:nether_quartz_ore"
@@ -17,7 +16,6 @@
     },
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:nether_gold_ore"
@@ -25,9 +23,8 @@
     },
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/sulfur"
+        "tag": "c:dusts/sulfur"
       }
     }
   ],
@@ -35,7 +32,6 @@
   "spoils": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:netherrack"
@@ -43,7 +39,6 @@
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:basalt"
@@ -51,7 +46,6 @@
     },
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:gravel"

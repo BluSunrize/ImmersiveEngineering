@@ -4,22 +4,22 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/tin"
+        "tag": "c:dusts/tin"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/tin"
+        "tag": "c:ores/tin"
       }
     }
   ],
   "type": "immersiveengineering:hammer_crushing",
   "input": {
-    "tag": "forge:ores/tin"
+    "tag": "c:ores/tin"
   },
   "result": {
-    "tag": "forge:dusts/tin"
+    "tag": "c:dusts/tin"
   }
 }

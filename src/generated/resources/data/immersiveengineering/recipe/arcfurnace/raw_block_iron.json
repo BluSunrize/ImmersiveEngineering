@@ -3,12 +3,12 @@
   "additives": [],
   "energy": 230400,
   "input": {
-    "tag": "forge:storage_blocks/raw_iron"
+    "tag": "c:storage_blocks/raw_iron"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/iron"
+        "tag": "c:ingots/iron"
       },
       "count": 13
     }
@@ -16,9 +16,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/iron"
+        "tag": "c:ingots/iron"
       }
     }
   ],

@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ores/cobalt"
+        "tag": "c:ores/cobalt"
       }
     }
   ],
@@ -19,18 +19,18 @@
   "additives": [],
   "energy": 102400,
   "input": {
-    "tag": "forge:ores/cobalt"
+    "tag": "c:ores/cobalt"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/cobalt"
+        "tag": "c:ingots/cobalt"
       },
       "count": 2
     }
   ],
   "slag": {
-    "tag": "forge:slag"
+    "tag": "c:slag"
   },
   "time": 200
 }

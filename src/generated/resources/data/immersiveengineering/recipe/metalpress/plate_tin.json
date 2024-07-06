@@ -4,24 +4,24 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/tin"
+        "tag": "c:ingots/tin"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:plates/tin"
+        "tag": "c:plates/tin"
       }
     }
   ],
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/tin"
+    "tag": "c:ingots/tin"
   },
   "mold": "immersiveengineering:mold_plate",
   "result": {
-    "tag": "forge:plates/tin"
+    "tag": "c:plates/tin"
   }
 }

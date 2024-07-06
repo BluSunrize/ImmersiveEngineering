@@ -4,25 +4,25 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:dusts/osmium"
+        "tag": "c:dusts/osmium"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:storage_blocks/raw_osmium"
+        "tag": "c:storage_blocks/raw_osmium"
       }
     }
   ],
   "type": "immersiveengineering:crusher",
   "energy": 54000,
   "input": {
-    "tag": "forge:storage_blocks/raw_osmium"
+    "tag": "c:storage_blocks/raw_osmium"
   },
   "result": {
     "basePredicate": {
-      "tag": "forge:dusts/osmium"
+      "tag": "c:dusts/osmium"
     },
     "count": 12
   }

@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "energy": 6000,
   "input": {
-    "tag": "forge:ores/redstone"
+    "tag": "c:ores/redstone"
   },
   "result": {
     "basePredicate": {

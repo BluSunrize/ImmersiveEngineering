@@ -3,11 +3,11 @@
   "additives": [],
   "energy": 51200,
   "input": {
-    "tag": "forge:dusts/nickel"
+    "tag": "c:dusts/nickel"
   },
   "results": [
     {
-      "tag": "forge:ingots/nickel"
+      "tag": "c:ingots/nickel"
     }
   ],
   "time": 100

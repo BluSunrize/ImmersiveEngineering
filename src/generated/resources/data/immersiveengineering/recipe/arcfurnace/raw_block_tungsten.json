@@ -4,14 +4,14 @@
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:ingots/tungsten"
+        "tag": "c:ingots/tungsten"
       }
     },
     {
       "type": "neoforge:not",
       "value": {
         "type": "neoforge:tag_empty",
-        "tag": "forge:storage_blocks/raw_tungsten"
+        "tag": "c:storage_blocks/raw_tungsten"
       }
     }
   ],
@@ -19,12 +19,12 @@
   "additives": [],
   "energy": 230400,
   "input": {
-    "tag": "forge:storage_blocks/raw_tungsten"
+    "tag": "c:storage_blocks/raw_tungsten"
   },
   "results": [
     {
       "basePredicate": {
-        "tag": "forge:ingots/tungsten"
+        "tag": "c:ingots/tungsten"
       },
       "count": 13
     }
@@ -32,9 +32,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:ingots/tungsten"
+        "tag": "c:ingots/tungsten"
       }
     }
   ],

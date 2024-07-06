@@ -1,0 +1,15 @@
+{
+  "values": [
+    "#c:plates/copper",
+    "#c:plates/aluminum",
+    "#c:plates/lead",
+    "#c:plates/silver",
+    "#c:plates/nickel",
+    "#c:plates/uranium",
+    "#c:plates/constantan",
+    "#c:plates/electrum",
+    "#c:plates/steel",
+    "#c:plates/iron",
+    "#c:plates/gold"
+  ]
+}

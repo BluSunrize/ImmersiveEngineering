@@ -8,10 +8,10 @@
       "tag": "minecraft:water"
     },
     "c": {
-      "tag": "forge:plates/constantan"
+      "tag": "c:plates/constantan"
     },
     "i": {
-      "tag": "forge:sheetmetals/steel"
+      "tag": "c:sheetmetals/steel"
     }
   },
   "pattern": [

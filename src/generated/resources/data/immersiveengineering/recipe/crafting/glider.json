@@ -6,10 +6,10 @@
       "item": "minecraft:leather_chestplate"
     },
     "f": {
-      "tag": "forge:fabric_hemp"
+      "tag": "c:fabric_hemp"
     },
     "r": {
-      "tag": "forge:rods/aluminum"
+      "tag": "c:rods/aluminum"
     }
   },
   "pattern": [

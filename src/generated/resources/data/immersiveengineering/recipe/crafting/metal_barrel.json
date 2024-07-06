@@ -6,7 +6,7 @@
       "item": "immersiveengineering:slab_sheetmetal_iron"
     },
     "w": {
-      "tag": "forge:sheetmetals/iron"
+      "tag": "c:sheetmetals/iron"
     }
   },
   "pattern": [

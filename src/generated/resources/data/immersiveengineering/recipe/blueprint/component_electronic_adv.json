@@ -3,7 +3,7 @@
   "category": "components",
   "inputs": [
     {
-      "tag": "forge:plates/plastic"
+      "tag": "c:plates/plastic"
     },
     {
       "basePredicate": {
@@ -12,7 +12,7 @@
       "count": 2
     },
     {
-      "tag": "forge:wires/aluminum"
+      "tag": "c:wires/aluminum"
     }
   ],
   "result": {

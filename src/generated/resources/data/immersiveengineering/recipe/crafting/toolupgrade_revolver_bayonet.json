@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "s": {
       "item": "immersiveengineering:sword_steel"
     },
     "w": {
-      "tag": "forge:wires/copper"
+      "tag": "c:wires/copper"
     }
   },
   "pattern": [

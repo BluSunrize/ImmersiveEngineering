@@ -6,13 +6,13 @@
       "item": "immersiveengineering:light_bulb"
     },
     "i": {
-      "tag": "forge:plates/iron"
+      "tag": "c:plates/iron"
     },
     "p": {
       "tag": "c:glass_panes"
     },
     "w": {
-      "tag": "forge:wires/copper"
+      "tag": "c:wires/copper"
     }
   },
   "pattern": [

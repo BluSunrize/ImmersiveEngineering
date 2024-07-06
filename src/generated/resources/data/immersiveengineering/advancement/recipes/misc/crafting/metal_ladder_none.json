@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:rods/all_metal"
+            "items": "#c:rods/all_metal"
           }
         ]
       },

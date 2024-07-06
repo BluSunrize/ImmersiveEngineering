@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "energy": 3200,
   "input": {
-    "tag": "forge:sandstone/colorless"
+    "tag": "c:sandstone/uncolored_blocks"
   },
   "result": {
     "basePredicate": {
@@ -13,9 +13,8 @@
   "secondaries": [
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
-        "tag": "forge:dusts/saltpeter"
+        "tag": "c:dusts/saltpeter"
       }
     }
   ]

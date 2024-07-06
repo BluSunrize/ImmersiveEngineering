@@ -9,14 +9,12 @@
   "ores": [
     {
       "chance": 0.7,
-      "conditions": [],
       "output": {
         "tag": "c:ores/copper"
       }
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "tag": "c:ores/gold"
       }
@@ -25,7 +23,6 @@
   "spoils": [
     {
       "chance": 0.2,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:gravel"
@@ -33,7 +30,6 @@
     },
     {
       "chance": 0.5,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobblestone"
@@ -41,7 +37,6 @@
     },
     {
       "chance": 0.3,
-      "conditions": [],
       "output": {
         "count": 1,
         "id": "minecraft:cobbled_deepslate"

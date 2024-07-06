@@ -25,7 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:ingots/copper"
+            "items": "#c:ingots/copper"
           }
         ]
       },
