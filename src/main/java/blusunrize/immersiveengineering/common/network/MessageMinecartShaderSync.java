@@ -16,21 +16,23 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record MessageMinecartShaderSync(int entityID, ItemStack shader) implements IMessage
+import java.util.Optional;
+
+public record MessageMinecartShaderSync(int entityID, Optional<ResourceLocation> shader) implements IMessage
 {
 	public static final Type<MessageMinecartShaderSync> ID = IMessage.createType("minecart_shader_sync");
 	public static final StreamCodec<RegistryFriendlyByteBuf, MessageMinecartShaderSync> CODEC = StreamCodec.composite(
 			ByteBufCodecs.INT, MessageMinecartShaderSync::entityID,
-			ItemStack.STREAM_CODEC, MessageMinecartShaderSync::shader,
+			ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), MessageMinecartShaderSync::shader,
 			MessageMinecartShaderSync::new
 	);
 
@@ -47,7 +49,7 @@ public record MessageMinecartShaderSync(int entityID, ItemStack shader) implemen
 				ShaderWrapper cap = entity.getData(IEDataAttachments.MINECART_SHADER);
 				if(cap!=null)
 					PacketDistributor.sendToPlayersInDimension(
-							(ServerLevel)world, new MessageMinecartShaderSync(entity.getId(), cap.getShaderItem())
+							(ServerLevel)world, new MessageMinecartShaderSync(entity.getId(), Optional.ofNullable(cap.getShader()))
 					);
 			});
 		}
@@ -58,7 +60,7 @@ public record MessageMinecartShaderSync(int entityID, ItemStack shader) implemen
 				{
 					Entity entity = world.getEntity(entityID);
 					if(entity instanceof AbstractMinecart)
-						ShaderMinecartRenderer.shadedCarts.put(entityID, shader);
+						ShaderMinecartRenderer.shadedCarts.put(entityID, shader.orElse(null));
 				}
 			});
 	}

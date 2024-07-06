@@ -43,14 +43,11 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, Tiers.DIAMOND, 10, 7, 10000, ImmersiveEngineering.rl("item/drill_diesel"));
 	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, Tiers.IRON, 9, 6, 6000, ImmersiveEngineering.rl("item/drill_iron"));
 
-	public static final String DAMAGE_KEY_OLD = "headDamage";
-	public static final String DAMAGE_KEY = "Damage";
-
 	public DrillHeadPerm perms;
 
 	public DrillheadItem(DrillHeadPerm perms)
 	{
-		super(new Properties().stacksTo(1));
+		super(new Properties().stacksTo(1).component(DataComponents.DAMAGE, 0));
 		this.perms = perms;
 	}
 

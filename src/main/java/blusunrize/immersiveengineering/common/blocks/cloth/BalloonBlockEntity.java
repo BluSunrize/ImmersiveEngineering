@@ -149,9 +149,9 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 			}
 			return true;
 		}
-		else if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
+		else if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem shaderItem)
 		{
-			this.shader.setShaderItem(heldItem.copyWithCount(1));
+			this.shader.setShader(shaderItem.getShaderName());
 			markContainingBlockForUpdate(null);
 			return true;
 		}

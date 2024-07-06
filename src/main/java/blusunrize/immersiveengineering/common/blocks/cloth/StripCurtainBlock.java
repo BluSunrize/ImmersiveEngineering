@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -58,10 +58,8 @@ public class StripCurtainBlock extends IEEntityBlock<StripCurtainBlockEntity>
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> tooltip, TooltipFlag advanced)
 	{
-		if(ItemNBTHelper.hasKey(stack, "colour"))
-		{
-			int color = ItemNBTHelper.getInt(stack, "colour");
-			tooltip.add(FontUtils.withAppendColoredColour(Component.translatable(Lib.DESC_INFO+"colour"), color));
-		}
+		var color = stack.get(IEDataComponents.COLOR);
+		if(color!=null)
+			tooltip.add(FontUtils.withAppendColoredColour(Component.translatable(Lib.DESC_INFO+"colour"), color.toInt()));
 	}
 }

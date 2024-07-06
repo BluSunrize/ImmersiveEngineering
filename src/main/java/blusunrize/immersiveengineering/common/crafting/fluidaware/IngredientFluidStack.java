@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.register.IEIngredients;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -38,7 +39,7 @@ public record IngredientFluidStack(FluidTagInput fluidTagInput) implements ICust
 
 	public IngredientFluidStack(TagKey<Fluid> tag, int amount)
 	{
-		this(new FluidTagInput(tag, amount, null));
+		this(new FluidTagInput(tag, amount, DataComponentPredicate.EMPTY));
 	}
 
 	public FluidTagInput getFluidTagInput()

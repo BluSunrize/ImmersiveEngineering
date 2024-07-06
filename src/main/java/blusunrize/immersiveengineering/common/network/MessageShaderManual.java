@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
-import blusunrize.immersiveengineering.common.items.ShaderItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -72,8 +71,9 @@ public record MessageShaderManual(MessageType key, List<ResourceLocation> args) 
 				else if(key==MessageType.SPAWN&&!args.isEmpty())
 				{
 					if(!player.getAbilities().instabuild)
+						// TODO should we check that this actually passed?
 						IngredientUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args.get(0)).replicationCost.get());
-					ItemStack shaderStack = ShaderItem.makeShaderItem(args.get(0));
+					ItemStack shaderStack = ShaderRegistry.makeShaderStack(args.get(0));
 					ItemEntity entityitem = player.drop(shaderStack, false);
 					if(entityitem!=null)
 					{

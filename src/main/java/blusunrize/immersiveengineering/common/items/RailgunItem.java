@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -49,6 +48,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.energy.ComponentEnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -128,7 +128,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		registerCapabilitiesISI(registrar);
 		registrar.register(
 				EnergyStorage.ITEM,
-				stack -> new EnergyHelper.ItemEnergyStorage(stack, RailgunItem::getMaxEnergyStored)
+				stack -> new ComponentEnergyStorage(stack, IEDataComponents.GENERIC_ENERGY.get(), getMaxEnergyStored(stack))
 		);
 		registrar.register(
 				CapabilityShader.ITEM,
@@ -190,7 +190,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 			if(shader!=null)
 			{
 				Vec3 pos = Utils.getLivingFrontPos(user, .4375, user.getBbHeight()*.75, ItemUtils.getLivingHand(user, user.getUsedItemHand()), false, 1);
-				shader.registryEntry().getEffectFunction().execute(user.level(), shader.shader(), stack, shader.sCase().getShaderType().toString(), pos, null, .0625f);
+				shader.registryEntry().getEffectFunction().execute(user.level(), stack, shader.sCase().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
 	}
@@ -238,7 +238,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 			if(user.getUsedItemHand()!=InteractionHand.MAIN_HAND)
 				handside = handside==HumanoidArm.LEFT?HumanoidArm.RIGHT: HumanoidArm.LEFT;
 			Vec3 pos = Utils.getLivingFrontPos(user, .75, user.getBbHeight()*.75, handside, false, 1);
-			shader.registryEntry().getEffectFunction().execute(world, shader.shader(), railgun,
+			shader.registryEntry().getEffectFunction().execute(world, railgun,
 					shader.sCase().getShaderType().toString(), pos,
 					Vec3.directionFromRotation(user.getRotationVector()), .125f);
 		}

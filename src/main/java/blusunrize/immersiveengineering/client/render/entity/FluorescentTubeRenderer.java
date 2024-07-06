@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
@@ -85,7 +86,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	private static ItemStack tubeActive = ItemStack.EMPTY;
 
 	static void drawTube(
-			boolean active, float[] rgb,
+			boolean active, Color4 rgb,
 			PoseStack matrixStack, MultiBufferSource buffer,
 			int light, int overlay, Level level
 	)

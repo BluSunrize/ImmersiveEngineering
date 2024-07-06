@@ -279,7 +279,7 @@ public final class IEItems
 		public static final ItemRegObject<JerrycanItem> JERRYCAN = register("jerrycan", JerrycanItem::new);
 		public static final ItemRegObject<EngineersBlueprintItem> BLUEPRINT = register("blueprint", EngineersBlueprintItem::new);
 		public static final ItemRegObject<SkyhookItem> SKYHOOK = register("skyhook", SkyhookItem::new);
-		public static final ItemRegObject<ShaderItem> SHADER = register("shader", ShaderItem::new);
+		public static final Map<ResourceLocation, ItemRegObject<ShaderItem>> SHADERS = new HashMap<>();
 		// We can't use an EnumMap here, since Rarity is an "extensible enum" (Forge), so people may add to it later on.
 		// And since this map is created during static class init, it may be initialized before another mod has any
 		// chance of adding the rarity.
@@ -325,6 +325,9 @@ public final class IEItems
 					IEItems.Misc.FARADAY_SUIT.put(slot, register(
 							"armor_faraday_"+slot.name().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
 					));
+			for(var shader : ShaderRegistry.shaderRegistry.keySet())
+				// TODO fix for non-IE shaders
+				SHADERS.put(shader, register(shader.getPath(), () -> new ShaderItem(shader)));
 		}
 
 		public static void registerShaderBags()

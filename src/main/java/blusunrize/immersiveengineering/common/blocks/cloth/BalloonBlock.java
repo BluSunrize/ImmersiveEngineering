@@ -76,7 +76,7 @@ public class BalloonBlock extends IEEntityBlock<BalloonBlockEntity>
 		{
 			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(balloon.getShader());
 			if(shader!=null)
-				shader.registryEntry().getEffectFunction().execute(level, shader.shader(), null, shader.sCase().getShaderType().toString(), pos, null, .375f);
+				shader.registryEntry().getEffectFunction().execute(level, null, shader.sCase().getShaderType().toString(), pos, null, .375f);
 		}
 	}
 }

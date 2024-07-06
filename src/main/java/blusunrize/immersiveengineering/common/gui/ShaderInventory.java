@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +31,7 @@ public class ShaderInventory implements Container
 	{
 		this.container = par1Container;
 		this.wrapper = wrapper;
-		this.shader = wrapper.getShaderItem();
+		this.shader = ShaderRegistry.makeShaderStack(wrapper.getShader());
 		this.name = wrapper.getShaderType();
 	}
 
@@ -107,8 +109,8 @@ public class ShaderInventory implements Container
 	@Override
 	public void setChanged()
 	{
-		if(wrapper!=null)
-			wrapper.setShaderItem(shader);
+		if(wrapper!=null&&shader.getItem() instanceof IShaderItem shaderItem)
+			wrapper.setShader(shaderItem.getShaderName());
 	}
 
 	@Override

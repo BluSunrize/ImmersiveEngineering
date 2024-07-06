@@ -9,12 +9,10 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
-import blusunrize.immersiveengineering.client.render.tile.ShaderBannerRenderer;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -146,9 +144,9 @@ public class ModelPowerpack
 		{
 			matrixStackIn.pushPose();
 
-			ResourceLocation shaderTexture = ShaderBannerRenderer.getShaderResourceLocation(
+			ResourceLocation shaderTexture = null/*TODO ShaderBannerRenderer.getShaderResourceLocation(
 					banner, IEApi.ieLoc("banner")
-			);
+			)*/;
 			if(shaderTexture!=null)
 			{
 				// set up to render the large-texture banner

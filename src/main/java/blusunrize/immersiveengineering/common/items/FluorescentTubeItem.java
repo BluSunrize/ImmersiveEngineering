@@ -14,12 +14,15 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
+import blusunrize.immersiveengineering.api.utils.Color4;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
@@ -36,9 +39,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool, IElectricEquipment, IColouredItem
@@ -80,23 +83,14 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 		return super.useOn(ctx);
 	}
 
-	public static float[] getRGB(ItemStack s)
+	public static Color4 getRGB(ItemStack s)
 	{
-		if(ItemNBTHelper.hasKey(s, "rgb"))
-		{
-			CompoundTag nbt = ItemNBTHelper.getTagCompound(s, "rgb");
-			return new float[]{nbt.getFloat("r"), nbt.getFloat("g"), nbt.getFloat("b")};
-		}
-		return new float[]{1, 1, 1};
+		return s.getOrDefault(IEDataComponents.COLOR, Color4.WHITE);
 	}
 
-	public static void setRGB(ItemStack s, float[] rgb)
+	public static void setRGB(ItemStack s, Color4 color)
 	{
-		CompoundTag nbt = new CompoundTag();
-		nbt.putFloat("r", rgb[0]);
-		nbt.putFloat("g", rgb[1]);
-		nbt.putFloat("b", rgb[2]);
-		ItemNBTHelper.setTagCompound(s, "rgb", nbt);
+		s.set(IEDataComponents.COLOR, color);
 	}
 
 	@Override
@@ -115,19 +109,23 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	public ToolConfigFloat[] getFloatOptions(ItemStack stack)
 	{
 		ToolConfigFloat[] ret = new ToolConfigFloat[3];
-		float[] rgb = getRGB(stack);
-		ret[0] = new ToolConfigFloat("red", 60, 20, rgb[0]);
-		ret[1] = new ToolConfigFloat("green", 60, 40, rgb[1]);
-		ret[2] = new ToolConfigFloat("blue", 60, 60, rgb[2]);
+		var rgb = getRGB(stack);
+		ret[0] = new ToolConfigFloat("red", 60, 20, rgb.r());
+		ret[1] = new ToolConfigFloat("green", 60, 40, rgb.g());
+		ret[2] = new ToolConfigFloat("blue", 60, 60, rgb.b());
 		return ret;
 	}
 
 	@Override
 	public void applyConfigOption(ItemStack stack, String key, Object value)
 	{
-		int id = key.equals("red")?0: (key.equals("green")?1: 2);
-		float[] rgb = getRGB(stack);
-		rgb[id] = (float)value;
+		var rgb = getRGB(stack);
+		switch(key)
+		{
+			case "red" -> rgb = new Color4((float)value, rgb.g(), rgb.b(), rgb.a());
+			case "green" -> rgb = new Color4(rgb.r(), (float)value, rgb.b(), rgb.a());
+			case "blue" -> rgb = new Color4(rgb.r(), rgb.g(), (float)value, rgb.a());
+		}
 		setRGB(stack, rgb);
 	}
 
@@ -164,8 +162,8 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 
 	public static float[] getRGBFloat(ItemStack stack, float factor)
 	{
-		float[] fRGB = getRGB(stack);
-		return new float[]{fRGB[0]*factor, fRGB[1]*factor, fRGB[2]*factor, 1};
+		var fRGB = getRGB(stack);
+		return new float[]{fRGB.r()*factor, fRGB.g()*factor, fRGB.b()*factor, 1};
 	}
 
 	public static int getRGBInt(ItemStack stack, float factor)
@@ -174,18 +172,14 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 		return (((int)(scaled[0]*255)<<16)+((int)(scaled[1]*255)<<8)+(int)(scaled[2]*255));
 	}
 
-	private static final String LIT_TIME = "litTime";
-	public static final String LIT_STRENGTH = "litStrength";
-
 	public static boolean isLit(ItemStack stack)
 	{
-		return ItemNBTHelper.hasKey(stack, LIT_TIME);
+		return stack.has(IEDataComponents.FLUORESCENT_TUBE_LIT);
 	}
 
 	public static void setLit(ItemStack stack, float strength)
 	{
-		ItemNBTHelper.putInt(stack, LIT_TIME, 35);
-		ItemNBTHelper.putFloat(stack, LIT_STRENGTH, Mth.clamp(strength, 0, 1F));
+		stack.set(IEDataComponents.FLUORESCENT_TUBE_LIT, new LitState(Mth.clamp(strength, 0, 1F), 35));
 	}
 
 	@Override
@@ -199,23 +193,28 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
 		super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
-		if(!worldIn.isClientSide&&isLit(stack))
+		var state = stack.get(IEDataComponents.FLUORESCENT_TUBE_LIT);
+		if(!worldIn.isClientSide&&state!=null)
 		{
-			int litTicksRemaining = ItemNBTHelper.getInt(stack, LIT_TIME);
-			litTicksRemaining--;
-			if(litTicksRemaining <= 0)
-			{
-				ItemNBTHelper.remove(stack, LIT_TIME);
-				ItemNBTHelper.remove(stack, LIT_STRENGTH);
-			}
+			if(state.time > 1)
+				stack.set(IEDataComponents.FLUORESCENT_TUBE_LIT, new LitState(state.strength, state.time-1));
 			else
-				ItemNBTHelper.putInt(stack, LIT_TIME, litTicksRemaining);
+				stack.remove(IEDataComponents.FLUORESCENT_TUBE_LIT);
 		}
 	}
 
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
 	{
-		return !ItemStack.isSameItem(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
+		return !ItemStack.isSameItem(oldStack, newStack)||!Objects.equals(getRGB(oldStack), getRGB(newStack));
+	}
+
+	public record LitState(float strength, int time)
+	{
+		public static final DualCodec<ByteBuf, LitState> CODECS = DualCodecs.composite(
+				DualCodecs.FLOAT.fieldOf("strength"), LitState::strength,
+				DualCodecs.INT.fieldOf("time"), LitState::time,
+				LitState::new
+		);
 	}
 }

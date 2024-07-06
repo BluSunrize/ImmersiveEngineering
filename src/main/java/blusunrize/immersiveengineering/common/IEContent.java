@@ -182,7 +182,6 @@ public class IEContent
 		IEWireTypes.setup();
 		IEStats.setup();
 
-		ShaderRegistry.itemShader = IEItems.Misc.SHADER.get();
 		ShaderRegistry.itemShaderBag = IEItems.Misc.SHADER_BAG;
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.REVOLVER));
 		ShaderRegistry.itemExamples.add(new ItemStack(Tools.DRILL));
@@ -312,6 +311,10 @@ public class IEContent
 		IMultiblockBEHelperMaster.MAKE_HELPER.setValue(MultiblockBEHelperMaster::new);
 		IMultiblockBEHelperDummy.MAKE_HELPER.setValue(MultiblockBEHelperDummy::new);
 		GlobalWireNetwork.GET_NET_UNCACHED.setValue(WireNetworkCreator::getOrCreateNetwork);
+		ShaderRegistry.GET_SHADER_ITEM.setValue(rl -> {
+			var regObject = IEItems.Misc.SHADERS.get(rl);
+			return regObject!=null?regObject.regObject(): null;
+		});
 		IEServerConfig.MACHINES.populateAPI();
 		SetRestrictedField.lock(false);
 

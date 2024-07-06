@@ -111,13 +111,13 @@ public class EventHandler
 		ItemStack stack = event.getItemStack();
 		if(!(event.getTarget() instanceof AbstractMinecart cart))
 			return;
-		if(stack.getItem() instanceof IShaderItem)
+		if(stack.getItem() instanceof IShaderItem shaderItem)
 		{
 			final ShaderWrapper wrapper = cart.getData(IEDataAttachments.MINECART_SHADER);
 			if(wrapper!=null&&!event.getLevel().isClientSide)
 			{
-				wrapper.setShaderItem(stack.copyWithCount(1));
-				PacketDistributor.sendToPlayersTrackingEntity(cart, new MessageMinecartShaderSync(cart.getId(), wrapper.getShaderItem()));
+				wrapper.setShader(shaderItem.getShaderName());
+				PacketDistributor.sendToPlayersTrackingEntity(cart, new MessageMinecartShaderSync(cart.getId(), Optional.ofNullable(wrapper.getShader())));
 			}
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.SUCCESS);
@@ -131,7 +131,7 @@ public class EventHandler
 		ItemStack stack = event.getItemEntity().getItem();
 		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
 		{
-			ResourceLocation shader = ((IShaderItem)stack.getItem()).getShaderName(stack);
+			ResourceLocation shader = ((IShaderItem)stack.getItem()).getShaderName();
 			ShaderRegistry.markShaderReceived(player.getUUID(), shader);
 		}
 	}

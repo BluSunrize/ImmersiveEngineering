@@ -58,10 +58,10 @@ public class DualCodecs
 			Ingredient.CODEC, Ingredient.CONTENTS_STREAM_CODEC
 	);
 	public static final DualCodec<RegistryFriendlyByteBuf, ItemStack> ITEM_STACK = new DualCodec<>(
-			ItemStack.CODEC, ItemStack.STREAM_CODEC
+			ItemStack.OPTIONAL_CODEC, ItemStack.OPTIONAL_STREAM_CODEC
 	);
 	public static final DualCodec<RegistryFriendlyByteBuf, FluidStack> FLUID_STACK = new DualCodec<>(
-			FluidStack.CODEC, FluidStack.STREAM_CODEC
+			FluidStack.OPTIONAL_CODEC, FluidStack.OPTIONAL_STREAM_CODEC
 	);
 	public static final DualCodec<RegistryFriendlyByteBuf, NonNullList<Ingredient>> NONNULL_INGREDIENTS = new DualCodec<>(
 			IECodecs.NONNULL_INGREDIENTS, Ingredient.CONTENTS_STREAM_CODEC.apply(IECodecs.nonNullList())

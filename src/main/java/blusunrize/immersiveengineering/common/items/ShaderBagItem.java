@@ -68,7 +68,7 @@ public class ShaderBagItem extends IEBaseItem implements IColouredItem
 				ResourceLocation shader = ShaderRegistry.getRandomShader(player.getUUID(), player.getRandom(), rarity, true);
 				if(shader==null)
 					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-				ItemStack shaderItem = ShaderItem.makeShaderItem(shader);
+				ItemStack shaderItem = ShaderRegistry.makeShaderStack(shader);
 				Rarity shaderRarity = shaderItem.getRarity();
 				if(ShaderRegistry.sortedRarityMap.indexOf(shaderRarity) <= ShaderRegistry.sortedRarityMap.indexOf(Rarity.EPIC)&&
 						ShaderRegistry.sortedRarityMap.indexOf(rarity) >= ShaderRegistry.sortedRarityMap.indexOf(Rarity.COMMON))

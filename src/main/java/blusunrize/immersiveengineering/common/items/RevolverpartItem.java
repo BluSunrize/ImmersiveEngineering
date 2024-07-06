@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.nbt.CompoundTag;
+import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,20 +29,17 @@ public class RevolverpartItem extends IEBaseItem
 	public Component getName(ItemStack stack)
 	{
 		Component name = super.getName(stack);
-		if(ItemNBTHelper.hasKey(stack, "perks"))
-			return RevolverItem.RevolverPerk.getFormattedName(name, ItemNBTHelper.getTagCompound(stack, "perks"));
+		var perks = stack.get(IEDataComponents.REVOLVER_PERKS);
+		if(perks!=null)
+			return RevolverItem.RevolverPerk.getFormattedName(name, perks);
 		return name;
 	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
-		CompoundTag perks = ItemNBTHelper.getTagCompound(stack, "perks");
-		for(String key : perks.getAllKeys())
-		{
-			RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
-			if(perk!=null)
-				list.add(Component.literal("  ").append(perk.getDisplayString(perks.getDouble(key))));
-		}
+		var perks = stack.getOrDefault(IEDataComponents.REVOLVER_PERKS, Perks.EMPTY);
+		for(var entry : perks.perks().entrySet())
+			list.add(Component.literal("  ").append(entry.getKey().getDisplayString(entry.getValue())));
 	}
 }

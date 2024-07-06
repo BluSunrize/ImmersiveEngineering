@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.FluorescentTubeCallbacks.Key;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -22,7 +22,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.items.FluorescentTubeItem.*;
+import static blusunrize.immersiveengineering.common.items.FluorescentTubeItem.getRGBFloat;
+import static blusunrize.immersiveengineering.common.items.FluorescentTubeItem.isLit;
 
 public class FluorescentTubeCallbacks implements ItemCallback<Key>
 {
@@ -32,7 +33,7 @@ public class FluorescentTubeCallbacks implements ItemCallback<Key>
 	public Key extractKey(ItemStack object, LivingEntity owner)
 	{
 		boolean lit = isLit(object);
-		float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F: 0);
+		float min = .3F+(lit?object.get(IEDataComponents.FLUORESCENT_TUBE_LIT).strength()*.68F: 0);
 		float mult = min+(lit?ApiUtils.RANDOM.nextFloat()*Mth.clamp(1-min, 0, .1F): 0);
 		float[] colors = getRGBFloat(object, mult);
 		return new Key(new Color4(colors[0], colors[1], colors[2], colors[3]));

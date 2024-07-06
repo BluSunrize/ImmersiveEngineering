@@ -212,7 +212,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 					else
 						particlePos = living.position();
 					shader.registryEntry().getEffectFunction().execute(
-							world, shader.shader(), stack, shader.sCase().getShaderType().toString(),
+							world, stack, shader.sCase().getShaderType().toString(),
 							particlePos, null, .375f
 					);
 				}

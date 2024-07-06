@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
+import java.util.Optional;
 
 public record MessageMultiblockSync(List<SyncedTemplate> templates) implements IMessage
 {
@@ -55,8 +56,8 @@ public record MessageMultiblockSync(List<SyncedTemplate> templates) implements I
 		private static final StreamCodec<RegistryFriendlyByteBuf, StructureBlockInfo> BLOCK_CODEC = StreamCodec.composite(
 				BlockPos.STREAM_CODEC, StructureBlockInfo::pos,
 				ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY), StructureBlockInfo::state,
-				ByteBufCodecs.COMPOUND_TAG, StructureBlockInfo::nbt,
-				StructureBlockInfo::new
+				ByteBufCodecs.OPTIONAL_COMPOUND_TAG, s -> Optional.ofNullable(s.nbt()),
+				(pos, block, nbt) -> new StructureBlockInfo(pos, block, nbt.orElse(null))
 		);
 		private static final StreamCodec<RegistryFriendlyByteBuf, StructureTemplate.Palette> PALETTE_CODEC = BLOCK_CODEC
 				.apply(ByteBufCodecs.list())

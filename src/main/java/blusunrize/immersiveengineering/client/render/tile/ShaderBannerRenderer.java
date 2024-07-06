@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTexture;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
@@ -29,7 +29,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
 
 import javax.annotation.Nullable;
@@ -109,29 +108,20 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 	@Nullable
 	private ResourceLocation getBannerResourceLocation(ShaderBannerBlockEntity bannerObj)
 	{
-		return getShaderResourceLocation(bannerObj.shader.getShaderItem(), bannerObj.shader.getShaderType());
+		return getShaderResourceLocation(bannerObj.shader.getShader(), bannerObj.shader.getShaderType());
 	}
 
 	@Nullable
-	public static ResourceLocation getShaderResourceLocation(ItemStack shader, ResourceLocation shaderType)
+	public static ResourceLocation getShaderResourceLocation(ResourceLocation shader, ResourceLocation shaderType)
 	{
-		ResourceLocation name = null;
-		ShaderCase sCase = null;
-		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-		{
-			IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
-			name = iShaderItem.getShaderName(shader);
-			if(CACHE.containsKey(name))
-				return CACHE.get(name);
-			sCase = iShaderItem.getShaderCase(shader, shaderType);
-		}
+		ShaderCase sCase = ShaderRegistry.getShader(shader, shaderType);
 
 		if(sCase!=null)
 		{
 			ShaderLayer[] layers = sCase.getLayers();
-			ResourceLocation textureLocation = name.withPath("bannershader/"+name.getPath());
+			ResourceLocation textureLocation = shader.withPath("bannershader/"+shader.getPath());
 			ClientUtils.mc().getTextureManager().register(textureLocation, new IEShaderLayerCompositeTexture(BASE_TEXTURE, layers));
-			CACHE.put(name, textureLocation);
+			CACHE.put(shader, textureLocation);
 			return textureLocation;
 		}
 		return null;

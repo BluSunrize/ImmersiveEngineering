@@ -26,7 +26,7 @@ public class TagOutput
 	public static final TagOutput EMPTY = new TagOutput(new IngredientWithSize(Ingredient.EMPTY));
 	public static final DualCodec<RegistryFriendlyByteBuf, TagOutput> CODECS = new DualCodec<>(
 			Codec.either(IngredientWithSize.CODEC, ItemStack.CODEC).xmap(TagOutput::new, out -> out.rawData),
-			ItemStack.STREAM_CODEC.map(TagOutput::new, TagOutput::get)
+			ItemStack.OPTIONAL_STREAM_CODEC.map(TagOutput::new, TagOutput::get)
 	);
 
 	private final Either<IngredientWithSize, ItemStack> rawData;

@@ -22,5 +22,5 @@ import javax.annotation.Nullable;
 @FunctionalInterface
 public interface IShaderEffectFunction
 {
-	void execute(@Nonnull Level world, @Nonnull ItemStack shader, @Nullable ItemStack item, @Nonnull String shaderType, @Nonnull Vec3 pos, @Nullable Vec3 direction, float scale);
+	void execute(@Nonnull Level world, @Nullable ItemStack item, @Nonnull String shaderType, @Nonnull Vec3 pos, @Nullable Vec3 direction, float scale);
 }

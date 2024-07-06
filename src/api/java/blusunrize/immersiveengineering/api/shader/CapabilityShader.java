@@ -18,9 +18,11 @@ import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
+
+import static blusunrize.immersiveengineering.api.IEApiDataComponents.ATTACHED_SHADER;
 
 /**
  * @author BluSunrize - 09.11.2016
@@ -44,7 +46,7 @@ public class CapabilityShader
 		else if(wrapperOld!=null&&wrapperNew==null)
 			return true;
 		else if(wrapperOld!=null)
-			return !ItemStack.matches(wrapperOld.getShaderItem(), wrapperNew.getShaderItem());
+			return !Objects.equals(wrapperOld.getShader(), wrapperNew.getShader());
 		else
 			return false;
 	}
@@ -53,16 +55,16 @@ public class CapabilityShader
 	{
 		ResourceLocation getShaderType();
 
-		void setShaderItem(@Nonnull ItemStack shader);
+		void setShader(@Nullable ResourceLocation shader);
 
-		@Nonnull
-		ItemStack getShaderItem();
+		@Nullable
+		ResourceLocation getShader();
 
 		default ShaderCase getCase()
 		{
-			ItemStack shaderStack = getShaderItem();
-			if(shaderStack.getItem() instanceof IShaderItem shaderItem)
-				return shaderItem.getShaderCase(shaderStack, getShaderType());
+			var shaderStack = getShader();
+			if(shaderStack!=null)
+				return ShaderRegistry.getShader(shaderStack, getShaderType());
 			else
 				return null;
 		}
@@ -70,7 +72,6 @@ public class CapabilityShader
 
 	public static class ShaderWrapper_Item implements ShaderWrapper
 	{
-		public static final String SHADER_NBT_KEY = "IE:Shader";
 		private final ItemStack container;
 		private final ResourceLocation shaderType;
 
@@ -87,31 +88,19 @@ public class CapabilityShader
 		}
 
 		@Override
-		public void setShaderItem(@NotNull ItemStack shader)
+		public void setShader(@Nullable ResourceLocation shader)
 		{
-			throw new UnsupportedOperationException();
-			//if(!container.hasTag())
-			//	container.setTag(new CompoundTag());
-			//if(!shader.isEmpty())
-			//{
-			//	CompoundTag shaderTag = shader.save(new CompoundTag());
-			//	container.getOrCreateTag().put(SHADER_NBT_KEY, shaderTag);
-			//}
-			//else
-			//	container.getOrCreateTag().remove(SHADER_NBT_KEY);
+			if(shader!=null)
+				container.set(ATTACHED_SHADER, shader);
+			else
+				container.remove(ATTACHED_SHADER);
 		}
 
 		@Override
-		@Nonnull
-		public ItemStack getShaderItem()
+		@Nullable
+		public ResourceLocation getShader()
 		{
-			throw new UnsupportedOperationException();
-			//if(!container.hasTag())
-			//	return ItemStack.EMPTY;
-			//CompoundTag tagCompound = container.getOrCreateTag();
-			//if(!tagCompound.contains(SHADER_NBT_KEY, Tag.TAG_COMPOUND))
-			//	return ItemStack.EMPTY;
-			//return ItemStack.of(tagCompound.getCompound(SHADER_NBT_KEY));
+			return container.get(ATTACHED_SHADER);
 		}
 	}
 
@@ -119,8 +108,8 @@ public class CapabilityShader
 	{
 		public static final IAttachmentSerializer<CompoundTag, ShaderWrapper_Direct> SERIALIZER = new WrapperSerializer();
 
-		@Nonnull
-		private ItemStack shader = ItemStack.EMPTY;
+		@Nullable
+		private ResourceLocation shader = null;
 		private final ResourceLocation type;
 
 		public ShaderWrapper_Direct(ResourceLocation type)
@@ -134,14 +123,14 @@ public class CapabilityShader
 		}
 
 		@Override
-		public void setShaderItem(@Nonnull ItemStack shader)
+		public void setShader(@Nullable ResourceLocation shader)
 		{
 			this.shader = shader;
 		}
 
 		@Override
-		@Nonnull
-		public ItemStack getShaderItem()
+		@Nullable
+		public ResourceLocation getShader()
 		{
 			return this.shader;
 		}
@@ -153,9 +142,9 @@ public class CapabilityShader
 		public CompoundTag write(ShaderWrapper_Direct attachment, Provider provider)
 		{
 			CompoundTag nbt = new CompoundTag();
-			ItemStack shader = attachment.getShaderItem();
-			if(!shader.isEmpty())
-				shader.save(provider, nbt);
+			var shader = attachment.getShader();
+			if(shader!=null)
+				nbt.putString("IE:Shader", shader.toString());
 			else
 				nbt.putString("IE:NoShader", "");
 			nbt.putString("IE:ShaderType", attachment.getShaderType().toString());
@@ -167,7 +156,7 @@ public class CapabilityShader
 		{
 			ShaderWrapper_Direct wrapper = new ShaderWrapper_Direct(ResourceLocation.parse(tag.getString("IE:ShaderType")));
 			if(!tag.contains("IE:NoShader"))
-				wrapper.setShaderItem(ItemStack.parseOptional(provider, tag));
+				wrapper.setShader(ResourceLocation.parse(tag.getString("IE:Shader")));
 			return wrapper;
 		}
 	}

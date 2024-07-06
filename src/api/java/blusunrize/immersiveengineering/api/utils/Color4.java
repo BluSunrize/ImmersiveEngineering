@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.utils;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.DyeColor;
 
@@ -41,12 +40,12 @@ public record Color4(float r, float g, float b, float a)
 
 	public static Color4 load(Tag nbt)
 	{
-		return CODECS.codec().decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
+		return CODECS.fromNBT(nbt);
 	}
 
 	public Tag save()
 	{
-		return CODECS.codec().encodeStart(NbtOps.INSTANCE, this).getOrThrow();
+		return CODECS.toNBT(this);
 	}
 
 	public int toInt()

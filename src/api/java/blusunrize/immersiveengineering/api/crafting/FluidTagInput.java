@@ -9,30 +9,22 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
-import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -40,7 +32,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,69 +46,51 @@ public class FluidTagInput implements Predicate<FluidStack>
 					ResourceLocation.CODEC.listOf().fieldOf("fluids")
 			).forGetter(t -> t.fluidTag),
 			Codec.INT.fieldOf("amount").forGetter(t -> t.amount),
-			CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(t -> Optional.ofNullable(t.nbtTag))
-	).apply(inst, (tag, amount, nbt) -> new FluidTagInput(tag, amount, nbt.orElse(null))));
+			DataComponentPredicate.CODEC.optionalFieldOf("nbt", DataComponentPredicate.EMPTY).forGetter(t -> t.predicate)
+	).apply(inst, FluidTagInput::new));
 	public static final Codec<FluidTagInput> CODEC = MAP_CODEC.codec();
 	public static final StreamCodec<RegistryFriendlyByteBuf, FluidTagInput> STREAM_CODEC = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), FluidTagInput::getMatchingFluidNames,
 			ByteBufCodecs.INT, t -> t.amount,
-			// TODO this is probably broken, but has to be replaced anyway
-			ByteBufCodecs.COMPOUND_TAG, t -> t.nbtTag,
+			DataComponentPredicate.STREAM_CODEC, t -> t.predicate,
 			(names, amount, tag) -> new FluidTagInput(Either.right(names), amount, tag)
 	);
 	public static final DualCodec<RegistryFriendlyByteBuf, FluidTagInput> CODECS = new DualCodec<>(CODEC, STREAM_CODEC);
 
 	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;
-	protected final CompoundTag nbtTag;
+	protected final DataComponentPredicate predicate;
 
-	public FluidTagInput(Either<TagKey<Fluid>, List<ResourceLocation>> matching, int amount, CompoundTag nbtTag)
+	public FluidTagInput(Either<TagKey<Fluid>, List<ResourceLocation>> matching, int amount, DataComponentPredicate predicate)
 	{
 		this.fluidTag = matching;
 		this.amount = amount;
-		this.nbtTag = nbtTag;
+		this.predicate = predicate;
 	}
 
-	public FluidTagInput(TagKey<Fluid> fluidTag, int amount, CompoundTag nbtTag)
+	public FluidTagInput(TagKey<Fluid> fluidTag, int amount, @Nonnull DataComponentPredicate predicate)
 	{
-		this(Either.left(fluidTag), amount, nbtTag);
+		this(Either.left(fluidTag), amount, predicate);
 	}
 
-	public FluidTagInput(ResourceLocation resourceLocation, int amount, CompoundTag nbtTag)
+	public FluidTagInput(ResourceLocation resourceLocation, int amount, @Nonnull DataComponentPredicate predicate)
 	{
-		this(TagKey.create(Registries.FLUID, resourceLocation), amount, nbtTag);
+		this(TagKey.create(Registries.FLUID, resourceLocation), amount, predicate);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount)
 	{
-		this(resourceLocation, amount, null);
+		this(resourceLocation, amount, DataComponentPredicate.EMPTY);
 	}
 
 	public FluidTagInput(TagKey<Fluid> tag, int amount)
 	{
-		this(tag, amount, null);
-	}
-
-	public static FluidTagInput deserialize(JsonElement input)
-	{
-		Preconditions.checkArgument(input instanceof JsonObject, "FluidTagWithSize can only be deserialized from a JsonObject");
-		JsonObject jsonObject = input.getAsJsonObject();
-		ResourceLocation resourceLocation = ResourceLocation.parse(GsonHelper.getAsString(jsonObject, "tag"));
-		if(!GsonHelper.isValidNode(jsonObject, "nbt"))
-			return new FluidTagInput(resourceLocation, GsonHelper.getAsInt(jsonObject, "amount"));
-		try
-		{
-			CompoundTag nbt = ItemUtils.parseNbtFromJson(jsonObject.get("nbt"));
-			return new FluidTagInput(resourceLocation, GsonHelper.getAsInt(jsonObject, "amount"), nbt);
-		} catch(CommandSyntaxException e)
-		{
-			throw new JsonParseException(e);
-		}
+		this(tag, amount, DataComponentPredicate.EMPTY);
 	}
 
 	public FluidTagInput withAmount(int amount)
 	{
-		return new FluidTagInput(this.fluidTag, amount, this.nbtTag);
+		return new FluidTagInput(this.fluidTag, amount, this.predicate);
 	}
 
 	@Override
@@ -135,35 +108,24 @@ public class FluidTagInput implements Predicate<FluidStack>
 				l -> l.contains(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()))
 		))
 			return false;
-		if(this.nbtTag!=null)
-			throw new UnsupportedOperationException();
-			//return fluidStack.hasTag()&&fluidStack.getTag().equals(this.nbtTag);
-		return true;
+		return predicate.test(fluidStack);
 	}
 
 	@Nonnull
 	public List<FluidStack> getMatchingFluidStacks()
 	{
-		throw new UnsupportedOperationException();
-		//return fluidTag.map(
-		//		// TODO less global?
-		//		t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t),
-		//		l -> l.stream().map(BuiltInRegistries.FLUID::get)
-		//)
-		//		.map(fluid -> new FluidStack(fluid, FluidTagInput.this.amount, FluidTagInput.this.nbtTag))
-		//		.collect(Collectors.toList());
-	}
-
-	@Nonnull
-	public JsonElement serialize()
-	{
-		JsonObject jsonObject = new JsonObject();
-		ResourceLocation name = this.fluidTag.orThrow().location();
-		jsonObject.addProperty("tag", name.toString());
-		jsonObject.addProperty("amount", this.amount);
-		if(this.nbtTag!=null)
-			jsonObject.addProperty("nbt", this.nbtTag.toString());
-		return jsonObject;
+		return fluidTag.map(
+						// TODO less global?
+						t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t),
+						l -> l.stream().map(BuiltInRegistries.FLUID::get)
+				)
+				// TODO include components/nbt
+				.map(fluid -> {
+					final FluidStack matchingStack = new FluidStack(fluid, FluidTagInput.this.amount);
+					matchingStack.applyComponents(predicate.asPatch());
+					return matchingStack;
+				})
+				.collect(Collectors.toList());
 	}
 
 	public int getAmount()
@@ -175,29 +137,6 @@ public class FluidTagInput implements Predicate<FluidStack>
 	{
 		List<FluidStack> all = getMatchingFluidStacks();
 		return all.get((rand/20)%all.size());
-	}
-
-	public static FluidTagInput read(FriendlyByteBuf input)
-	{
-		int numMatching = input.readVarInt();
-		List<ResourceLocation> matching = new ArrayList<>(numMatching);
-		for(int i = 0; i < numMatching; ++i)
-			matching.add(input.readResourceLocation());
-		int amount = input.readInt();
-		CompoundTag nbt = input.readBoolean()?input.readNbt(): null;
-		return new FluidTagInput(Either.right(matching), amount, nbt);
-	}
-
-	public void write(FriendlyByteBuf out)
-	{
-		List<ResourceLocation> matching = getMatchingFluidNames();
-		out.writeVarInt(matching.size());
-		for(ResourceLocation rl : matching)
-			out.writeResourceLocation(rl);
-		out.writeInt(this.amount);
-		out.writeBoolean(this.nbtTag!=null);
-		if(this.nbtTag!=null)
-			out.writeNbt(this.nbtTag);
 	}
 
 	private List<ResourceLocation> getMatchingFluidNames()
@@ -245,12 +184,12 @@ public class FluidTagInput implements Predicate<FluidStack>
 		if(this==o) return true;
 		if(o==null||getClass()!=o.getClass()) return false;
 		FluidTagInput that = (FluidTagInput)o;
-		return amount==that.amount&&Objects.equals(fluidTag, that.fluidTag)&&Objects.equals(nbtTag, that.nbtTag);
+		return amount==that.amount&&Objects.equals(fluidTag, that.fluidTag)&&Objects.equals(predicate, that.predicate);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(fluidTag, amount, nbtTag);
+		return Objects.hash(fluidTag, amount, predicate);
 	}
 }

@@ -57,8 +57,8 @@ public class IEDataGenerator
 			gen.addProvider(true, new ConnectorBlockStates(output, exHelper));
 			gen.addProvider(true, new ItemModels(output, exHelper, multiblocks));
 			gen.addProvider(true, new Advancements(output, lookup, exHelper));
-			gen.addProvider(true, new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, output));
-			gen.addProvider(true, new StructureUpdater("structures/village", Lib.MODID, exHelper, output));
+			gen.addProvider(true, new StructureUpdater("structure/multiblocks", Lib.MODID, exHelper, output));
+			gen.addProvider(true, new StructureUpdater("structure/village", Lib.MODID, exHelper, output));
 			gen.addProvider(true, new DynamicModels(multiblocks, output, exHelper));
 			gen.addProvider(true, new LootModifierProvider(output, lookup));
 			for(final DataProvider provider : WorldGenerationProvider.makeProviders(output, lookup, exHelper))

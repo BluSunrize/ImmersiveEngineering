@@ -19,6 +19,6 @@ public class IEApiDataComponents
 {
 	public static Supplier<DataComponentType<WireLink>> WIRE_LINK;
 	public static Supplier<DataComponentType<String>> BLUEPRINT_TYPE;
-	public static Supplier<DataComponentType<ResourceLocation>> SHADER_TYPE;
+	public static Supplier<DataComponentType<ResourceLocation>> ATTACHED_SHADER;
 	public static Supplier<DataComponentType<Unit>> FLUID_PRESSURIZED;
 }

@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
-import blusunrize.immersiveengineering.common.items.ShaderItem;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual;
 import blusunrize.immersiveengineering.common.network.MessageShaderManual.MessageType;
 import blusunrize.lib.manual.ManualInstance;
@@ -79,7 +78,7 @@ public class ShaderManualElement extends SpecialManualElements
 		UUID uuid = player.getUUID();
 		unlocked = ShaderRegistry.receivedShaders.get(uuid).contains(shader.getName());
 
-		shaderItem = ShaderItem.makeShaderItem(shader.name);
+		shaderItem = ShaderRegistry.makeShaderStack(shader.name);
 		replicationCost = shader.replicationCost.get();
 
 		if(unlocked)
@@ -91,7 +90,7 @@ public class ShaderManualElement extends SpecialManualElements
 				ShaderWrapper wrapper = s.getCapability(CapabilityShader.ITEM);
 				if(wrapper!=null)
 				{
-					wrapper.setShaderItem(shaderItem);
+					wrapper.setShader(shader.name);
 					list.add(s);
 				}
 			}

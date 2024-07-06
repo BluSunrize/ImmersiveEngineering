@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -144,67 +143,5 @@ public class EnergyHelper
 			remainingOutputs--;
 		}
 		return amount;
-	}
-
-	public static class ItemEnergyStorage implements IEnergyStorage
-	{
-		private final ItemStack stack;
-		private final ToIntFunction<ItemStack> getCapacity;
-
-		public ItemEnergyStorage(ItemStack item, ToIntFunction<ItemStack> getCapacity)
-		{
-			this.stack = item;
-			this.getCapacity = getCapacity;
-		}
-
-		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate)
-		{
-			int stored = getEnergyStored();
-			int accepted = Math.min(maxReceive, getMaxEnergyStored()-stored);
-			if(!simulate)
-			{
-				stored += accepted;
-				ItemNBTHelper.putInt(stack, ENERGY_KEY, stored);
-			}
-			return accepted;
-		}
-
-		@Override
-		public int extractEnergy(int maxExtract, boolean simulate)
-		{
-			int stored = getEnergyStored();
-			int extracted = Math.min(maxExtract, stored);
-			if(!simulate)
-			{
-				stored -= extracted;
-				ItemNBTHelper.putInt(stack, ENERGY_KEY, stored);
-			}
-			return extracted;
-		}
-
-		@Override
-		public int getEnergyStored()
-		{
-			return ItemNBTHelper.getInt(stack, ENERGY_KEY);
-		}
-
-		@Override
-		public int getMaxEnergyStored()
-		{
-			return getCapacity.applyAsInt(stack);
-		}
-
-		@Override
-		public boolean canExtract()
-		{
-			return true;
-		}
-
-		@Override
-		public boolean canReceive()
-		{
-			return true;
-		}
 	}
 }

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
@@ -39,7 +40,9 @@ public class PotionHelper
 		{
 			CompoundTag nbt = new CompoundTag();
 			nbt.putString("Potion", type.unwrapKey().orElseThrow().location().toString());
-			return new FluidTagInput(IETags.fluidPotion, amount, nbt);
+			return new FluidTagInput(IETags.fluidPotion, amount, DataComponentPredicate.builder()
+					.expect(DataComponents.POTION_CONTENTS, new PotionContents(type))
+					.build());
 		}
 	}
 

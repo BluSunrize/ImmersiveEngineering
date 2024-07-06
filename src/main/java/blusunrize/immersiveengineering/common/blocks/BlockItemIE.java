@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -31,7 +29,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,17 +64,17 @@ public class BlockItemIE extends BlockItem
 			tooltip.add(TextUtils.applyFormat(Component.translatable(flavourKey), ChatFormatting.GRAY));
 		}
 		super.appendHoverText(stack, ctx, tooltip, advanced);
-		if(ItemNBTHelper.hasKey(stack, EnergyHelper.ENERGY_KEY))
-			tooltip.add(TextUtils.applyFormat(Component.translatable(Lib.DESC_INFO+"energyStored",
-							ItemNBTHelper.getInt(stack,  EnergyHelper.ENERGY_KEY)),
-					ChatFormatting.GRAY));
-		if(ItemNBTHelper.hasKey(stack, "tank"))
+		if(stack.has(IEDataComponents.GENERIC_ENERGY))
+			tooltip.add(TextUtils.applyFormat(
+					Component.translatable(Lib.DESC_INFO+"energyStored", stack.get(IEDataComponents.GENERIC_ENERGY)),
+					ChatFormatting.GRAY
+			));
+		if(stack.has(IEDataComponents.GENERIC_FLUID))
 		{
-			Optional<FluidStack> fs = FluidStack.parse(ctx.registries(), ItemNBTHelper.getTagCompound(stack, "tank"));
-			if(fs.isPresent())
-				tooltip.add(Component.translatable(
-						Lib.DESC_INFO+"fluidStored", fs.get().getHoverName(), fs.get().getAmount()
-				).withStyle(ChatFormatting.GRAY));
+			var fs = stack.get(IEDataComponents.GENERIC_FLUID).copy();
+			tooltip.add(Component.translatable(
+					Lib.DESC_INFO+"fluidStored", fs.getHoverName(), fs.getAmount()
+			).withStyle(ChatFormatting.GRAY));
 		}
 	}
 

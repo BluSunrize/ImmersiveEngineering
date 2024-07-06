@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
 import com.google.common.collect.ImmutableMap;
@@ -30,10 +30,10 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 
 public class ShaderMinecartRenderer<T extends AbstractMinecart> extends MinecartRenderer<T>
 {
-	public static Int2ObjectMap<ItemStack> shadedCarts = new Int2ObjectOpenHashMap<>();
+	public static Int2ObjectMap<ResourceLocation> shadedCarts = new Int2ObjectOpenHashMap<>();
 
 	private final MinecartRenderer<T> baseRenderer;
 	private final MinecartModel<?> baseModel;
@@ -61,13 +61,9 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 	public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
 		ShaderCase sCase = null;
-		ItemStack shader;
-		if(shadedCarts.containsKey(entity.getId()))
-		{
-			shader = shadedCarts.get(entity.getId());
-			if(shader!=null&&!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, IEApi.ieLoc("minecart"));
-		}
+		ResourceLocation shader = shadedCarts.get(entity.getId());
+		if(shader!=null)
+			sCase = ShaderRegistry.getShader(shader, IEApi.ieLoc("minecart"));
 		baseRenderer.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 		if(sCase!=null)
 		{

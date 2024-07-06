@@ -83,7 +83,7 @@ public class IEShaders
 				true
 		);
 		addLayer(ikelos, "1_4", 0xff5f646a);
-		ikelos.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
+		ikelos.setEffectFunction((world, item, shaderType, pos, dir, scale) -> {
 			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 1, 0), scale, 2, null);
 			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 0, 1), scale, 2, null);
 			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(1, 0, 0), scale, 2, null);

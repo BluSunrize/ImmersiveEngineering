@@ -93,6 +93,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -184,10 +185,10 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		var wrapper = event.getItemStack().getCapability(CapabilityShader.ITEM);
 		if(wrapper!=null)
 		{
-			ItemStack shader = wrapper.getShaderItem();
-			if(!shader.isEmpty())
+			var shader = wrapper.getShader();
+			if(shader!=null)
 				event.getToolTip().add(TextUtils.applyFormat(
-						shader.getHoverName(),
+						ShaderItem.getShaderName(shader),
 						ChatFormatting.DARK_GRAY
 				));
 		}
@@ -797,6 +798,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
 		if(event.getEntity().level().isClientSide&&event.getEntity() instanceof AbstractMinecart)
-			PacketDistributor.sendToServer(new MessageMinecartShaderSync(event.getEntity().getId(), ItemStack.EMPTY));
+			PacketDistributor.sendToServer(new MessageMinecartShaderSync(event.getEntity().getId(), Optional.empty()));
 	}
 }

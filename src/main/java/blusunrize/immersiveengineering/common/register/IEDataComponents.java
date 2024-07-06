@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity.Tur
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerData;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem.EarmuffData;
+import blusunrize.immersiveengineering.common.items.FluorescentTubeItem.LitState;
 import blusunrize.immersiveengineering.common.items.HammerItem.MultiblockRestriction;
 import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
 import blusunrize.immersiveengineering.common.items.SurveyToolsItem.VeinEntry;
@@ -108,6 +109,9 @@ public class IEDataComponents
 			"multiblock_restriction", MultiblockRestriction.CODECS
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Perks>> REVOLVER_PERKS = make("revolver_perks", Perks.CODECS);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<String>> REVOLVER_ELITE = make("revolver_elite", DualCodecs.STRING);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<String>> REVOLVER_FLAVOUR = make("revolver_flavour", DualCodecs.STRING);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<LitState>> FLUORESCENT_TUBE_LIT = make("fluorescent_tube", LitState.CODECS);
 	private static final Map<IBullet<?>, Supplier<DataComponentType<?>>> BULLETS = new IdentityHashMap<>();
 
 	// TODO probably just a massive hack? Does this need to be persistent?
@@ -131,7 +135,7 @@ public class IEDataComponents
 		}
 		IEApiDataComponents.WIRE_LINK = make("wire_link", WireLink.CODECS);
 		IEApiDataComponents.BLUEPRINT_TYPE = make("blueprint", DualCodecs.STRING);
-		IEApiDataComponents.SHADER_TYPE = make("shader", DualCodecs.RESOURCE_LOCATION);
+		IEApiDataComponents.ATTACHED_SHADER = make("shader", DualCodecs.RESOURCE_LOCATION);
 		IEApiDataComponents.FLUID_PRESSURIZED = make("fluid_pressurized", DualCodecs.unit(Unit.INSTANCE));
 	}
 

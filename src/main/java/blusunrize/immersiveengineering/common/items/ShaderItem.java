@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
@@ -22,18 +21,14 @@ import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingB
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -49,33 +44,18 @@ import java.util.Locale;
 
 public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 {
-	public static ItemStack makeShaderItem(ResourceLocation type)
-	{
-		final var rarity = ShaderRegistry.shaderRegistry.containsKey(type)?
-				ShaderRegistry.shaderRegistry.get(type).getRarity():
-				Rarity.COMMON;
-		ItemStack s = new ItemStack(Misc.SHADER);
-		s.set(IEApiDataComponents.SHADER_TYPE, type);
-		s.set(DataComponents.RARITY, rarity);
-		return s;
-	}
+	private final ResourceLocation shaderName;
 
-	public ShaderItem()
+	public ShaderItem(ResourceLocation shaderName)
 	{
 		super(new Properties().stacksTo(1));
+		this.shaderName = shaderName;
 	}
 
 	@Override
-	public ShaderCase getShaderCase(ItemStack shader, ResourceLocation shaderType)
+	public ResourceLocation getShaderName()
 	{
-		return ShaderRegistry.getShader(getShaderName(shader), shaderType);
-	}
-
-
-	@Override
-	public ResourceLocation getShaderName(ItemStack stack)
-	{
-		return stack.get(IEApiDataComponents.SHADER_TYPE);
+		return this.shaderName;
 	}
 
 	@Nonnull
@@ -84,7 +64,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 	{
 		Level world = ctx.getLevel();
 		BlockPos pos = ctx.getClickedPos();
-		ResourceLocation name = getShaderName(ctx.getItemInHand());
+		ResourceLocation name = getShaderName();
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
 			BlockState blockState = world.getBlockState(pos);
@@ -103,17 +83,17 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 						world.setBlockAndUpdate(pos, Cloth.SHADER_BANNER.defaultBlockState()
 								.setValue(ShaderBannerStandingBlock.ROTATION, blockState.getValue(BannerBlock.ROTATION)));
 					tile = world.getBlockEntity(pos);
-					if(tile instanceof ShaderBannerBlockEntity)
+					if(tile instanceof ShaderBannerBlockEntity shaderBanner)
 					{
-						((ShaderBannerBlockEntity)tile).shader.setShaderItem(ctx.getItemInHand().copyWithCount(1));
+						shaderBanner.shader.setShader(shaderName);
 						tile.setChanged();
 						return InteractionResult.SUCCESS;
 					}
 				}
 			}
-			else if(tile instanceof ShaderBannerBlockEntity)
+			else if(tile instanceof ShaderBannerBlockEntity shaderBanner)
 			{
-				((ShaderBannerBlockEntity)tile).shader.setShaderItem(ctx.getItemInHand().copyWithCount(1));
+				shaderBanner.shader.setShader(shaderName);
 				tile.setChanged();
 				return InteractionResult.SUCCESS;
 			}
@@ -137,7 +117,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 		else
 		{
 			list.add(Component.translatable(Lib.DESC_INFO+"shader.applyTo"));
-			ResourceLocation rl = getShaderName(stack);
+			ResourceLocation rl = getShaderName();
 			if(rl!=null)
 			{
 				List<ShaderCase> array = ShaderRegistry.shaderRegistry.get(rl).getCases();
@@ -156,24 +136,19 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 	public Component getName(@Nonnull ItemStack stack)
 	{
 		MutableComponent itc = super.getName(stack).copy();
-		ResourceLocation rl = getShaderName(stack);
-		if(rl!=null)
-			itc.append(": ")
-					.append(Component.translatable("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
+		itc.append(": ").append(getShaderName(shaderName));
 		return itc;
 	}
 
-	@Override
-	public void fillCreativeTab(Output out)
+	public static Component getShaderName(ResourceLocation shader)
 	{
-		for(ResourceLocation key : ShaderRegistry.shaderRegistry.keySet())
-			out.accept(makeShaderItem(key));
+		return Component.translatable("item."+shader.getNamespace()+".shader.name."+shader.getPath());
 	}
 
 	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
-		ResourceLocation name = getShaderName(stack);
+		ResourceLocation name = getShaderName();
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
 			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(IEApi.ieLoc("item"));

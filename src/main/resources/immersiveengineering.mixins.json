@@ -41,7 +41,6 @@
     "accessors.client.MinecraftAccess",
     "accessors.client.ParticleManagerAccess",
     "accessors.client.PlayerControllerAccess",
-    "accessors.client.RenderSectionAccess",
     "accessors.client.RenderTypeAccess",
     "accessors.client.SimpleModelAccess",
     "accessors.client.WorldRendererAccess",

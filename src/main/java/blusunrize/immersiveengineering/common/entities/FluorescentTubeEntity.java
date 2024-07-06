@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
@@ -46,7 +47,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 
 	private int timer = 0;
 	public boolean active = false;
-	public float[] rgb = new float[4];
+	public Color4 rgb = Color4.WHITE;
 	boolean firstTick = true;
 	public float angleHorizontal = 0;
 
@@ -80,9 +81,9 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 			motion = new Vec3(motion.x*0.7, motion.y*-0.5, motion.z*0.7);
 		if(firstTick&&!level().isClientSide&&rgb!=null)
 		{
-			entityData.set(dataMarker_r, rgb[0]);
-			entityData.set(dataMarker_g, rgb[1]);
-			entityData.set(dataMarker_b, rgb[2]);
+			entityData.set(dataMarker_r, rgb.r());
+			entityData.set(dataMarker_g, rgb.g());
+			entityData.set(dataMarker_b, rgb.b());
 			entityData.set(dataMarker_angleHorizontal, angleHorizontal);
 			firstTick = false;
 		}
@@ -96,9 +97,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 		if(level().isClientSide)
 		{
 			active = entityData.get(dataMarker_active);
-			rgb = new float[]{entityData.get(dataMarker_r),
-					entityData.get(dataMarker_g),
-					entityData.get(dataMarker_b)};
+			rgb = new Color4(entityData.get(dataMarker_r), entityData.get(dataMarker_g), entityData.get(dataMarker_b), 1);
 			angleHorizontal = entityData.get(dataMarker_angleHorizontal);
 		}
 		setDeltaMovement(motion);
@@ -118,7 +117,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	protected void readAdditionalSaveData(CompoundTag nbt)
 	{
 		CompoundTag comp = nbt.getCompound("nbt");
-		rgb = new float[]{comp.getFloat("r"), comp.getFloat("g"), comp.getFloat("b")};
+		rgb = Color4.load(comp.get("color"));
 		angleHorizontal = nbt.getFloat("angleHor");
 
 	}
@@ -127,9 +126,8 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	protected void addAdditionalSaveData(CompoundTag nbt)
 	{
 		CompoundTag comp = new CompoundTag();
-		comp.putFloat("r", rgb[0]);
-		comp.putFloat("g", rgb[1]);
-		comp.putFloat("b", rgb[2]);
+		comp.put("color", rgb.save());
+		angleHorizontal = nbt.getFloat("angleHor");
 		nbt.put("nbt", comp);
 		nbt.putFloat("angleHor", angleHorizontal);
 	}

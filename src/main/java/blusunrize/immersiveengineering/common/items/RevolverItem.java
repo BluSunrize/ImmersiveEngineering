@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -81,7 +82,12 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 {
 	public RevolverItem()
 	{
-		super(new Properties().stacksTo(1), "REVOLVER");
+		super(
+				new Properties().stacksTo(1)
+						.component(IEDataComponents.REVOLVER_PERKS, Perks.EMPTY)
+						.component(IEDataComponents.REVOLVER_ELITE, ""),
+				"REVOLVER"
+		);
 	}
 
 	@Override
@@ -152,18 +158,13 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
 			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+tag));
-		else if(ItemNBTHelper.hasKey(stack, "flavour"))
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
+		else if(stack.has(IEDataComponents.REVOLVER_FLAVOUR))
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+stack.get(IEDataComponents.REVOLVER_FLAVOUR)));
 		else
 			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver"));
 
-		CompoundTag perks = getPerks(stack);
-		for(String key : perks.getAllKeys())
-		{
-			RevolverPerk perk = RevolverPerk.get(key);
-			if(perk!=null)
-				list.add(Component.literal("  ").append(perk.getDisplayString(perks.getDouble(key))));
-		}
+		for(var entry : getPerks(stack).perks().entrySet())
+			list.add(Component.literal("  ").append(entry.getKey().getDisplayString(entry.getValue())));
 	}
 
 	@Nonnull
@@ -328,7 +329,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 				{
 
 					Vec3 pos = Utils.getLivingFrontPos(player, .75, player.getBbHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
-					shader.registryEntry().getEffectFunction().execute(world, shader.shader(), revolver,
+					shader.registryEntry().getEffectFunction().execute(world, revolver,
 							shader.sCase().getShaderType().toString(), pos,
 							Vec3.directionFromRotation(player.getRotationVector()), .125f);
 				}
@@ -461,7 +462,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public String getRevolverDisplayTag(ItemStack revolver)
 	{
-		String tag = ItemNBTHelper.getString(revolver, "elite");
+		String tag = revolver.get(IEDataComponents.REVOLVER_ELITE);
 		if(!tag.isEmpty())
 		{
 			int split = tag.lastIndexOf("_");
@@ -472,19 +473,26 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		return "";
 	}
 
-	public static CompoundTag getPerks(ItemStack stack)
+	public static Perks getPerks(ItemStack stack)
 	{
-		return ItemNBTHelper.getTagCompound(stack, "perks");
+		return stack.getOrDefault(IEDataComponents.REVOLVER_PERKS, Perks.EMPTY);
 	}
 
 	public static boolean hasUpgradeValue(ItemStack stack, String key)
 	{
-		return getUpgradesStatic(stack).contains(key)||getPerks(stack).contains(key);
+		if(getUpgradesStatic(stack).contains(key))
+			return true;
+		var perk = RevolverPerk.get(key);
+		return perk!=null&&getPerks(stack).perks.containsKey(perk);
 	}
 
 	public static double getUpgradeValue_d(ItemStack stack, String key)
 	{
-		return getUpgradesStatic(stack).getDouble(key)+getPerks(stack).getDouble(key);
+		double baseValue = getUpgradesStatic(stack).getDouble(key);
+		var perk = RevolverPerk.get(key);
+		if(perk!=null)
+			baseValue += getPerks(stack).perks.getOrDefault(perk, 0.);
+		return baseValue;
 	}
 
 	@Override
@@ -516,7 +524,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			if(!list.isEmpty())
 			{
 				list.add(null);
-				String existingTag = ItemNBTHelper.getString(stack, "elite");
+				String existingTag = stack.get(IEDataComponents.REVOLVER_ELITE);
 				if(existingTag.isEmpty())
 					applySpecialCrafting(stack, list.get(0));
 				else
@@ -537,15 +545,15 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		if(r==null)
 		{
-			ItemNBTHelper.remove(stack, "elite");
-			ItemNBTHelper.remove(stack, "flavour");
+			stack.set(IEDataComponents.REVOLVER_ELITE, "");
+			stack.remove(IEDataComponents.REVOLVER_FLAVOUR);
 			ItemNBTHelper.remove(stack, "baseUpgrades");
 			return;
 		}
 		if(r.tag!=null&&!r.tag.isEmpty())
-			ItemNBTHelper.putString(stack, "elite", r.tag);
+			stack.set(IEDataComponents.REVOLVER_ELITE, r.tag);
 		if(r.flavour!=null&&!r.flavour.isEmpty())
-			ItemNBTHelper.putString(stack, "flavour", r.flavour);
+			stack.set(IEDataComponents.REVOLVER_FLAVOUR, r.flavour);
 		CompoundTag baseUpgrades = new CompoundTag();
 		for(Map.Entry<String, Object> e : r.baseUpgrades.entrySet())
 		{
@@ -570,9 +578,6 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		if(slotChanged||CapabilityShader.shouldReequipDueToShader(oldStack, newStack))
 			return true;
-
-		if(ItemNBTHelper.hasKey(oldStack, "elite")||ItemNBTHelper.hasKey(newStack, "elite"))
-			return !ItemNBTHelper.getString(oldStack, "elite").equals(ItemNBTHelper.getString(newStack, "elite"));
 
 		return false;
 	}
@@ -644,13 +649,13 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 					.withStyle(isBadValue.test(value)?ChatFormatting.RED: ChatFormatting.BLUE);
 		}
 
-		public static Component getFormattedName(Component name, CompoundTag perksTag)
+		public static Component getFormattedName(Component name, Perks perks)
 		{
 			double averageTier = 0;
-			for(String key : perksTag.getAllKeys())
+			for(var entry : perks.perks.entrySet())
 			{
-				RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
-				double value = perksTag.getDouble(key);
+				RevolverItem.RevolverPerk perk = entry.getKey();
+				double value = entry.getValue();
 				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
 				averageTier += dTier;
 				int iTier = (int)Mth.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
@@ -737,5 +742,6 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		public static final DualCodec<ByteBuf, Perks> CODECS = DualCodecs.forEnumMap(
 				RevolverPerk.values(), DualCodecs.DOUBLE
 		).map(Perks::new, Perks::perks);
+		public static final Perks EMPTY = new Perks(new EnumMap<>(RevolverPerk.class));
 	}
 }

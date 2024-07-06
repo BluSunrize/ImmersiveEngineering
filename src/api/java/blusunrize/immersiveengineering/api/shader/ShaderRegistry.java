@@ -13,8 +13,10 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.impl.*;
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.ItemLike;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
@@ -79,6 +82,7 @@ public class ShaderRegistry
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */
 	public static Map<ResourceLocation, double[]> defaultLayerBounds = new HashMap<>();
+	public static SetRestrictedField<Function<ResourceLocation, Holder<Item>>> GET_SHADER_ITEM = SetRestrictedField.common();
 
 	public static ShaderCase getShader(ResourceLocation name, ResourceLocation shaderCase)
 	{
@@ -443,7 +447,6 @@ public class ShaderRegistry
 		T apply(ResourceLocation name, String overlayType, Rarity rarity, int colour0, int colour1, int colour2, int colour3, String additionalTexture, int colourAddtional);
 	}
 
-	public static Item itemShader;
 	public static Map<Rarity, ? extends ItemLike> itemShaderBag;
 	/**
 	 * List of example items for shader manual entries
@@ -612,17 +615,22 @@ public class ShaderRegistry
 
 	public static ShaderAndCase getStoredShaderAndCase(CapabilityShader.ShaderWrapper wrapper)
 	{
-		ItemStack shader = wrapper.getShaderItem();
-		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem iShaderItem)
+		var shader = wrapper.getShader();
+		if(shader!=null)
 		{
-			ShaderRegistryEntry registryEntry = shaderRegistry.get(iShaderItem.getShaderName(shader));
+			ShaderRegistryEntry registryEntry = shaderRegistry.get(shader);
 			if(registryEntry!=null)
 				return new ShaderAndCase(shader, registryEntry, registryEntry.getCase(wrapper.getShaderType()));
 		}
 		return null;
 	}
 
-	public static record ShaderAndCase(ItemStack shader, ShaderRegistryEntry registryEntry, ShaderCase sCase)
+	public static ItemStack makeShaderStack(ResourceLocation name)
+	{
+		return GET_SHADER_ITEM.get().apply(name).value().getDefaultInstance();
+	}
+
+	public record ShaderAndCase(ResourceLocation shader, ShaderRegistryEntry registryEntry, ShaderCase sCase)
 	{
 	}
 
@@ -642,7 +650,7 @@ public class ShaderRegistry
 		public Supplier<IngredientWithSize> replicationCost;
 
 		public IShaderEffectFunction effectFunction;
-		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, shader, item, shaderType, pos, dir, scale) -> {
+		private static final IShaderEffectFunction DEFAULT_EFFECT = (world, item, shaderType, pos, dir, scale) -> {
 		};
 
 		public ShaderRegistryEntry(ResourceLocation name, Rarity rarity, List<ShaderCase> cases)

@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.ItemEnergyStorage;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -26,6 +26,7 @@ import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.energy.ComponentEnergyStorage;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -62,7 +63,7 @@ public class ItemCapabilityRegistration
 	{
 		ev.registerItem(
 				EnergyStorage.ITEM,
-				(stack, $) -> new ItemEnergyStorage(stack, value -> config.storage.getAsInt()),
+				(stack, $) -> new ComponentEnergyStorage(stack, IEDataComponents.GENERIC_ENERGY.get(), config.storage.getAsInt()),
 				capItem.get()
 		);
 	}
