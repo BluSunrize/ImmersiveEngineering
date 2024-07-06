@@ -237,13 +237,13 @@ public class MultiblockRecipes extends IERecipeProvider
 		CrusherRecipeBuilder.builder()
 				.output(Items.SAND, 2)
 				.addSecondary(IETags.saltpeterDust, .5f)
-				.input(IETags.getItemTag(IETags.colorlessSandstoneBlocks))
+				.input(Tags.Items.SANDSTONE_UNCOLORED_BLOCKS)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/sandstone"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.RED_SAND, 2)
 				.addSecondary(IETags.saltpeterDust, .5f)
-				.input(IETags.getItemTag(IETags.redSandstoneBlocks))
+				.input(Tags.Items.SANDSTONE_RED_BLOCKS)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/red_sandstone"));
 		CrusherRecipeBuilder.builder()

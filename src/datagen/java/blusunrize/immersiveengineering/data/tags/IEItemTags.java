@@ -130,16 +130,11 @@ public class IEItemTags extends ItemTagsProvider
 		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
 
 		generateTagsForToolbox();
-		tag(IETags.tools)
-				.addTag(IETags.shovels)
-				.addTag(IETags.pickaxes)
-				.addTag(IETags.hoes)
-				.addTag(IETags.axes);
-		tag(IETags.shovels).add(Tools.STEEL_SHOVEL.get());
-		tag(IETags.pickaxes).add(Tools.STEEL_PICK.get());
-		tag(IETags.hoes).add(Tools.STEEL_HOE.get());
-		tag(IETags.axes).add(Tools.STEEL_AXE.get());
-		tag(IETags.swords).add(Tools.STEEL_SWORD.get());
+		tag(ItemTags.SHOVELS).add(Tools.STEEL_SHOVEL.get());
+		tag(ItemTags.PICKAXES).add(Tools.STEEL_PICK.get());
+		tag(ItemTags.HOES).add(Tools.STEEL_HOE.get());
+		tag(ItemTags.AXES).add(Tools.STEEL_AXE.get());
+		tag(ItemTags.SWORDS).add(Tools.STEEL_SWORD.get());
 		tag(Tags.Items.TOOLS_SHIELDS).add(Misc.SHIELD.get());
 
 		for(var slot : ArmorItem.Type.values())
@@ -197,7 +192,7 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Tools.VOLTMETER.asItem())
 				.add(Misc.EARMUFFS.asItem())
 				.add(Misc.SKYHOOK.asItem())
-				.addTag(IETags.tools)
+				.addTag(Tags.Items.TOOLS)
 				.add(Items.SPYGLASS)
 				.add(Items.CLOCK)
 				.add(Items.COMPASS)

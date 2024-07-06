@@ -77,16 +77,6 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(Blocks.CLAY);
 		tag(IETags.glowstoneBlock)
 				.add(Blocks.GLOWSTONE);
-		tag(IETags.colorlessSandstoneBlocks)
-				.add(Blocks.SANDSTONE)
-				.add(Blocks.CUT_SANDSTONE)
-				.add(Blocks.CHISELED_SANDSTONE)
-				.add(Blocks.SMOOTH_SANDSTONE);
-		tag(IETags.redSandstoneBlocks)
-				.add(Blocks.RED_SANDSTONE)
-				.add(Blocks.CUT_RED_SANDSTONE)
-				.add(Blocks.CHISELED_RED_SANDSTONE)
-				.add(Blocks.SMOOTH_RED_SANDSTONE);
 		tag(IETags.copperBlocks)
 				.add(Blocks.COPPER_BLOCK, Blocks.EXPOSED_COPPER, Blocks.WEATHERED_COPPER, Blocks.OXIDIZED_COPPER)
 				.add(Blocks.WAXED_COPPER_BLOCK, Blocks.WAXED_EXPOSED_COPPER, Blocks.WAXED_WEATHERED_COPPER, Blocks.WAXED_OXIDIZED_COPPER);
