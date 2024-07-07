@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer;
@@ -126,8 +127,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
 				if(!held.isEmpty()&&held.getItem() instanceof IEShieldItem)
 				{
-					if(((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
-							((IEShieldItem)held.getItem()).getUpgrades(held).contains("prevSlot"))
+					if(UpgradeableToolItem.getUpgradesStatic(held).get(UpgradeEffect.MAGNET).prevSlot().isPresent())
 						PacketDistributor.sendToServer(new MessageMagnetEquip(-1));
 				}
 				else
@@ -135,7 +135,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					for(int i = 0; i < player.getInventory().items.size(); i++)
 					{
 						ItemStack s = player.getInventory().items.get(i);
-						if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+						if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).has(UpgradeEffect.MAGNET))
 							PacketDistributor.sendToServer(new MessageMagnetEquip(i));
 					}
 				}

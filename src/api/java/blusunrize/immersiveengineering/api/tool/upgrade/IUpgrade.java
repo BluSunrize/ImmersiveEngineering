@@ -1,14 +1,13 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2024
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.tool;
+package blusunrize.immersiveengineering.api.tool.upgrade;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Set;
@@ -30,11 +29,13 @@ public interface IUpgrade
 	 * @return whether the upgrade can be applied to the parsed target item
 	 * This should fired after comparing UpradeTypes, so you don't have to account for that
 	 */
-	boolean canApplyUpgrades(ItemStack target, ItemStack upgrade);
+	boolean canApplyUpgrades(UpgradeData existing, ItemStack upgrade);
 
 	/**
 	 * Applies the modifications to a HashMap. Do <b>NOT</b> apply upgrades to the target directly<br>
 	 * Valid modifications you can apply are Byte, byte[], Boolean, Integer, int[], Float, Double, String
+	 *
+	 * @return
 	 */
-	void applyUpgrades(ItemStack target, ItemStack upgrade, CompoundTag modifications);
+	UpgradeData applyUpgrades(UpgradeData base, ItemStack upgrade);
 }

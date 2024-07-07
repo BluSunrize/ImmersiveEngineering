@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
+import blusunrize.immersiveengineering.api.tool.upgrade.Cooldown;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEPotions;
@@ -19,7 +21,6 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
@@ -54,9 +55,11 @@ import java.util.function.Supplier;
 
 public class IEShieldItem extends UpgradeableToolItem
 {
+	public static final String TYPE = "SHIELD";
+
 	public IEShieldItem()
 	{
-		super(new Properties().durability(1024), "SHIELD");
+		super(new Properties().durability(1024), TYPE);
 	}
 
 	@Override
@@ -113,23 +116,16 @@ public class IEShieldItem extends UpgradeableToolItem
 		IEnergyStorage energy = stack.getCapability(EnergyStorage.ITEM);
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
-			if(getUpgrades(stack).contains("flash_cooldown", Tag.TAG_INT)&&energy.extractEnergy(10, true)==10)
+			for(var cooldownKey : List.of(UpgradeEffect.FLASH, UpgradeEffect.SHOCK))
 			{
-				energy.extractEnergy(20, false);
-				int cooldown = getUpgrades(stack).getInt("flash_cooldown");
-				if(--cooldown <= 0)
-					getUpgrades(stack).remove("flash_cooldown");
-				else
-					getUpgrades(stack).putInt("flash_cooldown", cooldown);
-			}
-			if(getUpgrades(stack).contains("shock_cooldown", Tag.TAG_INT)&&energy.extractEnergy(10, true)==10)
-			{
-				energy.extractEnergy(20, false);
-				int cooldown = getUpgrades(stack).getInt("shock_cooldown");
-				if(--cooldown <= 0)
-					getUpgrades(stack).remove("shock_cooldown");
-				else
-					getUpgrades(stack).putInt("shock_cooldown", cooldown);
+				var upgrades = getUpgrades(stack);
+				var cooldown = upgrades.get(cooldownKey);
+				if(cooldown.isOnCooldown()&&energy.extractEnergy(10, true)==10)
+				{
+					energy.extractEnergy(10, false);
+					if(cooldown.isOnCooldown())
+						stack.set(IEDataComponents.UPGRADE_DATA, upgrades.with(cooldownKey, cooldown.tick()));
+				}
 			}
 		}
 	}
@@ -142,7 +138,8 @@ public class IEShieldItem extends UpgradeableToolItem
 
 	public void hitShield(ItemStack stack, Player player, DamageSource source, float amount, LivingAttackEvent event)
 	{
-		if(getUpgrades(stack).getBoolean("flash")&&getUpgrades(stack).getInt("flash_cooldown") <= 0)
+		var upgrades = getUpgrades(stack);
+		if(upgrades.has(UpgradeEffect.FLASH)&&!upgrades.get(UpgradeEffect.FLASH).isOnCooldown())
 		{
 			Vec3 look = player.getLookAngle();
 			//Offsets Player position by look backwards, then truncates cone at 1
@@ -154,9 +151,9 @@ public class IEShieldItem extends UpgradeableToolItem
 					if(t instanceof Mob)
 						((Mob)t).setTarget(null);
 				}
-			getUpgrades(stack).putInt("flash_cooldown", 40);
+			upgrades = upgrades.with(UpgradeEffect.FLASH, new Cooldown(40));
 		}
-		if(getUpgrades(stack).getBoolean("shock")&&getUpgrades(stack).getInt("shock_cooldown") <= 0)
+		if(upgrades.has(UpgradeEffect.SHOCK)&&!upgrades.get(UpgradeEffect.SHOCK).isOnCooldown())
 		{
 			boolean b = false;
 			if(event.getSource().is(DamageTypeTags.IS_PROJECTILE)&&event.getSource().getDirectEntity()!=null)
@@ -174,11 +171,12 @@ public class IEShieldItem extends UpgradeableToolItem
 			}
 			if(b)
 			{
-				getUpgrades(stack).putInt("shock_cooldown", 40);
+				upgrades = upgrades.with(UpgradeEffect.SHOCK, new Cooldown(40));
 				player.level().playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.value(),
 						SoundSource.BLOCKS, 2.5F, 0.5F+ApiUtils.RANDOM.nextFloat());
 			}
 		}
+		stack.set(IEDataComponents.UPGRADE_DATA, upgrades);
 	}
 
 	@Override
@@ -189,7 +187,8 @@ public class IEShieldItem extends UpgradeableToolItem
 
 	public static int getMaxEnergyStored(ItemStack container)
 	{
-		return (getUpgradesStatic(container).getBoolean("flash")||getUpgradesStatic(container).getBoolean("shock"))?3200: 0;
+		var upgrades = getUpgradesStatic(container);
+		return (upgrades.has(UpgradeEffect.FLASH)||upgrades.has(UpgradeEffect.SHOCK))?3200: 0;
 	}
 
 	@Override
@@ -224,8 +223,8 @@ public class IEShieldItem extends UpgradeableToolItem
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
 		return new Slot[]{
-				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, "SHIELD", stack, true, level, getPlayer),
-				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, "SHIELD", stack, true, level, getPlayer)
+				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, TYPE, stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, TYPE, stack, true, level, getPlayer)
 		};
 	}
 

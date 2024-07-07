@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -22,7 +23,6 @@ import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -215,7 +215,7 @@ public class ItemOverlayUtils
 			FluidStack fuel = handler.getFluidInTank(0);
 			if(!fuel.isEmpty())
 			{
-				String name = ClientUtils.font().substrByWidth(fuel.getDisplayName(), 50).getString().trim();
+				String name = ClientUtils.font().substrByWidth(fuel.getHoverName(), 50).getString().trim();
 				ClientUtils.font().drawInBatch(
 						name, -68-ClientUtils.font().width(name)/2, -15, 0,
 						false, transform.last().pose(), buffer, DisplayMode.NORMAL,
@@ -228,8 +228,8 @@ public class ItemOverlayUtils
 	public static void renderShieldOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
 										   Player player, InteractionHand hand, ItemStack equipped)
 	{
-		CompoundTag upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
-		if(!upgrades.isEmpty())
+		var upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
+		if(!upgrades.entries().isEmpty())
 		{
 			VertexConsumer builder = getHudElementsBuilder(buffer);
 			boolean boundLeft = (player.getMainArm()==HumanoidArm.RIGHT)==(hand==InteractionHand.OFF_HAND);
@@ -239,21 +239,23 @@ public class ItemOverlayUtils
 			transform.translate(dx, dy, 0);
 			GuiHelper.drawTexturedColoredRect(builder, transform, 0, -22, 64, 22, 1, 1, 1, 1, 0, 64/256f, 176/256f, 198/256f);
 
-			if(upgrades.getBoolean("flash"))
+			if(upgrades.has(UpgradeEffect.FLASH))
 			{
 				GuiHelper.drawTexturedColoredRect(builder, transform, 11, -38, 16, 16, 1, 1, 1, 1, 11/256f, 27/256f, 160/256f, 176/256f);
-				if(upgrades.contains("flash_cooldown"))
+				final var cooldown = upgrades.get(UpgradeEffect.FLASH);
+				if(cooldown.isOnCooldown())
 				{
-					float h = upgrades.getInt("flash_cooldown")/40f*16;
+					float h = cooldown.remainingCooldown()/40f*16;
 					GuiHelper.drawTexturedColoredRect(builder, transform, 11, -22-h, 16, h, 1, 1, 1, 1, 11/256f, 27/256f, (214-h)/256f, 214/256f);
 				}
 			}
-			if(upgrades.getBoolean("shock"))
+			if(upgrades.has(UpgradeEffect.SHOCK))
 			{
 				GuiHelper.drawTexturedColoredRect(builder, transform, 40, -38, 12, 16, 1, 1, 1, 1, 40/256f, 52/256f, 160/256f, 176/256f);
-				if(upgrades.contains("shock_cooldown"))
+				final var cooldown = upgrades.get(UpgradeEffect.SHOCK);
+				if(cooldown.isOnCooldown())
 				{
-					float h = upgrades.getInt("shock_cooldown")/40f*16;
+					float h = cooldown.remainingCooldown()/40f*16;
 					GuiHelper.drawTexturedColoredRect(builder, transform, 40, -22-h, 12, h, 1, 1, 1, 1, 40/256f, 52/256f, (214-h)/256f, 214/256f);
 				}
 			}

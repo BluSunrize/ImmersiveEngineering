@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
-import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.items.upgrades.ToolUpgrade;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEItems;

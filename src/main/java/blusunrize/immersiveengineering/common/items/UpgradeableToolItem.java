@@ -8,12 +8,11 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.tool.IUpgrade;
-import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
-import blusunrize.immersiveengineering.common.items.components.DirectNBT;
+import blusunrize.immersiveengineering.api.tool.upgrade.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.upgrade.IUpgradeableTool;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,15 +37,14 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	}
 
 	@Override
-	public final CompoundTag getUpgrades(ItemStack stack)
+	public final UpgradeData getUpgrades(ItemStack stack)
 	{
 		return getUpgradesStatic(stack);
 	}
 
-	public static CompoundTag getUpgradesStatic(ItemStack stack)
+	public static UpgradeData getUpgradesStatic(ItemStack stack)
 	{
-		final var data = stack.get(IEDataComponents.UPGRADE_DATA);
-		return data!=null?data.tag(): new CompoundTag();
+		return stack.getOrDefault(IEDataComponents.UPGRADE_DATA, UpgradeData.EMPTY);
 	}
 
 	@Override
@@ -69,25 +67,24 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
 		if(inv!=null)
 		{
-			CompoundTag upgradeTag = getUpgradeBase(stack).copy();
+			var upgrades = getUpgradeBase(stack);
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack u = inv.getStackInSlot(i);
-				if(!u.isEmpty()&&u.getItem() instanceof IUpgrade)
+				if(!u.isEmpty()&&u.getItem() instanceof IUpgrade upg)
 				{
-					IUpgrade upg = (IUpgrade)u.getItem();
-					if(upg.getUpgradeTypes(u).contains(upgradeType)&&upg.canApplyUpgrades(stack, u))
-						upg.applyUpgrades(stack, u, upgradeTag);
+					if(upg.getUpgradeTypes(u).contains(upgradeType)&&upg.canApplyUpgrades(upgrades, u))
+						upgrades = upg.applyUpgrades(upgrades, u);
 				}
 			}
-			stack.set(IEDataComponents.UPGRADE_DATA, new DirectNBT(upgradeTag));
+			stack.set(IEDataComponents.UPGRADE_DATA, upgrades);
 			finishUpgradeRecalculation(stack, w.registryAccess());
 		}
 	}
 
-	public CompoundTag getUpgradeBase(ItemStack stack)
+	public UpgradeData getUpgradeBase(ItemStack stack)
 	{
-		return new CompoundTag();
+		return UpgradeData.EMPTY;
 	}
 
 	@Override

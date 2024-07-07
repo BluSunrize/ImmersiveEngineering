@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.items.upgrades.ToolUpgrade;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;

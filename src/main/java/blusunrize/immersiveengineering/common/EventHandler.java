@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
@@ -238,7 +239,7 @@ public class EventHandler
 			RandomSource rng = player.getRandom();
 			ItemStack powerpack = PowerpackItem.POWERPACK_GETTER.getFrom(player);
 			// 33% chance of zapping the attacker, provided they are living and within ~2 blocks
-			if(!powerpack.isEmpty()&&PowerpackItem.getUpgradesStatic(powerpack).getBoolean("tesla"))
+			if(!powerpack.isEmpty()&&PowerpackItem.getUpgradesStatic(powerpack).has(UpgradeEffect.TESLA))
 				if(event.getSource().getEntity() instanceof LivingEntity attacker&&attacker.distanceToSqr(player) < 4)
 				{
 					IEnergyStorage packStorage = powerpack.getCapability(EnergyStorage.ITEM);
@@ -309,7 +310,7 @@ public class EventHandler
 		ItemStack current = event.getEntity().getItemInHand(InteractionHand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
 		if(!current.isEmpty()&&current.getItem()==Tools.DRILL.get()&&event.getEntity().isEyeInFluid(FluidTags.WATER))
-			if(Tools.DRILL.get().getUpgrades(current).getBoolean("waterproof"))
+			if(Tools.DRILL.get().getUpgrades(current).has(UpgradeEffect.WATERPROOF))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);

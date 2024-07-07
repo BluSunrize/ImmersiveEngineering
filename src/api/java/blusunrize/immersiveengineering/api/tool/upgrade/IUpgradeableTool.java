@@ -1,15 +1,14 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2024
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.tool;
+package blusunrize.immersiveengineering.api.tool.upgrade;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -31,7 +30,7 @@ public interface IUpgradeableTool
 	 * @return an NBTTagCompound containing the upgrades as keys and their values<br>
 	 * Examples include "speed" for the mining speed of the drill or "bullets" for extended magazines on the revolver
 	 */
-	CompoundTag getUpgrades(ItemStack stack);
+	UpgradeData getUpgrades(ItemStack stack);
 
 	void clearUpgrades(ItemStack stack);
 

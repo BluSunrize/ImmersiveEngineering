@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
@@ -43,7 +44,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -217,8 +217,8 @@ public class ModelPowerpack
 			}
 		}
 
-		CompoundTag upgrades = PowerpackItem.getUpgradesStatic(powerpack);
-		if(upgrades.getBoolean("antenna"))
+		var upgrades = PowerpackItem.getUpgradesStatic(powerpack);
+		if(upgrades.has(UpgradeEffect.ANTENNA))
 		{
 			Vec3 antennaBase = new Vec3(-.09375, -.3125, .21875).yRot((float)Math.toRadians(-toRender.yBodyRotO));
 			Vec3 antennaTip = antennaBase.add(0, -2.5, 0);

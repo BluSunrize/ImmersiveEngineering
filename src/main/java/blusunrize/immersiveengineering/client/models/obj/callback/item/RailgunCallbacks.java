@@ -10,12 +10,12 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.RailgunCallbacks.Key;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import blusunrize.immersiveengineering.common.items.RailgunItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -28,8 +28,8 @@ public class RailgunCallbacks implements ItemCallback<Key>
 	@Override
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
-		CompoundTag upgrades = RailgunItem.getUpgradesStatic(stack);
-		return new Key(upgrades.getBoolean("scope"), upgrades.getDouble("speed") > 0);
+		var upgrades = RailgunItem.getUpgradesStatic(stack);
+		return new Key(upgrades.has(UpgradeEffect.SCOPE), upgrades.get(UpgradeEffect.SPEED) > 0);
 	}
 
 	@Override

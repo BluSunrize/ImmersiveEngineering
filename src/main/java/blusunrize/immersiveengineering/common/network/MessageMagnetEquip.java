@@ -8,7 +8,11 @@
 
 package blusunrize.immersiveengineering.common.network;
 
+import blusunrize.immersiveengineering.api.tool.upgrade.PrevSlot;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
+import blusunrize.immersiveengineering.common.items.UpgradeableToolItem;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -30,25 +34,28 @@ public record MessageMagnetEquip(int fetchSlot) implements IMessage
 		Player player = context.player();
 		context.enqueueWork(() -> {
 			ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
+			var upgrades = UpgradeableToolItem.getUpgradesStatic(held);
 			if(fetchSlot >= 0)
 			{
 				ItemStack s = player.getInventory().items.get(fetchSlot);
-				if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
+				if(s.getItem() instanceof IEShieldItem&&upgrades.has(UpgradeEffect.MAGNET))
 				{
-					((IEShieldItem)s.getItem()).getUpgrades(s).putInt("prevSlot", fetchSlot);
+					var withSlot = upgrades.with(UpgradeEffect.MAGNET, new PrevSlot(fetchSlot));
+					s.set(IEDataComponents.UPGRADE_DATA, withSlot);
 					player.getInventory().items.set(fetchSlot, held);
 					player.setItemInHand(InteractionHand.OFF_HAND, s);
 				}
 			}
 			else
 			{
-				if(held.getItem() instanceof IEShieldItem&&((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet"))
+				var prevSlot = upgrades.get(UpgradeEffect.MAGNET).prevSlot();
+				if(held.getItem() instanceof IEShieldItem&&((IEShieldItem)held.getItem()).getUpgrades(held).has(UpgradeEffect.MAGNET)&&prevSlot.isPresent())
 				{
-					int prevSlot = ((IEShieldItem)held.getItem()).getUpgrades(held).getInt("prevSlot");
-					ItemStack s = player.getInventory().items.get(prevSlot);
-					player.getInventory().items.set(prevSlot, held);
+					var withSlot = upgrades.with(UpgradeEffect.MAGNET, PrevSlot.NONE);
+					held.set(IEDataComponents.UPGRADE_DATA, withSlot);
+					ItemStack s = player.getInventory().items.get(prevSlot.get());
+					player.getInventory().items.set(prevSlot.get(), held);
 					player.setItemInHand(InteractionHand.OFF_HAND, s);
-					((IEShieldItem)held.getItem()).getUpgrades(held).remove("prevSlot");
 				}
 			}
 		});

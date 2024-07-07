@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -57,11 +58,12 @@ import static blusunrize.immersiveengineering.common.register.IEDataComponents.C
 
 public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IScrollwheel
 {
+	public static final String TYPE = "CHEMTHROWER";
 	private static final int CAPACITY = 2*FluidType.BUCKET_VOLUME;
 
 	public ChemthrowerItem()
 	{
-		super(new Properties().stacksTo(1).component(CHEMTHROWER_DATA, ChemthrowerData.DEFAULT), "CHEMTHROWER");
+		super(new Properties().stacksTo(1).component(CHEMTHROWER_DATA, ChemthrowerData.DEFAULT), TYPE);
 	}
 
 	@Override
@@ -76,7 +78,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	{
 		int cap = getCapacity(stack, CAPACITY);
 
-		int numberOfTanks = getUpgrades(stack).getBoolean("multitank")?3: 1;
+		int numberOfTanks = getUpgrades(stack).has(UpgradeEffect.MULTITANK)?3: 1;
 
 		for(int i = 0; i < numberOfTanks; i++)
 		{
@@ -135,7 +137,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 				float scatter = isGas?.25f: .15f;
 				float range = isGas?.5f: 1f;
-				if(getUpgrades(stack).getBoolean("focus"))
+				if(getUpgrades(stack).has(UpgradeEffect.FOCUS))
 				{
 					range += .25f;
 					scatter = .025f;
@@ -194,7 +196,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	@Override
 	public void onScrollwheel(ItemStack stack, Player playerEntity, boolean forward)
 	{
-		if(getUpgrades(stack).getBoolean("multitank"))
+		if(getUpgrades(stack).has(UpgradeEffect.MULTITANK))
 		{
 			var oldData = getData(stack);
 
@@ -243,7 +245,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	@Override
 	public int getCapacity(ItemStack stack, int baseCapacity)
 	{
-		return baseCapacity+getUpgrades(stack).getInt("capacity");
+		return baseCapacity+getUpgrades(stack).get(UpgradeEffect.CAPACITY);
 	}
 
 	@Override
@@ -256,8 +258,8 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
 		return new Slot[]{
-				new Upgrades(container, toolInventory, 0, 80, 32, "CHEMTHROWER", stack, true, level, getPlayer),
-				new Upgrades(container, toolInventory, 1, 100, 32, "CHEMTHROWER", stack, true, level, getPlayer)
+				new Upgrades(container, toolInventory, 0, 80, 32, TYPE, stack, true, level, getPlayer),
+				new Upgrades(container, toolInventory, 1, 100, 32, TYPE, stack, true, level, getPlayer)
 		};
 	}
 

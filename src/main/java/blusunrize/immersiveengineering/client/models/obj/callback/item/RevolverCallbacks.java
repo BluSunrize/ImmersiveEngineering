@@ -10,19 +10,19 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.RevolverCallbacks.Key;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
+import blusunrize.immersiveengineering.common.items.RevolverItem.RevolverCooldowns;
 import blusunrize.immersiveengineering.common.items.RevolverItem.SpecialRevolver;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -66,16 +66,16 @@ public class RevolverCallbacks implements ItemCallback<Key>
 	@Override
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
-		CompoundTag upgrades = RevolverItem.getUpgradesStatic(stack);
+		var upgrades = RevolverItem.getUpgradesStatic(stack);
 		return new Key(
 				stack.getOrDefault(IEDataComponents.REVOLVER_ELITE, ""),
 				stack.getOrDefault(IEDataComponents.REVOLVER_FLAVOUR, ""),
-				upgrades.getInt("bullets") > 0,
-				upgrades.getBoolean("fancyAnimation"),
-				upgrades.getDouble("melee") > 0,
-				upgrades.getBoolean("electro"),
-				upgrades.getBoolean("scope"),
-				ItemNBTHelper.getInt(stack, "reload")
+				upgrades.get(UpgradeEffect.BULLETS) > 0,
+				upgrades.has(UpgradeEffect.FANCY_ANIMATION),
+				upgrades.get(UpgradeEffect.MELEE) > 0,
+				upgrades.has(UpgradeEffect.ELECTRO),
+				upgrades.has(UpgradeEffect.SCOPE),
+				stack.getOrDefault(IEDataComponents.REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT).reloadTimer()
 		);
 	}
 
@@ -214,9 +214,10 @@ public class RevolverCallbacks implements ItemCallback<Key>
 			boolean left = transform==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||transform==ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
 			//Re-grab stack because the other one doesn't do reloads properly
 			stack = main?entity.getMainHandItem(): entity.getOffhandItem();
-			if(ItemNBTHelper.hasKey(stack, "reload"))
+			var cooldowns = RevolverItem.getCooldowns(stack);
+			if(cooldowns.reloadTimer() > 0)
 			{
-				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
+				float f = 3-cooldowns.reloadTimer()/20f; //Reload time in seconds, for coordinating with audio
 				if("frame".equals(groups.get(0)))
 				{
 					if(f < .35||f > 1.95)

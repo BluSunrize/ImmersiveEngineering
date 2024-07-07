@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.DrillCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.DieselToolItem;
@@ -19,7 +20,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class DrillCallbacks implements ItemCallback<Key>
 	@Override
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
-		CompoundTag upgrades = DrillItem.getUpgradesStatic(stack);
+		var upgrades = DrillItem.getUpgradesStatic(stack);
 		ItemStack head = DrillItem.getHeadStatic(stack);
 		ResourceLocation headTexture;
 		if(head.getItem() instanceof IDrillHead headItem)
@@ -49,10 +49,10 @@ public class DrillCallbacks implements ItemCallback<Key>
 			headTexture = null;
 		return new Key(
 				headTexture,
-				upgrades.getInt("damage"),
-				upgrades.getBoolean("waterproof"),
-				upgrades.getBoolean("oiled"),
-				upgrades.getBoolean("fortune")
+				upgrades.get(UpgradeEffect.DAMAGE),
+				upgrades.has(UpgradeEffect.WATERPROOF),
+				upgrades.has(UpgradeEffect.OILED),
+				upgrades.has(UpgradeEffect.FORTUNE)
 		);
 	}
 

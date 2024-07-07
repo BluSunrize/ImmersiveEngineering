@@ -10,11 +10,11 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ShieldCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,8 +31,8 @@ public class ShieldCallbacks implements ItemCallback<Key>
 	@Override
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
-		CompoundTag upgrades = IEShieldItem.getUpgradesStatic(stack);
-		return new Key(upgrades.getBoolean("flash"), upgrades.getBoolean("shock"));
+		var upgrades = IEShieldItem.getUpgradesStatic(stack);
+		return new Key(upgrades.has(UpgradeEffect.FLASH), upgrades.has(UpgradeEffect.SHOCK));
 	}
 
 	@Override

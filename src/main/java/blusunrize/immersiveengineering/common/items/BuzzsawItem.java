@@ -13,10 +13,11 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
-import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.items.upgrades.ToolUpgrade;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
@@ -71,10 +72,11 @@ import java.util.function.Supplier;
 public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 {
 	public static final Collection<SawbladeItem> SAWBLADES = new ArrayList<>(2);
+	public static final String TYPE = "BUZZSAW";
 
 	public BuzzsawItem()
 	{
-		super(new Properties().stacksTo(1), "BUZZSAW");
+		super(new Properties().stacksTo(1), TYPE);
 	}
 
 	@Override
@@ -100,8 +102,8 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		slots.add(new IESlot.WithPredicate(
 				toolInventory, 0, mainHeadX, 22, BuzzsawItem::isSawblade, newBlade -> setHead(stack, newBlade)
 		));
-		slots.add(new IESlot.Upgrades(container, toolInventory, 1, 88, 52, "BUZZSAW", stack, true, level, getPlayer));
-		slots.add(new IESlot.Upgrades(container, toolInventory, 2, 108, 52, "BUZZSAW", stack, true, level, getPlayer));
+		slots.add(new IESlot.Upgrades(container, toolInventory, 1, 88, 52, TYPE, stack, true, level, getPlayer));
+		slots.add(new IESlot.Upgrades(container, toolInventory, 2, 108, 52, TYPE, stack, true, level, getPlayer));
 		if(hasQuiverUpgrade(stack))
 		{
 			slots.add(new IESlot.WithPredicate(toolInventory, 3, 108, 12, BuzzsawItem::isSawblade));
@@ -600,7 +602,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public static boolean hasQuiverUpgrade(ItemStack stack)
 	{
-		return Tools.BUZZSAW.get().getUpgrades(stack).getBoolean("spareblades");
+		return Tools.BUZZSAW.get().getUpgrades(stack).has(UpgradeEffect.SPAREBLADES);
 	}
 
 	public static boolean isSawblade(ItemStack stack)

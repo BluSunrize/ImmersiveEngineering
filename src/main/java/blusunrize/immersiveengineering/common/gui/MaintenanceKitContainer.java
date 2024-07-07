@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
-import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
+import blusunrize.immersiveengineering.api.tool.upgrade.IUpgradeableTool;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;

@@ -10,10 +10,10 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks.Key;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -30,12 +30,12 @@ public class PowerpackCallbacks implements ItemCallback<Key>
 	@Override
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
-		CompoundTag upgrades = PowerpackItem.getUpgradesStatic(stack);
+		var upgrades = PowerpackItem.getUpgradesStatic(stack);
 		return new Key(
 				THIRD_PERSON_PASS,
-				upgrades.getBoolean("antenna"),
-				upgrades.getBoolean("induction"),
-				upgrades.getBoolean("tesla")
+				upgrades.has(UpgradeEffect.ANTENNA),
+				upgrades.has(UpgradeEffect.INDUCTION),
+				upgrades.has(UpgradeEffect.TESLA)
 		);
 	}
 

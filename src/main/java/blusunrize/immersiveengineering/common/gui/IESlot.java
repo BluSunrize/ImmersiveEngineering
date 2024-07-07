@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
-import blusunrize.immersiveengineering.api.tool.IUpgrade;
-import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
+import blusunrize.immersiveengineering.api.tool.upgrade.IUpgrade;
+import blusunrize.immersiveengineering.api.tool.upgrade.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
@@ -285,7 +285,10 @@ public abstract class IESlot extends Slot
 				for(Slot slot : container.slots)
 					if(this!=slot&&slot instanceof Upgrades&&ItemStack.isSameItem(slot.getItem(), itemStack))
 						return false;
-			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IUpgrade&&((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type)&&((IUpgrade)itemStack.getItem()).canApplyUpgrades(toolStack, itemStack);
+			return !itemStack.isEmpty()
+					&&itemStack.getItem() instanceof IUpgrade upgrade
+					&&upgrade.getUpgradeTypes(itemStack).contains(type)
+					&&upgrade.canApplyUpgrades(((IUpgradeableTool)toolStack.getItem()).getUpgrades(toolStack), itemStack);
 		}
 
 		@Override

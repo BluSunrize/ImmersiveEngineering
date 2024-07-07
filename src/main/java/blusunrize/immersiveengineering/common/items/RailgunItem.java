@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
@@ -60,9 +61,11 @@ import java.util.function.Supplier;
 
 public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScrollwheel
 {
+	public static final String TYPE = "RAILGUN";
+
 	public RailgunItem()
 	{
-		super(new Properties().stacksTo(1).component(IEDataComponents.GENERIC_ENERGY, 0), "RAILGUN");
+		super(new Properties().stacksTo(1).component(IEDataComponents.GENERIC_ENERGY, 0), TYPE);
 	}
 
 	@Override
@@ -82,8 +85,8 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
 		return new Slot[]{
-				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, "RAILGUN", stack, true, level, getPlayer),
-				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, "RAILGUN", stack, true, level, getPlayer)
+				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, TYPE, stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, TYPE, stack, true, level, getPlayer)
 		};
 	}
 
@@ -157,8 +160,6 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		ItemStack stack = player.getItemInHand(hand);
 		int consumption = IEServerConfig.TOOLS.railgun_consumption.get();
-		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
-		consumption = (int)(consumption*energyMod);
 		IEnergyStorage energy = Objects.requireNonNull(stack.getCapability(EnergyStorage.ITEM));
 		if(energy.extractEnergy(consumption, true)==consumption&&!findAmmo(stack, player).isEmpty())
 		{
@@ -204,8 +205,6 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 			if(inUse < getChargeTime(stack))
 				return;
 			int consumption = IEServerConfig.TOOLS.railgun_consumption.get();
-			float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
-			consumption = (int)(consumption*energyMod);
 			IEnergyStorage energy = Objects.requireNonNull(stack.getCapability(EnergyStorage.ITEM));
 			if(energy.extractEnergy(consumption, true)==consumption)
 			{
@@ -331,7 +330,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 
 	public static int getChargeTime(ItemStack railgun)
 	{
-		return (int)(40/(1+getUpgradesStatic(railgun).getFloat("speed")));
+		return (int)(40/(1+getUpgradesStatic(railgun).get(UpgradeEffect.SPEED)));
 	}
 
 	@Override
@@ -357,7 +356,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	@Override
 	public boolean canZoom(ItemStack stack, Player player)
 	{
-		return this.getUpgrades(stack).getBoolean("scope");
+		return this.getUpgrades(stack).has(UpgradeEffect.SCOPE);
 	}
 
 	float[] zoomSteps = new float[]{.1f, .15625f, .2f, .25f, .3125f, .4f, .5f, .625f};

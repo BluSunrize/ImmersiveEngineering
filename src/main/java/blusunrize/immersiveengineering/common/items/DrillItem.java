@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -66,9 +67,11 @@ import static blusunrize.immersiveengineering.common.register.IEDataComponents.D
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.GAME)
 public class DrillItem extends DieselToolItem
 {
+	public static final String TYPE = "DRILL";
+
 	public DrillItem()
 	{
-		super(new Properties().stacksTo(1).component(DRILL_SINGLEBLOCK, false), "DRILL");
+		super(new Properties().stacksTo(1).component(DRILL_SINGLEBLOCK, false), TYPE);
 	}
 
 	@Override
@@ -90,9 +93,9 @@ public class DrillItem extends DieselToolItem
 	{
 		return new Slot[]{
 				new IESlot.WithPredicate(toolInventory, 0, 98, 22, (itemStack) -> itemStack.getItem() instanceof IDrillHead),
-				new IESlot.Upgrades(container, toolInventory, 1, 78, 52, "DRILL", stack, true, level, getPlayer),
-				new IESlot.Upgrades(container, toolInventory, 2, 98, 52, "DRILL", stack, true, level, getPlayer),
-				new IESlot.Upgrades(container, toolInventory, 3, 118, 52, "DRILL", stack, true, level, getPlayer)
+				new IESlot.Upgrades(container, toolInventory, 1, 78, 52, TYPE, stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 2, 98, 52, TYPE, stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 3, 118, 52, TYPE, stack, true, level, getPlayer)
 		};
 	}
 
@@ -118,7 +121,7 @@ public class DrillItem extends DieselToolItem
 		final var newEnchantments = new ItemEnchantments.Mutable(
 				stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY)
 		);
-		if(getUpgradesStatic(stack).getBoolean("fortune"))
+		if(getUpgradesStatic(stack).has(UpgradeEffect.FORTUNE))
 		{
 			newEnchantments.set(fortune, 3);
 		}
@@ -180,7 +183,7 @@ public class DrillItem extends DieselToolItem
 	@Override
 	protected double getAttackDamage(ItemStack stack, ItemStack head)
 	{
-		return ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).getInt("damage");
+		return ((IDrillHead)head.getItem()).getAttackDamage(head)+getUpgrades(stack).get(UpgradeEffect.DAMAGE);
 	}
 
 	/* ------------- DIGGING ------------- */
@@ -216,7 +219,7 @@ public class DrillItem extends DieselToolItem
 		ItemStack drill = ev.getEntity().getInventory().getSelected();
 		if(!(drill.getItem() instanceof DrillItem drillItem))
 			return;
-		if(ev.getEntity().isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
+		if(ev.getEntity().isEyeInFluidType(NeoForgeMod.WATER_TYPE.value())&&!drillItem.getUpgrades(drill).has(UpgradeEffect.WATERPROOF))
 			ev.setCanHarvest(false);
 	}
 
@@ -281,7 +284,7 @@ public class DrillItem extends DieselToolItem
 	{
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty()&&canToolBeUsed(stack))
-			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+getUpgrades(stack).getFloat("speed");
+			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+getUpgrades(stack).get(UpgradeEffect.SPEED);
 		return super.getDestroySpeed(stack, state);
 	}
 

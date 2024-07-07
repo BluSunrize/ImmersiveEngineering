@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
@@ -33,7 +34,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
@@ -72,6 +72,7 @@ import static blusunrize.immersiveengineering.common.util.EnergyHelper.insertFlu
  */
 public class PowerpackItem extends UpgradeableToolItem
 {
+	public static final String TYPE = "POWERPACK";
 	public static final int CHEST_SLOT = Inventory.INVENTORY_SIZE+EquipmentSlot.CHEST.getIndex();
 	private static final Supplier<Map<Item, CapacitorConfig>> capacitorConfigMap = Suppliers.memoize(() -> {
 		Map<Item, CapacitorConfig> capacitorConfigMap = new HashMap<>();
@@ -103,7 +104,7 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public PowerpackItem()
 	{
-		super(new Properties().stacksTo(1), "POWERPACK");
+		super(new Properties().stacksTo(1), TYPE);
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public class PowerpackItem extends UpgradeableToolItem
 		IEnergyStorage packEnergy = itemStack.getCapability(EnergyStorage.ITEM);
 		if(packEnergy==null)
 			return;
-		CompoundTag upgrades = getUpgradesStatic(itemStack);
+		var upgrades = getUpgradesStatic(itemStack);
 		int energy = packEnergy.getEnergyStored();
 		if(energy > 0)
 		{
@@ -159,7 +160,7 @@ public class PowerpackItem extends UpgradeableToolItem
 			for(EquipmentSlot slot : EquipmentSlot.values())
 				energy -= insertInto(player.getItemBySlot(slot), energy);
 			// induction charging only happens every 4 ticks
-			if(upgrades.getBoolean("induction")&&player.tickCount%4==0)
+			if(upgrades.has(UpgradeEffect.INDUCTION)&&player.tickCount%4==0)
 			{
 				NonNullList<ItemStack> allItems = player.getInventory().items;
 				final int selected = player.getInventory().selected;
@@ -175,9 +176,9 @@ public class PowerpackItem extends UpgradeableToolItem
 			if(pre!=energy)
 				packEnergy.extractEnergy(pre-energy, false);
 		}
-		if(upgrades.getBoolean("antenna"))
+		if(upgrades.has(UpgradeEffect.ANTENNA))
 			handleAntennaTick(itemStack, world, player);
-		if(upgrades.getBoolean("magnet")&&energy >= MAGNET_CONSUMPTION)
+		if(upgrades.has(UpgradeEffect.MAGNET)&&energy >= MAGNET_CONSUMPTION)
 			handleMagnetTick(itemStack, world, player);
 	}
 
@@ -387,8 +388,8 @@ public class PowerpackItem extends UpgradeableToolItem
 				new IESlot.WithPredicate(toolInventory, 1, 134, 22,
 						(itemStack) -> itemStack.getItem() instanceof BannerItem||itemStack.getItem() instanceof IShaderItem
 				),
-				new IESlot.Upgrades(container, toolInventory, 2, 79, 52, "POWERPACK", stack, true, level, getPlayer),
-				new IESlot.Upgrades(container, toolInventory, 3, 117, 52, "POWERPACK", stack, true, level, getPlayer)
+				new IESlot.Upgrades(container, toolInventory, 2, 79, 52, TYPE, stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 3, 117, 52, TYPE, stack, true, level, getPlayer)
 		};
 	}
 

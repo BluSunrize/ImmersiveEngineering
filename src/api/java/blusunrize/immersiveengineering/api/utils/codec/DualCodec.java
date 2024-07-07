@@ -84,5 +84,4 @@ public record DualCodec<S extends ByteBuf, T>(Codec<T> codec, StreamCodec<S, T> 
 	{
 		return codec().decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 	}
-
 }

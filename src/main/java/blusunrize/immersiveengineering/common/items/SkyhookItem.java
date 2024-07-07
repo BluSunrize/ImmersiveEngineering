@@ -122,11 +122,6 @@ public class SkyhookItem extends UpgradeableToolItem
 			player.getData(IEDataAttachments.SKYHOOK_USER.get()).release();
 	}
 
-	public float getSkylineSpeed(ItemStack stack)
-	{
-		return 3f+this.getUpgrades(stack).getFloat("speed");
-	}
-
 	@Override
 	public int getUseDuration(ItemStack p_41454_, LivingEntity p_344979_)
 	{

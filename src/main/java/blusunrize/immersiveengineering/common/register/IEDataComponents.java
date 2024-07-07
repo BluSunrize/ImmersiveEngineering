@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
 import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
@@ -103,7 +104,7 @@ public class IEDataComponents
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> FLUID_SORTER_DATA = directNBT("fluid_sorter_nbt");
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> LOGIC_UNIT_DATA = directNBT("logic_unit_nbt");
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> SORTER_DATA = directNBT("sorter_nbt");
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> UPGRADE_DATA = directNBT("upgrade_nbt");
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> UPGRADE_DATA = make("upgrade_nbt", UpgradeData.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SKYHOOK_SPEED_LIMIT = make("speed_limit", DualCodecs.BOOL);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DRILL_SINGLEBLOCK = make("drill_singleblock", DualCodecs.BOOL);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<MultiblockRestriction>> MULTIBLOCK_RESTRICTION = make(
@@ -115,6 +116,7 @@ public class IEDataComponents
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<LitState>> FLUORESCENT_TUBE_LIT = make("fluorescent_tube", LitState.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> WINDMILL_BLADES = make("windmill_blades", DualCodecs.INT);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<RevolverCooldowns>> REVOLVER_COOLDOWN = make("revolver_cooldown", RevolverCooldowns.CODECS);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> BASE_UPGRADES = make("base_upgrades", UpgradeData.CODECS);
 	private static final Map<IBullet<?>, Supplier<DataComponentType<?>>> BULLETS = new IdentityHashMap<>();
 
 	// TODO probably just a massive hack? Does this need to be persistent?

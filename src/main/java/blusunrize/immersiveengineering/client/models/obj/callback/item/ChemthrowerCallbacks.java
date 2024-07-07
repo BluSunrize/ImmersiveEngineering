@@ -10,12 +10,12 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ChemthrowerCallbacks.Key;
 import blusunrize.immersiveengineering.common.entities.illager.Bulwark;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.AbstractIllager.IllagerArmPose;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -29,8 +29,8 @@ public class ChemthrowerCallbacks implements ItemCallback<Key>
 	@Override
 	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
-		CompoundTag upgrades = ChemthrowerItem.getUpgradesStatic(stack);
-		return new Key(upgrades.getInt("capacity") > 0, upgrades.getBoolean("multitank"));
+		var upgrades = ChemthrowerItem.getUpgradesStatic(stack);
+		return new Key(upgrades.get(UpgradeEffect.CAPACITY) > 0, upgrades.has(UpgradeEffect.MULTITANK));
 	}
 
 	@Override

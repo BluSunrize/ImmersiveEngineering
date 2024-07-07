@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
@@ -30,7 +32,6 @@ import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ArrayListMultimap;
@@ -38,7 +39,6 @@ import com.google.common.collect.Multimap;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -78,10 +78,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.*;
 
+import static blusunrize.immersiveengineering.common.register.IEDataComponents.BASE_UPGRADES;
 import static blusunrize.immersiveengineering.common.register.IEDataComponents.REVOLVER_COOLDOWN;
 
 public class RevolverItem extends UpgradeableToolItem implements IBulletContainer, IZoomTool
 {
+	public static final String TYPE = "REVOLVER";
+
 	public RevolverItem()
 	{
 		super(
@@ -89,7 +92,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 						.component(IEDataComponents.REVOLVER_PERKS, Perks.EMPTY)
 						.component(IEDataComponents.REVOLVER_ELITE, "")
 						.component(REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT),
-				"REVOLVER"
+				TYPE
 		);
 	}
 
@@ -124,8 +127,8 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		return new Slot[]
 				{
-						new IESlot.Upgrades(container, toolInventory, 18+0, 80, 32, "REVOLVER", stack, true, level, getPlayer),
-						new IESlot.Upgrades(container, toolInventory, 18+1, 100, 32, "REVOLVER", stack, true, level, getPlayer)
+						new IESlot.Upgrades(container, toolInventory, 18+0, 80, 32, TYPE, stack, true, level, getPlayer),
+						new IESlot.Upgrades(container, toolInventory, 18+1, 100, 32, TYPE, stack, true, level, getPlayer)
 				};
 	}
 
@@ -183,11 +186,12 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	public ItemAttributeModifiers getAttributeModifiers(ItemStack stack)
 	{
 		var builder = ItemAttributeModifiers.builder();
-		if(getUpgrades(stack).getBoolean("fancyAnimation"))
+		if(getUpgrades(stack).has(UpgradeEffect.FANCY_ANIMATION))
 			builder.add(
 					Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -2, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND
 			);
-		double melee = getUpgradeValue_d(stack, "melee");
+		final var upgrades = getUpgradesStatic(stack);
+		double melee = upgrades.get(UpgradeEffect.MELEE);
 		if(melee!=0)
 		{
 			builder.add(
@@ -197,13 +201,13 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 					Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, melee, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND
 			);
 		}
-		double speed = getUpgradeValue_d(stack, "speed");
+		double speed = upgrades.get(UpgradeEffect.SPEED);
 		if(speed!=0)
 			builder.add(
 					Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, speed, Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.HAND
 			);
 
-		double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
+		double luck = upgrades.get(UpgradeEffect.LUCK);
 		if(luck!=0)
 			builder.add(
 					Attributes.LUCK, new AttributeModifier(luckModUUID, luck, Operation.ADD_VALUE), EquipmentSlotGroup.HAND
@@ -245,7 +249,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			}
 			else if(player.getAttackStrengthScale(1) >= 1)
 			{
-				if(this.getUpgrades(revolver).getBoolean("nerf"))
+				if(this.getUpgrades(revolver).has(UpgradeEffect.NERF))
 					world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.6f);
 				else
 				{
@@ -333,7 +337,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		Player player = shooter instanceof Player p?p: null;
 		Vec3 vec = shooter.getLookAngle();
-		boolean electro = getUpgradesStatic(revolver).getBoolean("electro");
+		boolean electro = getUpgradesStatic(revolver).has(UpgradeEffect.ELECTRO);
 		int count = bullet.getProjectileCount(player);
 		if(count==1)
 		{
@@ -348,9 +352,8 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 				shooter.level().addFreshEntity(bullet.getProjectile(player, bulletStack, entBullet, electro));
 			}
 
-		float noise = 0.5f;
-		if(hasUpgradeValue(revolver, RevolverPerk.NOISE.getNBTKey()))
-			noise *= (float)getUpgradeValue_d(revolver, RevolverPerk.NOISE.getNBTKey());
+		var upgrades = getUpgradesStatic(revolver);
+		float noise = upgrades.get(UpgradeEffect.NOISE)/2;
 		SoundEvent sound = bullet.getSound();
 		if(sound==null)
 			sound = IESounds.revolverFire.value();
@@ -360,9 +363,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 
 	public int getMaxShootCooldown(ItemStack stack)
 	{
-		if(hasUpgradeValue(stack, RevolverPerk.COOLDOWN.getNBTKey()))
-			return (int)Math.ceil(15*getUpgradeValue_d(stack, RevolverPerk.COOLDOWN.getNBTKey()));
-		return 15;
+		return (int)Math.ceil(15*getUpgradesStatic(stack).get(UpgradeEffect.COOLDOWN));
 	}
 
 	/* ------------- IBulletContainer ------------- */
@@ -370,7 +371,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	@Override
 	public int getBulletCount(ItemStack revolver)
 	{
-		return 8+this.getUpgrades(revolver).getInt("bullets");
+		return 8+this.getUpgrades(revolver).get(UpgradeEffect.BULLETS);
 	}
 
 	@Override
@@ -396,9 +397,9 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		IItemHandlerModifiable inv = (IItemHandlerModifiable)revolver.getCapability(ItemHandler.ITEM);
 		for(int i = 0; i < 18; i++)
 			inv.setStackInSlot(i, ItemStack.EMPTY);
-		if(ignoreExtendedMag&&getUpgrades(revolver).getInt("bullets") > 0)
+		if(ignoreExtendedMag&&getUpgrades(revolver).get(UpgradeEffect.BULLETS) > 0)
 			for(int i = 0; i < bullets.size(); i++)
-				inv.setStackInSlot(i < 2?i: i+getUpgrades(revolver).getInt("bullets"), bullets.get(i));
+				inv.setStackInSlot(i < 2?i: i+getUpgrades(revolver).get(UpgradeEffect.BULLETS), bullets.get(i));
 		else
 			for(int i = 0; i < bullets.size(); i++)
 				inv.setStackInSlot(i, bullets.get(i));
@@ -440,9 +441,9 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	/* ------------- UPGRADES & PERKS ------------- */
 
 	@Override
-	public CompoundTag getUpgradeBase(ItemStack stack)
+	public UpgradeData getUpgradeBase(ItemStack stack)
 	{
-		return ItemNBTHelper.getTagCompound(stack, "baseUpgrades");
+		return stack.getOrDefault(IEDataComponents.BASE_UPGRADES, UpgradeData.EMPTY);
 	}
 
 	public String getRevolverDisplayTag(ItemStack revolver)
@@ -463,27 +464,10 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		return stack.getOrDefault(IEDataComponents.REVOLVER_PERKS, Perks.EMPTY);
 	}
 
-	public static boolean hasUpgradeValue(ItemStack stack, String key)
-	{
-		if(getUpgradesStatic(stack).contains(key))
-			return true;
-		var perk = RevolverPerk.get(key);
-		return perk!=null&&getPerks(stack).perks.containsKey(perk);
-	}
-
-	public static double getUpgradeValue_d(ItemStack stack, String key)
-	{
-		double baseValue = getUpgradesStatic(stack).getDouble(key);
-		var perk = RevolverPerk.get(key);
-		if(perk!=null)
-			baseValue += getPerks(stack).perks.getOrDefault(perk, 0.);
-		return baseValue;
-	}
-
 	@Override
 	public boolean canZoom(ItemStack stack, Player player)
 	{
-		return hasUpgradeValue(stack, "scope");
+		return getUpgradesStatic(stack).has(UpgradeEffect.SCOPE);
 	}
 
 	float[] zoomSteps = new float[]{.3125f, .4f, .5f, .625f};
@@ -532,28 +516,14 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		{
 			stack.set(IEDataComponents.REVOLVER_ELITE, "");
 			stack.remove(IEDataComponents.REVOLVER_FLAVOUR);
-			ItemNBTHelper.remove(stack, "baseUpgrades");
+			stack.remove(IEDataComponents.UPGRADE_DATA);
 			return;
 		}
 		if(r.tag!=null&&!r.tag.isEmpty())
 			stack.set(IEDataComponents.REVOLVER_ELITE, r.tag);
 		if(r.flavour!=null&&!r.flavour.isEmpty())
 			stack.set(IEDataComponents.REVOLVER_FLAVOUR, r.flavour);
-		CompoundTag baseUpgrades = new CompoundTag();
-		for(Map.Entry<String, Object> e : r.baseUpgrades.entrySet())
-		{
-			if(e.getValue() instanceof Boolean)
-				baseUpgrades.putBoolean(e.getKey(), (Boolean)e.getValue());
-			else if(e.getValue() instanceof Integer)
-				baseUpgrades.putInt(e.getKey(), (Integer)e.getValue());
-			else if(e.getValue() instanceof Float)
-				baseUpgrades.putDouble(e.getKey(), (Float)e.getValue());
-			else if(e.getValue() instanceof Double)
-				baseUpgrades.putDouble(e.getKey(), (Double)e.getValue());
-			else if(e.getValue() instanceof String)
-				baseUpgrades.putString(e.getKey(), (String)e.getValue());
-		}
-		ItemNBTHelper.setTagCompound(stack, "baseUpgrades", baseUpgrades);
+		stack.set(BASE_UPGRADES, r.baseUpgrades);
 	}
 
 	/* ------------- RENDERING ------------- */
@@ -583,7 +553,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			String[] uuid,
 			String tag,
 			String flavour,
-			HashMap<String, Object> baseUpgrades,
+			UpgradeData baseUpgrades,
 			String[] renderAdditions
 	)
 	{
