@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.ShaderBagItem;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -66,7 +66,7 @@ public class ShaderBagRecipe extends CustomRecipe
 				ItemStack output = new ItemStack(Misc.SHADER_BAG.get(next), next!=stackInSlot.getRarity()?2: 1);
 				if(next!=null)
 				{
-					ItemNBTHelper.putString(output, "rarity", next.toString());
+					output.set(DataComponents.RARITY, next);
 					return output;
 				}
 			}

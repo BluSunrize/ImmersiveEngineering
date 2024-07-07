@@ -9,9 +9,10 @@
 package blusunrize.immersiveengineering.common.entities.illager;
 
 import blusunrize.immersiveengineering.common.entities.ai.RailgunAttackGoal;
+import blusunrize.immersiveengineering.common.items.components.DirectNBT;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -124,7 +125,7 @@ public class Fusilier extends EngineerIllager
 			ItemStack railgun = new ItemStack(Weapons.RAILGUN);
 			CompoundTag upgrades = new CompoundTag();
 			upgrades.putFloat("speed", 1f);
-			ItemNBTHelper.setTagCompound(railgun, "upgrades", upgrades);
+			railgun.set(IEDataComponents.UPGRADE_DATA, new DirectNBT(upgrades));
 			this.setItemSlot(EquipmentSlot.MAINHAND, railgun);
 		}
 

@@ -78,6 +78,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.*;
 
+import static blusunrize.immersiveengineering.common.register.IEDataComponents.REVOLVER_COOLDOWN;
+
 public class RevolverItem extends UpgradeableToolItem implements IBulletContainer, IZoomTool
 {
 	public RevolverItem()
@@ -85,7 +87,8 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		super(
 				new Properties().stacksTo(1)
 						.component(IEDataComponents.REVOLVER_PERKS, Perks.EMPTY)
-						.component(IEDataComponents.REVOLVER_ELITE, ""),
+						.component(IEDataComponents.REVOLVER_ELITE, "")
+						.component(REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT),
 				"REVOLVER"
 		);
 	}
@@ -212,24 +215,12 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity ent, int slot, boolean inHand)
 	{
 		super.inventoryTick(stack, world, ent, slot, inHand);
-		{
-			if(ItemNBTHelper.hasKey(stack, "reload"))
-			{
-				int reload = ItemNBTHelper.getInt(stack, "reload")-1;
-				if(reload <= 0)
-					ItemNBTHelper.remove(stack, "reload");
-				else
-					ItemNBTHelper.putInt(stack, "reload", reload);
-			}
-			if(ItemNBTHelper.hasKey(stack, "cooldown"))
-			{
-				int cooldown = ItemNBTHelper.getInt(stack, "cooldown")-1;
-				if(cooldown <= 0)
-					ItemNBTHelper.remove(stack, "cooldown");
-				else
-					ItemNBTHelper.putInt(stack, "cooldown", cooldown);
-			}
-		}
+		final var cooldowns = getCooldowns(stack);
+		if(cooldowns.reloadTimer > 0||cooldowns.fireCooldown > 0)
+			stack.set(
+					REVOLVER_COOLDOWN,
+					new RevolverCooldowns(Math.max(cooldowns.reloadTimer-1, 0), Math.max(cooldowns.fireCooldown-1, 0))
+			);
 	}
 
 	@Nonnull
@@ -244,6 +235,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
 		ItemStack revolver = player.getItemInHand(hand);
+		final var cooldowns = getCooldowns(revolver);
 		if(!world.isClientSide)
 		{
 			if(player.isShiftKeyDown())
@@ -257,11 +249,12 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 					world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.6f);
 				else
 				{
-					if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
+					if(cooldowns.fireCooldown > 0||cooldowns.reloadTimer > 0)
 						return new InteractionResultHolder<>(InteractionResult.PASS, revolver);
 
 					NonNullList<ItemStack> bullets = getBullets(revolver);
 
+					// Try reloading
 					if(isEmpty(revolver, false))
 						for(int i = 0; i < player.getInventory().getContainerSize(); i++)
 						{
@@ -278,48 +271,45 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								if(player instanceof ServerPlayer)
 									PacketDistributor.sendToPlayer((ServerPlayer)player, new MessageSpeedloaderSync(i, hand));
 
-								ItemNBTHelper.putInt(revolver, "reload", 60);
+								revolver.set(REVOLVER_COOLDOWN, new RevolverCooldowns(60, cooldowns.fireCooldown));
 								return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 							}
 						}
 
-					if(!ItemNBTHelper.hasKey(revolver, "reload"))
+					ItemStack bulletStack = bullets.get(0);
+					Item bullet0 = bulletStack.getItem();
+					if(bullet0 instanceof BulletItem)
 					{
-						ItemStack bulletStack = bullets.get(0);
-						Item bullet0 = bulletStack.getItem();
-						if(bullet0 instanceof BulletItem)
+						IBullet<?> bullet = ((BulletItem<?>)bullet0).getType();
+						if(bullet!=null)
 						{
-							IBullet bullet = ((BulletItem)bullet0).getType();
-							if(bullet!=null)
+							float noise = fireProjectile(world, player, revolver, bullet, bulletStack);
+							bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
+							// alert nearby enemies
+							Utils.attractEnemies(player, 64*noise);
+							// Revolvers with more than 60% noise reduction do not trigger sculk sensors
+							if(noise > .2f)
 							{
-								float noise = fireProjectile(world, player, revolver, bullet, bulletStack);
-								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
-								// alert nearby enemies
-								Utils.attractEnemies(player, 64*noise);
-								// Revolvers with more than 60% noise reduction do not trigger sculk sensors
-								if(noise > .2f)
-								{
-									// anything louder than default is considered an explosion
-									var eventTriggered = noise > 0.5?GameEvent.EXPLODE: GameEvent.PROJECTILE_SHOOT;
-									world.gameEvent(eventTriggered, player.position(), GameEvent.Context.of(player));
-								}
+								// anything louder than default is considered an explosion
+								var eventTriggered = noise > 0.5?GameEvent.EXPLODE: GameEvent.PROJECTILE_SHOOT;
+								world.gameEvent(eventTriggered, player.position(), GameEvent.Context.of(player));
 							}
-							else
-								world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1f, 1f);
 						}
 						else
 							world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1f, 1f);
-
-						rotateCylinder(revolver, player, true, bullets);
-						ItemNBTHelper.putInt(revolver, "cooldown", getMaxShootCooldown(revolver));
-						return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 					}
+					else
+						world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1f, 1f);
+
+					rotateCylinder(revolver, player, true, bullets);
+					revolver.set(REVOLVER_COOLDOWN, new RevolverCooldowns(cooldowns.reloadTimer, getMaxShootCooldown(revolver)));
+					return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 				}
 			}
 		}
 		else if(!player.isShiftKeyDown())
 		{
-			if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
+			if(cooldowns.reloadTimer > 0||cooldowns.fireCooldown > 0)
 				return new InteractionResultHolder<>(InteractionResult.PASS, revolver);
 			NonNullList<ItemStack> bullets = getBullets(revolver);
 			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem)
@@ -366,11 +356,6 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			sound = IESounds.revolverFire.value();
 		world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
 		return noise;
-	}
-
-	public int getShootCooldown(ItemStack stack)
-	{
-		return ItemNBTHelper.getInt(stack, "cooldown");
 	}
 
 	public int getMaxShootCooldown(ItemStack stack)
@@ -670,13 +655,13 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			return name.copy().withStyle(rarity.color());
 		}
 
-		public static int calculateTier(CompoundTag perksTag)
+		public static int calculateTier(Perks perks)
 		{
 			double averageTier = 0;
-			for(String key : perksTag.getAllKeys())
+			for(var entry : perks.perks.entrySet())
 			{
-				RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
-				double value = perksTag.getDouble(key);
+				RevolverItem.RevolverPerk perk = entry.getKey();
+				double value = entry.getValue();
 				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
 				averageTier += dTier;
 			}
@@ -719,22 +704,27 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			return values()[i];
 		}
 
-		public static CompoundTag generatePerkSet(RandomSource rand, float luck)
+		public static Perks generatePerkSet(RandomSource rand, float luck)
 		{
 			RevolverPerk goodPerk = RevolverPerk.getRandom(rand);
 			RevolverPerk badPerk = RevolverPerk.LUCK;
 			//RevolverPerk.getRandom(rand);
 			double val = goodPerk.generateValue(rand, false, luck);
 
-			CompoundTag perkCompound = new CompoundTag();
+			EnumMap<RevolverPerk, Double> perks = new EnumMap<>(RevolverPerk.class);
 			if(goodPerk==badPerk)
 				val = (val+badPerk.generateValue(rand, true, luck))/2;
 			else
-				perkCompound.putDouble(badPerk.getNBTKey(), badPerk.generateValue(rand, true, luck));
-			perkCompound.putDouble(goodPerk.getNBTKey(), val);
+				perks.put(badPerk, badPerk.generateValue(rand, true, luck));
+			perks.put(goodPerk, val);
 
-			return perkCompound;
+			return new Perks(perks);
 		}
+	}
+
+	public static RevolverCooldowns getCooldowns(ItemStack revolver)
+	{
+		return revolver.getOrDefault(REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT);
 	}
 
 	public record Perks(EnumMap<RevolverPerk, Double> perks)
@@ -743,5 +733,15 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 				RevolverPerk.values(), DualCodecs.DOUBLE
 		).map(Perks::new, Perks::perks);
 		public static final Perks EMPTY = new Perks(new EnumMap<>(RevolverPerk.class));
+	}
+
+	public record RevolverCooldowns(int reloadTimer, int fireCooldown)
+	{
+		public static final DualCodec<ByteBuf, RevolverCooldowns> CODECS = DualCodecs.composite(
+				DualCodecs.INT.fieldOf("reloadTimer"), RevolverCooldowns::reloadTimer,
+				DualCodecs.INT.fieldOf("fireCooldown"), RevolverCooldowns::fireCooldown,
+				RevolverCooldowns::new
+		);
+		public static final RevolverCooldowns DEFAULT = new RevolverCooldowns(0, 0);
 	}
 }

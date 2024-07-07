@@ -66,7 +66,7 @@ public class ItemOverlayUtils
 
 			if(equipped.getItem() instanceof RevolverItem)
 			{
-				int cd = ((RevolverItem)equipped.getItem()).getShootCooldown(equipped);
+				int cd = RevolverItem.getCooldowns(equipped).fireCooldown();
 				float cdMax = ((RevolverItem)equipped.getItem()).getMaxShootCooldown(equipped);
 				float cooldown = 1-cd/cdMax;
 				if(cooldown > 0)

@@ -21,9 +21,9 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -236,8 +236,9 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		if(ItemNBTHelper.hasKey(stack, "sails"))
-			this.sails = ItemNBTHelper.getInt(stack, "sails");
+		var blades = stack.get(IEDataComponents.WINDMILL_BLADES);
+		if(blades!=null)
+			this.sails = blades;
 	}
 
 	private static final CachedVoxelShapes<Direction> SHAPES = new CachedVoxelShapes<>(WindmillBlockEntity::getShape);

@@ -8,13 +8,13 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -59,7 +59,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(te.getBlockPos()));
 				if(playerDistanceSq < 120)
 				{
-					final String category = ItemNBTHelper.getString(stack, "blueprint");
+					final String category = stack.get(IEApiDataComponents.BLUEPRINT_TYPE);
 					IVertexBufferHolder vbo = VBO_BY_BLUEPRINT.computeIfAbsent(category, this::buildVBO);
 					vbo.render(BlueprintRenderer.RENDER_TYPE, combinedLightIn, combinedOverlayIn, bufferIn, transform);
 				}

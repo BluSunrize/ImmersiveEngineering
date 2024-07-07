@@ -9,10 +9,11 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.HolderLookup.Provider;
@@ -108,9 +109,7 @@ public class FlareBulletColorRecipe extends CustomRecipe
 			r = (int)((float)r*colourMod/highestColour);
 			g = (int)((float)g*colourMod/highestColour);
 			b = (int)((float)b*colourMod/highestColour);
-			int newColour = (r<<8)+g;
-			newColour = (newColour<<8)+b;
-			ItemNBTHelper.putInt(newBullet, "flareColour", newColour);
+			newBullet.set(IEDataComponents.COLOR, new Color4(r, g, b, 255));
 			return newBullet;
 		}
 		return ItemStack.EMPTY;

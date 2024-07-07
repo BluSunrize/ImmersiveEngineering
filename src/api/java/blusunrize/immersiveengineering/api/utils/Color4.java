@@ -27,7 +27,12 @@ public record Color4(float r, float g, float b, float a)
 
 	public Color4(int rgba)
 	{
-		this(((rgba>>16)&255)/255f, ((rgba>>8)&255)/255f, (rgba&255)/255f, ((rgba>>24)&255)/255f);
+		this(rgba>>16&255, rgba>>8&255, rgba&255, rgba>>24&255);
+	}
+
+	public Color4(int r, int g, int b, int a)
+	{
+		this(r/255f, g/255f, b/255f, a/255f);
 	}
 
 	public static Color4 from(DyeColor dyeColor)

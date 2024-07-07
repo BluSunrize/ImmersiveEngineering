@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -76,7 +76,7 @@ public class PotionBulletFillRecipe extends CustomRecipe
 					potion = stackInSlot;
 		}
 		ItemStack newBullet = bullet.copyWithCount(1);
-		ItemNBTHelper.setItemStack(newBullet, "potion", potion.copy());
+		newBullet.set(DataComponents.POTION_CONTENTS, potion.get(DataComponents.POTION_CONTENTS));
 		return newBullet;
 	}
 

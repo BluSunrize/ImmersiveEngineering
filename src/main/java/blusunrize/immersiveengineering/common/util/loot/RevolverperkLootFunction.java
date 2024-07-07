@@ -10,10 +10,9 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.items.RevolverItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -38,8 +37,8 @@ public class RevolverperkLootFunction extends LootItemConditionalFunction
 	@Override
 	public ItemStack run(ItemStack stack, @Nonnull LootContext context)
 	{
-		CompoundTag perksTag = RevolverItem.RevolverPerk.generatePerkSet(context.getRandom(), context.getLuck());
-		ItemNBTHelper.setTagCompound(stack, "perks", perksTag);
+		var perks = RevolverItem.RevolverPerk.generatePerkSet(context.getRandom(), context.getLuck());
+		stack.set(IEDataComponents.REVOLVER_PERKS, perks);
 		return stack;
 	}
 

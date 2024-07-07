@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.items.EarmuffsItem.EarmuffData;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem.LitState;
 import blusunrize.immersiveengineering.common.items.HammerItem.MultiblockRestriction;
 import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
+import blusunrize.immersiveengineering.common.items.RevolverItem.RevolverCooldowns;
 import blusunrize.immersiveengineering.common.items.SurveyToolsItem.VeinEntry;
 import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import blusunrize.immersiveengineering.common.items.components.DirectNBT;
@@ -112,6 +113,8 @@ public class IEDataComponents
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<String>> REVOLVER_ELITE = make("revolver_elite", DualCodecs.STRING);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<String>> REVOLVER_FLAVOUR = make("revolver_flavour", DualCodecs.STRING);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<LitState>> FLUORESCENT_TUBE_LIT = make("fluorescent_tube", LitState.CODECS);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> WINDMILL_BLADES = make("windmill_blades", DualCodecs.INT);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<RevolverCooldowns>> REVOLVER_COOLDOWN = make("revolver_cooldown", RevolverCooldowns.CODECS);
 	private static final Map<IBullet<?>, Supplier<DataComponentType<?>>> BULLETS = new IdentityHashMap<>();
 
 	// TODO probably just a massive hack? Does this need to be persistent?

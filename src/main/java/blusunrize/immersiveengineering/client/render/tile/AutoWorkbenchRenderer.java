@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
@@ -21,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.AutoWorkb
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -280,7 +280,7 @@ public class AutoWorkbenchRenderer extends IEMultiblockRenderer<State>
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
-			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(level, ItemNBTHelper.getString(blueprintStack, "blueprint"));
+			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(level, blueprintStack.get(IEApiDataComponents.BLUEPRINT_TYPE));
 			BlueprintCraftingRecipe recipe = (state.selectedRecipe < 0||state.selectedRecipe >= recipes.size())?null: recipes.get(state.selectedRecipe).value();
 			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, level);
 			if(blueprint!=null)

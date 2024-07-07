@@ -201,7 +201,6 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		if(!world.isClientSide()&&user instanceof Player player)
 		{
 			int inUse = this.getUseDuration(stack, user)-timeLeft;
-			ItemNBTHelper.remove(stack, "inUse");
 			if(inUse < getChargeTime(stack))
 				return;
 			int consumption = IEServerConfig.TOOLS.railgun_consumption.get();

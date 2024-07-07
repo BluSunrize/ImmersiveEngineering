@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.item.RevolverC
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RevolverItem.SpecialRevolver;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
@@ -67,8 +68,8 @@ public class RevolverCallbacks implements ItemCallback<Key>
 	{
 		CompoundTag upgrades = RevolverItem.getUpgradesStatic(stack);
 		return new Key(
-				ItemNBTHelper.getString(stack, "elite"),
-				ItemNBTHelper.getString(stack, "flavour"),
+				stack.getOrDefault(IEDataComponents.REVOLVER_ELITE, ""),
+				stack.getOrDefault(IEDataComponents.REVOLVER_FLAVOUR, ""),
 				upgrades.getInt("bullets") > 0,
 				upgrades.getBoolean("fancyAnimation"),
 				upgrades.getDouble("melee") > 0,

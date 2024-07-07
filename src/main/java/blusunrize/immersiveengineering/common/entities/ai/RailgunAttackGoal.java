@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.entities.ai;
 import blusunrize.immersiveengineering.common.entities.illager.Fusilier;
 import blusunrize.immersiveengineering.common.items.RailgunItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.Entity;
@@ -160,7 +159,6 @@ public class RailgunAttackGoal<T extends Fusilier> extends Goal
 				if(shot instanceof Projectile projectile)
 					this.shootProjectile(this.mob, livingentity, projectile, 3f);
 				this.mob.releaseUsingItem();
-				ItemNBTHelper.remove(itemstack, "inUse");
 				this.mob.setAimingRailgun(false);
 				this.railgunState = RailgunState.COOLDOWN;
 				this.cooldownDelay = 40;

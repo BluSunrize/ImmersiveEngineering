@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +45,7 @@ public class WindmillLootFunction extends LootItemConditionalFunction
 		{
 			BlockEntity bEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
 			if(bEntity instanceof WindmillBlockEntity windmill&&windmill.sails > 0)
-				ItemNBTHelper.putInt(stack, "sails", windmill.sails);
+				stack.set(IEDataComponents.WINDMILL_BLADES, windmill.sails);
 		}
 		return stack;
 	}

@@ -8,13 +8,13 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.gui.AutoWorkbenchMenu;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -58,7 +58,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchMenu>
 		if(s!=null&&s.hasItem()&&s.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
 			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(
-					Minecraft.getInstance().level, ItemNBTHelper.getString(s.getItem(), "blueprint")
+					Minecraft.getInstance().level, s.getItem().get(IEApiDataComponents.BLUEPRINT_TYPE)
 			);
 			if(recipes!=null&&!recipes.isEmpty())
 			{

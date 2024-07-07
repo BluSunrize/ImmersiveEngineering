@@ -9,12 +9,12 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
@@ -39,7 +39,9 @@ public class BluprintzLootFunction extends LootItemConditionalFunction
 	public ItemStack run(ItemStack stack, @Nonnull LootContext context)
 	{
 		stack.set(DataComponents.CUSTOM_NAME, Component.literal("Super Special BluPrintz"));
-		ItemNBTHelper.setLore(stack, Component.literal("Congratulations!"), Component.literal("You have found an easter egg!"));
+		stack.set(DataComponents.LORE, new ItemLore(
+				List.of(Component.literal("Congratulations!"), Component.literal("You have found an easter egg!"))
+		));
 		return stack;
 	}
 

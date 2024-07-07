@@ -21,11 +21,11 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.mixin.accessors.HeroGiftsTaskAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplatePoolAccess;
 import com.google.common.collect.ImmutableSet;
@@ -53,6 +53,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.ItemLike;
@@ -437,7 +438,10 @@ public class Villages
 						DataComponents.ITEM_NAME,
 						Component.translatable("item.immersiveengineering.map_orevein")
 				);
-				ItemNBTHelper.setLore(selling, Component.translatable(vein.getMineral(world).getTranslationKey(vein.getMineralName())));
+				selling.set(
+						DataComponents.LORE,
+						new ItemLore(List.of(Component.translatable(vein.getMineral(world).getTranslationKey(vein.getMineralName()))))
+				);
 				// return offer
 				return new MerchantOffer(
 						new ItemCost(Items.EMERALD, 8+random.nextInt(8)),
@@ -467,11 +471,10 @@ public class Villages
 			{
 				luck = villager.getTradingPlayer().getLuck();
 			}
-			CompoundTag perksTag = RevolverItem.RevolverPerk.generatePerkSet(random, luck);
-			ItemNBTHelper.setTagCompound(stack, "perks", perksTag);
+			var perksTag = RevolverItem.RevolverPerk.generatePerkSet(random, luck);
+			stack.set(IEDataComponents.REVOLVER_PERKS, perksTag);
 			int tier = Math.max(1, RevolverItem.RevolverPerk.calculateTier(perksTag));
 
-			ItemNBTHelper.putBoolean(stack, "generatePerks", true);
 			return new MerchantOffer(new ItemCost(Items.EMERALD, 5*tier+random.nextInt(5)), stack, 1, 45, 0.25F);
 		}
 	}
