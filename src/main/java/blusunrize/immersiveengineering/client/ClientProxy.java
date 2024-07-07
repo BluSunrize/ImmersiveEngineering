@@ -45,10 +45,7 @@ import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.RedstoneStateCellBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.RedstoneTimerBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
@@ -378,6 +375,9 @@ public class ClientProxy extends CommonProxy
 
 		if(guiId.equals(Lib.GUIID_RedstoneTimer)&&tileEntity instanceof RedstoneTimerBlockEntity)
 			Minecraft.getInstance().setScreen(new RedstoneTimerScreen((RedstoneTimerBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
+		if(guiId.equals(Lib.GUIID_RedstoneSwitchboard)&&tileEntity instanceof RedstoneSwitchboardBlockEntity)
+			Minecraft.getInstance().setScreen(new RedstoneSwitchboardScreen((RedstoneSwitchboardBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 
 		if(guiId.equals(Lib.GUIID_MachineInterface)&&tileEntity instanceof MachineInterfaceBlockEntity)
 			Minecraft.getInstance().setScreen(new MachineInterfaceScreen((MachineInterfaceBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));

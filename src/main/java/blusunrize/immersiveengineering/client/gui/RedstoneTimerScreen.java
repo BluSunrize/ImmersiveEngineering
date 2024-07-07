@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 4
+ * Copyright (c) 2024
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneTimerBlockEntity;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -24,7 +22,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Red;
 
 import java.util.ArrayList;
 import java.util.Optional;

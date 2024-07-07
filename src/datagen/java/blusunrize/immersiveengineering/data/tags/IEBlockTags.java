@@ -331,6 +331,8 @@ public class IEBlockTags extends BlockTagsProvider
 		}
 		//Razor wire should only be broken by wirecutters, and its addition is accidental
 		tag.remove(MetalDevices.RAZOR_WIRE.get());
+		// switchboard doesn't extend ConnectorBlock
+		tag.add(Connectors.REDSTONE_SWITCHBOARD.get());
 	}
 
 	private void registerRockcutterMineable()
@@ -631,6 +633,7 @@ public class IEBlockTags extends BlockTagsProvider
 				Connectors.CONNECTOR_BUNDLED,
 				Connectors.REDSTONE_STATE_CELL,
 				Connectors.REDSTONE_TIMER,
+				Connectors.REDSTONE_SWITCHBOARD,
 				Connectors.FEEDTHROUGH
 		);
 		registerMineable(tag, Metals.SHEETMETAL);

@@ -1,4 +1,4 @@
-// 1.20.4	2024-07-03T16:31:50.7190323	Item models
+// 1.20.4	2024-07-04T15:07:16.3637427	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -271,6 +271,7 @@ c9ed5e2d876f73b17a7402a6fd7791c3232e468e assets/immersiveengineering/models/item
 de8f0f55a726b32354f8dc9cc6489b9aafc2fc25 assets/immersiveengineering/models/item/redstone_acid_bucket.json
 cf0a1cdb5b42c3d2455bb892c5f630414ea68107 assets/immersiveengineering/models/item/redstone_breaker.json
 d7ade2d2a5f792d5fc8de2d618f7ccf08c355276 assets/immersiveengineering/models/item/redstone_state_cell.json
+bf20d074211487ad8100badc02e701f2ec1b6f6c assets/immersiveengineering/models/item/redstone_switchboard.json
 a22f45c3b9f4628d6110f29c8ef6aa3082317cc2 assets/immersiveengineering/models/item/redstone_timer.json
 de3aff128fa1bfa3e4a279b392d48a0a00c09097 assets/immersiveengineering/models/item/refinery.json
 0cfaa06609150f400fc5365200d17a0ff1c973d6 assets/immersiveengineering/models/item/revolver.json

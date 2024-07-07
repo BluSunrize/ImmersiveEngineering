@@ -37,6 +37,7 @@
     "immersiveengineering:conveyor_dropper",
     "immersiveengineering:conveyor_vertical",
     "immersiveengineering:conveyor_splitter",
-    "immersiveengineering:conveyor_extract"
+    "immersiveengineering:conveyor_extract",
+    "immersiveengineering:redstone_switchboard"
   ]
 }

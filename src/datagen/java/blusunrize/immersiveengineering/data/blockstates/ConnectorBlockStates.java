@@ -98,6 +98,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 						.layer(translucent())
 						.end()
 		);
+		createHorizontalRotatedBlock(Connectors.REDSTONE_SWITCHBOARD, obj("block/connector/switchboard.obj", cutout()));
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();
