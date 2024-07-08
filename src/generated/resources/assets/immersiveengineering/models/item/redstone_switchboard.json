@@ -1,34 +1,39 @@
 {
   "display": {
     "firstperson_lefthand": {
-      "rotation": [
-        -180.0,
-        -44.99999,
-        -180.0
-      ],
-      "scale": [
-        0.4,
-        0.4,
-        0.4
-      ]
-    },
-    "firstperson_righthand": {
-      "rotation": [
-        0.0,
-        45.000004,
-        0.0
-      ],
-      "scale": [
-        0.4,
-        0.4,
-        0.4
-      ]
-    },
-    "fixed": {
       "scale": [
         0.5,
         0.5,
         0.5
+      ],
+      "translation": [
+        0.125,
+        0.0,
+        0.0
+      ]
+    },
+    "firstperson_righthand": {
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        0.125,
+        0.0,
+        0.0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        -180.0,
+        0.0,
+        -180.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        -7.0
       ]
     },
     "ground": {
@@ -39,26 +44,31 @@
       ],
       "translation": [
         0.0,
-        3.0,
-        0.0
+        4.0,
+        2.0
       ]
     },
     "gui": {
       "rotation": [
-        -149.99998,
-        -44.99999,
-        180.0
+        29.999996,
+        -45.000004,
+        -1.2074183E-6
       ],
       "scale": [
         0.625,
         0.625,
         0.625
+      ],
+      "translation": [
+        -2.0,
+        -1.0,
+        2.0
       ]
     },
-    "thirdperson_righthand": {
+    "thirdperson_lefthand": {
       "rotation": [
-        74.99999,
-        45.000004,
+        69.99999,
+        -69.99999,
         0.0
       ],
       "scale": [
@@ -67,9 +77,26 @@
         0.375
       ],
       "translation": [
-        0.0,
-        2.5,
+        -0.125,
+        0.125,
+        0.125
+      ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [
+        69.99999,
+        -69.99999,
         0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        -0.125,
+        0.125,
+        0.125
       ]
     }
   },

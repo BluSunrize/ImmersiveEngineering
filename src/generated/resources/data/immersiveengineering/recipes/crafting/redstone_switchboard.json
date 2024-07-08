@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:connector_redstone"
+    },
+    "e": {
+      "item": "immersiveengineering:component_electronic"
+    },
+    "s": {
+      "tag": "forge:plates/steel"
+    },
+    "w": {
+      "item": "immersiveengineering:wirecoil_redstone"
+    }
+  },
+  "pattern": [
+    "c c",
+    "sws",
+    "ses"
+  ],
+  "result": {
+    "item": "immersiveengineering:redstone_switchboard"
+  }
+}

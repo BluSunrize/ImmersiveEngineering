@@ -323,6 +323,16 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('t', Ingredients.ELECTRON_TUBE)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.REDSTONE_TIMER)));
+		shapedMisc(Connectors.REDSTONE_SWITCHBOARD)
+				.pattern("c c")
+				.pattern("sws")
+				.pattern("ses")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('s', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('w', Misc.WIRE_COILS.get(WireType.REDSTONE))
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.REDSTONE_SWITCHBOARD)));
 		shapedMisc(Connectors.CONNECTOR_BUNDLED)
 				.pattern(" w ")
 				.pattern("wcw")
