@@ -1,0 +1,6 @@
+{
+  "start": {
+    "type": "crafting",
+    "recipe": "crafting/redstone_switchboard"
+  }
+}

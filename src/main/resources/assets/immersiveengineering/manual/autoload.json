@@ -71,6 +71,7 @@
       "electromagnet",
       "redstone_state_cells",
       "redstone_timer",
+      "redstone_switchboard",
       "engineers_circuit_workbench",
       "logic_unit",
       "machine_interface"
