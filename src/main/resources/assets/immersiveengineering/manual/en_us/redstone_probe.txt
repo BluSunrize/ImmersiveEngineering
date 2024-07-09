@@ -1,0 +1,18 @@
+Redstone Probe Connector
+Comparatively exciting
+Probe Connectors are a compact device with many functions of the §2redstone comparator§r.<br>
+Comparator signal levels will be output on the redstone wire connected. Additionally, a §lsignal thresholds§r can be set where the probe will only output if the signal is above the given threshold.<br>
+These probes can operate on two channels, sending their read signal on one while still receiving and outputting signals on another. All these settings are configured by using the Engineer's Screwdriver.<br>
+Note that many multiblocks feature comparator-support, as described on the following pages. Where available, the redstone control surface of the multiblock is the designated spot to connect a comparator or probe connector.<np>
+§lTank: §rAs detailed in its <link;tank;manual entry>
+§lSilo: §rAs detailed in its <link;silo;manual entry>
+§lAssembler: §rOutputs a signal relative to the fill of the inventory.
+§lAutoWorkbench: §rOutputs a signal relative to the fill of the inventory.
+§lCrusher: §rOutputs a signal relative to the fill of the inventory.
+§lSqueezer: §rOutputs a signal relative to the fill of the inventory.
+§lFermenter: §rOutputs a signal relative to the fill of the inventory.
+§lExcavator: §rOutputs a signal relative to the remaining ore in the vein.
+§lArcFurnace: §rOutputs a signal relative to the fill of the inventory.
+Additionally, connecting a comparator to the electrodes at the top will send a signal based on their integrity.
+§lMixer: §rOutputs a signal relative to the fill of the inventory.<np>
+For more detailed analysis of the various multiblocks, their inventories, energy- and fluid storages, consider using the <link;machine_interface;Machine Interface> instead.
