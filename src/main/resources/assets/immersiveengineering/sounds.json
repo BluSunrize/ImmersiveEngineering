@@ -271,5 +271,12 @@
 			"immersiveengineering:electromagnet"
 		],
 		"subtitle": "subtitle.immersiveengineering.electromagnet"
+	},
+	"siren": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:siren"
+		],
+		"subtitle": "subtitle.immersiveengineering.siren"
 	}
 }

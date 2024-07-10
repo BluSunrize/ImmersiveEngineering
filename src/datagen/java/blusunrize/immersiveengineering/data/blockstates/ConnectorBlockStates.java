@@ -99,6 +99,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 						.end()
 		);
 		createHorizontalRotatedBlock(Connectors.REDSTONE_SWITCHBOARD, obj("block/connector/switchboard.obj", cutout()));
+		createHorizontalRotatedBlock(Connectors.SIREN, obj("block/connector/siren.obj", cutout()));
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();

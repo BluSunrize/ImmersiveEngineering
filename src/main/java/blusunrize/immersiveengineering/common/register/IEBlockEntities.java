@@ -23,13 +23,10 @@ import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -148,6 +145,9 @@ public class IEBlockEntities
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneSwitchboardBlockEntity>> REDSTONE_SWITCHBOARD = REGISTER.register(
 			"redstoneswitchboard", makeType(RedstoneSwitchboardBlockEntity::new, Connectors.REDSTONE_SWITCHBOARD)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SirenBlockEntity>> SIREN = REGISTER.register(
+			"siren", makeType(SirenBlockEntity::new, Connectors.SIREN)
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FeedthroughBlockEntity>> FEEDTHROUGH = REGISTER.register(
 			"feedthrough", makeType(FeedthroughBlockEntity::new, Connectors.FEEDTHROUGH)

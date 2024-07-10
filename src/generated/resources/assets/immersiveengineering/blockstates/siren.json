@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:block/connector/siren",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "immersiveengineering:block/connector/siren"
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/connector/siren",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/connector/siren",
+      "y": 270
+    }
+  }
+}

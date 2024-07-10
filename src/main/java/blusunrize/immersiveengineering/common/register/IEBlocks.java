@@ -707,6 +707,9 @@ public final class IEBlocks
 		public static final BlockEntry<HorizontalFacingEntityBlock<?>> REDSTONE_SWITCHBOARD = new BlockEntry<>(
 				"redstone_switchboard", ConnectorBlock.PROPERTIES, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.REDSTONE_SWITCHBOARD, p)
 		);
+		public static final BlockEntry<HorizontalFacingEntityBlock<?>> SIREN = new BlockEntry<>(
+				"siren", ConnectorBlock.PROPERTIES, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.SIREN, p)
+		);
 		public static final BlockEntry<FeedthroughBlock> FEEDTHROUGH = new BlockEntry<>("feedthrough", FeedthroughBlock.PROPERTIES, FeedthroughBlock::new);
 
 		public static BlockEntry<BasicConnectorBlock<?>> getEnergyConnector(String cat, boolean relay)

@@ -1,4 +1,4 @@
-// 1.20.4	2024-07-04T15:07:16.3677413	Loot Tables
+// 1.20.4	2024-07-10T08:18:32.8879425	Loot Tables
 75b6cfb9c9c9e099efa206255bb357c3ce17b802 data/immersiveengineering/loot_tables/advancements/shader_epic.json
 6ac241971170fd9eb94669ba6fb44e37946e694c data/immersiveengineering/loot_tables/advancements/shader_masterwork.json
 171edf84bfedad7b42d82bf64192615fe2172c67 data/immersiveengineering/loot_tables/advancements/shader_rare.json
@@ -210,6 +210,7 @@ aae22a291e9f91fffd0d9636b5fee10e9d203bd2 data/immersiveengineering/loot_tables/b
 8db39fa88e98365fa5e719d783c584ff98adca5b data/immersiveengineering/loot_tables/blocks/sheetmetal_steel.json
 394795fd4d1128fc5e9c8a8b6a7806545da8bd88 data/immersiveengineering/loot_tables/blocks/sheetmetal_uranium.json
 2378d0593139da7edb636a69d5c0a4da2a318068 data/immersiveengineering/loot_tables/blocks/silo.json
+441001e1dc56908fc4bb43062c1c01266c2166c4 data/immersiveengineering/loot_tables/blocks/siren.json
 4ada2fd7883fe30e95faa6f1ffc566edbbd0143f data/immersiveengineering/loot_tables/blocks/slab_alloybrick.json
 1f766a85f997e8a875fa7856ac6615e729fb8d10 data/immersiveengineering/loot_tables/blocks/slab_alu_scaffolding_grate_top.json
 8b45533933892166a04dcccad258efb58912fd0c data/immersiveengineering/loot_tables/blocks/slab_alu_scaffolding_standard.json
