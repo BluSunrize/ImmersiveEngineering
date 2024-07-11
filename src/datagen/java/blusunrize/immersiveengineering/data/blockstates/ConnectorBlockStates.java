@@ -19,11 +19,15 @@ import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
@@ -99,7 +103,18 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 						.end()
 		);
 		createHorizontalRotatedBlock(Connectors.REDSTONE_SWITCHBOARD, obj("block/connector/switchboard.obj", cutout()));
-		createHorizontalRotatedBlock(Connectors.SIREN, obj("block/connector/siren.obj", cutout()));
+		{
+			BlockModelBuilder model = ieObjBuilder("block/connector/siren.obj.ie")
+					.callback(SirenCallbacks.INSTANCE)
+					.layer(cutout())
+					.end();
+			VariantBlockStateBuilder stateBuilder = getVariantBuilder(Connectors.SIREN.get());
+			forEachState(stateBuilder.partialState(), List.of(), state -> {
+				for(Direction d : IEProperties.FACING_ALL.getPossibleValues())
+					state.with(IEProperties.FACING_ALL, d).setModels(new ConfiguredModel(model, 0, d.getAxis()==Axis.Y?0: getAngle(d, 180), false));
+			});
+		}
+
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();

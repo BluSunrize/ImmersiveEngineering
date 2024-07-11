@@ -136,6 +136,7 @@ public class ClientProxy extends CommonProxy
 		IEOBJCallbacks.register(rl("razor_wire"), RazorWireCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("connector_rs"), RSConnectorCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("timer"), TimerCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("siren"), SirenCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("structural_arm"), StructuralArmCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("structural_connector"), StructuralConnectorCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("turret"), TurretCallbacks.INSTANCE);

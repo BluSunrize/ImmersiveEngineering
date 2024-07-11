@@ -1,2 +1,5 @@
 newmtl siren
 map_Kd immersiveengineering:block/connector/siren
+
+newmtl wallmount
+map_Kd immersiveengineering:block/metal_decoration/steel_wallmount

@@ -75,5 +75,5 @@
   },
   "flip_v": true,
   "loader": "neoforge:obj",
-  "model": "immersiveengineering:models/block/connector/siren.obj"
+  "model": "immersiveengineering:models/block/connector/siren.obj.ie"
 }

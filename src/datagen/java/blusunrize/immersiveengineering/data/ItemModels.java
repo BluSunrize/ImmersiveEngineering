@@ -417,7 +417,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.renderType(ModelProviderUtils.getName(translucent()));
 		obj(Connectors.REDSTONE_SWITCHBOARD, rl("block/connector/switchboard.obj"))
 				.transforms(rl("item/switchboard"));
-		obj(Connectors.SIREN, rl("block/connector/siren.obj"))
+		obj(Connectors.SIREN, rl("block/connector/siren.obj.ie"))
 				.transforms(rl("item/block"));
 		obj(Connectors.CONNECTOR_STRUCTURAL, rl("block/connector/connector_structural.obj.ie"))
 				.transforms(rl("item/connector"));

@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.api.utils.shapes.ShapeUtils;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.redstone.IRedstoneConnector;
@@ -22,9 +24,9 @@ import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectabl
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
@@ -42,19 +44,18 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.EnumMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 		implements IEServerTickableBE, IStateBasedDirectional, IScrewdriverInteraction,
 		IBlockBounds, IRedstoneConnector
 {
+	private static final Vec3 CONNECTION_OFFSET = new Vec3(0.5, 0.875, 0.5);
 	private final double RADIUS = 48;
 	boolean active = false;
 	int activeTicks = 0;
@@ -147,41 +148,44 @@ public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 	@Override
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		Direction side = getFacing();
-		double conRadius = type.getRenderDiameter()/2;
-		return new Vec3(.5+side.getStepX()*(.25-conRadius), .75, .5+side.getStepZ()*(.25-conRadius));
+		return CONNECTION_OFFSET;
 	}
 
-	private static final Map<Direction, VoxelShape> SHAPES = Util.make(
-			new EnumMap<>(Direction.class), map -> {
-				final float wMin = .3125f;
-				final float wMax = .6875f;
-				map.put(Direction.NORTH, Shapes.box(wMin, wMin, 0, wMax, wMax, .875));
-				map.put(Direction.SOUTH, Shapes.box(wMin, wMin, .125, wMax, wMax, 1));
-				map.put(Direction.WEST, Shapes.box(0, wMin, wMin, .875, wMax, wMax));
-				map.put(Direction.EAST, Shapes.box(.125, wMin, wMin, 1, wMax, wMax));
-				map.put(Direction.DOWN, Shapes.box(wMin, 0, wMin, wMax, .875, wMax));
-				map.put(Direction.UP, Shapes.box(wMin, .125, wMin, wMax, 1, wMax));
-			}
+	private static final List<AABB> BASE_SHAPE = List.of(
+			new AABB(0, .25, .25, 1, .75, .75),
+			new AABB(.25, .25, .25, .75, .75, 1),
+			new AABB(.3125, .75, .3125, .6875, 1, .6875)
 	);
+
+	private static final CachedShapesWithTransform<Direction, Direction> SHAPES = new CachedShapesWithTransform<>(direction -> {
+		ArrayList<AABB> list = new ArrayList<>(BASE_SHAPE);
+		if(direction.getAxis()==Axis.Y)
+		{
+			list.add(new AABB(.3125, 0, .3125, .6875, .25, .6875));
+			list.add(new AABB(.25, .25, 0, .75, .75, .25));
+		}
+		else
+			list.add(new AABB(.3125, .1875, 0, .6875, .6875, .25));
+		return list;
+	}, (direction, aabb) -> direction.getAxis()==Axis.Y?aabb: ShapeUtils.transformAABB(aabb, direction));
 
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return Shapes.block();
-//		return VoxelShape. SHAPES.get(getFacing());
+		Direction f = getFacing();
+		return SHAPES.get(f, f);
 	}
 
 	@Override
 	public PlacementLimitation getFacingLimitation()
 	{
-		return PlacementLimitation.HORIZONTAL_PREFER_SIDE;
+		return PlacementLimitation.PISTON_LIKE_NO_DOWN;
 	}
 
 	@Override
 	public Property<Direction> getFacingProperty()
 	{
-		return IEProperties.FACING_HORIZONTAL;
+		return IEProperties.FACING_ALL;
 	}
 
 //
