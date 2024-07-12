@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.api.utils.shapes.ShapeUtils;
@@ -17,6 +20,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.redstone.IRedstoneConnector;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
@@ -24,13 +28,20 @@ import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectabl
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -42,6 +53,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -50,10 +62,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.function.IntFunction;
 
 public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 		implements IEServerTickableBE, IStateBasedDirectional, IScrewdriverInteraction,
-		IBlockBounds, IRedstoneConnector
+		IBlockBounds, IRedstoneConnector, IBlockOverlayText
 {
 	private static final Vec3 CONNECTION_OFFSET = new Vec3(0.5, 0.875, 0.5);
 	private final double RADIUS = 48;
@@ -61,6 +75,7 @@ public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 	int activeTicks = 0;
 
 	public DyeColor redstoneChannel = DyeColor.WHITE;
+	public SirenSound sound = SirenSound.SIREN;
 
 	public SirenBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -73,7 +88,7 @@ public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 		if(active)
 		{
 			if(activeTicks%160==0) // sound refreshes after 8 seconds
-				getLevelNonnull().playSound(null, getPosition(), IESounds.siren.value(), SoundSource.BLOCKS, 4, 1);
+				getLevelNonnull().playSound(null, getPosition(), this.sound.sound.value(), SoundSource.BLOCKS, 4, 1);
 			if(activeTicks%80==0) // entities update after 4 seconds
 			{
 				AABB aabb = new AABB(getPosition()).inflate(RADIUS);
@@ -113,14 +128,18 @@ public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 	@Override
 	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-//		if(level.isClientSide)
-//			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneStateCell, this);
+		if(level.isClientSide)
+			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_Siren, this);
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
+		if(message.contains("redstoneChannel"))
+			redstoneChannel = DyeColor.byId(message.getInt("redstoneChannel"));
+		if(message.contains("sound"))
+			sound = SirenSound.BY_ORDINAL.apply(message.getInt("sound"));
 	}
 
 	@Override
@@ -128,6 +147,7 @@ public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("redstoneChannel", redstoneChannel.getId());
+		nbt.putInt("sound", sound.ordinal());
 		nbt.putBoolean("active", active);
 	}
 
@@ -136,6 +156,7 @@ public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 	{
 		super.readCustomNBT(nbt, descPacket);
 		redstoneChannel = DyeColor.byId(nbt.getInt("redstoneChannel"));
+		sound = SirenSound.BY_ORDINAL.apply(nbt.getInt("sound"));
 		active = nbt.getBoolean("active");
 	}
 
@@ -188,11 +209,35 @@ public class SirenBlockEntity extends ImmersiveConnectableBlockEntity
 		return IEProperties.FACING_ALL;
 	}
 
-//
-//	@Override
-//	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
-//	{
-//		return null;
-//	}
+	@Override
+	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
+	{
+		if(!Utils.isScrewdriver(player.getItemInHand(InteractionHand.MAIN_HAND)))
+			return null;
+		return new Component[]{
+				Component.translatable(Lib.DESC_INFO+"redstoneChannel", I18n.get("color.minecraft."+redstoneChannel.getName()))
+		};
+	}
 
+
+	public enum SirenSound
+	{
+		SIREN(IESounds.siren),
+		KLAXON(IESounds.klaxon),
+		BUZZER(IESounds.buzzer);
+
+		private static final IntFunction<SirenSound> BY_ORDINAL = ByIdMap.continuous(SirenSound::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+
+		private final Holder<SoundEvent> sound;
+
+		SirenSound(Holder<SoundEvent> sound)
+		{
+			this.sound = sound;
+		}
+
+		public Component getComponent()
+		{
+			return Component.translatable(Lib.GUI_CONFIG+"siren.sound."+name().toLowerCase(Locale.ENGLISH));
+		}
+	}
 }

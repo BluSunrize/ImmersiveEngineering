@@ -78,6 +78,7 @@ public class Lib
 	public static final String GUIID_RedstoneStateCell = "redstonestatecell";
 	public static final String GUIID_RedstoneTimer = "redstonetimer";
 	public static final String GUIID_RedstoneSwitchboard = "redstoneswitchboard";
+	public static final String GUIID_Siren = "siren";
 	//Items
 	public static final String GUIID_Revolver = "revolver";
 	public static final String GUIID_Toolbox = "toolbox";

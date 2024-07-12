@@ -380,6 +380,9 @@ public class ClientProxy extends CommonProxy
 		if(guiId.equals(Lib.GUIID_RedstoneSwitchboard)&&tileEntity instanceof RedstoneSwitchboardBlockEntity)
 			Minecraft.getInstance().setScreen(new RedstoneSwitchboardScreen((RedstoneSwitchboardBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 
+		if(guiId.equals(Lib.GUIID_Siren)&&tileEntity instanceof SirenBlockEntity)
+			Minecraft.getInstance().setScreen(new SirenScreen((SirenBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
 		if(guiId.equals(Lib.GUIID_MachineInterface)&&tileEntity instanceof MachineInterfaceBlockEntity)
 			Minecraft.getInstance().setScreen(new MachineInterfaceScreen((MachineInterfaceBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 	}

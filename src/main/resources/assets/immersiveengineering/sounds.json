@@ -278,5 +278,19 @@
 			"immersiveengineering:siren"
 		],
 		"subtitle": "subtitle.immersiveengineering.siren"
+	},
+	"klaxon": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:klaxon"
+		],
+		"subtitle": "subtitle.immersiveengineering.klaxon"
+	},
+	"buzzer": {
+		"category": "block",
+		"sounds": [
+			"immersiveengineering:buzzer"
+		],
+		"subtitle": "subtitle.immersiveengineering.buzzer"
 	}
 }
