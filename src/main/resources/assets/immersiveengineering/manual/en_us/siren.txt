@@ -1,0 +1,6 @@
+Warning Siren
+Awooga!
+When things go wrong in a factory, the workers must be notified with a loud warning signal, audible over the noise of the heavy machinery.<br>
+The warning siren affects nearby villagers like a bell, sending them to their homes.<np>
+Sirens can be placed against walls or on top of <link;posts_and_wallmounts;posts>, and connected with <link;redstone_wiring;redstone wires>.<br>
+Using an Engineer's Screwdriver on a siren brings up the interface to configure its signal colour. Additionally, a warning siren can be set to produce one of three different sounds: siren, klaxon or buzzer.

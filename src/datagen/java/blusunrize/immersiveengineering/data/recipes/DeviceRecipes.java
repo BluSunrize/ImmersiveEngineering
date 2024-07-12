@@ -307,6 +307,14 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('p', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_PROBE)));
+		shapedMisc(Connectors.CONNECTOR_BUNDLED)
+				.pattern(" w ")
+				.pattern("wcw")
+				.pattern(" w ")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('w', IETags.aluminumWire)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.CONNECTOR_BUNDLED)));
 		shapedMisc(Connectors.REDSTONE_STATE_CELL)
 				.pattern("c")
 				.pattern("t")
@@ -333,14 +341,15 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('e', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.REDSTONE_SWITCHBOARD)));
-		shapedMisc(Connectors.CONNECTOR_BUNDLED)
-				.pattern(" w ")
-				.pattern("wcw")
-				.pattern(" w ")
+		shapedMisc(Connectors.SIREN)
+				.pattern(" c ")
+				.pattern("pmp")
+				.pattern(" p ")
 				.define('c', Connectors.CONNECTOR_REDSTONE)
-				.define('w', IETags.aluminumWire)
+				.define('p', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.define('m', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
-				.save(out, toRL(toPath(Connectors.CONNECTOR_BUNDLED)));
+				.save(out, toRL(toPath(Connectors.SIREN)));
 
 		// Connectors and Relays
 		shapedMisc(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), 4)

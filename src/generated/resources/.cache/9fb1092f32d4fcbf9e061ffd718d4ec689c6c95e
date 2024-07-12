@@ -1,4 +1,4 @@
-// 1.20.4	2024-07-07T20:10:40.0227497	Recipes
+// 1.20.4	2024-07-12T22:34:56.1302212	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -362,6 +362,7 @@ a8f3cea50342e6b48b2e6cd2fffd9eda7b1a2f6f data/immersiveengineering/advancements/
 eb027a0f20148753d5a318c9868d86efe74dad06 data/immersiveengineering/advancements/recipes/misc/crafting/sheetmetal_uranium_to_slab.json
 20925dd0309e39d2724bfcc3e9b3da1ecd0a1bec data/immersiveengineering/advancements/recipes/misc/crafting/shield.json
 12f775cffa7047ab9a15b12b2a5d58f0f3dc9eb1 data/immersiveengineering/advancements/recipes/misc/crafting/shovel_steel.json
+81e03524819d2d03c9619d9a46fc14adb435f0a9 data/immersiveengineering/advancements/recipes/misc/crafting/siren.json
 f29bae142144c3a246a02faf863ad45145b33ece data/immersiveengineering/advancements/recipes/misc/crafting/skyhook.json
 71bc3bfa53305e8278d87374d266ce87c9d14adb data/immersiveengineering/advancements/recipes/misc/crafting/slag_brick.json
 7e3a2aec357f0ec8e3e35b8e7a0931474f97daf3 data/immersiveengineering/advancements/recipes/misc/crafting/slag_brick_from_slab.json
@@ -1239,6 +1240,7 @@ dd2d24b22cd7d64dfb144a82fa17bd03de4a3d1a data/immersiveengineering/recipes/craft
 467095eafc7e73066b27cd768aadec7a3d426426 data/immersiveengineering/recipes/crafting/sheetmetal_uranium_to_slab.json
 be8fedc3b0dcf76e9c978bc5da4c289f73974415 data/immersiveengineering/recipes/crafting/shield.json
 9b47bb0f2b40376963da7e06048a14f242912079 data/immersiveengineering/recipes/crafting/shovel_steel.json
+68c58d85277c0e99a6d7a34bfd1ca9cf58b123b1 data/immersiveengineering/recipes/crafting/siren.json
 707fc253df83a0eda25c45bff1fe317be1961b6e data/immersiveengineering/recipes/crafting/skyhook.json
 322240dacae3a98580d041f69b5f8f1209c23ce5 data/immersiveengineering/recipes/crafting/slag_brick.json
 86bd9c61a9a0703e033bc022ba2516c43fb0da65 data/immersiveengineering/recipes/crafting/slag_brick_from_slab.json

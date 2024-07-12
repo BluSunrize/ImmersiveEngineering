@@ -107,6 +107,7 @@
     "entry_list": [
       "redstone_wiring",
       "redstone_state_cells",
+      "siren",
       "redstone_probe",
       "redstone_timer",
       "redstone_switchboard",

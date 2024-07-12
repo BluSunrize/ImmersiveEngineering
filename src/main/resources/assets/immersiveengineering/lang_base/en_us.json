@@ -1001,7 +1001,7 @@
   "block.immersiveengineering.redstone_state_cell": "Redstone State Cell",
   "block.immersiveengineering.redstone_timer": "Redstone Timer",
   "block.immersiveengineering.redstone_switchboard": "Redstone Switchboard",
-  "block.immersiveengineering.siren": "Siren",
+  "block.immersiveengineering.siren": "Warning Siren",
   "block.immersiveengineering.feedthrough": "Feedthrough Insulator",
   "block.immersiveengineering.capacitor_lv": "LV Accumulator",
   "block.immersiveengineering.capacitor_mv": "MV Accumulator",
