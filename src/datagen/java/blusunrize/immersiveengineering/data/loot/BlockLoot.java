@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.data.loot;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.MultiblockRegistration;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.PostBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.PostBlock.HorizontalOffset;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
@@ -115,6 +117,10 @@ public class BlockLoot implements LootTableSubProvider
 		registerDoor(WoodenDecoration.DOOR);
 		registerDoor(WoodenDecoration.DOOR_FRAMED);
 		registerDoor(MetalDecoration.STEEL_DOOR);
+
+		registerPost(WoodenDecoration.TREATED_POST);
+		registerPost(MetalDecoration.STEEL_POST);
+		registerPost(MetalDecoration.ALU_POST);
 
 		registerMultiblocks();
 
@@ -307,6 +313,15 @@ public class BlockLoot implements LootTableSubProvider
 		LootPool.Builder ret = createPoolBuilder().setRolls(ConstantValue.exactly(1.0F))
 				.add(LootItem.lootTableItem(b.get()).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b.get()).setProperties(
 						StatePropertiesPredicate.Builder.properties().hasProperty(DoorBlock.HALF, DoubleBlockHalf.LOWER))
+				));
+		register(b, ret);
+	}
+
+	private void registerPost(Supplier<? extends Block> b)
+	{
+		LootPool.Builder ret = createPoolBuilder().setRolls(ConstantValue.exactly(1.0F))
+				.add(LootItem.lootTableItem(b.get()).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(b.get()).setProperties(
+						StatePropertiesPredicate.Builder.properties().hasProperty(PostBlock.HORIZONTAL_OFFSET, HorizontalOffset.NONE))
 				));
 		register(b, ret);
 	}
