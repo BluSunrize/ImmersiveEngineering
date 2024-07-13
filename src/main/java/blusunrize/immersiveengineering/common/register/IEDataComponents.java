@@ -29,7 +29,6 @@ import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
 import blusunrize.immersiveengineering.common.items.RevolverItem.RevolverCooldowns;
 import blusunrize.immersiveengineering.common.items.SurveyToolsItem.VeinEntry;
 import blusunrize.immersiveengineering.common.items.components.AttachedItem;
-import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
@@ -61,6 +60,9 @@ public class IEDataComponents
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<LogicCircuitInstruction>> CIRCUIT_INSTRUCTION = make(
 			"logic_instruction", LogicCircuitInstruction.CODECS
+	);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<List<LogicCircuitInstruction>>> CIRCUIT_INSTRUCTIONS = make(
+			"logic_instructions", LogicCircuitInstruction.CODECS.listOf()
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> GENERIC_FLUID = REGISTER.register(
 			"fluid", () -> DataComponentType.<SimpleFluidContent>builder()
@@ -101,9 +103,6 @@ public class IEDataComponents
 	);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<TurretConfig>> TURRET_DATA = make("turret_data", TurretConfig.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<List<VeinEntry>>> SURVERYTOOL_DATA = make("surveytool_data", VeinEntry.CODECS.listOf());
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> FLUID_SORTER_DATA = directNBT("fluid_sorter_nbt");
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> LOGIC_UNIT_DATA = directNBT("logic_unit_nbt");
-	public static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> SORTER_DATA = directNBT("sorter_nbt");
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> UPGRADE_DATA = make("upgrade_nbt", UpgradeData.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SKYHOOK_SPEED_LIMIT = make("speed_limit", DualCodecs.BOOL);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DRILL_SINGLEBLOCK = make("drill_singleblock", DualCodecs.BOOL);
@@ -158,11 +157,5 @@ public class IEDataComponents
 						.networkSynchronized(codec.streamCodec())
 						.build()
 		);
-	}
-
-	@Deprecated
-	private static DeferredHolder<DataComponentType<?>, DataComponentType<DirectNBT>> directNBT(String name)
-	{
-		return make(name, DirectNBT.CODECS);
 	}
 }

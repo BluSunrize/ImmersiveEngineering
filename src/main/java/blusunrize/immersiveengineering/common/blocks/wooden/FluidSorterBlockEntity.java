@@ -16,9 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
@@ -26,10 +24,12 @@ import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlo
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -224,7 +224,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag data = new CompoundTag();
 		writeCustomNBT(data, false, context.getLevel().registryAccess());
-		stack.set(IEDataComponents.FLUID_SORTER_DATA, new DirectNBT(data));
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(data));
 		drop.accept(stack);
 	}
 
@@ -232,8 +232,9 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		if(stack.has(IEDataComponents.FLUID_SORTER_DATA))
-			readCustomNBT(stack.get(IEDataComponents.FLUID_SORTER_DATA).tag(), false, ctx.getLevel().registryAccess());
+		var data = ctx.getItemInHand().get(DataComponents.BLOCK_ENTITY_DATA);
+		if(data!=null)
+			readCustomNBT(data.copyTag(), false, ctx.getLevel().registryAccess());
 	}
 
 

@@ -14,9 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ArgContainer;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
@@ -34,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -345,16 +344,16 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		CompoundTag data = new CompoundTag();
 		writeCustomNBT(data, false, context.getLevel().registryAccess());
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		stack.set(IEDataComponents.SORTER_DATA, new DirectNBT(data));
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(data));
 		drop.accept(stack);
 	}
 
 	@Override
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		final var data = ctx.getItemInHand().get(IEDataComponents.SORTER_DATA);
+		final var data = ctx.getItemInHand().get(DataComponents.BLOCK_ENTITY_DATA);
 		if(data!=null)
-			readCustomNBT(data.tag(), false, ctx.getLevel().registryAccess());
+			readCustomNBT(data.copyTag(), false, ctx.getLevel().registryAccess());
 	}
 
 	private final EnumMap<Direction, IItemHandler> insertionHandlers = new EnumMap<>(Direction.class);

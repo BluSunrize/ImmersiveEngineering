@@ -66,6 +66,8 @@ public class TransformingVertexBuilder implements VertexConsumer
 	@Override
 	public VertexConsumer addVertex(float x, float y, float z)
 	{
+		if(pos.hasValue())
+			endVertex();
 		pos.putData(new Vector3f(x, y, z));
 		return this;
 	}
@@ -110,7 +112,8 @@ public class TransformingVertexBuilder implements VertexConsumer
 		return this;
 	}
 
-	//TODO
+	// TODO either call this everywhere or get rid of it
+	// TODO I think the vanilla stuff can handle arbitrary orders now? So only the globals missing
 	// @Override
 	public void endVertex()
 	{

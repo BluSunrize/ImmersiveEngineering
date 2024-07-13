@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.ILogicCircuitHandler;
+import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
@@ -22,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
-import blusunrize.immersiveengineering.common.items.components.DirectNBT;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
@@ -48,6 +48,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInventory, IBlockEntityDrop,
 		IInteractionObjectIE<LogicUnitBlockEntity>, IStateBasedDirectional, ILogicCircuitHandler
@@ -102,19 +103,19 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		CompoundTag nbt = new CompoundTag();
-		ContainerHelper.saveAllItems(nbt, inventory, context.getLevel().registryAccess());
-		if(!nbt.isEmpty())
-			stack.set(IEDataComponents.LOGIC_UNIT_DATA, new DirectNBT(nbt));
+		var instructions = getInstructions().toList();
+		if(!instructions.isEmpty())
+			stack.set(IEDataComponents.CIRCUIT_INSTRUCTIONS, instructions);
 		drop.accept(stack);
 	}
 
 	@Override
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		final var data = ctx.getItemInHand().get(IEDataComponents.LOGIC_UNIT_DATA);
-		if(data!=null)
-			readCustomNBT(data.tag(), false, ctx.getLevel().registryAccess());
+		final var instructions = ctx.getItemInHand().get(IEDataComponents.CIRCUIT_INSTRUCTIONS);
+		if(instructions!=null)
+			for(int i = 0; i < instructions.size(); ++i)
+				inventory.set(i, LogicCircuitBoardItem.buildCircuitBoard(instructions.get(i)));
 	}
 
 	@Override
@@ -166,12 +167,16 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 		boolean[] outPre = Arrays.copyOf(outputs, SIZE_COLORS);
 		Arrays.fill(registers, false);
 		Arrays.fill(outputs, false);
-		this.inventory.stream()
-				.map(s -> s.get(IEDataComponents.CIRCUIT_INSTRUCTION))
-				.filter(Objects::nonNull)
-				.forEachOrdered(instruction -> instruction.apply(this));
+		getInstructions().forEachOrdered(instruction -> instruction.apply(this));
 		if(!Arrays.equals(outPre, outputs))
 			markConnectorsDirty();
+	}
+
+	private Stream<LogicCircuitInstruction> getInstructions()
+	{
+		return this.inventory.stream()
+				.map(s -> s.get(IEDataComponents.CIRCUIT_INSTRUCTION))
+				.filter(Objects::nonNull);
 	}
 
 	private void markConnectorsDirty()
