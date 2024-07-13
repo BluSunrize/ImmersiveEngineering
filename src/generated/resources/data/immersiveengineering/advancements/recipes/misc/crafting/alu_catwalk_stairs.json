@@ -1,13 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_alu_catwalk": {
+    "has_scaffolding": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:alu_catwalk"
-            ]
+            "tag": "immersiveengineering:scaffoldings/aluminum"
           }
         ]
       },
@@ -23,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_alu_catwalk"
+      "has_scaffolding"
     ]
   ],
   "rewards": {

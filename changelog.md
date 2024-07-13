@@ -4,6 +4,7 @@
 - Add the redstone timer for emitting regular signals (BluSunrize)
 - Add the redstone switchboard for remapping redstone signals between networks (BluSunrize)
 - Move redstone components to a separate category of the manual (BluSunrize)
+- Change recipe for catwalk stairs to be cheaper (BluSunrize)
 - Fix waterlogged posts not dropping items (BluSunrize)
 - Fix treated windows and feedthrough insulators letting rain through (BluSunrize, voidsong-dragonfly)
 - Fix crates not syncing their names to the client (BluSunrize)

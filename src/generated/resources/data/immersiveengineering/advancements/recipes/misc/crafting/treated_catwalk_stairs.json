@@ -7,13 +7,11 @@
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "has_treated_catwalk": {
+    "has_treated_planks": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:treated_catwalk"
-            ]
+            "tag": "forge:treated_wood"
           }
         ]
       },
@@ -23,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_treated_catwalk"
+      "has_treated_planks"
     ]
   ],
   "rewards": {

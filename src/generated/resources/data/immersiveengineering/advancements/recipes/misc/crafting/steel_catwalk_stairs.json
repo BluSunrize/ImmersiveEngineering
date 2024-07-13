@@ -1,13 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_steel_catwalk": {
+    "has_scaffolding": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:steel_catwalk"
-            ]
+            "tag": "immersiveengineering:scaffoldings/steel"
           }
         ]
       },
@@ -23,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_steel_catwalk"
+      "has_scaffolding"
     ]
   ],
   "rewards": {
