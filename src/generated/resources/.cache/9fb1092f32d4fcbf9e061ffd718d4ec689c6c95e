@@ -1,4 +1,4 @@
-// 1.20.4	2024-07-13T09:47:03.103206	Recipes
+// 1.20.4	2024-07-13T09:53:52.8194613	Recipes
 d26086952b40806bc38c90c09b98813f12205a0d data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick.json
 b9b65ae84fb439073534ac46e2e74644d1239f0a data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_from_slab.json
 5dd470beb97dbd63fc44761ae16283bf3e542d5b data/immersiveengineering/advancements/recipes/misc/crafting/alloybrick_to_slab.json
@@ -1500,6 +1500,7 @@ a1b29dbecd094054eaea1de50dd85b6c9e03fe60 data/immersiveengineering/recipes/crush
 c549d42fdf477e8bc8f03f984ad5b526e13c1ae6 data/immersiveengineering/recipes/crusher/red_sandstone.json
 df85024e1c0facbcada099bdc03cc301bea1055d data/immersiveengineering/recipes/crusher/sandstone.json
 c5e9827bb85c8758e52bb644ecf9fe7e54b61c89 data/immersiveengineering/recipes/crusher/slag.json
+d62fe291492eb4fa89757f202ad32347b17ed8e1 data/immersiveengineering/recipes/crusher/slag_brick.json
 3e37e186024cc5be4246e34f52048ac976a6d967 data/immersiveengineering/recipes/crusher/stone.json
 a67d246f11d980b41523b08e970f8b213e45112a data/immersiveengineering/recipes/crusher/white_dye.json
 80aae8b7be91dbac284ff713f698b557f8b80c94 data/immersiveengineering/recipes/crusher/wool.json

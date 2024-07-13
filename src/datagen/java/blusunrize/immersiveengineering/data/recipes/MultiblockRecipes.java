@@ -248,6 +248,11 @@ public class MultiblockRecipes extends IERecipeProvider
 				.setEnergy(1600)
 				.build(out, toRL("crusher/slag"));
 		CrusherRecipeBuilder.builder()
+				.output(StoneDecoration.SLAG_GRAVEL.asItem())
+				.input(StoneDecoration.SLAG_BRICK)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/slag_brick"));
+		CrusherRecipeBuilder.builder()
 				.output(Items.SAND)
 				.input(Tags.Items.GLASS)
 				.setEnergy(3200)
