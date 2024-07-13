@@ -8,6 +8,7 @@
 - Fix treated windows and feedthrough insulators letting rain through (BluSunrize, voidsong-dragonfly)
 - Fix crates not syncing their names to the client (BluSunrize)
 - Fix shader based particles breaking on servers (BluSunrize)
+- Fix various button tooltips sticking around after being clicked (BluSunrize)
 
 ##### Version 1.20.4-11.5.0-179
 - Add warning signs (BluSunrize)

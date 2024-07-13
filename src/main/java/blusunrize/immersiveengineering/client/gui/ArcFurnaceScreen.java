@@ -47,7 +47,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
-		if(distributeButton.isHoveredOrFocused())
+		if(distributeButton.isHovered()&&menu.getCarried().isEmpty())
 			addLine.accept(Component.translatable(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 	}
 
