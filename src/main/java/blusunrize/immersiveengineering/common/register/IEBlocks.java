@@ -381,10 +381,10 @@ public final class IEBlocks
 				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<TrapDoorBlock> TRAPDOOR = new BlockEntry<>(
-				"treated_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_trapdoor", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<TrapDoorBlock> TRAPDOOR_FRAMED = new BlockEntry<>(
-				"treated_trapdoor_framed", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_trapdoor_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 
 		private static void init()
