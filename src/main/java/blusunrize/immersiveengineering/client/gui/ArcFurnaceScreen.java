@@ -14,13 +14,17 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -60,6 +64,27 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 			int h = process.processStep();
 			graphics.blit(background, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 		}
+	}
+
+
+	private static final DecimalFormat PROGRESS_PERCENTAGE = new DecimalFormat(" #00%");
+
+	@Override
+	protected List<Component> getTooltipFromContainerItem(ItemStack stack)
+	{
+		List<Component> ret = super.getTooltipFromContainerItem(stack);
+		if(this.hoveredSlot!=null)
+			menu.processes.get().forEach(processSlot -> {
+				if(processSlot.slot()==this.hoveredSlot.index)
+				{
+					Component progress = Component.literal(PROGRESS_PERCENTAGE.format(processSlot.processFloat())).withStyle(ChatFormatting.GRAY);
+					if(ret.get(0) instanceof MutableComponent mutable)
+						mutable.append(progress);
+					else
+						ret.add(progress);
+				}
+			});
+		return ret;
 	}
 
 	@Override

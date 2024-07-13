@@ -7,6 +7,7 @@
     - Move redstone components to a separate category of the manual (BluSunrize)
 - Add recipe for crushing slag bricks into slag gravel (BluSunrize)
 - Add recipes for wetting vanilla concrete powder in the bottling machine (BluSunrize)
+- Add progress tooltip to items in the arc furnace (BluSunrize)
 - Change recipe for catwalk stairs to be cheaper (BluSunrize)
 - Fix waterlogged posts not dropping items (BluSunrize)
 - Fix treated windows and feedthrough insulators letting rain through (BluSunrize, voidsong-dragonfly)
