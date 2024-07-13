@@ -15,6 +15,7 @@
 - Fix various button tooltips sticking around after being clicked (BluSunrize)
 - Fix treated trapdoors erroneously having metal properties (BluSunrize)
 - Fix arms on posts dropping blocks when broken (BluSunrize)
+- Fix crate minecarts crashing when inserted into with a hopper (BluSunrize)
 
 ##### Version 1.20.4-11.5.0-179
 - Add warning signs (BluSunrize)
