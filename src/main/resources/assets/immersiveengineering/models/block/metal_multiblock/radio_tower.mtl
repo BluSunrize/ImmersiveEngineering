@@ -1,0 +1,5 @@
+newmtl multiblock_base
+map_Kd immersiveengineering:block/multiblocks/multiblock_base
+
+newmtl radio_tower
+map_Kd immersiveengineering:block/multiblocks/radio_tower

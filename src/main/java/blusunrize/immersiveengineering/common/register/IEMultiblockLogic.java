@@ -166,6 +166,12 @@ public class IEMultiblockLogic
 			.gui(IEMenuTypes.ARC_FURNACE)
 			.build();
 
+	public static final MultiblockRegistration<RadioTowerLogic.State> RADIO_TOWER = metal(new RadioTowerLogic(), "radio_tower")
+			.structure(() -> IEMultiblocks.RADIO_TOWER)
+//			.redstone(s -> s.rsControl, ArcFurnaceLogic.REDSTONE_POS)
+//			.gui(IEMenuTypes.ARC_FURNACE)
+			.build();
+
 	private static <S extends IMultiblockState>
 	IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{

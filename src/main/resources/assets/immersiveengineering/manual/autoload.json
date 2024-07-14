@@ -113,7 +113,8 @@
       "redstone_switchboard",
       "engineers_circuit_workbench",
       "logic_unit",
-      "machine_interface"
+      "machine_interface",
+      "radio_tower"
     ]
   },
   "explosives_weaponry": {

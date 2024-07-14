@@ -428,7 +428,7 @@ public class IEBlockTags extends BlockTagsProvider
 				IEMultiblocks.AUTO_WORKBENCH.getBlock(), IEMultiblocks.BOTTLING_MACHINE.getBlock(), IEMultiblocks.BUCKET_WHEEL.getBlock(),
 				IEMultiblocks.DIESEL_GENERATOR.getBlock(), IEMultiblocks.EXCAVATOR.getBlock(), IEMultiblocks.FERMENTER.getBlock(), IEMultiblocks.LIGHTNING_ROD.getBlock(),
 				IEMultiblocks.METAL_PRESS.getBlock(), IEMultiblocks.MIXER.getBlock(), IEMultiblocks.REFINERY.getBlock(), IEMultiblocks.SHEETMETAL_TANK.getBlock(),
-				IEMultiblocks.SILO.getBlock(), IEMultiblocks.SQUEEZER.getBlock());
+				IEMultiblocks.SILO.getBlock(), IEMultiblocks.SQUEEZER.getBlock(), IEMultiblocks.RADIO_TOWER.getBlock());
 	}
 
 	private void registerAxeMineable()
