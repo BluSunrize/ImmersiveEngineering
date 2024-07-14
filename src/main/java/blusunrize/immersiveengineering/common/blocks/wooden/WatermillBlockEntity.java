@@ -29,6 +29,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -40,26 +41,18 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE, IStateBasedDirectional, IHasDummyBlocks, ISoundBE
 {
 	public int[] offset = {0, 0};
-	public float rotation = 0;
-	private Vec3 torqueVec = null;
-	// Indicates that the next tick should be skipped since the waterwheel is being controlled by another waterwheel
-	// attached to it
-	public boolean multiblock = false;
+	private double rotation = 0;
+	private double speed = 0;
+	private double powerOut = 0;
+	private long defferedUpdateTick = 0;
 	private boolean beingBroken = false;
-	public double perTick;
-	private IEBlockCapabilityCache<IRotationAcceptor> outputCap = IEBlockCapabilityCaches.forNeighbor(
-			IRotationAcceptor.CAPABILITY, this, () -> getFacing().getOpposite()
-	);
-	private IEBlockCapabilityCache<IRotationAcceptor> reverseOutputCap = IEBlockCapabilityCaches.forNeighbor(
-			IRotationAcceptor.CAPABILITY, this, this::getFacing
-	);
+	private IEBlockCapabilityCache<IRotationAcceptor> dynamo = null;
 	//These are position lists for blocks to check for flowrate. First 11 are breastshot, all 16 are overshot
 	private static final List<Vec3> offsetsZ = Arrays.asList(
 			new Vec3(+3, +1, 0),
@@ -95,6 +88,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			new Vec3(0, +3,  0),
 			new Vec3(0, +3, +1),
 			new Vec3(0, +2, +2));
+	private static final int MAX_WHEELS = 3;
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -104,87 +98,120 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public void tickClient()
 	{
-		rotation += perTick;
+		rotation += speed;
 		rotation %= 1;
-		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, Math.abs(perTick)>0, 0.5f, 1f);
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, Math.abs(speed)>0, 0.5f, 1f);
 	}
 
 	@Override
 	public void tickServer()
 	{
-		if(isBlocked())
+		if(dynamo!=null&&dynamo.getCapability()!=null&&powerOut>0)
 		{
-			setPerTickAndAdvance(0);
-			return;
+			dynamo.getCapability().inputRotation(powerOut);
+			if(level.getGameTime()%1024==((getBlockPos().getX()^getBlockPos().getZ())&1023))
+				handleUpdate(null);
 		}
-		if(level.getGameTime()%64==((getBlockPos().getX()^getBlockPos().getZ())&63))
-			torqueVec = null;
-		if(multiblock)
-		{
-			multiblock = false;
-			return;
-		}
+		if(dynamo==null||level.getGameTime()<defferedUpdateTick)
+			handleUpdate(null);
+	}
 
-		IRotationAcceptor dynamo = outputCap.getCapability();
-		Direction expandTo = getFacing();
-		if(dynamo==null)
+	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		if(level instanceof ServerLevel)
+			if(master() instanceof WatermillBlockEntity master)
+				master.setShouldUpdate();
+	}
+
+	@Override
+	public void onNeighborBlockChange(BlockPos pos)
+	{
+		super.onNeighborBlockChange(pos);
+		if(isDummy()&&(pos.relative(getFacing()).equals(getBlockPos())||pos.relative(getFacing().getOpposite()).equals(getBlockPos())))
+			return;
+		if(master() instanceof WatermillBlockEntity master)
+			master.setShouldUpdate();
+	}
+
+	/**
+	 * Handles updating the torque produced by this batch of waterwheels
+	 * This method will synchronize rotation across only dynamo-connected waterwheels!
+	 * @param search Direction in which to continue the search, if this is not the starting tile
+	 */
+	public void handleUpdate(@Nullable Direction search)
+	{
+		//Recalculate dynamo attachment
+		IEBlockCapabilityCache<IRotationAcceptor> facingCap = IEBlockCapabilityCaches.forNeighbor(IRotationAcceptor.CAPABILITY, this, this::getFacing);
+		IEBlockCapabilityCache<IRotationAcceptor> oppositeCap = IEBlockCapabilityCaches.forNeighbor(IRotationAcceptor.CAPABILITY, this, () -> getFacing().getOpposite());
+		dynamo = facingCap.getCapability()==null?oppositeCap:facingCap;
+		//Search for the waterwheel with the dynamo, or process the update if we have the connected dynamo
+		if(dynamo.getCapability()!=null)
 		{
-			dynamo = reverseOutputCap.getCapability();
-			expandTo = expandTo.getOpposite();
-		}
-		if(dynamo!=null)
-		{
-			double power = getIFScaledTorque();
-			List<WatermillBlockEntity> connectedWheels = new ArrayList<>();
-			for(int i = 1; i < 3; ++i)
+			Direction step = facingCap.getCapability()==null?getFacing():getFacing().getOpposite();
+			//Get total torque across all connected wheels up to maximum
+			double torque = getIFScaledTorque();
+			int wheels = 1;
+			while(wheels<MAX_WHEELS)
 			{
-				BlockEntity blockEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(expandTo, i));
-				if(!canUse(blockEntity))
+				BlockEntity be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(step, wheels));
+				System.out.println(be);
+				if(be instanceof WatermillBlockEntity watermill)
+					if(watermill.isBlocked())
+						break;
+					else
+						torque += watermill.getIFScaledTorque();
+				else
 					break;
-				WatermillBlockEntity asWatermill = (WatermillBlockEntity)blockEntity;
-				connectedWheels.add(asWatermill);
-				power += asWatermill.getIFScaledTorque();
+				wheels++;
 			}
-
-			// +1: Self is not included in list of connected wheels
-			setPerTickAndAdvance(0.00025*power/(connectedWheels.size()+1));
-			for(WatermillBlockEntity watermill : connectedWheels)
+			//Update connected wheels with new torque as necessary
+			powerOut = Math.abs(torque);
+			speed = 0.00025*torque/wheels;
+			//Update client with the data we just set
+			level.sendBlockUpdated(getBlockPos(), level.getBlockState(getBlockPos()), level.getBlockState(getBlockPos()), 3);
+			for(int i=1;i<wheels;i++)
 			{
-				watermill.setPerTickAndAdvance(perTick);
-				if(watermill.rotation!=rotation)
-				{
-					watermill.rotation = rotation;
-					watermill.markContainingBlockForUpdate(null);
-				}
-				watermill.multiblock = true;
+				BlockPos pos = getBlockPos().relative(step, i);
+				BlockEntity be = SafeChunkUtils.getSafeBE(level, pos);
+				if(be instanceof WatermillBlockEntity watermill)
+					if(watermill.isBlocked())
+						break;
+					else
+					{
+						watermill.speed = speed;
+						watermill.rotation = rotation;
+					}
+				//Update client with the data we just set
+				level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
 			}
-
-			dynamo.inputRotation(Math.abs(power));
 		}
-		else
-			setPerTickAndAdvance(0.00025*getIFScaledTorque());
-	}
-
-	private void setPerTickAndAdvance(double newValue)
-	{
-		if(newValue!=perTick)
+		//Start the search and go both directions as necessary
+		else if(search == null)
 		{
-			perTick = newValue;
-			markContainingBlockForUpdate(null);
+			BlockEntity be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing()));
+			if(be instanceof WatermillBlockEntity watermill) watermill.handleUpdate(getFacing());
+			be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing().getOpposite()));
+			if(be instanceof WatermillBlockEntity watermill) watermill.handleUpdate(getFacing().getOpposite());
 		}
-		rotation += perTick;
-		rotation %= 1;
+		//Continue the search if we haven't found the dynamo yet
+		else
+		{
+			BlockEntity be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(search));
+			if(be instanceof WatermillBlockEntity watermill) watermill.handleUpdate(search);
+		}
+		//Set this block's deferred update tick to -1
+		defferedUpdateTick = -1;
+		//Mark chunk dirty so data saves
+		markChunkDirty();
 	}
 
-	private boolean canUse(@Nullable BlockEntity tileEntity)
-	{
-		if(!(tileEntity instanceof WatermillBlockEntity watermill))
-			return false;
-		return watermill.offset[0]==0&&watermill.offset[1]==0
-				&&(watermill.getFacing()==getFacing()||watermill.getFacing()==getFacing().getOpposite())
-				&&!watermill.isBlocked()&&!watermill.multiblock;
-	}
-
+	/**
+	 * Returns whether the waterwheel has blocks in its blades preventing it from turning
+	 * Blocks without solid faces will not count as blocking the waterwheel
+	 * @return boolean for if the watermill can turn
+	 */
 	public boolean isBlocked()
 	{
 		if(level==null)
@@ -243,11 +270,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	 */
 	public Vec3 getTorque(boolean zAxis, boolean overshot)
 	{
-		if(torqueVec==null)
-		{
-			torqueVec = overshot?getOvershotTorque(zAxis): getBreastshotTorque(zAxis);
-			torqueVec = torqueVec.add(getResistanceTorque(torqueVec, zAxis));
-		}
+		Vec3 torqueVec = overshot?getOvershotTorque(zAxis): getBreastshotTorque(zAxis);
+		torqueVec = torqueVec.add(getResistanceTorque(torqueVec, zAxis));
 		return torqueVec;
 	}
 
@@ -338,18 +362,11 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public boolean triggerEvent(int id, int arg)
-	{
-		torqueVec = new Vec3(id/10000f, 0, arg/10000f);
-		return true;
-	}
-
-	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		offset = nbt.getIntArray("offset");
-		rotation = nbt.getFloat("rotation");
-		perTick = nbt.getDouble("perTick");
+		rotation = nbt.getDouble("rotation");
+		speed = nbt.getDouble("speed");
 
 		if(offset==null||offset.length < 2)
 			offset = new int[]{0, 0};
@@ -359,8 +376,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putIntArray("offset", offset);
-		nbt.putFloat("rotation", rotation);
-		nbt.putDouble("perTick", perTick);
+		nbt.putDouble("rotation", rotation);
+		nbt.putDouble("speed", speed);
 	}
 
 	public AABB renderAABB;
@@ -444,6 +461,22 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public boolean shouldPlaySound(String sound)
 	{
-		return Math.abs(perTick)>0;
+		return Math.abs(speed)>0;
+	}
+
+	public double getRotation()
+	{
+		return rotation;
+	}
+
+	public double getSpeed()
+	{
+		return speed;
+	}
+
+	public void setShouldUpdate()
+	{
+		if(isDummy()) return;
+		defferedUpdateTick = Math.max(defferedUpdateTick, level.getGameTime());
 	}
 }
