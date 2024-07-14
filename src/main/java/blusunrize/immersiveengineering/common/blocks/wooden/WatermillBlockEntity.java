@@ -50,7 +50,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	private double rotation = 0;
 	private double speed = 0;
 	private double powerOut = 0;
-	private long defferedUpdateTick = 0;
+	private long deferredUpdateTick = 0;
 	private boolean beingBroken = false;
 	private IEBlockCapabilityCache<IRotationAcceptor> dynamo = null;
 	//These are position lists for blocks to check for flowrate. First 11 are breastshot, all 16 are overshot
@@ -106,13 +106,17 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public void tickServer()
 	{
+		//Update rotation to make sure we sync it with client correctly
+		rotation += speed;
+		rotation %= 1;
+		//Do the rest of the update for the actual wheel logic
 		if(dynamo!=null&&powerOut>0&&dynamo.getCapability()!=null)
 		{
 			dynamo.getCapability().inputRotation(powerOut);
 			if(level.getGameTime()%1024==((getBlockPos().getX()^getBlockPos().getZ())&1023))
 				handleUpdate(null);
 		}
-		if(dynamo==null||level.getGameTime()<defferedUpdateTick)
+		if(dynamo==null||level.getGameTime()> deferredUpdateTick)
 			handleUpdate(null);
 	}
 
@@ -129,8 +133,6 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public void onNeighborBlockChange(BlockPos pos)
 	{
 		super.onNeighborBlockChange(pos);
-		if(isDummy()&&(pos.relative(getFacing()).equals(getBlockPos())||pos.relative(getFacing().getOpposite()).equals(getBlockPos())))
-			return;
 		if(master() instanceof WatermillBlockEntity master)
 			master.setShouldUpdate();
 	}
@@ -156,7 +158,6 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			while(wheels<MAX_WHEELS)
 			{
 				BlockEntity be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(step, wheels));
-				System.out.println(be);
 				if(be instanceof WatermillBlockEntity watermill)
 					if(watermill.isBlocked())
 						break;
@@ -202,7 +203,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			if(be instanceof WatermillBlockEntity watermill) watermill.handleUpdate(search);
 		}
 		//Set this block's deferred update tick to -1
-		defferedUpdateTick = -1;
+		deferredUpdateTick = Long.MAX_VALUE;
 		//Mark chunk dirty so data saves
 		markChunkDirty();
 	}
@@ -477,6 +478,6 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public void setShouldUpdate()
 	{
 		if(isDummy()) return;
-		defferedUpdateTick = Math.max(defferedUpdateTick, level.getGameTime());
+		deferredUpdateTick = Math.min(deferredUpdateTick, level.getGameTime());
 	}
 }
