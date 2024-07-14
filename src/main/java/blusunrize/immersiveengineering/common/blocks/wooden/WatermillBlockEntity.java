@@ -106,7 +106,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public void tickServer()
 	{
-		if(dynamo!=null&&dynamo.getCapability()!=null&&powerOut>0)
+		if(dynamo!=null&&powerOut>0&&dynamo.getCapability()!=null)
 		{
 			dynamo.getCapability().inputRotation(powerOut);
 			if(level.getGameTime()%1024==((getBlockPos().getX()^getBlockPos().getZ())&1023))
