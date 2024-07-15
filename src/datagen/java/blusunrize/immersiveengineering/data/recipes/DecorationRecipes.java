@@ -182,7 +182,14 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('s', IETags.getItemTag(IETags.treatedWoodSlab))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.CATWALK)));
-		addStairs(WoodenDecoration.CATWALK, WoodenDecoration.CATWALK_STAIRS, out);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, WoodenDecoration.CATWALK_STAIRS, 4)
+				.pattern("s  ")
+				.pattern("rs ")
+				.pattern(" rs")
+				.define('r', IETags.treatedStick)
+				.define('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(WoodenDecoration.CATWALK_STAIRS)));
 
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, WoodenDecoration.DOOR, 3)
 				.pattern("ww")
@@ -689,7 +696,14 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('s', IETags.getItemTag(IETags.scaffoldingSteelSlab))
 				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingSteel)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_CATWALK)));
-		addStairs(MetalDecoration.STEEL_CATWALK, MetalDecoration.STEEL_CATWALK_STAIRS, out);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.STEEL_CATWALK_STAIRS, 4)
+				.pattern("s  ")
+				.pattern("rs ")
+				.pattern(" rs")
+				.define('r', IETags.steelRod)
+				.define('s', IETags.getItemTag(IETags.scaffoldingSteelSlab))
+				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingSteel)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.STEEL_CATWALK_STAIRS)));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.ALU_CATWALK, 6)
 				.pattern("rrr")
 				.pattern("r r")
@@ -698,7 +712,14 @@ public class DecorationRecipes extends IERecipeProvider
 				.define('s', IETags.getItemTag(IETags.scaffoldingAluSlab))
 				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingAlu)))
 				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.ALU_CATWALK)));
-		addStairs(MetalDecoration.ALU_CATWALK, MetalDecoration.ALU_CATWALK_STAIRS, out);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.ALU_CATWALK_STAIRS, 4)
+				.pattern("s  ")
+				.pattern("rs ")
+				.pattern(" rs")
+				.define('r', IETags.aluminumRod)
+				.define('s', IETags.getItemTag(IETags.scaffoldingAluSlab))
+				.unlockedBy("has_scaffolding", has(IETags.getItemTag(IETags.scaffoldingAlu)))
+				.save(new WrappingRecipeOutput<>(out, BasicShapedRecipe::new), toRL(toPath(MetalDecoration.ALU_CATWALK_STAIRS)));
 
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, MetalDecoration.STEEL_DOOR, 3)
 				.pattern("ii")

@@ -15,9 +15,9 @@ import java.util.function.Supplier;
 
 public class GuiButtonBoolean extends GuiButtonState<Boolean>
 {
-	public GuiButtonBoolean(int x, int y, int w, int h, String name, Supplier<Boolean> state, ResourceLocation texture, int u, int v,
+	public GuiButtonBoolean(int x, int y, int w, int h, Component name, Supplier<Boolean> state, ResourceLocation texture, int u, int v,
 							int offsetDir, IIEPressable<GuiButtonState<Boolean>> handler)
 	{
-		super(x, y, w, h, Component.nullToEmpty(name), new Boolean[]{false, true}, () -> state.get()?1: 0, texture, u, v, offsetDir, handler);
+		super(x, y, w, h, name, new Boolean[]{false, true}, () -> state.get()?1: 0, texture, u, v, offsetDir, handler);
 	}
 }

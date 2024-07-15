@@ -11,6 +11,15 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "immersiveengineering:alu_post",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "horizontal_offset": "none"
+              }
+            }
+          ],
           "name": "immersiveengineering:alu_post"
         }
       ],

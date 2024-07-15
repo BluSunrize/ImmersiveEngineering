@@ -381,10 +381,10 @@ public final class IEBlocks
 				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<TrapDoorBlock> TRAPDOOR = new BlockEntry<>(
-				"treated_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_trapdoor", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 		public static final BlockEntry<TrapDoorBlock> TRAPDOOR_FRAMED = new BlockEntry<>(
-				"treated_trapdoor_framed", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+				"treated_trapdoor_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 
 		private static void init()
@@ -697,6 +697,18 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<BasicConnectorBlock<?>> CONNECTOR_BUNDLED = new BlockEntry<>(
 				"connector_bundled", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.CONNECTOR_BUNDLED)
+		);
+		public static final BlockEntry<BasicConnectorBlock<?>> REDSTONE_STATE_CELL = new BlockEntry<>(
+				"redstone_state_cell", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.REDSTONE_STATE_CELL)
+		);
+		public static final BlockEntry<BasicConnectorBlock<?>> REDSTONE_TIMER = new BlockEntry<>(
+				"redstone_timer", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.REDSTONE_TIMER)
+		);
+		public static final BlockEntry<HorizontalFacingEntityBlock<?>> REDSTONE_SWITCHBOARD = new BlockEntry<>(
+				"redstone_switchboard", ConnectorBlock.PROPERTIES, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.REDSTONE_SWITCHBOARD, p)
+		);
+		public static final BlockEntry<AnyFacingEntityBlock<?>> SIREN = new BlockEntry<>(
+				"siren", ConnectorBlock.PROPERTIES, p -> new AnyFacingEntityBlock<>(IEBlockEntities.SIREN, p)
 		);
 		public static final BlockEntry<FeedthroughBlock> FEEDTHROUGH = new BlockEntry<>("feedthrough", FeedthroughBlock.PROPERTIES, FeedthroughBlock::new);
 

@@ -20,6 +20,10 @@ public enum PlacementLimitation
 	SIDE_CLICKED((side, placer, hitPos) -> side),
 	SIDE_CLICKED_INVERTED((side, placer, hitPos) -> side.getOpposite()),
 	PISTON_LIKE((side, placer, hitPos) -> Direction.orderedByNearest(placer)[0]),
+	PISTON_LIKE_NO_DOWN((side, placer, hitPos) -> {
+		Direction f = Direction.orderedByNearest(placer)[0];
+		return f==Direction.DOWN?Direction.UP: f;
+	}),
 	PISTON_INVERTED((side, placer, hitPos) -> Direction.orderedByNearest(placer)[0].getOpposite()),
 	PISTON_INVERTED_NO_DOWN((side, placer, hitPos) -> {
 		Direction f = Direction.orderedByNearest(placer)[0];

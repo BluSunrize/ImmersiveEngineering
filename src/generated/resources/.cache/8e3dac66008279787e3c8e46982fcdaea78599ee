@@ -1,4 +1,4 @@
-// 1.20.4	2024-06-27T22:34:11.5656508	Tags for minecraft:item mod id immersiveengineering
+// 1.20.4	2024-07-02T13:51:09.233778	Tags for minecraft:item mod id immersiveengineering
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/forge/tags/items/armors.json
@@ -156,7 +156,7 @@ c3d387e89fbb8dfb53e5e91ad3b45e07f5202650 data/immersiveengineering/tags/items/sc
 b7ae6076dcdde66b8bd7c303e7f5ea5e58ba24f1 data/immersiveengineering/tags/items/scaffolding_stairs/aluminum.json
 58bcbaec9e8e1403838cbc28eb4bae9fdfa0dc3d data/immersiveengineering/tags/items/scaffolding_stairs/steel.json
 a7377577517c4d7856cefd165a4f35a75e636f06 data/immersiveengineering/tags/items/toolbox/tools.json
-e5c3944c2ae80d9e04025f18f44f3f7f45e17818 data/immersiveengineering/tags/items/toolbox/wiring.json
+ba8541c1dcff08a470290e6d940fd73f07a791ad data/immersiveengineering/tags/items/toolbox/wiring.json
 6e2720545b691b7dd962c68ecb9715cab8583fb9 data/immersiveengineering/tags/items/tools/hammers.json
 72757ad4db4fa6ebbe78f75376dd9544720b1c61 data/immersiveengineering/tags/items/tools/screwdrivers.json
 abd64977cb7f9a82733f5a615230b150179a2123 data/immersiveengineering/tags/items/tools/wirecutters.json

@@ -1,0 +1,8 @@
+Redstone Switchboard
+Meaningful connections
+When working with multiple redstone wire networks, connecting individual colours to each other can end up requiring a lot of space.<br>
+The redstone switchboard alleviates this issue by allowing any signals from one network to be relayed to another one, with colours being freely remapped on the way.<br>
+Signals only pass in one direction; left -> right when standing in front of the switchboard.<br>
+Additionally, the switchboard features analog inverters for all signals, allowing the output network to be sent the inverse of the input signal.<np>
+To configure the switchboard, use an Engineer's Screwdriver to open the interface. Click any of the input sockets to start connecting a cable there, then click an output socket to finalize the connection.<br>
+Optionally, toggle the red "invert" button on any of the output panels on or off - though note that inversion only has an effect if there is a connection going to that output.

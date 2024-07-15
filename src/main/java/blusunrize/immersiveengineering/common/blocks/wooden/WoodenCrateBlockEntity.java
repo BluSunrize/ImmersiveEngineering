@@ -181,7 +181,9 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();
-		level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+		// on minecarts, this can be null
+		if(this.level!=null)
+			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
 	}
 
 	@Override

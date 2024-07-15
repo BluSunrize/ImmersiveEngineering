@@ -54,7 +54,7 @@ public class GunTurretScreen extends TurretScreen<GunTurretMenu>
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addRenderableWidget(new GuiButtonBoolean(leftPos+134, topPos+31, 16, 16, "", menu.expelCasings, TEXTURE, 176, 81, 0,
+		this.addRenderableWidget(new GuiButtonBoolean(leftPos+134, topPos+31, 16, 16, Component.empty(), menu.expelCasings, TEXTURE, 176, 81, 0,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;

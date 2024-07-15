@@ -137,6 +137,18 @@ public class IEBlockEntities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConnectorBundledBlockEntity>> CONNECTOR_BUNDLED = REGISTER.register(
 			"connectorbundled", makeType(ConnectorBundledBlockEntity::new, Connectors.CONNECTOR_BUNDLED)
 	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneStateCellBlockEntity>> REDSTONE_STATE_CELL = REGISTER.register(
+			"redstonestatecell", makeType(RedstoneStateCellBlockEntity::new, Connectors.REDSTONE_STATE_CELL)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneTimerBlockEntity>> REDSTONE_TIMER = REGISTER.register(
+			"redstonetimer", makeType(RedstoneTimerBlockEntity::new, Connectors.REDSTONE_TIMER)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneSwitchboardBlockEntity>> REDSTONE_SWITCHBOARD = REGISTER.register(
+			"redstoneswitchboard", makeType(RedstoneSwitchboardBlockEntity::new, Connectors.REDSTONE_SWITCHBOARD)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SirenBlockEntity>> SIREN = REGISTER.register(
+			"siren", makeType(SirenBlockEntity::new, Connectors.SIREN)
+	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FeedthroughBlockEntity>> FEEDTHROUGH = REGISTER.register(
 			"feedthrough", makeType(FeedthroughBlockEntity::new, Connectors.FEEDTHROUGH)
 	);

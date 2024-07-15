@@ -1,0 +1,15 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 125,
+    "tag": "minecraft:water"
+  },
+  "input": {
+    "item": "minecraft:white_concrete_powder"
+  },
+  "results": [
+    {
+      "item": "minecraft:white_concrete"
+    }
+  ]
+}

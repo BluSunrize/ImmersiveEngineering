@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
@@ -20,7 +21,7 @@ public class GuiButtonCheckbox extends GuiButtonBoolean
 {
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("hud_elements");
 
-	public GuiButtonCheckbox(int x, int y, String name, Supplier<Boolean> state, IIEPressable<GuiButtonState<Boolean>> handler)
+	public GuiButtonCheckbox(int x, int y, Component name, Supplier<Boolean> state, IIEPressable<GuiButtonState<Boolean>> handler)
 	{
 		super(x, y, 8, 8, name, state, TEXTURE, 0, 128, -1, handler);
 	}

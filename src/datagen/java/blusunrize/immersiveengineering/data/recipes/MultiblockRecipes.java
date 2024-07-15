@@ -34,17 +34,26 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static blusunrize.immersiveengineering.api.IETags.getItemTag;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
@@ -217,6 +226,32 @@ public class MultiblockRecipes extends IERecipeProvider
 				.input(IETags.fiberHemp, 8)
 				.fluidInput(IETags.fluidResin, half_bucket)
 				.build(out, toRL("bottling/"+toPath(Tools.GRINDINGDISK)));
+
+
+		// I can't believe this map didn't exist already...
+		Map<Block, Block> vanillaConcrete = new HashMap<>();
+		vanillaConcrete.put(Blocks.WHITE_CONCRETE_POWDER, Blocks.WHITE_CONCRETE);
+		vanillaConcrete.put(Blocks.ORANGE_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE);
+		vanillaConcrete.put(Blocks.MAGENTA_CONCRETE_POWDER, Blocks.MAGENTA_CONCRETE);
+		vanillaConcrete.put(Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.LIGHT_BLUE_CONCRETE);
+		vanillaConcrete.put(Blocks.YELLOW_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE);
+		vanillaConcrete.put(Blocks.LIME_CONCRETE_POWDER, Blocks.LIME_CONCRETE);
+		vanillaConcrete.put(Blocks.PINK_CONCRETE_POWDER, Blocks.PINK_CONCRETE);
+		vanillaConcrete.put(Blocks.GRAY_CONCRETE_POWDER, Blocks.GRAY_CONCRETE);
+		vanillaConcrete.put(Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.LIGHT_GRAY_CONCRETE);
+		vanillaConcrete.put(Blocks.CYAN_CONCRETE_POWDER, Blocks.CYAN_CONCRETE);
+		vanillaConcrete.put(Blocks.PURPLE_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE);
+		vanillaConcrete.put(Blocks.BLUE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE);
+		vanillaConcrete.put(Blocks.BROWN_CONCRETE_POWDER, Blocks.BROWN_CONCRETE);
+		vanillaConcrete.put(Blocks.GREEN_CONCRETE_POWDER, Blocks.GREEN_CONCRETE);
+		vanillaConcrete.put(Blocks.RED_CONCRETE_POWDER, Blocks.RED_CONCRETE);
+		vanillaConcrete.put(Blocks.BLACK_CONCRETE_POWDER, Blocks.BLACK_CONCRETE);
+		vanillaConcrete.forEach((powder, concrete) -> BottlingMachineRecipeBuilder.builder()
+				.output(concrete)
+				.input(powder)
+				.fluidInput(FluidTags.WATER, eighth_bucket)
+				.build(out, toRL("bottling/"+toPath(powder)))
+		);
 	}
 
 	private void crusher(RecipeOutput out)
@@ -247,6 +282,11 @@ public class MultiblockRecipes extends IERecipeProvider
 				.input(IETags.slag)
 				.setEnergy(1600)
 				.build(out, toRL("crusher/slag"));
+		CrusherRecipeBuilder.builder()
+				.output(StoneDecoration.SLAG_GRAVEL.asItem())
+				.input(StoneDecoration.SLAG_BRICK)
+				.setEnergy(1600)
+				.build(out, toRL("crusher/slag_brick"));
 		CrusherRecipeBuilder.builder()
 				.output(Items.SAND)
 				.input(Tags.Items.GLASS)

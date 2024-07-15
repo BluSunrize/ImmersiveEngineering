@@ -22,8 +22,24 @@
       "other_engineers"
     ]
   },
-  "storage_transport": {
+  "tools": {
     "category_weight": 10,
+    "entry_list": [
+      "basic_tools",
+      "engineers_toolbox",
+      "jerrycan",
+      "ear_defenders",
+      "maintenance_kit",
+      "engineers_skyhook",
+      "mining_drill",
+      "buzzsaw",
+      "accumulator_backpack",
+      "collapsible_glider",
+      "shaders"
+    ]
+  },
+  "storage_transport": {
+    "category_weight": 20,
     "entry_list": [
       "storage_crates",
       "storage_barrels",
@@ -41,7 +57,7 @@
     ]
   },
   "construction": {
-    "category_weight": 20,
+    "category_weight": 30,
     "entry_list": [
       "concrete",
       "hempcrete",
@@ -59,7 +75,7 @@
     ]
   },
   "workbenches_machinery": {
-    "category_weight": 30,
+    "category_weight": 40,
     "entry_list": [
       "engineers_crafting_table",
       "engineers_workbench",
@@ -68,21 +84,17 @@
       "turntable",
       "garden_cloche",
       "charging_station",
-      "electromagnet",
-      "engineers_circuit_workbench",
-      "logic_unit",
-      "machine_interface"
+      "electromagnet"
     ]
   },
   "electrical_grids": {
-    "category_weight": 40,
+    "category_weight": 50,
     "entry_list": [
       "basic_wiring",
       "transformers",
       "feedthrough_insulators",
       "accumulators",
       "circuit_breakers",
-      "redstone_wiring",
       "current_transformer",
       "kinetic_generators",
       "thermoelectric_generator",
@@ -90,9 +102,24 @@
       "lightning_rod"
     ]
   },
-  "explosives_weaponry": {
-    "category_weight": 50,
+  "redstone_control": {
+    "category_weight": 60,
     "entry_list": [
+      "redstone_wiring",
+      "redstone_state_cells",
+      "siren",
+      "redstone_probe",
+      "redstone_timer",
+      "redstone_switchboard",
+      "engineers_circuit_workbench",
+      "logic_unit",
+      "machine_interface"
+    ]
+  },
+  "explosives_weaponry": {
+    "category_weight": 70,
+    "entry_list": [
+      "gunpowder_barrels",
       "heavy_plated_shield",
       "revolver",
       "revolver_cartridges",
@@ -100,28 +127,11 @@
       "chemical_thrower",
       "razor_wire",
       "tesla_coil",
-      "turrets",
-      "gunpowder_barrels"
-    ]
-  },
-  "tools": {
-    "category_weight": 60,
-    "entry_list": [
-      "basic_tools",
-      "engineers_toolbox",
-      "jerrycan",
-      "ear_defenders",
-      "maintenance_kit",
-      "engineers_skyhook",
-      "mining_drill",
-      "buzzsaw",
-      "accumulator_backpack",
-      "collapsible_glider",
-      "shaders"
+      "turrets"
     ]
   },
   "multiblock_constructions": {
-    "category_weight": 70,
+    "category_weight": 80,
     "entry_list": [
       "large_constructions",
       "silo",
@@ -133,7 +143,7 @@
     ]
   },
   "heavy_machinery": {
-    "category_weight": 80,
+    "category_weight": 90,
     "entry_list": [
       "machine_components",
       "metal_press",

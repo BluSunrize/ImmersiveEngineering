@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/block",
+  "callbacks": "immersiveengineering:siren",
+  "layers": [
+    "cutout"
+  ],
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/connector/siren.obj.ie",
+  "textures": {
+    "particle": "immersiveengineering:block/connector/siren"
+  }
+}
