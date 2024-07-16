@@ -62,30 +62,13 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		return true;
 	}
 
-	public static class FakeLightBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, ISpawnInterdiction
+	public static class FakeLightBlockEntity extends IEBaseBlockEntity implements ISpawnInterdiction
 	{
 		public BlockPos floodlightCoords = null;
 
 		public FakeLightBlockEntity(BlockPos pos, BlockState state)
 		{
 			super(IEBlockEntities.FAKE_LIGHT.get(), pos, state);
-		}
-
-		@Override
-		public void tickServer()
-		{
-			if(floodlightCoords==null)
-			{
-				level.removeBlock(getBlockPos(), false);
-				return;
-			}
-			if(level.getGameTime()%256==((getBlockPos().getX()^getBlockPos().getZ())&255))
-			{
-				BlockEntity tile = Utils.getExistingTileEntity(level, floodlightCoords);
-				if(!(tile instanceof FloodlightBlockEntity)||!((FloodlightBlockEntity)tile).getIsActive())
-					level.removeBlock(getBlockPos(), false);
-			}
-
 		}
 
 		@Override
@@ -112,6 +95,8 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		public void onLoad()
 		{
 			super.onLoad();
+			if(floodlightCoords==null||!(Utils.getExistingTileEntity(level, floodlightCoords) instanceof FloodlightBlockEntity floodlight)||!floodlight.getIsActive())
+				level.removeBlock(getBlockPos(), false);
 			SpawnInterdictionHandler.addInterdictionTile(this);
 		}
 
