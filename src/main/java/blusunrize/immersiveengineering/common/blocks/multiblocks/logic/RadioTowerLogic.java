@@ -70,7 +70,7 @@ public class RadioTowerLogic
 
 			// fetch the wireless handler for this world, register with it if not yet done
 			WirelessRedstoneHandler handler = WirelessRedstoneHandler.getHandler(serverLevel);
-			if(!handler.isRegistered(broadcastPos))
+			if(!handler.isRegistered(broadcastPos, context.getState()))
 				handler.register(broadcastPos, context.getState());
 
 			// if there is a signal to be sent, do so

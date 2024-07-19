@@ -42,9 +42,9 @@ public class WirelessRedstoneHandler
 		this.registeredComponents.put(pos, component);
 	}
 
-	public boolean isRegistered(BlockPos pos)
+	public boolean isRegistered(BlockPos pos, IWirelessRedstoneComponent fromComponent)
 	{
-		return this.registeredComponents.containsKey(pos);
+		return this.registeredComponents.containsKey(pos) && this.registeredComponents.get(pos) == fromComponent;
 	}
 
 	public void sendSignal(BlockPos fromPos, IWirelessRedstoneComponent fromComponent, byte[] signal)
