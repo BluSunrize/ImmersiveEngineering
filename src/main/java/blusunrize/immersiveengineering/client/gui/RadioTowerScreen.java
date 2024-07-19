@@ -26,6 +26,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +41,7 @@ import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.IntSupplier;
 
 public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 {
@@ -123,11 +125,7 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 		this.addRenderableWidget(new FrequencySlider(
 				getGuiLeft()+8, getGuiTop()+8,
 				RadioTowerLogic.FREQUENCY_MIN, RadioTowerLogic.FREQUENCY_MAX, this.menu.frequency,
-				frq -> {
-					CompoundTag message = new CompoundTag();
-					message.putInt("frequency", frq);
-					sendUpdateToServer(message);
-				}
+				this::sendFrequencyToServer
 		));
 
 		for(final DyeColor color : DyeColor.values())
@@ -137,13 +135,38 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 					getGuiLeft()+12+(ordinal%8)*20,
 					getGuiTop()+78+(ordinal/8)*22,
 					color,
+					() -> this.menu.savedFrequencies.get()[ordinal],
 					button -> {
-
+						int[] saved = this.menu.savedFrequencies.get();
+						if(Screen.hasShiftDown())
+						{
+							this.menu.frequency.set(saved[ordinal]);
+							sendFrequencyToServer(saved[ordinal]);
+						}
+						else
+						{
+							saved[ordinal] = this.menu.frequency.get();
+							this.menu.savedFrequencies.set(saved);
+							sendSavedFrequenciesToServer(saved);
+						}
 					}
 			));
 		}
 	}
 
+	private void sendFrequencyToServer(int frq)
+	{
+		CompoundTag message = new CompoundTag();
+		message.putInt("frequency", frq);
+		sendUpdateToServer(message);
+	}
+
+	private void sendSavedFrequenciesToServer(int[] frq)
+	{
+		CompoundTag message = new CompoundTag();
+		message.putIntArray("savedFrequencies", frq);
+		sendUpdateToServer(message);
+	}
 
 	private static class FrequencySlider extends AbstractWidget
 	{
@@ -257,11 +280,13 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 	private static class SaveButton extends GuiButtonIE implements ITooltipWidget
 	{
 		private final DyeColor color;
+		private final IntSupplier frequency;
 
-		public SaveButton(int x, int y, DyeColor color, IIEPressable handler)
+		public SaveButton(int x, int y, DyeColor color, IntSupplier frequency, IIEPressable handler)
 		{
 			super(x, y, 17, 17, Component.empty(), TEXTURE, 110, 239, handler);
 			this.color = color;
+			this.frequency = frequency;
 			this.setHoverOffset(width, 0);
 		}
 
@@ -279,7 +304,7 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 		public void gatherTooltip(int mouseX, int mouseY, List<Component> tooltip)
 		{
 			tooltip.add(Component.translatable("color.minecraft."+this.color.getName()));
-			tooltip.add(Component.translatable(Lib.GUI_CONFIG+"radio_tower.khz").withStyle(ChatFormatting.GRAY));
+			tooltip.add(Component.translatable(Lib.GUI_CONFIG+"radio_tower.khz", this.frequency.getAsInt()).withStyle(ChatFormatting.GRAY));
 			tooltip.add(Component.translatable(Lib.GUI_CONFIG+"radio_tower.save").withStyle(ChatFormatting.DARK_GRAY));
 			tooltip.add(Component.translatable(Lib.GUI_CONFIG+"radio_tower.load").withStyle(ChatFormatting.DARK_GRAY));
 		}

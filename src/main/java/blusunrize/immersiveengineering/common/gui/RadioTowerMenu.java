@@ -30,6 +30,7 @@ public class RadioTowerMenu extends IEContainerMenu
 {
 	public final IEnergyStorage energy;
 	public final GetterAndSetter<Integer> frequency;
+	public final GetterAndSetter<int[]> savedFrequencies;
 	public final GetterAndSetter<Integer> range;
 	public final GetterAndSetter<NearbyComponents> otherComponents;
 
@@ -42,6 +43,7 @@ public class RadioTowerMenu extends IEContainerMenu
 				multiblockCtx(type, id, ctx), invPlayer,
 				state.energy,
 				new GetterAndSetter<>(state::getFrequency, state::setFrequency),
+				new GetterAndSetter<>(state::getSavedFrequencies, state::setSavedFrequencies),
 				GetterAndSetter.getterOnly(state::getChunkRange),
 				GetterAndSetter.getterOnly(() -> NearbyComponents.fromCtx(ctx.mbContext()))
 		);
@@ -54,6 +56,7 @@ public class RadioTowerMenu extends IEContainerMenu
 				invPlayer,
 				new MutableEnergyStorage(RadioTowerLogic.ENERGY_CAPACITY),
 				GetterAndSetter.standalone(0),
+				GetterAndSetter.standalone(new int[0]),
 				GetterAndSetter.standalone(0),
 				GetterAndSetter.standalone(new NearbyComponents(List.of()))
 		);
@@ -61,17 +64,20 @@ public class RadioTowerMenu extends IEContainerMenu
 
 	private RadioTowerMenu(
 			MenuContext ctx, Inventory inventoryPlayer, MutableEnergyStorage energy,
-			GetterAndSetter<Integer> frequency, GetterAndSetter<Integer> range, GetterAndSetter<NearbyComponents> otherComponents
+			GetterAndSetter<Integer> frequency, GetterAndSetter<int[]> savedFrequencies,
+			GetterAndSetter<Integer> range, GetterAndSetter<NearbyComponents> otherComponents
 	)
 	{
 		super(ctx);
 		this.energy = energy;
 		this.frequency = frequency;
+		this.savedFrequencies = savedFrequencies;
 		this.range = range;
 		this.otherComponents = otherComponents;
 
 		addGenericData(GenericContainerData.energy(energy));
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.INT32, frequency));
+		addGenericData(new GenericContainerData<>(GenericDataSerializers.INT_ARRAY, savedFrequencies));
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.INT32, range));
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.RADIO_TOWER_NEARBY, otherComponents));
 	}
@@ -82,6 +88,8 @@ public class RadioTowerMenu extends IEContainerMenu
 	{
 		if(nbt.contains("frequency", Tag.TAG_INT))
 			this.frequency.set(nbt.getInt("frequency"));
+		if(nbt.contains("savedFrequencies", Tag.TAG_INT_ARRAY))
+			this.savedFrequencies.set(nbt.getIntArray("savedFrequencies"));
 	}
 
 

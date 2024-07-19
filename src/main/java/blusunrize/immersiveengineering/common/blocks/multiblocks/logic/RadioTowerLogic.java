@@ -136,6 +136,7 @@ public class RadioTowerLogic
 		public final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
 		private final RedstoneBundleConnection bundleConnection;
 		public int frequency = 142;
+		public int[] savedFrequencies = new int[16];
 		public int rangeInChunks = -1;
 
 		private byte[] receivedSignals = new byte[16];
@@ -171,18 +172,22 @@ public class RadioTowerLogic
 						signals[i] = (byte)Math.max(signals[i], receivedSignals[i]);
 				}
 			};
+			// initial fill
+			Arrays.fill(savedFrequencies, frequency);
 		}
 
 		@Override
 		public void writeSaveNBT(CompoundTag nbt)
 		{
 			nbt.putInt("frequency", frequency);
+			nbt.putIntArray("savedFrequencies", savedFrequencies);
 		}
 
 		@Override
 		public void readSaveNBT(CompoundTag nbt)
 		{
 			frequency = nbt.getInt("frequency");
+			savedFrequencies = nbt.getIntArray("savedFrequencies");
 		}
 
 		@Override
@@ -195,6 +200,16 @@ public class RadioTowerLogic
 		@Override
 		public void readSyncNBT(CompoundTag nbt)
 		{
+		}
+
+		public int[] getSavedFrequencies()
+		{
+			return savedFrequencies;
+		}
+
+		public void setSavedFrequencies(int[] savedFrequencies)
+		{
+			this.savedFrequencies = savedFrequencies;
 		}
 
 		public int getChunkRange()

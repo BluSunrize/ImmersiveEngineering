@@ -53,6 +53,10 @@ public class GenericDataSerializers
 			FriendlyByteBuf::readByteArray, FriendlyByteBuf::writeByteArray,
 			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
+	public static final DataSerializer<int[]> INT_ARRAY = register(
+			FriendlyByteBuf::readVarIntArray, FriendlyByteBuf::writeVarIntArray,
+			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
+	);
 	public static final DataSerializer<List<FluidStack>> FLUID_STACKS = register(
 			fbb -> fbb.readList(FriendlyByteBuf::readFluidStack),
 			(fbb, stacks) -> fbb.writeCollection(stacks, FriendlyByteBuf::writeFluidStack),
