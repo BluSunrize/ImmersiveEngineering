@@ -11,10 +11,14 @@ package blusunrize.immersiveengineering.api.wires.redstone;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 public class WirelessRedstoneHandler
 {
@@ -55,6 +59,22 @@ public class WirelessRedstoneHandler
 					return chunkDist < target.getValue().getChunkRangeSq()&&chunkDist < fromComponent.getChunkRangeSq();
 				})
 				.forEach(target -> target.getValue().receiveSignal(signal));
+	}
+
+	public List<Vec3> getRelativeComponentsInRange(BlockPos fromPos, IWirelessRedstoneComponent fromComponent)
+	{
+		final Vec3 fromVec = Vec3.atCenterOf(fromPos);
+		return this.registeredComponents.entrySet().stream()
+				.filter(target -> target.getValue().getFrequency()==fromComponent.getFrequency()) // filter to same frequency
+				.filter(target -> !fromPos.equals(target.getKey()))
+				.filter(target -> {
+					// check both points to be within distance
+					double chunkDist = fromPos.distSqr(target.getKey())/256; // divide by 16²
+					return chunkDist < target.getValue().getChunkRangeSq()&&chunkDist < fromComponent.getChunkRangeSq();
+				})
+				.map(Entry::getKey)
+				.map(blockPos -> Vec3.atCenterOf(blockPos).subtract(fromVec))
+				.toList();
 	}
 
 	public interface IWirelessRedstoneComponent

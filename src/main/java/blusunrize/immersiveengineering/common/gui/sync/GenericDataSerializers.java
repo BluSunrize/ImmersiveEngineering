@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.gui.sync;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import blusunrize.immersiveengineering.common.gui.MixerMenu.SlotProgress;
+import blusunrize.immersiveengineering.common.gui.RadioTowerMenu.NearbyComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -71,6 +72,9 @@ public class GenericDataSerializers
 	public static final DataSerializer<List<String>> STRINGS = register(
 			fbb -> fbb.readList(FriendlyByteBuf::readUtf), (fbb, list) -> fbb.writeCollection(list, FriendlyByteBuf::writeUtf),
 			ArrayList::new, List::equals
+	);
+	public static final DataSerializer<NearbyComponents> RADIO_TOWER_NEARBY = register(
+			NearbyComponents::from, NearbyComponents::writeTo
 	);
 
 	private static <T> DataSerializer<T> register(

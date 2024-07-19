@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IServerTickableComponent;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IInitialMultiblockContext;
@@ -33,15 +34,21 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class RadioTowerLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
+	public static final int FREQUENCY_MIN = 128;
+	public static final int FREQUENCY_MAX = 384;
+	public static final int ENERGY_CAPACITY = 64000;
+
 	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 5);
 	public static final BlockPos BROADCAST_POS = new BlockPos(2, 13, 2);
 
@@ -55,10 +62,10 @@ public class RadioTowerLogic
 		{
 			BlockPos broadcastPos = level.toAbsolute(BROADCAST_POS);
 			// update the maximum range if it's undefined or every ~ 7 minutes
-			if(state.rangeInChunksSqr < 0||serverLevel.getGameTime()%8192==((broadcastPos.getX()^broadcastPos.getZ())&8191))
+			if(state.rangeInChunks < 0||serverLevel.getGameTime()%8192==((broadcastPos.getX()^broadcastPos.getZ())&8191))
 			{
 				int maxRange = calculateMaxRange(serverLevel, broadcastPos, 4);
-				state.rangeInChunksSqr = maxRange*maxRange;
+				state.rangeInChunks = maxRange;
 			}
 
 			// fetch the wireless handler for this world, register with it if not yet done
@@ -126,9 +133,10 @@ public class RadioTowerLogic
 
 	public static class State implements IMultiblockState, IWirelessRedstoneComponent
 	{
+		public final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
 		private final RedstoneBundleConnection bundleConnection;
 		public int frequency = 142;
-		public int rangeInChunksSqr = -1;
+		public int rangeInChunks = -1;
 
 		private byte[] receivedSignals = new byte[16];
 		private byte[] sendingSignals = new byte[16];
@@ -189,10 +197,15 @@ public class RadioTowerLogic
 		{
 		}
 
+		public int getChunkRange()
+		{
+			return rangeInChunks;
+		}
+
 		@Override
 		public int getChunkRangeSq()
 		{
-			return rangeInChunksSqr;
+			return rangeInChunks*rangeInChunks;
 		}
 
 		@Override
@@ -201,11 +214,28 @@ public class RadioTowerLogic
 			return frequency;
 		}
 
+		public void setFrequency(int frequency)
+		{
+			this.frequency = frequency;
+		}
+
 		@Override
 		public void receiveSignal(byte[] signal)
 		{
 			this.receivedSignals = signal;
 			this.bundleConnection.markDirty();
+		}
+
+		public List<Vec3> getRelativeComponentsInRange(IMultiblockContext<State> context)
+		{
+			IMultiblockLevel level = context.getLevel();
+			final Level rawLevel = context.getLevel().getRawLevel();
+			if(rawLevel instanceof ServerLevel serverLevel)
+				return WirelessRedstoneHandler.getHandler(serverLevel).getRelativeComponentsInRange(
+						level.toAbsolute(BROADCAST_POS),
+						this
+				);
+			return List.of();
 		}
 	}
 }
