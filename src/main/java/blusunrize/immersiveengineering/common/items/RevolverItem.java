@@ -193,11 +193,11 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
 				builder.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, "Weapon modifier", speed, Operation.MULTIPLY_BASE));
-
-			double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
-			if(luck!=0)
-				builder.put(Attributes.LUCK, new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
 		}
+
+		double luck = getUpgradeValue_d(stack, RevolverPerk.LUCK.getNBTKey());
+		if(luck!=0)
+			builder.put(Attributes.LUCK, new AttributeModifier(luckModUUID, "Weapon modifier", luck, Operation.ADDITION));
 		return builder.build();
 	}
 
