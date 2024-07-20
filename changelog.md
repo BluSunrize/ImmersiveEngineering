@@ -8,6 +8,7 @@
 - Add recipe for crushing slag bricks into slag gravel (BluSunrize)
 - Add recipes for wetting vanilla concrete powder in the bottling machine (BluSunrize)
 - Add progress tooltip to items in the arc furnace (BluSunrize)
+- Allow revolver pieces to be recycled in the arc furnace (BluSunrize)
 - Change recipe for catwalk stairs to be cheaper (BluSunrize)
 - Change luck attribute on revolvers to apply always, instead of just when held (BluSunrize)
 - Fix waterlogged posts not dropping items (BluSunrize)

@@ -29,8 +29,10 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
+import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
@@ -137,6 +139,10 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof HammerItem
 				||stack instanceof WirecutterItem||stack instanceof ScrewdriverItem
 				||stack instanceof DrillheadItem||stack instanceof JerrycanItem);
+		// Revolver parts
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
+				Ingredients.GUNPART_BARREL, Ingredients.GUNPART_DRUM, Ingredients.GUNPART_HAMMER
+		));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
 		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("rods/");
