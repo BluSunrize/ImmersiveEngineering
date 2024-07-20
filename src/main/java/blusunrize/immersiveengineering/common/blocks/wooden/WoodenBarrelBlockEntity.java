@@ -333,7 +333,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		{
 			this.setChanged();
 			this.markContainingBlockForUpdate(null);
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return InteractionResult.sidedSuccess(player.level().isClientSide);
 		}
 		return InteractionResult.PASS;
 	}
