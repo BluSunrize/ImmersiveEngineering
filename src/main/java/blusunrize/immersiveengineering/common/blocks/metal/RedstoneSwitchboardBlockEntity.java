@@ -184,11 +184,11 @@ public class RedstoneSwitchboardBlockEntity extends ImmersiveConnectableBlockEnt
 		if(getFacing()==Direction.NORTH)
 			return new Vec3(right?.6875-conRadius: .3125+conRadius, .875-conRadius, .1875);
 		if(getFacing()==Direction.SOUTH)
-			return new Vec3(right?.3125+conRadius: .6875-conRadius, .875-conRadius, .1875);
+			return new Vec3(right?.3125+conRadius: .6875-conRadius, .875-conRadius, .8125);
 		if(getFacing()==Direction.WEST)
 			return new Vec3(.1875, .875-conRadius, right?.3125+conRadius: .6875-conRadius);
 		if(getFacing()==Direction.EAST)
-			return new Vec3(.1875, .875-conRadius, right?.6875-conRadius: .3125+conRadius);
+			return new Vec3(.8125, .875-conRadius, right?.6875-conRadius: .3125+conRadius);
 		return new Vec3(.5, .5, .5);
 	}
 
