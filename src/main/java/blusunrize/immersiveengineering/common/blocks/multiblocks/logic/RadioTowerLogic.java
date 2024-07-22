@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
@@ -36,6 +38,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +52,9 @@ public class RadioTowerLogic
 	public static final int FREQUENCY_MAX = 384;
 	public static final int ENERGY_CAPACITY = 64000;
 
-	public static final BlockPos REDSTONE_POS = new BlockPos(2, 1, 5);
+	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(1, 1, 5, RelativeBlockFace.UP);
+	private static final CapabilityPosition IO_CONNECTION = new CapabilityPosition(2, 1, 5, RelativeBlockFace.UP);
+	private static final CapabilityPosition CONTROL_CONNECTION = new CapabilityPosition(3, 1, 5, RelativeBlockFace.UP);
 	public static final BlockPos BROADCAST_POS = new BlockPos(2, 13, 2);
 
 	@Override
@@ -116,7 +121,9 @@ public class RadioTowerLogic
 	@Override
 	public void registerCapabilities(CapabilityRegistrar<State> register)
 	{
-		register.registerAtBlockPos(CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION, REDSTONE_POS, state -> state.bundleConnection);
+		register.registerAt(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
+		register.registerAt(CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION, IO_CONNECTION, state -> state.bundleConnection);
+		register.registerAt(CapabilityRedstoneNetwork.REDSTONE_BUNDLE_CONNECTION, CONTROL_CONNECTION, state -> state.controlConnection);
 	}
 
 	@Override
@@ -135,6 +142,7 @@ public class RadioTowerLogic
 	{
 		public final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
 		private final RedstoneBundleConnection bundleConnection;
+		private final RedstoneBundleConnection controlConnection;
 		public int frequency = 142;
 		public int[] savedFrequencies = new int[16];
 		public int rangeInChunks = -1;
@@ -146,13 +154,6 @@ public class RadioTowerLogic
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
-//			this.mifHandler = () -> new MachineCheckImplementation[]{
-//					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
-//					new MachineCheckImplementation<>(insertionHandler, MachineInterfaceHandler.BASIC_ITEM_IN),
-//					new MachineCheckImplementation<>(extractionHandler, MachineInterfaceHandler.BASIC_ITEM_OUT),
-//					new MachineCheckImplementation<>(fluidHandler, MachineInterfaceHandler.BASIC_FLUID_OUT),
-//					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
-//			};
 			bundleConnection = new RedstoneBundleConnection()
 			{
 				@Override
@@ -170,6 +171,23 @@ public class RadioTowerLogic
 				{
 					for(int i = 0; i < signals.length; i++)
 						signals[i] = (byte)Math.max(signals[i], receivedSignals[i]);
+				}
+			};
+			controlConnection = new RedstoneBundleConnection()
+			{
+				@Override
+				public void onChange(byte[] externalInputs, Direction side)
+				{
+					int maxSignal = 0;
+					int maxIdx = -1;
+					for(int i = 0; i < externalInputs.length; i++)
+						if(externalInputs[i] > maxSignal)
+						{
+							maxSignal = externalInputs[i];
+							maxIdx = i;
+						}
+					if(maxIdx >= 0)
+						frequency = savedFrequencies[maxIdx];
 				}
 			};
 			// initial fill
