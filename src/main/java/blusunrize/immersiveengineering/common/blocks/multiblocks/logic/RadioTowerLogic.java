@@ -78,11 +78,18 @@ public class RadioTowerLogic
 			if(!handler.isRegistered(broadcastPos, context.getState()))
 				handler.register(broadcastPos, context.getState());
 
-			// if there is a signal to be sent, do so
+			// if the sending signal has changed, notify other components
 			if(state.sendingDirty)
 			{
-				handler.sendSignal(broadcastPos, state, state.sendingSignals);
+				handler.notifyComponents(broadcastPos, state);
 				state.sendingDirty = false;
+			}
+			// if the network has changed, fetch new signal
+			if(state.receivingDirty)
+			{
+				state.receivedSignals = handler.fetchSignals(broadcastPos, state);
+				state.bundleConnection.markDirty();
+				state.receivingDirty = false;
 			}
 		}
 
@@ -150,6 +157,7 @@ public class RadioTowerLogic
 		private byte[] receivedSignals = new byte[16];
 		private byte[] sendingSignals = new byte[16];
 		private boolean sendingDirty = false;
+		private boolean receivingDirty = false;
 
 
 		public State(IInitialMultiblockContext<State> ctx)
@@ -187,7 +195,10 @@ public class RadioTowerLogic
 							maxIdx = i;
 						}
 					if(maxIdx >= 0)
+					{
 						frequency = savedFrequencies[maxIdx];
+						receivingDirty = true;
+					}
 				}
 			};
 			// initial fill
@@ -247,16 +258,27 @@ public class RadioTowerLogic
 			return frequency;
 		}
 
+		@Override
+		public byte[] getBroadcastSignal()
+		{
+			return sendingSignals;
+		}
+
 		public void setFrequency(int frequency)
 		{
 			this.frequency = frequency;
 		}
 
 		@Override
-		public void receiveSignal(byte[] signal)
+		public void notifyOfUpdate(WirelessRedstoneHandler handler)
 		{
-			this.receivedSignals = signal;
-			this.bundleConnection.markDirty();
+			markSendAndReceiveDirty();
+		}
+
+		public void markSendAndReceiveDirty()
+		{
+			this.receivingDirty = true;
+			this.sendingDirty = true;
 		}
 
 		public List<Vec3> getRelativeComponentsInRange(IMultiblockContext<State> context)

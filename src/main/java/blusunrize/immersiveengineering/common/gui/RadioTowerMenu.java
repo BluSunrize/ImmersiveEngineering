@@ -33,6 +33,7 @@ public class RadioTowerMenu extends IEContainerMenu
 	public final GetterAndSetter<int[]> savedFrequencies;
 	public final GetterAndSetter<Integer> range;
 	public final GetterAndSetter<NearbyComponents> otherComponents;
+	public final Runnable markDirty;
 
 	public static RadioTowerMenu makeServer(
 			MenuType<?> type, int id, Inventory invPlayer, MultiblockMenuContext<State> ctx
@@ -45,7 +46,8 @@ public class RadioTowerMenu extends IEContainerMenu
 				new GetterAndSetter<>(state::getFrequency, state::setFrequency),
 				new GetterAndSetter<>(state::getSavedFrequencies, state::setSavedFrequencies),
 				GetterAndSetter.getterOnly(state::getChunkRange),
-				GetterAndSetter.getterOnly(() -> NearbyComponents.fromCtx(ctx.mbContext()))
+				GetterAndSetter.getterOnly(() -> NearbyComponents.fromCtx(ctx.mbContext())),
+				state::markSendAndReceiveDirty
 		);
 	}
 
@@ -58,14 +60,17 @@ public class RadioTowerMenu extends IEContainerMenu
 				GetterAndSetter.standalone(0),
 				GetterAndSetter.standalone(new int[0]),
 				GetterAndSetter.standalone(0),
-				GetterAndSetter.standalone(new NearbyComponents(List.of()))
+				GetterAndSetter.standalone(new NearbyComponents(List.of())),
+				() -> {
+				}
 		);
 	}
 
 	private RadioTowerMenu(
 			MenuContext ctx, Inventory inventoryPlayer, MutableEnergyStorage energy,
 			GetterAndSetter<Integer> frequency, GetterAndSetter<int[]> savedFrequencies,
-			GetterAndSetter<Integer> range, GetterAndSetter<NearbyComponents> otherComponents
+			GetterAndSetter<Integer> range, GetterAndSetter<NearbyComponents> otherComponents,
+			Runnable markDirty
 	)
 	{
 		super(ctx);
@@ -74,6 +79,7 @@ public class RadioTowerMenu extends IEContainerMenu
 		this.savedFrequencies = savedFrequencies;
 		this.range = range;
 		this.otherComponents = otherComponents;
+		this.markDirty = markDirty;
 
 		addGenericData(GenericContainerData.energy(energy));
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.INT32, frequency));
@@ -90,6 +96,7 @@ public class RadioTowerMenu extends IEContainerMenu
 			this.frequency.set(nbt.getInt("frequency"));
 		if(nbt.contains("savedFrequencies", Tag.TAG_INT_ARRAY))
 			this.savedFrequencies.set(nbt.getIntArray("savedFrequencies"));
+		this.markDirty.run();
 	}
 
 

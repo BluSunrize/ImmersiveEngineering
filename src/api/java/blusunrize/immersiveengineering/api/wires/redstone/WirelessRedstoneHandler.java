@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+
+import static blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler.fillWithMax;
 
 public class WirelessRedstoneHandler
 {
@@ -47,7 +48,26 @@ public class WirelessRedstoneHandler
 		return this.registeredComponents.containsKey(pos) && this.registeredComponents.get(pos) == fromComponent;
 	}
 
-	public void sendSignal(BlockPos fromPos, IWirelessRedstoneComponent fromComponent, byte[] signal)
+	public byte[] fetchSignals(BlockPos fromPos, IWirelessRedstoneComponent fromComponent)
+	{
+		return this.registeredComponents.entrySet().stream()
+				.filter(target -> SafeChunkUtils.isChunkSafe(level, target.getKey())) // filter to loaded
+				.filter(target -> target.getValue().getFrequency()==fromComponent.getFrequency()) // filter to same frequency
+				.filter(target -> !fromPos.equals(target.getKey())) // ignore self
+				.filter(target -> {
+					// check both points to be within distance
+					double chunkDist = fromPos.distSqr(target.getKey())/256; // divide by 16²
+					return chunkDist < target.getValue().getChunkRangeSq()&&chunkDist < fromComponent.getChunkRangeSq();
+				})
+				.map(component -> component.getValue().getBroadcastSignal())
+				.reduce(new byte[16], (bytes1, bytes2) -> {
+					byte[] out = new byte[16];
+					fillWithMax(bytes2, bytes1, out);
+					return out;
+				});
+	}
+
+	public void notifyComponents(BlockPos fromPos, IWirelessRedstoneComponent fromComponent)
 	{
 		this.registeredComponents.entrySet().stream()
 				.filter(target -> SafeChunkUtils.isChunkSafe(level, target.getKey())) // filter to loaded
@@ -58,7 +78,7 @@ public class WirelessRedstoneHandler
 					double chunkDist = fromPos.distSqr(target.getKey())/256; // divide by 16²
 					return chunkDist < target.getValue().getChunkRangeSq()&&chunkDist < fromComponent.getChunkRangeSq();
 				})
-				.forEach(target -> target.getValue().receiveSignal(signal));
+				.forEach(target -> target.getValue().notifyOfUpdate(this));
 	}
 
 	public List<Vec3> getRelativeComponentsInRange(BlockPos fromPos, IWirelessRedstoneComponent fromComponent)
@@ -83,6 +103,8 @@ public class WirelessRedstoneHandler
 
 		int getFrequency();
 
-		void receiveSignal(byte[] signal);
+		byte[] getBroadcastSignal();
+
+		void notifyOfUpdate(WirelessRedstoneHandler wirelessRedstoneHandler);
 	}
 }
