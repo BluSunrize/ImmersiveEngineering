@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -239,6 +240,12 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 			return multiblockBE.getHelper().getPickBlock();
 		else
 			return ItemStack.EMPTY;
+	}
+
+	@Override
+	public boolean isPathfindable(BlockState state, BlockGetter blockGetter, BlockPos pos, PathComputationType type)
+	{
+		return false;
 	}
 
 	public static class WithMirrorState<State extends IMultiblockState> extends MultiblockPartBlock<State>
