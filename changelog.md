@@ -1,5 +1,6 @@
 ##### Version 1.20.4-11.6.0-pre
 - "The Redstone Update!"
+    - Add the radio tower, a way to wirelessly send signals! (BluSunrize)
     - Add the redstone state cell for storing signals (BluSunrize)
     - Add the redstone timer for emitting regular signals (BluSunrize)
     - Add the redstone switchboard for remapping redstone signals between networks (BluSunrize)
@@ -11,6 +12,9 @@
 - Allow revolver pieces to be recycled in the arc furnace (BluSunrize)
 - Change recipe for catwalk stairs to be cheaper (BluSunrize)
 - Change luck attribute on revolvers to apply always, instead of just when held (BluSunrize)
+- Improve performance of waterwheels (voidsong-dragonfly)
+- Improve performance of thermoelectric generators (voidsong-dragonfly)
+- Improve performance of floodlights (voidsong-dragonfly)
 - Fix waterlogged posts not dropping items (BluSunrize)
 - Fix treated windows and feedthrough insulators letting rain through (BluSunrize, voidsong-dragonfly)
 - Fix crates not syncing their names to the client (BluSunrize)
@@ -20,6 +24,7 @@
 - Fix arms on posts dropping blocks when broken (BluSunrize)
 - Fix crate minecarts crashing when inserted into with a hopper (BluSunrize)
 - Fix barrel minecarts crashing when right-clicked (BluSunrize)
+- Translations Added/Updated: de_de (AriaElidove)
 
 ##### Version 1.20.4-11.5.0-179
 - Add warning signs (BluSunrize)
