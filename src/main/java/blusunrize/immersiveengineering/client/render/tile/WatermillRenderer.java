@@ -46,7 +46,7 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntit
 		transform.translate(.5, .5, .5);
 		if(tile.getFacing().getAxis()==Axis.X)
 			transform.mulPose(new Quaternionf().rotateY(Mth.HALF_PI));
-		float wheelRotation = Mth.TWO_PI*(tile.rotation+partialTicks*(float)tile.perTick);
+		float wheelRotation = (float)(Mth.TWO_PI*(tile.getRotation()+partialTicks*tile.getSpeed()));
 		transform.mulPose(new Quaternionf().rotateZ(wheelRotation));
 		transform.translate(-.5, -.5, -.5);
 		MODEL_BUFFER.render(RenderType.cutoutMipped(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
