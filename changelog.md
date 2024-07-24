@@ -25,6 +25,7 @@
 - Fix crate minecarts crashing when inserted into with a hopper (BluSunrize)
 - Fix barrel minecarts crashing when right-clicked (BluSunrize)
 - Fix villagers trying to pathfind through multiblocks (BluSunrize)
+- Fix disconnect due to shader list in the manual (BluSunrize)
 - Translations Added/Updated: de_de (AriaElidove)
 
 ##### Version 1.20.4-11.5.0-179

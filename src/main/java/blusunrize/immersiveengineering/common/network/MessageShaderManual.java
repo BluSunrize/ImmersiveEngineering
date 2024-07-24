@@ -23,14 +23,14 @@ import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MessageShaderManual implements IMessage
 {
 	public static final ResourceLocation ID = IEApi.ieLoc("shader_manual");
-	private MessageType key;
-	private ResourceLocation[] args;
+	private final MessageType key;
+	private final ResourceLocation[] args;
 
 	public MessageShaderManual(MessageType key, ResourceLocation... args)
 	{
@@ -51,14 +51,9 @@ public class MessageShaderManual implements IMessage
 	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.key.ordinal());
-		if(args!=null)
-		{
-			buf.writeInt(this.args.length);
-			for(ResourceLocation rl : args)
-				buf.writeUtf(rl.toString());
-		}
-		else
-			buf.writeInt(0);
+		buf.writeInt(this.args.length);
+		for(ResourceLocation rl : args)
+			buf.writeUtf(rl.toString());
 	}
 
 	public enum MessageType
@@ -78,8 +73,7 @@ public class MessageShaderManual implements IMessage
 			context.workHandler().execute(() -> {
 				if(key==MessageType.SYNC)
 				{
-					Collection<ResourceLocation> received = ShaderRegistry.receivedShaders.get(playerId);
-					ResourceLocation[] ss = received.toArray(new ResourceLocation[0]);
+					ResourceLocation[] ss = ShaderRegistry.receivedShaders.get(playerId).stream().filter(Objects::nonNull).toArray(ResourceLocation[]::new);
 					PacketDistributor.PLAYER.with(player).send(new MessageShaderManual(MessageType.SYNC, ss));
 				}
 				else if(key==MessageType.UNLOCK&&args.length > 0)
