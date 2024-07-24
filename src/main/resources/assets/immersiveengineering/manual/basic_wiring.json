@@ -44,5 +44,27 @@
       }
       ]
     ]
+  },
+  "wirecoil_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/wirecoil_copper"
+        },
+        {
+          "recipe": "crafting/wirecoil_copper_ins"
+        },
+        {
+          "recipe": "crafting/wirecoil_electrum"
+        },
+        {
+          "recipe": "crafting/wirecoil_electrum_ins"
+        },
+        {
+          "recipe": "crafting/wirecoil_steel"
+        }
+      ]
+    ]
   }
 }
