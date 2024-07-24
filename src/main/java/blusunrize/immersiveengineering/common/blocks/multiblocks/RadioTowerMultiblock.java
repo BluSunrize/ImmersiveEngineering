@@ -27,6 +27,6 @@ public class RadioTowerMultiblock extends IETemplateMultiblock
 	@Override
 	public float getManualScale()
 	{
-		return 6;
+		return 5;
 	}
 }
