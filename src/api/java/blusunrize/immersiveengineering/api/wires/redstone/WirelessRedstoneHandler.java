@@ -43,9 +43,14 @@ public class WirelessRedstoneHandler
 		this.registeredComponents.put(pos, component);
 	}
 
+	public void unregister(BlockPos pos)
+	{
+		this.registeredComponents.remove(pos);
+	}
+
 	public boolean isRegistered(BlockPos pos, IWirelessRedstoneComponent fromComponent)
 	{
-		return this.registeredComponents.containsKey(pos) && this.registeredComponents.get(pos) == fromComponent;
+		return this.registeredComponents.containsKey(pos)&&this.registeredComponents.get(pos)==fromComponent;
 	}
 
 	public byte[] fetchSignals(BlockPos fromPos, IWirelessRedstoneComponent fromComponent)
@@ -53,6 +58,7 @@ public class WirelessRedstoneHandler
 		return this.registeredComponents.entrySet().stream()
 				.filter(target -> SafeChunkUtils.isChunkSafe(level, target.getKey())) // filter to loaded
 				.filter(target -> target.getValue().getFrequency()==fromComponent.getFrequency()) // filter to same frequency
+				.filter(target -> target.getValue().isActive()) // require active
 				.filter(target -> !fromPos.equals(target.getKey())) // ignore self
 				.filter(target -> {
 					// check both points to be within distance
@@ -72,7 +78,8 @@ public class WirelessRedstoneHandler
 		this.registeredComponents.entrySet().stream()
 				.filter(target -> SafeChunkUtils.isChunkSafe(level, target.getKey())) // filter to loaded
 				.filter(target -> target.getValue().getFrequency()==fromComponent.getFrequency()) // filter to same frequency
-				.filter(target -> !fromPos.equals(target.getKey()))
+				.filter(target -> target.getValue().isActive()) // require active
+				.filter(target -> !fromPos.equals(target.getKey())) // ignore self
 				.filter(target -> {
 					// check both points to be within distance
 					double chunkDist = fromPos.distSqr(target.getKey())/256; // divide by 16²
@@ -86,7 +93,8 @@ public class WirelessRedstoneHandler
 		final Vec3 fromVec = Vec3.atCenterOf(fromPos);
 		return this.registeredComponents.entrySet().stream()
 				.filter(target -> target.getValue().getFrequency()==fromComponent.getFrequency()) // filter to same frequency
-				.filter(target -> !fromPos.equals(target.getKey()))
+				.filter(target -> target.getValue().isActive()) // require active
+				.filter(target -> !fromPos.equals(target.getKey())) // ignore self
 				.filter(target -> {
 					// check both points to be within distance
 					double chunkDist = fromPos.distSqr(target.getKey())/256; // divide by 16²
@@ -99,6 +107,8 @@ public class WirelessRedstoneHandler
 
 	public interface IWirelessRedstoneComponent
 	{
+		boolean isActive();
+
 		int getChunkRangeSq();
 
 		int getFrequency();

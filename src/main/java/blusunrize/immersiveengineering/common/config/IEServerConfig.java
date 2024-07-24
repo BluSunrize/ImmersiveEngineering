@@ -292,6 +292,7 @@ public class IEServerConfig
 						.defineInRange("initial_depletion", .2, 0, 1);
 				builder.pop();
 			}
+			radio_tower_consumption = addPositive(builder, "radio_tower_consumption", 128, "The Flux the Radio Tower will consume per tick to remain active");
 			builder.pop();
 		}
 
@@ -428,6 +429,7 @@ public class IEServerConfig
 		public final DoubleValue excavator_theshold;
 		public final IntValue excavator_yield;
 		public final DoubleValue excavator_initial_depletion;
+		public final IntValue radio_tower_consumption;
 	}
 
 	public static class Ores

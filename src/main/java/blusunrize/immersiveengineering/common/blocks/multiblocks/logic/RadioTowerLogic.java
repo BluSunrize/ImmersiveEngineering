@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.WirelessRedstoneHandle
 import blusunrize.immersiveengineering.api.wires.redstone.WirelessRedstoneHandler.IWirelessRedstoneComponent;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RadioTowerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.RadioTowerShapes;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -60,9 +61,9 @@ public class RadioTowerLogic
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
 	{
+		State state = context.getState();
 		IMultiblockLevel level = context.getLevel();
 		final Level rawLevel = context.getLevel().getRawLevel();
-		State state = context.getState();
 		if(rawLevel instanceof ServerLevel serverLevel)
 		{
 			BlockPos broadcastPos = level.toAbsolute(BROADCAST_POS);
@@ -73,8 +74,19 @@ public class RadioTowerLogic
 				state.rangeInChunks = maxRange;
 			}
 
-			// fetch the wireless handler for this world, register with it if not yet done
+			// fetch the wireless handler for this world
 			WirelessRedstoneHandler handler = WirelessRedstoneHandler.getHandler(serverLevel);
+
+			// consume energy and set active state
+			int consumed = IEServerConfig.MACHINES.radio_tower_consumption.get();
+			int extracted = state.energy.extractEnergy(consumed, false);
+			final boolean prevActive = state.active;
+			state.active = extracted >= consumed;
+			// if active state changed, notify the network
+			if(state.active!=prevActive)
+				state.markSendAndReceiveDirty();
+
+			// register with handler if not yet done
 			if(!handler.isRegistered(broadcastPos, context.getState()))
 				handler.register(broadcastPos, context.getState());
 
@@ -87,12 +99,11 @@ public class RadioTowerLogic
 			// if the network has changed, fetch new signal
 			if(state.receivingDirty)
 			{
-				state.receivedSignals = handler.fetchSignals(broadcastPos, state);
+				state.receivedSignals = state.isActive()?handler.fetchSignals(broadcastPos, state): new byte[16];
 				state.bundleConnection.markDirty();
 				state.receivingDirty = false;
 			}
 		}
-
 	}
 
 	@Override
@@ -150,6 +161,8 @@ public class RadioTowerLogic
 		public final AveragingEnergyStorage energy = new AveragingEnergyStorage(ENERGY_CAPACITY);
 		private final RedstoneBundleConnection bundleConnection;
 		private final RedstoneBundleConnection controlConnection;
+
+		public boolean active = false;
 		public int frequency = 142;
 		public int[] savedFrequencies = new int[16];
 		public int rangeInChunks = -1;
@@ -210,6 +223,7 @@ public class RadioTowerLogic
 		{
 			nbt.putInt("frequency", frequency);
 			nbt.putIntArray("savedFrequencies", savedFrequencies);
+			nbt.put("energy", energy.serializeNBT());
 		}
 
 		@Override
@@ -217,6 +231,7 @@ public class RadioTowerLogic
 		{
 			frequency = nbt.getInt("frequency");
 			savedFrequencies = nbt.getIntArray("savedFrequencies");
+			energy.deserializeNBT(nbt.getCompound("energy"));
 		}
 
 		@Override
@@ -244,6 +259,12 @@ public class RadioTowerLogic
 		public int getChunkRange()
 		{
 			return rangeInChunks;
+		}
+
+		@Override
+		public boolean isActive()
+		{
+			return active;
 		}
 
 		@Override
