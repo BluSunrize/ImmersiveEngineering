@@ -81,14 +81,14 @@ public class RedstoneTimerScreen extends ClientBlockEntityScreen<RedstoneTimerBl
 	{
 		CompoundTag message = new CompoundTag();
 		message.putInt(key, value);
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	private void sendConfig(String key, boolean value)
 	{
 		CompoundTag message = new CompoundTag();
 		message.putBoolean(key, value);
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

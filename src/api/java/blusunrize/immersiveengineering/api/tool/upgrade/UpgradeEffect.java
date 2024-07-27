@@ -43,6 +43,10 @@ public record UpgradeEffect<T>(String name, DualCodec<ByteBuf, T> valueCodec, T 
 	public static final UpgradeEffect<Float> NOISE = new UpgradeEffect<>("noise", DualCodecs.FLOAT, 1f);
 	public static final UpgradeEffect<Float> COOLDOWN = new UpgradeEffect<>("cooldown", DualCodecs.FLOAT, 1f);
 	public static final UpgradeEffect<Float> LUCK = new UpgradeEffect<>("luck", DualCodecs.FLOAT, 0f);
+	public static final UpgradeEffect<Float> SLOPE_MODIFIER = new UpgradeEffect<>("slope_modifier", DualCodecs.FLOAT, 1f);
+	public static final UpgradeEffect<Unit> INSULATED = unit("insulated");
+	public static final UpgradeEffect<Unit> MACE_ATTACK = unit("mace");
+	public static final UpgradeEffect<Unit> BARREL_SNUB = unit("barrel_snub");
 
 	// Revolver "special" effects, only available via contributor JSON
 	public static final UpgradeEffect<Unit> NERF = unit("nerf");

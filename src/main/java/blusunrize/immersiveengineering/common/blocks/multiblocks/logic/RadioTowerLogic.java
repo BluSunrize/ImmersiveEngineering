@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.RadioTow
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -219,30 +220,30 @@ public class RadioTowerLogic
 		}
 
 		@Override
-		public void writeSaveNBT(CompoundTag nbt)
+		public void writeSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			nbt.putInt("frequency", frequency);
 			nbt.putIntArray("savedFrequencies", savedFrequencies);
-			nbt.put("energy", energy.serializeNBT());
+			nbt.put("energy", energy.serializeNBT(provider));
 		}
 
 		@Override
-		public void readSaveNBT(CompoundTag nbt)
+		public void readSaveNBT(CompoundTag nbt, Provider provider)
 		{
 			frequency = nbt.getInt("frequency");
 			savedFrequencies = nbt.getIntArray("savedFrequencies");
-			energy.deserializeNBT(nbt.getCompound("energy"));
+			energy.deserializeNBT(provider, nbt.getCompound("energy"));
 		}
 
 		@Override
-		public void writeSyncNBT(CompoundTag nbt)
+		public void writeSyncNBT(CompoundTag nbt, Provider provider)
 		{
 			// write a dummy value to prevent NPE exceptions
 			nbt.putBoolean("npe_avoid", true);
 		}
 
 		@Override
-		public void readSyncNBT(CompoundTag nbt)
+		public void readSyncNBT(CompoundTag nbt, Provider provider)
 		{
 		}
 

@@ -73,7 +73,7 @@ public class RedstoneStateCellScreen extends ClientBlockEntityScreen<RedstoneSta
 	{
 		CompoundTag message = new CompoundTag();
 		message.putInt(key, value);
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

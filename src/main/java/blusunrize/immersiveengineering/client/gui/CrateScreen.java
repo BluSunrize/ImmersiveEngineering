@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import blusunrize.immersiveengineering.common.gui.CrateMenu;
-import blusunrize.immersiveengineering.common.gui.IScreenMessageReceive;
 import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.nbt.CompoundTag;
@@ -48,7 +46,7 @@ public abstract class CrateScreen<C extends CrateMenu> extends IEContainerScreen
 			{
 				CompoundTag message = new CompoundTag();
 				message.putString("name", s);
-				PacketDistributor.SERVER.noArg().send(new MessageContainerUpdate(getMenu().containerId, message));
+				PacketDistributor.sendToServer(new MessageContainerUpdate(getMenu().containerId, message));
 			}
 		});
 		this.nameField.setValue(this.title.getString());

@@ -10,14 +10,9 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.common.gui.IESlot.Bullet;
-import blusunrize.immersiveengineering.common.items.BulletItem;
-import blusunrize.immersiveengineering.common.register.IEItems;
-import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.items.bullets.IEBullets;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -52,20 +47,19 @@ public class PotionRecipeGenerators
 
 	public static List<BottlingMachineRecipe> getPotionBottlingRecipes()
 	{
-		Map<Potion, BottlingMachineRecipe> bottleRecipes = new HashMap<>();
-		Function<Potion, BottlingMachineRecipe> toBottleRecipe = potion -> new BottlingMachineRecipe(
-				new TagOutputList(new TagOutput(PotionUtils.setPotion(new ItemStack(Items.POTION), potion))),
+		Map<Holder<Potion>, BottlingMachineRecipe> bottleRecipes = new HashMap<>();
+		Function<Holder<Potion>, BottlingMachineRecipe> toBottleRecipe = potion -> new BottlingMachineRecipe(
+				new TagOutputList(new TagOutput(PotionContents.createItemStack(Items.POTION, potion))),
 				IngredientWithSize.of(new ItemStack(Items.GLASS_BOTTLE)),
 				getFluidTagForType(potion, 250)
 		);
 
-		Map<Potion, BottlingMachineRecipe> bulletRecipes = new HashMap<>();
-		Function<Potion, BottlingMachineRecipe> toBulletRecipe = potion -> {
-			ItemStack bulletStack = BulletHandler.getBulletStack(BulletItem.POTION);
-			ItemNBTHelper.setItemStack(bulletStack, "potion", PotionUtils.setPotion(new ItemStack(Items.POTION), potion));
+		Map<Holder<Potion>, BottlingMachineRecipe> bulletRecipes = new HashMap<>();
+		Function<Holder<Potion>, BottlingMachineRecipe> toBulletRecipe = potion -> {
+			var potionBulletItem = BulletHandler.getBulletItem(IEBullets.POTION);
 			return new BottlingMachineRecipe(
-					new TagOutputList(new TagOutput(bulletStack)),
-					new IngredientWithSize(Ingredient.of(BulletHandler.getBulletItem(BulletItem.POTION))),
+					new TagOutputList(new TagOutput(PotionContents.createItemStack(potionBulletItem, potion))),
+					new IngredientWithSize(Ingredient.of(potionBulletItem)),
 					getFluidTagForType(potion, 250)
 			);
 		};

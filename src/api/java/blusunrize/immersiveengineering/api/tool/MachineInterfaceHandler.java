@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,14 +27,16 @@ import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToIntFunction;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class MachineInterfaceHandler
 {
-	public static ResourceLocation BASIC_ACTIVE = new ResourceLocation(Lib.MODID, "basic/active");
-	public static ResourceLocation BASIC_ITEM_IN = new ResourceLocation(Lib.MODID, "basic/item_input");
-	public static ResourceLocation BASIC_ITEM_OUT = new ResourceLocation(Lib.MODID, "basic/item_output");
-	public static ResourceLocation BASIC_FLUID_IN = new ResourceLocation(Lib.MODID, "basic/fluid_input");
-	public static ResourceLocation BASIC_FLUID_OUT = new ResourceLocation(Lib.MODID, "basic/fluid_output");
-	public static ResourceLocation BASIC_ENERGY = new ResourceLocation(Lib.MODID, "basic/energy_storage");
+	public static ResourceLocation BASIC_ACTIVE = ieLoc("basic/active");
+	public static ResourceLocation BASIC_ITEM_IN = ieLoc("basic/item_input");
+	public static ResourceLocation BASIC_ITEM_OUT = ieLoc("basic/item_output");
+	public static ResourceLocation BASIC_FLUID_IN = ieLoc("basic/fluid_input");
+	public static ResourceLocation BASIC_FLUID_OUT = ieLoc("basic/fluid_output");
+	public static ResourceLocation BASIC_ENERGY = ieLoc("basic/energy_storage");
 
 	private static final Map<ResourceLocation, CheckOption<?>[]> CONDITION_REGISTRY = new HashMap<>();
 
@@ -54,8 +54,8 @@ public class MachineInterfaceHandler
 	{
 		// Active, yes/no
 		register(BASIC_ACTIVE,
-				new CheckOption<BooleanSupplier>(new ResourceLocation(Lib.MODID, "yes"), value -> value.getAsBoolean()?15: 0),
-				new CheckOption<BooleanSupplier>(new ResourceLocation(Lib.MODID, "no"), value -> value.getAsBoolean()?0: 15)
+				new CheckOption<BooleanSupplier>(ieLoc("yes"), value -> value.getAsBoolean()?15: 0),
+				new CheckOption<BooleanSupplier>(ieLoc("no"), value -> value.getAsBoolean()?0: 15)
 		);
 		// Items
 		register(BASIC_ITEM_IN, buildComparativeConditions(MachineInterfaceHandler::getInventoryFill));
@@ -71,12 +71,12 @@ public class MachineInterfaceHandler
 	public static <T> CheckOption<T>[] buildComparativeConditions(ToDoubleFunction<T> tdf)
 	{
 		return (CheckOption<T>[])new CheckOption<?>[]{
-				CheckOption.doubleCondition(new ResourceLocation(Lib.MODID, "comparator"), tdf),
-				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "empty"), h -> tdf.applyAsDouble(h) <= 0),
-				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "quarter"), h -> tdf.applyAsDouble(h) > 0.25),
-				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "half"), h -> tdf.applyAsDouble(h) > 0.5),
-				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "three_quarter"), h -> tdf.applyAsDouble(h) > 0.75),
-				CheckOption.<T>booleanCondition(new ResourceLocation(Lib.MODID, "full"), h -> tdf.applyAsDouble(h) >= 1)
+				CheckOption.doubleCondition(ieLoc("comparator"), tdf),
+				CheckOption.<T>booleanCondition(ieLoc("empty"), h -> tdf.applyAsDouble(h) <= 0),
+				CheckOption.<T>booleanCondition(ieLoc("quarter"), h -> tdf.applyAsDouble(h) > 0.25),
+				CheckOption.<T>booleanCondition(ieLoc("half"), h -> tdf.applyAsDouble(h) > 0.5),
+				CheckOption.<T>booleanCondition(ieLoc("three_quarter"), h -> tdf.applyAsDouble(h) > 0.75),
+				CheckOption.<T>booleanCondition(ieLoc("full"), h -> tdf.applyAsDouble(h) >= 1)
 		};
 	}
 
@@ -160,7 +160,7 @@ public class MachineInterfaceHandler
 	public interface IMachineInterfaceConnection
 	{
 		BlockCapability<IMachineInterfaceConnection, @Nullable Direction> CAPABILITY = BlockCapability.createSided(
-				IEApi.ieLoc("machine_interface_connection"), IMachineInterfaceConnection.class
+				ieLoc("machine_interface_connection"), IMachineInterfaceConnection.class
 		);
 
 		MachineCheckImplementation<?>[] getAvailableChecks();

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
@@ -68,6 +67,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class RefineryLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
@@ -88,8 +89,8 @@ public class RefineryLogic
 	private static final int SLOT_CONTAINER_OUT = 2;
 	public static final int NUM_SLOTS = 3;
 	public static final int ENERGY_CAPACITY = 16000;
-	public static ResourceLocation MIF_CONDITION_FLUID_IN_L = new ResourceLocation(Lib.MODID, "refinery/tank_left");
-	public static ResourceLocation MIF_CONDITION_FLUID_IN_R = new ResourceLocation(Lib.MODID, "refinery/tank_right");
+	public static ResourceLocation MIF_CONDITION_FLUID_IN_L = ieLoc("refinery/tank_left");
+	public static ResourceLocation MIF_CONDITION_FLUID_IN_R = ieLoc("refinery/tank_right");
 
 	static
 	{

@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.common.gui.sync;
 
+import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import blusunrize.immersiveengineering.common.gui.MixerMenu.SlotProgress;
@@ -46,7 +47,7 @@ public class GenericDataSerializers
 			ByteBufCodecs.BYTE_ARRAY, arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
 	public static final DataSerializer<int[]> INT_ARRAY = register(
-			FriendlyByteBuf::readVarIntArray, FriendlyByteBuf::writeVarIntArray,
+			IECodecs.VAR_INT_ARRAY_STREAM_CODEC,
 			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
 	public static final DataSerializer<List<FluidStack>> FLUID_STACKS = register(
@@ -68,9 +69,7 @@ public class GenericDataSerializers
 			ByteBufCodecs.stringUtf8(512).apply(ByteBufCodecs.list()),
 			ArrayList::new, List::equals
 	);
-	public static final DataSerializer<NearbyComponents> RADIO_TOWER_NEARBY = register(
-			NearbyComponents::from, NearbyComponents::writeTo
-	);
+	public static final DataSerializer<NearbyComponents> RADIO_TOWER_NEARBY = register(NearbyComponents.STREAM_CODEC);
 
 	private static <T> DataSerializer<T> register(StreamCodec<? super RegistryFriendlyByteBuf, T> codec)
 	{

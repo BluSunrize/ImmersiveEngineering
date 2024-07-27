@@ -10,14 +10,17 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockContext;
+import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RadioTowerLogic;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RadioTowerLogic.State;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.phys.Vec3;
@@ -102,6 +105,10 @@ public class RadioTowerMenu extends IEContainerMenu
 
 	public record NearbyComponents(List<Vec3> positions)
 	{
+		public static final StreamCodec<ByteBuf, NearbyComponents> STREAM_CODEC = IECodecs.VEC3_STREAM_CODEC
+				.apply(ByteBufCodecs.list())
+				.map(NearbyComponents::new, NearbyComponents::positions);
+
 		public static NearbyComponents fromCtx(IMultiblockContext<RadioTowerLogic.State> ctx)
 		{
 			final State state = ctx.getState();
@@ -110,16 +117,6 @@ public class RadioTowerMenu extends IEContainerMenu
 					Comparator.comparingDouble(Vec3::lengthSqr)
 			).orElse(Vec3.ZERO).length();
 			return new NearbyComponents(list.stream().map(vec3 -> vec3.scale(distMod)).toList());
-		}
-
-		public static NearbyComponents from(FriendlyByteBuf buffer)
-		{
-			return new NearbyComponents(buffer.readList(FriendlyByteBuf::readVec3));
-		}
-
-		public static void writeTo(FriendlyByteBuf out, NearbyComponents nearby)
-		{
-			out.writeCollection(nearby.positions(), FriendlyByteBuf::writeVec3);
 		}
 	}
 }

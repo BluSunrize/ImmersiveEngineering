@@ -63,7 +63,7 @@ public class IETags
 	public static final TagKey<Item> clay = createItemWrapper(cLoc("clay"));
 	public static final TagKey<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
 	public static final TagKey<Item> charCoal = createItemWrapper(cLoc("charcoal"));
-	public static final TagKey<Item> paper = createItemWrapper(forgeLoc("paper"));
+	public static final TagKey<Item> paper = createItemWrapper(cLoc("paper"));
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final TagKey<Block> copperBlocks = createBlockTag(ieLoc("blocks/copper"));
 	public static final TagKey<Block> cutCopperBlocks = createBlockTag(ieLoc("cut_blocks/copper"));
@@ -145,7 +145,7 @@ public class IETags
 	public static final TagKey<Fluid> fluidPlantoil = createFluidWrapper(cLoc("plantoil"));
 	public static final TagKey<Fluid> fluidEthanol = createFluidWrapper(cLoc("ethanol"));
 	public static final TagKey<Fluid> fluidBiodiesel = createFluidWrapper(cLoc("biodiesel"));
-	public static final TagKey<Fluid> fluidHighPowerBiodiesel = createFluidWrapper(forgeLoc("high_power_biodiesel"));
+	public static final TagKey<Fluid> fluidHighPowerBiodiesel = createFluidWrapper(cLoc("high_power_biodiesel"));
 	public static final TagKey<Fluid> fluidConcrete = createFluidWrapper(cLoc("concrete"));
 	public static final TagKey<Fluid> fluidHerbicide = createFluidWrapper(cLoc("herbicide"));
 	public static final TagKey<Fluid> fluidRedstoneAcid = createFluidWrapper(cLoc("redstone_acid"));

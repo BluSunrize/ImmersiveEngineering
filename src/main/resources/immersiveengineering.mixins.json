@@ -5,6 +5,7 @@
   "plugin": "blusunrize.immersiveengineering.common.mixin.IEMixinConfig",
   "mixins": [
     "accessors.AbstractArrowAccess",
+    "accessors.BaseContainerBEAccess",
     "accessors.BETypeAccess",
     "accessors.ConcretePowderBlockAccess",
     "accessors.ContainerAccess",

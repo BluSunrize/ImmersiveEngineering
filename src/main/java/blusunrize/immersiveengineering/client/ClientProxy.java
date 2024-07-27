@@ -204,15 +204,14 @@ public class ClientProxy extends CommonProxy
 			ev.enqueueWork(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
 
 		IEManual.addIEManualEntries();
-		IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
-			for(Holder<BannerPattern> pattern : entry.patterns())
-			{
-				ResourceKey<BannerPattern> key = pattern.unwrapKey().orElseThrow();
-				Sheets.BANNER_MATERIALS.put(key, new Material(Sheets.BANNER_SHEET, BannerPattern.location(key, true)));
-				Sheets.SHIELD_MATERIALS.put(key, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(key, false)));
-			}
-		});
-		ev.enqueueWork(OptifineWarning::warnIfRequired);
+		// TODO probably data driven now?
+		//IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
+		//	for(var key : entry.patterns())
+		//	{
+		//		Sheets.BANNER_MATERIALS.put(key, new Material(Sheets.BANNER_SHEET, BannerPattern.location(key, true)));
+		//		Sheets.SHIELD_MATERIALS.put(key, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(key, false)));
+		//	}
+		//});
 	}
 
 	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(

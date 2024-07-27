@@ -25,9 +25,10 @@ import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import blusunrize.immersiveengineering.mixin.accessors.BaseContainerBEAccess;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +39,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -106,31 +107,31 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
-		return ClientboundBlockEntityDataPacket.create(this, be -> {
+		return ClientboundBlockEntityDataPacket.create(this, (be, access) -> {
 			CompoundTag nbttagcompound = new CompoundTag();
-			this.saveAdditional(nbttagcompound);
+			this.saveAdditional(nbttagcompound, access);
 			return nbttagcompound;
 		});
 	}
 
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, Provider access)
 	{
 		CompoundTag nonNullTag = pkt.getTag()!=null?pkt.getTag(): new CompoundTag();
 		if(nonNullTag.contains("CustomName", 8))
 		{
-			Component customName = Component.Serializer.fromJson(nonNullTag.getString("CustomName"));
+			Component customName = Component.Serializer.fromJson(nonNullTag.getString("CustomName"), access);
 			if(customName!=null)
 				this.setCustomName(customName);
 		}
 	}
 
 	@Override
-	public CompoundTag getUpdateTag()
+	public CompoundTag getUpdateTag(Provider provider)
 	{
-		CompoundTag nbt = super.getUpdateTag();
+		CompoundTag nbt = super.getUpdateTag(provider);
 		if(getCustomName()!=null)
-			nbt.putString("CustomName", Component.Serializer.toJson(getCustomName()));
+			nbt.putString("CustomName", Component.Serializer.toJson(getCustomName(), provider));
 		return nbt;
 	}
 
@@ -263,7 +264,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(heldItem.is(IETags.hammers)&&player.isCrouching())
 		{
@@ -273,11 +274,11 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"crate_sealed"), true);
 				player.playSound(SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR);
 				player.getCooldowns().addCooldown(heldItem.getItem(), 10);
-				return InteractionResult.sidedSuccess(Objects.requireNonNull(getLevel()).isClientSide);
+				return ItemInteractionResult.sidedSuccess(Objects.requireNonNull(getLevel()).isClientSide);
 			}
-			return InteractionResult.FAIL;
+			return ItemInteractionResult.FAIL;
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Nullable
@@ -290,5 +291,8 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 		return null;
 	}
 
-
+	public void setCustomName(Component customName)
+	{
+		((BaseContainerBEAccess)this).setName(customName);
+	}
 }

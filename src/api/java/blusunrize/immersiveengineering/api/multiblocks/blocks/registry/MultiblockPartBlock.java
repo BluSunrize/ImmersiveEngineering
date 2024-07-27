@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -245,7 +244,7 @@ public class MultiblockPartBlock<State extends IMultiblockState> extends Block i
 	}
 
 	@Override
-	public boolean isPathfindable(BlockState state, BlockGetter blockGetter, BlockPos pos, PathComputationType type)
+	protected boolean isPathfindable(BlockState state, PathComputationType type)
 	{
 		return false;
 	}

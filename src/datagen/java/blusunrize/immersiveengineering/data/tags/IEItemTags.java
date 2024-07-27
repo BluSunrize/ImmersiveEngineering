@@ -166,7 +166,7 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.recyclingIgnoredComponents)
 				// Ignore bricks for outputting
 				.addTag(Tags.Items.BRICKS)
-				.addTag(Tags.Items.INGOTS_NETHER_BRICK)
+				.addTag(Tags.Items.BRICKS_NETHER)
 				// Prevent tools used during crafting to be recycled as components
 				.add(Tools.HAMMER.get())
 				.add(Tools.SCREWDRIVER.get())

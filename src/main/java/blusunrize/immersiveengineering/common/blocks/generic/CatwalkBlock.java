@@ -8,20 +8,17 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -40,8 +37,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-
-import static blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation.SIDE_UP;
 
 public class CatwalkBlock extends IEBaseBlock implements IColouredBlock
 {
@@ -85,22 +80,22 @@ public class CatwalkBlock extends IEBaseBlock implements IColouredBlock
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 								 BlockHitResult hit)
 	{
-		if(this.isDyeable&&Utils.isDye(player.getItemInHand(hand)))
+		if(this.isDyeable&&Utils.isDye(stack))
 		{
-			DyeColor dye = Utils.getDye(player.getItemInHand(hand));
+			DyeColor dye = Utils.getDye(stack);
 			if(dye!=null)
 				world.setBlock(pos, state.setValue(DYE_PROPERTY, dye), 3);
-			return InteractionResult.sidedSuccess(world.isClientSide);
+			return ItemInteractionResult.sidedSuccess(world.isClientSide);
 		}
-		return super.use(state, world, pos, player, hand, hit);
+		return super.useItemOn(stack, state, world, pos, player, hand, hit);
 	}
 
 
 	@Override
-	public InteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
 		if(player.isShiftKeyDown())
 		{
@@ -115,10 +110,10 @@ public class CatwalkBlock extends IEBaseBlock implements IColouredBlock
 			{
 				BlockState state = w.getBlockState(pos);
 				w.setBlock(pos, state.setValue(prop, !state.getValue(prop)), 3);
-				return InteractionResult.sidedSuccess(w.isClientSide);
+				return ItemInteractionResult.sidedSuccess(w.isClientSide);
 			}
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

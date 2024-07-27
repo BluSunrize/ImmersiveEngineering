@@ -207,7 +207,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			message.put("configuration", config.writeToNBT());
 		else
 			message.putBoolean("delete", true);
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	private void sendInputColor(DyeColor col)
@@ -217,7 +217,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 		//update server
 		CompoundTag message = new CompoundTag();
 		message.putInt("inputColor", col.getId());
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

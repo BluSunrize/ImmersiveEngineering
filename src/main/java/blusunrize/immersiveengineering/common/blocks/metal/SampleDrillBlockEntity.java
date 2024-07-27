@@ -38,7 +38,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -237,7 +237,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(dummy!=0)
 		{
@@ -255,7 +255,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 				setChanged();
 				this.markContainingBlockForUpdate(null);
 			}
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(this.process <= 0)
 		{
@@ -265,9 +265,9 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 				setChanged();
 				this.markContainingBlockForUpdate(null);
 			}
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

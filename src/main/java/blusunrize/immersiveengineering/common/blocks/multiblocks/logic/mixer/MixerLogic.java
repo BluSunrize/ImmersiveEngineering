@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.mixer;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
@@ -68,6 +67,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class MixerLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
 {
@@ -81,7 +82,7 @@ public class MixerLogic
 	public static final int NUM_SLOTS = 8;
 	public static final int ENERGY_CAPACITY = 16000;
 	public static final int TANK_VOLUME = 8*FluidType.BUCKET_VOLUME;
-	public static ResourceLocation MIF_CONDITION_TANK = new ResourceLocation(Lib.MODID, "mixer/tank");
+	public static ResourceLocation MIF_CONDITION_TANK = ieLoc("mixer/tank");
 
 	static
 	{

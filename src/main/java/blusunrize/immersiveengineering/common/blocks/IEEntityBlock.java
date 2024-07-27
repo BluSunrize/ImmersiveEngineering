@@ -282,8 +282,8 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		}
 		if(tile instanceof IPlayerInteraction interaction)
 		{
-			InteractionResult res = interaction.interact(side, player, hand, heldItem, hitX, hitY, hitZ);
-			if(res.consumesAction()||res==InteractionResult.FAIL)
+			var res = interaction.interact(side, player, hand, heldItem, hitX, hitY, hitZ);
+			if(res.consumesAction()||res==ItemInteractionResult.FAIL)
 				return res;
 		}
 		if(tile instanceof MenuProvider menuProvider&&hand==InteractionHand.MAIN_HAND&&!player.isShiftKeyDown())

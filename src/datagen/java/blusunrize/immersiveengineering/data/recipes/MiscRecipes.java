@@ -53,9 +53,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
-import java.util.stream.Stream;
-
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
@@ -159,61 +158,61 @@ public class MiscRecipes extends IERecipeProvider
 
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.CASULL), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.CASULL), 4))
 				.input(BulletHandler.emptyCasing, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.LEAD).nugget)
 				.build(out, toRL("blueprint/bullet_casull"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.ARMOR_PIERCING), 4))
 				.input(BulletHandler.emptyCasing, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.STEEL).nugget)
 				.input(IETags.getTagsFor(EnumMetals.CONSTANTAN).nugget, 2)
 				.build(out, toRL("blueprint/bullet_armorpiercing"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.ARMOR_PIERCING), 4))
 				.input(BulletHandler.emptyCasing, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.netheriteNugget, 3)
 				.build(out, toRL("blueprint/bullet_armorpiercing_netherite"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.SILVER), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.SILVER), 4))
 				.input(BulletHandler.emptyCasing, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.LEAD).nugget)
 				.input(IETags.getTagsFor(EnumMetals.SILVER).nugget)
 				.build(out, toRL("blueprint/bullet_silver"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.BUCKSHOT), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.BUCKSHOT), 4))
 				.input(BulletHandler.emptyShell, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.STEEL).dust)
 				.build(out, toRL("blueprint/bullet_buckshot"));
 
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.HIGH_EXPLOSIVE), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.HIGH_EXPLOSIVE), 4))
 				.input(BulletHandler.emptyShell, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(Items.TNT)
 				.build(out, toRL("blueprint/bullet_explosive"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.DRAGONS_BREATH), 4))
 				.input(BulletHandler.emptyShell, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 2)
 				.build(out, toRL("blueprint/bullet_dragonsbreath"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.POTION), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.POTION), 4))
 				.input(BulletHandler.emptyShell, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(Items.GLASS_BOTTLE, 4)
 				.build(out, toRL("blueprint/bullet_potion"));
 
@@ -224,7 +223,7 @@ public class MiscRecipes extends IERecipeProvider
 				.category("specialBullet")
 				.output(flare.copy())
 				.input(BulletHandler.emptyShell, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_RED)
 				.build(out, toRL("blueprint/bullet_flare_red"));
@@ -233,7 +232,7 @@ public class MiscRecipes extends IERecipeProvider
 				.category("specialBullet")
 				.output(flare.copy())
 				.input(BulletHandler.emptyShell, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_GREEN)
 				.build(out, toRL("blueprint/bullet_flare_green"));
@@ -242,15 +241,15 @@ public class MiscRecipes extends IERecipeProvider
 				.category("specialBullet")
 				.output(flare.copy())
 				.input(BulletHandler.emptyShell, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_YELLOW)
 				.build(out, toRL("blueprint/bullet_flare_yellow"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.HOMING), 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.HOMING), 4))
 				.input(BulletHandler.emptyCasing, 4)
-				.input(Tags.Items.GUNPOWDER)
+				.input(Tags.Items.GUNPOWDERS)
 				.input(IETags.getTagsFor(EnumMetals.LEAD).nugget)
 				.input(Items.ENDER_EYE)
 				.build(out, toRL("blueprint/bullet_homing"));
@@ -258,8 +257,8 @@ public class MiscRecipes extends IERecipeProvider
 				.category("specialBullet")
 				.output(BulletHandler.getBulletItem(IEBullets.WOLFPACK))
 				.input(BulletHandler.emptyShell)
-				.input(Tags.Items.GUNPOWDER)
-				.input(BulletHandler.getBulletItem(BulletItem.HOMING), 4)
+				.input(Tags.Items.GUNPOWDERS)
+				.input(BulletHandler.getBulletItem(IEBullets.HOMING), 4)
 				.build(out, toRL("blueprint/bullet_wolfpack"));
 
 		BlueprintCraftingRecipeBuilder.builder()
@@ -320,7 +319,7 @@ public class MiscRecipes extends IERecipeProvider
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WOLF.item())
 				.input(IETags.paper)
-				.input(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
+				.input(BulletHandler.getBulletItem(IEBullets.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf"));
 
 		for(WarningSignIcon icon : WarningSignIcon.values())

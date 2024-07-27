@@ -33,12 +33,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -125,18 +126,18 @@ public class RedstoneSwitchboardBlockEntity extends ImmersiveConnectableBlockEnt
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		ListTag settingsTag = new ListTag();
 		this.settings.forEach(switchboardSetting -> settingsTag.add(switchboardSetting.writeToNBT()));
 		nbt.put("settings", settingsTag);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		ListTag settingsTag = nbt.getList("settings", 10);
 		this.settings.clear();
 		for(int i = 0; i < settingsTag.size(); i++)
@@ -221,11 +222,11 @@ public class RedstoneSwitchboardBlockEntity extends ImmersiveConnectableBlockEnt
 	}
 
 	@Override
-	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
+	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(level.isClientSide)
 			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneSwitchboard, this);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	CachedVoxelShapes<Direction> SHAPES = new CachedVoxelShapes<>(

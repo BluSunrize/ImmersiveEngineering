@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -79,14 +79,14 @@ public class CagelampBlock extends IEBaseBlock
 	}
 
 	@Override
-	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Level level, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Level level, BlockPos pos, BlockHitResult hit)
 	{
 		if(level instanceof ServerLevel serverlevel)
 		{
 			BlockState state = level.getBlockState(pos);
 			updateActiveState(state.cycle(IEProperties.INVERTED), serverlevel, pos);
 		}
-		return InteractionResult.sidedSuccess(level.isClientSide());
+		return ItemInteractionResult.sidedSuccess(level.isClientSide());
 	}
 
 	public void updateActiveState(BlockState state, ServerLevel level, BlockPos pos)

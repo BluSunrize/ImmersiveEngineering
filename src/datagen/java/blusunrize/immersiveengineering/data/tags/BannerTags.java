@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.data.tags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -34,18 +33,16 @@ public class BannerTags extends TagsProvider<BannerPattern>
 	protected void addTags(Provider p_256380_)
 	{
 		for(BannerEntry entry : IEBannerPatterns.ALL_BANNERS)
-			tag(entry.tag()).add(entry.key());
+			tag(entry.tag()).addAll(entry.patterns());
 	}
 
 	public static void bootstrap(BootstrapContext<BannerPattern> ctx)
 	{
 		for(BannerEntry entry : IEBannerPatterns.ALL_BANNERS)
-		{
-			var key = entry.key();
-			ctx.register(
-					key,
-					new BannerPattern(key.location(), "block.minecraft.banner."+key.location().toShortLanguageKey())
-			);
-		}
+			for(var pattern : entry.patterns())
+				ctx.register(
+						pattern,
+						new BannerPattern(pattern.location(), "block.minecraft.banner."+pattern.location().toShortLanguageKey())
+				);
 	}
 }

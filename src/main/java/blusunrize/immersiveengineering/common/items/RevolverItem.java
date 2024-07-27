@@ -200,7 +200,6 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			builder.add(
 					Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, speed, Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.HAND
 			);
-	}
 
 		double luck = upgrades.get(UpgradeEffect.LUCK);
 		if(luck!=0)
@@ -244,7 +243,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		if(player.getAttackStrengthScale(1) < 1)
 			return InteractionResultHolder.pass(revolver);
 
-		if(this.getUpgrades(revolver).getBoolean("nerf"))
+		if(this.getUpgrades(revolver).has(UpgradeEffect.NERF))
 		{
 			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.6f);
 			return InteractionResultHolder.sidedSuccess(revolver, world.isClientSide());
@@ -289,7 +288,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 							if(shader!=null)
 							{
 								Vec3 pos = Utils.getLivingFrontPos(player, .75, player.getBbHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
-								shader.registryEntry().getEffectFunction().execute(world, shader.shader(), revolver,
+								shader.registryEntry().getEffectFunction().execute(world, revolver,
 										shader.sCase().getShaderType().toString(), pos,
 										Vec3.directionFromRotation(player.getRotationVector()), .125f);
 							}
@@ -311,21 +310,23 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 	for(int i = 0; i < player.getInventory().getContainerSize(); i++)
 		{
 			ItemStack stack = player.getInventory().getItem(i);
-			if(stack.getItem() instanceof SpeedloaderItem&&!((SpeedloaderItem)stack.getItem()).isEmpty(stack))
+			if(stack.getItem() instanceof SpeedloaderItem speedloader&&!speedloader.isEmpty(stack))
 			{
 				if(!level.isClientSide())
 				{
 					for(ItemStack b : bullets)
 						if(!b.isEmpty())
 							level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), b));
-					setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack), true);
+					var bulletList = speedloader.getBullets(stack);
+					setBullets(revolver, bulletList, true);
 					((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 					player.getInventory().setChanged();
 					if(player instanceof ServerPlayer)
-						PacketDistributor.PLAYER.with((ServerPlayer)player).send(new MessageSpeedloaderSync(i, hand));
+						PacketDistributor.sendToPlayer((ServerPlayer)player, new MessageSpeedloaderSync(i, hand));
 				}
 				// set cooldown & animation timer
-				ItemNBTHelper.putInt(revolver, "reload", 60);
+				var oldCooldowns = getCooldowns(revolver);
+				revolver.set(REVOLVER_COOLDOWN, new RevolverCooldowns(60, oldCooldowns.fireCooldown));
 				player.getCooldowns().addCooldown(this, 60);
 				return true;
 			}

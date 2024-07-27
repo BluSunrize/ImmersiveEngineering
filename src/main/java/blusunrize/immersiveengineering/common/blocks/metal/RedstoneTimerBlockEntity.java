@@ -19,10 +19,11 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -108,11 +109,11 @@ public class RedstoneTimerBlockEntity extends ConnectorRedstoneBlockEntity
 	}
 
 	@Override
-	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
+	public ItemInteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(level.isClientSide)
 			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneTimer, this);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -137,9 +138,9 @@ public class RedstoneTimerBlockEntity extends ConnectorRedstoneBlockEntity
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.writeCustomNBT(nbt, descPacket);
+		super.writeCustomNBT(nbt, descPacket, provider);
 		nbt.putInt("timerSetting", timerSetting);
 		nbt.putInt("currentTimer", currentTimer);
 		nbt.putBoolean("requireControlSignal", requireControlSignal);
@@ -148,9 +149,9 @@ public class RedstoneTimerBlockEntity extends ConnectorRedstoneBlockEntity
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		super.readCustomNBT(nbt, descPacket);
+		super.readCustomNBT(nbt, descPacket, provider);
 		timerSetting = nbt.getInt("timerSetting");
 		currentTimer = nbt.getInt("currentTimer");
 		requireControlSignal = nbt.getBoolean("requireControlSignal");

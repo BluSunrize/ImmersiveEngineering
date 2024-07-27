@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -18,19 +19,23 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
+import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -46,7 +51,7 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 {
 	public static final int NUM_SLOTS = 9;
 
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
+	private NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 
 	public BlueprintShelfBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -72,25 +77,22 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		ContainerHelper.loadAllItems(nbt, inventory);
+		ContainerHelper.loadAllItems(nbt, inventory, provider);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		ContainerHelper.saveAllItems(nbt, inventory);
+		ContainerHelper.saveAllItems(nbt, inventory, provider);
 	}
 
 	@Override
 	public void getBlockEntityDrop(LootContext context, Consumer<ItemStack> drop)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		CompoundTag nbt = new CompoundTag();
-		ContainerHelper.saveAllItems(nbt, inventory);
-		if(!nbt.isEmpty())
-			stack.setTag(nbt);
+		stack.set(IEDataComponents.GENERIC_ITEMS, ItemContainerContents.fromItems(inventory));
 		drop.accept(stack);
 	}
 
@@ -98,8 +100,8 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		if(stack.hasTag())
-			readCustomNBT(stack.getOrCreateTag(), false);
+		if(stack.has(IEDataComponents.GENERIC_ITEMS))
+			inventory = ListUtils.fromStream(stack.get(IEDataComponents.GENERIC_ITEMS).stream(), inventory.size());
 	}
 
 	@Override
@@ -141,7 +143,7 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		int targetedSlot = getTargetedSlot(side, hitX, hitY, hitZ);
 		ItemStack stackInSlot = this.inventory.get(targetedSlot);
@@ -154,16 +156,16 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 				player.spawnAtLocation(stackInSlot, 0);
 			this.inventory.set(targetedSlot, ItemStack.EMPTY);
 			this.setState(state.setValue(BlueprintShelfBlock.BLUEPRINT_SLOT_FILLED[targetedSlot], false));
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(isStackValid(targetedSlot, heldItem))
 		{
 			this.inventory.set(targetedSlot, heldItem.copyWithCount(1));
 			heldItem.shrink(1);
 			this.setState(state.setValue(BlueprintShelfBlock.BLUEPRINT_SLOT_FILLED[targetedSlot], true));
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return InteractionResult.FAIL;
+		return ItemInteractionResult.FAIL;
 	}
 
 	@Nullable
@@ -177,7 +179,7 @@ public class BlueprintShelfBlockEntity extends IEBaseBlockEntity implements IIEI
 			final float hitZ = (float)bhr.getLocation().z-bhr.getBlockPos().getZ();
 			int targetedSlot = getTargetedSlot(bhr.getDirection(), hitX, hitY, hitZ);
 			ItemStack stackInSlot = this.inventory.get(targetedSlot);
-			String key = EngineersBlueprintItem.getCategory(stackInSlot);
+			String key = stackInSlot.get(IEApiDataComponents.BLUEPRINT_TYPE);
 			if(key.isEmpty())
 				return null;
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;

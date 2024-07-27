@@ -36,7 +36,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -70,10 +70,10 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IWireCoil)
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		int transfer = getAveragePower();
 		int packets = lastPackets.size();
 		if(isDummy())
@@ -86,7 +86,7 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 		if(transfer > 0)
 			transferred = Utils.formatDouble(transfer, "0.###");
 		ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"energyTransfered", packets, transferred));
-		return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+		return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 	}
 
 	@Override

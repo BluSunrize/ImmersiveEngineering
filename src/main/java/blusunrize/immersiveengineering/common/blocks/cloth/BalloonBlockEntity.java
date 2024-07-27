@@ -30,7 +30,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -136,7 +136,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(player.isShiftKeyDown())
 		{
@@ -148,13 +148,13 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 				level.removeBlock(getBlockPos(), false);
 				level.addFreshEntity(entityitem);
 			}
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		else if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem shaderItem)
 		{
 			this.shader.setShader(shaderItem.getShaderName());
 			markContainingBlockForUpdate(null);
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		int target = 0;
 		if(side.getAxis()==Axis.Y&&style==0)
@@ -175,21 +175,21 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 		}
 		DyeColor heldDye = Utils.getDye(heldItem);
 		if(heldDye==null)
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		if(target==0)
 		{
 			if(colour0==heldDye)
-				return InteractionResult.PASS;
+				return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 			colour0 = heldDye;
 		}
 		else
 		{
 			if(colour1==heldDye)
-				return InteractionResult.PASS;
+				return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 			colour1 = heldDye;
 		}
 		markContainingBlockForUpdate(null);
-		return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+		return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 	}
 
 	@Override

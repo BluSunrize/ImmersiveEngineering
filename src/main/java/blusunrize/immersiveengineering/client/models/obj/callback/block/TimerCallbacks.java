@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.client.ieobj.BlockCallback;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
+import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.TimerCallbacks.Key;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneTimerBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
 
@@ -42,13 +42,10 @@ public class TimerCallbacks implements BlockCallback<Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shader, Vector4f original)
+	public Color4 getRenderColor(Key key, String group, String material, ShaderCase shader, Color4 original)
 	{
 		if("coloured".equals(group))
-		{
-			float[] rgb = key.output().getTextureDiffuseColors();
-			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
-		}
+			return Color4.from(key.output());
 		return original;
 	}
 

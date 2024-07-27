@@ -22,10 +22,10 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -134,7 +134,7 @@ public class SkylineHookEntity extends Entity
 	@Override
 	protected void defineSynchedData(Builder builder)
 	{
-		this.entityData.define(SLOPE_MODIFIER, 1f);
+		builder.define(SLOPE_MODIFIER, 1f);
 	}
 
 

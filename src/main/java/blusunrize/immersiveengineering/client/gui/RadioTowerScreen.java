@@ -294,8 +294,8 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 		public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 		{
 			super.renderWidget(graphics, mouseX, mouseY, partialTicks);
-			float[] rgb = this.color.getTextureDiffuseColors();
-			graphics.setColor(rgb[0], rgb[1], rgb[2], 1);
+			var rgb = Utils.vec4fFromDye(this.color);
+			graphics.setColor(rgb.x, rgb.y, rgb.z, 1);
 			graphics.blit(texture, getX(), getY(), texU+width*2, texV, width, height);
 			graphics.setColor(1, 1, 1, 1);
 		}

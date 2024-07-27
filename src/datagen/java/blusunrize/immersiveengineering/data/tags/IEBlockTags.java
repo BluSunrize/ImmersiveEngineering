@@ -236,7 +236,7 @@ public class IEBlockTags extends BlockTagsProvider
 				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("dynamictrees", "leaves"));
 		tag(IETags.surveyToolTargets)
 				//Overworld stones
-				.addTag(Tags.Blocks.STONE)
+				.addTag(Tags.Blocks.STONES)
 				.add(Blocks.DRIPSTONE_BLOCK)
 				.add(Blocks.CALCITE)
 				.add(Blocks.SANDSTONE)
@@ -245,7 +245,7 @@ public class IEBlockTags extends BlockTagsProvider
 				.addTag(BlockTags.DIRT)
 				.remove(Blocks.MOSS_BLOCK)
 				.addTag(Tags.Blocks.GRAVELS)
-				.addTag(Tags.Blocks.SAND)
+				.addTag(Tags.Blocks.SANDS)
 				.add(Blocks.CLAY)
 				//Overworld terracotta
 				.add(Blocks.TERRACOTTA)
@@ -257,7 +257,7 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(Blocks.ORANGE_TERRACOTTA)
 				.add(Blocks.YELLOW_TERRACOTTA)
 				//Nether stones
-				.addTag(Tags.Blocks.NETHERRACK)
+				.addTag(Tags.Blocks.NETHERRACKS)
 				.add(Blocks.BASALT)
 				.add(Blocks.BLACKSTONE)
 				//Nether soils
@@ -337,11 +337,11 @@ public class IEBlockTags extends BlockTagsProvider
 		// overworld stones & ores
 		tag.addTag(Tags.Blocks.COBBLESTONES);
 		tag.addTag(Tags.Blocks.STONES);
-		tag.addTag(Tags.Blocks.SANDSTONE);
+		tag.addTag(Tags.Blocks.SANDSTONE_BLOCKS);
 		tag.addTag(Tags.Blocks.ORES);
 		tag.add(Blocks.CALCITE, Blocks.DRIPSTONE_BLOCK, Blocks.POINTED_DRIPSTONE);
 		// specialty stones and stone-alikes
-		tag.addTag(Tags.Blocks.NETHERRACK);
+		tag.addTag(Tags.Blocks.NETHERRACKS);
 		tag.add(Blocks.BASALT, Blocks.SMOOTH_BASALT);
 		tag.add(Blocks.BLACKSTONE);
 		tag.add(Blocks.END_STONE);

@@ -68,7 +68,11 @@ public enum ToolUpgrade
 			(target, upgrade) -> !PowerpackItem.getUpgradesStatic(target).has(UpgradeEffect.ANTENNA),
 			(upgrade, modifications) -> modifications.with(UpgradeEffect.TESLA)
 	),
-	POWERPACK_MAGNET(ImmutableSet.of(PowerpackItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.MAGNET, PrevSlot.NONE));
+	POWERPACK_MAGNET(ImmutableSet.of(PowerpackItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.MAGNET, PrevSlot.NONE)),
+	SKYHOOK_SLOPE(ImmutableSet.of(SkyhookItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.SLOPE_MODIFIER, 0.5f)),
+	SKYHOOK_INSULATION(ImmutableSet.of(SkyhookItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.INSULATED)),
+	SKYHOOK_MACE(ImmutableSet.of(SkyhookItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.MACE_ATTACK)),
+	;
 
 	public final ImmutableSet<String> toolset;
 	public final int stackSize;

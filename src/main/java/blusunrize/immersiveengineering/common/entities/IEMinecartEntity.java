@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SynchedEntityData.Builder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -120,10 +121,10 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(Builder builder)
 	{
-		super.defineSynchedData();
-		this.entityData.define(DATA_ID_BE_DATA, new CompoundTag());
+		super.defineSynchedData(builder);
+		builder.define(DATA_ID_BE_DATA, new CompoundTag());
 	}
 
 
@@ -149,7 +150,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 
 	public void updateSynchedData()
 	{
-		this.getEntityData().set(DATA_ID_BE_DATA, this.containedBlockEntity.saveWithoutMetadata());
+		this.getEntityData().set(DATA_ID_BE_DATA, this.containedBlockEntity.saveWithoutMetadata(level().registryAccess()));
 	}
 
 	@Override
@@ -157,7 +158,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	{
 		super.onSyncedDataUpdated(p_38527_);
 		if(DATA_ID_BE_DATA.equals(p_38527_))
-			this.containedBlockEntity.load(this.getEntityData().get(DATA_ID_BE_DATA));
+			this.containedBlockEntity.loadCustomOnly(this.getEntityData().get(DATA_ID_BE_DATA), level().registryAccess());
 	}
 
 	// This is only used by the super impl of destroy, which does not allow attaching NBT to the drop. So it's actually

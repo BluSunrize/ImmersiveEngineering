@@ -124,8 +124,7 @@ public class IEManual
 	{
 		IEManualInstance ieMan = (IEManualInstance)ManualHelper.getManual();
 		InnerNode<ResourceLocation, ManualEntry> resourcesCat = ieMan.getRoot().getOrCreateSubnode(IEApi.ieLoc(ManualHelper.CAT_RESOURCES), 0);
-		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_TOOLS), 50);
+		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.getRoot().getOrCreateSubnode(IEApi.ieLoc(ManualHelper.CAT_TOOLS), 50);
 
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());

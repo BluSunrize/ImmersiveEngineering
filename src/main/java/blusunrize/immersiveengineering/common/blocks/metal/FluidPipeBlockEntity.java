@@ -43,7 +43,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -693,7 +693,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(heldItem.isEmpty()&&player.isShiftKeyDown()&&hasCover())
 		{
@@ -705,14 +705,14 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 				markChunkDirty();
 			}
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(!heldItem.isEmpty()&&!player.isShiftKeyDown())
 			return setColorOrCoverFrom(heldItem, player);
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
-	private InteractionResult setColorOrCoverFrom(ItemStack heldItem, Player player)
+	private ItemInteractionResult setColorOrCoverFrom(ItemStack heldItem, Player player)
 	{
 		DyeColor heldDye = Utils.getDye(heldItem);
 		if(heldDye!=null)
@@ -724,11 +724,11 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				markContainingBlockForUpdate(null);
 				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 			}
-			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+			return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		Block heldBlock = Block.byItem(heldItem.getItem());
 		if(heldBlock==Blocks.AIR)
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		for(Predicate<Block> func : validPipeCovers)
 			if(func.test(heldBlock)&&this.cover!=heldBlock)
 			{
@@ -742,9 +742,9 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					this.markContainingBlockForUpdate(null);
 					level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 				}
-				return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+				return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 			}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

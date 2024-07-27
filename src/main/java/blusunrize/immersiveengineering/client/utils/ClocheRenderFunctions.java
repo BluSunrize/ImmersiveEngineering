@@ -29,7 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -252,7 +251,7 @@ public class ClocheRenderFunctions
 
 	public static class RenderFunctionDoubleFlower implements ClocheRenderFunction
 	{
-		public static final Codec<RenderFunctionDoubleFlower> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionDoubleFlower::new);
+		public static final DualMapCodec<? super RegistryFriendlyByteBuf, RenderFunctionDoubleFlower> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionDoubleFlower::new);
 
 		final Block cropBlock;
 
@@ -279,7 +278,7 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Codec<? extends ClocheRenderFunction> codec()
+		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}

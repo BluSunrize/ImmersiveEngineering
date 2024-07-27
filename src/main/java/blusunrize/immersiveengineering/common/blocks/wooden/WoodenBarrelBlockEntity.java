@@ -31,7 +31,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -308,27 +308,27 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		Optional<FluidStack> fOptional = FluidUtil.getFluidContained(heldItem);
 		boolean metal = this instanceof MetalBarrelBlockEntity;
 		if(!metal)
 		{
-			InteractionResult ret = fOptional.map((f) -> {
+			ItemInteractionResult ret = fOptional.map((f) -> {
 				if(f.getFluid().is(Tags.Fluids.GASEOUS))
 				{
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"noGasAllowed"), true);
-					return InteractionResult.FAIL;
+					return ItemInteractionResult.FAIL;
 				}
 				else if(f.getFluid().getFluidType().getTemperature(f) >= WoodenBarrelBlockEntity.IGNITION_TEMPERATURE)
 				{
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"tooHot"), true);
-					return InteractionResult.FAIL;
+					return ItemInteractionResult.FAIL;
 				}
 				else
-					return InteractionResult.PASS;
-			}).orElse(InteractionResult.PASS);
-			if(ret!=InteractionResult.PASS)
+					return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			}).orElse(ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION);
+			if(ret!=ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION)
 				return ret;
 		}
 
@@ -336,9 +336,9 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		{
 			this.setChanged();
 			this.markContainingBlockForUpdate(null);
-			return InteractionResult.sidedSuccess(player.level().isClientSide);
+			return ItemInteractionResult.sidedSuccess(player.level().isClientSide);
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

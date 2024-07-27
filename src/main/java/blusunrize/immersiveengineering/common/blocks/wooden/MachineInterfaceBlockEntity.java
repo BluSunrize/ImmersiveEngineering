@@ -27,11 +27,12 @@ import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -82,7 +83,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		ListTag list = nbt.getList("configurations", Tag.TAG_COMPOUND);
 		configurations.clear();
@@ -92,7 +93,7 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
 		ListTag list = new ListTag();
 		configurations.forEach(conf -> list.add(conf.writeToNBT()));
@@ -120,11 +121,11 @@ public class MachineInterfaceBlockEntity extends IEBaseBlockEntity implements IE
 	}
 
 	@Override
-	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public ItemInteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(getLevelNonnull().isClientSide)
 			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_MachineInterface, this);
-		return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
+		return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 	}
 
 	@Override

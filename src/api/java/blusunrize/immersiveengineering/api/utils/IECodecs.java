@@ -13,6 +13,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
@@ -38,6 +39,20 @@ public class IECodecs
 			ByteBufCodecs.DOUBLE, Vec3::z,
 			Vec3::new
 	);
+	public static final StreamCodec<FriendlyByteBuf, int[]> VAR_INT_ARRAY_STREAM_CODEC = new StreamCodec<>()
+	{
+		@Override
+		public int[] decode(FriendlyByteBuf p_320376_)
+		{
+			return p_320376_.readVarIntArray();
+		}
+
+		@Override
+		public void encode(FriendlyByteBuf p_320158_, int[] p_320396_)
+		{
+			p_320158_.writeVarIntArray(p_320396_);
+		}
+	};
 
 	public static final Codec<NonNullList<Ingredient>> NONNULL_INGREDIENTS = Ingredient.LIST_CODEC.xmap(
 			l -> {

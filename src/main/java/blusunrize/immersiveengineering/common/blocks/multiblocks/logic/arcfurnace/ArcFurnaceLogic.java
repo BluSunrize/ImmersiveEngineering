@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.arcfurnace;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
@@ -44,8 +43,8 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -68,6 +67,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class ArcFurnaceLogic
 		implements IMultiblockLogic<State>, IServerTickableComponent<State>, IClientTickableComponent<State>
@@ -108,9 +109,9 @@ public class ArcFurnaceLogic
 	public static final int ENERGY_CAPACITY = 64000;
 
 	// register additional conditions for machine interface
-	public static ResourceLocation MIF_CONDITION_ADDITIVES = new ResourceLocation(Lib.MODID, "arc_furnace/additives");
-	public static ResourceLocation MIF_CONDITION_SLAG = new ResourceLocation(Lib.MODID, "arc_furnace/slag");
-	public static ResourceLocation MIF_CONDITION_ELECTRODES = new ResourceLocation(Lib.MODID, "arc_furnace/electrodes");
+	public static ResourceLocation MIF_CONDITION_ADDITIVES = ieLoc("arc_furnace/additives");
+	public static ResourceLocation MIF_CONDITION_SLAG = ieLoc("arc_furnace/slag");
+	public static ResourceLocation MIF_CONDITION_ELECTRODES = ieLoc("arc_furnace/electrodes");
 
 	static
 	{

@@ -98,6 +98,7 @@ public class ArcFurnaceMenu extends IEContainerMenu
 		public static final StreamCodec<ByteBuf, ProcessSlot> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.INT, ProcessSlot::slot,
 				ByteBufCodecs.INT, ProcessSlot::processStep,
+				ByteBufCodecs.FLOAT, ProcessSlot::processFloat,
 				ProcessSlot::new
 		);
 

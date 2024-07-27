@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.Lib.DamageTypes;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.entities.SkyhookUserData;
@@ -23,11 +24,7 @@ import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
-import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,32 +32,39 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 @EventBusSubscriber(modid = Lib.MODID)
 public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipment
 {
+	public static final String TYPE = "SKYHOOK";
+
 	public SkyhookItem()
 	{
-		super(new Properties().stacksTo(1).component(IEDataComponents.SKYHOOK_SPEED_LIMIT, false), "SKYHOOK", 2);
+		super(new Properties().stacksTo(1).component(IEDataComponents.SKYHOOK_SPEED_LIMIT, false), TYPE, 2);
 	}
 
 	@Override
@@ -97,18 +101,19 @@ public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipme
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
+	public ItemAttributeModifiers getAttributeModifiers(ItemStack stack)
 	{
-		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		if(slot==EquipmentSlot.MAINHAND)
-		{
-			builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
-					BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", 5, AttributeModifier.Operation.ADDITION
-			));
-			builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
-					BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4, AttributeModifier.Operation.ADDITION
-			));
-		}
+		var builder = ItemAttributeModifiers.builder();
+		builder.add(
+				Attributes.ATTACK_DAMAGE,
+				new AttributeModifier(ieLoc("weapon_modifier_damage"), 5, Operation.ADD_VALUE),
+				EquipmentSlotGroup.MAINHAND
+		);
+		builder.add(
+				Attributes.ATTACK_SPEED,
+				new AttributeModifier(ieLoc("weapon_modifier_speed"), -2.4, Operation.ADD_VALUE),
+				EquipmentSlotGroup.MAINHAND
+		);
 		return builder.build();
 	}
 
@@ -116,7 +121,7 @@ public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipme
 	public static void criticalHit(CriticalHitEvent ev)
 	{
 		ItemStack heldItem = ev.getEntity().getMainHandItem();
-		if(heldItem.is(IEItems.Misc.SKYHOOK.asItem())&&getUpgradesStatic(heldItem).getBoolean("maceAttack")&&ev.isVanillaCritical())
+		if(heldItem.is(IEItems.Misc.SKYHOOK.asItem())&&getUpgradesStatic(heldItem).has(UpgradeEffect.MACE_ATTACK)&&ev.isVanillaCritical())
 		{
 			// This is a similar formula to the mace inflicts in 1.21, but we can't do a flat damage bonus,
 			// so we approximate with a multiplier
@@ -130,7 +135,7 @@ public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipme
 				damageBonus = 2f+0.33f*(fallDistance-3); // 33% / 2 damage for the next 5 blocks
 			else
 				damageBonus = 3.65f+0.165f*(fallDistance-8); // 16.5% / 1 damage for the rest of the way
-			ev.setDamageModifier(ev.getDamageModifier()+damageBonus);
+			ev.setDamageMultiplier(ev.getDamageMultiplier()+damageBonus);
 			// also reset fall damage on a successful attack
 			ev.getEntity().fallDistance = 0;
 		}
@@ -191,16 +196,14 @@ public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipme
 
 	public float getSlopeModifier(ItemStack stack)
 	{
-		CompoundTag upgrades = this.getUpgrades(stack);
-		if(upgrades.contains("slopeModifier"))
-			return Math.max(upgrades.getFloat("slopeModifier"), 0.5f);
-		return 1;
+		var upgrades = this.getUpgrades(stack);
+		return Math.max(upgrades.get(UpgradeEffect.SLOPE_MODIFIER), 0.5f);
 	}
 
 	@Override
 	public void onStrike(ItemStack equipped, EquipmentSlot eqSlot, LivingEntity owner, Map<String, Object> cache, @Nullable DamageSource dmg, ElectricSource desc)
 	{
-		if(dmg instanceof ElectricDamageSource eds&&dmg.is(DamageTypes.WIRE_SHOCK)&&this.getUpgrades(equipped).getBoolean("insulated")
+		if(dmg instanceof ElectricDamageSource eds&&dmg.is(DamageTypes.WIRE_SHOCK)&&this.getUpgrades(equipped).has(UpgradeEffect.INSULATED)
 				&&(owner.getVehicle() instanceof SkylineHookEntity||owner.isUsingItem())) // either on a wire or trying to attach
 		{
 			eds.dmg = 0;

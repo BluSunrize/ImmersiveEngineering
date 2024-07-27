@@ -9,34 +9,25 @@
 package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.common.register.*;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class Language extends LanguageProvider
 {
@@ -47,7 +38,7 @@ public class Language extends LanguageProvider
 	{
 		super(output, Lib.MODID, locale);
 		this.existingFileHelper = existingFileHelper;
-		this.baseLangFile = new ResourceLocation(Lib.MODID, locale);
+		this.baseLangFile = ieLoc(locale);
 	}
 
 	@Override
@@ -69,9 +60,9 @@ public class Language extends LanguageProvider
 
 		// Add banners with their coloration
 		for(BannerEntry banner : IEBannerPatterns.ALL_BANNERS)
-			for(Holder<BannerPattern> pattern : banner.patterns())
+			for(var pattern : banner.patterns())
 			{
-				final String key = pattern.unwrapKey().get().location().getPath();
+				final String key = pattern.location().getPath();
 				final String[] keyParts = key.split("_");
 				String bannerName = Utils.toCamelCase(keyParts[0]);
 				if(keyParts.length > 1)

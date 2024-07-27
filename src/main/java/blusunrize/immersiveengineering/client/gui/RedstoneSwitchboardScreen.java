@@ -135,7 +135,7 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 		// create new widget
 		addConnectionWidget(newSetting);
 		// send to server
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, newSetting.writeToNBT()));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, newSetting.writeToNBT()));
 	}
 
 	private void removeSetting(DyeColor output, boolean selectInput)
@@ -151,7 +151,7 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 		// send to server
 		CompoundTag msg = new CompoundTag();
 		msg.putInt("remove", output.getId());
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, msg));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, msg));
 	}
 
 
@@ -240,18 +240,14 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 			Matrix4f matrix4f = graphics.pose().last().pose();
 			// Quad
 			VertexConsumer vertexconsumer = graphics.bufferSource().getBuffer(RenderType.debugQuads());
-			vertexconsumer.vertex(matrix4f, topLeft.x, topLeft.y, 1)
-					.color(colour)
-					.endVertex();
-			vertexconsumer.vertex(matrix4f, botLeft.x, botLeft.y, 1)
-					.color(colour)
-					.endVertex();
-			vertexconsumer.vertex(matrix4f, botRight.x, botRight.y, 1)
-					.color(colour)
-					.endVertex();
-			vertexconsumer.vertex(matrix4f, topRight.x, topRight.y, 1)
-					.color(colour)
-					.endVertex();
+			vertexconsumer.addVertex(matrix4f, topLeft.x, topLeft.y, 1)
+					.setColor(colour);
+			vertexconsumer.addVertex(matrix4f, botLeft.x, botLeft.y, 1)
+					.setColor(colour);
+			vertexconsumer.addVertex(matrix4f, botRight.x, botRight.y, 1)
+					.setColor(colour);
+			vertexconsumer.addVertex(matrix4f, topRight.x, topRight.y, 1)
+					.setColor(colour);
 			graphics.flush();
 		}
 	}

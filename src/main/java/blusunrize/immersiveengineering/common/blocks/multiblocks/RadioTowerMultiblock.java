@@ -8,10 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.register.IEMultiblockLogic;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 
 public class RadioTowerMultiblock extends IETemplateMultiblock
 {
@@ -19,7 +18,7 @@ public class RadioTowerMultiblock extends IETemplateMultiblock
 
 	public RadioTowerMultiblock()
 	{
-		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/radio_tower"),
+		super(IEApi.ieLoc("multiblocks/radio_tower"),
 				MASTER_OFFSET, new BlockPos(2, 1, 5), new BlockPos(5, 19, 6),
 				IEMultiblockLogic.RADIO_TOWER);
 	}

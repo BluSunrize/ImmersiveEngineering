@@ -76,7 +76,7 @@ public class RevolverCallbacks implements ItemCallback<Key>
 				upgrades.has(UpgradeEffect.ELECTRO),
 				upgrades.has(UpgradeEffect.SCOPE),
 				stack.getOrDefault(IEDataComponents.REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT).reloadTimer(),
-				upgrades.getBoolean("barrel_snub")
+				upgrades.has(UpgradeEffect.BARREL_SNUB)
 		);
 	}
 
@@ -219,7 +219,7 @@ public class RevolverCallbacks implements ItemCallback<Key>
 	{
 		String firstGroup = groups.get(0);
 		// special case for snubnose, move attachments back
-		if(RevolverItem.getUpgradesStatic(stack).getBoolean("barrel_snub"))
+		if(RevolverItem.getUpgradesStatic(stack).has(UpgradeEffect.BARREL_SNUB))
 		{
 			if("dev_scope".equals(firstGroup))
 				return MAT_SNUB_SCOPE;

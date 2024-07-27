@@ -68,7 +68,7 @@ public class SirenScreen extends ClientBlockEntityScreen<SirenBlockEntity>
 		// clientside
 		blockEntity.receiveMessageFromClient(message);
 		// serverside
-		PacketDistributor.SERVER.noArg().send(new MessageBlockEntitySync(blockEntity, message));
+		PacketDistributor.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

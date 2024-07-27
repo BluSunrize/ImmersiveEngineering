@@ -49,6 +49,7 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
@@ -246,10 +247,10 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("scs")
 				.pattern("tbt")
 				.pattern("scs")
-				.define('s', Tags.Items.SAND)
+				.define('s', Tags.Items.SANDS)
 				.define('c', IETags.clay)
 				.define('t', Ingredients.HEMP_FABRIC)
-				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
+				.define('b', new Ingredient(new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_clay", has(IETags.clay))
 				.save(new WrappingRecipeOutput<ShapedRecipe>(
 						out, r -> new TurnAndCopyRecipe(r, List.of()).allowQuarterTurn()
@@ -381,7 +382,7 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("rcr")
 				.pattern("rrr")
 				.define('r', IETags.netheriteRod)
-				.define('c', new IngredientFluidStack(IETags.fluidConcrete, FluidType.BUCKET_VOLUME))
+				.define('c', new Ingredient(new IngredientFluidStack(IETags.fluidConcrete, FluidType.BUCKET_VOLUME)))
 				.unlockedBy("has_netherite", has(Items.NETHERITE_INGOT))
 				.save(out, toRL(toPath(StoneDecoration.CONCRETE_REINFORCED)));
 		shapedMisc(StoneDecoration.CONCRETE_REINFORCED_TILE, 4)
@@ -511,7 +512,9 @@ public class DecorationRecipes extends IERecipeProvider
 				.pattern("crc")
 				.pattern("igi")
 				.define('c', IETags.copperWire)
-				.define('r', Tags.Items.GLASS_RED)
+				//TODO
+				// .define('r', Tags.Items.GLASS_RED)
+				.define('r', Tags.Items.GLASS_BLOCKS)
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).nugget)
 				.define('g', Tags.Items.DUSTS_GLOWSTONE)
 				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))

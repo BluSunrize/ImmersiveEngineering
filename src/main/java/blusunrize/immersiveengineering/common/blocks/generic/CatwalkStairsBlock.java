@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.ShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -70,7 +70,7 @@ public class CatwalkStairsBlock extends CatwalkBlock
 	}
 
 	@Override
-	public InteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
+	public ItemInteractionResult hammerUseSide(Direction side, Player player, InteractionHand hand, Level w, BlockPos pos, BlockHitResult hit)
 	{
 		BlockState state = w.getBlockState(pos);
 		Direction currentDirection = state.getValue(IEProperties.FACING_HORIZONTAL);
@@ -85,10 +85,10 @@ public class CatwalkStairsBlock extends CatwalkBlock
 				case EAST -> hitVec.z < 0?RAILING_LEFT: RAILING_RIGHT;
 			};
 			w.setBlock(pos, state.setValue(railing, !state.getValue(railing)), 3);
-			return InteractionResult.sidedSuccess(w.isClientSide);
+			return ItemInteractionResult.sidedSuccess(w.isClientSide);
 		}
 		w.setBlock(pos, state.setValue(IEProperties.FACING_HORIZONTAL, currentDirection.getClockWise()), 3);
-		return InteractionResult.sidedSuccess(w.isClientSide);
+		return ItemInteractionResult.sidedSuccess(w.isClientSide);
 	}
 
 	@Override

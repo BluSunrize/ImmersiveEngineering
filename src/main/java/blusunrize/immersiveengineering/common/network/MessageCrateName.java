@@ -8,50 +8,38 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.LogicalSide;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public class MessageCrateName implements IMessage
+public record MessageCrateName(BlockPos pos, String name) implements IMessage
 {
-	public static final ResourceLocation ID = IEApi.ieLoc("crate_name");
-
-	private final BlockPos pos;
-	private final String name;
+	public static final Type<MessageCrateName> ID = IMessage.createType("crate_name");
+	public static final StreamCodec<ByteBuf, MessageCrateName> CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, MessageCrateName::pos,
+			ByteBufCodecs.STRING_UTF8, MessageCrateName::name,
+			MessageCrateName::new
+	);
 
 	public MessageCrateName(BlockEntity tile, String name)
 	{
-		this.pos = tile.getBlockPos();
-		this.name = name;
-	}
-
-	public MessageCrateName(FriendlyByteBuf buf)
-	{
-		this.pos = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-		this.name = buf.readUtf();
+		this(tile.getBlockPos(), name);
 	}
 
 	@Override
-	public void write(FriendlyByteBuf buf)
-	{
-		buf.writeInt(pos.getX()).writeInt(pos.getY()).writeInt(pos.getZ());
-		buf.writeUtf(name);
-	}
-
-	@Override
-	public void process(PlayPayloadContext context)
+	public void process(IPayloadContext context)
 	{
 		if(context.flow().getReceptionSide()==LogicalSide.SERVER)
-			context.workHandler().execute(() -> {
-				Level world = context.player().orElseThrow().level();
+			context.enqueueWork(() -> {
+				Level world = context.player().level();
 				if(world.isAreaLoaded(pos, 1))
 				{
 					BlockEntity tile = world.getBlockEntity(pos);
@@ -62,8 +50,7 @@ public class MessageCrateName implements IMessage
 	}
 
 	@Override
-	@NotNull
-	public ResourceLocation id()
+	public Type<? extends CustomPacketPayload> type()
 	{
 		return ID;
 	}

@@ -31,6 +31,11 @@ public record MessageBlockEntitySync(BlockPos pos, CompoundTag nbt) implements I
 			MessageBlockEntitySync::new
 	);
 
+	public MessageBlockEntitySync(BlockEntity be, CompoundTag nbt)
+	{
+		this(be.getBlockPos(), nbt);
+	}
+
 	@Override
 	public void process(IPayloadContext context)
 	{

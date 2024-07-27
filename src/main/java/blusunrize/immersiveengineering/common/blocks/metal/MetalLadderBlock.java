@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerBlockInteraction;
 import blusunrize.immersiveengineering.common.util.orientation.RotationUtil;
@@ -132,7 +131,8 @@ public class MetalLadderBlock extends LadderBlock implements IHammerBlockInterac
 	@Override
 	public InteractionResult useHammer(BlockState state, Level world, BlockPos pos, Player player)
 	{
-		if(player==null) return InteractionResult.FAIL;
+		if(player==null)
+			return InteractionResult.FAIL;
 		if(type!=CoverType.NONE&&player.isShiftKeyDown())
 		{
 			boolean b = world.setBlockAndUpdate(pos, state.setValue(OPEN, !state.getValue(OPEN)));
