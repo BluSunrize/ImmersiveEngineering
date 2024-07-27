@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.ComparatorManager;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.component.IClientTickableComponent;
@@ -24,6 +25,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.SawmillLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.SawmillShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -42,6 +46,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -79,6 +84,13 @@ public class SawmillLogic
 	private static final CapabilityPosition ENERGY_INPUT = new CapabilityPosition(2, 1, 0, RelativeBlockFace.UP);
 	public static final BlockPos REDSTONE_POS = new BlockPos(0, 1, 2);
 	private static final AABB SAWBLADE_AABB = new AABB(2.6875, 1, 1.375, 4.3125, 2, 1.625);
+
+	public static ResourceLocation MIF_CONDITION_SAWBLADE = new ResourceLocation(Lib.MODID, "sawmill/blade");
+
+	static
+	{
+		MachineInterfaceHandler.register(MIF_CONDITION_SAWBLADE, MachineInterfaceHandler.buildComparativeConditions(State::getSawbladeComparatorValue));
+	}
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
@@ -192,6 +204,7 @@ public class SawmillLogic
 	{
 		register.registerAtOrNull(EnergyStorage.BLOCK, ENERGY_INPUT, state -> state.energy);
 		register.registerAt(ItemHandler.BLOCK, INPUT, state -> state.insertionHandler);
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -340,10 +353,7 @@ public class SawmillLogic
 
 	public static ComparatorManager<State> makeComparator()
 	{
-		return ComparatorManager.makeSimple(state -> {
-			float damage = 1-(state.sawblade.getDamageValue()/(float)state.sawblade.getMaxDamage());
-			return Mth.ceil(damage*15);
-		}, REDSTONE_POS);
+		return ComparatorManager.makeSimple(state -> Mth.ceil(state.getSawbladeComparatorValue()*15), REDSTONE_POS);
 	}
 
 	public static class State implements IMultiblockState
@@ -358,6 +368,7 @@ public class SawmillLogic
 		private final DroppingMultiblockOutput output;
 		private final DroppingMultiblockOutput secondaryOutput;
 		private final IItemHandler insertionHandler;
+		private final IMachineInterfaceConnection mifHandler;
 
 		// Client fields
 		public ActiveState active = ActiveState.DISABLED;
@@ -387,6 +398,15 @@ public class SawmillLogic
 					}
 					return toInsert;
 				}
+			};
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active==ActiveState.SAWING, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(
+							this, MachineInterfaceHandler.BASIC_ITEM_IN,
+							MachineInterfaceHandler.buildComparativeConditions(s -> s.sawmillProcessQueue.size()/6f) // most you can fit is 6 logs of the same type
+					),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+					new MachineCheckImplementation<>(this, MIF_CONDITION_SAWBLADE)
 			};
 			for(final ActiveState state : ActiveState.values())
 				soundPlaying.put(state, () -> false);
@@ -443,6 +463,11 @@ public class SawmillLogic
 		public IEnergyStorage getEnergy()
 		{
 			return energy;
+		}
+
+		private float getSawbladeComparatorValue()
+		{
+			return 1-(sawblade.getDamageValue()/(float)sawblade.getMaxDamage());
 		}
 	}
 

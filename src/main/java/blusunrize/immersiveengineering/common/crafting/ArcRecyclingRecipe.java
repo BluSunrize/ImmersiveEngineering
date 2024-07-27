@@ -20,6 +20,9 @@ import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy.Fast;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +32,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	private final Supplier<RegistryAccess> tags;
 	private final List<Pair<TagOutput, Double>> outputs;
-	private final TagOutputList defaultOutputs;
+	private final Lazy<TagOutputList> defaultOutputs;
 
 	public ArcRecyclingRecipe(Supplier<RegistryAccess> tags, List<Pair<TagOutput, Double>> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
@@ -45,11 +48,18 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		this.tags = tags;
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
-		this.defaultOutputs = Util.make(() -> {
+		this.defaultOutputs = Lazy.of(() -> {
 			List<TagOutput> ret = new ArrayList<>();
 			for(Pair<TagOutput, Double> e : outputs)
-				// TODO scaling?
-				ret.add(e.getFirst());
+			{
+				if(e.getSecond() >= 1)
+					ret.add(new TagOutput(e.getFirst().get().copyWithCount((int)(e.getSecond().doubleValue()))));
+				String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getFirst().get(), "ingots");
+				if(type!=null&&((e.getSecond()%1) > 0.11))
+				{
+					ret.add(new TagOutput(TagUtils.createItemWrapper(IETags.getNugget(type[1])), (int)(9*(e.getSecond()%1))));
+				}
+			}
 			return new TagOutputList(ret);
 		});
 	}
@@ -76,13 +86,13 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	@Override
 	public NonNullList<ItemStack> getBaseOutputs()
 	{
-		return defaultOutputs.get();
+		return defaultOutputs.get().get();
 	}
 
 	@Override
 	public NonNullList<ItemStack> getItemOutputs()
 	{
-		return defaultOutputs.get();
+		return defaultOutputs.get().get();
 	}
 
 	private void addOutputToList(double scaledOut, NonNullList<ItemStack> outs, Pair<TagOutput, Double> e)

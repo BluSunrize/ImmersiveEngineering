@@ -9,7 +9,7 @@
       {
         "item": "minecraft:potion",
         "nbt": {
-          "Potion": "minecraft:healing"
+          "Potion": "minecraft:awkward"
         }
       },
       {

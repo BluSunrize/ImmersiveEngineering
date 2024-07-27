@@ -69,6 +69,7 @@ processResources {
         expand version_replaces
     }
     exclude ".cache"
+    exclude "assets/immersiveengineering/lang_base"
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
@@ -113,7 +114,6 @@ repositories {
         url 'https://squiddev.cc/maven/'
         content {
             includeGroup("cc.tweaked")
-            includeModule("org.squiddev", "Cobalt")
         }
     }
     mavenLocal()
@@ -125,9 +125,7 @@ dependencies {
     compileOnly "mezz.jei:jei-1.20.4-neoforge-api:${version_jei}"
     compileOnly "mezz.jei:jei-1.20.4-common-api:${version_jei}"
     compileOnly "com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:14.0.34"
-    //TODO only API. For some reason IPeripheral (an API class) does not show up in the API artifact
-    // compileOnly "cc.tweaked:cc-tweaked-1.19.3-forge-api:${version_cctweaked}")
-    compileOnly "cc.tweaked:cc-tweaked-1.19.3-forge:${version_cctweaked}"
+    compileOnly "cc.tweaked:cc-tweaked-1.20.4-forge-api:${version_cctweaked}"
     compileOnly "curse.maven:the-one-probe-245211:3825695"
     compileOnly "curse.maven:curios-309927:4780213"
     compileOnly "curse.maven:jade-324717:4801177"

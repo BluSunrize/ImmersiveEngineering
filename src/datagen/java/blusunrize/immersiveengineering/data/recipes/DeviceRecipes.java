@@ -29,9 +29,12 @@ import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient.ItemValue;
+import net.minecraft.world.item.crafting.Ingredient.Value;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -39,9 +42,12 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class DeviceRecipes extends IERecipeProvider
 {
@@ -83,8 +89,8 @@ public class DeviceRecipes extends IERecipeProvider
 				.pattern("rcr")
 				.pattern("wpw")
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('p', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('r', IETags.ironRod)
+				.define('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('r', IETags.steelRod)
 				.define('c', IEBlocks.WoodenDevices.CRATE)
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(new WrappingRecipeOutput<ShapedRecipe>(
@@ -141,6 +147,15 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('c', Ingredients.CIRCUIT_BOARD)
 				.unlockedBy("has_"+toPath(Ingredients.CIRCUIT_BOARD), has(Ingredients.CIRCUIT_BOARD))
 				.save(out, toRL(toPath(WoodenDevices.LOGIC_UNIT)));
+		shapedMisc(WoodenDevices.MACHINE_INTERFACE)
+				.pattern("aea")
+				.pattern("wcw")
+				.define('w', IETags.getItemTag(IETags.treatedWood))
+				.define('a', IETags.aluminumWire)
+				.define('c', Ingredients.CIRCUIT_BOARD)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
+				.unlockedBy("has_"+toPath(Ingredients.CIRCUIT_BOARD), has(Ingredients.CIRCUIT_BOARD))
+				.save(out, toRL(toPath(WoodenDevices.MACHINE_INTERFACE)));
 
 		shapedMisc(WoodenDevices.TURNTABLE)
 				.pattern("iwi")
@@ -187,6 +202,15 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('f', WoodenDecoration.TREATED_FENCE)
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(WoodenDevices.WORKBENCH)));
+		shapedMisc(WoodenDevices.BLUEPRINT_SHELF)
+				.pattern("srs")
+				.pattern("rsr")
+				.pattern("www")
+				.define('s', IETags.getItemTag(IETags.treatedWoodSlab))
+				.define('r', IETags.treatedStick)
+				.define('w', IETags.getItemTag(IETags.treatedWood))
+				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
+				.save(out, toRL(toPath(WoodenDevices.BLUEPRINT_SHELF)));
 		shapedMisc(WoodenDevices.CIRCUIT_TABLE)
 				.pattern("sst")
 				.pattern("c e")
@@ -209,7 +233,7 @@ public class DeviceRecipes extends IERecipeProvider
 
 	private void connectors(@Nonnull RecipeOutput out)
 	{
-		shapedMisc(IEBlocks.Connectors.BREAKER_SWITCH)
+		shapedMisc(Connectors.BREAKER_SWITCH)
 				.pattern(" l ")
 				.pattern("cic")
 				.define('l', Items.LEVER)
@@ -217,7 +241,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('c', IETags.connectorInsulator)
 				.unlockedBy("has_"+toPath(Misc.WIRE_COILS.get(WireType.COPPER)), has(Misc.WIRE_COILS.get(WireType.COPPER)))
 				.save(out, toRL(toPath(Connectors.BREAKER_SWITCH)));
-		shapedMisc(IEBlocks.Connectors.REDSTONE_BREAKER)
+		shapedMisc(Connectors.REDSTONE_BREAKER)
 				.pattern("hrh")
 				.pattern("ici")
 				.define('h', IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false))
@@ -227,7 +251,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_hv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.REDSTONE_BREAKER)));
 
-		shapedMisc(IEBlocks.Connectors.CURRENT_TRANSFORMER)
+		shapedMisc(Connectors.CURRENT_TRANSFORMER)
 				.pattern(" m ")
 				.pattern(" b ")
 				.pattern("iei")
@@ -238,7 +262,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_voltmeter", has(IEItems.Tools.VOLTMETER))
 				.save(out, toRL(toPath(Connectors.CURRENT_TRANSFORMER)));
 
-		shapedMisc(IEBlocks.Connectors.TRANSFORMER)
+		shapedMisc(Connectors.TRANSFORMER)
 				.pattern("lm")
 				.pattern("eb")
 				.pattern("ii")
@@ -249,7 +273,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.unlockedBy("has_mv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.MV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.TRANSFORMER)));
-		shapedMisc(IEBlocks.Connectors.TRANSFORMER_HV)
+		shapedMisc(Connectors.TRANSFORMER_HV)
 				.pattern("mh")
 				.pattern("eb")
 				.pattern("ii")
@@ -261,7 +285,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_hv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.TRANSFORMER_HV)));
 
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_STRUCTURAL, 8)
+		shapedMisc(Connectors.CONNECTOR_STRUCTURAL, 8)
 				.pattern("isi")
 				.pattern("i i")
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
@@ -269,7 +293,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_STRUCTURAL)));
 
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_REDSTONE, 4)
+		shapedMisc(Connectors.CONNECTOR_REDSTONE, 4)
 				.pattern("iii")
 				.pattern("brb")
 				.define('i', IETags.getTagsFor(EnumMetals.ELECTRUM).nugget)
@@ -277,7 +301,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('r', Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_electrum_nugget", has(IETags.getTagsFor(EnumMetals.ELECTRUM).nugget))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_REDSTONE)));
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_PROBE)
+		shapedMisc(Connectors.CONNECTOR_PROBE)
 				.pattern(" c ")
 				.pattern("gpg")
 				.define('c', Connectors.CONNECTOR_REDSTONE)
@@ -285,7 +309,7 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('p', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_PROBE)));
-		shapedMisc(IEBlocks.Connectors.CONNECTOR_BUNDLED)
+		shapedMisc(Connectors.CONNECTOR_BUNDLED)
 				.pattern(" w ")
 				.pattern("wcw")
 				.pattern(" w ")
@@ -293,6 +317,41 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('w', IETags.aluminumWire)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_BUNDLED)));
+		shapedMisc(Connectors.REDSTONE_STATE_CELL)
+				.pattern("c")
+				.pattern("t")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('t', Ingredients.ELECTRON_TUBE)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.REDSTONE_STATE_CELL)));
+		shapedMisc(Connectors.REDSTONE_TIMER)
+				.pattern(" t ")
+				.pattern("te ")
+				.pattern("  c")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.define('t', Ingredients.ELECTRON_TUBE)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.REDSTONE_TIMER)));
+		shapedMisc(Connectors.REDSTONE_SWITCHBOARD)
+				.pattern("c c")
+				.pattern("sws")
+				.pattern("ses")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('s', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('w', Misc.WIRE_COILS.get(WireType.REDSTONE))
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.REDSTONE_SWITCHBOARD)));
+		shapedMisc(Connectors.SIREN)
+				.pattern(" c ")
+				.pattern("pmp")
+				.pattern(" p ")
+				.define('c', Connectors.CONNECTOR_REDSTONE)
+				.define('p', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.define('m', Ingredients.COMPONENT_IRON)
+				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
+				.save(out, toRL(toPath(Connectors.SIREN)));
 
 		// Connectors and Relays
 		shapedMisc(Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), 4)
@@ -654,6 +713,32 @@ public class DeviceRecipes extends IERecipeProvider
 					.define('s', IETags.getItemTag(IETags.getTagsFor(chute.getKey()).sheetmetal))
 					.unlockedBy("has_plate", has(IETags.getTagsFor(chute.getKey()).plate))
 					.save(out, toRL(toPath(chute.getValue())));
+
+		Ingredient anyDyeableChute = Ingredient.fromValues(
+				Stream.concat(
+						MetalDevices.CHUTES.values().stream(),
+						MetalDevices.DYED_CHUTES.values().stream()
+				).map((Function<BlockEntry<ChuteBlock>, Value>)b -> new ItemValue(new ItemStack(b)))
+		);
+		for(Entry<DyeColor, BlockEntry<ChuteBlock>> chute : MetalDevices.DYED_CHUTES.entrySet())
+		{
+			shapedMisc(chute.getValue(), 12)
+					.pattern("s s")
+					.pattern("s s")
+					.pattern("s s")
+					.define('s', MetalDecoration.COLORED_SHEETMETAL.get(chute.getKey()))
+					.unlockedBy("has_sheetmetal", has(MetalDecoration.COLORED_SHEETMETAL.get(chute.getKey())))
+					.save(out, toRL(toPath(chute.getValue())));
+			shapedMisc(chute.getValue(), 8)
+					.pattern("ccc")
+					.pattern("cdc")
+					.pattern("ccc")
+					.define('c', anyDyeableChute)
+					.define('d', chute.getKey().getTag())
+					.unlockedBy("has_sheetmetal", has(MetalDecoration.COLORED_SHEETMETAL.get(chute.getKey())))
+					.save(out, toRL(toPath(chute.getValue())+"_dyeing"));
+		}
+
 		shapedMisc(MetalDevices.ELECTROMAGNET)
 				.pattern("pcp")
 				.pattern("wiw")
@@ -664,6 +749,16 @@ public class DeviceRecipes extends IERecipeProvider
 				.define('c', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_"+toPath(Ingredients.COMPONENT_ELECTRONIC), has(Ingredients.COMPONENT_ELECTRONIC))
 				.save(out, toRL(toPath(MetalDevices.ELECTROMAGNET)));
+
+		shapedMisc(MetalDevices.PIPE_VALVE)
+				.pattern("pc")
+				.pattern("sr")
+				.define('p', MetalDevices.FLUID_PIPE)
+				.define('c', Ingredients.COMPONENT_IRON)
+				.define('s', IETags.ironRod)
+				.define('r', Tags.Items.DUSTS_REDSTONE)
+				.unlockedBy("has_fluid_pipe", has(MetalDevices.FLUID_PIPE))
+				.save(out, toRL(toPath(MetalDevices.PIPE_VALVE)));
 	}
 
 	private void addCoveyorCoveringRecipe(ItemLike basic, RecipeOutput out)

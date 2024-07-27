@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "m": {
+      "item": "immersiveengineering:component_steel"
+    },
+    "n": {
+      "tag": "forge:ingots/netherite"
+    }
+  },
+  "pattern": [
+    " n ",
+    " mn",
+    "n  "
+  ],
+  "result": {
+    "item": "immersiveengineering:toolupgrade_skyhook_mace"
+  }
+}

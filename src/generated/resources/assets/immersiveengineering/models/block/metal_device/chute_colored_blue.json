@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/block",
+  "callbacks": "immersiveengineering:chute",
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/metal_device/chute.obj.ie",
+  "textures": {
+    "particle": "immersiveengineering:block/metal/sheetmetal_blue",
+    "texture": "immersiveengineering:block/metal/sheetmetal_blue"
+  }
+}

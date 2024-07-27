@@ -108,7 +108,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.recursiveButton = new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", menu.recursiveIngredients::get, TEXTURE, 240, 66, 3,
+		this.recursiveButton = new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, Component.empty(), menu.recursiveIngredients::get, TEXTURE, 240, 66, 3,
 				btn -> {
 					sendButtonClick.accept(3);
 					fullInit();

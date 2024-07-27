@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#forge:nuggets/copper",
+    "#forge:nuggets/aluminum",
+    "#forge:nuggets/lead",
+    "#forge:nuggets/silver",
+    "#forge:nuggets/nickel",
+    "#forge:nuggets/uranium",
+    "#forge:nuggets/constantan",
+    "#forge:nuggets/electrum",
+    "#forge:nuggets/steel",
+    "immersiveengineering:nugget_netherite"
+  ]
+}

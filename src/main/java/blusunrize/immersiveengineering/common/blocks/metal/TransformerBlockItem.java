@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -33,7 +34,7 @@ public class TransformerBlockItem extends BlockItemIE
 	{
 		Level w = context.getLevel();
 		BlockPos possiblePost = context.getClickedPos();
-		if(!context.replacingClickedOnBlock())
+		if(!context.replacingClickedOnBlock()&&context.getClickedFace().getAxis()!=Axis.Y)
 			possiblePost = possiblePost.relative(context.getClickedFace(), -1);
 		if(PostTransformerBlock.isAttacheablePost(possiblePost, w))
 			return Connectors.POST_TRANSFORMER.defaultBlockState();

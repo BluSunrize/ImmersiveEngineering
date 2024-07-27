@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import blusunrize.immersiveengineering.api.shader.IShaderEffectFunction;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
@@ -70,13 +71,21 @@ public class BalloonBlock extends IEEntityBlock<BalloonBlockEntity>
 		Vec3 pos = Vec3.atCenterOf(bPos);
 		level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.FIREWORK_ROCKET_BLAST,
 				SoundSource.BLOCKS, 1.5f, 0.7f);
-		level.removeBlock(bPos, false);
-		level.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
+
+		Runnable shaderEffect = () -> {
+		};
 		if(level.getBlockEntity(bPos) instanceof BalloonBlockEntity balloon)
 		{
 			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(balloon.getShader());
 			if(shader!=null)
-				shader.registryEntry().getEffectFunction().execute(level, null, shader.sCase().getShaderType().toString(), pos, null, .375f);
+				shaderEffect = () -> shader.registryEntry().getEffectFunction().execute(
+						level,
+						null, shader.sCase().getShaderType().toString(), pos, Vec3.ZERO,
+						.375f
+				);
 		}
+		level.removeBlock(bPos, false);
+		level.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
+		shaderEffect.run();
 	}
 }

@@ -108,15 +108,16 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 		//TODO proper translation
 		list.add(Component.translatable(Lib.DESC_INFO+"shader.level")
 				.append(stack.getRarity().color().toString())
-				.append(Component.translatable(Lib.DESC_INFO+"shader.rarity."+stack.getRarity().name().toLowerCase(Locale.US)))
+				.append(Component.translatable(Lib.DESC_INFO+"shader.rarity."+stack.getRarity().name().toLowerCase(Locale.US))).withStyle(ChatFormatting.GRAY)
 		);
 		if(!Screen.hasShiftDown())
 			list.add(Component.translatable(Lib.DESC_INFO+"shader.applyTo")
 					.append(" ")
-					.append(Component.translatable(Lib.DESC_INFO+"holdShift")));
+					.append(Component.translatable(Lib.DESC_INFO+"holdShift")).withStyle(ChatFormatting.GRAY)
+			);
 		else
 		{
-			list.add(Component.translatable(Lib.DESC_INFO+"shader.applyTo"));
+			list.add(Component.translatable(Lib.DESC_INFO+"shader.applyTo").withStyle(ChatFormatting.GRAY));
 			ResourceLocation rl = getShaderName();
 			if(rl!=null)
 			{

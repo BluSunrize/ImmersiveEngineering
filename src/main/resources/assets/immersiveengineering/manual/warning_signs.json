@@ -1,0 +1,34 @@
+{
+  "start": {
+    "type": "crafting",
+    "recipe": "crafting/blueprint_warning_sign"
+  },
+  "sign_recipes": {
+    "type": "blueprint",
+    "recipes": [
+      "blueprint/warning_sign_attention",
+      "blueprint/warning_sign_magnet",
+      "blueprint/warning_sign_cold",
+      "blueprint/warning_sign_electric",
+      "blueprint/warning_sign_hot",
+      "blueprint/warning_sign_fire",
+      "blueprint/warning_sign_falling",
+      "blueprint/warning_sign_sound",
+      "blueprint/warning_sign_ear_defenders",
+      "blueprint/warning_sign_cat",
+      "blueprint/warning_sign_villager",
+      "blueprint/warning_sign_turret",
+      "blueprint/warning_sign_creeper",
+      "blueprint/warning_sign_shrieker",
+      "blueprint/warning_sign_warden",
+      "blueprint/warning_sign_arrow_up",
+      "blueprint/warning_sign_arrow_down",
+      "blueprint/warning_sign_arrow_left",
+      "blueprint/warning_sign_arrow_right",
+      "blueprint/warning_sign_arrow_double_up",
+      "blueprint/warning_sign_arrow_double_down",
+      "blueprint/warning_sign_arrow_double_left",
+      "blueprint/warning_sign_arrow_double_right"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "transformer_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        "crafting/transformer",
+        "crafting/transformer_hv"
+      ]
+    ]
+  },
+  "images": {
+    "type": "image",
+    "offset": 1,
+    "images": [
+      {
+        "location": "textures/misc/wiring.png",
+        "uMin": 0,
+        "vMin": 70,
+        "uSize": 110,
+        "vSize": 60
+      },
+      {
+        "location": "textures/misc/wiring.png",
+        "uMin": 0,
+        "vMin": 130,
+        "uSize": 110,
+        "vSize": 60
+      }
+    ]
+  }
+}

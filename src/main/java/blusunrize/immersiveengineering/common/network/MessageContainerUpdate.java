@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
+import blusunrize.immersiveengineering.common.gui.IScreenMessageReceive;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -32,7 +32,7 @@ public record MessageContainerUpdate(int windowId, CompoundTag nbt) implements I
 		ServerPlayer player = IMessage.serverPlayer(context);
 		context.enqueueWork(() -> {
 			player.resetLastActionTime();
-			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IEContainerMenu ieMenu)
+			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IScreenMessageReceive ieMenu)
 				ieMenu.receiveMessageFromScreen(nbt);
 		});
 	}

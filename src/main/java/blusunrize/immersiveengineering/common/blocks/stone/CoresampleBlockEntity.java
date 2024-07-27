@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -97,7 +98,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(player.isShiftKeyDown())
 		{
@@ -109,7 +110,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 				level.removeBlock(worldPosition, false);
 				level.addFreshEntity(entityitem);
 			}
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP)
 		{
@@ -121,7 +122,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 					if(mapData.dimension!=containedSample.position().dimension())
 					{
 						player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapDimension"));
-						return true;
+						return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 					}
 
 					String ident = "ie:coresample_"+containedSample.position().position();
@@ -156,9 +157,9 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 					}
 				}
 			}
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return false;
+		return InteractionResult.PASS;
 	}
 
 	//TODO @Override

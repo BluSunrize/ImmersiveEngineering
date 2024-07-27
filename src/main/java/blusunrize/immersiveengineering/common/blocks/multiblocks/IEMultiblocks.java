@@ -55,6 +55,8 @@ public class IEMultiblocks
 	public static IETemplateMultiblock SILO;
 	public static IETemplateMultiblock SQUEEZER;
 
+	public static IETemplateMultiblock RADIO_TOWER;
+
 	public static void init()
 	{
 		//Add general matcher predicates
@@ -137,6 +139,7 @@ public class IEMultiblocks
 						new TransformedMultiblock(EXCAVATOR, Vec3i.ZERO, Rotation.NONE),
 						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
 				)));
+		RADIO_TOWER = register(new RadioTowerMultiblock());
 	}
 
 	private static <T extends IMultiblock>

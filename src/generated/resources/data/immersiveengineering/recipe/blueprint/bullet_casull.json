@@ -9,20 +9,14 @@
       "count": 4
     },
     {
-      "basePredicate": {
-        "tag": "c:gunpowders"
-      },
-      "count": 2
+      "tag": "forge:gunpowder"
     },
     {
-      "basePredicate": {
-        "tag": "c:nuggets/lead"
-      },
-      "count": 2
+      "tag": "forge:nuggets/lead"
     }
   ],
   "result": {
-    "count": 4,
+    "Count": 4,
     "id": "immersiveengineering:casull"
   }
 }

@@ -1,0 +1,15 @@
+Engineer's Circuit Workbench
+Don't Breathe the Fumes
+Using the Circuit Workbench, complex redstone logic circuits can be compressed from several square meters onto just a single board.<br>
+§2Logic Circuits§r are made from <link;crafting_components;Vacuum Tubes;tubes> mounted to <link;crafting_components;backplanes;pcb> using solder such as §2Lead Wire§r or §2Copper Wire§r.<br>
+Due to the need to solder components to the board, power must be supplied to the plug on the back of the table.<br>
+Using the various components, you then select the pattern of circuit you want to make and decide the input values, as well as the designated output.<br>
+The available in- and outputs are the 16 colored channels of a Redstone wire, as well as 8 "Registers".<br>
+These allow for a temporary storage of a value within the block that handles the logic, as detailed later.<br>
+After setting the operator, in- and outputs, the required components are listed next to the input slots on the left.<br>
+The amount of components required depends on the complexity of the circuit, with §lNAND§r being the easiest to produce.<br>
+As long as enough components are present, you can then take the completed circuit from the output on the right.<br>
+Several helpful tips are detailed upon the following pages for configuring logic circuits in the workbench.<np>
+Helpful shortcuts:<br>
+When hovering over a in- or output button, press a numbered key to change it to the numbered register. Press a letter to cycle through the colors starting with that letter.<br>
+Pick up a finished logic circuit and click it on the center of the circuit table's interface to copy the instructions to the table.

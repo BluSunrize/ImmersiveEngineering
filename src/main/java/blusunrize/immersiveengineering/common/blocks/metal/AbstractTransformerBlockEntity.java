@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
+import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.LimitingEnergyConnector;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
@@ -37,7 +39,7 @@ import java.util.Set;
 import static blusunrize.immersiveengineering.api.wires.WireType.MV_CATEGORY;
 
 public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectableBlockEntity
-		implements IStateBasedDirectional
+		implements IStateBasedDirectional, LimitingEnergyConnector
 {
 	protected static final int RIGHT_INDEX = 0;
 	protected static final int LEFT_INDEX = 1;
@@ -74,6 +76,13 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	public String getHigherWiretype()
 	{
 		return MV_CATEGORY;
+	}
+
+	@Override
+	public double getPowerLimit()
+	{
+		if(leftType==null||rightType==null) return 0;
+		return Math.min(((IEnergyWire)leftType).getTransferRate(), ((IEnergyWire)rightType).getTransferRate());
 	}
 
 	@Override
@@ -177,5 +186,17 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 
 	protected void updateMirrorState()
 	{
+	}
+
+	@Override
+	public boolean isSource(ConnectionPoint cp)
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isSink(ConnectionPoint cp)
+	{
+		return false;
 	}
 }

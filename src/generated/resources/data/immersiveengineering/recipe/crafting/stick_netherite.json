@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "sticks",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/netherite"
+    }
+  },
+  "pattern": [
+    "i",
+    "i"
+  ],
+  "result": {
+    "count": 4,
+    "item": "immersiveengineering:stick_netherite"
+  }
+}

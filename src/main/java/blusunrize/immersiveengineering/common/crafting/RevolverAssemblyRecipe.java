@@ -13,8 +13,16 @@ import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
 import blusunrize.immersiveengineering.common.items.RevolverItem.RevolverPerk;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import net.minecraft.core.HolderLookup.Provider;
+import blusunrize.immersiveengineering.common.items.RevolverItem;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nonnull;
@@ -26,6 +34,13 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 	public RevolverAssemblyRecipe(ShapedRecipe vanilla, List<Integer> copyNBT)
 	{
 		super(vanilla, copyNBT);
+	}
+
+	@Nonnull
+	@Override
+	public RecipeSerializer<?> getSerializer()
+	{
+		return RecipeSerializers.REVOLVER_ASSEMBLY_SERIALIZER.get();
 	}
 
 	@Nonnull

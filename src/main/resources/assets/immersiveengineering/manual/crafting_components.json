@@ -1,0 +1,37 @@
+{
+  "mech_components": {
+        "type": "crafting",
+        "recipes": [
+            [
+                "crafting/component_iron",
+                "crafting/component_steel"
+            ]
+        ]
+    },
+  "component_blueprint": {
+        "type": "blueprint",
+        "recipes": [
+            "blueprint/component_iron",
+            "blueprint/component_steel"
+        ]
+    },
+    "elec_components": {
+        "type": "blueprint",
+        "recipes": [
+            "blueprint/component_electronic",
+            "blueprint/component_electronic_adv"
+        ]
+    },
+    "light_bulbs": {
+        "type": "blueprint",
+        "recipe": "blueprint/light_bulb"
+    },
+    "tubes": {
+        "type": "blueprint",
+        "recipe": "blueprint/electron_tube"
+    },
+    "pcb": {
+        "type": "blueprint",
+        "recipe": "blueprint/circuit_board"
+    }
+}

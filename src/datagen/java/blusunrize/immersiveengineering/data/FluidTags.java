@@ -35,6 +35,7 @@ class FluidTags extends FluidTagsProvider
 		tag(IETags.fluidPlantoil).add(IEFluids.PLANTOIL.getStill());
 		tag(IETags.fluidEthanol).add(IEFluids.ETHANOL.getStill());
 		tag(IETags.fluidBiodiesel).add(IEFluids.BIODIESEL.getStill());
+		tag(IETags.fluidHighPowerBiodiesel).add(IEFluids.HIGH_POWER_BIODIESEL.getStill());
 		tag(IETags.fluidConcrete).add(IEFluids.CONCRETE.getStill());
 		tag(IETags.fluidHerbicide).add(IEFluids.HERBICIDE.getStill());
 		tag(IETags.fluidRedstoneAcid).add(IEFluids.REDSTONE_ACID.getStill());
@@ -42,7 +43,7 @@ class FluidTags extends FluidTagsProvider
 		tag(IETags.fluidResin).add(IEFluids.PHENOLIC_RESIN.getStill());
 		tag(IETags.fluidPotion).add(IEFluids.POTION.get());
 
-		tag(IETags.drillFuel).addTag(IETags.fluidBiodiesel);
+		tag(IETags.drillFuel).addTag(IETags.fluidBiodiesel).addTag(IETags.fluidHighPowerBiodiesel);
 		tag(Fluids.GASEOUS).add(IEFluids.ACETALDEHYDE.getStill());
 	}
 }

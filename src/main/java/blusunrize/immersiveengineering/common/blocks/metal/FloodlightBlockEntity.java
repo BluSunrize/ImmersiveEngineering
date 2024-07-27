@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.ComputerControlState;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
@@ -246,7 +247,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	{
 		Vec3 light = Vec3.atCenterOf(getBlockPos()).add(0, 0.25, 0);
 		int range = 32;
-		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
+		HashSet<BlockPos> ignore = new HashSet<>();
 		ignore.add(getBlockPos());
 		BlockPos hit = Utils.rayTraceForFirst(vec.add(light), light.add(vec.x*range, vec.y*range, vec.z*range), level, ignore);
 		double maxDistance = hit!=null?Vec3.atCenterOf(hit).add(0, 0.25, 0).distanceToSqr(light): range*range;
@@ -280,6 +281,9 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	public void setRemovedIE()
 	{
 		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
+		for(BlockPos pos : fakeLights)
+			if(SafeChunkUtils.getSafeBE(level, pos) instanceof FakeLightBlockEntity light)
+				level.removeBlock(pos, false);
 		super.setRemovedIE();
 	}
 

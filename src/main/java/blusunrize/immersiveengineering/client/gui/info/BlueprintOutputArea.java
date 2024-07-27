@@ -39,6 +39,8 @@ public class BlueprintOutputArea extends InfoArea
 	@Override
 	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
+		if(!slot.isOnPage())
+			return;
 		BlueprintCraftingRecipe recipe = slot.recipe;
 		if(recipe.output.get().isEmpty()||slot.hasItem())
 			return;
@@ -72,6 +74,8 @@ public class BlueprintOutputArea extends InfoArea
 	@Override
 	public void draw(GuiGraphics graphics)
 	{
+		if(!slot.isOnPage())
+			return;
 		ItemStack ghostStack = slot.recipe.output.get();
 		if(ghostStack.isEmpty()||slot.hasItem())
 			return;

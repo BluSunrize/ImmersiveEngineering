@@ -138,7 +138,7 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler implements IWorl
 		return ret;
 	}
 
-	private static void fillWithMax(byte[] inA, byte[] inB, byte[] out)
+	public static void fillWithMax(byte[] inA, byte[] inB, byte[] out)
 	{
 		Preconditions.checkArgument(inA.length==16);
 		Preconditions.checkArgument(inB.length==16);

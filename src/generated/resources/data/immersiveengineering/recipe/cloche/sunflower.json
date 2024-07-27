@@ -4,8 +4,8 @@
     "item": "minecraft:sunflower"
   },
   "render": {
-    "type": "immersiveengineering:generic",
-    "block": "minecraft:sunflower"
+    "type": "immersiveengineering:doubleflower",
+    "value": "minecraft:sunflower"
   },
   "results": [
     {

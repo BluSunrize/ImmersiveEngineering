@@ -75,7 +75,7 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 			int dummyState = state.getValue(POST_SLAVE);
 			HorizontalOffset offset = state.getValue(HORIZONTAL_OFFSET);
 			if(dummyState > 0&&offset==HorizontalOffset.NONE)
-				world.setBlockAndUpdate(pos.below(dummyState), Blocks.AIR.defaultBlockState());
+				world.removeBlock(pos.below(dummyState), false);
 			else if(dummyState==0)
 			{
 				final int highestBlock = 3;
@@ -85,10 +85,10 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 					BlockPos armPos = armStart.relative(d);
 					BlockState armState = world.getBlockState(armPos);
 					if(armState.getBlock()==this&&armState.getValue(HORIZONTAL_OFFSET).getOffset().equals(d.getNormal()))
-						world.setBlockAndUpdate(armPos, Blocks.AIR.defaultBlockState());
+						world.removeBlock(armPos, false);
 				}
 				for(int i = 0; i <= highestBlock; ++i)
-					world.setBlockAndUpdate(pos.above(i), Blocks.AIR.defaultBlockState());
+					world.removeBlock(pos.above(i), false);
 			}
 		}
 		super.onRemove(state, world, pos, newState, moving);

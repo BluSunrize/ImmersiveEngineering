@@ -1,0 +1,11 @@
+Machine Interface
+Querying Complex Conditions Quickly
+<&recipe>With the increasing complexity of multiblock machinery, keeping track of their needs becomes quite complex.<br>
+While <link;redstone_probe;comparator signals> can provide some insight into the amount of items inside, only the Machine Interface can provide a more detailed evaluation and send redstone signals.<np>
+When placed against the redstone control surface of a multiblock, opening the GUI will allow setting up a variety of conditions by which to output a signal.<br>
+Press the "Add Condition" button to add a new row. Within that row, the first button serves to delete it again, the second one is for configuring the signal color to output on.<np>
+This is followed by two dropdown menus, one for selecting the type of check (such as "Machine Active", "Item Input", "Fluid Output") and one for selecting the condition.<br>
+Most checks support "Comparator Output" for a signal strength that is scaled to the items/fluid/energy stored. There also exists various from true or false options, such as "75% Filled" or "Empty".<np>
+As soon as a condition is matched, the Machine Interface will output the relevant signal on the configured color-channel to any attached <link;redstone_wiring;Redstone Interface Connector;bundled>.<br>
+In addition to sending, the Machine Interface can also receive a redstone signal and output it to the connected machine. The signal color for that is configured in the bottom right of the GUI.<np>
+This allows for use of the <link;logic_unit;Logic Unit> to evaluate the signals coming from the machine and then send one back to enable or disable it!

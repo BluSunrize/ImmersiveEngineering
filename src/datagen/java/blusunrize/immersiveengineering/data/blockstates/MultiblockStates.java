@@ -197,6 +197,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 				),
 				null, null);
 		createMultiblock(innerObj("block/metal_multiblock/auto_workbench.obj"), IEMultiblocks.AUTO_WORKBENCH);
+		createMultiblock(innerObj("block/metal_multiblock/radio_tower.obj", cutout()).ao(false), IEMultiblocks.RADIO_TOWER);
 	}
 
 	@Nonnull

@@ -93,7 +93,7 @@ public class ArcFurnaceMenu extends IEContainerMenu
 		addGenericData(new GenericContainerData<>(GenericDataSerializers.ARC_PROCESS_SLOTS, processes));
 	}
 
-	public record ProcessSlot(int slot, int processStep)
+	public record ProcessSlot(int slot, int processStep, float processFloat)
 	{
 		public static final StreamCodec<ByteBuf, ProcessSlot> STREAM_CODEC = StreamCodec.composite(
 				ByteBufCodecs.INT, ProcessSlot::slot,
@@ -106,17 +106,17 @@ public class ArcFurnaceMenu extends IEContainerMenu
 			float mod = process.processTick/(float)process.getMaxTicks(level);
 			int slot = process.getInputSlots()[0];
 			int h = (int)Math.max(1, mod*16);
-			return new ProcessSlot(slot, h);
+			return new ProcessSlot(slot, h, mod);
 		}
 
 		public static ProcessSlot from(FriendlyByteBuf buffer)
 		{
-			return new ProcessSlot(buffer.readByte(), buffer.readByte());
+			return new ProcessSlot(buffer.readByte(), buffer.readByte(), buffer.readFloat());
 		}
 
 		public static void writeTo(FriendlyByteBuf out, ProcessSlot slot)
 		{
-			out.writeByte(slot.slot).writeByte(slot.processStep);
+			out.writeByte(slot.slot).writeByte(slot.processStep).writeFloat(slot.processFloat);
 		}
 	}
 }

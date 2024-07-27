@@ -35,20 +35,14 @@ public abstract class ClientBlockEntityScreen<T extends BlockEntity> extends Scr
 		this.guiTop = (this.height-this.ySize)/2;
 	}
 
-	protected abstract void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
-
 	protected abstract void drawGuiContainerForegroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
 
 	@Override
 	public void render(GuiGraphics graphics, int mx, int my, float partial)
 	{
-		// Background texture
-		drawGuiContainerBackgroundLayer(graphics, mx, my, partial);
-
-		// Buttons
+		// Background & widgets
 		super.render(graphics, mx, my, partial);
-
-		// Foreground
+		// Additional foreground elements
 		drawGuiContainerForegroundLayer(graphics, mx, my, partial);
 	}
 

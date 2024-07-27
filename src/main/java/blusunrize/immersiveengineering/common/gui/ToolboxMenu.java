@@ -10,12 +10,13 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ToolboxBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +28,8 @@ import java.util.Objects;
 
 public class ToolboxMenu extends IEContainerMenu implements ICallbackContainer
 {
+	protected int blockedSlot = -1;
+
 	public static ToolboxMenu makeFromBE(
 			MenuType<?> type, int id, Inventory invPlayer, ToolboxBlockEntity be
 	)
@@ -42,12 +45,24 @@ public class ToolboxMenu extends IEContainerMenu implements ICallbackContainer
 				itemCtx(type, id, invPlayer, slot, stack),
 				invPlayer,
 				Objects.requireNonNull(stack.getCapability(ItemHandler.ITEM))
-		);
+		).setBlockedSlot(invPlayer);
 	}
 
 	public static ToolboxMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
 	{
 		return new ToolboxMenu(clientCtx(type, id), invPlayer, new ItemStackHandler(ToolboxItem.SLOT_COUNT));
+	}
+
+	public static ToolboxMenu makeClientItem(MenuType<?> type, int id, Inventory invPlayer)
+	{
+		return new ToolboxMenu(clientCtx(type, id), invPlayer, new ItemStackHandler(ToolboxItem.SLOT_COUNT))
+				.setBlockedSlot(invPlayer);
+	}
+
+	public ToolboxMenu setBlockedSlot(Inventory invPlayer)
+	{
+		this.blockedSlot = (invPlayer.selected+27+ToolboxItem.SLOT_COUNT);
+		return this;
 	}
 
 	public ToolboxMenu(MenuContext ctx, Inventory inventoryPlayer, IItemHandler inv)
@@ -99,6 +114,14 @@ public class ToolboxMenu extends IEContainerMenu implements ICallbackContainer
 			return ToolboxHandler.isWiring(stack);
 		else
 			return true;
+	}
+
+	@Override
+	public void clicked(int par1, int par2, ClickType par3, Player par4EntityPlayer)
+	{
+		if(blockedSlot >= 0&&(par1==this.blockedSlot||(par3==ClickType.SWAP&&par2==par4EntityPlayer.getInventory().selected)))
+			return;
+		super.clicked(par1, par2, par3, par4EntityPlayer);
 	}
 
 	@Override

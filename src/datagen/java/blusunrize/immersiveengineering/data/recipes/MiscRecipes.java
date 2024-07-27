@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.data.recipes;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import blusunrize.immersiveengineering.common.crafting.NoContainersShapedRecipe;
 import blusunrize.immersiveengineering.common.crafting.RGBColourationRecipe;
@@ -53,6 +53,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import java.util.stream.Stream;
+
 import java.util.concurrent.CompletableFuture;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -87,6 +89,7 @@ public class MiscRecipes extends IERecipeProvider
 		mineralMixes(out);
 
 		out.accept(toRL("generator_fuel/biodiesel"), new GeneratorFuel(IETags.fluidBiodiesel, 250), null);
+		out.accept(toRL("generator_fuel/high_power_biodiesel"), new GeneratorFuel(IETags.fluidHighPowerBiodiesel, 275), null);
 		out.accept(toRL("generator_fuel/creosote"), new GeneratorFuel(IETags.fluidCreosote, 20), null);
 
 		thermoelectricFuels(out);
@@ -98,14 +101,14 @@ public class MiscRecipes extends IERecipeProvider
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("components")
 				.output(new ItemStack(Ingredients.COMPONENT_IRON))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.IRON).plate, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.input(IETags.getTagsFor(EnumMetals.IRON).plate, 2)
+				.input(IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.build(out, toRL("blueprint/component_iron"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("components")
 				.output(new ItemStack(Ingredients.COMPONENT_STEEL))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.input(IETags.getTagsFor(EnumMetals.STEEL).plate, 2)
+				.input(IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.build(out, toRL("blueprint/component_steel"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("components")
@@ -119,14 +122,14 @@ public class MiscRecipes extends IERecipeProvider
 				.category("components")
 				.output(new ItemStack(Ingredients.COMPONENT_ELECTRONIC_ADV))
 				.input(IETags.plasticPlate)
-				.input(new IngredientWithSize(Ingredient.of(Ingredients.ELECTRON_TUBE), 2))
+				.input(Ingredients.ELECTRON_TUBE, 2)
 				.input(IETags.aluminumWire)
 				.build(out, toRL("blueprint/component_electronic_adv"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("components")
 				.output(new ItemStack(Ingredients.LIGHT_BULB, 3))
 				.input(Tags.Items.GLASS_BLOCKS)
-				.input(new IngredientWithSize(Ingredient.of(Items.PAPER, Items.BAMBOO), 3))
+				.input(Ingredient.fromValues(Stream.of(new Ingredient.TagValue(IETags.paper), new Ingredient.ItemValue(Items.BAMBOO.getDefaultInstance()))), 3)
 				.input(IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.build(out, toRL("blueprint/light_bulb"));
 		BlueprintCraftingRecipeBuilder.builder()
@@ -149,62 +152,69 @@ public class MiscRecipes extends IERecipeProvider
 			BlueprintCraftingRecipeBuilder.builder()
 					.category("molds")
 					.output(mold.asItem())
-					.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 3))
+					.input(IETags.getTagsFor(EnumMetals.STEEL).plate, 3)
 					.input(Tools.WIRECUTTER)
 					.build(out, toRL("blueprint/"+toPath(mold)));
 
 
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.CASULL), 4))
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.CASULL), 4))
+				.input(BulletHandler.emptyCasing, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.getTagsFor(EnumMetals.LEAD).nugget)
 				.build(out, toRL("blueprint/bullet_casull"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.ARMOR_PIERCING), 4))
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).nugget, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.CONSTANTAN).nugget, 2))
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING), 4))
+				.input(BulletHandler.emptyCasing, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.getTagsFor(EnumMetals.STEEL).nugget)
+				.input(IETags.getTagsFor(EnumMetals.CONSTANTAN).nugget, 2)
 				.build(out, toRL("blueprint/bullet_armorpiercing"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.SILVER), 4))
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.SILVER).nugget, 2))
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.ARMOR_PIERCING), 4))
+				.input(BulletHandler.emptyCasing, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.netheriteNugget, 3)
+				.build(out, toRL("blueprint/bullet_armorpiercing_netherite"));
+		BlueprintCraftingRecipeBuilder.builder()
+				.category("bullet")
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.SILVER), 4))
+				.input(BulletHandler.emptyCasing, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.getTagsFor(EnumMetals.LEAD).nugget)
+				.input(IETags.getTagsFor(EnumMetals.SILVER).nugget)
 				.build(out, toRL("blueprint/bullet_silver"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.BUCKSHOT), 4))
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).dust, 2))
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.BUCKSHOT), 4))
+				.input(BulletHandler.emptyShell, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.getTagsFor(EnumMetals.STEEL).dust)
 				.build(out, toRL("blueprint/bullet_buckshot"));
 
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(BulletHandler.getBulletItem(IEBullets.HIGH_EXPLOSIVE))
-				.input(BulletHandler.emptyCasing)
-				.input(Tags.Items.GUNPOWDERS)
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.HIGH_EXPLOSIVE), 4))
+				.input(BulletHandler.emptyShell, 4)
+				.input(Tags.Items.GUNPOWDER)
 				.input(Items.TNT)
 				.build(out, toRL("blueprint/bullet_explosive"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.DRAGONS_BREATH), 4))
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 4))
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH), 4))
+				.input(BulletHandler.emptyShell, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 2)
 				.build(out, toRL("blueprint/bullet_dragonsbreath"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(BulletHandler.getBulletItem(IEBullets.POTION))
-				.input(BulletHandler.emptyCasing)
-				.input(Tags.Items.GUNPOWDERS)
-				.input(Items.GLASS_BOTTLE)
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.POTION), 4))
+				.input(BulletHandler.emptyShell, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(Items.GLASS_BOTTLE, 4)
 				.build(out, toRL("blueprint/bullet_potion"));
 
 		ItemStack flare = new ItemStack(BulletHandler.getBulletItem(IEBullets.FLARE), 4);
@@ -213,8 +223,8 @@ public class MiscRecipes extends IERecipeProvider
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
 				.output(flare.copy())
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
+				.input(BulletHandler.emptyShell, 4)
+				.input(Tags.Items.GUNPOWDER)
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_RED)
 				.build(out, toRL("blueprint/bullet_flare_red"));
@@ -222,8 +232,8 @@ public class MiscRecipes extends IERecipeProvider
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
 				.output(flare.copy())
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
+				.input(BulletHandler.emptyShell, 4)
+				.input(Tags.Items.GUNPOWDER)
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_GREEN)
 				.build(out, toRL("blueprint/bullet_flare_green"));
@@ -231,81 +241,95 @@ public class MiscRecipes extends IERecipeProvider
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
 				.output(flare.copy())
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyShell), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
+				.input(BulletHandler.emptyShell, 4)
+				.input(Tags.Items.GUNPOWDER)
 				.input(IETags.getTagsFor(EnumMetals.ALUMINUM).dust)
 				.input(Tags.Items.DYES_YELLOW)
 				.build(out, toRL("blueprint/bullet_flare_yellow"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
-				.output(new ItemStack(BulletHandler.getBulletItem(IEBullets.HOMING), 4))
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.emptyCasing), 4))
-				.input(new IngredientWithSize(Tags.Items.GUNPOWDERS, 2))
-				.input(new IngredientWithSize(IETags.getTagsFor(EnumMetals.LEAD).nugget, 2))
+				.output(new ItemStack(BulletHandler.getBulletItem(BulletItem.HOMING), 4))
+				.input(BulletHandler.emptyCasing, 4)
+				.input(Tags.Items.GUNPOWDER)
+				.input(IETags.getTagsFor(EnumMetals.LEAD).nugget)
 				.input(Items.ENDER_EYE)
 				.build(out, toRL("blueprint/bullet_homing"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("specialBullet")
 				.output(BulletHandler.getBulletItem(IEBullets.WOLFPACK))
 				.input(BulletHandler.emptyShell)
-				.input(Tags.Items.GUNPOWDERS)
-				.input(new IngredientWithSize(Ingredient.of(BulletHandler.getBulletItem(IEBullets.HOMING)), 4))
+				.input(Tags.Items.GUNPOWDER)
+				.input(BulletHandler.getBulletItem(BulletItem.HOMING), 4)
 				.build(out, toRL("blueprint/bullet_wolfpack"));
 
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("electrode")
 				.output(Misc.GRAPHITE_ELECTRODE)
-				.input(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
+				.input(IETags.hopGraphiteIngot, 4)
 				.build(out, toRL("blueprint/graphite_electrode"));
 
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.HAMMER.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(Tools.HAMMER)
 				.build(out, toRL("blueprint/banner_hammer"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
+				.output(IEBannerPatterns.WIRECUTTER.item())
+				.input(IETags.paper)
+				.input(Tools.WIRECUTTER)
+				.build(out, toRL("blueprint/banner_wirecutter"));
+		BlueprintCraftingRecipeBuilder.builder()
+				.category("bannerpatterns")
+				.output(IEBannerPatterns.SCREWDRIVER.item())
+				.input(IETags.paper)
+				.input(Tools.SCREWDRIVER)
+				.build(out, toRL("blueprint/banner_screwdriver"));
+		BlueprintCraftingRecipeBuilder.builder()
+				.category("bannerpatterns")
 				.output(IEBannerPatterns.BEVELS.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(IETags.plates)
 				.build(out, toRL("blueprint/banner_bevels"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.ORNATE.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(IETags.getTagsFor(EnumMetals.SILVER).dust)
 				.build(out, toRL("blueprint/banner_ornate"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.TREATED_WOOD.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(IETags.getItemTag(IETags.treatedWood))
 				.build(out, toRL("blueprint/banner_treatedwood"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WINDMILL.item())
-				.input(Items.PAPER)
+				.input(IETags.paper)
 				.input(WoodenDevices.WINDMILL)
 				.build(out, toRL("blueprint/banner_windmill"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
-				.output(IEBannerPatterns.WOLF_R.item())
-				.input(Items.PAPER)
-				.input(BulletHandler.getBulletItem(IEBullets.WOLFPACK))
-				.build(out, toRL("blueprint/banner_wolf_r"));
-		BlueprintCraftingRecipeBuilder.builder()
-				.category("bannerpatterns")
-				.output(IEBannerPatterns.WOLF_L.item())
-				.input(Items.PAPER)
-				.input(BulletHandler.getBulletItem(IEBullets.WOLFPACK))
-				.build(out, toRL("blueprint/banner_wolf_l"));
+				.output(IEBannerPatterns.WARNING.item())
+				.input(IETags.paper)
+				.input(Ingredient.fromValues(MetalDecoration.WARNING_SIGNS.values().stream().map(b -> new Ingredient.ItemValue(new ItemStack(b)))))
+				.build(out, toRL("blueprint/banner_warning"));
 		BlueprintCraftingRecipeBuilder.builder()
 				.category("bannerpatterns")
 				.output(IEBannerPatterns.WOLF.item())
-				.input(Items.PAPER)
-				.input(BulletHandler.getBulletItem(IEBullets.WOLFPACK))
+				.input(IETags.paper)
+				.input(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf"));
+
+		for(WarningSignIcon icon : WarningSignIcon.values())
+			BlueprintCraftingRecipeBuilder.builder()
+					.category("warning_sign")
+					.output(MetalDecoration.WARNING_SIGNS.get(icon))
+					.input(IETags.plates)
+					.input(Tags.Items.DYES_YELLOW)
+					.build(out, toRL("blueprint/"+toPath(MetalDecoration.WARNING_SIGNS.get(icon))));
 	}
 
 	private void mineralMixes(RecipeOutput out)
@@ -773,16 +797,6 @@ public class MiscRecipes extends IERecipeProvider
 				.unlockedBy("has_sulfur", has(IETags.sulfurDust))
 				.unlockedBy("has_slag", has(IETags.slag))
 				.save(out, toRL(toPath(Misc.FERTILIZER)));
-
-		shapedMisc(MetalDecoration.LANTERN)
-				.pattern(" I ")
-				.pattern("PGP")
-				.pattern(" I ")
-				.define('I', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('G', Tags.Items.DUSTS_GLOWSTONE)
-				.define('P', Items.GLASS_PANE)
-				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
-				.save(out, toRL(toPath(MetalDecoration.LANTERN)));
 
 		shapedMisc(Minecarts.CART_WOODEN_CRATE)
 				.pattern("B")

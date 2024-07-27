@@ -1,5 +1,7 @@
 {
   "values": [
-    "immersiveengineering:hammer"
+    "immersiveengineering:hammer",
+    "immersiveengineering:hammer_head",
+    "immersiveengineering:hammer_grip"
   ]
 }

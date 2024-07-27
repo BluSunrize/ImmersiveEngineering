@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "immersiveengineering:item/banner_pattern_screwdriver"
+  }
+}

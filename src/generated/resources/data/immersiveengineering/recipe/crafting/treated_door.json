@@ -1,0 +1,20 @@
+{
+  "type": "immersiveengineering:shaped_fluid",
+  "value": {
+    "category": "misc",
+    "key": {
+      "w": {
+        "tag": "forge:treated_wood"
+      }
+    },
+    "pattern": [
+      "ww",
+      "ww",
+      "ww"
+    ],
+    "result": {
+      "count": 3,
+      "item": "immersiveengineering:treated_door"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "parent": "minecraft:block/block",
+  "children": {
+    "base": {
+      "parent": "immersiveengineering:block/catwalk_base",
+      "textures": {
+        "side": "immersiveengineering:block/metal_decoration/steel_scaffolding",
+        "top": "immersiveengineering:block/metal_decoration/steel_scaffolding_top_grate_top"
+      }
+    },
+    "railing": {
+      "parent": "immersiveengineering:block/catwalk_railing",
+      "textures": {
+        "side": "immersiveengineering:block/metal_decoration/steel_scaffolding",
+        "top": "immersiveengineering:block/metal_decoration/steel_scaffolding_top_grate_top"
+      }
+    }
+  },
+  "item_render_order": [
+    "base",
+    "railing"
+  ],
+  "loader": "neoforge:composite"
+}

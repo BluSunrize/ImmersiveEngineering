@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
+    }
+  },
+  "pattern": [
+    "sis",
+    "sis"
+  ],
+  "result": {
+    "item": "immersiveengineering:steel_fence_gate"
+  }
+}

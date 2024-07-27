@@ -1,0 +1,147 @@
+{
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/pipe_valve_side",
+    "rsside": "immersiveengineering:block/metal_device/pipe_valve_side",
+    "rsend": "immersiveengineering:block/metal_device/pipe_valve_connector"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        5,
+        0
+      ],
+      "to": [
+        11,
+        11,
+        3
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "rotation": 90,
+          "texture": "#rsend"
+        },
+        "east": {
+          "uv": [
+            10,
+            5,
+            13,
+            11
+          ],
+          "texture": "#rsside"
+        },
+        "south": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#rsend"
+        },
+        "west": {
+          "uv": [
+            3,
+            5,
+            6,
+            11
+          ],
+          "texture": "#rsside"
+        },
+        "up": {
+          "uv": [
+            3,
+            5,
+            6,
+            11
+          ],
+          "rotation": 90,
+          "texture": "#rsside"
+        },
+        "down": {
+          "uv": [
+            10,
+            5,
+            13,
+            11
+          ],
+          "rotation": 90,
+          "texture": "#rsside"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        120,
+        15,
+        0
+      ],
+      "translation": [
+        -1,
+        -1,
+        -2
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        120,
+        30,
+        0
+      ],
+      "translation": [
+        2,
+        3,
+        0
+      ],
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        1.75,
+        0
+      ],
+      "scale": [
+        0.2,
+        0.2,
+        0.2
+      ]
+    },
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "scale": [
+        0.625,
+        0.625,
+        0.625
+      ]
+    },
+    "fixed": {
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

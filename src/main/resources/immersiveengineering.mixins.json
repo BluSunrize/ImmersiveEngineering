@@ -30,7 +30,8 @@
     "accessors.TrimModelDataAccess",
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin",
-    "coremods.TemplateMixin"
+    "coremods.TemplateMixin",
+    "coremods.WaterwheelBoundsMixin"
   ],
   "client": [
     "accessors.client.ChatComponentAccess",

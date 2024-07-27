@@ -1,0 +1,13 @@
+Basic Wiring
+Bzzzt!
+<&images>Power grids have three important devices: §lconnectors§r in- and output to the net, §lrelays§r attach multiple wires together, and <link;transformers;Transformers> that convert between different voltages of wire.<np>
+<&connector_recipes>§lConnectors§r serve as in- and outputs to the electrical grid. Powered devices connected with them will transfer power through the grid.<br>
+§lRelays§r will not in- or output power, they serve as hubs for the electrical grid.<np>
+<&wirecoil_recipes>To connect two devices, use a §lwire coil§r on the first one, then use the same coil on the second. Connections will break if a block obstructs the wire.<br>
+The transfer rate between two points depends on the lowest tier of wire between them.<np>
+Connectors and relays can only take wires of the same voltage that the device was designed for. Transformers will only take two wires of different voltages, and voltages only work with devices designed for them.<br>
+Low and medium voltage wires can be insulated to prevent damage to nearby creatures.<br>
+Sneaking when using the "Pick Block" function on a connector will pick the connected wire from your inventory.<np>
+Connectors have a maximum power they will transmit in IF/t (§o<config;iA;machines.wireConnectorInput>§r), and wires have a maximum power before they fail (§o<config;iA;wires.wireTransferRate;l3>§r) IF/t.<br>
+Multiple connectors can §ounify§r onto a single wire using relays, centralizing long-range transfer to just a single wire. If enough connectors are unified that the §omaximum transfer rate§r exceeds that of the wire, §othe wire will burn up§r.<np>
+Only the input and output of a wire need be working for the wire to transfer energy, which means that large distances can be bridged with high- voltage wires to transfer energy to friends or far outposts.

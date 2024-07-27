@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.gui.sync;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import blusunrize.immersiveengineering.common.gui.MixerMenu.SlotProgress;
+import blusunrize.immersiveengineering.common.gui.RadioTowerMenu.NearbyComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -44,6 +45,10 @@ public class GenericDataSerializers
 	public static final DataSerializer<byte[]> BYTE_ARRAY = register(
 			ByteBufCodecs.BYTE_ARRAY, arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
+	public static final DataSerializer<int[]> INT_ARRAY = register(
+			FriendlyByteBuf::readVarIntArray, FriendlyByteBuf::writeVarIntArray,
+			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
+	);
 	public static final DataSerializer<List<FluidStack>> FLUID_STACKS = register(
 			FluidStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
 			l -> l.stream().map(FluidStack::copy).toList(),
@@ -62,6 +67,9 @@ public class GenericDataSerializers
 	public static final DataSerializer<List<String>> STRINGS = register(
 			ByteBufCodecs.stringUtf8(512).apply(ByteBufCodecs.list()),
 			ArrayList::new, List::equals
+	);
+	public static final DataSerializer<NearbyComponents> RADIO_TOWER_NEARBY = register(
+			NearbyComponents::from, NearbyComponents::writeTo
 	);
 
 	private static <T> DataSerializer<T> register(StreamCodec<? super RegistryFriendlyByteBuf, T> codec)

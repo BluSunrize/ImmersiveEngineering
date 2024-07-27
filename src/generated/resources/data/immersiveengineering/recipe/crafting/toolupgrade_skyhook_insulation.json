@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "forge:plates/plastic"
+    },
+    "g": {
+      "item": "immersiveengineering:wooden_grip"
+    },
+    "r": {
+      "tag": "forge:rods/aluminum"
+    }
+  },
+  "pattern": [
+    "rrd",
+    "dgg"
+  ],
+  "result": {
+    "item": "immersiveengineering:toolupgrade_skyhook_insulation"
+  }
+}

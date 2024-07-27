@@ -28,6 +28,9 @@ import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.generic.CatwalkBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.WindowBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -35,9 +38,11 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.network.*;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -50,6 +55,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -209,7 +215,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			{
 				List<Component> tooltip = event.getToolTip();
 				// find gap
-				int idx = IntStream.range(0,tooltip.size() ).filter(i -> tooltip.get(i) == CommonComponents.EMPTY).findFirst().orElse(tooltip.size()-1);
+				int idx = IntStream.range(0, tooltip.size()).filter(i -> tooltip.get(i)==CommonComponents.EMPTY).findFirst().orElse(tooltip.size()-1);
 				// put tooltip in that gap
 				tooltip.add(idx++, CommonComponents.EMPTY);
 				tooltip.add(idx++, TextUtils.applyFormat(powerpack.getHoverName(), ChatFormatting.GRAY));
@@ -259,7 +265,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						PoseStack transform = event.getPoseStack();
 						transform.pushPose();
 						MultiBufferSource buffer = event.getMultiBufferSource();
-						transform.mulPose(new Quaternionf().rotateXYZ(0, 0, -i*Mth.PI / 4));
+						transform.mulPose(new Quaternionf().rotateXYZ(0, 0, -i*Mth.PI/4));
 						transform.translate(-.5, .5, -.001);
 						VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
 						GuiHelper.drawTexturedColoredRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
@@ -681,11 +687,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			MultiBufferSource buffer = event.getMultiBufferSource();
 			BlockHitResult rtr = event.getTarget();
 			BlockPos pos = rtr.getBlockPos();
+			Level world = living.level();
+			BlockState targetBlock = world.getBlockState(rtr.getBlockPos());
 			Vec3 renderView = event.getCamera().getPosition();
 			transform.pushPose();
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
-			float eps = 0.002F;
 			BlockEntity tile = living.level().getBlockEntity(rtr.getBlockPos());
 			ItemStack stack = living.getItemInHand(InteractionHand.MAIN_HAND);
 
@@ -714,7 +721,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				}
 			}
 
-			Level world = living.level();
 			if(!stack.isEmpty()&&ConveyorHandler.isConveyorBlock(Block.byItem(stack.getItem()))&&rtr.getDirection().getAxis()==Axis.Y)
 			{
 				Direction side = rtr.getDirection();
@@ -722,36 +728,35 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				AABB targetedBB = null;
 				if(!shape.isEmpty())
 					targetedBB = shape.bounds();
-
-				MultiBufferSource buffers = event.getMultiBufferSource();
-
-				float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-eps: targetedBB.maxY+eps);
-				Matrix4f mat = transform.last().pose();
-				VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
-				float sqrt2Half = (float)(Math.sqrt(2)/2);
-				lineBuilder.addVertex(mat, 0-eps, y, 0-eps)
-						.setColor(0, 0, 0, 0.4F)
-						.setNormal(transform.last(), sqrt2Half, 0, sqrt2Half);
-				lineBuilder.addVertex(mat, 1+eps, y, 1+eps)
-						.setColor(0, 0, 0, 0.4F)
-						.setNormal(transform.last(), sqrt2Half, 0, sqrt2Half);
-				lineBuilder.addVertex(mat, 0-eps, y, 1+eps)
-						.setColor(0, 0, 0, 0.4F)
-						.setNormal(transform.last(), sqrt2Half, 0, -sqrt2Half);
-				lineBuilder.addVertex(mat, 1+eps, y, 0-eps)
-						.setColor(0, 0, 0, 0.4F)
-						.setNormal(transform.last(), sqrt2Half, 0, -sqrt2Half);
+				BlockOverlayUtils.drawQuadrantX(transform, buffer, side, targetedBB, 0.002f);
 
 				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getLocation().x-pos.getX()-.5f;
 				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getLocation().y-pos.getY()-.5f;
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getLocation().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3 dir = new Vec3(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
-				BlockOverlayUtils.drawBlockOverlayArrow(transform.last(), buffers, dir, side, targetedBB);
+				BlockOverlayUtils.drawBlockOverlayArrow(transform.last(), buffer, dir, side, targetedBB);
 			}
 
+			if(targetBlock.getBlock() instanceof CatwalkBlock&&Utils.isHammer(stack)&&rtr.getDirection()==Direction.UP&&living.isShiftKeyDown())
+			{
+				AABB targetedBB = new AABB(0, 0, 0, 1, .125, 1);
+				BlockOverlayUtils.drawQuadrantX(transform, buffer, Direction.UP, targetedBB, 0.002f);
+			}
+
+
 			transform.popPose();
-			BlockState targetBlock = world.getBlockState(rtr.getBlockPos());
+			// fix lines overlaying on translucent blocks
+			if(targetBlock.getBlock() instanceof WindowBlock)
+			{
+				((WorldRendererAccess)event.getLevelRenderer()).callRenderHitOutline(
+						transform, buffer.getBuffer(IERenderTypes.LINES_NONTRANSLUCENT),
+						living, renderView.x, renderView.y, renderView.z,
+						pos, targetBlock
+				);
+				event.setCanceled(true);
+			}
+
 			if(stack.getItem() instanceof DrillItem drillItem&&drillItem.isEffective(stack, targetBlock))
 			{
 				ItemStack head = drillItem.getHead(stack);

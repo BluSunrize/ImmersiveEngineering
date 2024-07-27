@@ -15,6 +15,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.network.syncher.SynchedEntityData.Builder;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -51,6 +52,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	{
 		super(type, world);
 		this.pickup = Pickup.DISALLOWED;
+		this.setSoundEvent(SoundEvents.EMPTY);
 	}
 
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, double x, double y, double z)

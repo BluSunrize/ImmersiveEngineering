@@ -534,7 +534,7 @@ public abstract class IESlot extends Slot
 		private final Container inputInventory;
 		public final BlueprintCraftingRecipe recipe;
 
-		public BlueprintOutput(AbstractContainerMenu container, BlueprintInventory inv, Container inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
+		public BlueprintOutput(ModWorkbenchContainer container, BlueprintInventory inv, Container inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
 		{
 			super(container, inv, id, x, y);
 			this.inputInventory = inputInventory;
@@ -547,11 +547,21 @@ public abstract class IESlot extends Slot
 			return false;
 		}
 
+		public boolean isOnPage()
+		{
+			return ((ModWorkbenchContainer)this.containerMenu).isOutputSlotOnPage(this);
+		}
 
 		@Override
 		public boolean isActive()
 		{
-			return this.hasItem();
+			return this.hasItem()&&isOnPage();
+		}
+
+		@Override
+		public boolean mayPickup(Player player)
+		{
+			return isOnPage();
 		}
 
 		@Override

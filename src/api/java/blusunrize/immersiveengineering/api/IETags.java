@@ -50,12 +50,20 @@ public class IETags
 		toItemTag.put(BlockTags.SLABS, ItemTags.SLABS);
 		toItemTag.put(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
 		toItemTag.put(BlockTags.STAIRS, ItemTags.STAIRS);
+		toItemTag.put(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES);
+		toItemTag.put(BlockTags.FENCES, ItemTags.FENCES);
+		toItemTag.put(BlockTags.FENCE_GATES, ItemTags.FENCE_GATES);
+		toItemTag.put(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS);
+		toItemTag.put(BlockTags.DOORS, ItemTags.DOORS);
+		toItemTag.put(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS);
+		toItemTag.put(BlockTags.TRAPDOORS, ItemTags.TRAPDOORS);
 	}
 
 	//Vanilla
 	public static final TagKey<Item> clay = createItemWrapper(cLoc("clay"));
 	public static final TagKey<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
 	public static final TagKey<Item> charCoal = createItemWrapper(cLoc("charcoal"));
+	public static final TagKey<Item> paper = createItemWrapper(forgeLoc("paper"));
 	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
 	public static final TagKey<Block> copperBlocks = createBlockTag(ieLoc("blocks/copper"));
 	public static final TagKey<Block> cutCopperBlocks = createBlockTag(ieLoc("cut_blocks/copper"));
@@ -82,6 +90,8 @@ public class IETags
 	public static final TagKey<Item> steelRod = createItemWrapper(getRod("steel"));
 	public static final TagKey<Item> metalRods = createItemWrapper(getRod("all_metal"));
 	public static final TagKey<Item> aluminumRod = createItemWrapper(getRod("aluminum"));
+	public static final TagKey<Item> netheriteRod = createItemWrapper(getRod("netherite"));
+	public static final TagKey<Item> netheriteNugget = createItemWrapper(getNugget("netherite"));
 	public static final TagKey<Item> seedsHemp = createItemWrapper(cLoc("seeds/hemp"));
 	public static final TagKey<Item> fiberHemp = createItemWrapper(cLoc("fiber_hemp"));
 	public static final TagKey<Item> fabricHemp = createItemWrapper(cLoc("fabric_hemp"));
@@ -122,6 +132,7 @@ public class IETags
 	public static final TagKey<Block> surveyToolTargets = createBlockWrapper(ieLoc("survey_tool_targets"));
 	public static final TagKey<Block> concreteForFeet = createBlockWrapper(ieLoc("concrete_for_concrete_feet"));
 	public static final TagKey<Block> incorrectDropsSteel = createBlockWrapper(ieLoc("incorrect_for_steel_tool"));
+	public static final TagKey<Block> teleportBlocking = createBlockWrapper(ieLoc("teleport_blocking"));
 
 	public static final TagKey<Block> buzzsawTreeBlacklist = createBlockWrapper(ieLoc("buzzsaw/tree_blacklist"));
 	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(ieLoc("powerpack/forbid_attach"));
@@ -134,6 +145,7 @@ public class IETags
 	public static final TagKey<Fluid> fluidPlantoil = createFluidWrapper(cLoc("plantoil"));
 	public static final TagKey<Fluid> fluidEthanol = createFluidWrapper(cLoc("ethanol"));
 	public static final TagKey<Fluid> fluidBiodiesel = createFluidWrapper(cLoc("biodiesel"));
+	public static final TagKey<Fluid> fluidHighPowerBiodiesel = createFluidWrapper(forgeLoc("high_power_biodiesel"));
 	public static final TagKey<Fluid> fluidConcrete = createFluidWrapper(cLoc("concrete"));
 	public static final TagKey<Fluid> fluidHerbicide = createFluidWrapper(cLoc("herbicide"));
 	public static final TagKey<Fluid> fluidRedstoneAcid = createFluidWrapper(cLoc("redstone_acid"));

@@ -3,7 +3,10 @@
   "category": "specialBullet",
   "inputs": [
     {
-      "item": "immersiveengineering:empty_casing"
+      "basePredicate": {
+        "item": "immersiveengineering:empty_shell"
+      },
+      "count": 4
     },
     {
       "tag": "c:gunpowders"
@@ -13,6 +16,7 @@
     }
   ],
   "result": {
-    "item": "immersiveengineering:he"
+    "Count": 4,
+    "id": "immersiveengineering:he"
   }
 }

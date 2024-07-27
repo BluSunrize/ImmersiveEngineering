@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:shaped_fluid",
+  "value": {
+    "category": "misc",
+    "key": {
+      "r": {
+        "tag": "forge:rods/aluminum"
+      },
+      "s": {
+        "tag": "immersiveengineering:scaffolding_slabs/aluminum"
+      }
+    },
+    "pattern": [
+      "s  ",
+      "rs ",
+      " rs"
+    ],
+    "result": {
+      "count": 4,
+      "item": "immersiveengineering:alu_catwalk_stairs"
+    }
+  }
+}

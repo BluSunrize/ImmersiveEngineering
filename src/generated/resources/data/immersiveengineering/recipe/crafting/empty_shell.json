@@ -6,7 +6,7 @@
       "tag": "c:plates/copper"
     },
     "p": {
-      "item": "minecraft:paper"
+      "tag": "forge:paper"
     },
     "r": {
       "tag": "c:dyes/red"

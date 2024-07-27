@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    },
+    "s": {
+      "tag": "forge:rods/iron"
+    }
+  },
+  "pattern": [
+    "pc",
+    "sr"
+  ],
+  "result": {
+    "item": "immersiveengineering:pipe_valve"
+  }
+}

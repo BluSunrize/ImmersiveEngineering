@@ -1,3 +1,5 @@
 Current Transformer
 88 Flux per hour!
-The Current Transformer is a measurement device for electrical power. It can be hooked up in any powerline and will keep track of energy transferred through it, returning an average Flux/t upon rightclick.
+The Current Transformer is a measurement device for electrical throughput.<br>
+It can be hooked up in any powerline and will keep track of energy transferred through it, returning an average Flux/t upon rightclick.<br>
+If a comparator is attached to the base of the transformer, it will output a signal from 0-15 depending upon the fill ratio of the wire's maximum transfer rate.

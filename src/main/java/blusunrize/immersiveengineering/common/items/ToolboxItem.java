@@ -12,9 +12,11 @@ import blusunrize.immersiveengineering.api.tool.ToolboxHandler.ToolboxCategory;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerTypeNew;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -33,6 +35,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gameevent.GameEvent.Context;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
@@ -109,37 +113,52 @@ public class ToolboxItem extends InternalStorageItem
 	}
 
 	@Override
-	public InteractionResult useOn(UseOnContext ctx)
+	@Nonnull
+	public InteractionResult useOn(@Nonnull UseOnContext context)
 	{
-		ItemStack stack = ctx.getItemInHand();
-		Player player = ctx.getPlayer();
+		BlockPos pos = context.getClickedPos();
+		Direction side = context.getClickedFace();
+		Level level = context.getLevel();
+		BlockState state = level.getBlockState(pos);
+		BlockPlaceContext ctx = new BlockPlaceContext(context);
+		if(!state.canBeReplaced(ctx))
+			pos = pos.relative(side);
+		ItemStack stack = context.getItemInHand();
+		Player player = context.getPlayer();
+
 		if(player!=null&&player.isShiftKeyDown())
 		{
-			Level world = ctx.getLevel();
-			BlockPos pos = ctx.getClickedPos();
-			Direction side = ctx.getClickedFace();
-			BlockState state = world.getBlockState(pos);
-			BlockPlaceContext blockCtx = new BlockPlaceContext(ctx);
-			if(!state.canBeReplaced(blockCtx))
-				pos = pos.relative(side);
-
-			if(stack.getCount()!=0&&player.mayUseItemAt(pos, side, stack)&&world.getBlockState(pos).canBeReplaced(blockCtx))
+			if(!ctx.canPlace())
+				return InteractionResult.FAIL;
+			else if(player.mayUseItemAt(pos, side, stack))
 			{
 				BlockState toolbox = MetalDevices.TOOLBOX.defaultBlockState();
-				if(world.setBlock(pos, toolbox, 3))
+				if(!level.setBlockAndUpdate(pos, toolbox))
+					return InteractionResult.FAIL;
+				else
 				{
-					MetalDevices.TOOLBOX.get().onIEBlockPlacedBy(new BlockPlaceContext(ctx), toolbox);
+					state = level.getBlockState(pos);
+					if(state.is(toolbox.getBlock()))
+					{
+						MetalDevices.TOOLBOX.get().onIEBlockPlacedBy(ctx, toolbox);
+						state.getBlock().setPlacedBy(level, pos, state, player, stack);
+						if(player instanceof ServerPlayer)
+						{
+							CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, pos, stack);
+						}
+					}
 
-					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-					world.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
-					stack.shrink(1);
+					SoundType soundtype = state.getSoundType(level, pos, ctx.getPlayer());
+					level.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
+					level.gameEvent(GameEvent.BLOCK_PLACE, pos, Context.of(player, state));
+					if(!player.getAbilities().instabuild)
+						stack.shrink(1);
+
+					return InteractionResult.SUCCESS;
 				}
-				return InteractionResult.SUCCESS;
 			}
-			else
-				return InteractionResult.FAIL;
 		}
-		return super.useOn(ctx);
+		return super.useOn(context);
 	}
 
 	@Override

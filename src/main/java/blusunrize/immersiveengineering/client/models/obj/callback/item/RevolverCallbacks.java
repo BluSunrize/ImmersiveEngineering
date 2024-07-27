@@ -75,7 +75,8 @@ public class RevolverCallbacks implements ItemCallback<Key>
 				upgrades.get(UpgradeEffect.MELEE) > 0,
 				upgrades.has(UpgradeEffect.ELECTRO),
 				upgrades.has(UpgradeEffect.SCOPE),
-				stack.getOrDefault(IEDataComponents.REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT).reloadTimer()
+				stack.getOrDefault(IEDataComponents.REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT).reloadTimer(),
+				upgrades.getBoolean("barrel_snub")
 		);
 	}
 
@@ -91,7 +92,7 @@ public class RevolverCallbacks implements ItemCallback<Key>
 	@Override
 	public boolean shouldRenderGroup(Key stack, String group, RenderType layer)
 	{
-		if(group.equals("frame")||group.equals("cylinder")||group.equals("barrel")||group.equals("cosmetic_compensator"))
+		if(group.equals("frame")||group.equals("cylinder"))
 			return true;
 
 		Set<String> render = new HashSet<>();
@@ -123,6 +124,13 @@ public class RevolverCallbacks implements ItemCallback<Key>
 		}
 		if(stack.scope())
 			render.add("dev_scope");
+		if(stack.snub())
+			render.add("barrel_snub");
+		else
+		{
+			render.add("barrel");
+			render.add("cosmetic_compensator");
+		}
 		return render.contains(group);
 	}
 
@@ -185,29 +193,40 @@ public class RevolverCallbacks implements ItemCallback<Key>
 		}
 	}
 
-	private static final List<List<String>> groups = List.of(List.of("frame"), List.of("cylinder"));
+	private static final List<List<String>> SPECIAL_GROUPS = List.of(
+			List.of("frame"),
+			List.of("cylinder"),
+			List.of("dev_scope"),
+			List.of("player_electro_0", "player_electro_1")
+	);
 
 	@Override
 	public List<List<String>> getSpecialGroups(ItemStack stack, ItemDisplayContext transform, LivingEntity entity)
 	{
-		return groups;
+		return SPECIAL_GROUPS;
 	}
 
-	private static Transformation matOpen;
-	private static Transformation matClose;
-	private static Transformation matCylinder;
+	private static final Transformation MAT_OPEN = new Transformation(new Vector3f(-.625F, .25F, 0), new Quaternionf().rotateXYZ(0, 0, -.87266f), null, null);
+	private static final Transformation MAT_CLOSE = new Transformation(new Vector3f(-.625F, .25F, 0), null, null, null);
+	private static final Transformation MAT_CYLINDER = new Transformation(new Vector3f(0, .6875F, 0), null, null, null);
+	private static final Transformation MAT_SNUB_SCOPE = new Transformation(new Vector3f(1.375f, 0, 0), null, null, null);
+	private static final Transformation MAT_SNUB_ELECTRO = new Transformation(new Vector3f(1.4375f, -.1875f, 0.125f), null, null, null);
 
 	@Nonnull
 	@Override
 	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, ItemDisplayContext transform, LivingEntity entity,
 												float partialTicks)
 	{
-		if(matOpen==null)
-			matOpen = new Transformation(new Vector3f(-.625F, .25F, 0), new Quaternionf().rotateXYZ(0, 0, -.87266f), null, null);
-		if(matClose==null)
-			matClose = new Transformation(new Vector3f(-.625F, .25F, 0), null, null, null);
-		if(matCylinder==null)
-			matCylinder = new Transformation(new Vector3f(0, .6875F, 0), null, null, null);
+		String firstGroup = groups.get(0);
+		// special case for snubnose, move attachments back
+		if(RevolverItem.getUpgradesStatic(stack).getBoolean("barrel_snub"))
+		{
+			if("dev_scope".equals(firstGroup))
+				return MAT_SNUB_SCOPE;
+			else if("player_electro_0".equals(firstGroup))
+				return MAT_SNUB_ELECTRO;
+		}
+
 		if(entity instanceof Player&&(transform==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||transform==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||transform==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND||transform==ItemDisplayContext.THIRD_PERSON_LEFT_HAND))
 		{
 			boolean main = (transform==ItemDisplayContext.FIRST_PERSON_RIGHT_HAND||transform==ItemDisplayContext.THIRD_PERSON_RIGHT_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT);
@@ -218,24 +237,24 @@ public class RevolverCallbacks implements ItemCallback<Key>
 			if(cooldowns.reloadTimer() > 0)
 			{
 				float f = 3-cooldowns.reloadTimer()/20f; //Reload time in seconds, for coordinating with audio
-				if("frame".equals(groups.get(0)))
+				if("frame".equals(firstGroup))
 				{
 					if(f < .35||f > 1.95)
-						return matClose;
+						return MAT_CLOSE;
 					else if(f < .5)
 						return new Transformation(
 								new Vector3f(-.625f, .25f, 0),
 								new Quaternionf().rotateXYZ(0, 0, -2.64F*(f-.35F)),
 								null, null);
 					else if(f < 1.8)
-						return matOpen;
+						return MAT_OPEN;
 					else
 						return new Transformation(
 								new Vector3f(-.625f, .25f, 0),
 								new Quaternionf().rotateXYZ(0, 0, -2.64f*(1.95f-f)),
 								null, null);
 				}
-				else if(f > 2.5&&f < 2.9)
+				else if("cylinder".equals(firstGroup)&&f > 2.5&&f < 2.9)
 				{
 					float angle = (left?-1: 1)*-15.70795f*(f-2.5f);
 					return new Transformation(
@@ -244,21 +263,26 @@ public class RevolverCallbacks implements ItemCallback<Key>
 							null, null);
 				}
 			}
-			else if("frame".equals(groups.get(0))&&((Player)entity).containerMenu instanceof RevolverContainer)
-				return matOpen;
+			else if("frame".equals(firstGroup)&&((Player)entity).containerMenu instanceof RevolverContainer)
+				return MAT_OPEN;
 		}
-		return "frame".equals(groups.get(0))?matClose: matCylinder;
+		return switch(firstGroup)
+		{
+			case "frame" -> MAT_CLOSE;
+			case "cylinder" -> MAT_CYLINDER;
+			default -> Transformation.identity();
+		};
 	}
 
 	@Override
 	public Key getDefaultKey()
 	{
-		return new Key("", "", false, false, false, false, false, 0);
+		return new Key("", "", false, false, false, false, false, 0, false);
 	}
 
 	public record Key(
 			String elite, String flavor, boolean extraBullets, boolean fancyAnimation, boolean extraMelee,
-			boolean electro, boolean scope, int reload
+			boolean electro, boolean scope, int reload, boolean snub
 	)
 	{
 	}

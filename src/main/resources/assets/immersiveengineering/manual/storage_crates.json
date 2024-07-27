@@ -1,0 +1,10 @@
+{
+  "crate": {
+    "type": "crafting",
+    "recipe": "crafting/crate"
+  },
+  "reinforced_crate": {
+    "type": "crafting",
+    "recipe": "crafting/reinforced_crate"
+  }
+}

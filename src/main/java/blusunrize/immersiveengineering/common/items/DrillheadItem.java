@@ -54,17 +54,18 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
-		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));
-		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));
-		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")));
-		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")));
+		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth).withStyle(ChatFormatting.GRAY));
+		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))).withStyle(ChatFormatting.GRAY));
+		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")).withStyle(ChatFormatting.GRAY));
+		list.add(Component.translatable(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")).withStyle(ChatFormatting.GRAY));
 
 		int maxDmg = getMaximumHeadDamage(stack);
 		int dmg = maxDmg-getHeadDamage(stack);
 		float quote = dmg/(float)maxDmg;
-		String status = ""+(quote < .1?ChatFormatting.RED: quote < .3?ChatFormatting.GOLD: quote < .6?ChatFormatting.YELLOW: ChatFormatting.GREEN);
-		String s = status+(getMaximumHeadDamage(stack)-getHeadDamage(stack))+"/"+getMaximumHeadDamage(stack);
-		list.add(Component.translatable(Lib.DESC_INFO+"durability", s));
+		ChatFormatting status = quote < .1?ChatFormatting.RED: quote < .3?ChatFormatting.GOLD: quote < .6?ChatFormatting.YELLOW: ChatFormatting.GREEN;
+		list.add(Component.translatable(Lib.DESC_INFO+"durability").withStyle(ChatFormatting.GRAY)
+				.append(Component.literal((getMaximumHeadDamage(stack)-getHeadDamage(stack))+"/"+getMaximumHeadDamage(stack)).withStyle(status))
+		);
 	}
 
 	@Override

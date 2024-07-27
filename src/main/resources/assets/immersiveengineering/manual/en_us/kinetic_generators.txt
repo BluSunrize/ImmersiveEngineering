@@ -1,0 +1,12 @@
+Kinetic Generators
+And The Generator Goes 'Round
+<&dynamo_recipe>The simplest form of power generation available is not solar or coal, but using natural forces to excite a generator.<br>
+The Kinetic Dynamo connects to integrated methods of producing shaft power and produces electrical power based on how fast they turn.<np>
+Windmills and waterwheels, detailed in the following pages, are the sources of shaft power the Kinetic Dynamo will accept, and must be assembled after the dynamo for them to connect.<br>
+Other sources of shaft power cannot be used with the kinetic dynamo, and will not produce electrical power.<np>
+<&windmill_recipes>Windmills are a basic but slow method of generating power. Speed depends on the space in front of it, with its output reducing greatly if the airflow is obscured. Additionally, weather conditions like rain or storms result in stronger winds and higher speeds.<np>
+<&sail_recipe>Wind-based power generation can be improved by covering the blades in cloth. Doing so increases the surface area and with it the rotation speed and energy output.
+Windmill sails are crafted from <link;industrial_hemp;tough fabric;fabric_recipe> and applied to the windmill by right clicking it.<np>
+<&waterwheel_recipes>Waterwheels are constant method of generating shaft power. Due to the higher stresses involved, waterwheels require <link;basic_metal_products;steel;alloys> in their construction.<br>
+Rotational speed is based on the amount of water flowing around the wheel, with more water providing a greater speed.<br>
+Up to three water wheels can be placed against each other and provide shaft power from a single shaft.

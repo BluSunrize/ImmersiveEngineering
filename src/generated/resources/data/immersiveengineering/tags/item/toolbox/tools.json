@@ -20,6 +20,9 @@
     "minecraft:compass",
     "minecraft:flint_and_steel",
     "minecraft:fishing_rod",
+    "minecraft:brush",
+    "minecraft:recovery_compass",
+    "minecraft:goat_horn",
     {
       "id": "#c:buckets/empty",
       "required": false

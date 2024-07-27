@@ -1,0 +1,7 @@
+Scaffolding & Ladders
+Warning: Construction Site
+<&scaffolding_recipes>Scaffolding is a versatile arrangement of metal rods that can be used in construction.<br>
+Scaffolding can also be climbed like ladders along its sides.<np>
+<&ladder_recipes>Often, factories and machines have vertical drops that need to be traversed.<br>
+Metal ladders provide a fireproof method, and can be covered in scaffolding to prevent accidental egress.<br>
+Metal ladders can be opened with the Engineer's Hammer by sneaking and rightclicking the ladder.

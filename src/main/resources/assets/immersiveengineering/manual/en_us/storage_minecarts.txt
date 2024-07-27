@@ -1,0 +1,6 @@
+Storage Minecarts
+Let The Bullgine Run
+<&item_storage><link;storage_crates;Storage Crates> can be placed into Minecarts, as with chests and hoppers.<br>
+When placed into Minecarts, crates will act as they do outside, and store their items inside when they are broken, unlike chests.<np>
+<&fluid_storage><link;storage_barrels;Storage Barrels> can be placed into Minecarts, as with chests and hoppers.<br>
+When placed into Minecarts, barrels will act as they do outside, accepting fluids from bucketing and displaying fluid to containers.

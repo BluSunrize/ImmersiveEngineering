@@ -80,7 +80,7 @@ public class PotionFluid extends Fluid
 
 	@Override
 	protected boolean canBeReplacedWith(@Nonnull FluidState fluidState, @Nonnull BlockGetter blockReader,
-								  @Nonnull BlockPos pos, @Nonnull Fluid fluid, @Nonnull Direction direction)
+										@Nonnull BlockPos pos, @Nonnull Fluid fluid, @Nonnull Direction direction)
 	{
 		return true;
 	}
@@ -188,7 +188,8 @@ public class PotionFluid extends Fluid
 		{
 			super(Properties.create()
 					.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY));
+					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+					.density(1300));
 		}
 
 		@Override

@@ -28,6 +28,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -56,7 +58,12 @@ public class IEBlockInterfaces
 		Component[] getOverlayText(Player player, HitResult mop, boolean hammer);
 
 		@Deprecated
-		boolean useNixieFont(Player player, HitResult mop);
+		default boolean useNixieFont(Player player, HitResult mop)
+		{
+			return false;
+		}
+
+		;
 	}
 
 	public interface ISoundBE
@@ -217,13 +224,17 @@ public class IEBlockInterfaces
 
 	public interface IPlayerInteraction
 	{
-		//TODO should really return ActionResultType
-		boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
+		InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
 	}
 
 	public interface IHammerInteraction
 	{
 		boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec);
+	}
+
+	public interface IHammerBlockInteraction
+	{
+		InteractionResult useHammer(BlockState state, Level world, BlockPos pos, Player player);
 	}
 
 	public interface IScrewdriverInteraction
@@ -315,7 +326,7 @@ public class IEBlockInterfaces
 	}
 
 	/**
-	 * super-interface for {@link MultiblockPartBlockEntity} and {@link IHasDummyBlocks}
+	 * super-interface for {@link IHasDummyBlocks}
 	 */
 	public interface IGeneralMultiblock extends BlockstateProvider
 	{

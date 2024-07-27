@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/treated_door_framed_from_treated_door"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_treated_door": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:treated_door"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_treated_door"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/treated_door_framed_from_treated_door"
+    ]
+  }
+}

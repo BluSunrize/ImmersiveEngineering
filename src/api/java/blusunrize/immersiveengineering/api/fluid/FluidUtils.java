@@ -292,19 +292,19 @@ public class FluidUtils
 	static
 	{
 		// this is not all the existing fraction symbols, but the most commonly used
-		FRACTION_STRINGS.put(Fraction.ONE_HALF, "½");
-		FRACTION_STRINGS.put(Fraction.ONE_QUARTER, "¼");
-		FRACTION_STRINGS.put(Fraction.THREE_QUARTERS, "¾");
-		FRACTION_STRINGS.put(Fraction.ONE_THIRD, "⅓");
-		FRACTION_STRINGS.put(Fraction.TWO_THIRDS, "⅔");
-		FRACTION_STRINGS.put(Fraction.ONE_FIFTH, "⅕");
-		FRACTION_STRINGS.put(Fraction.TWO_FIFTHS, "⅖");
-		FRACTION_STRINGS.put(Fraction.THREE_FIFTHS, "⅗");
-		FRACTION_STRINGS.put(Fraction.FOUR_FIFTHS, "⅘");
-		FRACTION_STRINGS.put(Fraction.getFraction(1,8),"⅛");
-		FRACTION_STRINGS.put(Fraction.getFraction(3,8),"⅜");
-		FRACTION_STRINGS.put(Fraction.getFraction(1,9), "⅑");
-		FRACTION_STRINGS.put(Fraction.getFraction(1,10), "⅒");
+		FRACTION_STRINGS.put(Fraction.ONE_HALF, "\u00BD");
+		FRACTION_STRINGS.put(Fraction.ONE_QUARTER, "\u00BC");
+		FRACTION_STRINGS.put(Fraction.THREE_QUARTERS, "\u00BE");
+		FRACTION_STRINGS.put(Fraction.ONE_THIRD, "\u2153");
+		FRACTION_STRINGS.put(Fraction.TWO_THIRDS, "\u2154");
+		FRACTION_STRINGS.put(Fraction.ONE_FIFTH, "\u2155");
+		FRACTION_STRINGS.put(Fraction.TWO_FIFTHS, "\u2156");
+		FRACTION_STRINGS.put(Fraction.THREE_FIFTHS, "\u2157");
+		FRACTION_STRINGS.put(Fraction.FOUR_FIFTHS, "\u2158");
+		FRACTION_STRINGS.put(Fraction.getFraction(1, 8), "\u215B");
+		FRACTION_STRINGS.put(Fraction.getFraction(3, 8), "\u215C");
+		FRACTION_STRINGS.put(Fraction.getFraction(1, 9), "\u2151");
+		FRACTION_STRINGS.put(Fraction.getFraction(1, 10), "\u2152");
 	}
 
 	public static String getBucketFraction(int amount)

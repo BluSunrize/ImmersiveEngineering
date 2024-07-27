@@ -1,0 +1,6 @@
+{
+  "parent": "immersiveengineering:block/warning_sign",
+  "textures": {
+    "icon": "immersiveengineering:block/metal_decoration/sign/icon_villager"
+  }
+}

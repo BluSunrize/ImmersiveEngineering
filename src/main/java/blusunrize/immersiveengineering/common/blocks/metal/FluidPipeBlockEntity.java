@@ -43,6 +43,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -692,7 +693,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(heldItem.isEmpty()&&player.isShiftKeyDown()&&hasCover())
 		{
@@ -704,14 +705,14 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 				markChunkDirty();
 			}
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		else if(!heldItem.isEmpty()&&!player.isShiftKeyDown())
 			return setColorOrCoverFrom(heldItem, player);
-		return false;
+		return InteractionResult.PASS;
 	}
 
-	private boolean setColorOrCoverFrom(ItemStack heldItem, Player player)
+	private InteractionResult setColorOrCoverFrom(ItemStack heldItem, Player player)
 	{
 		DyeColor heldDye = Utils.getDye(heldItem);
 		if(heldDye!=null)
@@ -723,11 +724,11 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				markContainingBlockForUpdate(null);
 				level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 			}
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
 		Block heldBlock = Block.byItem(heldItem.getItem());
 		if(heldBlock==Blocks.AIR)
-			return false;
+			return InteractionResult.PASS;
 		for(Predicate<Block> func : validPipeCovers)
 			if(func.test(heldBlock)&&this.cover!=heldBlock)
 			{
@@ -741,9 +742,9 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					this.markContainingBlockForUpdate(null);
 					level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 				}
-				return true;
+				return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 			}
-		return false;
+		return InteractionResult.PASS;
 	}
 
 	@Override

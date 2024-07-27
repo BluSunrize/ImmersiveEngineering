@@ -258,11 +258,39 @@
 		],
 		"subtitle": "subtitle.immersiveengineering.process_2_lift"
 	},
+  "mill_creaking": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:mill_creaking"
+    ],
+    "subtitle": "subtitle.immersiveengineering.mill_creaking"
+  },
 	"electromagnet": {
 		"category": "player",
 		"sounds": [
 			"immersiveengineering:electromagnet"
 		],
 		"subtitle": "subtitle.immersiveengineering.electromagnet"
+    },
+  "siren": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:siren"
+    ],
+    "subtitle": "subtitle.immersiveengineering.siren"
+  },
+  "klaxon": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:klaxon"
+    ],
+    "subtitle": "subtitle.immersiveengineering.klaxon"
+  },
+  "buzzer": {
+    "category": "block",
+    "sounds": [
+      "immersiveengineering:buzzer"
+    ],
+    "subtitle": "subtitle.immersiveengineering.buzzer"
 	}
 }

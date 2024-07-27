@@ -1,0 +1,8 @@
+Industrial Hemp
+530 fabric it
+<&items>Industrial Hemp is a very versatile plant, with uses all throughout the engineering profession. It seeds can be used for the creation of LINK TO GO HERE(plant oil), used in <link;industrial_fluids;Biodiesel;biodiesel>; its fibers can be used in the creation of a sturdy canvas, §2Tough Fabric§r.<br>
+The seeds can be obtained by breaking tall grass and other similar methods of collection.<np>
+<&fabric_recipe>Tough Fabric is a resilient weave made from hemp fiber. When waterproofed, it can be used as <link;this;Ersatz Leather;ersatz_leather>.<br>
+On its own, it can be used to create <link;kinetic_generators;Improved Windmills;sail_recipe> as well as <link;balloon;Balloons;start>, <link;hempcrete;Hempcrete>, and <link;this;Jump Cushions;cushion_recipe>.<np>
+<&cushion_recipe>Jump Cushions are simple blocks created from tough fabric and inflated with air. They are capable of absorbing impacts and prevent damage from falling when landed upon, but, unlike slime blocks, will not cause impacting object so rebound.<np>
+<&ersatz_leather>Ersatz leather is created via saturating tough fabric with plant oil or beeswax. This waterproofed fabric can be used in many things normal animal leather can be used in, such as <link;conveyor_belts;Conveyor Belts>.

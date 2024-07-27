@@ -48,7 +48,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -158,11 +157,11 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+tag));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+tag).withStyle(ChatFormatting.GRAY));
 		else if(stack.has(IEDataComponents.REVOLVER_FLAVOUR))
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+stack.get(IEDataComponents.REVOLVER_FLAVOUR)));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+stack.get(IEDataComponents.REVOLVER_FLAVOUR)).withStyle(ChatFormatting.GRAY));
 		else
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver").withStyle(ChatFormatting.GRAY));
 
 		for(var entry : getPerks(stack).perks().entrySet())
 			list.add(Component.literal("  ").append(entry.getKey().getDisplayString(entry.getValue())));
@@ -201,6 +200,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			builder.add(
 					Attributes.MOVEMENT_SPEED, new AttributeModifier(speedModUUID, speed, Operation.ADD_MULTIPLIED_BASE), EquipmentSlotGroup.HAND
 			);
+	}
 
 		double luck = upgrades.get(UpgradeEffect.LUCK);
 		if(luck!=0)
@@ -234,53 +234,42 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
 		ItemStack revolver = player.getItemInHand(hand);
-		final var cooldowns = getCooldowns(revolver);
-		if(!world.isClientSide)
+		if(player.isShiftKeyDown())
 		{
-			if(player.isShiftKeyDown())
-			{
-				openGui(player, hand);
-				return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
-			}
-			else if(player.getAttackStrengthScale(1) >= 1)
-			{
-				if(this.getUpgrades(revolver).has(UpgradeEffect.NERF))
-					world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.6f);
-				else
-				{
-					if(cooldowns.fireCooldown > 0||cooldowns.reloadTimer > 0)
-						return new InteractionResultHolder<>(InteractionResult.PASS, revolver);
+			openGui(player, hand);
+			return InteractionResultHolder.sidedSuccess(revolver, world.isClientSide());
+		}
 
-					NonNullList<ItemStack> bullets = getBullets(revolver);
+		// not yet fully drawn
+		if(player.getAttackStrengthScale(1) < 1)
+			return InteractionResultHolder.pass(revolver);
 
-					// Try reloading
-					if(isEmpty(revolver, false))
-						for(int i = 0; i < player.getInventory().getContainerSize(); i++)
-						{
-							ItemStack stack = player.getInventory().getItem(i);
-							if(stack.getItem() instanceof SpeedloaderItem speedloader&&!speedloader.isEmpty(stack))
-							{
-								for(ItemStack b : bullets)
-									if(!b.isEmpty())
-										world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), b));
-								var bulletList = speedloader.getBullets(stack);
-								setBullets(revolver, bulletList, true);
-								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
-								player.getInventory().setChanged();
-								if(player instanceof ServerPlayer)
-									PacketDistributor.sendToPlayer((ServerPlayer)player, new MessageSpeedloaderSync(i, hand));
+		if(this.getUpgrades(revolver).getBoolean("nerf"))
+		{
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.6f);
+			return InteractionResultHolder.sidedSuccess(revolver, world.isClientSide());
+		}
 
-								revolver.set(REVOLVER_COOLDOWN, new RevolverCooldowns(60, cooldowns.fireCooldown));
-								return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
-							}
-						}
+		// on cooldown, can't be used
+		if(player.getCooldowns().isOnCooldown(this))
+			return InteractionResultHolder.pass(revolver);
 
-					ItemStack bulletStack = bullets.get(0);
+		NonNullList<ItemStack> bullets = getBullets(revolver);
+		// check if empty and try to use speedloader
+		if(bullets.stream().noneMatch(stack -> stack.getItem() instanceof BulletItem))
+		{
+			if(useSpeedloader(world, player, revolver, hand, bullets))
+				return InteractionResultHolder.sidedSuccess(revolver, world.isClientSide());
+		}
+
+		ItemStack bulletStack = bullets.get(0);
 					Item bullet0 = bulletStack.getItem();
 					if(bullet0 instanceof BulletItem)
 					{
 						IBullet<?> bullet = ((BulletItem<?>)bullet0).getType();
 						if(bullet!=null)
+						{
+							if(!world.isClientSide())
 						{
 							float noise = fireProjectile(world, player, revolver, bullet, bulletStack);
 							bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
@@ -291,8 +280,20 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 							{
 								// anything louder than default is considered an explosion
 								var eventTriggered = noise > 0.5?GameEvent.EXPLODE: GameEvent.PROJECTILE_SHOOT;
-								world.gameEvent(eventTriggered, player.position(), GameEvent.Context.of(player));
+								player.gameEvent(eventTriggered);
 							}
+
+
+							// fancy particle effects for shaders
+							ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(revolver);
+							if(shader!=null)
+							{
+								Vec3 pos = Utils.getLivingFrontPos(player, .75, player.getBbHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
+								shader.registryEntry().getEffectFunction().execute(world, shader.shader(), revolver,
+										shader.sCase().getShaderType().toString(), pos,
+										Vec3.directionFromRotation(player.getRotationVector()), .125f);
+							}
+						}
 						}
 						else
 							world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1f, 1f);
@@ -300,32 +301,36 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 					else
 						world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS, 1f, 1f);
 
-					rotateCylinder(revolver, player, true, bullets);
-					revolver.set(REVOLVER_COOLDOWN, new RevolverCooldowns(cooldowns.reloadTimer, getMaxShootCooldown(revolver)));
-					return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
-				}
-			}
-		}
-		else if(!player.isShiftKeyDown())
-		{
-			if(cooldowns.reloadTimer > 0||cooldowns.fireCooldown > 0)
-				return new InteractionResultHolder<>(InteractionResult.PASS, revolver);
-			NonNullList<ItemStack> bullets = getBullets(revolver);
-			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem)
-			{
-				ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(revolver);
-				if(shader!=null)
-				{
+		rotateCylinder(revolver, player, true, bullets);
+		player.getCooldowns().addCooldown(this, getMaxShootCooldown(revolver));
+		return InteractionResultHolder.sidedSuccess(revolver, world.isClientSide());
+	}
 
-					Vec3 pos = Utils.getLivingFrontPos(player, .75, player.getBbHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
-					shader.registryEntry().getEffectFunction().execute(world, revolver,
-							shader.sCase().getShaderType().toString(), pos,
-							Vec3.directionFromRotation(player.getRotationVector()), .125f);
+public boolean useSpeedloader(Level level, Player player, ItemStack revolver, InteractionHand hand, NonNullList<ItemStack> bullets)
+{
+	for(int i = 0; i < player.getInventory().getContainerSize(); i++)
+		{
+			ItemStack stack = player.getInventory().getItem(i);
+			if(stack.getItem() instanceof SpeedloaderItem&&!((SpeedloaderItem)stack.getItem()).isEmpty(stack))
+			{
+				if(!level.isClientSide())
+				{
+					for(ItemStack b : bullets)
+						if(!b.isEmpty())
+							level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), b));
+					setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack), true);
+					((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
+					player.getInventory().setChanged();
+					if(player instanceof ServerPlayer)
+						PacketDistributor.PLAYER.with((ServerPlayer)player).send(new MessageSpeedloaderSync(i, hand));
 				}
+				// set cooldown & animation timer
+				ItemNBTHelper.putInt(revolver, "reload", 60);
+				player.getCooldowns().addCooldown(this, 60);
+				return true;
 			}
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 		}
-		return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
+	return false;
 	}
 
 	public static float fireProjectile(Level world, LivingEntity shooter, ItemStack revolver, IBullet bullet, ItemStack bulletStack)
@@ -412,23 +417,6 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		NonNullList<ItemStack> bullets = getBullets(revolver);
 		rotateCylinder(revolver, player, forward, bullets);
-	}
-
-	public boolean isEmpty(ItemStack stack, boolean allowCasing)
-	{
-		IItemHandler inv = stack.getCapability(ItemHandler.ITEM);
-		if(inv==null)
-			return true;
-		for(int i = 0; i < inv.getSlots(); i++)
-		{
-			ItemStack b = inv.getStackInSlot(i);
-			boolean isValid = true;
-			if(!allowCasing)
-				isValid = b.getItem() instanceof BulletItem;
-			if(!b.isEmpty()&&isValid)
-				return false;
-		}
-		return true;
 	}
 
 	/* ------------- UPGRADES & PERKS ------------- */

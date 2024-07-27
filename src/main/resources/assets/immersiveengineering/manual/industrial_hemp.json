@@ -1,0 +1,25 @@
+{
+  "items": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:hemp_fiber"
+      },
+      {
+        "item": "immersiveengineering:seed"
+      }
+    ]
+  },
+  "fabric_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/hemp_fabric"
+  },
+  "cushion_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/cushion"
+  },
+  "ersatz_leather": {
+    "type": "crafting",
+    "recipe": "crafting/ersatz_leather"
+  }
+}

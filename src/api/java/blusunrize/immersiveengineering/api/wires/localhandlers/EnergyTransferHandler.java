@@ -41,6 +41,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private final Map<ConnectionPoint, EnergyConnector> sinks = new HashMap<>();
 	private final List<SinkPathsFromSource> transferPaths = new ArrayList<>();
 	private boolean sourceSinkMapInitialized = true;
+	HashMap<Connection, List<Double>> limits = new HashMap<>();
 
 	public EnergyTransferHandler(LocalWireNetwork net, GlobalWireNetwork global)
 	{
@@ -119,6 +120,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		sources.clear();
 		transferPaths.clear();
 		sourceSinkMapInitialized = false;
+		limits.clear();
+		;
 	}
 
 	public Map<ConnectionPoint, EnergyConnector> getSources()
@@ -163,6 +166,9 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					sinks.put(cp, energyIIC);
 				if(energyIIC.isSource(cp))
 					sources.put(cp, energyIIC);
+				if(energyIIC instanceof LimitingEnergyConnector limiting)
+					for(Connection c : localNet.getConnections(cp))
+						limits.put(c, Arrays.asList(limiting.getPowerLimit(), limiting.getPowerLimit()));
 			}
 		}
 		for(Entry<ConnectionPoint, EnergyConnector> source : sources.entrySet())
@@ -220,6 +226,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	private void transferPower()
 	{
 		updateSourcesAndSinks();
+		resetLimits();
 		for(SinkPathsFromSource sourceData : transferPaths)
 		{
 			ConnectionPoint sourceCp = sourceData.sourceCP();
@@ -234,11 +241,21 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			List<OutputData> maxOut = new ArrayList<>(sourceData.paths().size());
 			for(SinkPath sinkEntry : sourceData.paths())
 			{
+				double limit = Double.MAX_VALUE;
+				Connection conn = null;
+				for(Connection c : sinkEntry.pathTo().conns)
+					if(limits.containsKey(c))
+					{
+						limit = limits.get(c).get(1);
+						conn = c;
+					}
 				EnergyConnector sink = sinkEntry.sinkConnector();
-				int requested = sink.getRequestedEnergy();
+				int requested = (int)Math.min(sink.getRequestedEnergy(), limit*(1-sinkEntry.pathTo().loss));
 				if(requested <= 0)
 					continue;
 				double requiredAtSource = Math.min(requested/(1-sinkEntry.pathTo().loss), available);
+				if(conn!=null)
+					limits.put(conn, Arrays.asList(limits.get(conn).get(0), limit-requiredAtSource));
 				maxOut.add(new OutputData(requiredAtSource, sinkEntry.pathTo(), sink));
 				maxSum += requiredAtSource;
 			}
@@ -254,8 +271,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				for(Connection c : path.conns)
 				{
 					currentPoint = c.getOtherEnd(currentPoint);
-					//TODO use Blu's loss formula
-					availableFactor -= getBasicLoss(c);
+					// We use exponential loss here so there is still some power at arbitrarily far distances
+					availableFactor *= (1-getBasicLoss(c));
 					double availableAtPoint = atSource*availableFactor;
 					transferredNextTick.addTo(c, availableAtPoint);
 					if(!currentPoint.equals(path.end))
@@ -304,6 +321,12 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			return Double.POSITIVE_INFINITY;
 	}
 
+	private void resetLimits()
+	{
+		if(limits.isEmpty()) return;
+		limits.replaceAll((p, v) -> Arrays.asList(limits.get(p).get(0), limits.get(p).get(0)));
+	}
+
 	public static class Path
 	{
 		public final Connection[] conns;
@@ -344,7 +367,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		public Path append(Connection next, boolean isPathToSink)
 		{
 			ConnectionPoint newEnd = next.getOtherEnd(end);
-			double newLoss = loss+getBasicLoss(next);
+			double newLoss = loss+(1-loss)*getBasicLoss(next);
 			Connection[] newPath = Arrays.copyOf(conns, conns.length+1);
 			newPath[newPath.length-1] = next;
 			return new Path(newPath, start, newEnd, newLoss, isPathToSink);
@@ -408,6 +431,11 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		default void onEnergyPassedThrough(double amount)
 		{
 		}
+	}
+
+	public interface LimitingEnergyConnector extends EnergyConnector
+	{
+		double getPowerLimit();
 	}
 
 	private record SinkPath(ConnectionPoint sinkCP, EnergyConnector sinkConnector, Path pathTo)

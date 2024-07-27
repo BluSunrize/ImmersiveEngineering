@@ -1,0 +1,6 @@
+Machine Components
+Where's my Allen Wrench?
+Outside of paracausal events and the ability to modify the size of atoms, fitting complex heavy machinery into a meter cube seems impossible.<br>
+In order to create more complex machines than simple furnaces and storage silos, component machinery must first be assembled.<br>
+Engineering Blocks are used alongside simpler components such as <link;scaffolding_and_ladders;scaffolding> to construct heavy machinery.<np>
+<&recipes>

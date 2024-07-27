@@ -152,6 +152,9 @@
     }
   },
   "dynamic": true,
+  "layers": [
+    "translucent"
+  ],
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/drill/drill_diesel.obj.ie"
 }

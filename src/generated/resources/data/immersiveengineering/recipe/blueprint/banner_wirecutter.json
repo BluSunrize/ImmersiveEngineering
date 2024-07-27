@@ -1,0 +1,15 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "category": "bannerpatterns",
+  "inputs": [
+    {
+      "tag": "forge:paper"
+    },
+    {
+      "item": "immersiveengineering:wirecutter"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:bannerpattern_wirecutter"
+  }
+}

@@ -279,7 +279,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			if(remappedFace!=null)
 				out.accept(PolygonUtils.toBakedQuad(
 						remappedFace.getPoints(), new ExtraQuadData(texture, colorTint), transform,
-						callback.useAbsoluteUV(key, mat.name())
+						callback.useAbsoluteUV(key, mat.name()), callback.shadeQuads(key, mat.name())
 				));
 		}
 	}

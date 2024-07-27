@@ -29,6 +29,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.joml.Vector3f;
@@ -50,6 +52,7 @@ public class ClocheRenderFunctions
 		register("stem", RenderFunctionStem.CODEC);
 		register("generic", RenderFunctionGeneric.CODEC);
 
+		register("doubleflower", RenderFunctionDoubleFlower.CODEC);
 		register("hemp", RenderFunctionHemp.CODEC);
 		register("chorus", RenderFunctionChorus.CODEC);
 	}
@@ -242,6 +245,41 @@ public class ClocheRenderFunctions
 
 		@Override
 		public DualMapCodec<? super RegistryFriendlyByteBuf, ? extends ClocheRenderFunction> codec()
+		{
+			return CODEC;
+		}
+	}
+
+	public static class RenderFunctionDoubleFlower implements ClocheRenderFunction
+	{
+		public static final Codec<RenderFunctionDoubleFlower> CODEC = byBlockCodec(f -> f.cropBlock, RenderFunctionDoubleFlower::new);
+
+		final Block cropBlock;
+
+		public RenderFunctionDoubleFlower(Block cropBlock)
+		{
+			this.cropBlock = cropBlock;
+		}
+
+		@Override
+		public float getScale(ItemStack seed, float growth)
+		{
+			return 0.75f;
+		}
+
+		@Override
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
+		{
+			Vector3f transl = new Vector3f(0.5f-growth/2, 0, 0.5f-growth/2);
+			Vector3f transl1 = new Vector3f(0.5f-growth/2, 0+growth, 0.5f-growth/2);
+			Vector3f scale = new Vector3f(growth, growth, growth);
+			return ImmutableList.of(
+					Pair.of(this.cropBlock.defaultBlockState(), new Transformation(transl, null, scale, null)),
+					Pair.of(this.cropBlock.defaultBlockState().setValue(DoublePlantBlock.HALF, DoubleBlockHalf.UPPER), new Transformation(transl1, null, scale, null)));
+		}
+
+		@Override
+		public Codec<? extends ClocheRenderFunction> codec()
 		{
 			return CODEC;
 		}

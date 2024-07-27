@@ -1,0 +1,14 @@
+Logic Unit
+Turing Complete
+<&unit>With the versatility of <link;redstone_wiring;Redstone Wires> and shunting from <link;crafting_components;Vacuum Tubes;tubes>, complex redstone can be compacted into <link;engineers_circuit_workbench;Logic Circuits>.<br>
+The Logic Unit is the specialty machine in which logic circuits are slotted to be used.<br>
+It has enough space for a total of §210 circuits§r, and features a full §28 inbuilt registers§r, usable for any circuit.<br>
+For a logic unit to interface with the colored redstone systems, it needs to have a <link;redstone_wiring;Redstone Interface Connector;bundled> attached to its side.<br>
+Every time any of the attached connectors change their state, the logic unit cycles through its circuits and performs all 10 operations.<br>
+If a circuit uses a register as an output, the resulting value is kept in the register and may be used by later circuit as an input.<br>
+The same interface connector used to input can be used as an output as well.
+
+
+
+
+

@@ -25,7 +25,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Objects;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,8 +60,7 @@ public record MessageShaderManual(MessageType key, List<ResourceLocation> args) 
 			context.enqueueWork(() -> {
 				if(key==MessageType.SYNC)
 				{
-					Collection<ResourceLocation> received = ShaderRegistry.receivedShaders.get(playerId);
-					ResourceLocation[] ss = received.toArray(new ResourceLocation[0]);
+					ResourceLocation[] ss = ShaderRegistry.receivedShaders.get(playerId).stream().filter(Objects::nonNull).toArray(ResourceLocation[]::new);
 					PacketDistributor.sendToPlayer(player, new MessageShaderManual(MessageType.SYNC, ss));
 				}
 				else if(key==MessageType.UNLOCK&&!args.isEmpty())

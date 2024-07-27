@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "tag": "forge:wires/copper"
+    },
+    "g": {
+      "tag": "forge:dusts/glowstone"
+    },
+    "i": {
+      "tag": "forge:nuggets/iron"
+    },
+    "r": {
+      "tag": "forge:glass/red"
+    }
+  },
+  "pattern": [
+    " c ",
+    "crc",
+    "igi"
+  ],
+  "result": {
+    "item": "immersiveengineering:cagelamp"
+  }
+}

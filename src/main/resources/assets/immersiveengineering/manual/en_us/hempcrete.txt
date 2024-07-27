@@ -1,0 +1,4 @@
+Hempcrete
+Insulation Material
+<&hempcrete>Hempcrete is a fibrous, weaker variant of concrete with higher insulation potential.<br>
+Hempcrete can be cut into the same kinds of bricks as <link;concrete;Concrete;brick> can, but cannot be cut into slices or other specialty constructs.

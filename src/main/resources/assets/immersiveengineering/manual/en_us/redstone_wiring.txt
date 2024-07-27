@@ -1,0 +1,8 @@
+Redstone Wiring
+Integration Takeover
+<&coil>§2Redstone Wires§r are aluminium coated in redstone dust. The resulting cables provide an easy way to transfer redstone signals over long distance without losing signal strength.<np>
+<&connector>§2Redstone Wire Connectors§r work as both relays and connectors: input and output connectors can have multiple wires connected.<br>
+With the Engineer's Screwdriver, the connectors can be configured between in- and output mode and set to one of 16 coloured frequencies.<np>
+<&bundled>§2Redstone Interface Connectors§r are designed to be attached to other blocks that can make use of the coloured redstone signals.<br>
+The interface connector is inert and does not possess a colour, input- or output-state. Instead, it provides an interface to all 16 colors of the redstone grid.<br>
+Blocks such as the <link;item_batcher;Item Batcher> and <link;logic_unit;Logic Unit> use this to output on many signals based on internal thresholds.

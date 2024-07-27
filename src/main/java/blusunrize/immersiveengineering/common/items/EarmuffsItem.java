@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import com.google.common.collect.Sets;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -115,7 +116,7 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		int color = this.getColourForIEItem(stack, 0);
-		MutableComponent mainComponent = Component.translatable(Lib.DESC_INFO+"colour");
+		MutableComponent mainComponent = Component.translatable(Lib.DESC_INFO+"colour").withStyle(ChatFormatting.GRAY);
 		list.add(withAppendColoredColour(mainComponent, color));
 	}
 

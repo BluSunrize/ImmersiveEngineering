@@ -4,8 +4,8 @@
     "item": "minecraft:rose_bush"
   },
   "render": {
-    "type": "immersiveengineering:generic",
-    "block": "minecraft:rose_bush"
+    "type": "immersiveengineering:doubleflower",
+    "value": "minecraft:rose_bush"
   },
   "results": [
     {

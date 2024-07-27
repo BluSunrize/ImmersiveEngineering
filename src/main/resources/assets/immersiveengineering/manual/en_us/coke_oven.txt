@@ -1,0 +1,7 @@
+Coke Oven
+Hot topic!
+<&recipe>The Coke Oven is the first important machine that needs to be constructed in order to proceed with any industrial progress.<br>
+The Coke Oven is a simple machine: it heats up fuels in a low-oxygen environment in the middle of the brick oven, pyrolyzing them into carbon-rich versions of the fuel, such as §2Coal Coke§r, or §2Charcoal§r.<br>
+Just as important is the waste from this process, <link;industrial_fluids;Creosote Oil;creosote_oil>, which is used as a <link;treated_wood;preservative for wood>. This preserved wood can be used to construct all manner of sturdy machines and is used throughout industry.<br>
+The Coke Oven cannot output the oil by itself, and it must be extracted by <link;fluid_pump;Fluid Pump>.<np>
+<&multiblock>To form a Coke Oven, arrange 27 of these blocks in a 3x3x3 cube, and rightclick one of the sides' center blocks with an Engineer's Hammer.

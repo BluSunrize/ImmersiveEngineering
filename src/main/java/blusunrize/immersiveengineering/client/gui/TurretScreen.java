@@ -76,28 +76,28 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 				.setPadding(0, 0, 2, 2));
 		this.addRenderableWidget(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, Component.translatable(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
 				btn -> addName()));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), () -> !menu.data.whitelist().get(),
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, Component.translatable(Lib.GUI_CONFIG+"turret.blacklist"), () -> !menu.data.whitelist().get(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tag.putBoolean("whitelist", btn.getState());
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), menu.data.attackAnimals(),
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+26, Component.translatable(Lib.GUI_CONFIG+"turret.animals"), menu.data.attackAnimals(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tag.putBoolean("attackAnimals", btn.getNextState());
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), menu.data.attackPlayers(),
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+42, Component.translatable(Lib.GUI_CONFIG+"turret.players"), menu.data.attackPlayers(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tag.putBoolean("attackPlayers", btn.getNextState());
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), menu.data.attackNeutrals(),
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+58, Component.translatable(Lib.GUI_CONFIG+"turret.neutrals"), menu.data.attackNeutrals(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;

@@ -1,0 +1,5 @@
+newmtl cagelamp
+map_Kd #texture
+
+newmtl emissive
+map_Kd #texture

@@ -1,0 +1,7 @@
+{
+  "parent": "immersiveengineering:block/catwalk_stairs",
+  "textures": {
+    "side": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
+    "top": "immersiveengineering:block/metal_decoration/aluminum_scaffolding_top_grate_top"
+  }
+}

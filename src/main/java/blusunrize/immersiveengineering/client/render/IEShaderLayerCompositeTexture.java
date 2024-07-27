@@ -72,7 +72,8 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 				)
 				{
 
-					float[] mod = new float[]{colour.r(), colour.g(), colour.b(), colour.a()};
+					// this uses ABGR instead of ARGB, because Mojang I guess
+					float[] mod = new float[]{colour.b(), colour.g(), colour.a(), colour.a()};
 					if(mod[3] < 0.2)
 						mod[3] *= 2.5f;
 

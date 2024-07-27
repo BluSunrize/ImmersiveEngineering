@@ -1,4 +1,10 @@
 Excavator
 Better than Dwarves
-<&excavator>The Excavator is one of the pinnacles of modern engineering. It is able to dig up <link;minerals;minerals> from veins inaccessible by normal mining. In return however, the excavator is a complex structure which requires <config;i;machines.excavator.consumption> Flux/t in order to operate.
-<&wheel><&full>The structure is comprised of two pieces: The engine shown on the first page and the bucket wheel displayed on the second, which fits into the 'braces' of the engine as displayed on the previous page. The energy input for the engine is on its side, the back features a redstone control panel and the item output.<br>As the excavator digs up ores, the yield of the vein slowly decreases, but a vein of minerals can provide up to <config;i;machines.excavator.yield> blocks of ore.
+<&full>The Excavator is one of the pinnacles of modern industry, able to dig up <link;mineral_deposits;minerals> from veins normally inaccessible.<np>
+Due to the intensive requirements of extracting sparse veins from the rock, the Excavator is a complex machine which requires <config;i;machines.excavator.consumption> Flux/t in order to operate.<br>
+Mining commences from the bottom tip of the bucket wheel, and materials are output from the rear of the engine bracket.<br>
+The three plugs for the engine take in power from the side, and the back features a redstone control panel.<br>
+As the excavator digs up ores, the yield of the vein slowly decreases, but a mineral deposit can provide at maximum <config;i;machines.excavator.yield> blocks of ore.<br>
+The structure is comprised of two pieces: The engine shown on the following page and the bucket wheel displayed on the next, which fits into the 'braces' of the engine. The full structure can be assembled by using the Engineer's Hammer on the rear central Heavy Engineering Block.<br>
+<&wheel>The wheel can be formed on its own via using the Engineer's Hammer on the central steel block.
+<&engine>The engine can be formed on its own via the rear center port's Heavy Engineering Block, and will form the bucket wheel with it provided it is placed properly.

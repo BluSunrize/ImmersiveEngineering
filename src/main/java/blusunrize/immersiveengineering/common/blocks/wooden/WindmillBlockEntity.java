@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.energy.WindmillBiome;
@@ -17,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlacementInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
@@ -24,6 +26,8 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,6 +37,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +58,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
-		IStateBasedDirectional, IPlacementInteraction, IPlayerInteraction, IBlockBounds
+		IStateBasedDirectional, IPlacementInteraction, IPlayerInteraction, IBlockBounds, ISoundBE
 {
 	public float rotation = 0;
 	public float turnSpeed = 0;
@@ -83,6 +88,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	{
 		rotation += getActualTurnSpeed();
 		rotation %= 1;
+		ImmersiveEngineering.proxy.handleTileSound(IESounds.mill_creaking, this, turnSpeed > 0, 0.5f, 1f);
 	}
 
 
@@ -108,7 +114,6 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	@Override
 	public void tickServer()
 	{
-		tickClient();
 		if(level.getGameTime()%128==((getBlockPos().getX()^getBlockPos().getZ())&127))
 		{
 			final float oldTurnSpeed = turnSpeed;
@@ -122,7 +127,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 		IRotationAcceptor dynamo = outputCap.getCapability();
 		if(dynamo!=null)
 		{
-			double power = getActualTurnSpeed()*800;
+			double power = getActualTurnSpeed()*2400;
 			dynamo.inputRotation(Math.abs(power));
 		}
 	}
@@ -219,7 +224,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	}
 
 	@Override
-	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public InteractionResult interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(sails < 8&&heldItem.getItem()==Ingredients.WINDMILL_SAIL.asItem())
 		{
@@ -227,9 +232,9 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 			if(!player.getAbilities().instabuild)
 				heldItem.shrink(1);
 			this.setChanged();
-			return true;
+			return InteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 		}
-		return false;
+		return InteractionResult.PASS;
 	}
 
 	@Override
@@ -256,5 +261,11 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return SHAPES.get(this.getFacing());
+	}
+
+	@Override
+	public boolean shouldPlaySound(String sound)
+	{
+		return turnSpeed > 0;
 	}
 }

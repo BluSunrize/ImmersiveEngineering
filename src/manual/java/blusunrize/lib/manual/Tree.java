@@ -111,8 +111,7 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		private final List<AbstractNode<NT, LT>> children = new ArrayList<>();
 
 		private final Comparator<AbstractNode<NT, LT>> compare =
-				Comparator.<AbstractNode<NT, LT>, Boolean>comparing(AbstractNode::isLeaf)
-						.thenComparingDouble(AbstractNode::getWeight)
+				Comparator.<AbstractNode<NT, LT>>comparingDouble(AbstractNode::getWeight)
 						//Nulls should be irrelevant (either both or neither are null)
 						.thenComparing(AbstractNode::getNodeData, Comparator.nullsFirst(Comparator.naturalOrder()))
 						.thenComparing(AbstractNode::getLeafData, Comparator.nullsFirst(Comparator.naturalOrder()));

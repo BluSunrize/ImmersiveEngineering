@@ -20,6 +20,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockCon
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockLogic;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.*;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.SqueezerLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
@@ -54,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -170,6 +174,8 @@ public class SqueezerLogic
 			else
 				return null;
 		});
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
+
 	}
 
 	@Override
@@ -210,6 +216,7 @@ public class SqueezerLogic
 		private final IFluidHandler fluidOutputCap;
 		private final IItemHandler itemInputCap;
 		private final IItemHandler itemOutputCap;
+		private final IMachineInterfaceConnection mifHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -232,6 +239,13 @@ public class SqueezerLogic
 			this.itemOutputCap = new WrappingItemHandler(
 					inventory, false, true, new IntRange(OUTPUT_SLOT, OUTPUT_SLOT+1)
 			);
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(itemInputCap, MachineInterfaceHandler.BASIC_ITEM_IN),
+					new MachineCheckImplementation<>(itemOutputCap, MachineInterfaceHandler.BASIC_ITEM_OUT),
+					new MachineCheckImplementation<>(fluidOutputCap, MachineInterfaceHandler.BASIC_FLUID_OUT),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+			};
 		}
 
 		@Override

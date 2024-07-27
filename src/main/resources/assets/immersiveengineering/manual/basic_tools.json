@@ -1,0 +1,18 @@
+{
+  "engineers_hammer": {
+    "type": "crafting",
+    "recipe": "crafting/hammer"
+  },
+  "wirecutters": {
+    "type": "crafting",
+    "recipe": "crafting/wirecutter"
+  },
+  "screwdriver": {
+    "type": "crafting",
+    "recipe": "crafting/screwdriver"
+  },
+  "multimeter": {
+    "type": "crafting",
+    "recipe": "crafting/voltmeter"
+  }
+}

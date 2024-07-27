@@ -1,3 +1,182 @@
+##### Version 1.20.4-11.6.0-180
+
+- "The Redstone Update!"
+    - Add the radio tower, a way to wirelessly send signals! (BluSunrize)
+    - Add the redstone state cell for storing signals (BluSunrize)
+    - Add the redstone timer for emitting regular signals (BluSunrize)
+    - Add the redstone switchboard for remapping redstone signals between networks (BluSunrize)
+    - Add the warning siren to make loud noises and send villagers to their homes (BluSunrize)
+    - Move redstone components to a separate category of the manual (BluSunrize)
+- Add recipe for crushing slag bricks into slag gravel (BluSunrize)
+- Add recipes for wetting vanilla concrete powder in the bottling machine (BluSunrize)
+- Add progress tooltip to items in the arc furnace (BluSunrize)
+- Allow revolver pieces to be recycled in the arc furnace (BluSunrize)
+- Change recipe for catwalk stairs to be cheaper (BluSunrize)
+- Change luck attribute on revolvers to apply always, instead of just when held (BluSunrize)
+- Improve performance of waterwheels (voidsong-dragonfly)
+- Improve performance of thermoelectric generators (voidsong-dragonfly)
+- Improve performance of floodlights (voidsong-dragonfly)
+- Fix waterlogged posts not dropping items (BluSunrize)
+- Fix treated windows and feedthrough insulators letting rain through (BluSunrize, voidsong-dragonfly)
+- Fix crates not syncing their names to the client (BluSunrize)
+- Fix shader based particles breaking on servers (BluSunrize)
+- Fix various button tooltips sticking around after being clicked (BluSunrize)
+- Fix treated trapdoors erroneously having metal properties (BluSunrize)
+- Fix arms on posts dropping blocks when broken (BluSunrize)
+- Fix crate minecarts crashing when inserted into with a hopper (BluSunrize)
+- Fix barrel minecarts crashing when right-clicked (BluSunrize)
+- Fix villagers trying to pathfind through multiblocks (BluSunrize)
+- Fix disconnect due to shader list in the manual (BluSunrize)
+- Translations Added/Updated: de_de (AriaElidove)
+
+##### Version 1.20.4-11.5.0-179
+
+- Add warning signs (BluSunrize)
+    - Textures kindly provided by AriaElidove, thank you!
+    - You can also make a banner pattern with the signs and put (some) of the warnings on banners and shields!
+- Add fence gates for treated wood, steel and aluminium (BluSunrize)
+- Add colored sheetmetal chutes (BluSunrize)
+- Add a new light: the cage lamp (BluSunrize)
+    - Model & texture kindly provided by sinsinewave, thank you!
+- Remove raw ore blocks from the list of blocks dug by the grinding disk  (voidsong-dragonfly)
+- Change workbench to be able to handle blueprints with more than 9 recipes (BluSunrize)
+- Change villager trades for revolver pieces and mineral deposit maps to re-roll (BluSunrize)
+    - After buying the item, the trade will be replaced with a new one
+    - This only works on villagers acquired AFTER this update!
+- Change revolvers to use the vanilla cooldown system (BluSunrize)
+    - This does unfortunately make dualwielding less powerful, because cooldowns affect all revolvers
+- Change transformers nto not be worse than accumulators (voidsong-dragonfly)
+    - They now limit the energy flow properly, making them technically higher on throughput and reducing wire burnout
+- Prevent crates from being opened after being sealed (BluSunrize)
+- Fix villagers being unable to interact with IE doors (BluSunrize)
+- Fix steel doors dropping twice (BluSunrize)
+- Fix blueprint shelves not dropping blueprints when broken (BluSunrize)
+- Fix conveyors moving players while flying (BluSunrize)
+- Fix models for drill and buzzsaw not using translucent as a rendertype (BluSunrize)
+- Fix revolvers not combining their perks correctly when crafted (BluSunrize)
+- Fix revolver shots having impact sounds like an arrow (BluSunrize)
+- Fix models for drill and buzzsaw not using translucent as a rendertype (BluSunrize)
+
+##### Version 1.20.4-11.4.3-178
+
+- Change scaffolding blocks to have more descriptive names (AriaElidove)
+- Change translations for fluid blocks so Jade shows them properly (AriaElidove)
+- Fix arc recycling preventing joining multiplayer servers (BluSunrize)
+- Fix wooden crates closing their GUI when using your inventory key in their name (BluSunrize)
+
+##### Version 1.20.4-11.4.2-177
+
+- Add treated wood & steel doors (BluSunrize)
+    - Steel doors can only be opened by hand and will be locked by an applied redstone signal
+    - There's also matching trapdoors
+- Add the redstone-controlled pipe valve from Engineer's Decor (voidsong-dragonfly)
+    - Thank you wilechaote for giving us permission to include these blocks in the mod <3
+- Add a banner pattern for the screwdriver (BluSunrize)
+    - Also give the banner patterns each unique item textures
+- Add a recipe for armor-piercing cartridges using netherite nuggets (BluSunrize)
+- Add the ability to open scaffold covered ladders on the side (voidsong-dragonfly)
+- Add lots more block to be dug by the grinding disk, rock cutter and engineer's hammer (voidsong-dragonfly)
+- Remove duplicate villager trade (voidsong-dragonfly)
+- Change language files to partially use datageneration (BluSunrize)
+    - This way we don't forget about localizing the countless banner variations anymore
+- Change mixer to always place mixed fluid on bottom (voidsong-dragonfly)
+- Change fluids to actually have density (voidsong-dragonfly)
+- Change the survey tools to work on even more overworld blocks (voidsong-dragonfly)
+- Change rendering for two-block high flowers in the cloche (voidsong-dragonfly)
+- Change reinforced crates to require steel (BluSunrize)
+- Change arc furnace recycling (voidsong-dragonfly)
+    - Add additional items to recycle
+    - Improve JEI displays
+- Fix creative tab not being translatable (voidsong-dragonfly)
+- Fix diesel generator producing energy on low fluid amounts (voidsong-dragonfly)
+- Fix Toolboxes getting emptied when replacing grass blocks (voidsong-dragonfly)
+- Fix windmill crashing on servers (voidsong-dragonfly)
+- Fix Diesel generator not switching to active properly (voidsong-dragonfly)
+- Fix post transformers being placeable on top of posts (voidsong-dragonfly)
+
+##### Version 1.20.4-11.4.1-176
+
+- Add a netherite nugget (BluSunrize)
+    - This is to allow recycling outputs of nuggets
+- Fix incorrect output on high-cetane diesel recipe (BluSunrize)
+
+##### Version 1.20.4-11.4.0-175
+
+- Add upgrades for the Engineering's Skyhook (BluSunrize)
+    - High Torque Motor makes it faster to go up slopes
+    - Insulated Grip allows riding live wires without getting zapped
+    - Heavy Impact Hooks deal bonus damage with a falling attack, much like the mace in 1.21
+- Allow Phial Cartridges to be filled in the Bottling Machine (BluSunrize)
+- Allow survey tools to be used on more blocks (voidsong-dragonfly)
+- Add cloche recipes for ferns and grass (voidsong-dragonfly)
+- Add crushing recipes for stone and deepslate (voidsong-dragonfly)
+- Add the blueprint shelf, a block that can store up to 9 blueprints! (BluSunrize)
+- Add a banner pattern for the wire cutter (BluSunrize)
+- Add sub-designs for the banner patterns: hammer, wire cutter & wolf (BluSunrize)
+    - This allows for individual coloured grip + head of the tool
+    - It also allows all three wolf designs to be stored in one pattern
+- Allow barrel and crate minecarts to be automatically loaded & unloaded (voidsong-dragonfly)
+    - You can use a fluid pump to load and unload the barrel carts!
+- Add High-Cetane Biodiesel (BluSunrize)
+    - It's made from biodiesel and potion of strength in the refinery
+    - Its burntime is 25% longer than normal biodiesel!
+- Add catwalk blocks, heavily inspired by Engineer's Decor (BluSunrize)
+    - Thank you wilechaote for giving us permission to include these blocks in the mod <3
+    - Also includes catwalks stairs!
+- Change the recipes for revolver cartridges to be cheaper overall (BluSunrize)
+- Change Nickel and Uranium ores to have more easily identifiable textures (BluSunrize)
+- Change titles and descriptions of Advancements to more closely match Mojang's pattern (voidsong-dragonfly)
+- Change wire loss to be exponential rather than linear, allowing HV lines to run much further and still be viable! (
+  voidsong-dragonfly)
+- Change storage crates in their behavior (BluSunrize)
+    - They will only keep their items if they are sealed before being broken
+    - To seal a crate you'll need to use an engineer's hammer on it for an extended duration
+    - This way, they're not longer as good as Shulker Boxes
+    - To make up for it, the name of a crate can now be edited in its GUI and will display when hovering the cursor over
+      the block
+- Change waterwheels in their behavior (voidsong-dragonfly)
+    - Water source blocks directly in wheel paddles now have higher 'resistance' and penalize wheels
+    - Fluid blocks of lower height now provide less torque to waterwheels - higher flow is better
+    - Water will no longer spill/flow off the 'side' of waterwheels, their models have been adjusted to symbolize this
+    - Breastshot wheels are given a small buff to make millrace setups like large 17th century mills profitable
+    - The maximum power for an optimized overshot wheel is the same as before!
+    - Also both the waterwheel and windmill now have sounds!
+- Fix crusher not accepting multiple stacks of the same ore (BluSunrize)
+- Fix stone multiblocks being washed away by water (BluSunrize)
+- Fix potential race condition with wires damaging entities (BluSunrize)
+- Fix shader banners and potion fluids using the wrong colors (BluSunrize)
+- Fix accumulator backpack getting rendered as full-bright when worn (BluSunrize)
+- Fix IE's tools rendering inverted in offhand (BluSunrize)
+- Fix crusher and excavator particles behaving weirdly (BluSunrize)
+- Fix inconsistent breaking sounds with stone multiblocks (BluSunrize)
+
+##### Version 1.20.4-11.3.0-174
+
+- Re-add CC-Tweaked integration (Malte)
+- Add missing redstone acid recipe to the manual (BluSunrize)
+- Add the windows from Engineer's Decor (BluSunrize)
+    - Thank you wilechaote for giving us permission to include these blocks in the mod <3
+- Add Reinforced Concrete, crafted with Netherite Rods (BluSunrize)
+    - It's witherproof!
+- Add Panzerglass windows, which are also witherproof, in a similar way to the Engineer's Decor block! (BluSunrize)
+- Change Leaded Concrete to be less resistant to explosions and block teleporting instead
+- Fix fractions not rendering properly in the manual (BluSunrize)
+- Fix Machine Interface crashing on servers (BluSunrize)
+- Fix Toolbox being movable while opened (BluSunrize)
+
+##### Version 1.20.4-11.2.0-173
+
+- Overhaul the Engineering's Manual (voidsong-dragonfly)
+    - Splitting various long entries into multiple smaller ones (fluid transport, logic circuits, ...)
+    - Adding new pages for undocumented features (gunpower barrel, minecarts, ...)
+    - Sorting everything into a new list of more comprehensible categories
+    - As a result, all translations of the manual are deprecated and need to be updated by community input
+- Add the Machine Interfact, a block designed to read a variety of data from multiblock machines (BluSunrize)
+- Change recipe for hempcrete to make it cheaper to mass produce (voidsong-dragonfly)
+- Fix covered conveyors crashing the game (BluSunrize)
+- Fix multiblocks being broken by flowing water (BluSunrize)
+- Fix buttons in the circuit table not behaving correctly with keyboard inputs (BluSunrize)
+
 ##### Version 1.20.4-11.1.0-172
 - First release for 1.20.4
 - Includes all features from 10.1.0

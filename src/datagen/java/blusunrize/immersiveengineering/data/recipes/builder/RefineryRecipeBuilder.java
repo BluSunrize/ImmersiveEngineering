@@ -61,10 +61,15 @@ public class RefineryRecipeBuilder extends IERecipeBuilder<RefineryRecipeBuilder
 
 	public RefineryRecipeBuilder input(TagKey<Fluid> fluid, int amount)
 	{
+		return this.input(new FluidTagInput(fluid, amount));
+	}
+
+	public RefineryRecipeBuilder input(FluidTagInput input)
+	{
 		if(input0==null)
-			input0 = new FluidTagInput(fluid, amount);
+			input0 = input;
 		else
-			input1 = new FluidTagInput(fluid, amount);
+			input1 = input;
 		return this;
 	}
 

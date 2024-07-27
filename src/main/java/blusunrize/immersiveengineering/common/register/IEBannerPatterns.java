@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -18,28 +19,44 @@ import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.block.entity.BannerPattern;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class IEBannerPatterns
 {
 	public static final List<BannerEntry> ALL_BANNERS = new ArrayList<>();
-	public static final BannerEntry HAMMER = addBanner("hammer");
-	public static final BannerEntry BEVELS = addBanner("bevels");
-	public static final BannerEntry ORNATE = addBanner("ornate");
-	public static final BannerEntry TREATED_WOOD = addBanner("treated_wood");
-	public static final BannerEntry WINDMILL = addBanner("windmill");
-	public static final BannerEntry WOLF_R = addBanner("wolf_r");
-	public static final BannerEntry WOLF_L = addBanner("wolf_l");
-	public static final BannerEntry WOLF = addBanner("wolf");
+	public static final BannerEntry HAMMER = addBanner("hammer", "hmr", "head", "grip");
+	public static final BannerEntry WIRECUTTER = addBanner("wirecutter", "wct", "head", "grip");
+	public static final BannerEntry SCREWDRIVER = addBanner("screwdriver", "scd", "head", "grip");
+	public static final BannerEntry BEVELS = addBanner("bevels", "bvl");
+	public static final BannerEntry ORNATE = addBanner("ornate", "orn");
+	public static final BannerEntry TREATED_WOOD = addBanner("treated_wood", "twd");
+	public static final BannerEntry WINDMILL = addBanner("windmill", "wnd");
+	public static final BannerEntry WARNING = addBanner("warning", "wrn",
+			Arrays.stream(WarningSignIcon.values())
+					.filter(WarningSignIcon::hasBanner)
+					.map(WarningSignIcon::getSerializedName)
+					.toArray(String[]::new)
+	);
+	public static final BannerEntry WOLF = addBanner("wolf", "wlf", "r", "l");
 
-	private static BannerEntry addBanner(String name)
+	public static void init(IEventBus modBus)
 	{
-		var key = ResourceKey.create(Registries.BANNER_PATTERN, IEApi.ieLoc(name));
-		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, IEApi.ieLoc(name));
-		ItemRegObject<BannerPatternItem> item = IEItems.register(
-				"bannerpattern_"+name, () -> new BannerPatternItem(tag, new Properties())
-		);
-		BannerEntry result = new BannerEntry(key, tag, item);
+		REGISTER.register(modBus);
+	}
+
+	private static BannerEntry addBanner(String name, String hashName, String... subdesigns)
+	{
+		Holder<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
+		TagKey<BannerPattern> tag = TagKey.create(Registries.BANNER_PATTERN, pattern.unwrapKey().get().location());
+		ItemRegObject<BannerPatternItem> item = IEItems.register("bannerpattern_"+name, () -> new BannerPatternItem(
+				tag, new Properties()
+		));
+		BannerEntry result = new BannerEntry(name, pattern, tag, item);
+		for(String design : subdesigns)
+			result.patterns().add(
+					REGISTER.register(name+"_"+design, () -> new BannerPattern("ie_"+hashName+"_"+design))
+			);
 		ALL_BANNERS.add(result);
 		return result;
 	}
@@ -49,10 +66,16 @@ public class IEBannerPatterns
 	}
 
 	public record BannerEntry(
-			ResourceKey<BannerPattern> key,
+			String name,
+			List<ResourceKey<BannerPattern>> patterns,
 			TagKey<BannerPattern> tag,
 			IEItems.ItemRegObject<BannerPatternItem> item
 	)
 	{
+		public BannerEntry(String name, Holder<BannerPattern> pattern, TagKey<BannerPattern> tag, ItemRegObject<BannerPatternItem> item)
+		{
+			this(name, new ArrayList<>(), tag, item);
+			this.patterns.add(pattern);
+		}
 	}
 }

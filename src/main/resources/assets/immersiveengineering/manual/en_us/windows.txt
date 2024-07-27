@@ -1,0 +1,6 @@
+Factory Windows
+The grime is obligatory
+<&window_recipes>Framed glass windows allow some natural light to make its way into the factory, as to not rely on <link;engineered_lighting;lanterns> alone.<br>
+Frames made from Treated Wood are thicker, while Steel and Aluminium make for a thinner one.<br>
+Unlike normal glass panes, these windows can be placed horizontally in addition to vertically, to act as skylights!<np>
+<&reinforced>Made from laminated glass and <link;resin_and_duroplast;duroplast sheets> and encased in a sturdy frame of netherite, these windows are highly resistant to explosions even up to those of a Wither!

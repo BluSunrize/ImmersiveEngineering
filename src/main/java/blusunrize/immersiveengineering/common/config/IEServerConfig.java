@@ -54,15 +54,15 @@ public class IEServerConfig
 			// Split: Color in client, all others in server
 			energyWireConfigs.put(
 					IEWireType.COPPER,
-					new EnergyWireConfig(builder, "copper", 16, 2048, 0.05)
+					new EnergyWireConfig(builder, "copper", 16, 2048, 0.0125)
 			);
 			energyWireConfigs.put(
 					IEWireType.ELECTRUM,
-					new EnergyWireConfig(builder, "electrum", 16, 8192, 0.025)
+					new EnergyWireConfig(builder, "electrum", 16, 8192, 0.003)
 			);
 			energyWireConfigs.put(
 					IEWireType.STEEL,
-					new EnergyWireConfig(builder, "hv", 32, 32768, 0.025)
+					new EnergyWireConfig(builder, "hv", 32, 32768, 0.0008)
 			);
 			wireConfigs.put(
 					IEWireType.STRUCTURE_ROPE,
@@ -130,10 +130,10 @@ public class IEServerConfig
 				super(builder, name, defLength, false);
 				this.transferRate = builder.comment("The transfer rate of "+name+" wire in IF/t")
 						.defineInRange("transferRate", defRate, 0, Integer.MAX_VALUE);
-				this.lossRatio = builder.comment("The percentage of power lost every 16 blocks of distance in "+name+" wire")
-						.defineInRange("loss", defLoss, 0, 1);
+				this.lossRatio = builder.comment("The percentage of received power lost every 16 blocks of distance in "+name+" wire. This means exponential loss!")
+						.defineInRange("distanceLoss", defLoss, 0, 1);
 				this.connectorRate = builder
-						.comment("In- and output rates of "+name+" wire connectors. This is independant of the transferrate of the wires.")
+						.comment("In- and output rates of "+name+" wire connectors. This is independent of the transfer rate of the wires.")
 						.defineInRange("wireConnectorInput", defRate/8, 0, Integer.MAX_VALUE);
 				builder.pop();
 			}
@@ -152,8 +152,9 @@ public class IEServerConfig
 				hvCapConfig = new CapacitorConfig(builder, () -> IEBlockEntities.CAPACITOR_HV.get(), "high", 4000000, 4096, 4096);
 				builder.pop();
 			}
+			// TODO: Make this multiplier one on next major (1.21?) update
 			dynamo_output = builder
-					.comment("The base Flux that is output by the dynamo. This will be modified by the rotation modifier of the attached water- or windmill")
+					.comment("Output modifier for the energy created by the kinetic dynamo. This will be modified by the rotation modifier of the attached water- or windmill")
 					.defineInRange("dynamo_output", 3D, 0, Integer.MAX_VALUE);
 			thermoelectric_output = builder
 					.comment("Output modifier for the energy created by the Thermoelectric Generator")
@@ -292,6 +293,7 @@ public class IEServerConfig
 						.defineInRange("initial_depletion", .2, 0, 1);
 				builder.pop();
 			}
+			radio_tower_consumption = addPositive(builder, "radio_tower_consumption", 128, "The Flux the Radio Tower will consume per tick to remain active");
 			builder.pop();
 		}
 
@@ -428,6 +430,7 @@ public class IEServerConfig
 		public final DoubleValue excavator_theshold;
 		public final IntValue excavator_yield;
 		public final DoubleValue excavator_initial_depletion;
+		public final IntValue radio_tower_consumption;
 	}
 
 	public static class Ores

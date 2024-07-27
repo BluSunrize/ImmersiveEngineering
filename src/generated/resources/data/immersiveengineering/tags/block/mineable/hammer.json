@@ -1,4 +1,7 @@
 {
+  "remove": [
+    "immersiveengineering:razor_wire"
+  ],
   "values": [
     "immersiveengineering:metal_ladder_none",
     "immersiveengineering:metal_ladder_alu",
@@ -20,6 +23,8 @@
     "immersiveengineering:connector_redstone",
     "immersiveengineering:connector_probe",
     "immersiveengineering:connector_bundled",
+    "immersiveengineering:redstone_state_cell",
+    "immersiveengineering:redstone_timer",
     "immersiveengineering:feedthrough",
     "immersiveengineering:connector_lv",
     "immersiveengineering:connector_lv_relay",
@@ -32,6 +37,7 @@
     "immersiveengineering:conveyor_dropper",
     "immersiveengineering:conveyor_vertical",
     "immersiveengineering:conveyor_splitter",
-    "immersiveengineering:conveyor_extract"
+    "immersiveengineering:conveyor_extract",
+    "immersiveengineering:redstone_switchboard"
   ]
 }

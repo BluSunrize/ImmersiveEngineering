@@ -62,7 +62,10 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		{
 			IEnergyStorage forSide = energyWrappers.get(fd).getCapability();
 			if(forSide!=null)
+			{
 				amount -= forSide.receiveEnergy(amount, false);
+				if(amount <= 0) return;
+			}
 		}
 	}
 

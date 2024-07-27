@@ -1,0 +1,117 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_base"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_r"
+      },
+      "when": {
+        "facing": "north",
+        "railing_right": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_l"
+      },
+      "when": {
+        "facing": "north",
+        "railing_left": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_base",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_r",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "railing_right": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_l",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "railing_left": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_base",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_r",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "railing_right": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_l",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "railing_left": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_base",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_r",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "railing_right": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/treated_catwalk_stairs_railing_l",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "railing_left": "true"
+      }
+    }
+  ]
+}

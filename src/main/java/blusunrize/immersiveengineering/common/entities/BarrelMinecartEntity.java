@@ -26,14 +26,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEntity>
 {
+	public MinecartFluidHandler minecartFluidHandler = new MinecartFluidHandler(this);
+
 	public BarrelMinecartEntity(Level world, double x, double y, double z)
 	{
 		this(IEEntityTypes.BARREL_MINECART.get(), world, x, y, z);
@@ -52,7 +56,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	public static <T extends BarrelMinecartEntity>
 	void registerCapabilities(RegisterCapabilitiesEvent ev, Supplier<EntityType<T>> type)
 	{
-		ev.registerEntity(FluidHandler.ENTITY, type.get(), (e, $) -> e.containedBlockEntity.tank);
+		ev.registerEntity(FluidHandler.ENTITY, type.get(), (e, $) -> e.minecartFluidHandler);
 	}
 
 	@Override
@@ -103,4 +107,67 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 		return IEBlocks.WoodenDevices.WOODEN_BARREL.defaultBlockState();
 	}
 
+
+	static class MinecartFluidHandler implements IFluidHandler
+	{
+		final BarrelMinecartEntity minecart;
+
+		public MinecartFluidHandler(BarrelMinecartEntity minecart)
+		{
+			this.minecart = minecart;
+		}
+
+		@Override
+		public int getTanks()
+		{
+			return 1;
+		}
+
+		@Override
+		public FluidStack getFluidInTank(int tank)
+		{
+			return this.minecart.containedBlockEntity.tank.getFluidInTank(tank);
+		}
+
+		@Override
+		public int getTankCapacity(int tank)
+		{
+			return this.minecart.containedBlockEntity.tank.getTankCapacity(tank);
+		}
+
+		@Override
+		public boolean isFluidValid(int tank, FluidStack stack)
+		{
+			return this.minecart.containedBlockEntity.tank.isFluidValid(tank, stack);
+		}
+
+		@Override
+		public int fill(FluidStack resource, FluidAction action)
+		{
+			int filled = this.minecart.containedBlockEntity.tank.fill(resource, action);
+			updateContainingEntity();
+			return filled;
+		}
+
+		@Override
+		public FluidStack drain(FluidStack resource, FluidAction action)
+		{
+			FluidStack drained = this.minecart.containedBlockEntity.tank.drain(resource, action);
+			updateContainingEntity();
+			return drained;
+		}
+
+		@Override
+		public FluidStack drain(int maxDrain, FluidAction action)
+		{
+			FluidStack drained = this.minecart.containedBlockEntity.tank.drain(maxDrain, action);
+			updateContainingEntity();
+			return drained;
+		}
+
+		private void updateContainingEntity()
+		{
+			this.minecart.updateSynchedData();
+		}
+	}
 }

@@ -1,0 +1,55 @@
+{
+  "conveyor_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/conveyor_basic"
+        }
+      ]
+    ]
+  },
+  "conveyor_redstone_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/conveyor_redstone"
+  },
+  "conveyor_dropper_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/conveyor_dropper"
+  },
+  "conveyor_extract_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/conveyor_extract"
+  },
+  "conveyor_vertical_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/conveyor_vertical"
+  },
+  "conveyor_splitter_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/conveyor_splitter"
+  },
+  "conveyor_covered_recipe": {
+    "type": "crafting",
+    "recipe": "crafting/conveyor_basic_covered"
+  },
+  "conveyor_other_covered_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/conveyor_dropper_covered"
+        },
+        {
+          "recipe": "crafting/conveyor_extract_covered"
+        },
+        {
+          "recipe": "crafting/conveyor_splitter_covered"
+        },
+        {
+          "recipe": "crafting/conveyor_vertical_covered"
+        }
+      ]
+    ]
+  }
+}

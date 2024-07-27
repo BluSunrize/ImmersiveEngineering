@@ -94,13 +94,14 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	BlockEntityTicker<T2> getTicker(Level world, BlockState state, BlockEntityType<T2> type)
 	{
 		BlockEntityTicker<T2> baseTicker = getClassData().makeBaseTicker(world.isClientSide);
-		if(makeEntity instanceof MultiblockBEType<?> multiBEType && type != multiBEType.master())
+		if(makeEntity instanceof MultiblockBEType<?> multiBEType&&type!=multiBEType.master())
 			return null;
 		return baseTicker;
 	}
 
 	private static final List<BooleanProperty> DEFAULT_OFF = ImmutableList.of(
-			IEProperties.MULTIBLOCKSLAVE, IEProperties.ACTIVE, IEProperties.MIRRORED
+			IEProperties.MULTIBLOCKSLAVE, IEProperties.ACTIVE, IEProperties.MIRRORED,
+			IEProperties.UP, IEProperties.DOWN, IEProperties.NORTH, IEProperties.SOUTH, IEProperties.WEST, IEProperties.EAST
 	);
 
 	@Override
@@ -279,11 +280,11 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 			world.blockEvent(tile.getBlockPos(), tile.getBlockState().getBlock(), 255, 0);
 			return ItemInteractionResult.SUCCESS;
 		}
-		if(tile instanceof IPlayerInteraction)
+		if(tile instanceof IPlayerInteraction interaction)
 		{
-			boolean b = ((IPlayerInteraction)tile).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
-			if(b)
-				return ItemInteractionResult.SUCCESS;
+			InteractionResult res = interaction.interact(side, player, hand, heldItem, hitX, hitY, hitZ);
+			if(res.consumesAction()||res==InteractionResult.FAIL)
+				return res;
 		}
 		if(tile instanceof MenuProvider menuProvider&&hand==InteractionHand.MAIN_HAND&&!player.isShiftKeyDown())
 		{

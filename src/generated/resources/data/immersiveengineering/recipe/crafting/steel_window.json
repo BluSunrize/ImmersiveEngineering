@@ -1,0 +1,23 @@
+{
+  "type": "immersiveengineering:shaped_fluid",
+  "value": {
+    "category": "misc",
+    "key": {
+      "g": {
+        "tag": "forge:glass_panes"
+      },
+      "r": {
+        "tag": "forge:sheetmetals/steel"
+      }
+    },
+    "pattern": [
+      "rgr",
+      "ggg",
+      "rgr"
+    ],
+    "result": {
+      "count": 8,
+      "item": "immersiveengineering:steel_window"
+    }
+  }
+}

@@ -45,8 +45,8 @@ import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.*;
+import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
@@ -126,12 +126,15 @@ public class ClientProxy extends CommonProxy
 		IEOBJCallbacks.register(rl("cloche"), ClocheCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("floodlight"), FloodlightCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("lantern"), LanternCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("cagelamp"), CagelampCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("logic_unit"), LogicUnitCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("pipe"), PipeCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("probe"), ProbeConnectorCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("post"), PostCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("razor_wire"), RazorWireCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("connector_rs"), RSConnectorCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("timer"), TimerCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("siren"), SirenCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("structural_arm"), StructuralArmCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("structural_connector"), StructuralConnectorCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("turret"), TurretCallbacks.INSTANCE);
@@ -201,8 +204,15 @@ public class ClientProxy extends CommonProxy
 			ev.enqueueWork(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
 
 		IEManual.addIEManualEntries();
-		// TODO is this necessary? Is this enough?
-		// IEBannerPatterns.ALL_BANNERS.forEach(entry -> Sheets.getBannerMaterial(entry.pattern()));
+		IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
+			for(Holder<BannerPattern> pattern : entry.patterns())
+			{
+				ResourceKey<BannerPattern> key = pattern.unwrapKey().orElseThrow();
+				Sheets.BANNER_MATERIALS.put(key, new Material(Sheets.BANNER_SHEET, BannerPattern.location(key, true)));
+				Sheets.SHIELD_MATERIALS.put(key, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(key, false)));
+			}
+		});
+		ev.enqueueWork(OptifineWarning::warnIfRequired);
 	}
 
 	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(
@@ -358,6 +368,21 @@ public class ClientProxy extends CommonProxy
 
 		if(guiId.equals(Lib.GUIID_RedstoneProbe)&&tileEntity instanceof ConnectorProbeBlockEntity)
 			Minecraft.getInstance().setScreen(new RedstoneProbeScreen((ConnectorProbeBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
+		if(guiId.equals(Lib.GUIID_RedstoneStateCell)&&tileEntity instanceof RedstoneStateCellBlockEntity)
+			Minecraft.getInstance().setScreen(new RedstoneStateCellScreen((RedstoneStateCellBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
+		if(guiId.equals(Lib.GUIID_RedstoneTimer)&&tileEntity instanceof RedstoneTimerBlockEntity)
+			Minecraft.getInstance().setScreen(new RedstoneTimerScreen((RedstoneTimerBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
+		if(guiId.equals(Lib.GUIID_RedstoneSwitchboard)&&tileEntity instanceof RedstoneSwitchboardBlockEntity)
+			Minecraft.getInstance().setScreen(new RedstoneSwitchboardScreen((RedstoneSwitchboardBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
+		if(guiId.equals(Lib.GUIID_Siren)&&tileEntity instanceof SirenBlockEntity)
+			Minecraft.getInstance().setScreen(new SirenScreen((SirenBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+
+		if(guiId.equals(Lib.GUIID_MachineInterface)&&tileEntity instanceof MachineInterfaceBlockEntity)
+			Minecraft.getInstance().setScreen(new MachineInterfaceScreen((MachineInterfaceBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 	}
 
 
@@ -410,6 +435,7 @@ public class ClientProxy extends CommonProxy
 		ev.register(IEMenuTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
 		ev.register(IEMenuTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
 		ev.register(IEMenuTypes.MIXER.getType(), MixerScreen::new);
+		ev.register(IEMenuTypes.RADIO_TOWER.getType(), RadioTowerScreen::new);
 		ev.register(IEMenuTypes.GUN_TURRET.getType(), GunTurretScreen::new);
 		ev.register(IEMenuTypes.CHEM_TURRET.getType(), ChemTurretScreen::new);
 		ev.register(IEMenuTypes.FLUID_SORTER.getType(), FluidSorterScreen::new);

@@ -21,6 +21,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockS
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPosition;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.DieselGeneratorLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.shapes.DieselGeneratorShapes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -77,28 +80,31 @@ public class DieselGeneratorLogic
 					.map(Supplier::get)
 					.filter(Objects::nonNull)
 					.collect(Collectors.toList());
-			if(!presentOutputs.isEmpty()&&EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
-				state.consumeTick--;
-			if(state.consumeTick <= 0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
+			GeneratorFuel recipe = state.recipeGetter.apply(
+					context.getLevel().getRawLevel(), state.tank.getFluid().getFluid()
+			);
+			if(recipe!=null&&
+					!presentOutputs.isEmpty()&&
+					EnergyHelper.distributeFlux(presentOutputs, output, true) < output)
 			{
-				GeneratorFuel recipe = state.recipeGetter.apply(
-						context.getLevel().getRawLevel(), state.tank.getFluid().getFluid()
-				);
-				if(recipe!=null)
+				state.consumeTick--;
+				if(state.consumeTick <= 0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
 				{
-					int burnTime = recipe.getBurnTime();
-					int fluidConsumed = (10*FluidType.BUCKET_VOLUME)/burnTime;
-					if(state.tank.getFluidAmount() >= fluidConsumed)
+					int toConsume = (10*FluidType.BUCKET_VOLUME)/recipe.getBurnTime();
+					float fluidConsumed;
+					if((fluidConsumed = state.tank.drain(toConsume, FluidAction.EXECUTE).getAmount()) > 0)
 					{
 						if(!active)
 							active = true;
-						state.tank.drain(fluidConsumed, FluidAction.EXECUTE);
-						state.consumeTick = 10;
+						state.consumeTick = 10*(int)(fluidConsumed/toConsume);
 					}
 					else if(active)
 						active = false;
 				}
+				EnergyHelper.distributeFlux(presentOutputs, output, false);
 			}
+			else if(active)
+				active = false;
 		}
 		else if(active)
 			active = false;
@@ -179,6 +185,7 @@ public class DieselGeneratorLogic
 			else
 				return null;
 		});
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -208,6 +215,7 @@ public class DieselGeneratorLogic
 		// Utils
 		private final BiFunction<Level, Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
 		private final List<Supplier<@Nullable IEnergyStorage>> energyOutputs;
+		private final IMachineInterfaceConnection mifHandler;
 
 		public State(IInitialMultiblockContext<State> ctx)
 		{
@@ -215,6 +223,10 @@ public class DieselGeneratorLogic
 			for(BlockPos pos : ENERGY_OUTPUTS)
 				outputs.add(ctx.getCapabilityAt(EnergyStorage.BLOCK, pos, RelativeBlockFace.DOWN));
 			this.energyOutputs = outputs.build();
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(tank, MachineInterfaceHandler.BASIC_FLUID_IN),
+			};
 		}
 
 		@Override

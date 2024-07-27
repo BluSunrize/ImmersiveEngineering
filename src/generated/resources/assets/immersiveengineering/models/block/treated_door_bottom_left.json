@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/door_bottom_left",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "immersiveengineering:block/wooden_decoration/treated_door_bottom",
+    "top": "immersiveengineering:block/wooden_decoration/treated_door_top"
+  }
+}

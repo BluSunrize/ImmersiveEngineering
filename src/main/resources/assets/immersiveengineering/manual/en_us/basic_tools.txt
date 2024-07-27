@@ -1,0 +1,12 @@
+Basic Tools
+Hammer & §mSickle§r Screwdriver
+<&engineers_hammer>Engineer's Hammers are one of the most important tools in the engineer's toolbox.<br>
+It can be used to configure and form machines, as well as crush ores.<np>
+<&wirecutters>§lEngineer's Wire Cutters§r are used to remove all the wires connected to a block by simply rightclicking it.<br>
+Wirecutters can also remove wires strung between poles when worked with.<np>
+<&screwdriver>Engineer's Screwdrivers are another common item in toolboxes.<br>
+They are used for precise configuration on certain pieces of machinery.<np>
+<&multimeter>§lMultimeters§r are used to measure connections.<br>
+Aiming it at any energy storage or rightclicking it will read its current storage.<br>
+Sneak+rightclick two connectors to calculate the average loss between them.<br>
+Multimeters can also be used to read redstone levels of blocks such as redstone connectors and redstone dust.

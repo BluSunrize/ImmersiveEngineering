@@ -1,0 +1,588 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/frame",
+        "x": -90
+      },
+      "when": {
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_0",
+        "x": -90
+      },
+      "when": {
+        "blueprint_0": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_1",
+        "x": -90
+      },
+      "when": {
+        "blueprint_1": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_2",
+        "x": -90
+      },
+      "when": {
+        "blueprint_2": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_3",
+        "x": -90
+      },
+      "when": {
+        "blueprint_3": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_4",
+        "x": -90
+      },
+      "when": {
+        "blueprint_4": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_5",
+        "x": -90
+      },
+      "when": {
+        "blueprint_5": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_6",
+        "x": -90
+      },
+      "when": {
+        "blueprint_6": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_7",
+        "x": -90
+      },
+      "when": {
+        "blueprint_7": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_8",
+        "x": -90
+      },
+      "when": {
+        "blueprint_8": "true",
+        "facing": "down"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/frame",
+        "x": -90
+      },
+      "when": {
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_0",
+        "x": -90
+      },
+      "when": {
+        "blueprint_0": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_1",
+        "x": -90
+      },
+      "when": {
+        "blueprint_1": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_2",
+        "x": -90
+      },
+      "when": {
+        "blueprint_2": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_3",
+        "x": -90
+      },
+      "when": {
+        "blueprint_3": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_4",
+        "x": -90
+      },
+      "when": {
+        "blueprint_4": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_5",
+        "x": -90
+      },
+      "when": {
+        "blueprint_5": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_6",
+        "x": -90
+      },
+      "when": {
+        "blueprint_6": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_7",
+        "x": -90
+      },
+      "when": {
+        "blueprint_7": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_8",
+        "x": -90
+      },
+      "when": {
+        "blueprint_8": "true",
+        "facing": "up"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/frame"
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_0"
+      },
+      "when": {
+        "blueprint_0": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_1"
+      },
+      "when": {
+        "blueprint_1": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_2"
+      },
+      "when": {
+        "blueprint_2": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_3"
+      },
+      "when": {
+        "blueprint_3": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_4"
+      },
+      "when": {
+        "blueprint_4": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_5"
+      },
+      "when": {
+        "blueprint_5": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_6"
+      },
+      "when": {
+        "blueprint_6": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_7"
+      },
+      "when": {
+        "blueprint_7": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_8"
+      },
+      "when": {
+        "blueprint_8": "true",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/frame",
+        "y": 180
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_0",
+        "y": 180
+      },
+      "when": {
+        "blueprint_0": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_1",
+        "y": 180
+      },
+      "when": {
+        "blueprint_1": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_2",
+        "y": 180
+      },
+      "when": {
+        "blueprint_2": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_3",
+        "y": 180
+      },
+      "when": {
+        "blueprint_3": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_4",
+        "y": 180
+      },
+      "when": {
+        "blueprint_4": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_5",
+        "y": 180
+      },
+      "when": {
+        "blueprint_5": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_6",
+        "y": 180
+      },
+      "when": {
+        "blueprint_6": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_7",
+        "y": 180
+      },
+      "when": {
+        "blueprint_7": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_8",
+        "y": 180
+      },
+      "when": {
+        "blueprint_8": "true",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/frame",
+        "y": 270
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_0",
+        "y": 270
+      },
+      "when": {
+        "blueprint_0": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_1",
+        "y": 270
+      },
+      "when": {
+        "blueprint_1": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_2",
+        "y": 270
+      },
+      "when": {
+        "blueprint_2": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_3",
+        "y": 270
+      },
+      "when": {
+        "blueprint_3": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_4",
+        "y": 270
+      },
+      "when": {
+        "blueprint_4": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_5",
+        "y": 270
+      },
+      "when": {
+        "blueprint_5": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_6",
+        "y": 270
+      },
+      "when": {
+        "blueprint_6": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_7",
+        "y": 270
+      },
+      "when": {
+        "blueprint_7": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_8",
+        "y": 270
+      },
+      "when": {
+        "blueprint_8": "true",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/frame",
+        "y": 90
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_0",
+        "y": 90
+      },
+      "when": {
+        "blueprint_0": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_1",
+        "y": 90
+      },
+      "when": {
+        "blueprint_1": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_2",
+        "y": 90
+      },
+      "when": {
+        "blueprint_2": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_3",
+        "y": 90
+      },
+      "when": {
+        "blueprint_3": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_4",
+        "y": 90
+      },
+      "when": {
+        "blueprint_4": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_5",
+        "y": 90
+      },
+      "when": {
+        "blueprint_5": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_6",
+        "y": 90
+      },
+      "when": {
+        "blueprint_6": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_7",
+        "y": 90
+      },
+      "when": {
+        "blueprint_7": "true",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "immersiveengineering:block/blueprint_shelf/blueprint_8",
+        "y": 90
+      },
+      "when": {
+        "blueprint_8": "true",
+        "facing": "east"
+      }
+    }
+  ]
+}

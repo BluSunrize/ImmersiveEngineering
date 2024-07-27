@@ -65,12 +65,14 @@ public class Lib
 	public static final String GUIID_Sorter = "sorter";
 	public static final String GUIID_ItemBatcher = "item_batcher";
 	public static final String GUIID_LogicUnit = "logic_unit";
+	public static final String GUIID_MachineInterface = "machineinterface";
 	public static final String GUIID_Squeezer = "squeezer";
 	public static final String GUIID_Fermenter = "fermenter";
 	public static final String GUIID_Refinery = "refinery";
 	public static final String GUIID_ArcFurnace = "arcfurnace";
 	public static final String GUIID_AutoWorkbench = "autoworkbench";
 	public static final String GUIID_Mixer = "mixer";
+	public static final String GUIID_RadioTower = "radiotower";
 	public static final String GUIID_Turret_Gun = "turret_gun";
 	public static final String GUIID_Turret_Chem = "turret_chem";
 	public static final String GUIID_FluidSorter = "fluidsorter";
@@ -78,6 +80,10 @@ public class Lib
 	public static final String GUIID_ToolboxBlock = "toolboxblock";
 	public static final String GUIID_RedstoneConnector = "redstoneconnector";
 	public static final String GUIID_RedstoneProbe = "redstoneprobe";
+	public static final String GUIID_RedstoneStateCell = "redstonestatecell";
+	public static final String GUIID_RedstoneTimer = "redstonetimer";
+	public static final String GUIID_RedstoneSwitchboard = "redstoneswitchboard";
+	public static final String GUIID_Siren = "siren";
 	//Items
 	public static final String GUIID_Revolver = "revolver";
 	public static final String GUIID_Toolbox = "toolbox";

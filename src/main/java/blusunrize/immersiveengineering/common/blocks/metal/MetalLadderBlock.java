@@ -8,14 +8,24 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerBlockInteraction;
+import blusunrize.immersiveengineering.common.util.orientation.RotationUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -26,9 +36,12 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class MetalLadderBlock extends LadderBlock
+public class MetalLadderBlock extends LadderBlock implements IHammerBlockInteraction
 {
+	public static final BooleanProperty OPEN = BooleanProperty.create("open");
+
 	private static final Map<Direction, VoxelShape> FRAMES = new EnumMap<>(Direction.class);
+	private static final Map<Direction, VoxelShape> FRAMES_OPEN = new EnumMap<>(Direction.class);
 
 	static
 	{
@@ -44,6 +57,21 @@ public class MetalLadderBlock extends LadderBlock
 			if(dir!=Direction.WEST)
 				forDir = merge(forDir, new AABB(.9375, 0, 0, 1, 1, 1));
 			FRAMES.put(dir, forDir);
+		}
+		for(Direction dir : DirectionUtils.BY_HORIZONTAL_INDEX)
+		{
+			VoxelShape forDir = Shapes.empty();
+			if(dir.getAxis()==Axis.Z)
+			{
+				forDir = merge(forDir, new AABB(.9375, 0, 0, 1, 1, 1));
+				forDir = merge(forDir, new AABB(0, 0, 0, .0625, 1, 1));
+			}
+			else
+			{
+				forDir = merge(forDir, new AABB(0, 0, .9375, 1, 1, 1));
+				forDir = merge(forDir, new AABB(0, 0, 0, 1, 1, .0625));
+			}
+			FRAMES_OPEN.put(dir, forDir);
 		}
 	}
 
@@ -69,7 +97,7 @@ public class MetalLadderBlock extends LadderBlock
 		else
 		{
 			Direction ladderSide = state.getValue(LadderBlock.FACING);
-			return Shapes.joinUnoptimized(base, FRAMES.get(ladderSide), BooleanOp.OR);
+			return state.getValue(OPEN)?Shapes.joinUnoptimized(base, FRAMES_OPEN.get(ladderSide), BooleanOp.OR): Shapes.joinUnoptimized(base, FRAMES.get(ladderSide), BooleanOp.OR);
 		}
 	}
 
@@ -78,7 +106,9 @@ public class MetalLadderBlock extends LadderBlock
 	public BlockState getStateForPlacement(BlockPlaceContext ctx)
 	{
 		BlockState baseState = super.getStateForPlacement(ctx);
-		if(type==CoverType.NONE||baseState==null)
+		if(baseState==null) return baseState;
+		baseState = baseState.setValue(OPEN, false);
+		if(type==CoverType.NONE)
 			return baseState;
 		else
 			return baseState.setValue(LadderBlock.FACING, Direction.fromYRot(ctx.getRotation()).getOpposite());
@@ -91,6 +121,33 @@ public class MetalLadderBlock extends LadderBlock
 			return super.canSurvive(state, world, pos);
 		else
 			return true;
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
+	{
+		state.add(FACING, WATERLOGGED, OPEN);
+	}
+
+	@Override
+	public InteractionResult useHammer(BlockState state, Level world, BlockPos pos, Player player)
+	{
+		if(player==null) return InteractionResult.FAIL;
+		if(type!=CoverType.NONE&&player.isShiftKeyDown())
+		{
+			boolean b = world.setBlockAndUpdate(pos, state.setValue(OPEN, !state.getValue(OPEN)));
+			if(b)
+				return InteractionResult.SUCCESS;
+			else
+				return InteractionResult.FAIL;
+		}
+		else
+		{
+			if(RotationUtil.rotateBlock(world, pos, false))
+				return InteractionResult.SUCCESS;
+			else
+				return InteractionResult.FAIL;
+		}
 	}
 
 	public enum CoverType

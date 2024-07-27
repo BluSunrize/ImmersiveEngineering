@@ -31,6 +31,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -43,13 +44,18 @@ public class WireCollisions
 		{
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.level());
 			WireCollisionData wireData = global.getCollisionData();
-			Collection<WireCollisionData.CollisionInfo> atBlock = wireData.getCollisionInfo(p);
-			for(CollisionInfo info : atBlock)
+			Iterator<CollisionInfo> infos = wireData.getCollisionInfo(p).iterator();
+			//noinspection SynchronizationOnLocalVariableOrMethodParameter
+			synchronized(infos)
 			{
-				LocalWireNetwork local = info.getLocalNet(global);
-				for(LocalNetworkHandler h : local.getAllHandlers())
-					if(h instanceof ICollisionHandler collisionHandler)
-						collisionHandler.onCollided(living, p, info);
+				while(infos.hasNext())
+				{
+					CollisionInfo info = infos.next();
+					LocalWireNetwork local = info.getLocalNet(global);
+					for(LocalNetworkHandler h : local.getAllHandlers())
+						if(h instanceof ICollisionHandler collisionHandler)
+							collisionHandler.onCollided(living, p, info);
+				}
 			}
 		}
 	}

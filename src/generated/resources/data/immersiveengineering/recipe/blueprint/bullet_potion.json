@@ -3,16 +3,23 @@
   "category": "specialBullet",
   "inputs": [
     {
-      "item": "immersiveengineering:empty_casing"
+      "basePredicate": {
+        "item": "immersiveengineering:empty_shell"
+      },
+      "count": 4
     },
     {
       "tag": "c:gunpowders"
     },
     {
-      "item": "minecraft:glass_bottle"
+      "basePredicate": {
+        "item": "minecraft:glass_bottle"
+      },
+      "count": 4
     }
   ],
   "result": {
-    "item": "immersiveengineering:potion"
+    "Count": 4,
+    "id": "immersiveengineering:potion"
   }
 }

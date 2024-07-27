@@ -1,0 +1,8 @@
+Transformers
+These go up AND down!
+<&transformer_recipes>§lTransformers§r are laminated iron cores wrapped in coils of wire that convert between different voltages of wire.<br>
+Standard transformers can convert between LV and MV freely, but specialty circuits found in the HV Transformer are needed to convert to HV.<br>
+Their compact internals allow standard transformers to be placed on <link;posts_and_wallmounts;Posts>, however HV Transformers cannot be placed this way.<br>
+The HV Transformer can step directly between LV and HV as necessary, thus reducing the number of transformers needed.<br>
+Connection diagrams can be found on the following pages.
+<&images>

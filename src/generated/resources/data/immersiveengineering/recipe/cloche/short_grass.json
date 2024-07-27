@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:short_grass"
+  },
+  "render": {
+    "type": "immersiveengineering:generic",
+    "value": "minecraft:short_grass"
+  },
+  "results": [
+    {
+      "item": "minecraft:short_grass"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:coarse_dirt"
+  },
+  "time": 480
+}

@@ -1,0 +1,16 @@
+{
+  "window_recipes": {
+    "type": "crafting",
+    "recipes": [
+      [
+        "crafting/treated_window",
+        "crafting/steel_window",
+        "crafting/alu_window"
+      ]
+    ]
+  },
+  "reinforced": {
+    "type": "crafting",
+    "recipe": "crafting/reinforced_window"
+  }
+}

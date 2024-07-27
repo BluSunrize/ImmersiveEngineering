@@ -1,0 +1,6 @@
+{
+  "parent": "immersiveengineering:block/window_thin",
+  "textures": {
+    "frame": "immersiveengineering:block/metal/storage_steel"
+  }
+}

@@ -53,6 +53,7 @@ public class ClocheRecipes extends IERecipeProvider
 
 		mushrooms(out);
 		flowers(out);
+		plants(out);
 	}
 
 	private void fertilizers(RecipeOutput out)
@@ -82,6 +83,24 @@ public class ClocheRecipes extends IERecipeProvider
 				.build(out, toRL("fertilizer/fertilizer"));
 	}
 
+	private void plants(RecipeOutput out)
+	{
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.SHORT_GRASS)
+				.seed(Blocks.SHORT_GRASS)
+				.soil(Blocks.COARSE_DIRT)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.SHORT_GRASS))
+				.build(out, toRL("cloche/"+Blocks.SHORT_GRASS.builtInRegistryHolder().key().location().getPath()));
+		ClocheRecipeBuilder.builder()
+				.output(Blocks.FERN)
+				.seed(Blocks.FERN)
+				.soil(Blocks.COARSE_DIRT)
+				.setTime(480)
+				.setRender(new RenderFunctionGeneric(Blocks.FERN))
+				.build(out, toRL("cloche/"+Blocks.FERN.builtInRegistryHolder().key().location().getPath()));
+	}
+
 	private void flowers(RecipeOutput out)
 	{
 		flower(out, Blocks.RED_TULIP);
@@ -96,10 +115,10 @@ public class ClocheRecipes extends IERecipeProvider
 		flower(out, Blocks.LILY_OF_THE_VALLEY);
 		flower(out, Blocks.CORNFLOWER);
 		flower(out, Blocks.BLUE_ORCHID, Blocks.MUD);
-		flower(out, Blocks.LILAC);
-		flower(out, Blocks.SUNFLOWER);
-		flower(out, Blocks.ROSE_BUSH);
-		flower(out, Blocks.PEONY);
+		doubleFlower(out, Blocks.LILAC);
+		doubleFlower(out, Blocks.SUNFLOWER);
+		doubleFlower(out, Blocks.ROSE_BUSH);
+		doubleFlower(out, Blocks.PEONY);
 		flower(out, Blocks.WITHER_ROSE, Blocks.SOUL_SOIL);
 	}
 
@@ -114,9 +133,25 @@ public class ClocheRecipes extends IERecipeProvider
 				.build(out, toRL("cloche/"+flowerBlock.builtInRegistryHolder().key().location().getPath()));
 	}
 
+	private void doubleFlower(RecipeOutput out, Block flowerBlock, ItemLike soil)
+	{
+		ClocheRecipeBuilder.builder()
+				.output(flowerBlock)
+				.seed(flowerBlock)
+				.soil(soil)
+				.setTime(480)
+				.setRender(new RenderFunctionDoubleFlower(flowerBlock))
+				.build(out, toRL("cloche/"+flowerBlock.builtInRegistryHolder().key().location().getPath()));
+	}
+
 	private void flower(RecipeOutput out, Block flowerBlock)
 	{
 		flower(out, flowerBlock, Blocks.DIRT);
+	}
+
+	private void doubleFlower(RecipeOutput out, Block flowerBlock)
+	{
+		doubleFlower(out, flowerBlock, Blocks.DIRT);
 	}
 
 	private void mushrooms(RecipeOutput out)

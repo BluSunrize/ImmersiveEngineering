@@ -123,16 +123,16 @@ public class IEManual
 	public static void addIEManualEntries()
 	{
 		IEManualInstance ieMan = (IEManualInstance)ManualHelper.getManual();
-		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(IEApi.ieLoc(ManualHelper.CAT_GENERAL), 0);
+		InnerNode<ResourceLocation, ManualEntry> resourcesCat = ieMan.getRoot().getOrCreateSubnode(IEApi.ieLoc(ManualHelper.CAT_RESOURCES), 0);
+		InnerNode<ResourceLocation, ManualEntry> toolsCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
+				ManualHelper.CAT_TOOLS), 50);
 
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.readFromFile(IEApi.ieLoc("minerals"));
+			builder.readFromFile(IEApi.ieLoc("mineral_deposits"));
 			builder.appendText(IEManual::getMineralVeinTexts);
-			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "graphite", -0.5));
+			ieMan.addEntry(resourcesCat, builder.create(), ieMan.atOffsetFrom(resourcesCat, "ores", 0.5));
 		}
-		// hide entry on blueprints
-		ieMan.hideEntry(IEApi.ieLoc("blueprints"));
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
 			builder.setContent(
@@ -158,7 +158,7 @@ public class IEManual
 			}
 			builder.setLocation(IEApi.ieLoc("shader_list"));
 			ManualEntry e = builder.create();
-			ieMan.addEntry(generalCat, e);
+			ieMan.addEntry(toolsCat, e);
 			ieMan.hideEntry(e.getLocation());
 		}
 

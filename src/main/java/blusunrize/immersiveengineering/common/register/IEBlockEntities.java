@@ -67,6 +67,9 @@ public class IEBlockEntities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ModWorkbenchBlockEntity>> MOD_WORKBENCH = REGISTER.register(
 			"modworkbench", makeType(ModWorkbenchBlockEntity::new, WoodenDevices.WORKBENCH)
 	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlueprintShelfBlockEntity>> BLUEPRINT_SHELF = REGISTER.register(
+			"blueprint_shelf", makeType(BlueprintShelfBlockEntity::new, WoodenDevices.BLUEPRINT_SHELF)
+	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CircuitTableBlockEntity>> CIRCUIT_TABLE = REGISTER.register(
 			"circuittable", makeType(CircuitTableBlockEntity::new, WoodenDevices.CIRCUIT_TABLE)
 	);
@@ -84,6 +87,9 @@ public class IEBlockEntities
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LogicUnitBlockEntity>> LOGIC_UNIT = REGISTER.register(
 			"logicunit", makeType(LogicUnitBlockEntity::new, WoodenDevices.LOGIC_UNIT)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MachineInterfaceBlockEntity>> MACHINE_INTERFACE = REGISTER.register(
+			"machineinterface", makeType(MachineInterfaceBlockEntity::new, WoodenDevices.MACHINE_INTERFACE)
 	);
 	public static final MultiblockBEType<WatermillBlockEntity> WATERMILL = makeMultiblock(
 			"watermill", WatermillBlockEntity::new, WoodenDevices.WATERMILL
@@ -130,6 +136,18 @@ public class IEBlockEntities
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConnectorBundledBlockEntity>> CONNECTOR_BUNDLED = REGISTER.register(
 			"connectorbundled", makeType(ConnectorBundledBlockEntity::new, Connectors.CONNECTOR_BUNDLED)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneStateCellBlockEntity>> REDSTONE_STATE_CELL = REGISTER.register(
+			"redstonestatecell", makeType(RedstoneStateCellBlockEntity::new, Connectors.REDSTONE_STATE_CELL)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneTimerBlockEntity>> REDSTONE_TIMER = REGISTER.register(
+			"redstonetimer", makeType(RedstoneTimerBlockEntity::new, Connectors.REDSTONE_TIMER)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedstoneSwitchboardBlockEntity>> REDSTONE_SWITCHBOARD = REGISTER.register(
+			"redstoneswitchboard", makeType(RedstoneSwitchboardBlockEntity::new, Connectors.REDSTONE_SWITCHBOARD)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SirenBlockEntity>> SIREN = REGISTER.register(
+			"siren", makeType(SirenBlockEntity::new, Connectors.SIREN)
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FeedthroughBlockEntity>> FEEDTHROUGH = REGISTER.register(
 			"feedthrough", makeType(FeedthroughBlockEntity::new, Connectors.FEEDTHROUGH)
@@ -202,6 +220,9 @@ public class IEBlockEntities
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FakeLightBlockEntity>> FAKE_LIGHT = REGISTER.register(
 			"fakelight", makeType(FakeLightBlockEntity::new, Misc.FAKE_LIGHT)
+	);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PipeValveBlockEntity>> PIPE_VALVE = REGISTER.register(
+			"pipevalve", makeType(PipeValveBlockEntity::new, MetalDevices.PIPE_VALVE)
 	);
 
 	static

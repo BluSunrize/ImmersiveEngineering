@@ -59,7 +59,7 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 	public DyeColor redstoneChannel = DyeColor.WHITE;
 	public boolean rsDirty = false;
 	//Only write to this in wire network updates!
-	private int output;
+	protected int output;
 
 	public ConnectorRedstoneBlockEntity(BlockPos pos, BlockState state)
 	{

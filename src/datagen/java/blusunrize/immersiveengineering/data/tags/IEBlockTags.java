@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
@@ -66,8 +67,26 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(MetalDecoration.ALU_FENCE.get())
 				.add(MetalDecoration.STEEL_FENCE.get())
 				.add(WoodenDecoration.TREATED_FENCE.get());
+		tag(BlockTags.FENCE_GATES)
+				.add(MetalDecoration.ALU_FENCE_GATE.get())
+				.add(MetalDecoration.STEEL_FENCE_GATE.get())
+				.add(WoodenDecoration.TREATED_FENCE_GATE.get());
 		tag(BlockTags.WOODEN_FENCES)
 				.add(WoodenDecoration.TREATED_FENCE.get());
+		tag(BlockTags.DOORS)
+				.add(MetalDecoration.STEEL_DOOR.get())
+				.add(WoodenDecoration.DOOR.get())
+				.add(WoodenDecoration.DOOR_FRAMED.get());
+		tag(BlockTags.WOODEN_DOORS)
+				.add(WoodenDecoration.DOOR.get())
+				.add(WoodenDecoration.DOOR_FRAMED.get());
+		tag(BlockTags.TRAPDOORS)
+				.add(MetalDecoration.STEEL_TRAPDOOR.get())
+				.add(WoodenDecoration.TRAPDOOR.get())
+				.add(WoodenDecoration.TRAPDOOR_FRAMED.get());
+		tag(BlockTags.WOODEN_TRAPDOORS)
+				.add(WoodenDecoration.TRAPDOOR.get())
+				.add(WoodenDecoration.TRAPDOOR_FRAMED.get());
 		tag(BlockTags.PLANKS).add(WoodenDecoration.FIBERBOARD.get());
 		tag(IETags.fencesSteel)
 				.add(MetalDecoration.STEEL_FENCE.get());
@@ -152,6 +171,15 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.SLAG_GRAVEL.get());
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.POTTED_HEMP.get());
+		tag(BlockTags.WITHER_IMMUNE)
+				.add(StoneDecoration.CONCRETE_REINFORCED.get())
+				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED.getId()).get())
+				.add(StoneDecoration.CONCRETE_REINFORCED_TILE.get())
+				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_REINFORCED_TILE.getId()).get())
+				.add(MetalDecoration.REINFORCED_WINDOW.get());
+		tag(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON)
+				.add(WoodenDevices.WATERMILL.get())
+				.add(WoodenDevices.WINDMILL.get());
 		//Add parity tags to gravel & sand for IE similar blocks
 		tag(BlockTags.BAMBOO_PLANTABLE_ON)
 				.add(StoneDecoration.SLAG_GRAVEL.get())
@@ -164,15 +192,30 @@ public class IEBlockTags extends BlockTagsProvider
 				.add(StoneDecoration.GRIT_SAND.get());
 		tag(BlockTags.DEAD_BUSH_MAY_PLACE_ON)
 				.add(StoneDecoration.GRIT_SAND.get());
-		tag(IETags.concreteForFeet)
-				.add(StoneDecoration.CONCRETE.get())
-				.add(StoneDecoration.CONCRETE_TILE.get())
-				.add(StoneDecoration.CONCRETE_SPRAYED.get())
-				.add(IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()).get())
-				.add(StoneDecoration.CONCRETE_THREE_QUARTER.get())
-				.add(StoneDecoration.CONCRETE_SHEET.get())
-				.add(StoneDecoration.CONCRETE_QUARTER.get())
-				.add(StoneDecoration.CONCRETE_LEADED.get());
+		BlockEntry<?>[] concreteBlocks = new BlockEntry<?>[]{
+				StoneDecoration.CONCRETE,
+				StoneDecoration.CONCRETE_TILE,
+				StoneDecoration.CONCRETE_SPRAYED,
+				StoneDecoration.CONCRETE_THREE_QUARTER,
+				StoneDecoration.CONCRETE_SHEET,
+				StoneDecoration.CONCRETE_QUARTER,
+				StoneDecoration.CONCRETE_LEADED,
+				StoneDecoration.CONCRETE_REINFORCED,
+				StoneDecoration.CONCRETE_REINFORCED_TILE,
+		};
+		for(BlockEntry<?> entry : concreteBlocks)
+		{
+			tag(IETags.concreteForFeet).add(entry.get());
+			BlockEntry<?> shaped;
+			if((shaped = IEBlocks.TO_SLAB.get(entry.getId()))!=null)
+				tag(IETags.concreteForFeet).add(shaped.get());
+			if((shaped = IEBlocks.TO_STAIRS.get(entry.getId()))!=null)
+				tag(IETags.concreteForFeet).add(shaped.get());
+		}
+		tag(IETags.teleportBlocking)
+				.add(StoneDecoration.CONCRETE_LEADED.get())
+				.add(IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_LEADED.getId()).get())
+				.add(IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()).get());
 
 		registerHammerMineable();
 		registerRockcutterMineable();
@@ -192,10 +235,37 @@ public class IEBlockTags extends BlockTagsProvider
 				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("dynamictrees", "branches"))
 				.addOptionalTag(ResourceLocation.fromNamespaceAndPath("dynamictrees", "leaves"));
 		tag(IETags.surveyToolTargets)
+				//Overworld stones
+				.addTag(Tags.Blocks.STONE)
+				.add(Blocks.DRIPSTONE_BLOCK)
+				.add(Blocks.CALCITE)
+				.add(Blocks.SANDSTONE)
+				.add(Blocks.RED_SANDSTONE)
+				//Overworld soils
 				.addTag(BlockTags.DIRT)
+				.remove(Blocks.MOSS_BLOCK)
 				.addTag(Tags.Blocks.GRAVELS)
-				.add(Blocks.GRASS_BLOCK)
-				.add(Blocks.CLAY);
+				.addTag(Tags.Blocks.SAND)
+				.add(Blocks.CLAY)
+				//Overworld terracotta
+				.add(Blocks.TERRACOTTA)
+				.add(Blocks.WHITE_TERRACOTTA)
+				.add(Blocks.LIGHT_GRAY_TERRACOTTA)
+				.add(Blocks.GRAY_TERRACOTTA)
+				.add(Blocks.BROWN_TERRACOTTA)
+				.add(Blocks.RED_TERRACOTTA)
+				.add(Blocks.ORANGE_TERRACOTTA)
+				.add(Blocks.YELLOW_TERRACOTTA)
+				//Nether stones
+				.addTag(Tags.Blocks.NETHERRACK)
+				.add(Blocks.BASALT)
+				.add(Blocks.BLACKSTONE)
+				//Nether soils
+				.addTag(BlockTags.NYLIUM)
+				.add(Blocks.SOUL_SAND)
+				.add(Blocks.SOUL_SOIL)
+				//End Stones
+				.add(Blocks.END_STONE);
 		checkAllRegisteredForBreaking();
 
 		for(BlockEntry<?> treatedWood : WoodenDecoration.TREATED_WOOD.values())
@@ -249,20 +319,45 @@ public class IEBlockTags extends BlockTagsProvider
 			if(block instanceof ConnectorBlock<?>||block instanceof ConveyorBlock)
 				tag.add(block);
 		}
+		//Razor wire should only be broken by wirecutters, and its addition is accidental
+		tag.remove(MetalDevices.RAZOR_WIRE.get());
+		// switchboard doesn't extend ConnectorBlock
+		tag.add(Connectors.REDSTONE_SWITCHBOARD.get());
 	}
 
 	private void registerRockcutterMineable()
 	{
+		/*
+		 * Current design philosophy for the rockcutter is as follows:
+		 * The rockcutter is not here to break synthetic stone blocks, it's here to break worldgen blocks + silktouchables
+		 * Thus, no stairs or slabs or similar, and the exclusion of prismarine
+		 * Just the stone blocks common in every dimension along with ores and other similar blocks
+		 */
 		IntrinsicTagAppender<Block> tag = tag(IETags.rockcutterHarvestable);
-		// stones & ores
+		// overworld stones & ores
 		tag.addTag(Tags.Blocks.COBBLESTONES);
 		tag.addTag(Tags.Blocks.STONES);
+		tag.addTag(Tags.Blocks.SANDSTONE);
 		tag.addTag(Tags.Blocks.ORES);
-		// glass, ice, glowing blocks
+		tag.add(Blocks.CALCITE, Blocks.DRIPSTONE_BLOCK, Blocks.POINTED_DRIPSTONE);
+		// specialty stones and stone-alikes
+		tag.addTag(Tags.Blocks.NETHERRACK);
+		tag.add(Blocks.BASALT, Blocks.SMOOTH_BASALT);
+		tag.add(Blocks.BLACKSTONE);
+		tag.add(Blocks.END_STONE);
+		tag.add(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN);
+		tag.add(Blocks.BONE_BLOCK);
+		// glass, ice, amethyst, glowing blocks, gilded blackstone
 		tag.addTag(Tags.Blocks.GLASS_BLOCKS);
+		tag.addTag(Tags.Blocks.GLASS_PANES);
 		tag.addTag(BlockTags.ICE);
+		tag.add(Blocks.AMETHYST_BLOCK, Blocks.BUDDING_AMETHYST, Blocks.AMETHYST_CLUSTER, Blocks.LARGE_AMETHYST_BUD, Blocks.MEDIUM_AMETHYST_BUD, Blocks.SMALL_AMETHYST_BUD);
 		tag.add(Blocks.GLOWSTONE);
 		tag.add(Blocks.SEA_LANTERN);
+		tag.add(Blocks.GILDED_BLACKSTONE);
+		// coral, first alive by tag and then dead by block - silktouchable and pickaxe-needed + the dead ones for consistency
+		tag.addTag(BlockTags.CORAL_BLOCKS);
+		tag.add(Blocks.DEAD_BRAIN_CORAL_BLOCK, Blocks.DEAD_BUBBLE_CORAL_BLOCK, Blocks.DEAD_FIRE_CORAL_BLOCK, Blocks.DEAD_HORN_CORAL_BLOCK, Blocks.DEAD_TUBE_CORAL_BLOCK);
 		// enderchest
 		tag.addTag(Tags.Blocks.CHESTS_ENDER);
 		// skulk, but intentionally only some of them
@@ -272,7 +367,7 @@ public class IEBlockTags extends BlockTagsProvider
 	private void registerGrindingDiskMineable()
 	{
 		IntrinsicTagAppender<Block> tag = tag(IETags.grindingDiskHarvestable);
-		// storage and sheetmetal
+		// storage and remove rocklike storage, sheetmetal
 		tag.addTag(Tags.Blocks.STORAGE_BLOCKS);
 		tag.addTag(IETags.sheetmetals);
 		// storage and sheetmetal slabs
@@ -280,24 +375,50 @@ public class IEBlockTags extends BlockTagsProvider
 			if(!metal.isVanillaMetal())
 				tag.add(IEBlocks.TO_SLAB.get(Metals.STORAGE.get(metal).getId()).get());
 		tag.addTag(IETags.sheetmetalSlabs);
+		// remove blocks the grinding disc shouldn't cut
+		tag.remove(Blocks.AMETHYST_BLOCK, Blocks.QUARTZ_BLOCK, Blocks.LAPIS_BLOCK, Blocks.REDSTONE_BLOCK, Blocks.DIAMOND_BLOCK, Blocks.EMERALD_BLOCK, Blocks.COAL_BLOCK);
+		tag.remove(Tags.Blocks.STORAGE_BLOCKS_RAW_COPPER, Tags.Blocks.STORAGE_BLOCKS_RAW_IRON, Tags.Blocks.STORAGE_BLOCKS_RAW_GOLD);
+		for(BlockEntry raw_storage : Metals.RAW_ORES.values())
+			tag.remove(raw_storage.get());
 		// copper
 		tag.addTag(IETags.copperBlocks);
 		tag.addTag(IETags.cutCopperBlocks);
 		tag.addTag(IETags.cutCopperSlabs);
 		tag.addTag(IETags.cutCopperStairs);
+		// vanilla blocks
+		tag.add(Blocks.ANVIL, Blocks.CHIPPED_ANVIL, Blocks.DAMAGED_ANVIL);
+		tag.add(Blocks.CHAIN, Blocks.IRON_BARS, Blocks.IRON_DOOR, Blocks.IRON_TRAPDOOR, Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE, Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE,
+				Blocks.HOPPER, Blocks.CAULDRON, Blocks.LAVA_CAULDRON, Blocks.WATER_CAULDRON, Blocks.POWDER_SNOW_CAULDRON, Blocks.LIGHTNING_ROD);
 		// scaffolding
 		tag.addTag(IETags.scaffoldingSteel);
 		tag.addTag(IETags.scaffoldingAlu);
-		tag.add(MetalDecoration.ALU_FENCE.get(), MetalDecoration.ALU_POST.get(), MetalDecoration.ALU_WALLMOUNT.get(), MetalDecoration.ALU_SLOPE.get());
-		tag.add(MetalDecoration.STEEL_FENCE.get(), MetalDecoration.STEEL_POST.get(), MetalDecoration.STEEL_WALLMOUNT.get(), MetalDecoration.STEEL_SLOPE.get());
+		// decorations including catwalks
+		tag.add(MetalDecoration.LANTERN.get(), MetalDecoration.CAGELAMP.get(), MetalDecoration.STEEL_DOOR.get(), MetalDecoration.STEEL_TRAPDOOR.get(), MetalDecoration.REINFORCED_WINDOW.get());
+		tag.add(MetalDecoration.ALU_FENCE.get(), MetalDecoration.ALU_POST.get(), MetalDecoration.ALU_WALLMOUNT.get(), MetalDecoration.ALU_SLOPE.get(),
+				MetalDecoration.ALU_CATWALK.get(), MetalDecoration.ALU_CATWALK_STAIRS.get(), MetalDecoration.ALU_WINDOW.get());
+		tag.add(MetalDecoration.STEEL_FENCE.get(), MetalDecoration.STEEL_POST.get(), MetalDecoration.STEEL_WALLMOUNT.get(), MetalDecoration.STEEL_SLOPE.get(),
+				MetalDecoration.STEEL_CATWALK.get(), MetalDecoration.STEEL_CATWALK_STAIRS.get(), MetalDecoration.STEEL_WINDOW.get());
 		MetalDecoration.METAL_LADDER.values().forEach(entry -> tag.add(entry.get()));
 		// chutes
 		MetalDevices.CHUTES.values().forEach(entry -> tag.add(entry.get()));
+		MetalDevices.DYED_CHUTES.values().forEach(entry -> tag.add(entry.get()));
 		// fluid machines
-		tag.add(MetalDevices.BARREL.get(), MetalDevices.FLUID_PUMP.get(), MetalDevices.FLUID_PIPE.get(), MetalDevices.FLUID_PLACER.get());
+		tag.add(MetalDevices.BARREL.get(), MetalDevices.FLUID_PUMP.get(), MetalDevices.FLUID_PIPE.get(), MetalDevices.FLUID_PLACER.get(), MetalDevices.PIPE_VALVE.get());
+		// other machines
+		tag.add(MetalDevices.BLAST_FURNACE_PREHEATER.get(), MetalDevices.FURNACE_HEATER.get(), MetalDevices.DYNAMO.get(), MetalDevices.THERMOELECTRIC_GEN.get(),
+				MetalDevices.ELECTRIC_LANTERN.get(), MetalDevices.SAMPLE_DRILL.get(), MetalDevices.FLOODLIGHT.get(), MetalDevices.ELECTROMAGNET.get());
+		// wire connected machines
+		tag.add(Connectors.CONNECTOR_STRUCTURAL.get(), Connectors.TRANSFORMER.get(), Connectors.TRANSFORMER_HV.get(), Connectors.BREAKER_SWITCH.get(),
+				Connectors.REDSTONE_BREAKER.get(), Connectors.CURRENT_TRANSFORMER.get(), Connectors.POST_TRANSFORMER.get());
 		// multiblock components
 		tag.add(MetalDecoration.LV_COIL.get(), MetalDecoration.MV_COIL.get(), MetalDecoration.MV_COIL.get());
 		tag.add(MetalDecoration.ENGINEERING_RS.get(), MetalDecoration.ENGINEERING_LIGHT.get(), MetalDecoration.ENGINEERING_HEAVY.get(), MetalDecoration.RADIATOR.get(), MetalDecoration.GENERATOR.get());
+		// multiblock blocks?
+		tag.add(IEMultiblocks.CRUSHER.getBlock(), IEMultiblocks.SAWMILL.getBlock(), IEMultiblocks.ARC_FURNACE.getBlock(), IEMultiblocks.ASSEMBLER.getBlock(),
+				IEMultiblocks.AUTO_WORKBENCH.getBlock(), IEMultiblocks.BOTTLING_MACHINE.getBlock(), IEMultiblocks.BUCKET_WHEEL.getBlock(),
+				IEMultiblocks.DIESEL_GENERATOR.getBlock(), IEMultiblocks.EXCAVATOR.getBlock(), IEMultiblocks.FERMENTER.getBlock(), IEMultiblocks.LIGHTNING_ROD.getBlock(),
+				IEMultiblocks.METAL_PRESS.getBlock(), IEMultiblocks.MIXER.getBlock(), IEMultiblocks.REFINERY.getBlock(), IEMultiblocks.SHEETMETAL_TANK.getBlock(),
+				IEMultiblocks.SILO.getBlock(), IEMultiblocks.SQUEEZER.getBlock(), IEMultiblocks.RADIO_TOWER.getBlock());
 	}
 
 	private void registerAxeMineable()
@@ -307,6 +428,7 @@ public class IEBlockTags extends BlockTagsProvider
 				tag,
 				WoodenDevices.CRAFTING_TABLE,
 				WoodenDevices.WORKBENCH,
+				WoodenDevices.BLUEPRINT_SHELF,
 				WoodenDevices.CIRCUIT_TABLE,
 				WoodenDevices.GUNPOWDER_BARREL,
 				WoodenDevices.WOODEN_BARREL,
@@ -320,11 +442,20 @@ public class IEBlockTags extends BlockTagsProvider
 				WoodenDevices.WATERMILL,
 				WoodenDevices.TREATED_WALLMOUNT,
 				WoodenDevices.LOGIC_UNIT,
+				WoodenDevices.MACHINE_INTERFACE,
 				WoodenDecoration.TREATED_FENCE,
+				WoodenDecoration.TREATED_FENCE_GATE,
 				WoodenDecoration.TREATED_SCAFFOLDING,
 				WoodenDecoration.TREATED_POST,
 				WoodenDecoration.SAWDUST,
 				WoodenDecoration.FIBERBOARD,
+				WoodenDecoration.WINDOW,
+				WoodenDecoration.CATWALK,
+				WoodenDecoration.CATWALK_STAIRS,
+				WoodenDecoration.DOOR,
+				WoodenDecoration.DOOR_FRAMED,
+				WoodenDecoration.TRAPDOOR,
+				WoodenDecoration.TRAPDOOR_FRAMED,
 				Cloth.SHADER_BANNER,
 				Cloth.SHADER_BANNER_WALL
 		);
@@ -416,6 +547,8 @@ public class IEBlockTags extends BlockTagsProvider
 				StoneDecoration.CONCRETE_PILLAR,
 				StoneDecoration.CONCRETE_TILE,
 				StoneDecoration.CONCRETE_LEADED,
+				StoneDecoration.CONCRETE_REINFORCED,
+				StoneDecoration.CONCRETE_REINFORCED_TILE,
 				StoneDecoration.INSULATING_GLASS,
 				StoneDecoration.SLAG_GLASS,
 				StoneDecoration.CONCRETE_SPRAYED,
@@ -448,6 +581,7 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDevices.TURRET_GUN,
 				MetalDevices.CLOCHE,
 				MetalDevices.ELECTROMAGNET,
+				MetalDevices.PIPE_VALVE,
 				MetalDecoration.LV_COIL,
 				MetalDecoration.MV_COIL,
 				MetalDecoration.HV_COIL,
@@ -457,14 +591,26 @@ public class IEBlockTags extends BlockTagsProvider
 				MetalDecoration.GENERATOR,
 				MetalDecoration.RADIATOR,
 				MetalDecoration.STEEL_FENCE,
+				MetalDecoration.STEEL_FENCE_GATE,
 				MetalDecoration.ALU_FENCE,
+				MetalDecoration.ALU_FENCE_GATE,
 				MetalDecoration.STEEL_WALLMOUNT,
 				MetalDecoration.ALU_WALLMOUNT,
 				MetalDecoration.STEEL_POST,
 				MetalDecoration.ALU_POST,
 				MetalDecoration.LANTERN,
+				MetalDecoration.CAGELAMP,
 				MetalDecoration.STEEL_SLOPE,
 				MetalDecoration.ALU_SLOPE,
+				MetalDecoration.STEEL_WINDOW,
+				MetalDecoration.ALU_WINDOW,
+				MetalDecoration.REINFORCED_WINDOW,
+				MetalDecoration.STEEL_CATWALK,
+				MetalDecoration.STEEL_CATWALK_STAIRS,
+				MetalDecoration.ALU_CATWALK,
+				MetalDecoration.ALU_CATWALK_STAIRS,
+				MetalDecoration.STEEL_DOOR,
+				MetalDecoration.STEEL_TRAPDOOR,
 				Connectors.CONNECTOR_STRUCTURAL,
 				Connectors.TRANSFORMER,
 				Connectors.POST_TRANSFORMER,
@@ -475,6 +621,10 @@ public class IEBlockTags extends BlockTagsProvider
 				Connectors.CONNECTOR_REDSTONE,
 				Connectors.CONNECTOR_PROBE,
 				Connectors.CONNECTOR_BUNDLED,
+				Connectors.REDSTONE_STATE_CELL,
+				Connectors.REDSTONE_TIMER,
+				Connectors.REDSTONE_SWITCHBOARD,
+				Connectors.SIREN,
 				Connectors.FEEDTHROUGH
 		);
 		registerMineable(tag, Metals.SHEETMETAL);
@@ -482,7 +632,9 @@ public class IEBlockTags extends BlockTagsProvider
 		registerMineable(tag, MetalDecoration.METAL_LADDER);
 		registerMineable(tag, MetalDecoration.STEEL_SCAFFOLDING);
 		registerMineable(tag, MetalDecoration.ALU_SCAFFOLDING);
+		registerMineable(tag, MetalDecoration.WARNING_SIGNS);
 		registerMineable(tag, MetalDevices.CHUTES);
+		registerMineable(tag, MetalDevices.DYED_CHUTES);
 		registerMineable(tag, Connectors.ENERGY_CONNECTORS);
 		registerMineable(tag, MetalDevices.CONVEYORS);
 		setOreMiningLevel(EnumMetals.COPPER, Tiers.STONE);

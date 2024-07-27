@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -27,7 +29,7 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	public void appendHoverText(ItemStack stack, TooltipContext ctx, List<Component> list, TooltipFlag flag)
 	{
 		float integrity = 1-getDamage(stack)/(float)getMaxDamage(stack);
-		list.add(Component.translatable(Lib.DESC_INFO+"electrodeIntegrity", String.format("%.2f", integrity)));
+		list.add(Component.translatable(Lib.DESC_INFO+"electrodeIntegrity", String.format("%.2f", integrity)).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override

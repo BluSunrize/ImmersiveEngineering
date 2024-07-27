@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data.tags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

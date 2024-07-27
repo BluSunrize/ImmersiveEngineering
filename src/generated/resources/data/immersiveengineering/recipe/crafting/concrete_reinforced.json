@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "type": "immersiveengineering:fluid_stack",
+      "value": {
+        "amount": 1000,
+        "tag": "forge:concrete"
+      }
+    },
+    "r": {
+      "tag": "forge:rods/netherite"
+    }
+  },
+  "pattern": [
+    "rrr",
+    "rcr",
+    "rrr"
+  ],
+  "result": {
+    "count": 4,
+    "item": "immersiveengineering:concrete_reinforced"
+  }
+}

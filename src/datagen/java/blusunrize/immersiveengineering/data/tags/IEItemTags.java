@@ -80,6 +80,7 @@ public class IEItemTags extends ItemTagsProvider
 
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);
+		tag(IETags.paper).add(Items.PAPER);
 
 		tag(ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
 		tag(ItemTags.BOOKSHELF_BOOKS).add(Tools.MANUAL.get());
@@ -93,6 +94,9 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.ironRod).add(Ingredients.STICK_IRON.get());
 		tag(IETags.steelRod).add(Ingredients.STICK_STEEL.get());
 		tag(IETags.aluminumRod).add(Ingredients.STICK_ALUMINUM.get());
+		tag(IETags.netheriteRod).add(Ingredients.STICK_NETHERITE.get());
+		tag(IETags.netheriteNugget).add(Ingredients.NUGGET_NETHERITE.asItem());
+		tag(Tags.Items.NUGGETS).add(Ingredients.NUGGET_NETHERITE.asItem());
 		tag(IETags.fiberHemp).add(Ingredients.HEMP_FIBER.get());
 		tag(IETags.fabricHemp).add(Ingredients.HEMP_FABRIC.get());
 		tag(IETags.coalCoke).add(Ingredients.COAL_COKE.get());
@@ -115,7 +119,8 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.metalRods)
 				.addTag(IETags.aluminumRod)
 				.addTag(IETags.ironRod)
-				.addTag(IETags.steelRod);
+				.addTag(IETags.steelRod)
+				.addTag(IETags.netheriteRod);
 		tag(IETags.plasticPlate).add(Ingredients.DUROPLAST_PLATE.asItem());
 		tag(IETags.sawblades).add(Tools.SAWBLADE.get());
 		tag(IETags.circuitPCB).add(Ingredients.CIRCUIT_BOARD.asItem());
@@ -161,6 +166,7 @@ public class IEItemTags extends ItemTagsProvider
 		tag(IETags.recyclingIgnoredComponents)
 				// Ignore bricks for outputting
 				.addTag(Tags.Items.BRICKS)
+				.addTag(Tags.Items.INGOTS_NETHER_BRICK)
 				// Prevent tools used during crafting to be recycled as components
 				.add(Tools.HAMMER.get())
 				.add(Tools.SCREWDRIVER.get())
@@ -198,6 +204,9 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Items.COMPASS)
 				.add(Items.FLINT_AND_STEEL)
 				.add(Items.FISHING_ROD)
+				.add(Items.BRUSH)
+				.add(Items.RECOVERY_COMPASS)
+				.add(Items.GOAT_HORN)
 				.addOptionalTag(Tags.Items.BUCKETS_EMPTY)
 				.addOptionalTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "tools/wrenches")))
 		;
@@ -216,6 +225,7 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Connectors.CONNECTOR_REDSTONE.asItem())
 				.add(Connectors.CONNECTOR_PROBE.asItem())
 				.add(Connectors.CONNECTOR_BUNDLED.asItem())
+				.add(Connectors.REDSTONE_STATE_CELL.asItem())
 				.add(Cloth.BALLOON.asItem())
 				.add(MetalDevices.RAZOR_WIRE.asItem());
 	}

@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:shaped_fluid",
+  "value": {
+    "category": "misc",
+    "key": {
+      "d": {
+        "tag": "forge:plates/plastic"
+      },
+      "g": {
+        "tag": "forge:glass_panes"
+      },
+      "r": {
+        "tag": "forge:rods/netherite"
+      }
+    },
+    "pattern": [
+      "rgr",
+      "ddd",
+      "rgr"
+    ],
+    "result": {
+      "count": 4,
+      "item": "immersiveengineering:reinforced_window"
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "parent": "block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "immersiveengineering:block/metal_decoration/sign/base_front",
+    "back": "immersiveengineering:block/metal_decoration/sign/base_back",
+    "front": "immersiveengineering:block/metal_decoration/sign/base_front"
+  },
+  "elements": [
+    {
+      "name": "base",
+      "from": [
+        1,
+        1,
+        0
+      ],
+      "to": [
+        15,
+        15,
+        1
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#back"
+        },
+        "east": {
+          "uv": [
+            14,
+            1,
+            15,
+            15
+          ],
+          "texture": "#front"
+        },
+        "south": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#front"
+        },
+        "west": {
+          "uv": [
+            1,
+            1,
+            2,
+            15
+          ],
+          "texture": "#front"
+        },
+        "up": {
+          "uv": [
+            1,
+            1,
+            15,
+            2
+          ],
+          "texture": "#front"
+        },
+        "down": {
+          "uv": [
+            1,
+            14,
+            15,
+            15
+          ],
+          "texture": "#front"
+        }
+      }
+    },
+    {
+      "name": "icon",
+      "from": [
+        1,
+        1,
+        1
+      ],
+      "to": [
+        15,
+        15,
+        1
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            1,
+            1,
+            15,
+            15
+          ],
+          "texture": "#icon"
+        }
+      }
+    }
+  ]
+}

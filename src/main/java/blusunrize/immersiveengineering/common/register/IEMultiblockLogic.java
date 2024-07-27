@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.sawmill.S
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
@@ -165,12 +166,19 @@ public class IEMultiblockLogic
 			.gui(IEMenuTypes.ARC_FURNACE)
 			.build();
 
+	public static final MultiblockRegistration<RadioTowerLogic.State> RADIO_TOWER = metal(new RadioTowerLogic(), "radio_tower")
+			.structure(() -> IEMultiblocks.RADIO_TOWER)
+			.gui(IEMenuTypes.RADIO_TOWER)
+			.build();
+
 	private static <S extends IMultiblockState>
 	IEMultiblockBuilder<S> stone(IMultiblockLogic<S> logic, String name, boolean solid)
 	{
 		Properties properties = Properties.of()
+				.sound(SoundType.NETHER_BRICKS)
 				.mapColor(MapColor.STONE)
 				.instrument(NoteBlockInstrument.BASEDRUM)
+				.forceSolidOn()
 				.strength(2, 20);
 		if(!solid)
 			properties.noOcclusion();

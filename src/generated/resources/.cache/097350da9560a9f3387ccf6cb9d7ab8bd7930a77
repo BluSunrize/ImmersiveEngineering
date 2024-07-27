@@ -1,9 +1,10 @@
-// 1.21	2024-06-22T14:38:52.044301165	Tags for minecraft:banner_pattern mod id immersiveengineering
+// 1.20.4	2024-06-30T09:37:18.2738864	Tags for minecraft:banner_pattern mod id immersiveengineering
 ddb1c650b3c462bf3507da13e6950d7945ce7657 data/immersiveengineering/tags/banner_pattern/bevels.json
-6e2720545b691b7dd962c68ecb9715cab8583fb9 data/immersiveengineering/tags/banner_pattern/hammer.json
+8a6637f8443997bd76b12e61dd8a202cdb722566 data/immersiveengineering/tags/banner_pattern/hammer.json
 f07357f56a3a9bd328e633669c33ec559026bba6 data/immersiveengineering/tags/banner_pattern/ornate.json
+e3faf7e70996bdc7cd489aa1802f92938723a52f data/immersiveengineering/tags/banner_pattern/screwdriver.json
 90d8c7b101303a7497706654182eed407a14c953 data/immersiveengineering/tags/banner_pattern/treated_wood.json
+01790c79e5bc0aeb1d6e92a0541c9af03a03a4f1 data/immersiveengineering/tags/banner_pattern/warning.json
 96a3c601f5bc4ce4d2c384d31458ccec8f4883be data/immersiveengineering/tags/banner_pattern/windmill.json
-e40d232522b0b7047807059f27b560e5bc3e7582 data/immersiveengineering/tags/banner_pattern/wolf.json
-8ddf49c4315a55ba1ff452d578e350eccafa9b31 data/immersiveengineering/tags/banner_pattern/wolf_l.json
-d4d47235f31d83ddff739693c9aac9aee9411fdc data/immersiveengineering/tags/banner_pattern/wolf_r.json
+db370bd1a35b9a480742f27dda2a4a50a7b3f9ae data/immersiveengineering/tags/banner_pattern/wirecutter.json
+d8526ac27308c3f908cc2698a523f47d92069eae data/immersiveengineering/tags/banner_pattern/wolf.json

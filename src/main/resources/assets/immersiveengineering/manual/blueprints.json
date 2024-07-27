@@ -1,9 +1,22 @@
 {
-  "start": {
+  "molds_components": {
     "type": "crafting",
     "recipes": [
       "crafting/blueprint_components",
       "crafting/blueprint_molds"
+    ]
+  },
+  "banners_signs": {
+    "type": "crafting",
+    "recipes": [
+      "crafting/blueprint_bannerpatterns",
+      "crafting/blueprint_warning_sign"
+    ]
+  },
+  "projectiles": {
+    "type": "crafting",
+    "recipes": [
+      "crafting/blueprint_bullets"
     ]
   }
 }

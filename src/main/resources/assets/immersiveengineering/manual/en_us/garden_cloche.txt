@@ -1,7 +1,9 @@
 Garden Cloche
 Localized Rainforest
-<&recipe>The Garden Cloche, or Belljar, is a device designed to hasten the growth of plants. It allows even the agriculturally challenged engineer to grow plants and harvest their yield.<np>
-The device accepts power, fluid and items through its respective ports.
-Water and power are always required, and you may add fertilizer to the slot on the left to increase growth speed.
-Soil and seeds are placed in the middle; each seed requires the correct soil to grow on, with dirt being automatically tilled into farmland.<np>
+<&recipe>Garden Cloches are machines designed to hasten the growth of plants in a controlled, semi hydroponic environment.<br>
+It allows even agriculturally challenged engineers to grow plants quickly and automatically harvest their produce.<np>
+The device accepts power through the plugs on the top and sides, and fluid and items through the other ports.<br>
+When provided with power and water, the Garden Cloche will use the water to grow crops.<br>
+Providing fertilizers such as <link;industrial_byproducts;Sulfur;sulfur> or <link;industrial_byproducts;Industrial Fertilizer;fertilizer> will boost the growth speed significantly. Only one fertilizer will be used at a time, and will stay dissolved in the water until it is finished.<br>
+Soil and seeds are placed in the middle; each seed requires the correct soil to grow on, with dirt being automatically tilled into farmland.<br>
 Produced items are stored in the slots on the right, and will be automatically output through the hatch at the front of the glass dome.

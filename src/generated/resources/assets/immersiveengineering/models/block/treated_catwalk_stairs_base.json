@@ -1,0 +1,7 @@
+{
+  "parent": "immersiveengineering:block/catwalk_stairs",
+  "textures": {
+    "side": "immersiveengineering:block/wooden_decoration/scaffolding",
+    "top": "immersiveengineering:block/wooden_decoration/scaffolding_top"
+  }
+}

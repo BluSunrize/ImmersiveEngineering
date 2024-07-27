@@ -77,17 +77,11 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
-	{
-
-	}
-
-	@Override
 	protected void drawGuiContainerForegroundLayer(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		ArrayList<Component> tooltip = new ArrayList<>();
 
-		if(buttonInOut.isHoveredOrFocused())
+		if(buttonInOut.isHovered())
 		{
 			tooltip.add(Component.translatable(Lib.GUI_CONFIG+"redstone_iomode"));
 			tooltip.add(TextUtils.applyFormat(
@@ -97,7 +91,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		}
 
 		for(int i = 0; i < colorButtons.length; i++)
-			if(colorButtons[i].isHoveredOrFocused())
+			if(colorButtons[i].isHovered())
 			{
 				tooltip.add(Component.translatable(Lib.GUI_CONFIG+"redstone_color"));
 				tooltip.add(TextUtils.applyFormat(
@@ -126,7 +120,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 			GuiButtonBoolean[] buttons, int posX, int posY, Supplier<Boolean> active, DyeColor color, Consumer<GuiButtonBoolean> onClick
 	)
 	{
-		return new GuiButtonBoolean(posX, posY, 12, 12, "", active,
+		return new GuiButtonBoolean(posX, posY, 12, 12, Component.empty(), active,
 				TEXTURE, 194, 0, 1,
 				btn -> {
 					if(btn.getNextState())

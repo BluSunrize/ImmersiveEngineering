@@ -1,26 +1,10 @@
 {
-  "smoker_recipe": {
-    "type": "crafting",
-    "recipes": [
-      [
-        [
-          {
-            "x": 24,
-            "y": 0,
-            "item": "minecraft:bricks"
-          },
-          {
-            "x": 42,
-            "y": 0,
-            "item": "minecraft:smoker"
-          },
-          {
-            "x": 78,
-            "y": 0,
-            "item": "immersiveengineering:clinker_brick"
-          }
-        ]
-      ]
+  "clinker_brick": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:clinker_brick"
+      }
     ]
   },
   "variants": {

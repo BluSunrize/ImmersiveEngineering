@@ -1,0 +1,10 @@
+Basic Metal Products
+Shapes & Colors
+<&alloys>Alloys are specialty metals used in advanced applications, and can be created from grit or in alloying furnaces.<br>
+Steel is used for structural engineering and decoration, electrum for <link;basic_wiring;electrical engineering>, and constantan for <link;thermoelectric_generator;thermal engineering>.<np>
+<&plates>Metal plates are a crafting material required for the creation of most machines and components.<br>
+They are made by hammering an ingot with an Engineer's Hammer or in a <link;metal_press;Metal Press>.<np>
+<&rods>Metal rods are a crafting material used in many components or decorations, such as scaffolding.<br>
+They can be crafted or made in a <link;metal_press;Metal Press>.<np>
+<&wires>Wires are the backbone of power transfer and are used in many electronic components.<br>
+They are made by cutting a plate with Engineer's Wire Cutters or in a <link;metal_press;Metal Press>.

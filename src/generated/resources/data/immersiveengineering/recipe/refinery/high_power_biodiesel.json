@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:refinery",
+  "energy": 80,
+  "input0": {
+    "amount": 95,
+    "tag": "forge:biodiesel"
+  },
+  "input1": {
+    "amount": 5,
+    "nbt": {
+      "Potion": "minecraft:strength"
+    },
+    "tag": "forge:potion"
+  },
+  "result": {
+    "Amount": 100,
+    "FluidName": "immersiveengineering:high_power_biodiesel"
+  }
+}

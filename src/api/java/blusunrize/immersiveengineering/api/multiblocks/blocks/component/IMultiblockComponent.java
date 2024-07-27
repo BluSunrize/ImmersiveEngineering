@@ -63,6 +63,15 @@ public interface IMultiblockComponent<State>
 	{
 		<T> void register(BlockCapability<T, @Nullable Direction> capability, CapabilityGetter<T, State> getter);
 
+		default <T> void registerAtBlockPos(
+				BlockCapability<T, @Nullable Direction> capability,
+				BlockPos atPosition,
+				Function<State, T> getter
+		)
+		{
+			register(capability, (state, position) -> Objects.equals(position.posInMultiblock(), atPosition)?getter.apply(state): null);
+		}
+
 		default <T> void registerAt(
 				BlockCapability<T, @Nullable Direction> capability,
 				CapabilityPosition atPosition,

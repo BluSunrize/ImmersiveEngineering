@@ -1,0 +1,6 @@
+Fluid Outlet
+And Now The Floodgates Will Open
+<&outlet_recipe>Fluid Outlets are open grates that act as endpoints for pipe systems where fluids can flow out into the world.<br>
+Fluid can only be filled up to the level of the outlet's sides, and once that level is reached backflow will prevent fluid flow.<br>
+The sides of the outlet can be changes between input, output, or closed with the Engineer's Hammer.<br>
+Redstone signals will prevent fluid from flowing into the Fluid Outlet and thus the world.

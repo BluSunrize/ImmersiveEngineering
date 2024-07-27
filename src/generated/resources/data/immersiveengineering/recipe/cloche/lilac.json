@@ -4,8 +4,8 @@
     "item": "minecraft:lilac"
   },
   "render": {
-    "type": "immersiveengineering:generic",
-    "block": "minecraft:lilac"
+    "type": "immersiveengineering:doubleflower",
+    "value": "minecraft:lilac"
   },
   "results": [
     {

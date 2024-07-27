@@ -1,0 +1,16 @@
+Radio Tower
+REM-64 Longwave Radio
+While transferring energy over long distances must rely on <link;basic_wiring;high-voltage wiring> to bridge long distances, information can be transmitted wirelessly.<np>
+A §lradio tower§r can broadcast redstone signals to be received by other towers.<br>
+For two towers to interact, they need to be tuned to the same frequency and must be within range of each other.<br>
+The range of any radio tower is greatly hindered by any surrounding structures or terrain that are higher than itself. For optimal range, towers should be placed in open fields or atop mountains or buildings.<np>
+§lStructure:§r
+An assembled tower features three connection ports on top of its main circuitry box:<br>
+The §2left port§r is for inputting energy. The radio tower will consume <config;i;machines.radio_tower_consumption> Flux/t to operate.<br>
+The §2central port§r is for the signals being sent and received, via a <link;redstone_wiring;redstone interface connector;bundled>.<np>
+The §2right port§r is for controlling the tower remotely, selecting one of its 16 saved frequencies by inputting a matching coloured signal through another redstone interface connector.<np>
+§lInterface:§r
+The tower's interface features a slider to set its frequency, within a range from 128 to 384 kHz.<br>
+Below this are 16 coloured buttons with which to save a selected frequency, to quickly change the tower over to it.<br>
+These same saved frequencies can only be triggered by a coloured redstone signal to the redstone control port, as explained before.<br>
+A display on the lower right shows other towers within range and on the same frequency. The field below indicates the tower's range in meters.

@@ -33,6 +33,11 @@ public interface IEOBJCallback<Key>
 		return false;
 	}
 
+	default boolean shadeQuads(Key object, String material)
+	{
+		return true;
+	}
+
 	default boolean shouldRenderGroup(Key object, String group, RenderType layer)
 	{
 		return true;

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks.logic;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
@@ -22,6 +23,9 @@ import blusunrize.immersiveengineering.api.multiblocks.blocks.util.CapabilityPos
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.ShapeType;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
+import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.RefineryLogic.State;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessor.InMachineProcessor;
@@ -38,6 +42,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -83,6 +88,15 @@ public class RefineryLogic
 	private static final int SLOT_CONTAINER_OUT = 2;
 	public static final int NUM_SLOTS = 3;
 	public static final int ENERGY_CAPACITY = 16000;
+	public static ResourceLocation MIF_CONDITION_FLUID_IN_L = new ResourceLocation(Lib.MODID, "refinery/tank_left");
+	public static ResourceLocation MIF_CONDITION_FLUID_IN_R = new ResourceLocation(Lib.MODID, "refinery/tank_right");
+
+	static
+	{
+		MachineInterfaceHandler.copyOptions(MIF_CONDITION_FLUID_IN_L, MachineInterfaceHandler.BASIC_FLUID_IN);
+		MachineInterfaceHandler.copyOptions(MIF_CONDITION_FLUID_IN_R, MachineInterfaceHandler.BASIC_FLUID_IN);
+	}
+
 
 	@Override
 	public void tickServer(IMultiblockContext<State> context)
@@ -151,6 +165,7 @@ public class RefineryLogic
 			else
 				return null;
 		});
+		register.registerAtBlockPos(IMachineInterfaceConnection.CAPABILITY, REDSTONE_POS, state -> state.mifHandler);
 	}
 
 	@Override
@@ -196,6 +211,7 @@ public class RefineryLogic
 		private final Supplier<@Nullable IFluidHandler> fluidOutput;
 		private final IFluidHandler inputCap;
 		private final IFluidHandler outputCap;
+		private final IMachineInterfaceConnection mifHandler;
 
 		// Sync/client fields
 		public boolean active;
@@ -213,6 +229,13 @@ public class RefineryLogic
 					false, true, markDirty, tanks.leftInput, tanks.rightInput
 			);
 			this.outputCap = ArrayFluidHandler.drainOnly(this.tanks.output, markDirty);
+			this.mifHandler = () -> new MachineCheckImplementation[]{
+					new MachineCheckImplementation<>((BooleanSupplier)() -> this.active, MachineInterfaceHandler.BASIC_ACTIVE),
+					new MachineCheckImplementation<>(tanks.leftInput, MIF_CONDITION_FLUID_IN_L),
+					new MachineCheckImplementation<>(tanks.rightInput, MIF_CONDITION_FLUID_IN_R),
+					new MachineCheckImplementation<>(tanks.output, MachineInterfaceHandler.BASIC_FLUID_OUT),
+					new MachineCheckImplementation<>(energy, MachineInterfaceHandler.BASIC_ENERGY),
+			};
 		}
 
 		@Override

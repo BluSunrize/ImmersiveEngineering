@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.*;
 import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleBlockEntity;
@@ -34,6 +35,7 @@ import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -75,7 +77,13 @@ public final class IEBlocks
 			.mapColor(MapColor.STONE)
 			.instrument(NoteBlockInstrument.BASEDRUM)
 			.requiresCorrectToolForDrops()
-			.strength(2, 180);
+			.strength(2, 100);
+	private static final Supplier<Properties> STONE_DECO_REINFORCED_PROPS = () -> Block.Properties.of()
+			.sound(SoundType.STONE)
+			.mapColor(MapColor.STONE)
+			.instrument(NoteBlockInstrument.BASEDRUM)
+			.requiresCorrectToolForDrops()
+			.strength(20, 1200);
 	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of()
 			.sound(SoundType.STONE)
 			.mapColor(MapColor.STONE)
@@ -115,7 +123,7 @@ public final class IEBlocks
 					.sound(SoundType.WOOD)
 					.strength(2, 5)
 					.isViewBlocking((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion().forceSolidOn();
 	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of()
 			.mapColor(MapColor.METAL)
 			.sound(SoundType.METAL)
@@ -128,7 +136,7 @@ public final class IEBlocks
 					.strength(3, 15)
 					.requiresCorrectToolForDrops()
 					.isViewBlocking((state, blockReader, pos) -> false);
-	public static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	public static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion().forceSolidOn();
 	private static final Supplier<Properties> METAL_PROPERTIES_DYNAMIC = () -> METAL_PROPERTIES_NO_OCCLUSION.get().dynamicShape();
 
 	private IEBlocks()
@@ -149,6 +157,7 @@ public final class IEBlocks
 						.instrument(NoteBlockInstrument.BASEDRUM)
 						.sound(SoundType.NETHER_BRICKS).requiresCorrectToolForDrops().strength(2.5f, 12)
 		);
+		public static final BlockEntry<IEBaseBlock> ALLOYBRICK = BlockEntry.simple("alloybrick", STONE_DECO_GBRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> SLAG_BRICK = BlockEntry.simple("slag_brick", STONE_DECO_GBRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> CLINKER_BRICK = BlockEntry.simple("clinker_brick", STONE_DECO_BRICK_PROPS);
 		public static final BlockEntry<IEBaseBlock> CLINKER_BRICK_SILL = BlockEntry.simple("clinker_brick_sill", STONE_DECO_BRICK_PROPS);
@@ -190,6 +199,12 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> CONCRETE_LEADED = BlockEntry.simple(
 				"concrete_leaded", STONE_DECO_LEADED_PROPS
 		);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_REINFORCED = BlockEntry.simple(
+				"concrete_reinforced", STONE_DECO_REINFORCED_PROPS
+		);
+		public static final BlockEntry<IEBaseBlock> CONCRETE_REINFORCED_TILE = BlockEntry.simple(
+				"concrete_reinforced_tile", STONE_DECO_REINFORCED_PROPS
+		);
 		public static final BlockEntry<IEBaseBlock> INSULATING_GLASS = BlockEntry.simple(
 				"insulating_glass", STONE_DECO_PROPS_NOT_SOLID
 		);
@@ -202,7 +217,6 @@ public final class IEBlocks
 						.instrument(NoteBlockInstrument.BASEDRUM)
 						.strength(.2F, 1)
 						.noOcclusion());
-		public static final BlockEntry<IEBaseBlock> ALLOYBRICK = BlockEntry.simple("alloybrick", STONE_DECO_STONE_BRICK_PROPS);
 
 		//TODO possibly merge into a single block with "arbitrary" height?
 		public static final BlockEntry<PartialConcreteBlock> CONCRETE_SHEET = new BlockEntry<>(
@@ -324,6 +338,11 @@ public final class IEBlocks
 	{
 		public static final Map<TreatedWoodStyles, BlockEntry<IEBaseBlock>> TREATED_WOOD = new EnumMap<>(TreatedWoodStyles.class);
 		public static final BlockEntry<FenceBlock> TREATED_FENCE = BlockEntry.fence("treated_fence", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
+		public static final BlockEntry<FenceGateBlock> TREATED_FENCE_GATE = new BlockEntry<>(
+				"treated_fence_gate",
+				STANDARD_WOOD_PROPERTIES_NO_OVERLAY,
+				blockProps -> new FenceGateBlock(blockProps, SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE)
+		);
 		public static final BlockEntry<ScaffoldingBlock> TREATED_SCAFFOLDING = BlockEntry.scaffolding("treated_scaffold", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION);
 		public static final BlockEntry<PostBlock> TREATED_POST = BlockEntry.post("treated_post", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<SawdustBlock> SAWDUST = new BlockEntry<>(
@@ -343,6 +362,29 @@ public final class IEBlocks
 						.ignitedByLava()
 						.instrument(NoteBlockInstrument.BASS)
 						.strength(1.25f, 1)
+		);
+		public static final BlockEntry<IEBaseBlock> WINDOW = new BlockEntry<>(
+				"treated_window", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> CATWALK = new BlockEntry<>(
+				"treated_catwalk", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, false)
+		);
+
+		public static final BlockEntry<IEBaseBlock> CATWALK_STAIRS = new BlockEntry<>(
+				"treated_catwalk_stairs", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, false)
+		);
+
+		public static final BlockEntry<DoorBlock> DOOR = new BlockEntry<>(
+				"treated_door", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+		);
+		public static final BlockEntry<DoorBlock> DOOR_FRAMED = new BlockEntry<>(
+				"treated_door_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+		);
+		public static final BlockEntry<TrapDoorBlock> TRAPDOOR = new BlockEntry<>(
+				"treated_trapdoor", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
+		);
+		public static final BlockEntry<TrapDoorBlock> TRAPDOOR_FRAMED = new BlockEntry<>(
+				"treated_trapdoor_framed", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.TREATED_WOOD, blockProps)
 		);
 
 		private static void init()
@@ -367,6 +409,9 @@ public final class IEBlocks
 		public static final BlockEntry<DeskBlock<ModWorkbenchBlockEntity>> WORKBENCH = new BlockEntry<>(
 				"workbench", DeskBlock.PROPERTIES, p -> new DeskBlock<>(IEBlockEntities.MOD_WORKBENCH, p)
 		);
+		public static final BlockEntry<BlueprintShelfBlock> BLUEPRINT_SHELF = new BlockEntry<>(
+				"blueprint_shelf", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, BlueprintShelfBlock::new
+		);
 		public static final BlockEntry<DeskBlock<CircuitTableBlockEntity>> CIRCUIT_TABLE = new BlockEntry<>(
 				"circuit_table", DeskBlock.PROPERTIES, p -> new DeskBlock<>(IEBlockEntities.CIRCUIT_TABLE, p)
 		);
@@ -376,17 +421,17 @@ public final class IEBlocks
 		public static final BlockEntry<IEEntityBlock<?>> WOODEN_BARREL = BlockEntry.barrel("wooden_barrel", false);
 		public static final BlockEntry<TurntableBlock> TURNTABLE = new BlockEntry<>("turntable", STANDARD_WOOD_PROPERTIES, TurntableBlock::new);
 		public static final BlockEntry<IEEntityBlock<WoodenCrateBlockEntity>> CRATE = new BlockEntry<>(
-				"crate", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p, false)
+				"crate", STANDARD_WOOD_PROPERTIES, CrateBlock::new
 		);
 		public static final BlockEntry<IEEntityBlock<WoodenCrateBlockEntity>> REINFORCED_CRATE = new BlockEntry<>(
 				"reinforced_crate",
 				() -> Properties.of()
 						.sound(SoundType.WOOD)
-						.strength(2, 1200000)
+						.strength(2, 1200)
 						.mapColor(MapColor.WOOD)
 						.ignitedByLava()
 						.instrument(NoteBlockInstrument.BASS),
-				p -> new IEEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p, false)
+				CrateBlock::new
 		);
 		public static final BlockEntry<IEEntityBlock<SorterBlockEntity>> SORTER = new BlockEntry<>(
 				"sorter", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.SORTER, p)
@@ -409,6 +454,9 @@ public final class IEBlocks
 		public static final BlockEntry<HorizontalFacingEntityBlock<LogicUnitBlockEntity>> LOGIC_UNIT = new BlockEntry<>(
 				"logic_unit", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.LOGIC_UNIT, p)
 		);
+		public static final BlockEntry<HorizontalFacingEntityBlock<MachineInterfaceBlockEntity>> MACHINE_INTERFACE = new BlockEntry<>(
+				"machine_interface", STANDARD_WOOD_PROPERTIES, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.MACHINE_INTERFACE, p)
+		);
 
 		private static void init()
 		{
@@ -427,12 +475,23 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> GENERATOR = BlockEntry.simple("generator", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<IEBaseBlock> RADIATOR = BlockEntry.simple("radiator", DEFAULT_METAL_PROPERTIES);
 		public static final BlockEntry<FenceBlock> STEEL_FENCE = BlockEntry.fence("steel_fence", METAL_PROPERTIES_NO_OVERLAY);
+		public static final BlockEntry<FenceGateBlock> STEEL_FENCE_GATE = new BlockEntry<>(
+				"steel_fence_gate",
+				METAL_PROPERTIES_NO_OVERLAY,
+				blockProps -> new FenceGateBlock(blockProps, SoundEvents.COPPER_DOOR_OPEN, SoundEvents.COPPER_DOOR_CLOSE)
+		);
 		public static final BlockEntry<FenceBlock> ALU_FENCE = BlockEntry.fence("alu_fence", METAL_PROPERTIES_NO_OVERLAY);
+		public static final BlockEntry<FenceGateBlock> ALU_FENCE_GATE = new BlockEntry<>(
+				"alu_fence_gate",
+				METAL_PROPERTIES_NO_OVERLAY,
+				blockProps -> new FenceGateBlock(blockProps, SoundEvents.COPPER_DOOR_OPEN, SoundEvents.COPPER_DOOR_CLOSE)
+		);
 		public static final BlockEntry<WallmountBlock> STEEL_WALLMOUNT = BlockEntry.wallmount("steel_wallmount", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<WallmountBlock> ALU_WALLMOUNT = BlockEntry.wallmount("alu_wallmount", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<PostBlock> STEEL_POST = BlockEntry.post("steel_post", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<PostBlock> ALU_POST = BlockEntry.post("alu_post", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<LanternBlock> LANTERN = new BlockEntry<>("lantern", LanternBlock.PROPERTIES, LanternBlock::new);
+		public static final BlockEntry<CagelampBlock> CAGELAMP = new BlockEntry<>("cagelamp", CagelampBlock.PROPERTIES, CagelampBlock::new);
 		public static final BlockEntry<StructuralArmBlock> STEEL_SLOPE = new BlockEntry<>(
 				"steel_slope", METAL_PROPERTIES_DYNAMIC, StructuralArmBlock::new
 		);
@@ -443,6 +502,43 @@ public final class IEBlocks
 		public static final Map<MetalScaffoldingType, BlockEntry<ScaffoldingBlock>> STEEL_SCAFFOLDING = new EnumMap<>(MetalScaffoldingType.class);
 		public static final Map<MetalScaffoldingType, BlockEntry<ScaffoldingBlock>> ALU_SCAFFOLDING = new EnumMap<>(MetalScaffoldingType.class);
 		public static final Map<DyeColor, BlockEntry<IEBaseBlock>> COLORED_SHEETMETAL = new EnumMap<>(DyeColor.class);
+		public static final BlockEntry<IEBaseBlock> STEEL_WINDOW = new BlockEntry<>(
+				"steel_window", METAL_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> ALU_WINDOW = new BlockEntry<>(
+				"alu_window", METAL_PROPERTIES_NO_OCCLUSION, WindowBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> REINFORCED_WINDOW = new BlockEntry<>(
+				"reinforced_window",
+				() -> Properties.of()
+						.mapColor(MapColor.METAL)
+						.sound(SoundType.METAL)
+						.strength(20, 1200)
+						.requiresCorrectToolForDrops()
+						.isViewBlocking((state, blockReader, pos) -> false)
+						.noOcclusion()
+						.forceSolidOn(),
+				WindowBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> STEEL_CATWALK = new BlockEntry<>(
+				"steel_catwalk", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, true)
+		);
+		public static final BlockEntry<IEBaseBlock> STEEL_CATWALK_STAIRS = new BlockEntry<>(
+				"steel_catwalk_stairs", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, true)
+		);
+		public static final BlockEntry<IEBaseBlock> ALU_CATWALK = new BlockEntry<>(
+				"alu_catwalk", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkBlock(blockProps, true)
+		);
+		public static final BlockEntry<IEBaseBlock> ALU_CATWALK_STAIRS = new BlockEntry<>(
+				"alu_catwalk_stairs", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new CatwalkStairsBlock(blockProps, true)
+		);
+		public static final BlockEntry<DoorBlock> STEEL_DOOR = new BlockEntry<>(
+				"steel_door", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IEDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
+		);
+		public static final BlockEntry<TrapDoorBlock> STEEL_TRAPDOOR = new BlockEntry<>(
+				"steel_trapdoor", METAL_PROPERTIES_NO_OCCLUSION, blockProps -> new IETrapDoorBlock(IEDoorBlock.STEEL, blockProps).setLockedByRedstone()
+		);
+		public static final Map<WarningSignIcon, BlockEntry<IEBaseBlock>> WARNING_SIGNS = new EnumMap<>(WarningSignIcon.class);
 
 		private static void init()
 		{
@@ -472,6 +568,10 @@ public final class IEBlocks
 				registerStairs(steelBlock);
 				registerStairs(aluBlock);
 			}
+			for(WarningSignIcon icon : WarningSignIcon.values())
+				WARNING_SIGNS.put(icon, new BlockEntry<>(
+						"warning_sign_"+icon.getSerializedName(), METAL_PROPERTIES_NO_OVERLAY, blockProps -> new WarningSignBlock(icon, blockProps)
+				));
 		}
 	}
 
@@ -538,14 +638,20 @@ public final class IEBlocks
 		public static final BlockEntry<ClocheBlock> CLOCHE = new BlockEntry<>("cloche", METAL_PROPERTIES_NO_OCCLUSION, ClocheBlock::new);
 		public static final Map<IConveyorType<?>, BlockEntry<ConveyorBlock>> CONVEYORS = new HashMap<>();
 		public static final Map<EnumMetals, BlockEntry<ChuteBlock>> CHUTES = new EnumMap<>(EnumMetals.class);
+		public static final Map<DyeColor, BlockEntry<ChuteBlock>> DYED_CHUTES = new EnumMap<>(DyeColor.class);
 		public static final BlockEntry<AnyFacingEntityBlock<ElectromagnetBlockEntity>> ELECTROMAGNET = new BlockEntry<>(
 				"electromagnet", DEFAULT_METAL_PROPERTIES, p -> new AnyFacingEntityBlock<>(IEBlockEntities.ELECTROMAGNET, p)
 		);
+		public static final BlockEntry<PipeValveBlock> PIPE_VALVE = new BlockEntry<>(
+				"pipe_valve", METAL_PROPERTIES_NO_OCCLUSION, PipeValveBlock::new
+		);
+
 		private static void init()
 		{
 			for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
 				CHUTES.put(metal, new BlockEntry<>("chute_"+metal.tagName(), METAL_PROPERTIES_DYNAMIC, ChuteBlock::new));
-
+			for(DyeColor dye : DyeColor.values())
+				DYED_CHUTES.put(dye, new BlockEntry<>("chute_colored_"+dye.getName(), METAL_PROPERTIES_DYNAMIC, ChuteBlock::new));
 		}
 
 		public static void initConveyors()
@@ -592,7 +698,19 @@ public final class IEBlocks
 		public static final BlockEntry<BasicConnectorBlock<?>> CONNECTOR_BUNDLED = new BlockEntry<>(
 				"connector_bundled", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.CONNECTOR_BUNDLED)
 		);
-		public static final BlockEntry<FeedthroughBlock> FEEDTHROUGH = new BlockEntry<>("feedthrough", ConnectorBlock.PROPERTIES, FeedthroughBlock::new);
+		public static final BlockEntry<BasicConnectorBlock<?>> REDSTONE_STATE_CELL = new BlockEntry<>(
+				"redstone_state_cell", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.REDSTONE_STATE_CELL)
+		);
+		public static final BlockEntry<BasicConnectorBlock<?>> REDSTONE_TIMER = new BlockEntry<>(
+				"redstone_timer", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.REDSTONE_TIMER)
+		);
+		public static final BlockEntry<HorizontalFacingEntityBlock<?>> REDSTONE_SWITCHBOARD = new BlockEntry<>(
+				"redstone_switchboard", ConnectorBlock.PROPERTIES, p -> new HorizontalFacingEntityBlock<>(IEBlockEntities.REDSTONE_SWITCHBOARD, p)
+		);
+		public static final BlockEntry<AnyFacingEntityBlock<?>> SIREN = new BlockEntry<>(
+				"siren", ConnectorBlock.PROPERTIES, p -> new AnyFacingEntityBlock<>(IEBlockEntities.SIREN, p)
+		);
+		public static final BlockEntry<FeedthroughBlock> FEEDTHROUGH = new BlockEntry<>("feedthrough", FeedthroughBlock.PROPERTIES, FeedthroughBlock::new);
 
 		public static BlockEntry<BasicConnectorBlock<?>> getEnergyConnector(String cat, boolean relay)
 		{
@@ -693,6 +811,8 @@ public final class IEBlocks
 		registerSlab(StoneDecoration.CONCRETE_BRICK);
 		registerSlab(StoneDecoration.CONCRETE_TILE);
 		registerSlab(StoneDecoration.CONCRETE_LEADED);
+		registerSlab(StoneDecoration.CONCRETE_REINFORCED);
+		registerSlab(StoneDecoration.CONCRETE_REINFORCED_TILE);
 		registerSlab(StoneDecoration.INSULATING_GLASS);
 		registerSlab(StoneDecoration.ALLOYBRICK);
 		registerStairs(StoneDecoration.SLAG_BRICK);
@@ -717,6 +837,8 @@ public final class IEBlocks
 				toItem = BlockItemBalloon::new;
 			else if(entry==Connectors.TRANSFORMER)
 				toItem = TransformerBlockItem::new;
+			else if(entry==WoodenDevices.CRATE||entry==WoodenDevices.REINFORCED_CRATE)
+				toItem = b -> new BlockItemIE(b, new Item.Properties().stacksTo(1));
 			else
 				toItem = BlockItemIE::new;
 			if(entry==StoneDecoration.COKE)

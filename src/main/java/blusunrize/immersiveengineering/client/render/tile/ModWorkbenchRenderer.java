@@ -124,7 +124,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 			final ClientLevel level = ClientUtils.mc().level;
 			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(level, category);
 			transform.pushPose();
-			int numRecipes = recipes.size();
+			int numRecipes = Math.min(recipes.size(), 9);
 			int perRow;
 			if(numRecipes > 6) perRow = numRecipes-3;
 			else if(numRecipes > 4) perRow = numRecipes-2;

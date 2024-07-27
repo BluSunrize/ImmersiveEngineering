@@ -16,12 +16,15 @@ import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleL
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
+import blusunrize.immersiveengineering.common.blocks.metal.WarningSignBlock.WarningSignIcon;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.SteelArmorItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns.BannerEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -41,6 +44,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorItem.Type;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.model.generators.ModelProvider;
@@ -97,6 +101,15 @@ public class ItemModels extends TRSRItemModelProvider
 		obj(MetalDecoration.ALU_POST, modLoc("block/wooden_device/wooden_post_inv.obj"))
 				.texture("post", modLoc("block/metal_decoration/aluminum_post"))
 				.transforms(modLoc("item/post"));
+		addItemModel("door_steel", MetalDecoration.STEEL_DOOR);
+
+		for(Entry<WarningSignIcon, BlockEntry<IEBaseBlock>> warningSign : MetalDecoration.WARNING_SIGNS.entrySet())
+		{
+			addLayeredItemModel(warningSign.getValue().asItem(),
+					rl("block/metal_decoration/sign/base_front"),
+					rl("block/metal_decoration/sign/icon_"+warningSign.getKey().getSerializedName())
+			);
+		}
 
 		obj(MetalDevices.CLOCHE, rl("block/metal_device/cloche.obj.ie"))
 				.transforms(rl("item/cloche"))
@@ -106,6 +119,10 @@ public class ItemModels extends TRSRItemModelProvider
 		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.CHUTES.entrySet())
 			obj(chute.getValue(), rl("block/metal_device/chute_inv.obj"))
 					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().tagName()))
+					.transforms(rl("item/block"));
+		for(Entry<DyeColor, BlockEntry<ChuteBlock>> chute : MetalDevices.DYED_CHUTES.entrySet())
+			obj(chute.getValue(), rl("block/metal_device/chute_inv.obj"))
+					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().getName()))
 					.transforms(rl("item/block"));
 
 
@@ -172,6 +189,9 @@ public class ItemModels extends TRSRItemModelProvider
 
 		obj(MetalDecoration.LANTERN, modLoc("block/lantern_inventory.obj"))
 				.transforms(modLoc("item/block"));
+		obj(MetalDecoration.CAGELAMP, rl("block/cagelamp.obj"))
+				.texture("texture", modLoc("block/metal_decoration/cagelamp"))
+				.transforms(rl("item/block"));
 		addLayeredItemModel(
 				MetalDecoration.METAL_LADDER.get(CoverType.NONE).asItem(),
 				rl("block/metal_decoration/metal_ladder")
@@ -191,6 +211,9 @@ public class ItemModels extends TRSRItemModelProvider
 		obj(WoodenDecoration.TREATED_POST, modLoc("block/wooden_device/wooden_post_inv.obj"))
 				.texture("post", modLoc("block/wooden_decoration/post"))
 				.transforms(modLoc("item/post"));
+		addItemModel("door_treated", WoodenDecoration.DOOR);
+		addItemModel("door_treated_framed", WoodenDecoration.DOOR_FRAMED);
+
 		obj(WoodenDevices.WORKBENCH, rl("block/wooden_device/workbench.obj.ie"))
 				.transforms(rl("item/workbench"));
 		obj(WoodenDevices.CIRCUIT_TABLE, rl("block/wooden_device/circuit_table.obj"))
@@ -226,7 +249,7 @@ public class ItemModels extends TRSRItemModelProvider
 		for(ItemLike bag : IEItems.Misc.SHADER_BAG.values())
 			addItemModel("shader_bag", bag);
 
-		addItemModels("material_", Ingredients.STICK_TREATED, Ingredients.STICK_IRON, Ingredients.STICK_STEEL, Ingredients.STICK_ALUMINUM,
+		addItemModels("material_", Ingredients.STICK_TREATED, Ingredients.STICK_IRON, Ingredients.STICK_STEEL, Ingredients.STICK_ALUMINUM, Ingredients.STICK_NETHERITE,
 				Ingredients.HEMP_FIBER, Ingredients.HEMP_FABRIC, Ingredients.ERSATZ_LEATHER, Ingredients.COAL_COKE, Ingredients.SLAG,
 				Ingredients.COMPONENT_IRON, Ingredients.COMPONENT_STEEL, Ingredients.WATERWHEEL_SEGMENT, Ingredients.WINDMILL_BLADE, Ingredients.WINDMILL_SAIL,
 				Ingredients.WOODEN_GRIP, Ingredients.GUNPART_BARREL, Ingredients.GUNPART_DRUM, Ingredients.GUNPART_HAMMER,
@@ -236,6 +259,7 @@ public class ItemModels extends TRSRItemModelProvider
 				Ingredients.LIGHT_BULB, Ingredients.ELECTRON_TUBE, Ingredients.CIRCUIT_BOARD,
 				Ingredients.DUROPLAST_PLATE, Ingredients.COMPONENT_ELECTRONIC, Ingredients.COMPONENT_ELECTRONIC_ADV
 		);
+		addItemModels("metal_", Ingredients.NUGGET_NETHERITE);
 
 		addItemModels(
 				"tool_", mcLoc("item/handheld"), Tools.HAMMER, Tools.WIRECUTTER, Tools.SCREWDRIVER,
@@ -264,14 +288,8 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
 		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);
 		addItemModels("", IEItems.Misc.FERTILIZER);
-		addItemModel("banner_pattern", IEBannerPatterns.HAMMER.item());
-		addItemModel("banner_pattern", IEBannerPatterns.BEVELS.item());
-		addItemModel("banner_pattern", IEBannerPatterns.ORNATE.item());
-		addItemModel("banner_pattern", IEBannerPatterns.TREATED_WOOD.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WINDMILL.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WOLF_R.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WOLF_L.item());
-		addItemModel("banner_pattern", IEBannerPatterns.WOLF.item());
+		for(BannerEntry holder : IEBannerPatterns.ALL_BANNERS)
+			addItemModel("banner_pattern_"+holder.name(), holder.item());
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
 				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED, IEItems.Misc.ICON_BTTF);
 
@@ -298,11 +316,13 @@ public class ItemModels extends TRSRItemModelProvider
 		ieObjBuilder(Tools.DRILL, modLoc("item/drill/drill_diesel.obj.ie"))
 				.dynamic(true)
 				.callback(DrillCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(modLoc("item/drill"));
 		ieObjBuilder(Tools.BUZZSAW, modLoc("item/buzzsaw_diesel.obj.ie"))
 				.dynamic(true)
 				.callback(BuzzsawCallbacks.INSTANCE)
+				.layer(RenderType.translucent())
 				.end()
 				.transforms(modLoc("item/buzzsaw"));
 		ieObjBuilder(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))
@@ -389,6 +409,16 @@ public class ItemModels extends TRSRItemModelProvider
 				.renderType(ModelProviderUtils.getName(translucent()));
 		obj(Connectors.CONNECTOR_BUNDLED, rl("block/connector/connector_bundled.obj"))
 				.transforms(rl("item/connector"));
+		obj(Connectors.REDSTONE_STATE_CELL, rl("block/connector/redstone_state_cell.obj"))
+				.transforms(rl("item/connector"))
+				.renderType(ModelProviderUtils.getName(translucent()));
+		obj(Connectors.REDSTONE_TIMER, rl("block/connector/redstone_timer.obj.ie"))
+				.transforms(rl("item/block"))
+				.renderType(ModelProviderUtils.getName(translucent()));
+		obj(Connectors.REDSTONE_SWITCHBOARD, rl("block/connector/switchboard.obj"))
+				.transforms(rl("item/switchboard"));
+		obj(Connectors.SIREN, rl("block/connector/siren.obj.ie"))
+				.transforms(rl("item/block"));
 		obj(Connectors.CONNECTOR_STRUCTURAL, rl("block/connector/connector_structural.obj.ie"))
 				.transforms(rl("item/connector"));
 		obj(Connectors.TRANSFORMER, rl("block/connector/transformer_mv_left.obj"))

@@ -1,9 +1,7 @@
 Treated Wood
 Highly Durable
-<&treated_wood>Treated Wood is, quite simply, wooden planks covered in <link;cokeoven;creosote oil;outputs>. Despite its simplicity, it is one of the most important materials you will be using in Immersive Engineering, so you'd better be prepared to craft a lot of it.<np>
+<&treated_wood>Treated wood is any kind of wooden planks impregnated with <link;industrial_fluids;Creosote Oil;creosote_oil>.<br>
+Despite their simplicity, these weatherproof planks are used throughout industrial matters where a durable wood is needed.<np>
 <&recipes>
-<&posts>Posts made from treated wood make for excellent attachment points for your Wire Connectors. They are 4 blocks high, so you won't be able to place them without the proper clearance.
-Using the hammer on the sides of the topmost block will attach an arm to the post.
-You can also place <link;wiring;transformers;transformer_recipes> on the pole, which makes it less obtrusive.
-Placing blocks below the arms of the wooden post will flip the arms upside down.<np>
-<&wallmount>Treated wood can also be used to craft §2Wallmounts§r, which can be very useful to mount connectors in a visually attractive way without using posts.
+<&wallmount>Treated wood can also be used to craft §2Wallmounts§r, which can be very useful to mount connectors in a visually attractive way without using posts.<br>
+Wallmounts can be placed facing upwards or downwards, and do not automatically connect to blocks placed near them.

@@ -9,20 +9,20 @@
       "count": 4
     },
     {
-      "basePredicate": {
-        "tag": "c:gunpowders"
-      },
-      "count": 2
+      "tag": "forge:gunpowder"
     },
     {
-      "tag": "c:dusts/aluminum"
+      "tag": "forge:dusts/aluminum"
     },
     {
-      "tag": "c:dyes/red"
+      "tag": "forge:dyes/red"
     }
   ],
   "result": {
-    "count": 4,
-    "id": "immersiveengineering:flare"
+    "Count": 4,
+    "id": "immersiveengineering:flare",
+    "tag": {
+      "flareColour": 13381126
+    }
   }
 }

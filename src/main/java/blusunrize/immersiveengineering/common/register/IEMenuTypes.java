@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.gui.IEContainerMenu.MultiblockMenu
 import blusunrize.immersiveengineering.common.gui.TurretMenu.ChemTurretMenu;
 import blusunrize.immersiveengineering.common.gui.TurretMenu.GunTurretMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -39,8 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.IContainerFactory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.Holder;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -102,6 +101,9 @@ public class IEMenuTypes
 	public static final MultiblockContainer<MixerLogic.State, MixerMenu> MIXER = registerMultiblock(
 			Lib.GUIID_Mixer, MixerMenu::makeServer, MixerMenu::makeClient
 	);
+	public static final MultiblockContainer<RadioTowerLogic.State, RadioTowerMenu> RADIO_TOWER = registerMultiblock(
+			Lib.GUIID_RadioTower, RadioTowerMenu::makeServer, RadioTowerMenu::makeClient
+	);
 	public static final ArgContainer<TurretGunBlockEntity, GunTurretMenu> GUN_TURRET = registerArg(
 			Lib.GUIID_Turret_Gun, GunTurretMenu::makeServer, GunTurretMenu::makeClient
 	);
@@ -119,7 +121,7 @@ public class IEMenuTypes
 	);
 
 	public static final ItemContainerTypeNew<ToolboxMenu> TOOLBOX = registerItem(
-			Lib.GUIID_Toolbox, ToolboxMenu::makeFromItem, ToolboxMenu::makeClient
+			Lib.GUIID_Toolbox, ToolboxMenu::makeFromItem, ToolboxMenu::makeClientItem
 	);
 	public static final ItemContainerType<RevolverContainer> REVOLVER = register(Lib.GUIID_Revolver, RevolverContainer::new);
 	public static final ItemContainerType<MaintenanceKitContainer> MAINTENANCE_KIT = register(Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);

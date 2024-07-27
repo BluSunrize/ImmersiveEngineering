@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
 import blusunrize.immersiveengineering.common.network.SyncedConnection;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -59,13 +60,13 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 	{
 		if(WireType.REDSTONE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.redstone"));
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.redstone").withStyle(ChatFormatting.GRAY));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction1").withStyle(ChatFormatting.GRAY));
 		}
 		else if(WireType.STRUCTURE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction0"));
-			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction0").withStyle(ChatFormatting.GRAY));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction1").withStyle(ChatFormatting.GRAY));
 		}
 		WireLink link = stack.get(IEApiDataComponents.WIRE_LINK);
 		if(link!=null)

@@ -1,0 +1,7 @@
+{
+  "parent": "immersiveengineering:block/window_thick",
+  "textures": {
+    "frame": "minecraft:block/netherite_block",
+    "glass": "immersiveengineering:block/panzerglass"
+  }
+}

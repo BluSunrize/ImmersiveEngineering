@@ -36,13 +36,17 @@ import java.util.Objects;
 
 public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockEntity>
 {
-	public static final int MAX_NUM_DYNAMIC_SLOTS = 20;
+	public static final int MAX_NUM_DYNAMIC_SLOTS = 36;
+	public static final int OUTPUTS_PER_PAGE = 9;
 
 	private final Level world;
 	public Inventory inventoryPlayer;
 	private BlueprintInventory inventoryBPoutput;
 	public ShaderInventory shaderInv;
 	private final ItemStackHandler clientInventory = new ItemStackHandler(MAX_NUM_DYNAMIC_SLOTS+1);
+
+	private int pages = 0;
+	private int currentPage = 0;
 
 	public ModWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ModWorkbenchBlockEntity tile)
 	{
@@ -105,11 +109,14 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 				blueprint = true;
 				List<RecipeHolder<BlueprintCraftingRecipe>> recipes = EngineersBlueprintItem.getRecipes(world, tool);
 				inventoryBPoutput = new BlueprintInventory(this, recipes);
+				this.currentPage = 0;
+				this.pages = (recipes.size()/OUTPUTS_PER_PAGE)+1;
 
 				//Add output slots
 				for(int i = 0; i < recipes.size(); i++)
 				{
-					int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
+					int y = //21+(i < 9?i/3: (-(i-6)/3))*18-(i>=9?12:0);
+							21+(i%OUTPUTS_PER_PAGE)/3*18;
 					this.addSlot(new IESlot.BlueprintOutput(
 							this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes.get(i).value()
 					));
@@ -134,6 +141,21 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 			addSlot(new IESlot.AlwaysEmptySlot(this));
 		bindPlayerInv(inventoryPlayer);
 		ImmersiveEngineering.proxy.reInitGui();
+	}
+
+	public boolean isOutputSlotOnPage(IESlot.BlueprintOutput slot)
+	{
+		return slot.getSlotIndex() >= this.currentPage*OUTPUTS_PER_PAGE&&slot.getSlotIndex() < (this.currentPage+1)*OUTPUTS_PER_PAGE;
+	}
+
+	@Override
+	public boolean clickMenuButton(Player player, int buttonId)
+	{
+		if(buttonId==1)
+			this.currentPage = Math.floorMod(this.currentPage-1, this.pages);
+		else
+			this.currentPage = Math.floorMod(this.currentPage+1, this.pages);
+		return true;
 	}
 
 	@Nonnull

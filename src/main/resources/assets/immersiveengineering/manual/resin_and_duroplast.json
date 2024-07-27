@@ -1,0 +1,43 @@
+{
+  "resin": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:phenolic_resin_bucket"
+      }
+    ]
+  },
+  "duroplast": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:duroplast"
+      },
+      {
+        "item": "immersiveengineering:plate_duroplast"
+      }
+    ]
+  },
+  "duroplast_sheet": {
+    "type": "bottling",
+    "recipe": {
+      "item": "immersiveengineering:plate_duroplast"
+    }
+  },
+  "duroplast_block": {
+    "type": "bottling",
+    "recipe": {
+      "item": "immersiveengineering:duroplast"
+    }
+  },
+  "fiberboard": {
+    "type": "crafting",
+    "recipe": "crafting/fiberboard"
+  },
+  "empty_shell": {
+    "type": "bottling",
+    "recipe": {
+      "item": "immersiveengineering:empty_shell"
+    }
+  }
+}

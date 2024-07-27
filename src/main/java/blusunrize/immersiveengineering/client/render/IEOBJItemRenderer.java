@@ -75,8 +75,9 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		LivingEntity entity = GlobalTempData.getActiveHolder();
 		if(transformType==ItemDisplayContext.FIRST_PERSON_LEFT_HAND||transformType==ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
 		{
-			MultiBufferSource oldBufferIn = bufferIn;
-			bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));
+			// todo: do we still need this? Currently it's just resulting in model rendering inside-out
+			// MultiBufferSource oldBufferIn = bufferIn;
+			// bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));
 		}
 		for(List<String> groups : callback.getSpecialGroups(stack, transformType, entity))
 		{

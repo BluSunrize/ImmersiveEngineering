@@ -15,7 +15,7 @@
       "tag": "c:ingots/iron"
     },
     "p": {
-      "item": "minecraft:paper"
+      "tag": "forge:paper"
     }
   },
   "pattern": [
