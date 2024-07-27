@@ -5,7 +5,7 @@
   },
   "render": {
     "type": "immersiveengineering:doubleflower",
-    "value": "minecraft:sunflower"
+    "block": "minecraft:sunflower"
   },
   "results": [
     {

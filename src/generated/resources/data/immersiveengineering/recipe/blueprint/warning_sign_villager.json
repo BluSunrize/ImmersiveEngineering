@@ -3,10 +3,10 @@
   "category": "warning_sign",
   "inputs": [
     {
-      "tag": "forge:plates"
+      "tag": "c:plates"
     },
     {
-      "tag": "forge:dyes/yellow"
+      "tag": "c:dyes/yellow"
     }
   ],
   "result": {

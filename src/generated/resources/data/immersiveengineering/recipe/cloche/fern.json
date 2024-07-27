@@ -5,7 +5,7 @@
   },
   "render": {
     "type": "immersiveengineering:generic",
-    "value": "minecraft:fern"
+    "block": "minecraft:fern"
   },
   "results": [
     {

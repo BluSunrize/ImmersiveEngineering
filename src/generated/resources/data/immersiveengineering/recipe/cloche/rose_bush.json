@@ -5,7 +5,7 @@
   },
   "render": {
     "type": "immersiveengineering:doubleflower",
-    "value": "minecraft:rose_bush"
+    "block": "minecraft:rose_bush"
   },
   "results": [
     {

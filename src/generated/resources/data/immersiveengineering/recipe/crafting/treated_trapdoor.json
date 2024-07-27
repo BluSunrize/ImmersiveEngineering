@@ -1,19 +1,17 @@
 {
   "type": "immersiveengineering:shaped_fluid",
-  "value": {
-    "category": "misc",
-    "key": {
-      "w": {
-        "tag": "forge:treated_wood"
-      }
-    },
-    "pattern": [
-      "www",
-      "www"
-    ],
-    "result": {
-      "count": 3,
-      "item": "immersiveengineering:treated_trapdoor"
+  "category": "misc",
+  "key": {
+    "w": {
+      "tag": "immersiveengineering:treated_wood"
     }
+  },
+  "pattern": [
+    "www",
+    "www"
+  ],
+  "result": {
+    "count": 3,
+    "id": "immersiveengineering:treated_trapdoor"
   }
 }

@@ -2,7 +2,7 @@
   "type": "immersiveengineering:metal_press",
   "energy": 2400,
   "input": {
-    "tag": "forge:ingots/netherite"
+    "tag": "c:ingots/netherite"
   },
   "mold": "immersiveengineering:mold_rod",
   "result": {

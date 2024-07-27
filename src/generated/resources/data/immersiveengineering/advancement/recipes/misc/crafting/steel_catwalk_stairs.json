@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "immersiveengineering:scaffoldings/steel"
+            "items": "#immersiveengineering:scaffoldings/steel"
           }
         ]
       },

@@ -1,23 +1,21 @@
 {
   "type": "immersiveengineering:shaped_fluid",
-  "value": {
-    "category": "misc",
-    "key": {
-      "g": {
-        "tag": "forge:glass_panes"
-      },
-      "r": {
-        "tag": "forge:sheetmetals/aluminum"
-      }
+  "category": "misc",
+  "key": {
+    "g": {
+      "tag": "c:glass_panes"
     },
-    "pattern": [
-      "rgr",
-      "ggg",
-      "rgr"
-    ],
-    "result": {
-      "count": 8,
-      "item": "immersiveengineering:alu_window"
+    "r": {
+      "tag": "c:sheetmetals/aluminum"
     }
+  },
+  "pattern": [
+    "rgr",
+    "ggg",
+    "rgr"
+  ],
+  "result": {
+    "count": 8,
+    "id": "immersiveengineering:alu_window"
   }
 }

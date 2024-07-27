@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "c:ingots/steel"
     },
     "s": {
-      "tag": "forge:rods/steel"
+      "tag": "c:rods/steel"
     }
   },
   "pattern": [
@@ -14,6 +14,7 @@
     "sis"
   ],
   "result": {
-    "item": "immersiveengineering:steel_fence_gate"
+    "count": 1,
+    "id": "immersiveengineering:steel_fence_gate"
   }
 }

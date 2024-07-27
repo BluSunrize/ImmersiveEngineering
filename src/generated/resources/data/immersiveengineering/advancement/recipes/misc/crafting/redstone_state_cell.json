@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:connector_redstone"
-            ]
+            "items": "immersiveengineering:connector_redstone"
           }
         ]
       },

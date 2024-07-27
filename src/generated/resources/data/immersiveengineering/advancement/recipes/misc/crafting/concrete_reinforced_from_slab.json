@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:concrete_reinforced"
-            ]
+            "items": "immersiveengineering:concrete_reinforced"
           }
         ]
       },

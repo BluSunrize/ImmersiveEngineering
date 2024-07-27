@@ -1,7 +1,7 @@
 {
   "values": [
-    "#forge:ingots/brick",
-    "#forge:ingots/nether_brick",
+    "#c:bricks",
+    "#c:bricks/nether",
     "immersiveengineering:hammer",
     "immersiveengineering:screwdriver",
     "immersiveengineering:wirecutter"

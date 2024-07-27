@@ -9,7 +9,7 @@
       "item": "immersiveengineering:component_steel"
     },
     "r": {
-      "tag": "forge:rods/steel"
+      "tag": "c:rods/steel"
     },
     "w": {
       "item": "immersiveengineering:wirecoil_copper"
@@ -21,6 +21,7 @@
     "r  "
   ],
   "result": {
-    "item": "immersiveengineering:toolupgrade_skyhook_slope"
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_skyhook_slope"
   }
 }

@@ -9,14 +9,14 @@
       "count": 4
     },
     {
-      "tag": "forge:gunpowder"
+      "tag": "c:gunpowders"
     },
     {
-      "tag": "forge:dusts/steel"
+      "tag": "c:dusts/steel"
     }
   ],
   "result": {
-    "Count": 4,
+    "count": 4,
     "id": "immersiveengineering:buckshot"
   }
 }

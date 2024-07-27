@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/netherite"
+            "items": "#c:ingots/netherite"
           }
         ]
       },

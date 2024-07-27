@@ -1,34 +1,30 @@
 {
   "type": "immersiveengineering:turn_and_copy",
-  "value": {
-    "category": "misc",
-    "key": {
-      "b": {
-        "type": "immersiveengineering:fluid_stack",
-        "value": {
-          "amount": 1000,
-          "tag": "minecraft:water"
-        }
-      },
-      "c": {
-        "tag": "forge:clay"
-      },
-      "s": {
-        "tag": "forge:sand"
-      },
-      "t": {
-        "item": "immersiveengineering:hemp_fabric"
-      }
+  "category": "misc",
+  "key": {
+    "b": {
+      "type": "immersiveengineering:fluid_stack",
+      "amount": 1000,
+      "tag": "minecraft:water"
     },
-    "pattern": [
-      "scs",
-      "tbt",
-      "scs"
-    ],
-    "quarter_turn": true,
-    "result": {
-      "count": 8,
-      "item": "immersiveengineering:hempcrete"
+    "c": {
+      "tag": "c:clay"
+    },
+    "s": {
+      "tag": "c:sands"
+    },
+    "t": {
+      "item": "immersiveengineering:hemp_fabric"
     }
+  },
+  "pattern": [
+    "scs",
+    "tbt",
+    "scs"
+  ],
+  "quarter_turn": true,
+  "result": {
+    "count": 8,
+    "id": "immersiveengineering:hempcrete"
   }
 }

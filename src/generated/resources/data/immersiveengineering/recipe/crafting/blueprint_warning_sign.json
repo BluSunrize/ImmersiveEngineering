@@ -3,16 +3,16 @@
   "category": "misc",
   "key": {
     "b": {
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     },
     "d": {
-      "tag": "forge:dyes/blue"
+      "tag": "c:dyes/blue"
     },
     "p": {
-      "tag": "forge:paper"
+      "tag": "c:paper"
     },
     "y": {
-      "tag": "forge:dyes/yellow"
+      "tag": "c:dyes/yellow"
     }
   },
   "pattern": [
@@ -21,8 +21,11 @@
     "ppp"
   ],
   "result": {
-    "item": "immersiveengineering:blueprint",
-    "nbt": "{blueprint:\"warning_sign\"}"
+    "components": {
+      "immersiveengineering:blueprint": "warning_sign"
+    },
+    "count": 1,
+    "id": "immersiveengineering:blueprint"
   },
   "show_notification": false
 }

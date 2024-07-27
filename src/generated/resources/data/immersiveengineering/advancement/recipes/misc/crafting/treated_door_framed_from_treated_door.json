@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:treated_door"
-            ]
+            "items": "immersiveengineering:treated_door"
           }
         ]
       },

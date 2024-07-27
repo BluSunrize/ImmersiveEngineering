@@ -2,6 +2,7 @@
   "values": [
     "#c:rods/aluminum",
     "#c:rods/iron",
-    "#c:rods/steel"
+    "#c:rods/steel",
+    "#c:rods/netherite"
   ]
 }

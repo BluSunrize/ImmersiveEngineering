@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "d": {
-      "tag": "forge:plates/plastic"
+      "tag": "c:plates/plastic"
     },
     "g": {
       "item": "immersiveengineering:wooden_grip"
     },
     "r": {
-      "tag": "forge:rods/aluminum"
+      "tag": "c:rods/aluminum"
     }
   },
   "pattern": [
@@ -17,6 +17,7 @@
     "dgg"
   ],
   "result": {
-    "item": "immersiveengineering:toolupgrade_skyhook_insulation"
+    "count": 1,
+    "id": "immersiveengineering:toolupgrade_skyhook_insulation"
   }
 }

@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:skyhook"
-            ]
+            "items": "immersiveengineering:skyhook"
           }
         ]
       },

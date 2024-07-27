@@ -9,10 +9,10 @@
       "item": "immersiveengineering:fluid_pipe"
     },
     "r": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "s": {
-      "tag": "forge:rods/iron"
+      "tag": "c:rods/iron"
     }
   },
   "pattern": [
@@ -20,6 +20,7 @@
     "sr"
   ],
   "result": {
-    "item": "immersiveengineering:pipe_valve"
+    "count": 1,
+    "id": "immersiveengineering:pipe_valve"
   }
 }

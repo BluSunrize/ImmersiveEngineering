@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:nugget_netherite"
-            ]
+            "items": "immersiveengineering:nugget_netherite"
           }
         ]
       },

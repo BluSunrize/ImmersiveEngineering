@@ -65,7 +65,7 @@
       }
     ],
     "d": {
-      "tag": "forge:dyes/orange"
+      "tag": "c:dyes/orange"
     }
   },
   "pattern": [
@@ -75,6 +75,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "immersiveengineering:chute_colored_orange"
+    "id": "immersiveengineering:chute_colored_orange"
   }
 }

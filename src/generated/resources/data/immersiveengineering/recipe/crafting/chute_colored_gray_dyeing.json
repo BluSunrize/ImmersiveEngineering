@@ -65,7 +65,7 @@
       }
     ],
     "d": {
-      "tag": "forge:dyes/gray"
+      "tag": "c:dyes/gray"
     }
   },
   "pattern": [
@@ -75,6 +75,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "immersiveengineering:chute_colored_gray"
+    "id": "immersiveengineering:chute_colored_gray"
   }
 }

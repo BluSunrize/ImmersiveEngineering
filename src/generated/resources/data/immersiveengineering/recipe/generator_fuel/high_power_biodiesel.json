@@ -1,5 +1,5 @@
 {
   "type": "immersiveengineering:generator_fuel",
   "burnTime": 275,
-  "fluidTag": "forge:high_power_biodiesel"
+  "fluidTag": "c:high_power_biodiesel"
 }

@@ -8,10 +8,9 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
 import blusunrize.immersiveengineering.client.gui.info.BlueprintOutputArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -22,10 +21,8 @@ import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -65,7 +62,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 		if(s.hasItem()&&s.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
 			List<RecipeHolder<BlueprintCraftingRecipe>> recipes = BlueprintCraftingRecipe.findRecipes(
-					Minecraft.getInstance().level, ItemNBTHelper.getString(s.getItem(), "blueprint")
+					Minecraft.getInstance().level, s.getItem().get(IEApiDataComponents.BLUEPRINT_TYPE)
 			);
 			if(recipes!=null&&!recipes.isEmpty()&&recipes.size() > ModWorkbenchContainer.OUTPUTS_PER_PAGE)
 			{

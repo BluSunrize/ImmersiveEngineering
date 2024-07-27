@@ -1,19 +1,17 @@
 {
   "type": "immersiveengineering:shaped_fluid",
-  "value": {
-    "category": "misc",
-    "key": {
-      "i": {
-        "tag": "forge:ingots/steel"
-      }
-    },
-    "pattern": [
-      "iii",
-      "iii"
-    ],
-    "result": {
-      "count": 3,
-      "item": "immersiveengineering:steel_trapdoor"
+  "category": "misc",
+  "key": {
+    "i": {
+      "tag": "c:ingots/steel"
     }
+  },
+  "pattern": [
+    "iii",
+    "iii"
+  ],
+  "result": {
+    "count": 3,
+    "id": "immersiveengineering:steel_trapdoor"
   }
 }

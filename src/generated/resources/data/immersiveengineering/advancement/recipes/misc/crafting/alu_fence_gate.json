@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/aluminum"
+            "items": "#c:ingots/aluminum"
           }
         ]
       },
@@ -15,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:rods/aluminum"
+            "items": "#c:rods/aluminum"
           }
         ]
       },

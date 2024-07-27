@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:sheetmetal_colored_orange"
-            ]
+            "items": "immersiveengineering:sheetmetal_colored_orange"
           }
         ]
       },

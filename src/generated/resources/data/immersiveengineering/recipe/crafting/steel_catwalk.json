@@ -1,23 +1,21 @@
 {
   "type": "immersiveengineering:shaped_fluid",
-  "value": {
-    "category": "misc",
-    "key": {
-      "r": {
-        "tag": "forge:rods/steel"
-      },
-      "s": {
-        "tag": "immersiveengineering:scaffolding_slabs/steel"
-      }
+  "category": "misc",
+  "key": {
+    "r": {
+      "tag": "c:rods/steel"
     },
-    "pattern": [
-      "rrr",
-      "r r",
-      "sss"
-    ],
-    "result": {
-      "count": 6,
-      "item": "immersiveengineering:steel_catwalk"
+    "s": {
+      "tag": "immersiveengineering:scaffolding_slabs/steel"
     }
+  },
+  "pattern": [
+    "rrr",
+    "r r",
+    "sss"
+  ],
+  "result": {
+    "count": 6,
+    "id": "immersiveengineering:steel_catwalk"
   }
 }

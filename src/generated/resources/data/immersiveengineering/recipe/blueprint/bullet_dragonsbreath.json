@@ -9,17 +9,17 @@
       "count": 4
     },
     {
-      "tag": "forge:gunpowder"
+      "tag": "c:gunpowders"
     },
     {
       "basePredicate": {
-        "tag": "forge:dusts/aluminum"
+        "tag": "c:dusts/aluminum"
       },
       "count": 2
     }
   ],
   "result": {
-    "Count": 4,
+    "count": 4,
     "id": "immersiveengineering:dragons_breath"
   }
 }

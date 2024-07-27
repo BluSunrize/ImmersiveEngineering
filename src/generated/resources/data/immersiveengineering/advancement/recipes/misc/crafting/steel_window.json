@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:sheetmetals/steel"
+            "items": "#c:sheetmetals/steel"
           }
         ]
       },

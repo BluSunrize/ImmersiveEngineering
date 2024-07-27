@@ -65,7 +65,7 @@
       }
     ],
     "d": {
-      "tag": "forge:dyes/black"
+      "tag": "c:dyes/black"
     }
   },
   "pattern": [
@@ -75,6 +75,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "immersiveengineering:chute_colored_black"
+    "id": "immersiveengineering:chute_colored_black"
   }
 }

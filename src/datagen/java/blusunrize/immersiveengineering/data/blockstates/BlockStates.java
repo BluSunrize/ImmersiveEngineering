@@ -767,11 +767,11 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 		{
 			builder.partialState()
-					.with(IEProperties.FACING_HORIZONTAL, d)
+					.with(LadderBlock.FACING, d)
 					.with(MetalLadderBlock.OPEN, false)
 					.setModels(new ConfiguredModel(model, 0, getAngle(d, 180), true));
 			builder.partialState()
-					.with(IEProperties.FACING_HORIZONTAL, d)
+					.with(LadderBlock.FACING, d)
 					.with(MetalLadderBlock.OPEN, true)
 					.setModels(new ConfiguredModel(modelOpen, 0, getAngle(d, 180), false));
 		}

@@ -8,6 +8,7 @@
     "#c:nuggets/uranium",
     "#c:nuggets/constantan",
     "#c:nuggets/electrum",
-    "#c:nuggets/steel"
+    "#c:nuggets/steel",
+    "immersiveengineering:nugget_netherite"
   ]
 }

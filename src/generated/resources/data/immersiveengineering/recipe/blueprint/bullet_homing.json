@@ -9,17 +9,17 @@
       "count": 4
     },
     {
-      "tag": "forge:gunpowder"
+      "tag": "c:gunpowders"
     },
     {
-      "tag": "forge:nuggets/lead"
+      "tag": "c:nuggets/lead"
     },
     {
       "item": "minecraft:ender_eye"
     }
   ],
   "result": {
-    "Count": 4,
+    "count": 4,
     "id": "immersiveengineering:homing"
   }
 }

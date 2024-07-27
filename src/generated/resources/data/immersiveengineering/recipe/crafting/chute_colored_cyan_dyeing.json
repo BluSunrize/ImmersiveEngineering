@@ -65,7 +65,7 @@
       }
     ],
     "d": {
-      "tag": "forge:dyes/cyan"
+      "tag": "c:dyes/cyan"
     }
   },
   "pattern": [
@@ -75,6 +75,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "immersiveengineering:chute_colored_cyan"
+    "id": "immersiveengineering:chute_colored_cyan"
   }
 }

@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "i": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "c:ingots/aluminum"
     },
     "s": {
-      "tag": "forge:rods/aluminum"
+      "tag": "c:rods/aluminum"
     }
   },
   "pattern": [
@@ -14,6 +14,7 @@
     "sis"
   ],
   "result": {
-    "item": "immersiveengineering:alu_fence_gate"
+    "count": 1,
+    "id": "immersiveengineering:alu_fence_gate"
   }
 }

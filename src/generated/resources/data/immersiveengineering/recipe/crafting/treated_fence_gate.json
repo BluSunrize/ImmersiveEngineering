@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "i": {
-      "tag": "forge:treated_wood"
+      "tag": "immersiveengineering:treated_wood"
     },
     "s": {
-      "tag": "forge:rods/treated_wood"
+      "tag": "c:rods/treated_wood"
     }
   },
   "pattern": [
@@ -14,6 +14,7 @@
     "sis"
   ],
   "result": {
-    "item": "immersiveengineering:treated_fence_gate"
+    "count": 1,
+    "id": "immersiveengineering:treated_fence_gate"
   }
 }

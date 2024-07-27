@@ -65,7 +65,7 @@
       }
     ],
     "d": {
-      "tag": "forge:dyes/purple"
+      "tag": "c:dyes/purple"
     }
   },
   "pattern": [
@@ -75,6 +75,6 @@
   ],
   "result": {
     "count": 8,
-    "item": "immersiveengineering:chute_colored_purple"
+    "id": "immersiveengineering:chute_colored_purple"
   }
 }

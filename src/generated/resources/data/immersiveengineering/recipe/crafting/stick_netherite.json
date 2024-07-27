@@ -4,7 +4,7 @@
   "group": "sticks",
   "key": {
     "i": {
-      "tag": "forge:ingots/netherite"
+      "tag": "c:ingots/netherite"
     }
   },
   "pattern": [
@@ -13,6 +13,6 @@
   ],
   "result": {
     "count": 4,
-    "item": "immersiveengineering:stick_netherite"
+    "id": "immersiveengineering:stick_netherite"
   }
 }

@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:treated_trapdoor_framed"
-            ]
+            "items": "immersiveengineering:treated_trapdoor_framed"
           }
         ]
       },

@@ -9,20 +9,20 @@
       "count": 4
     },
     {
-      "tag": "forge:gunpowder"
+      "tag": "c:gunpowders"
     },
     {
-      "tag": "forge:nuggets/steel"
+      "tag": "c:nuggets/steel"
     },
     {
       "basePredicate": {
-        "tag": "forge:nuggets/constantan"
+        "tag": "c:nuggets/constantan"
       },
       "count": 2
     }
   ],
   "result": {
-    "Count": 4,
+    "count": 4,
     "id": "immersiveengineering:armor_piercing"
   }
 }
