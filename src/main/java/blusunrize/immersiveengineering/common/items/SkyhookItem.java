@@ -39,7 +39,7 @@ public class SkyhookItem extends UpgradeableToolItem
 {
 	public SkyhookItem()
 	{
-		super(new Properties().stacksTo(1).component(IEDataComponents.SKYHOOK_SPEED_LIMIT, false), "SKYHOOK");
+		super(new Properties().stacksTo(1).component(IEDataComponents.SKYHOOK_SPEED_LIMIT, false), "SKYHOOK", 2);
 	}
 
 	@Override
@@ -141,11 +141,5 @@ public class SkyhookItem extends UpgradeableToolItem
 				new IESlot.Upgrades(container, toolInventory, 0, 102, 42, "SKYHOOK", stack, true, level, getPlayer),
 				new IESlot.Upgrades(container, toolInventory, 1, 102, 22, "SKYHOOK", stack, true, level, getPlayer),
 		};
-	}
-
-	@Override
-	public int getSlotCount()
-	{
-		return 2;
 	}
 }

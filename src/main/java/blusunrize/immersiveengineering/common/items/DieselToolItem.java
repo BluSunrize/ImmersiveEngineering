@@ -53,9 +53,9 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 {
 	protected static final int CAPACITY = 2*FluidType.BUCKET_VOLUME;
 
-	public DieselToolItem(Item.Properties props, String upgradeType)
+	public DieselToolItem(Item.Properties props, String upgradeType, int slotCount)
 	{
-		super(props, upgradeType);
+		super(props, upgradeType, slotCount);
 	}
 
 	@Override

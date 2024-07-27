@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.inventory.EmptyContainer;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +33,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -406,12 +404,6 @@ public abstract class IESlot extends Slot
 			super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool upgradeableTool)
 				upgradeableTool.removeFromWorkbench(player, stack);
-			IItemHandler handler = stack.getCapability(ItemHandler.ITEM);
-			if(handler!=null)
-			{
-				if(handler instanceof IEItemStackHandler ieHandler)
-					ieHandler.setTile(null);
-			}
 		}
 	}
 

@@ -63,7 +63,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 	public ChemthrowerItem()
 	{
-		super(new Properties().stacksTo(1).component(CHEMTHROWER_DATA, ChemthrowerData.DEFAULT), TYPE);
+		super(new Properties().stacksTo(1).component(CHEMTHROWER_DATA, ChemthrowerData.DEFAULT), TYPE, 4);
 	}
 
 	@Override
@@ -234,12 +234,6 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				CapabilityShader.ITEM,
 				stack -> new ShaderWrapper_Item(ieLoc("chemthrower"), stack)
 		);
-	}
-
-	@Override
-	public int getSlotCount()
-	{
-		return 4;
 	}
 
 	@Override

@@ -9,14 +9,13 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -76,15 +75,16 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 
 	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount, GuiGraphics graphics)
 	{
+		graphics.blitSprite(IEApi.ieLoc("gui/revolver"), 0, 0, 51, 51);
 		VertexConsumer builder = graphics.bufferSource().getBuffer(IERenderTypes.getGui(TEXTURE));
 
-		GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 0, 1, 74, 74, 1, 1, 1, 1, 0/256f, 74/256f, 51/256f, 125/256f);
+		// TODO graphics.blit?
+		GuiHelper.drawTexturedRect(builder, graphics.pose(), 0, 1, 74, 74, 256, 0, 74, 51, 125);
 		if(bulletAmount >= 18)
-			GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 47, 1, 103, 74, 1, 1, 1, 1, 74/256f, 177/256f, 51/256f, 125/256f);
+			GuiHelper.drawTexturedRect(builder, graphics.pose(), 47, 1, 103, 74, 256, 74, 177, 51, 125);
 		else if(bulletAmount > 8)
-			GuiHelper.drawTexturedColoredRect(builder, graphics.pose(), 57, 1, 79, 39, 1, 1, 1, 1, 57/256f, 136/256f, 12/256f, 51/256f);
+			GuiHelper.drawTexturedRect(builder, graphics.pose(), 57, 1, 79, 39, 256, 57, 136, 12, 51);
 
-		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
 		graphics.pose().pushPose();
 		graphics.pose().translate(0, 0, 10);

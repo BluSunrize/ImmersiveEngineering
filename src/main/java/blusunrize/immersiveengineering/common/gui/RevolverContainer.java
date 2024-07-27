@@ -9,11 +9,9 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -97,8 +95,6 @@ public class RevolverContainer extends InternalStorageItemContainer
 			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getMainArm()==HumanoidArm.RIGHT)?secondRevolverInventory: this.inv;
 			int revolverSlots = ((IBulletContainer)(held).getItem()).getBulletCount(held);
 
-			if(inv instanceof IEItemStackHandler)
-				((IEItemStackHandler)inv).setInventoryForUpdate(this.inventoryPlayer);
 			this.addSlot(new IESlot.Bullet(inv, i++, off+29, 3, 1));
 			int slots = revolverSlots >= 18?2: revolverSlots > 8?1: 0;
 			for(int[] slot : slotPositions[slots])
@@ -132,20 +128,5 @@ public class RevolverContainer extends InternalStorageItemContainer
 	protected boolean allowShiftclicking()
 	{
 		return false;
-	}
-
-
-	@Override
-	public void removed(Player par1EntityPlayer)
-	{
-		super.removed(par1EntityPlayer);
-
-		for(int hand = 0; hand < (this.secondHand!=null?2: 1); hand++)
-		{
-			IItemHandler secondRevolverInventory = secondRevolver.getCapability(ItemHandler.ITEM);
-			IItemHandler inv = this.secondHand==null?this.inv: (hand==0)==(player.getMainArm()==HumanoidArm.RIGHT)?secondRevolverInventory: this.inv;
-			if(inv instanceof IEItemStackHandler)
-				((IEItemStackHandler)inv).setInventoryForUpdate(null);
-		}
 	}
 }

@@ -49,7 +49,7 @@ public class ToolboxItem extends InternalStorageItem
 
 	public ToolboxItem()
 	{
-		super(new Properties().stacksTo(1));
+		super(new Properties().stacksTo(1), SLOT_COUNT);
 	}
 
 	@Nonnull
@@ -140,12 +140,6 @@ public class ToolboxItem extends InternalStorageItem
 				return InteractionResult.FAIL;
 		}
 		return super.useOn(ctx);
-	}
-
-	@Override
-	public int getSlotCount()
-	{
-		return SLOT_COUNT;
 	}
 
 	@Override

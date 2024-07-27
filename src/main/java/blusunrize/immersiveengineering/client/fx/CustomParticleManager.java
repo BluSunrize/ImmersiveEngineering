@@ -12,9 +12,7 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.mixin.accessors.client.ParticleManagerAccess;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
@@ -63,9 +61,8 @@ public class CustomParticleManager
 		matrixStack.translate(
 				activeInfo.getPosition().x, activeInfo.getPosition().y, activeInfo.getPosition().z
 		);
-		VertexConsumer baseBuffer = IERenderTypes.whiteLightmap(bufferIn).getBuffer(IERenderTypes.PARTICLES);
 		TransformingVertexBuilder particleBuilder = new TransformingVertexBuilder(
-				baseBuffer, matrixStack, DefaultVertexFormat.PARTICLE
+				IERenderTypes.whiteLightmap(bufferIn), IERenderTypes.PARTICLES, matrixStack
 		);
 		// Need to fix *some* normal, so just use "up" for all quads. Does not seem to actually affect rendering.
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

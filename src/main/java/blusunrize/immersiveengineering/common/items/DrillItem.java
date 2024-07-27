@@ -71,7 +71,7 @@ public class DrillItem extends DieselToolItem
 
 	public DrillItem()
 	{
-		super(new Properties().stacksTo(1).component(DRILL_SINGLEBLOCK, false), TYPE);
+		super(new Properties().stacksTo(1).component(DRILL_SINGLEBLOCK, false), TYPE, 5);
 	}
 
 	@Override
@@ -82,12 +82,6 @@ public class DrillItem extends DieselToolItem
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
-	@Override
-	public int getSlotCount()
-	{
-		return 5;
-	}
-
 	@Override
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{

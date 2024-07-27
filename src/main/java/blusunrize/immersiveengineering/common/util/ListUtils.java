@@ -12,8 +12,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by codew on 4/04/2017.
@@ -31,8 +31,13 @@ public final class ListUtils
 		return list;
 	}
 
-	public static <T> Collector<T, ?, NonNullList<T>> collector()
+	public static NonNullList<ItemStack> fromStream(Stream<ItemStack> data, int exactSize)
 	{
-		return Collectors.toCollection(NonNullList::create);
+		var result = data
+				.limit(exactSize)
+				.collect(Collectors.toCollection(NonNullList::create));
+		while(result.size() < exactSize)
+			result.add(ItemStack.EMPTY);
+		return result;
 	}
 }

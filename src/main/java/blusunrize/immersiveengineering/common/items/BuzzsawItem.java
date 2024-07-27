@@ -76,7 +76,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public BuzzsawItem()
 	{
-		super(new Properties().stacksTo(1), TYPE);
+		super(new Properties().stacksTo(1), TYPE, 5);
 	}
 
 	@Override
@@ -87,12 +87,6 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
-	@Override
-	public int getSlotCount()
-	{
-		return 5;
-	}
-
 	@Override
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
@@ -162,7 +156,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 				var upgradeInventory = upgrade.remove(IEDataComponents.GENERIC_ITEMS);
 				if(upgradeInventory==null)
 					continue;
-				for(int i = 1; i <= 2; i++)
+				for(int i = 1; i <= upgradeInventory.getSlots(); i++)
 				{
 					var blade = upgradeInventory.getStackInSlot(i-1);
 					if(!blade.isEmpty())

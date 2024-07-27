@@ -59,7 +59,7 @@ public class IEShieldItem extends UpgradeableToolItem
 
 	public IEShieldItem()
 	{
-		super(new Properties().durability(1024), TYPE);
+		super(new Properties().durability(1024), TYPE, 2);
 	}
 
 	@Override
@@ -226,12 +226,6 @@ public class IEShieldItem extends UpgradeableToolItem
 				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, TYPE, stack, true, level, getPlayer),
 				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, TYPE, stack, true, level, getPlayer)
 		};
-	}
-
-	@Override
-	public int getSlotCount()
-	{
-		return 2;
 	}
 
 	@Override

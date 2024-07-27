@@ -18,19 +18,19 @@ import net.neoforged.neoforge.items.ComponentItemHandler;
 
 public abstract class InternalStorageItem extends IEBaseItem
 {
+	private final int slotCount;
 
-	public InternalStorageItem(Properties props)
+	public InternalStorageItem(Properties props, int slotCount)
 	{
-		super(props);
+		super(props.component(IEDataComponents.GENERIC_ITEMS, ItemContainerContents.EMPTY));
+		this.slotCount = slotCount;
 	}
-
-	public abstract int getSlotCount();
 
 	public static void registerCapabilitiesISI(ItemCapabilityRegistrar registrar)
 	{
 		registrar.register(ItemHandler.ITEM, stack -> {
 			InternalStorageItem item = (InternalStorageItem)stack.getItem();
-			return new ComponentItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.getSlotCount());
+			return new ComponentItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.slotCount);
 		});
 	}
 
@@ -41,6 +41,12 @@ public abstract class InternalStorageItem extends IEBaseItem
 
 	public static ItemContainerContents getContainedItems(ItemStack stack)
 	{
+		// TODO verify usages wrt empty tails
 		return stack.getOrDefault(IEDataComponents.GENERIC_ITEMS, ItemContainerContents.EMPTY);
+	}
+
+	public int getSlotCount()
+	{
+		return slotCount;
 	}
 }

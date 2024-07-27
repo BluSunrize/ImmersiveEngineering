@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.upgrade.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -74,8 +73,6 @@ public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockE
 		if(tool.getItem() instanceof IUpgradeableTool upgradeableTool)
 		{
 			IItemHandler toolInv = Objects.requireNonNull(tool.getCapability(ItemHandler.ITEM));
-			if(toolInv instanceof IEItemStackHandler ieInv)
-				ieInv.setTile(tile);
 
 			// Use a "simple" inventory on the client rather than the one for the tool stack. The server always syncs an
 			// "empty" tool to the client, so if the slots use the tool inventory the behavior become highly dependent

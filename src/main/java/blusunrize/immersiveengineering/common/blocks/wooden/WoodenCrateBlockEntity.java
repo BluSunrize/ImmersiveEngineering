@@ -160,9 +160,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	public void onBEPlaced(ItemStack stack)
 	{
 		if(stack.has(IEDataComponents.GENERIC_ITEMS))
-			this.inventory = stack.get(IEDataComponents.GENERIC_ITEMS)
-					.stream()
-					.collect(ListUtils.collector());
+			this.inventory = ListUtils.fromStream(stack.get(IEDataComponents.GENERIC_ITEMS).stream(), CONTAINER_SIZE);
 		enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
 	}
 

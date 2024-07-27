@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
@@ -64,9 +63,9 @@ public class GuiHelper
 			float u0, float u1, float v0, float v1
 	)
 	{
-		TransformingVertexBuilder innerBuilder = new TransformingVertexBuilder(builder, transform, DefaultVertexFormat.BLOCK);
-		innerBuilder.defaultColor((int)(255*r), (int)(255*g), (int)(255*b), (int)(255*alpha));
-		innerBuilder.setDefaultLight(LightTexture.pack(15, 15));
+		TransformingVertexBuilder innerBuilder = new TransformingVertexBuilder(builder, transform);
+		innerBuilder.defaultColor(r, g, b, alpha);
+		innerBuilder.setDefaultLight(LightTexture.FULL_BRIGHT);
 		innerBuilder.setDefaultOverlay(OverlayTexture.NO_OVERLAY);
 		innerBuilder.setDefaultNormal(1, 1, 1);
 		innerBuilder.addVertex(x, y+h, 0).setUv(u0, v1);

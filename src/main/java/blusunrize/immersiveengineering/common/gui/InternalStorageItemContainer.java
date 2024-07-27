@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,8 +30,6 @@ public abstract class InternalStorageItemContainer extends ItemContainer
 		super(type, id, iinventory, world, entityEquipmentSlot, heldItem);
 		this.entityEquipmentSlot = entityEquipmentSlot;
 		this.inv = Objects.requireNonNull(heldItem.getCapability(ItemHandler.ITEM));
-		if(inv instanceof IEItemStackHandler)
-			((IEItemStackHandler)inv).setInventoryForUpdate(iinventory);
 		updateSlots();
 	}
 
@@ -43,13 +39,5 @@ public abstract class InternalStorageItemContainer extends ItemContainer
 		if(inv==null)
 			return;
 		super.updateSlots();
-	}
-
-	@Override
-	public void removed(Player par1EntityPlayer)
-	{
-		super.removed(par1EntityPlayer);
-		if(inv instanceof IEItemStackHandler)
-			((IEItemStackHandler)inv).setInventoryForUpdate(null);
 	}
 }

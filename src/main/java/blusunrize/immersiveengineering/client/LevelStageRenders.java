@@ -208,10 +208,9 @@ public class LevelStageRenders
 
 	private static void renderObstructingBlocks(Pair<PoseStack, BufferSource> context)
 	{
-		VertexConsumer baseBuilder = context.getSecond().getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
 		final PoseStack transform = context.getFirst();
 		TransformingVertexBuilder builder = new TransformingVertexBuilder(
-				baseBuilder, IERenderTypes.TRANSLUCENT_POSITION_COLOR.format()
+				context.getSecond(), IERenderTypes.TRANSLUCENT_POSITION_COLOR
 		);
 		builder.defaultColor(255, 0, 0, 128);
 		for(Entry<Connection, Pair<Collection<BlockPos>, MutableInt>> entry : FAILED_CONNECTIONS.entrySet())

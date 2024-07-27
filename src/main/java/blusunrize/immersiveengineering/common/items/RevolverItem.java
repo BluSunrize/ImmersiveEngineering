@@ -92,7 +92,8 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 						.component(IEDataComponents.REVOLVER_PERKS, Perks.EMPTY)
 						.component(IEDataComponents.REVOLVER_ELITE, "")
 						.component(REVOLVER_COOLDOWN, RevolverCooldowns.DEFAULT),
-				TYPE
+				TYPE,
+				18+2+1
 		);
 	}
 
@@ -115,12 +116,6 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	}
 
 	/* ------------- INTERNAL INVENTORY ------------- */
-
-	@Override
-	public int getSlotCount()
-	{
-		return 18+2+1;
-	}
 
 	@Override
 	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
@@ -263,12 +258,12 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 						for(int i = 0; i < player.getInventory().getContainerSize(); i++)
 						{
 							ItemStack stack = player.getInventory().getItem(i);
-							if(stack.getItem() instanceof SpeedloaderItem&&!((SpeedloaderItem)stack.getItem()).isEmpty(stack))
+							if(stack.getItem() instanceof SpeedloaderItem speedloader&&!speedloader.isEmpty(stack))
 							{
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
 										world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), b));
-								var bulletList = getContainedItems(stack).stream().collect(ListUtils.collector());
+								var bulletList = speedloader.getBullets(stack);
 								setBullets(revolver, bulletList, true);
 								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
 								player.getInventory().setChanged();
@@ -377,9 +372,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	@Override
 	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		return getContainedItems(revolver).stream()
-				.limit(getBulletCount(revolver))
-				.collect(ListUtils.collector());
+		return ListUtils.fromStream(getContainedItems(revolver).stream(), getBulletCount(revolver));
 	}
 
 	/* ------------- BULLET UTILITY ------------- */

@@ -104,7 +104,7 @@ public class PowerpackItem extends UpgradeableToolItem
 
 	public PowerpackItem()
 	{
-		super(new Properties().stacksTo(1), TYPE);
+		super(new Properties().stacksTo(1), TYPE, 4);
 	}
 
 	@Override
@@ -360,12 +360,6 @@ public class PowerpackItem extends UpgradeableToolItem
 				return cfg.storage.getAsInt();
 		}
 		return 0;
-	}
-
-	@Override
-	public int getSlotCount()
-	{
-		return 4;
 	}
 
 	public static void registerCapabilities(ItemCapabilityRegistrar registrar)

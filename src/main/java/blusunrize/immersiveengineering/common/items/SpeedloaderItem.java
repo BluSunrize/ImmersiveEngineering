@@ -32,13 +32,7 @@ public class SpeedloaderItem extends InternalStorageItem implements IBulletConta
 {
 	public SpeedloaderItem()
 	{
-		super(new Properties().stacksTo(1));
-	}
-
-	@Override
-	public int getSlotCount()
-	{
-		return 8;
+		super(new Properties().stacksTo(1), 8);
 	}
 
 	@Nonnull
@@ -81,7 +75,7 @@ public class SpeedloaderItem extends InternalStorageItem implements IBulletConta
 	@Override
 	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		return getContainedItems(revolver).stream().limit(getSlotCount()).collect(ListUtils.collector());
+		return ListUtils.fromStream(getContainedItems(revolver).stream(), getSlotCount());
 	}
 
 	@Nonnull

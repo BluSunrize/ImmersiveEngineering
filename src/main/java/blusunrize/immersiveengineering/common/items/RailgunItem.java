@@ -65,7 +65,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 
 	public RailgunItem()
 	{
-		super(new Properties().stacksTo(1).component(IEDataComponents.GENERIC_ENERGY, 0), TYPE);
+		super(new Properties().stacksTo(1).component(IEDataComponents.GENERIC_ENERGY, 0), TYPE, 2+1);
 	}
 
 	@Override
@@ -73,12 +73,6 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		super.initializeClient(consumer);
 		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
-	}
-
-	@Override
-	public int getSlotCount()
-	{
-		return 2+1;
 	}
 
 	@Override
