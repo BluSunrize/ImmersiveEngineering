@@ -76,7 +76,7 @@ public class EntityLoot implements LootTableSubProvider
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
 						//TODO
 						// .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 1)))
-				).add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK))
+				).add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK.getValue()))
 						.apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
 				));
 		out.accept(key("entities/bulwark"), builder);

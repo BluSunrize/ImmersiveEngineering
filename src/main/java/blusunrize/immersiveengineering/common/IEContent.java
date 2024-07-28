@@ -126,7 +126,7 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Rarity.UNCOMMON, 7);
 		ShaderRegistry.rarityWeightMap.put(Rarity.RARE, 5);
 		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
-		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
+		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK.getValue(), 1);
 
 		IEDataComponents.init(modBus);
 		IEFluids.REGISTER.register(modBus);

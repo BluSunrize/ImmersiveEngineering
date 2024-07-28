@@ -16,8 +16,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
 import java.util.Map;
 import java.util.Set;
@@ -25,8 +25,8 @@ import java.util.function.Predicate;
 
 public class SawbladeItem extends IEBaseItem
 {
-	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
-			ToolActions.AXE_DIG, ToolActions.SWORD_DIG, ToolActions.SHEARS_CARVE
+	private static final Set<ItemAbility> TOOL_ACTIONS = ImmutableSet.of(
+			ItemAbilities.AXE_DIG, ItemAbilities.SWORD_DIG, ItemAbilities.SHEARS_CARVE
 	);
 	private final float sawbladeSpeed;
 	private final float sawbladeDamage;
@@ -93,7 +93,7 @@ public class SawbladeItem extends IEBaseItem
 		return s -> s.is(BlockTags.MINEABLE_WITH_AXE);
 	}
 
-	public Set<ToolAction> getToolActions()
+	public Set<ItemAbility> getItemAbilities()
 	{
 		return TOOL_ACTIONS;
 	}

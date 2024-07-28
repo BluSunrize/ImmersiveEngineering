@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
@@ -37,13 +36,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool, IElectricEquipment, IColouredItem
 {
@@ -51,13 +48,6 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	public FluorescentTubeItem()
 	{
 		super(new Properties().stacksTo(1));
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
-	{
-		super.initializeClient(consumer);
-		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	@Override

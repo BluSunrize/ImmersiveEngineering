@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -48,7 +47,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.energy.ComponentEnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -56,7 +54,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScrollwheel
@@ -66,13 +63,6 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	public RailgunItem()
 	{
 		super(new Properties().stacksTo(1).component(IEDataComponents.GENERIC_ENERGY, 0), TYPE, 2+1);
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
-	{
-		super.initializeClient(consumer);
-		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	@Override

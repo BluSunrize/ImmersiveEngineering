@@ -1,4 +1,4 @@
-// 1.21	2024-07-27T18:39:21.954228497	Tags for minecraft:item mod id immersiveengineering
+// 1.21	2024-07-28T17:06:49.469479913	Tags for minecraft:item mod id immersiveengineering
 d0562e49ea1662a8e02805b805f76658ebd3ea7c data/c/tags/item/armors.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/c/tags/item/charcoal.json
 0b4e9eb2e57b7d0790ad2a0344733be5de39a297 data/c/tags/item/clay.json
@@ -117,7 +117,7 @@ b55e74dc34f8adea30d4dc91d50f91f426aa114b data/c/tags/item/storage_blocks/raw_sil
 511af3b19f7d8b92766975510260be68380ca969 data/c/tags/item/storage_blocks/silver.json
 57fdca4c0f5f6529987aa3d07d4a4f48a424e016 data/c/tags/item/storage_blocks/steel.json
 e563b87b316084581f07d20d80466bc0014fce68 data/c/tags/item/storage_blocks/uranium.json
-5a096087432197ae05b19032b8d150b528ad1b9b data/c/tags/item/tools/shields.json
+5a096087432197ae05b19032b8d150b528ad1b9b data/c/tags/item/tools/shield.json
 6334b5da68c30fee016b64a38b56425c4b91934e data/c/tags/item/wires.json
 d3c3d0392a8b14657114131cdfb49303d4c5b7b8 data/c/tags/item/wires/aluminum.json
 f5470081131755f2ca6efe914c57a261c517eec5 data/c/tags/item/wires/copper.json

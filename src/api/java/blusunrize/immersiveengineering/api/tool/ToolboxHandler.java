@@ -10,21 +10,16 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.IETags;
 import com.google.common.collect.Sets;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShearsItem;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class ToolboxHandler
 {
@@ -61,16 +56,16 @@ public class ToolboxHandler
 
 	static
 	{
-		Set<ToolAction> toolActions = Sets.newHashSet();
-		toolActions.addAll(ToolActions.DEFAULT_PICKAXE_ACTIONS);
-		toolActions.addAll(ToolActions.DEFAULT_AXE_ACTIONS);
-		toolActions.addAll(ToolActions.DEFAULT_SHOVEL_ACTIONS);
-		toolActions.addAll(ToolActions.DEFAULT_HOE_ACTIONS);
-		toolActions.addAll(ToolActions.DEFAULT_SHEARS_ACTIONS);
+		Set<ItemAbility> toolActions = Sets.newHashSet();
+		toolActions.addAll(ItemAbilities.DEFAULT_PICKAXE_ACTIONS);
+		toolActions.addAll(ItemAbilities.DEFAULT_AXE_ACTIONS);
+		toolActions.addAll(ItemAbilities.DEFAULT_SHOVEL_ACTIONS);
+		toolActions.addAll(ItemAbilities.DEFAULT_HOE_ACTIONS);
+		toolActions.addAll(ItemAbilities.DEFAULT_SHEARS_ACTIONS);
 
 		tools.add((s) -> s.is(IETags.toolboxTools));
 		tools.add((s) -> {
-			for(ToolAction action : toolActions)
+			for(ItemAbility action : toolActions)
 				if(s.canPerformAction(action))
 					return true;
 			return false;

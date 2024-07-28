@@ -18,7 +18,8 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.ToolAction;
+import net.neoforged.fml.common.asm.enumextension.EnumProxy;
+import net.neoforged.neoforge.common.ItemAbility;
 
 import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
@@ -168,7 +169,10 @@ public class Lib
 			return Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot);
 		}
 	};
-	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", ieLoc("masterwork"), ChatFormatting.GOLD);
+	public static final EnumProxy<Rarity> RARITY_MASTERWORK = new EnumProxy<>(
+			// 0 is "index" parameter, should get replaced by Neo's enum extension handler
+			Rarity.class, 0, MODID+":masterwork", ChatFormatting.GOLD
+	);
 
-	public static final ToolAction WIRECUTTER_DIG = ToolAction.get("wirecutter_dig");
+	public static final ItemAbility WIRECUTTER_DIG = ItemAbility.get("wirecutter_dig");
 }

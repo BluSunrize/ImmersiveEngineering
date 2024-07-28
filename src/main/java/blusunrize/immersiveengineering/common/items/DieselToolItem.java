@@ -142,7 +142,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	}
 
 	@Override
-	public ItemAttributeModifiers getAttributeModifiers(ItemStack stack)
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack)
 	{
 		List<Entry> modifiers = new ArrayList<>();
 		ItemStack head = getHead(stack);

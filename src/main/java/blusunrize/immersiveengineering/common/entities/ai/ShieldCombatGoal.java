@@ -13,7 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.AbstractIllager;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
 
 import java.util.EnumSet;
 
@@ -44,7 +44,7 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 
 	protected boolean isHoldingShield()
 	{
-		return this.mob.isHolding(is -> is.canPerformAction(ToolActions.SHIELD_BLOCK));
+		return this.mob.isHolding(is -> is.canPerformAction(ItemAbilities.SHIELD_BLOCK));
 	}
 
 	protected boolean hasTarget()
@@ -94,7 +94,7 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 
 	protected boolean isUsingShield()
 	{
-		return mob.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK);
+		return mob.getUseItem().canPerformAction(ItemAbilities.SHIELD_BLOCK);
 	}
 
 	protected void startUsingShield()
@@ -102,7 +102,7 @@ public abstract class ShieldCombatGoal<T extends AbstractIllager> extends Goal
 		if(this.shieldCooldown > 0)
 			return;
 		this.mob.startUsingItem(this.mob.getMainHandItem()
-				.canPerformAction(ToolActions.SHIELD_BLOCK)?InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND
+				.canPerformAction(ItemAbilities.SHIELD_BLOCK)?InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND
 		);
 	}
 

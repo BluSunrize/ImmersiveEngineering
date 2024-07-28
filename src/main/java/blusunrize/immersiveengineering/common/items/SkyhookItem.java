@@ -101,7 +101,7 @@ public class SkyhookItem extends UpgradeableToolItem implements IElectricEquipme
 	}
 
 	@Override
-	public ItemAttributeModifiers getAttributeModifiers(ItemStack stack)
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack)
 	{
 		var builder = ItemAttributeModifiers.builder();
 		builder.add(

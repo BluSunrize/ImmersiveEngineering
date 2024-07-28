@@ -38,13 +38,13 @@ public class LootModifierProvider extends GlobalLootModifierProvider
 		add("hemp_from_grass", new AddDropModifier(
 				Misc.HEMP_SEEDS,
 				randomChance(0.1f),
-				invert(toolMatches(item().of(Items.TOOLS_SHEARS))),
+				invert(toolMatches(item().of(Items.TOOLS_SHEAR))),
 				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.SHORT_GRASS)
 		));
 		add("hemp_from_tall_grass", new AddDropModifier(
 				Misc.HEMP_SEEDS,
 				randomChance(0.1f),
-				invert(toolMatches(item().of(Items.TOOLS_SHEARS))),
+				invert(toolMatches(item().of(Items.TOOLS_SHEAR))),
 				LootItemBlockStatePropertyCondition.hasBlockStateProperties(Blocks.TALL_GRASS)
 		));
 	}

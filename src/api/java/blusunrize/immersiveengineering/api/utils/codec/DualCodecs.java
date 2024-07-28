@@ -27,6 +27,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -65,6 +66,9 @@ public class DualCodecs
 	);
 	public static final DualCodec<RegistryFriendlyByteBuf, NonNullList<Ingredient>> NONNULL_INGREDIENTS = new DualCodec<>(
 			IECodecs.NONNULL_INGREDIENTS, Ingredient.CONTENTS_STREAM_CODEC.apply(IECodecs.nonNullList())
+	);
+	public static final DualCodec<RegistryFriendlyByteBuf, Recipe<?>> RECIPE = new DualCodec<>(
+			Recipe.CODEC, Recipe.STREAM_CODEC
 	);
 
 	public static <T, S extends ByteBuf> DualCodec<S, T> unit(T value)

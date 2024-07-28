@@ -10,7 +10,7 @@
       "term": {
         "condition": "minecraft:match_tool",
         "predicate": {
-          "items": "#c:tools/shears"
+          "items": "#c:tools/shear"
         }
       }
     },

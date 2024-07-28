@@ -14,13 +14,13 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
+// TODO to follow Neo convention this needs to have ShapedRecipe as the superclass instead AFAR
 public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
-		extends AbstractFluidAwareRecipe<MatchLocation> implements IShapedRecipe<CraftingInput>
+		extends AbstractFluidAwareRecipe<MatchLocation>
 {
 	private final int recipeWidth;
 	private final int recipeHeight;
@@ -47,13 +47,11 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 		this.data = data;
 	}
 
-	@Override
 	public int getWidth()
 	{
 		return this.recipeWidth;
 	}
 
-	@Override
 	public int getHeight()
 	{
 		return this.recipeHeight;

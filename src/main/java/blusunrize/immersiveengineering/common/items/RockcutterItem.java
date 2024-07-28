@@ -16,8 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
 import java.util.Map;
 import java.util.Set;
@@ -25,8 +25,8 @@ import java.util.function.Predicate;
 
 public class RockcutterItem extends SawbladeItem
 {
-	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
-			ToolActions.PICKAXE_DIG
+	private static final Set<ItemAbility> TOOL_ACTIONS = ImmutableSet.of(
+			ItemAbilities.PICKAXE_DIG
 	);
 	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/rockcutter_blade");
 
@@ -54,7 +54,7 @@ public class RockcutterItem extends SawbladeItem
 	}
 
 	@Override
-	public Set<ToolAction> getToolActions()
+	public Set<ItemAbility> getItemAbilities()
 	{
 		return TOOL_ACTIONS;
 	}

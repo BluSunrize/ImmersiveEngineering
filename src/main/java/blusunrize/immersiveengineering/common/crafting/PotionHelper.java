@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionBrewing;
-import net.minecraft.world.item.alchemy.PotionBrewing.Mix;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -50,11 +49,11 @@ public class PotionHelper
 	{
 		PotionBrewing brewingData = ServerLifecycleHooks.getCurrentServer().potionBrewing();
 		// Vanilla
-		for(Mix<Potion> mixPredicate : ((PotionBrewingAccess)brewingData).getConversions())
-			if(mixPredicate.to()!=Potions.MUNDANE&&mixPredicate.to()!=Potions.THICK)
+		for(var mixPredicate : ((PotionBrewingAccess)brewingData).getConversions())
+			if(mixPredicate.getTo()!=Potions.MUNDANE&&mixPredicate.getTo()!=Potions.THICK)
 				out.apply(
-						mixPredicate.to(), mixPredicate.from(),
-						new IngredientWithSize(mixPredicate.ingredient())
+						mixPredicate.getTo(), mixPredicate.getFrom(),
+						new IngredientWithSize(mixPredicate.getIngredient())
 				);
 
 		// Modded

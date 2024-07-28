@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.*;
-import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.upgrade.Cooldown;
@@ -40,17 +39,15 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.energy.ComponentEnergyStorage;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class IEShieldItem extends UpgradeableToolItem
@@ -60,13 +57,6 @@ public class IEShieldItem extends UpgradeableToolItem
 	public IEShieldItem()
 	{
 		super(new Properties().durability(1024), TYPE, 2);
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
-	{
-		super.initializeClient(consumer);
-		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	public static void registerCapabilities(ItemCapabilityRegistration.ItemCapabilityRegistrar registrar)
@@ -131,12 +121,12 @@ public class IEShieldItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
+	public boolean canPerformAction(ItemStack stack, ItemAbility toolAction)
 	{
-		return ToolActions.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+		return ItemAbilities.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
 	}
 
-	public void hitShield(ItemStack stack, Player player, DamageSource source, float amount, LivingAttackEvent event)
+	public void hitShield(ItemStack stack, Player player, DamageSource source, float amount, LivingDamageEvent.Pre event)
 	{
 		var upgrades = getUpgrades(stack);
 		if(upgrades.has(UpgradeEffect.FLASH)&&!upgrades.get(UpgradeEffect.FLASH).isOnCooldown())
@@ -160,7 +150,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			{
 				Entity projectile = event.getSource().getDirectEntity();
 				projectile.discard();
-				event.setCanceled(true);
+				event.setNewDamage(0);
 				b = true;
 			}
 			if(event.getSource().getEntity()!=null&&event.getSource().getEntity() instanceof LivingEntity&&event.getSource().getEntity().distanceToSqr(player) < 4)

@@ -11,21 +11,14 @@ package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.client.NamedRenderTypeManager;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.model.geometry.GeometryLoaderManager;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.lang.reflect.Field;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.lang.reflect.InvocationTargetException;
 
 public class GameInitializationManager
 {
@@ -50,9 +43,15 @@ public class GameInitializationManager
 
 		initialized = true;
 
-		initClient(NeoForgeRegistries.FLUID_TYPES, FluidType::initializeClient, FluidType.class);
-		initClient(BuiltInRegistries.ITEM, Item::initializeClient, Item.class);
-		initClient(BuiltInRegistries.BLOCK, Block::initializeClient, Block.class);
+		try
+		{
+			var clientExtensionEventConstructor = RegisterClientExtensionsEvent.class.getDeclaredConstructor();
+			clientExtensionEventConstructor.setAccessible(true);
+			ModLoader.postEvent(clientExtensionEventConstructor.newInstance());
+		} catch(NoSuchMethodException|InstantiationException|IllegalAccessException|InvocationTargetException e)
+		{
+			throw new RuntimeException(e);
+		}
 		GLFWInitializationManager.getInstance().initialize();
 		MinecraftInstanceManager.getInstance().initialize(existingFileHelper, output);
 		ClientProxy.initWithMC();
@@ -67,24 +66,5 @@ public class GameInitializationManager
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static <R, P> void initClient(Registry<R> reg, BiConsumer<R, Consumer<P>> initialize, Class<R> type)
-	{
-		Field field = ObfuscationReflectionHelper.findField(type, "renderProperties");
-		reg.stream().forEach(obj -> initialize.accept(obj, setter(obj, field)));
-	}
-
-	private static <T> Consumer<T> setter(Object owner, Field toSet)
-	{
-		return t -> {
-			try
-			{
-				toSet.set(owner, t);
-			} catch(IllegalAccessException e)
-			{
-				throw new RuntimeException(e);
-			}
-		};
 	}
 }

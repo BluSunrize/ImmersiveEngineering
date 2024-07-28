@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.common.config.EarlyConfigLoader;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
@@ -17,7 +16,6 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import mcjty.theoneprobe.TheOneProbe;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 
 import javax.annotation.Nullable;
@@ -39,10 +37,7 @@ public final class IECompatModules
 
 	public static void onModConstruction(IEventBus modBus)
 	{
-		try(final var ignored = new EarlyConfigLoader(IECommonConfig.CONFIG_SPEC, Type.COMMON))
-		{
-			constructModules(EARLY_MODULE_CLASSES, modBus);
-		}
+		constructModules(EARLY_MODULE_CLASSES, modBus);
 	}
 
 	private static <T extends IECompatModule>

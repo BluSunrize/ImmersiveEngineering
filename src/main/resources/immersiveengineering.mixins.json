@@ -21,7 +21,7 @@
     "accessors.ItemModelGeneratorsAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
-    "accessors.PotionMixAccessor",
+    "accessors.PotionMixAccess",
     "accessors.ServerPlayNetHandlerAccess",
     "accessors.ShapedPatternAccess",
     "accessors.ShapedRecipeAccess",

@@ -17,12 +17,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.common.crafting.IShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ public class ManualElementCrafting extends SpecialManualElements
 		NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
 		int recipeWidth;
 		int recipeHeight;
-		if(rec instanceof IShapedRecipe<?> shaped)
+		if(rec instanceof ShapedRecipe shaped)
 		{
 			recipeWidth = shaped.getWidth();
 			recipeHeight = shaped.getHeight();

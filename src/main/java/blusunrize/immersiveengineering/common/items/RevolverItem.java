@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -66,7 +65,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -75,7 +73,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
-import java.util.function.*;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoublePredicate;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.register.IEDataComponents.BASE_UPGRADES;
 import static blusunrize.immersiveengineering.common.register.IEDataComponents.REVOLVER_COOLDOWN;
@@ -94,13 +95,6 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 				TYPE,
 				18+2+1
 		);
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
-	{
-		super.initializeClient(consumer);
-		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	public static final ResourceLocation speedModUUID = IEApi.ieLoc("speed_modifier");
@@ -177,7 +171,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
 
 	@Override
-	public ItemAttributeModifiers getAttributeModifiers(ItemStack stack)
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack)
 	{
 		var builder = ItemAttributeModifiers.builder();
 		if(getUpgrades(stack).has(UpgradeEffect.FANCY_ANIMATION))
@@ -603,7 +597,14 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 			}
 
 			int rarityTier = (int)Math.ceil(Mth.clamp(averageTier+3, 0, 6)/6*5);
-			Rarity rarity = rarityTier==5?Lib.RARITY_MASTERWORK: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
+			Rarity rarity = switch(rarityTier)
+			{
+				case 5 -> Lib.RARITY_MASTERWORK.getValue();
+				case 4 -> Rarity.EPIC;
+				case 3 -> Rarity.RARE;
+				case 2 -> Rarity.UNCOMMON;
+				default -> Rarity.COMMON;
+			};
 			return name.copy().withStyle(rarity.color());
 		}
 

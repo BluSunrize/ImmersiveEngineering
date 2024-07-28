@@ -61,7 +61,8 @@ public class IEManualInstance extends ManualInstance
 						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).connectorRate.get(),
 						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).connectorRate.get()
 				);
-			UnmodifiableConfig actualCfg = IEServerConfig.getRawConfig();
+			// TODO is this right?
+			UnmodifiableConfig actualCfg = IEServerConfig.CONFIG_SPEC.getValues();
 			if(!actualCfg.contains(s))
 				return null;
 			else

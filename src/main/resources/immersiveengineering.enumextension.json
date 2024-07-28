@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/item/Rarity",
+      "name": "immersiveengineering_MASTERWORK",
+      "constructor": "(ILjava/lang/String;Lnet/minecraft/ChatFormatting;)V",
+      "parameters": {
+        "class": "blusunrize/immersiveengineering/api/Lib",
+        "field": "RARITY_MASTERWORK"
+      }
+    }
+  ]
+}

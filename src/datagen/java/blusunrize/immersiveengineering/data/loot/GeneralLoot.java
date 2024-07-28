@@ -91,7 +91,7 @@ public class GeneralLoot implements LootTableSubProvider
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK), 1, 1, 1)));
+				.add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK.getValue()), 1, 1, 1)));
 		out.accept(key("advancements/shader_masterwork"), builder);
 
 		/* Add Hero of the Village Loot Tables */

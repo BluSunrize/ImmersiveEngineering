@@ -9,46 +9,37 @@
 
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
 import blusunrize.immersiveengineering.common.crafting.NoContainersShapedRecipe;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.neoforged.neoforge.common.crafting.IShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 public class NoContainerSerializer implements RecipeSerializer<NoContainersRecipe<?>>
 {
 	public static final String BASE_RECIPE = "baseRecipe";
 
-	public static final MapCodec<NoContainersRecipe<?>> CODEC = Recipe.CODEC.fieldOf(BASE_RECIPE).xmap(inner -> {
-		if(inner instanceof IShapedRecipe<?>)
-			return new NoContainersShapedRecipe((CraftingRecipe)inner);
+	public static final DualMapCodec<RegistryFriendlyByteBuf, NoContainersRecipe<?>> CODECS = DualCodecs.RECIPE.fieldOf(BASE_RECIPE).map(inner -> {
+		if(inner instanceof ShapedRecipe shaped)
+			return new NoContainersShapedRecipe<>(shaped);
 		else
-			return new NoContainersRecipe((CraftingRecipe)inner);
+			return new NoContainersRecipe<>((CraftingRecipe)inner);
 	}, r -> r.baseRecipe);
-
-	public static final StreamCodec<RegistryFriendlyByteBuf, NoContainersRecipe<?>> STREAM_CODEC = Recipe.STREAM_CODEC.map(
-			inner -> {
-				if(inner instanceof IShapedRecipe<?>)
-					return new NoContainersShapedRecipe((CraftingRecipe)inner);
-				else
-					return new NoContainersRecipe((CraftingRecipe)inner);
-			},
-			r -> r.baseRecipe
-	);
 
 	@Override
 	public MapCodec<NoContainersRecipe<?>> codec()
 	{
-		return CODEC;
+		return CODECS.mapCodec();
 	}
 
 	@Override
 	public StreamCodec<RegistryFriendlyByteBuf, NoContainersRecipe<?>> streamCodec()
 	{
-		return STREAM_CODEC;
+		return CODECS.streamCodec();
 	}
 }

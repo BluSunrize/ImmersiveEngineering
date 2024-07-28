@@ -51,13 +51,10 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.neoforged.neoforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.apache.commons.lang3.mutable.Mutable;
-import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -644,12 +641,8 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(IEFluids.FluidEntry entry : IEFluids.ALL_ENTRIES)
 		{
 			Fluid still = entry.getStill();
-			// Hack, but after all this is datagen
-			Mutable<IClientFluidTypeExtensions> box = new MutableObject<>();
-			still.getFluidType().initializeClient(box::setValue);
-			ResourceLocation stillTexture = box.getValue().getStillTexture();
 			ModelFile model = models().getBuilder("block/fluid/"+BuiltInRegistries.FLUID.getKey(still).getPath())
-					.texture("particle", stillTexture);
+					.texture("particle", entry.stillTexture());
 			getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
 		}
 		createHorizontalRotatedBlock(MetalDevices.TOOLBOX, obj("block/toolbox.obj"));

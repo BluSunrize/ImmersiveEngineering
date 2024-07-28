@@ -75,7 +75,7 @@ public class IEShaders
 		addShader("regal", 4, Rarity.UNCOMMON, 0xffd8d4d1, 0xff431c1d, 0xffd8d4d1, 0xffd8d4d1).setInfo(null, "Destiny", "regal");
 		addShader("harrowed", 4, Rarity.RARE, 0xff161321, 0xff431c1d, 0xff161321, 0xff161321).setInfo(null, "Destiny", "harrowed");
 		addShader("taken", 5, Rarity.EPIC, 0xff111c26, 0xff111c26, 0xffbad7dd, 0xff111c26, null, false, 0xffffffff).setInfo(null, "Destiny", "taken");
-		final ShaderRegistryEntry ikelos = addShader("ikelos", 2, Lib.RARITY_MASTERWORK, 0xff74665d, 0xff424348, 0xff424348, 0xff313131).setInfo(null, "Destiny", "ikelos");
+		final ShaderRegistryEntry ikelos = addShader("ikelos", 2, Lib.RARITY_MASTERWORK.getValue(), 0xff74665d, 0xff424348, 0xff424348, 0xff313131).setInfo(null, "Destiny", "ikelos");
 		addDynamicLayer(ikelos, "circuit", 0xffefa117,
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
 				pre -> {
@@ -92,14 +92,14 @@ public class IEShaders
 		addShader("angelsthesis", 2, Rarity.EPIC, 0xff1e1e1e, 0xff754697, 0xff77b93d, 0xff505050, null, false, 0xffffffff).setInfo("Mecha", "Neon Genesis Evangelion", "angelsthesis");
 		addShader("sutherland", 0, Rarity.RARE, 0xff44404f, 0xff6b5eae, 0xff702739, 0xff44404f, "whitestripe", true, 0xff702034).setInfo("Mecha", "Code Geass", "sutherland");
 		addShader("exia", 8, Rarity.RARE, 0xffb2220c, 0xff5571d2, 0xffece7e1, 0xffc0fdc7, "whitestripe", true, 0xffc09032).setInfo("Mecha", "Gundam 00", "exia");
-		addShader("crimsonlotus", 3, Lib.RARITY_MASTERWORK, 0xffd83239, 0xffd83239, 0xff4e4f53, 0xff2ff177, "whitestripe", true, 0xfff4b951).setInfo("Mecha", "Gurren Lagann", "crimsonlotus");
+		addShader("crimsonlotus", 3, Lib.RARITY_MASTERWORK.getValue(), 0xffd83239, 0xffd83239, 0xff4e4f53, 0xff2ff177, "whitestripe", true, 0xfff4b951).setInfo("Mecha", "Gurren Lagann", "crimsonlotus");
 		addShader("dominator", 1, Rarity.UNCOMMON, 0xff4c311f, 0xff2a2c36, 0xff5bfffb, 0xff2a2c36, "1_3", true, 0xff2a2c36).setInfo(null, "Psycho-Pass", "dominator");
 
 		addShader("warbird", 7, Rarity.UNCOMMON, 0xff313640, 0xffd8d7d0, 0xffebac00, 0xffd8d7d0).setInfo(null, null, "warbird");
 		addShader("matrix", 7, Rarity.RARE, 0xff053f3c, 0xffe1e1ff, 0xffd4ffff, 0xffffffff, "pipes", true, 0xff84ddd8).setInfo(null, null, "matrix");
 		addShader("twili", 5, Rarity.EPIC, 0xff555d70, 0xff1a1e2b, 0xff222739, 0xff1db58e, "circuit", false, 0xff1db58e).setInfo(null, "The Legend of Zelda: Twilight Princess", "twili");
 		addShader("usurper", 3, Rarity.EPIC, 0xff3e1e1e, 0xff5c6156, 0xff111010, 0xff737a6c, "circuit", false, 0xffca2f38).setInfo(null, "The Legend of Zelda: Twilight Princess", "usurper");
-		final ShaderRegistryEntry ancient = addShader("ancient", 6, Lib.RARITY_MASTERWORK, 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
+		final ShaderRegistryEntry ancient = addShader("ancient", 6, Lib.RARITY_MASTERWORK.getValue(), 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
 		addDynamicLayer(ancient, "1_6", 0xff80fcf2,//0xaafaf307,
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
 				pre -> {

@@ -40,7 +40,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -181,8 +180,8 @@ public class PotionFluid extends Fluid
 
 	public static class PotionFluidType extends FluidType
 	{
-		private static final ResourceLocation TEXTURE_STILL = rl("block/fluid/potion_still");
-		private static final ResourceLocation TEXTURE_FLOW = rl("block/fluid/potion_flow");
+		public static final ResourceLocation TEXTURE_STILL = rl("block/fluid/potion_still");
+		public static final ResourceLocation TEXTURE_FLOW = rl("block/fluid/potion_flow");
 
 		public PotionFluidType()
 		{
@@ -190,34 +189,6 @@ public class PotionFluid extends Fluid
 					.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
 					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
 					.density(1300));
-		}
-
-		@Override
-		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-		{
-			consumer.accept(new IClientFluidTypeExtensions()
-			{
-				@Override
-				public ResourceLocation getStillTexture()
-				{
-					return TEXTURE_STILL;
-				}
-
-				@Override
-				public ResourceLocation getFlowingTexture()
-				{
-					return TEXTURE_FLOW;
-				}
-
-				@Override
-				public int getTintColor(FluidStack stack)
-				{
-					var potionData = stack.get(DataComponents.POTION_CONTENTS);
-					if(potionData==null)
-						return 0xff0000ff;
-					return 0xff000000|potionData.getColor();
-				}
-			});
 		}
 
 		@Override

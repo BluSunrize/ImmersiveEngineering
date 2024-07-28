@@ -140,7 +140,7 @@ public class IEItemTags extends ItemTagsProvider
 		tag(ItemTags.HOES).add(Tools.STEEL_HOE.get());
 		tag(ItemTags.AXES).add(Tools.STEEL_AXE.get());
 		tag(ItemTags.SWORDS).add(Tools.STEEL_SWORD.get());
-		tag(Tags.Items.TOOLS_SHIELDS).add(Misc.SHIELD.get());
+		tag(Tags.Items.TOOLS_SHIELD).add(Misc.SHIELD.get());
 
 		for(var slot : ArmorItem.Type.values())
 			if(slot!=Type.BODY)

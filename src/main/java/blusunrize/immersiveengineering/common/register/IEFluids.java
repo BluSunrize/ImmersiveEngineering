@@ -32,7 +32,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -119,7 +118,9 @@ public class IEFluids
 
 	public record FluidEntry(
 			DeferredHolder<Fluid, IEFluid> flowing,
+			ResourceLocation flowingTexture,
 			DeferredHolder<Fluid, IEFluid> still,
+			ResourceLocation stillTexture,
 			BlockEntry<IEFluidBlock> block,
 			DeferredHolder<Item, BucketItem> bucket,
 			Holder<FluidType> type,
@@ -175,9 +176,7 @@ public class IEFluids
 					.sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY);
 			if(buildAttributes!=null)
 				buildAttributes.accept(builder);
-			Holder<FluidType> type = TYPE_REGISTER.register(
-					name, () -> makeTypeWithTextures(builder, stillTex, flowingTex)
-			);
+			Holder<FluidType> type = TYPE_REGISTER.register(name, () -> new FluidType(builder));
 			Mutable<FluidEntry> thisMutable = new MutableObject<>();
 			DeferredHolder<Fluid, IEFluid> still = REGISTER.register(name, () -> IEFluid.makeFluid(
 					makeStill, thisMutable.getValue()
@@ -191,38 +190,11 @@ public class IEFluids
 					p -> new IEFluidBlock(thisMutable.getValue(), p)
 			);
 			DeferredHolder<Item, BucketItem> bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
-			FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties);
+			FluidEntry entry = new FluidEntry(flowing, flowingTex, still, stillTex, block, bucket, type, properties);
 			thisMutable.setValue(entry);
 			ALL_FLUID_BLOCKS.add(block);
 			ALL_ENTRIES.add(entry);
 			return entry;
-		}
-
-		private static FluidType makeTypeWithTextures(
-				FluidType.Properties builder, ResourceLocation stillTex, ResourceLocation flowingTex
-		)
-		{
-			return new FluidType(builder)
-			{
-				@Override
-				public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-				{
-					consumer.accept(new IClientFluidTypeExtensions()
-					{
-						@Override
-						public ResourceLocation getStillTexture()
-						{
-							return stillTex;
-						}
-
-						@Override
-						public ResourceLocation getFlowingTexture()
-						{
-							return flowingTex;
-						}
-					});
-				}
-			};
 		}
 
 		public IEFluid getFlowing()

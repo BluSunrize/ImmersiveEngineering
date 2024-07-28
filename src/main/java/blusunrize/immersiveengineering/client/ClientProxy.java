@@ -67,7 +67,9 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
@@ -276,13 +278,14 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void registerLayers(EntityRenderersEvent.AddLayers ev)
 	{
-		for(EntityRenderer<?> render : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values())
-		{
-			if(render instanceof HumanoidMobRenderer<?, ?> hmr)
-				addIELayer(hmr, ev.getEntityModels());
-			else if(render instanceof ArmorStandRenderer asr)
-				addIELayer(asr, ev.getEntityModels());
-		}
+		// TODO fix
+		//for(EntityRenderer<?> render : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values())
+		//{
+		//	if(render instanceof HumanoidMobRenderer<?, ?> hmr)
+		//		addIELayer(hmr, ev.getEntityModels());
+		//	else if(render instanceof ArmorStandRenderer asr)
+		//		addIELayer(asr, ev.getEntityModels());
+		//}
 		for(Model skin : ev.getSkins())
 		{
 			EntityRenderer<? extends Player> render = ev.getSkin(skin);

@@ -19,8 +19,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
 import java.util.Map;
 import java.util.Set;
@@ -28,8 +28,8 @@ import java.util.function.Predicate;
 
 public class GrindingDiskItem extends SawbladeItem
 {
-	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
-			ToolActions.PICKAXE_DIG, ToolActions.AXE_STRIP, ToolActions.AXE_SCRAPE, ToolActions.AXE_WAX_OFF, Lib.WIRECUTTER_DIG
+	private static final Set<ItemAbility> TOOL_ACTIONS = ImmutableSet.of(
+			ItemAbilities.PICKAXE_DIG, ItemAbilities.AXE_STRIP, ItemAbilities.AXE_SCRAPE, ItemAbilities.AXE_WAX_OFF, Lib.WIRECUTTER_DIG
 	);
 	private static final ListTag ENCHANTS = new ListTag();
 	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/grindingdisk_blade");
@@ -72,7 +72,7 @@ public class GrindingDiskItem extends SawbladeItem
 	}
 
 	@Override
-	public Set<ToolAction> getToolActions()
+	public Set<ItemAbility> getItemAbilities()
 	{
 		return TOOL_ACTIONS;
 	}

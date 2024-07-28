@@ -18,8 +18,6 @@ import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
-import com.electronwill.nightconfig.core.Config;
-import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -635,21 +633,11 @@ public class IEServerConfig
 		CONFIG_SPEC = builder.build();
 	}
 
-	private static Config rawConfig;
-
-	public static Config getRawConfig()
-	{
-		return Preconditions.checkNotNull(rawConfig);
-	}
-
 	@SubscribeEvent
 	public static void onConfigReload(ModConfigEvent ev)
 	{
 		if(CONFIG_SPEC==ev.getConfig().getSpec())
-		{
-			rawConfig = ev.getConfig().getConfigData();
 			refresh();
-		}
 	}
 
 	public static int getOrDefault(IntValue value)

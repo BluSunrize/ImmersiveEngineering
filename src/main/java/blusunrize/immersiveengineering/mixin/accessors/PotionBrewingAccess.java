@@ -21,7 +21,7 @@ import java.util.List;
 public interface PotionBrewingAccess
 {
 	@Accessor("potionMixes")
-	List<PotionBrewing.Mix<Potion>> getConversions();
+	List<PotionMixAccess<Potion>> getConversions();
 
 	@Accessor("registry")
 	BrewingRecipeRegistry getRegistry();

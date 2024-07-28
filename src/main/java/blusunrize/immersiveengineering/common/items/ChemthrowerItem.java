@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
@@ -42,7 +41,6 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.Tags.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -50,7 +48,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
@@ -64,13 +61,6 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	public ChemthrowerItem()
 	{
 		super(new Properties().stacksTo(1).component(CHEMTHROWER_DATA, ChemthrowerData.DEFAULT), TYPE, 4);
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
-	{
-		super.initializeClient(consumer);
-		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	@Override

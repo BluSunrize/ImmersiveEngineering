@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -53,11 +52,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.ToolAction;
-import net.neoforged.neoforge.common.ToolActions;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -65,7 +63,6 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -77,13 +74,6 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public BuzzsawItem()
 	{
 		super(new Properties().stacksTo(1), TYPE, 5);
-	}
-
-	@Override
-	public void initializeClient(Consumer<IClientItemExtensions> consumer)
-	{
-		super.initializeClient(consumer);
-		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
@@ -367,22 +357,22 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	/* ------------- Tool Actions ------------- */
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
+	public boolean canPerformAction(ItemStack stack, ItemAbility toolAction)
 	{
 		ItemStack sawblade = getHead(stack);
 		if(sawblade.getItem() instanceof SawbladeItem)
-			return ((SawbladeItem)sawblade.getItem()).getToolActions().contains(toolAction);
+			return ((SawbladeItem)sawblade.getItem()).getItemAbilities().contains(toolAction);
 		return false;
 	}
 
-	private static final Map<ToolAction, SoundEvent> ACTION_SOUNDS = new HashMap<>();
+	private static final Map<ItemAbility, SoundEvent> ACTION_SOUNDS = new HashMap<>();
 
 	static
 	{
-		ACTION_SOUNDS.put(ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP);
-		ACTION_SOUNDS.put(ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE);
-		ACTION_SOUNDS.put(ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF);
-		ACTION_SOUNDS.put(ToolActions.SHEARS_CARVE, SoundEvents.PUMPKIN_CARVE);
+		ACTION_SOUNDS.put(ItemAbilities.AXE_STRIP, SoundEvents.AXE_STRIP);
+		ACTION_SOUNDS.put(ItemAbilities.AXE_SCRAPE, SoundEvents.AXE_SCRAPE);
+		ACTION_SOUNDS.put(ItemAbilities.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF);
+		ACTION_SOUNDS.put(ItemAbilities.SHEARS_CARVE, SoundEvents.PUMPKIN_CARVE);
 	}
 
 	@Override
@@ -396,8 +386,8 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		BlockPos pos = context.getClickedPos();
 		BlockState state = level.getBlockState(pos);
 
-		Set<ToolAction> toolActions = sawblade.getToolActions();
-		for(ToolAction action : toolActions)
+		Set<ItemAbility> toolActions = sawblade.getItemAbilities();
+		for(ItemAbility action : toolActions)
 		{
 			BlockState transformed = state.getToolModifiedState(context, action, false);
 			if(transformed!=null)

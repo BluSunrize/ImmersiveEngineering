@@ -11,12 +11,10 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -25,10 +23,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.extensions.common.IClientMobEffectExtensions;
 import net.neoforged.neoforge.registries.DeferredRegister;
-
-import java.util.function.Consumer;
 
 public class IEPotions
 {
@@ -63,8 +58,8 @@ public class IEPotions
 	{
 		final int tickrate;
 		final boolean halfTickRateWIthAmplifier;
-		boolean showInInventory = true;
-		boolean showInHud = true;
+		public final boolean showInInventory;
+		public final boolean showInHud;
 
 		public IEPotion(MobEffectCategory isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
 		{
@@ -73,25 +68,6 @@ public class IEPotions
 			this.showInHud = showInHud;
 			this.tickrate = tick;
 			this.halfTickRateWIthAmplifier = halveTick;
-		}
-
-		@Override
-		public void initializeClient(Consumer<IClientMobEffectExtensions> consumer)
-		{
-			consumer.accept(new IClientMobEffectExtensions()
-			{
-				@Override
-				public boolean isVisibleInGui(MobEffectInstance instance)
-				{
-					return showInHud;
-				}
-
-				@Override
-				public boolean isVisibleInInventory(MobEffectInstance instance)
-				{
-					return showInInventory;
-				}
-			});
 		}
 
 		//TODO

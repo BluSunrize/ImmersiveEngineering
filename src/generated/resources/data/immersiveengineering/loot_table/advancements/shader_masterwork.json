@@ -57,7 +57,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "immersiveengineering:shader_bag_ie_masterwork"
+          "name": "immersiveengineering:shader_bag_immersiveengineering_masterwork"
         }
       ],
       "rolls": 1.0

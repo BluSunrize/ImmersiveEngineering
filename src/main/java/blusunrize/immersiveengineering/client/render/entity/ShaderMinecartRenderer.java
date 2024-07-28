@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.Color4;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -26,21 +25,16 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class ShaderMinecartRenderer<T extends AbstractMinecart> extends MinecartRenderer<T>
@@ -169,17 +163,18 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 	{
 		Minecraft mc = Minecraft.getInstance();
 		EntityRenderDispatcher rendererManager = mc.getEntityRenderDispatcher();
-		Map<EntityType<?>, EntityRenderer<?>> mutableRenderers = new HashMap<>(rendererManager.renderers);
-		for(Entry<EntityType<?>, EntityRenderer<?>> entry : rendererManager.renderers.entrySet())
-			if(entry.getValue() instanceof MinecartRenderer<?> minecartRender)
-				mutableRenderers.put(
-						entry.getKey(),
-						new ShaderMinecartRenderer<>(minecartRender, new Context(
-								rendererManager, mc.getItemRenderer(), mc.getBlockRenderer(),
-								mc.getEntityRenderDispatcher().getItemInHandRenderer(),
-								mc.getResourceManager(), mc.getEntityModels(), mc.font
-						))
-				);
-		rendererManager.renderers = ImmutableMap.copyOf(mutableRenderers);
+		// TODO fix, possibly using EntityRenderersEvent.AddLayers?
+		//Map<EntityType<?>, EntityRenderer<?>> mutableRenderers = new HashMap<>(rendererManager.renderers);
+		//for(Entry<EntityType<?>, EntityRenderer<?>> entry : rendererManager.renderers.entrySet())
+		//	if(entry.getValue() instanceof MinecartRenderer<?> minecartRender)
+		//		mutableRenderers.put(
+		//				entry.getKey(),
+		//				new ShaderMinecartRenderer<>(minecartRender, new Context(
+		//						rendererManager, mc.getItemRenderer(), mc.getBlockRenderer(),
+		//						mc.getEntityRenderDispatcher().getItemInHandRenderer(),
+		//						mc.getResourceManager(), mc.getEntityModels(), mc.font
+		//				))
+		//		);
+		//rendererManager.renderers = ImmutableMap.copyOf(mutableRenderers);
 	}
 }

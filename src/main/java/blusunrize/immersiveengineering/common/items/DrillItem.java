@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.api.client.ieobj.ItemCallback;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
@@ -48,16 +47,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -71,13 +67,6 @@ public class DrillItem extends DieselToolItem
 	public DrillItem()
 	{
 		super(new Properties().stacksTo(1).component(DRILL_SINGLEBLOCK, false), TYPE, 5);
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
-	{
-		super.initializeClient(consumer);
-		consumer.accept(ItemCallback.USE_IEOBJ_RENDER);
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */

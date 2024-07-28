@@ -219,6 +219,28 @@ public class TemplateWorld extends Level
 	}
 
 	@Override
+	public void setDayTimeFraction(float dayTimeFraction)
+	{
+	}
+
+	@Override
+	public float getDayTimeFraction()
+	{
+		return 1;
+	}
+
+	@Override
+	public float getDayTimePerTick()
+	{
+		return 1;
+	}
+
+	@Override
+	public void setDayTimePerTick(float dayTimePerTick)
+	{
+	}
+
+	@Override
 	public FeatureFlagSet enabledFeatures()
 	{
 		return ImmersiveEngineering.proxy.getClientWorld().enabledFeatures();

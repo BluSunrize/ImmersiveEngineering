@@ -76,11 +76,10 @@ import net.neoforged.neoforge.common.Tags.EntityTypes;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AnvilUpdateEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.living.LivingAttackEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
-import net.neoforged.neoforge.event.entity.living.LivingHurtEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
@@ -225,14 +224,14 @@ public class EventHandler
 	}
 
 	@SubscribeEvent
-	public void onLivingAttacked(LivingAttackEvent event)
+	public void onLivingAttacked(LivingDamageEvent.Pre event)
 	{
 		if(event.getEntity() instanceof Player player)
 		{
 			ItemStack activeStack = player.getUseItem();
-			if(!activeStack.isEmpty()&&activeStack.getItem() instanceof IEShieldItem&&event.getAmount() >= 3&&Utils.canBlockDamageSource(player, event.getSource()))
+			if(!activeStack.isEmpty()&&activeStack.getItem() instanceof IEShieldItem&&event.getOriginalDamage() >= 3&&Utils.canBlockDamageSource(player, event.getSource()))
 			{
-				float amount = event.getAmount();
+				float amount = event.getOriginalDamage();
 				((IEShieldItem)activeStack.getItem()).hitShield(activeStack, player, event.getSource(), amount, event);
 			}
 
@@ -254,27 +253,21 @@ public class EventHandler
 					}
 				}
 		}
-	}
 
-
-	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void onLivingHurt(LivingHurtEvent event)
-	{
 		if(event.getSource().is(DamageTypeTags.IS_FIRE)&&event.getEntity().getEffect(IEPotions.FLAMMABLE)!=null)
 		{
 			int amp = event.getEntity().getEffect(IEPotions.FLAMMABLE).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
-			event.setAmount(event.getAmount()*mod);
+			event.setNewDamage(event.getNewDamage()*mod);
 		}
 		if(("flux".equals(event.getSource().getMsgId())||event.getSource().is(DamageTypes.RAZOR_SHOCK)||
 				event.getSource() instanceof ElectricDamageSource)&&event.getEntity().getEffect(IEPotions.CONDUCTIVE)!=null)
 		{
 			int amp = event.getEntity().getEffect(IEPotions.CONDUCTIVE).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
-			event.setAmount(event.getAmount()*mod);
+			event.setNewDamage(event.getNewDamage()*mod);
 		}
-		// TODO there was a &&!event.getEntity().canChangeDimensions() in there as well. What was that for?
-		if(!event.isCanceled()&&event.getAmount() >= event.getEntity().getHealth()&&event.getSource().getEntity() instanceof Player&&((Player)event.getSource().getEntity()).getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof DrillItem)
+		if(event.getNewDamage() >= event.getEntity().getHealth()&&event.getSource().getEntity() instanceof Player&&((Player)event.getSource().getEntity()).getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof DrillItem)
 			Utils.unlockIEAdvancement((Player)event.getSource().getEntity(), "tools/secret_drillbreak");
 	}
 

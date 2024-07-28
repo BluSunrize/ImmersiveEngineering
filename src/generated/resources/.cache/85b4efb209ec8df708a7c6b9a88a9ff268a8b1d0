@@ -1,4 +1,4 @@
-// 1.21	2024-07-27T18:39:21.957713175	Item models
+// 1.21	2024-07-28T17:06:49.473261493	Item models
 8e8e1578653ae2e701aee18c524176bc5c6bcd7f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 62d8a99359a8d59d68eaae60eca3ab0da03e358f assets/immersiveengineering/models/item/advanced_blast_furnace.json
 d03faa43ead928b27068b685663fe7fdd4465d1a assets/immersiveengineering/models/item/alloy_smelter.json
@@ -283,7 +283,7 @@ f6e1943d311590533b1cdcfab44a31e7d755d0df assets/immersiveengineering/models/item
 17511ea1fb65865b2c8e3cf523d646adc608bdac assets/immersiveengineering/models/item/seed.json
 62a579de79e6f2e83639ef8158bec8c13d8d2bea assets/immersiveengineering/models/item/shader_bag_common.json
 62a579de79e6f2e83639ef8158bec8c13d8d2bea assets/immersiveengineering/models/item/shader_bag_epic.json
-62a579de79e6f2e83639ef8158bec8c13d8d2bea assets/immersiveengineering/models/item/shader_bag_ie_masterwork.json
+62a579de79e6f2e83639ef8158bec8c13d8d2bea assets/immersiveengineering/models/item/shader_bag_immersiveengineering_masterwork.json
 62a579de79e6f2e83639ef8158bec8c13d8d2bea assets/immersiveengineering/models/item/shader_bag_rare.json
 62a579de79e6f2e83639ef8158bec8c13d8d2bea assets/immersiveengineering/models/item/shader_bag_uncommon.json
 0330b7714fecd9faccfccb744fc6483b76125efb assets/immersiveengineering/models/item/sheetmetal_aluminum.json

@@ -33,8 +33,8 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.ToolAction;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -116,7 +116,7 @@ public class WirecutterItem extends IEBaseItem
 	}
 
 	@Override
-	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
+	public boolean canPerformAction(ItemStack stack, ItemAbility toolAction)
 	{
 		return toolAction==Lib.WIRECUTTER_DIG;
 	}

@@ -9,25 +9,21 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.neoforged.neoforge.common.crafting.IShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
-public class NoContainersShapedRecipe<T extends CraftingRecipe & IShapedRecipe<CraftingInput>>
-		extends NoContainersRecipe<T> implements IShapedRecipe<CraftingInput>
+// TODO extend from ShapedRecipe(?)
+public class NoContainersShapedRecipe<T extends ShapedRecipe> extends NoContainersRecipe<T>
 {
 	public NoContainersShapedRecipe(T baseRecipe)
 	{
 		super(baseRecipe);
 	}
 
-	@Override
 	public int getWidth()
 	{
 		return baseRecipe.getWidth();
 	}
 
-	@Override
 	public int getHeight()
 	{
 		return baseRecipe.getHeight();

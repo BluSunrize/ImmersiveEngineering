@@ -16,6 +16,7 @@ updateJSONURL = "https://raw.githubusercontent.com/BluSunrize/ImmersiveEngineeri
 displayURL = "https://minecraft.curseforge.com/projects/immersive-engineering/"
 logoFile = "logo.png"
 credits = "All the great other Git Contributors, and the nerds on IRC!"
+enumExtensions = "immersiveengineering.enumextension.json"
 
 [[dependencies.immersiveengineering]]
   modId="neoforge"
