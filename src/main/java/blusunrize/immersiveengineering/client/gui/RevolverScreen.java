@@ -10,11 +10,8 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -28,6 +25,9 @@ import javax.annotation.Nonnull;
 public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("revolver");
+	private static final ResourceLocation DRUM_MAIN = IEApi.ieLoc("revolver/drum_single");
+	private static final ResourceLocation EXTENDED_MAG = IEApi.ieLoc("revolver/drum_extend");
+	private static final ResourceLocation SECOND_DRUM = IEApi.ieLoc("revolver/drum_second");
 
 	private final int[] bullets = new int[2];
 	private final boolean otherRevolver;
@@ -58,11 +58,11 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 		for(int hand = 0; hand < (otherRevolver?2: 1); hand++)
 		{
 			int side = !otherRevolver?0: (hand==0)==(ImmersiveEngineering.proxy.getClientPlayer().getMainArm()==HumanoidArm.RIGHT)?1: 0;
-			graphics.blit(TEXTURE, leftPos+off+00, topPos+1, 00, 51, 74, 74);
+			graphics.blitSprite(DRUM_MAIN, leftPos+off, topPos+1, 74, 74);
 			if(bullets[side] >= 18)
-				graphics.blit(TEXTURE, leftPos+off+47, topPos+1, 74, 51, 103, 74);
+				graphics.blitSprite(SECOND_DRUM, leftPos+off+47, topPos+1, 74, 103);
 			else if(bullets[side] > 8)
-				graphics.blit(TEXTURE, leftPos+off+57, topPos+1, 57, 12, 79, 39);
+				graphics.blitSprite(EXTENDED_MAG, leftPos+off+57, topPos+1, 79, 39);
 			off += (bullets[side] >= 18?150: bullets[side] > 8?136: 74)+4;
 		}
 	}
@@ -75,19 +75,13 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 
 	public static void drawExternalGUI(NonNullList<ItemStack> bullets, int bulletAmount, GuiGraphics graphics)
 	{
-		graphics.blitSprite(IEApi.ieLoc("gui/revolver"), 0, 0, 51, 51);
-		VertexConsumer builder = graphics.bufferSource().getBuffer(IERenderTypes.getGui(TEXTURE));
-
-		// TODO graphics.blit?
-		GuiHelper.drawTexturedRect(builder, graphics.pose(), 0, 1, 74, 74, 256, 0, 74, 51, 125);
+		graphics.blitSprite(DRUM_MAIN, 0, 1, 74, 74);
 		if(bulletAmount >= 18)
-			GuiHelper.drawTexturedRect(builder, graphics.pose(), 47, 1, 103, 74, 256, 74, 177, 51, 125);
+			graphics.blitSprite(SECOND_DRUM, 47, 1, 74, 103);
 		else if(bulletAmount > 8)
-			GuiHelper.drawTexturedRect(builder, graphics.pose(), 57, 1, 79, 39, 256, 57, 136, 12, 51);
+			graphics.blitSprite(EXTENDED_MAG, 57, 1, 79, 39);
 
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
-		graphics.pose().pushPose();
-		graphics.pose().translate(0, 0, 10);
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);
@@ -114,6 +108,5 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 				graphics.renderItem(b, x, y);
 			}
 		}
-		graphics.pose().popPose();
 	}
 }

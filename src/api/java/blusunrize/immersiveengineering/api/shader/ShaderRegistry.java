@@ -627,7 +627,8 @@ public class ShaderRegistry
 
 	public static ItemStack makeShaderStack(ResourceLocation name)
 	{
-		return GET_SHADER_ITEM.get().apply(name).value().getDefaultInstance();
+		var shaderItem = GET_SHADER_ITEM.get().apply(name);
+		return shaderItem!=null?shaderItem.value().getDefaultInstance(): ItemStack.EMPTY;
 	}
 
 	public record ShaderAndCase(ResourceLocation shader, ShaderRegistryEntry registryEntry, ShaderCase sCase)

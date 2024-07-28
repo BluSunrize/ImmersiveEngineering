@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.common.items.upgrades;
 
-import blusunrize.immersiveengineering.api.tool.upgrade.*;
+import blusunrize.immersiveengineering.api.tool.upgrade.Cooldown;
+import blusunrize.immersiveengineering.api.tool.upgrade.PrevSlot;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeData;
+import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.common.items.*;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.item.ItemStack;
@@ -31,14 +34,14 @@ public enum ToolUpgrade
 	DRILL_CAPACITY(
 			ImmutableSet.of(DrillItem.TYPE, ChemthrowerItem.TYPE, BuzzsawItem.TYPE),
 			1,
-			(target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).has(UpgradeEffect.MULTITANK),
+			(upgradeStack, existing) -> !existing.has(UpgradeEffect.MULTITANK),
 			(upgrade, modifications) -> modifications.add(UpgradeEffect.CAPACITY, 2*FluidType.BUCKET_VOLUME)
 	),
 	REVOLVER_BAYONET(ImmutableSet.of(RevolverItem.TYPE), (upgrade, modifications) -> modifications.add(UpgradeEffect.MELEE, 6)),
 	REVOLVER_MAGAZINE(
 			ImmutableSet.of(RevolverItem.TYPE),
 			1,
-			(target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).has(UpgradeEffect.BULLETS),
+			(upgradeStack, existing) -> !existing.has(UpgradeEffect.BULLETS),
 			(upgrade, modifications) -> modifications.add(UpgradeEffect.BULLETS, 6)
 	),
 	REVOLVER_ELECTRO(ImmutableSet.of(RevolverItem.TYPE), (upgrade, modifications) -> modifications.with(UpgradeEffect.ELECTRO)),
@@ -51,21 +54,21 @@ public enum ToolUpgrade
 	CHEMTHROWER_MULTITANK(
 			ImmutableSet.of(ChemthrowerItem.TYPE),
 			1,
-			(target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).has(UpgradeEffect.CAPACITY),
+			(upgradeStack, existing) -> !existing.has(UpgradeEffect.CAPACITY),
 			(upgrade, modifications) -> modifications.with(UpgradeEffect.MULTITANK)
 	),
 	BUZZSAW_SPAREBLADES(ImmutableSet.of(BuzzsawItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.SPAREBLADES)),
 	POWERPACK_ANTENNA(
 			ImmutableSet.of(PowerpackItem.TYPE),
 			1,
-			(target, upgrade) -> !PowerpackItem.getUpgradesStatic(target).has(UpgradeEffect.TESLA),
+			(upgradeStack, existing) -> !existing.has(UpgradeEffect.TESLA),
 			(upgrade, modifications) -> modifications.with(UpgradeEffect.ANTENNA)
 	),
 	POWERPACK_INDUCTION(ImmutableSet.of(PowerpackItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.INDUCTION)),
 	POWERPACK_TESLA(
 			ImmutableSet.of(PowerpackItem.TYPE),
 			1,
-			(target, upgrade) -> !PowerpackItem.getUpgradesStatic(target).has(UpgradeEffect.ANTENNA),
+			(upgradeStack, existing) -> !existing.has(UpgradeEffect.ANTENNA),
 			(upgrade, modifications) -> modifications.with(UpgradeEffect.TESLA)
 	),
 	POWERPACK_MAGNET(ImmutableSet.of(PowerpackItem.TYPE), 1, (upgrade, modifications) -> modifications.with(UpgradeEffect.MAGNET, PrevSlot.NONE)),
