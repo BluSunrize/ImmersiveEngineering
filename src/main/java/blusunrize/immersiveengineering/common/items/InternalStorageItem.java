@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.items.ComponentItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 public abstract class InternalStorageItem extends IEBaseItem
 {
@@ -28,10 +29,13 @@ public abstract class InternalStorageItem extends IEBaseItem
 
 	public static void registerCapabilitiesISI(ItemCapabilityRegistrar registrar)
 	{
-		registrar.register(ItemHandler.ITEM, stack -> {
-			InternalStorageItem item = (InternalStorageItem)stack.getItem();
-			return new ComponentItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.slotCount);
-		});
+		registrar.register(ItemHandler.ITEM, InternalStorageItem::makeInternalItemHandler);
+	}
+
+	public static IItemHandlerModifiable makeInternalItemHandler(ItemStack stack)
+	{
+		InternalStorageItem item = (InternalStorageItem)stack.getItem();
+		return new ComponentItemHandler(stack, IEDataComponents.GENERIC_ITEMS.get(), item.slotCount);
 	}
 
 	public void setContainedItems(ItemStack stack, NonNullList<ItemStack> inventory)

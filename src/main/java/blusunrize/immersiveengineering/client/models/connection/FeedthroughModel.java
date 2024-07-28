@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.FeedthroughData;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -48,8 +48,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -79,8 +77,6 @@ import java.util.concurrent.TimeUnit;
 import static blusunrize.immersiveengineering.api.ApiUtils.RANDOM_SOURCE;
 import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
-import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.MIDDLE_STATE;
-import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.WIRE;
 import static net.minecraft.core.Direction.Axis.Y;
 
 public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<Pair<FeedthroughCacheKey, Direction>>
@@ -319,10 +315,12 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 		public SpecificFeedthroughModel(ItemStack stack)
 		{
-			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-			BlockState state = NbtUtils.readBlockState(
+			// TODO
+			WireType w = IEWireTypes.COPPER;//WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
+			BlockState state = Blocks.GLOWSTONE.defaultBlockState();/*NbtUtils.readBlockState(
 					BuiltInRegistries.BLOCK.asLookup(), ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE)
-			);
+			)*/
+			;
 			if(state.getBlock()==Blocks.AIR)
 				state = Blocks.BOOKSHELF.defaultBlockState();
 			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),

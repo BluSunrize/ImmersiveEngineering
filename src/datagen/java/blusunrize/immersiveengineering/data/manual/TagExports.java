@@ -19,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.tags.TagLoader;
-import net.minecraft.tags.TagManager;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -53,7 +52,7 @@ public record TagExports(PackOutput output, ExistingFileHelper helper, Path outP
 	private void actuallyRun() throws IOException
 	{
 		TagLoader<Item> loader = new TagLoader<>(
-				rl -> BuiltInRegistries.ITEM.getOptional(rl), TagManager.getTagDir(Registries.ITEM)
+				BuiltInRegistries.ITEM::getOptional, Registries.tagsDirPath(Registries.ITEM)
 		);
 		try(ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(
 				PackType.SERVER_DATA, output, helper

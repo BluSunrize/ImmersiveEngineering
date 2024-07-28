@@ -14,14 +14,17 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.util.Unit;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -29,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -75,7 +79,10 @@ public class ManualDataGenerator
 				type==PackType.CLIENT_RESOURCES?"clientResources": "serverData"
 		);
 		List<PackResources> allSources = nonGeneratedManager.listPacks().collect(Collectors.toList());
-		allSources.add(new PathPackResources("generated", output.getOutputFolder(), true));
+		allSources.add(new PathPackResources(
+				new PackLocationInfo("generated", Component.literal("generated"), PackSource.BUILT_IN, Optional.empty()),
+				output.getOutputFolder()
+		));
 		ReloadableResourceManager resourceManager = new ReloadableResourceManager(type);
 		resourceManager.createReload(
 				Util.backgroundExecutor(), Minecraft.getInstance(), CompletableFuture.completedFuture(Unit.INSTANCE), allSources

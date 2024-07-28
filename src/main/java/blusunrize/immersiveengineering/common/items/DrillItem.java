@@ -53,7 +53,6 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -146,8 +145,13 @@ public class DrillItem extends DieselToolItem
 	@Override
 	public void setHead(ItemStack drill, ItemStack head)
 	{
-		IItemHandler inv = drill.getCapability(ItemHandler.ITEM);
-		((IItemHandlerModifiable)inv).setStackInSlot(0, head);
+		setHeadStatic(drill, head);
+	}
+
+	public static void setHeadStatic(ItemStack drill, ItemStack head)
+	{
+		// We do not have caps in datagen, this "should" be drill.getCapability(...)
+		makeInternalItemHandler(drill).setStackInSlot(0, head);
 	}
 
 	@Override

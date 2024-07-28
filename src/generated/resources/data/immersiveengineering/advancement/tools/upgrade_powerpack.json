@@ -1,0 +1,43 @@
+{
+  "parent": "immersiveengineering:tools/craft_powerpack",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.upgrade_powerpack.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "components": {
+        "immersiveengineering:upgrade_nbt": [
+          {
+            "type": "antenna",
+            "data": {}
+          },
+          {
+            "type": "induction",
+            "data": {}
+          }
+        ]
+      },
+      "count": 1,
+      "id": "immersiveengineering:powerpack"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.upgrade_powerpack"
+    }
+  },
+  "requirements": [
+    [
+      "code_trigger"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "immersiveengineering:advancements/shader_rare"
+    ]
+  }
+}

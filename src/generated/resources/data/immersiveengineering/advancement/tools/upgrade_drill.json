@@ -1,0 +1,60 @@
+{
+  "parent": "immersiveengineering:tools/craft_drill",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.upgrade_drill.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "components": {
+        "immersiveengineering:items": [
+          {
+            "item": {
+              "count": 1,
+              "id": "immersiveengineering:drillhead_steel"
+            },
+            "slot": 0
+          }
+        ],
+        "immersiveengineering:upgrade_nbt": [
+          {
+            "type": "damage",
+            "data": 3
+          },
+          {
+            "type": "waterproof",
+            "data": {}
+          },
+          {
+            "type": "oiled",
+            "data": {}
+          },
+          {
+            "type": "speed",
+            "data": 6.0
+          }
+        ]
+      },
+      "count": 1,
+      "id": "immersiveengineering:drill"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.upgrade_drill"
+    }
+  },
+  "requirements": [
+    [
+      "code_trigger"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "immersiveengineering:advancements/shader_rare"
+    ]
+  }
+}

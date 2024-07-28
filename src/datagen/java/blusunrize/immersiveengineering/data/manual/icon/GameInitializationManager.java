@@ -12,15 +12,15 @@ package blusunrize.immersiveengineering.data.manual.icon;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.client.NamedRenderTypeManager;
 import net.neoforged.neoforge.client.model.geometry.GeometryLoaderManager;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.lang.reflect.Field;

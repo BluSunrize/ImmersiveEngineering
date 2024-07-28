@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.loot.LootModifierProvider;
+import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import blusunrize.immersiveengineering.data.recipes.RootRecipeProvider;
 import blusunrize.immersiveengineering.data.tags.IEBlockTags;
 import blusunrize.immersiveengineering.data.tags.IEItemTags;
@@ -64,7 +65,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new Language(output, exHelper, "en_us"));
 			for(final DataProvider provider : WorldGenerationProvider.makeProviders(output, lookup, exHelper))
 				gen.addProvider(true, provider);
-			// TODO ManualDataGenerator.addProviders(gen, exHelper);
+			ManualDataGenerator.addProviders(gen, exHelper);
 		}
 	}
 }

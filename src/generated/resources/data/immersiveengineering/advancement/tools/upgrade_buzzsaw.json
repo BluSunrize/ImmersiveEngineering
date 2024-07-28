@@ -1,0 +1,66 @@
+{
+  "parent": "immersiveengineering:tools/craft_buzzsaw",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.upgrade_buzzsaw.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "components": {
+        "immersiveengineering:items": [
+          {
+            "item": {
+              "count": 1,
+              "id": "immersiveengineering:sawblade"
+            },
+            "slot": 0
+          },
+          {
+            "item": {
+              "count": 1,
+              "id": "immersiveengineering:sawblade"
+            },
+            "slot": 3
+          },
+          {
+            "item": {
+              "count": 1,
+              "id": "immersiveengineering:sawblade"
+            },
+            "slot": 4
+          }
+        ],
+        "immersiveengineering:upgrade_nbt": [
+          {
+            "type": "oiled",
+            "data": {}
+          },
+          {
+            "type": "spareblades",
+            "data": {}
+          }
+        ]
+      },
+      "count": 1,
+      "id": "immersiveengineering:buzzsaw"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.upgrade_buzzsaw"
+    }
+  },
+  "requirements": [
+    [
+      "code_trigger"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "immersiveengineering:advancements/shader_rare"
+    ]
+  }
+}

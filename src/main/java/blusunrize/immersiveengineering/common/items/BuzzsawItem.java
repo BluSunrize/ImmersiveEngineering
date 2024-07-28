@@ -189,11 +189,10 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		setSawblade(buzzsaw, sawblade, 0);
 	}
 
-	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade, int spare)
+	public static void setSawblade(ItemStack buzzsaw, ItemStack sawblade, int spare)
 	{
 		int slot = spare==0?0: 2+spare;
-		IItemHandler inv = buzzsaw.getCapability(ItemHandler.ITEM);
-		((IItemHandlerModifiable)inv).setStackInSlot(slot, sawblade);
+		makeInternalItemHandler(buzzsaw).setStackInSlot(slot, sawblade);
 	}
 
 	@Override

@@ -1,0 +1,43 @@
+{
+  "parent": "immersiveengineering:tools/craft_railgun",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancement.immersiveengineering.upgrade_railgun.desc"
+    },
+    "frame": "challenge",
+    "icon": {
+      "components": {
+        "immersiveengineering:upgrade_nbt": [
+          {
+            "type": "scope",
+            "data": {}
+          },
+          {
+            "type": "speed",
+            "data": 1.0
+          }
+        ]
+      },
+      "count": 1,
+      "id": "immersiveengineering:railgun"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.upgrade_railgun"
+    }
+  },
+  "requirements": [
+    [
+      "code_trigger"
+    ]
+  ],
+  "rewards": {
+    "loot": [
+      "immersiveengineering:advancements/shader_rare"
+    ]
+  }
+}

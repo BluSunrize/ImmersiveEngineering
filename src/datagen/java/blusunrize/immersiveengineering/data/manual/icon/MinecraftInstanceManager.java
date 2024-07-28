@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
+import com.mojang.blaze3d.pipeline.MainTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.Tesselator;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.DeltaTracker.Timer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -78,6 +78,7 @@ public class MinecraftInstanceManager
 		initializeGameRenderer(resourceManager);
 		initializeDataFixer();
 		initializeGameSettings();
+		initializeRenderTarget();
 
 		try
 		{
@@ -203,6 +204,12 @@ public class MinecraftInstanceManager
 	{
 		final Options gameSettings = new Options(Minecraft.getInstance(), new File("./"));
 		setMCField("options", gameSettings);
+	}
+
+	private void initializeRenderTarget()
+	{
+		// TODO texture target?
+		setMCField("mainRenderTarget", new MainTarget(400, 400));
 	}
 
 	private static void setMCField(String name, Object value)

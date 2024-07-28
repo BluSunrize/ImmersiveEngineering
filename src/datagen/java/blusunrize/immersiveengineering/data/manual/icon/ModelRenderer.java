@@ -12,9 +12,7 @@ import blusunrize.immersiveengineering.client.utils.DummyVertexBuilder;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexSorting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -122,12 +120,12 @@ public class ModelRenderer implements AutoCloseable
             Lighting.setupFor3DItems();
         else
             Lighting.setupForFlatItems();
-        BufferBuilder builder = Tesselator.getInstance().getBuilder();
         MultiBufferSource.BufferSource bufferSources = renderBuffers.bufferSource();
         // Do not render foil/enchantment glint: This depends on the current time, and we do not want the output to vary
         // randomly. Additionally, glint isn't really visible in the output anyway, I assume this is technically a bug.
         MultiBufferSource noFoilSource = type -> {
-            if(type==RenderType.glintDirect())
+            // TODO is this right?
+            if(type==RenderType.glint())
                 return DummyVertexBuilder.INSTANCE;
             else
                 return bufferSources.getBuffer(type);
@@ -142,8 +140,6 @@ public class ModelRenderer implements AutoCloseable
         );
 
         bufferSources.endBatch();
-        if(builder.building())
-            builder.end();
         renderBuffers.fixedBufferPack().clearAll();
 
         final TextureCutter cutter = new TextureCutter(width, height);
