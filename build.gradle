@@ -132,7 +132,9 @@ dependencies {
     compileOnly "curse.maven:opencomputers2-437654:3630307"
 
     implementation "malte0811:BlockModelSplitter:2.0.1"
-    testImplementation('junit:junit:4.13.2')
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+    testImplementation("net.neoforged:testframework:${version_neoforge}")
 }
 
 def customGradle = rootProject.file('custom.gradle');

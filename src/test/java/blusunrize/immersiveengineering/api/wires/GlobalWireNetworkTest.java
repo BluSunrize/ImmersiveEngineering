@@ -15,9 +15,11 @@ import blusunrize.immersiveengineering.api.wires.testutils.DummyWireType;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GlobalWireNetworkTest
 {
@@ -31,7 +33,7 @@ public class GlobalWireNetworkTest
 	private final IImmersiveConnectable iicA = new DummyIIC(posA, false, ImmutableList.of(cpA0), ImmutableList.of());
 	private final IImmersiveConnectable iicB = new DummyIIC(posB, false, ImmutableList.of(cpB0, cpB1), ImmutableList.of());
 
-	@Before
+	@BeforeEach
 	public void setupNetwork()
 	{
 		global = new GlobalWireNetwork(false, new DummyProxyProvider(), new DummySyncManager());
@@ -42,14 +44,14 @@ public class GlobalWireNetworkTest
 	{
 		global.onConnectorLoad(iicA, false);
 		global.onConnectorLoad(iicB, false);
-		Assert.assertEquals(global.getExistingConnector(cpA0), iicA);
-		Assert.assertEquals(global.getExistingConnector(cpB0), iicB);
-		Assert.assertEquals(global.getExistingConnector(cpB1), iicB);
+		assertEquals(global.getExistingConnector(cpA0), iicA);
+		assertEquals(global.getExistingConnector(cpB0), iicB);
+		assertEquals(global.getExistingConnector(cpB1), iicB);
 		for(ConnectionPoint cp : new ConnectionPoint[]{cpA0, cpB0, cpB1})
-			Assert.assertNotNull(global.getNullableLocalNet(cp));
-		Assert.assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
-		Assert.assertNotEquals(global.getLocalNet(cpB0), global.getLocalNet(cpB1));
-		Assert.assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB1));
+			assertNotNull(global.getNullableLocalNet(cp));
+		assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
+		assertNotEquals(global.getLocalNet(cpB0), global.getLocalNet(cpB1));
+		assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB1));
 	}
 
 	@Test
@@ -59,10 +61,10 @@ public class GlobalWireNetworkTest
 		global.onConnectorLoad(iicB, false);
 		global.addConnection(new Connection(wiretype, cpA0, cpB0, Vec3.ZERO, Vec3.ZERO));
 		for(ConnectionPoint cp : new ConnectionPoint[]{cpA0, cpB0, cpB1})
-			Assert.assertNotNull(global.getNullableLocalNet(cp));
-		Assert.assertEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
-		Assert.assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB1));
+			assertNotNull(global.getNullableLocalNet(cp));
+		assertEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
+		assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB1));
 		global.removeConnection(new Connection(wiretype, cpA0, cpB0, Vec3.ZERO, Vec3.ZERO));
-		Assert.assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
+		assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
 	}
 }

@@ -10,9 +10,8 @@ package blusunrize.immersiveengineering.api;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import junit.framework.TestCase;
 import net.minecraft.resources.ResourceLocation;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +19,12 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class IEApiTest extends TestCase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class IEApiTest
 {
+	@Test
 	public void testGetPreferredElementByMod()
 	{
 		IEApi.modPreference = ImmutableList.of("b", "a", "c");
@@ -29,15 +32,15 @@ public class IEApiTest extends TestCase
 		testGetPreferredElementByMod(rl("a", "a"), rl("a", "b"), rl("a", "a"), rl("c", "0"), rl("d", "a"));
 		testGetPreferredElementByMod(rl("d", "a"), rl("e", "c"), rl("d", "b"), rl("d", "a"), rl("e", "a"));
 		testGetPreferredElementByMod(rl("b", "a"), rl("b", "b"), rl("b", "a"), rl("a", "0"), rl("d", "a"));
-		Assert.assertTrue(IEApi.getPreferredElementbyMod(Stream.empty(), Function.identity()).isEmpty());
+		assertTrue(IEApi.getPreferredElementbyMod(Stream.empty(), Function.identity()).isEmpty());
 	}
 
 	private void testGetPreferredElementByMod(ResourceLocation expected, ResourceLocation... input)
 	{
 		List<ResourceLocation> baseList = Arrays.asList(input);
 		// Basic check to make sure order does not matter
-		Assert.assertEquals(Optional.of(expected), IEApi.getPreferredElementbyMod(baseList.stream(), Function.identity()));
-		Assert.assertEquals(Optional.of(expected), IEApi.getPreferredElementbyMod(Lists.reverse(baseList).stream(), Function.identity()));
+		assertEquals(Optional.of(expected), IEApi.getPreferredElementbyMod(baseList.stream(), Function.identity()));
+		assertEquals(Optional.of(expected), IEApi.getPreferredElementbyMod(Lists.reverse(baseList).stream(), Function.identity()));
 	}
 
 	private ResourceLocation rl(String namespace, String path)

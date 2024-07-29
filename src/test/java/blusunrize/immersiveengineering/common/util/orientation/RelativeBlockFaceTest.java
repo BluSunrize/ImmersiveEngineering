@@ -12,12 +12,14 @@ package blusunrize.immersiveengineering.common.util.orientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.RelativeBlockFace;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import junit.framework.TestCase;
 import net.minecraft.core.Direction;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
-public class RelativeBlockFaceTest extends TestCase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class RelativeBlockFaceTest
 {
+	@Test
 	public void testInverse()
 	{
 		for(Direction front : DirectionUtils.BY_HORIZONTAL_INDEX)
@@ -27,7 +29,7 @@ public class RelativeBlockFaceTest extends TestCase
 				for(Direction face : DirectionUtils.VALUES)
 				{
 					RelativeBlockFace relative = RelativeBlockFace.from(new MultiblockOrientation(front, mirror), face);
-					Assert.assertEquals(face, relative.forFront(new MultiblockOrientation(front, mirror)));
+					assertEquals(face, relative.forFront(new MultiblockOrientation(front, mirror)));
 				}
 			}
 		}

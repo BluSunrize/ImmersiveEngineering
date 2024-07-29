@@ -12,12 +12,14 @@ import blusunrize.lib.manual.SplitResult.Token;
 import blusunrize.lib.manual.gui.ManualScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TextSplitterTest
 {
@@ -29,7 +31,7 @@ public class TextSplitterTest
 	private static final SpecialManualElement HEIGHT_10 = new DummyElement(10);
 	private TextSplitter splitter;
 
-	@Before
+	@BeforeEach
 	public void createSplitter()
 	{
 		splitter = new TextSplitter(
@@ -45,7 +47,7 @@ public class TextSplitterTest
 	{
 		List<List<List<Token>>> output = result.entry;
 		int[] actualSizes = output.stream().mapToInt(List::size).toArray();
-		Assert.assertArrayEquals("Split result: "+output, lineCounts, actualSizes);
+		assertArrayEquals(lineCounts, actualSizes, "Split result: "+output);
 	}
 
 	private void assertLines(SplitResult result, String... lines)
@@ -55,12 +57,12 @@ public class TextSplitterTest
 				.flatMap(List::stream)
 				.map(l -> l.stream().map(Token::getText).collect(Collectors.joining()))
 				.toArray(String[]::new);
-		Assert.assertArrayEquals("Split result: "+output, lines, actualLines);
+		assertArrayEquals(lines, actualLines, "Split result: "+output);
 	}
 
 	private void assertSpecialAt(SplitResult result, int page, SpecialManualElement expected)
 	{
-		Assert.assertEquals(result.specialByPage.toString(), expected, result.specialByPage.get(page));
+		assertEquals(expected, result.specialByPage.get(page), result.specialByPage.toString());
 	}
 
 	@Test

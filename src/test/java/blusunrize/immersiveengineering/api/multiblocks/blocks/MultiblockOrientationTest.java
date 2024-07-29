@@ -10,18 +10,21 @@ package blusunrize.immersiveengineering.api.multiblocks.blocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.blocks.util.MultiblockOrientation;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import junit.framework.TestCase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
-import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MultiblockOrientationTest extends TestCase
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class MultiblockOrientationTest
 {
+	@Test
 	public void testInverse()
 	{
 		final BlockPos testPosRelative = new BlockPos(1, 2, 3);
@@ -31,11 +34,12 @@ public class MultiblockOrientationTest extends TestCase
 			{
 				final MultiblockOrientation orientation = new MultiblockOrientation(front, mirrored);
 				final BlockPos absolute = orientation.getAbsoluteOffset(testPosRelative);
-				Assert.assertTrue(seenPositions.add(absolute));
-				Assert.assertEquals(mirrored+", "+front, testPosRelative, orientation.getPosInMB(absolute));
+				assertTrue(seenPositions.add(absolute));
+				assertEquals(testPosRelative, orientation.getPosInMB(absolute), mirrored+", "+front);
 			}
 	}
 
+	@Test
 	public void testMatched()
 	{
 		final BlockPos testPos = new BlockPos(1, 2, 3);
@@ -47,7 +51,7 @@ public class MultiblockOrientationTest extends TestCase
 				final BlockPos transformedPos = orientation.getAbsoluteOffset(testPos);
 				final Vec3 transformedVec = orientation.getAbsoluteOffset(testVec);
 				final Vec3 delta = transformedVec.subtract(Vec3.atCenterOf(transformedPos));
-				Assert.assertEquals(delta.lengthSqr(), 0, 1e-3);
+				assertEquals(delta.lengthSqr(), 0, 1e-3);
 			}
 	}
 }
