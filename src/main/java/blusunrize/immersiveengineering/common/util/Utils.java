@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.Raytracer;
@@ -139,10 +139,12 @@ public class Utils
 		return stack.is(Tags.Items.DYES);
 	}
 
-	@Deprecated(forRemoval = true)
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
 	{
-		return FluidUtils.copyFluidStackWithAmount(stack, amount, stripPressure);
+		FluidStack fs = stack.copyWithAmount(amount);
+		if(stripPressure)
+			fs.remove(IEApiDataComponents.FLUID_PRESSURIZED);
+		return fs;
 	}
 
 	private static final long UUID_BASE = 109406000905L;

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
-import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,21 +37,6 @@ import java.util.function.IntFunction;
 
 public class FluidUtils
 {
-	@Deprecated(forRemoval = true)
-	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount)
-	{
-		return copyFluidStackWithAmount(stack, amount, false);
-	}
-
-	@Deprecated(forRemoval = true)
-	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
-	{
-		FluidStack fs = stack.copyWithAmount(amount);
-		if(stripPressure)
-			fs.remove(IEApiDataComponents.FLUID_PRESSURIZED);
-		return fs;
-	}
-
 	/**
 	 * Same as {@link FluidUtil#getFluidContained(ItemStack)}, but does not create ItemStack copies for no reason (and
 	 * instead assumes that fluid handlers ignore stack size)
@@ -96,7 +80,7 @@ public class FluidUtils
 				updateTile = fillFluidContainer(tank, slotIn, slotOut, inv);
 
 			// Then try to output into pipes or similar
-			FluidStack out = copyFluidStackWithAmount(tank.getFluid(), Math.min(tank.getFluidAmount(), FluidType.BUCKET_VOLUME), false);
+			FluidStack out = tank.getFluid().copyWithAmount(Math.min(tank.getFluidAmount(), FluidType.BUCKET_VOLUME));
 			if(output!=null)
 			{
 				int accepted = output.fill(out, FluidAction.EXECUTE);

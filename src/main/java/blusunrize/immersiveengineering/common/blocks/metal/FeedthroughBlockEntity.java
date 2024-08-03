@@ -11,6 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
@@ -18,10 +20,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
@@ -154,10 +158,12 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
 		final ItemStack stack = ctx.getItemInHand();
-		reference = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-		stateForMiddle = NbtUtils.readBlockState(
-				getLevelNonnull().holderLookup(Registries.BLOCK), ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE)
-		);
+		ItemData data = stack.get(IEDataComponents.FEEDTHROUGH_DATA);
+		if(data!=null)
+		{
+			reference = data.type();
+			stateForMiddle = data.middleState();
+		}
 	}
 
 	@Override
@@ -257,5 +263,18 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 			int colorMultiplier
 	)
 	{
+	}
+
+	public record ItemData(
+			WireType type,
+			BlockState middleState
+	)
+	{
+		public static final DualCodec<ByteBuf, ItemData> CODECS = DualCodecs.composite(
+				WireType.CODECS.fieldOf("type"), ItemData::type,
+				DualCodecs.BLOCK_STATE.fieldOf("middleState"), ItemData::middleState,
+				ItemData::new
+		);
+		public static final ItemData FALLBACK = new ItemData(IEWireTypes.COPPER, Blocks.STONE.defaultBlockState());
 	}
 }

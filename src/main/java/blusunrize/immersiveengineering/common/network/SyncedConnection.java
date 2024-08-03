@@ -23,7 +23,7 @@ public record SyncedConnection(
 	public static final StreamCodec<ByteBuf, SyncedConnection> CODEC = StreamCodec.composite(
 			ConnectionPoint.CODECS.streamCodec(), SyncedConnection::start,
 			ConnectionPoint.CODECS.streamCodec(), SyncedConnection::end,
-			WireType.STREAM_CODEC, SyncedConnection::type,
+			WireType.CODECS.streamCodec(), SyncedConnection::type,
 			IECodecs.VEC3_STREAM_CODEC, SyncedConnection::offsetStart,
 			IECodecs.VEC3_STREAM_CODEC, SyncedConnection::offsetEnd,
 			SyncedConnection::new

@@ -28,6 +28,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -69,6 +71,10 @@ public class DualCodecs
 	);
 	public static final DualCodec<RegistryFriendlyByteBuf, Recipe<?>> RECIPE = new DualCodec<>(
 			Recipe.CODEC, Recipe.STREAM_CODEC
+	);
+	public static final DualCodec<ByteBuf, BlockState> BLOCK_STATE = new DualCodec<>(
+			BlockState.CODEC,
+			ByteBufCodecs.VAR_INT.map(Block.BLOCK_STATE_REGISTRY::byId, Block::getId)
 	);
 
 	public static <T, S extends ByteBuf> DualCodec<S, T> unit(T value)

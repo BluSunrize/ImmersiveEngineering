@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.data;
+package blusunrize.immersiveengineering.data.dynregistry;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
@@ -17,8 +17,7 @@ import blusunrize.immersiveengineering.common.world.IECountPlacement;
 import blusunrize.immersiveengineering.common.world.IEHeightProvider;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import blusunrize.immersiveengineering.data.tags.BannerTags;
-import blusunrize.immersiveengineering.data.tags.DamageTypeTagProvider;
+import blusunrize.immersiveengineering.data.DamageTypeProvider;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.Util;

@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwhee
 import blusunrize.immersiveengineering.common.items.ItemCapabilityRegistration.ItemCapabilityRegistrar;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -230,10 +229,10 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	public static ItemStack findAmmo(ItemStack railgun, Player player)
 	{
 		// Check for cached slot
-		if(ItemNBTHelper.hasKey(railgun, "ammo_slot"))
+		var lastSlot = railgun.get(IEDataComponents.RAILGUN_AMMO_SLOT);
+		if(lastSlot!=null)
 		{
-			int slot = ItemNBTHelper.getInt(railgun, "ammo_slot");
-			ItemStack ammo = findAmmoInSlot(player, slot);
+			ItemStack ammo = findAmmoInSlot(player, lastSlot);
 			if(!ammo.isEmpty())
 				return ammo;
 		}
@@ -241,12 +240,12 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		// Find it otherwise
 		if(isAmmo(player.getItemInHand(InteractionHand.OFF_HAND)))
 		{
-			ItemNBTHelper.putInt(railgun, "ammo_slot", 0);
+			railgun.set(IEDataComponents.RAILGUN_AMMO_SLOT, 0);
 			return player.getItemInHand(InteractionHand.OFF_HAND);
 		}
 		else if(isAmmo(player.getItemInHand(InteractionHand.MAIN_HAND)))
 		{
-			ItemNBTHelper.putInt(railgun, "ammo_slot", 1);
+			railgun.set(IEDataComponents.RAILGUN_AMMO_SLOT, 1);
 			return player.getItemInHand(InteractionHand.MAIN_HAND);
 		}
 		else
@@ -255,7 +254,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 				ItemStack itemstack = player.getInventory().getItem(i);
 				if(isAmmo(itemstack))
 				{
-					ItemNBTHelper.putInt(railgun, "ammo_slot", 2+i);
+					railgun.set(IEDataComponents.RAILGUN_AMMO_SLOT, 2+i);
 					return itemstack;
 				}
 			}
@@ -286,7 +285,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		if(!findAmmoInSlot(player, actualSlot).isEmpty())
 		{
-			ItemNBTHelper.putInt(stack, "ammo_slot", actualSlot);
+			stack.set(IEDataComponents.RAILGUN_AMMO_SLOT, actualSlot);
 			player.getInventory().setChanged();
 			return true;
 		}
@@ -296,7 +295,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	@Override
 	public void onScrollwheel(ItemStack stack, Player player, boolean forward)
 	{
-		int slot = ItemNBTHelper.getInt(stack, "ammo_slot");
+		int slot = stack.getOrDefault(IEDataComponents.RAILGUN_AMMO_SLOT, 0);
 		int count = player.getInventory().getContainerSize()+2;
 		if(forward)
 		{

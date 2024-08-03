@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity.CapacitorState;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity.TurretConfig;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerData;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
@@ -116,6 +117,8 @@ public class IEDataComponents
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> WINDMILL_BLADES = make("windmill_blades", DualCodecs.INT);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<RevolverCooldowns>> REVOLVER_COOLDOWN = make("revolver_cooldown", RevolverCooldowns.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> BASE_UPGRADES = make("base_upgrades", UpgradeData.CODECS);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<FeedthroughBlockEntity.ItemData>> FEEDTHROUGH_DATA = make("feedthrough_data", FeedthroughBlockEntity.ItemData.CODECS);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> RAILGUN_AMMO_SLOT = make("railgun_ammo_slot", DualCodecs.INT);
 	private static final Map<IBullet<?>, Supplier<DataComponentType<?>>> BULLETS = new IdentityHashMap<>();
 
 	// TODO probably just a massive hack? Does this need to be persistent?

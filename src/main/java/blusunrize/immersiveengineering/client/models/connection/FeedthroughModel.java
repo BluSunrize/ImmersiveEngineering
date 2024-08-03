@@ -20,9 +20,10 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.FeedthroughData;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.ItemData;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -315,15 +316,11 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 		public SpecificFeedthroughModel(ItemStack stack)
 		{
-			// TODO
-			WireType w = IEWireTypes.COPPER;//WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-			BlockState state = Blocks.GLOWSTONE.defaultBlockState();/*NbtUtils.readBlockState(
-					BuiltInRegistries.BLOCK.asLookup(), ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE)
-			)*/
-			;
+			final var itemData = stack.getOrDefault(IEDataComponents.FEEDTHROUGH_DATA, ItemData.FALLBACK);
+			BlockState state = itemData.middleState();
 			if(state.getBlock()==Blocks.AIR)
 				state = Blocks.BOOKSHELF.defaultBlockState();
-			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),
+			init(new FeedthroughCacheKey(itemData.type(), state, Integer.MAX_VALUE, Direction.NORTH, null),
 					i -> mc().getItemColors().getColor(stack, i));
 		}
 

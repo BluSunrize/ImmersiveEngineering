@@ -1,12 +1,12 @@
 /*
  * BluSunrize
- * Copyright (c) 2023
+ * Copyright (c) 2024
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.data.tags;
+package blusunrize.immersiveengineering.data.dynregistry;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;

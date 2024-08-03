@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.wires.utils;
 
-import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import net.minecraft.core.BlockPos;
@@ -16,7 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class WirecoilUtils
@@ -29,18 +27,6 @@ public class WirecoilUtils
 	)
 	{
 		return COIL_USE.get().doCoilUse(coil, player, world, pos, hand, side, hitX, hitY, hitZ);
-	}
-
-	@Deprecated(forRemoval = true)
-	public static void clearWireLink(ItemStack stack)
-	{
-		stack.remove(IEApiDataComponents.WIRE_LINK);
-	}
-
-	@Deprecated(forRemoval = true)
-	public static boolean hasWireLink(ItemStack stack)
-	{
-		return stack.has(IEApiDataComponents.WIRE_LINK);
 	}
 
 	public interface UseCallback

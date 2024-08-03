@@ -12,14 +12,8 @@ import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRec
 import blusunrize.immersiveengineering.common.items.RevolverItem.Perks;
 import blusunrize.immersiveengineering.common.items.RevolverItem.RevolverPerk;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
-import net.minecraft.core.HolderLookup.Provider;
-import blusunrize.immersiveengineering.common.items.RevolverItem;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;

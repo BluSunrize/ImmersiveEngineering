@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.data.blockstates.BlockStates;
 import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
+import blusunrize.immersiveengineering.data.dynregistry.WorldGenerationProvider;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.loot.LootModifierProvider;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;

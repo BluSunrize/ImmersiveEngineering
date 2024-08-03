@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.inventory;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -133,12 +132,12 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		if(action.simulate())
 			return toFill;
 		for(FluidStack fs : this.fluids)
-			if(fs.isFluidEqual(resource))
+			if(FluidStack.isSameFluidSameComponents(fs, resource))
 			{
 				fs.grow(toFill);
 				return toFill;
 			}
-		this.fluids.add(0, Utils.copyFluidStackWithAmount(resource, toFill, true));
+		this.fluids.add(0, resource.copyWithAmount(toFill));
 		return toFill;
 	}
 
@@ -149,12 +148,12 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		if(action.simulate())
 			return toFill;
 		for(FluidStack fs : this.fluids)
-			if(fs.isFluidEqual(resource))
+			if(FluidStack.isSameFluidSameComponents(fs, resource))
 			{
 				fs.grow(toFill);
 				return toFill;
 			}
-		this.fluids.add(Utils.copyFluidStackWithAmount(resource, toFill, true));
+		this.fluids.add(resource.copyWithAmount(toFill));
 		return toFill;
 
 	}
@@ -169,7 +168,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 		while(it.hasNext())
 		{
 			FluidStack fs = it.next();
-			if(fs.isFluidEqual(resource))
+			if(FluidStack.isSameFluidSameComponents(fs, resource))
 			{
 				int amount = Math.min(resource.getAmount(), fs.getAmount());
 				if(action.execute())
@@ -178,7 +177,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 					if(fs.getAmount() <= 0)
 						it.remove();
 				}
-				return Utils.copyFluidStackWithAmount(resource, amount, true);
+				return resource.copyWithAmount(amount);
 			}
 		}
 		return FluidStack.EMPTY;
@@ -196,7 +195,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 			if(fluidTag.testIgnoringAmount(fs))
 			{
 				int amount = Math.min(fluidTag.getAmount(), fs.getAmount());
-				FluidStack ret = Utils.copyFluidStackWithAmount(fs, amount, true);
+				FluidStack ret = fs.copyWithAmount(amount);
 				if(action.execute())
 				{
 					fs.shrink(amount);
@@ -218,7 +217,7 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 			if(removeFrom.isEmpty())
 				removeIt.remove();
 		}
-		return Utils.copyFluidStackWithAmount(removeFrom, amount, true);
+		return removeFrom.copyWithAmount(amount);
 	}
 
 	@Nonnull

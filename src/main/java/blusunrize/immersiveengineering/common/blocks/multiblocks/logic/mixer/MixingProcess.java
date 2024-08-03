@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockLevel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.ProcessContext.ProcessContextInMachine;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -93,7 +92,7 @@ public class MixingProcess extends MultiblockProcessInMachine<MixerRecipe>
 						components.set(i, context.getInventory().getStackInSlot(this.inputSlots[i]));
 					FluidStack output = levelData.recipe().getFluidOutput(drained, components);
 
-					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
+					FluidStack fs = output.copyWithAmount(drained.getAmount());
 					this.tank.fillRecipe(fs, FluidAction.EXECUTE);
 				}
 			}

@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import com.google.common.collect.ImmutableList;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -32,7 +32,7 @@ public abstract class WireType implements ILocalHandlerProvider
 	public static final String HV_CATEGORY = "HV";
 	public static final String STRUCTURE_CATEGORY = "STRUCTURE";
 	public static final String REDSTONE_CATEGORY = "REDSTONE";
-	public static final StreamCodec<ByteBuf, WireType> STREAM_CODEC = ByteBufCodecs.stringUtf8(128)
+	public static final DualCodec<ByteBuf, WireType> CODECS = DualCodecs.STRING
 			.map(WireType::getValue, WireType::getUniqueName);
 	private static final LinkedHashSet<WireType> values = new LinkedHashSet<>();
 

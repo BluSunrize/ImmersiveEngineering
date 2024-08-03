@@ -61,14 +61,14 @@ public class SheetmetalTankLogic implements IServerTickableComponent<State>, MBO
 		for(Supplier<@Nullable IFluidHandler> outputRef : state.outputs)
 		{
 			int outSize = Math.min(FluidType.BUCKET_VOLUME, state.tank.getFluidAmount());
-			FluidStack out = Utils.copyFluidStackWithAmount(state.tank.getFluid(), outSize, false);
+			FluidStack out = state.tank.getFluid().copyWithAmount(outSize);
 			IFluidHandler output = outputRef.get();
 			if(output==null)
 				continue;
 			int accepted = output.fill(out, FluidAction.SIMULATE);
 			if(accepted > 0)
 			{
-				int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+				int drained = output.fill(out.copyWithAmount(Math.min(out.getAmount(), accepted)), FluidAction.EXECUTE);
 				state.tank.drain(drained, FluidAction.EXECUTE);
 				context.markMasterDirty();
 				context.requestMasterBESync();
