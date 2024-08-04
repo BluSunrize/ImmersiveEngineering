@@ -51,9 +51,8 @@ public class CommandMineral
 		list.executes(command -> {
 			StringBuilder s = new StringBuilder();
 			int i = 0;
-			//TODO
-			//for(MineralMix mm : MineralMix.RECIPES.getRecipes(command.getSource().getLevel()))
-			//	s.append((i++) > 0?", ": "").append(mm.getId());
+			for(var mm : MineralMix.RECIPES.getRecipes(command.getSource().getLevel()))
+				s.append((i++) > 0?", ": "").append(mm.id());
 			command.getSource().sendSuccess(() -> Component.literal(s.toString()), true);
 			return Command.SINGLE_SUCCESS;
 		});
@@ -142,11 +141,11 @@ public class CommandMineral
 			ExcavatorHandler.addVein(sender.getLevel().dimension(), vein);
 			IESaveData.markInstanceDirty();
 			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
-					"mineral.put.success", mineral.id(), radius, pos.x(), pos.z()), true);
+					"mineral.put.success", mineral.id().toString(), radius, pos.x(), pos.z()), true);
 		}
 		else
 			sender.sendSuccess(() -> Component.translatable(Lib.CHAT_COMMAND+
-					"mineral.put.invalid_mineral", mineral.id()), true);
+					"mineral.put.invalid_mineral", mineral.id().toString()), true);
 	}
 
 	private static LiteralArgumentBuilder<CommandSourceStack> setMineralDepletion()

@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntit
 import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity.TurretConfig;
 import blusunrize.immersiveengineering.common.items.ChemthrowerItem.ChemthrowerData;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.CoresampleMapData;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem.EarmuffData;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem.LitState;
 import blusunrize.immersiveengineering.common.items.HammerItem.MultiblockRestriction;
@@ -119,6 +120,7 @@ public class IEDataComponents
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> BASE_UPGRADES = make("base_upgrades", UpgradeData.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<FeedthroughBlockEntity.ItemData>> FEEDTHROUGH_DATA = make("feedthrough_data", FeedthroughBlockEntity.ItemData.CODECS);
 	public static DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> RAILGUN_AMMO_SLOT = make("railgun_ammo_slot", DualCodecs.INT);
+	public static DeferredHolder<DataComponentType<?>, DataComponentType<CoresampleMapData>> CORESAMPLE_MAP_DATA = make("coresample_map_data", CoresampleMapData.CODECS);
 	private static final Map<IBullet<?>, Supplier<DataComponentType<?>>> BULLETS = new IdentityHashMap<>();
 
 	// TODO probably just a massive hack? Does this need to be persistent?

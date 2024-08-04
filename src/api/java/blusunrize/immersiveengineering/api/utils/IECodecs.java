@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.utils;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Registry;
@@ -83,24 +84,37 @@ public class IECodecs
 		return ByteBufCodecs.VAR_INT.map(i -> keys[i], E::ordinal);
 	}
 
-	public static <E extends Enum<E>, B extends ByteBuf, T>
-	StreamCodec<B, EnumMap<E, T>> enumMapStreamCodec(E[] keys, StreamCodec<? super B, T> valueCodec)
+	public static <K, B extends ByteBuf, T>
+	StreamCodec<B, Map<K, T>> mapStreamCodec(StreamCodec<? super B, K> keyCodec, StreamCodec<? super B, T> valueCodec)
 	{
-		final var keyCodec = enumStreamCodec(keys);
-		return StreamCodec.<B, Pair<E, T>, E, T>composite(
+		return StreamCodec.<B, Pair<K, T>, K, T>composite(
 						keyCodec, Pair::getFirst,
 						valueCodec, Pair::getSecond,
 						Pair::of
 				).apply(ByteBufCodecs.list())
-				.map(IECodecs::listToEnumMap, IECodecs::mapToList);
+				.map(IECodecs::listToMap, IECodecs::mapToList);
+	}
+
+	public static <E extends Enum<E>, B extends ByteBuf, T>
+	StreamCodec<B, EnumMap<E, T>> enumMapStreamCodec(E[] keys, StreamCodec<? super B, T> valueCodec)
+	{
+		final var keyCodec = enumStreamCodec(keys);
+		return mapStreamCodec(keyCodec, valueCodec).map(EnumMap::new, Function.identity()).cast();
+	}
+
+	public static <K, T> Codec<Map<K, T>> mapCodec(Codec<K> keyCodec, Codec<T> valueCodec)
+	{
+		Codec<Pair<K, T>> entryCodec = RecordCodecBuilder.create(inst -> inst.group(
+				keyCodec.fieldOf("key").forGetter(Pair::getFirst),
+				valueCodec.fieldOf("value").forGetter(Pair::getSecond)
+		).apply(inst, Pair::of));
+		return entryCodec.listOf().xmap(IECodecs::listToMap, IECodecs::mapToList);
 	}
 
 	public static <E extends Enum<E>, T> Codec<EnumMap<E, T>> enumMapCodec(E[] keys, Codec<T> valueCodec)
 	{
 		final var keyCodec = enumCodec(keys);
-		return Codec.pair(keyCodec, valueCodec)
-				.listOf()
-				.xmap(IECodecs::listToEnumMap, IECodecs::mapToList);
+		return mapCodec(keyCodec, valueCodec).xmap(EnumMap::new, Function.identity());
 	}
 
 	public static <C> Codec<Set<C>> setOf(Codec<C> codec)
@@ -113,14 +127,14 @@ public class IECodecs
 		return codec.apply(ByteBufCodecs.list()).map(Set::copyOf, List::copyOf);
 	}
 
-	private static <E extends Enum<E>, T>
-	EnumMap<E, T> listToEnumMap(List<Pair<E, T>> l)
+	private static <K, T>
+	Map<K, T> listToMap(List<Pair<K, T>> l)
 	{
-		return new EnumMap<E, T>(l.stream().collect(Collectors.toMap(Pair::getFirst, Pair::getSecond)));
+		return l.stream().collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 	}
 
-	private static <E extends Enum<E>, T>
-	List<Pair<E, T>> mapToList(Map<E, T> m)
+	private static <K, T>
+	List<Pair<K, T>> mapToList(Map<K, T> m)
 	{
 		return m.entrySet().stream().map(e -> Pair.of(e.getKey(), e.getValue())).toList();
 	}

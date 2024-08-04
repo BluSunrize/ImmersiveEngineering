@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.utils.codec;
 
+import com.google.common.base.Preconditions;
 import com.mojang.serialization.*;
 
 import java.util.ArrayList;
@@ -65,6 +66,12 @@ public final class EntryListCodec<T> extends MapCodec<T>
 			MapCodec<EntryType> codec, Function<MainType, EntryType> getter
 	)
 	{
+		public CodecEntry
+		{
+			Preconditions.checkArgument(codec!=null);
+			Preconditions.checkArgument(getter!=null);
+		}
+
 		public <Data> RecordBuilder<Data> encodeInto(
 				MainType input, DynamicOps<Data> ops, RecordBuilder<Data> prefix
 		)

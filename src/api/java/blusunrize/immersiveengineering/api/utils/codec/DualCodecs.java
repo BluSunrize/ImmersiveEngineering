@@ -34,6 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -170,6 +171,15 @@ public class DualCodecs
 	DualCodec<ByteBuf, E> forEnum(E[] values)
 	{
 		return new DualCodec<>(IECodecs.enumCodec(values), IECodecs.enumStreamCodec(values));
+	}
+
+	public static <K, V, S extends ByteBuf>
+	DualCodec<S, Map<K, V>> forMap(DualCodec<? super S, K> keyCodec, DualCodec<? super S, V> valueCodec)
+	{
+		return new DualCodec<>(
+				IECodecs.mapCodec(keyCodec.codec(), valueCodec.codec()),
+				IECodecs.mapStreamCodec(keyCodec.streamCodec(), valueCodec.streamCodec())
+		);
 	}
 
 	public static <E extends Enum<E>, V, S extends ByteBuf>

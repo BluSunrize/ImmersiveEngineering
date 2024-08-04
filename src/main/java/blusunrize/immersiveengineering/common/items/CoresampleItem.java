@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.client.utils.TimestampFormat;
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -42,8 +41,10 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class CoresampleItem extends IEBaseItem
 {
@@ -142,7 +143,7 @@ public class CoresampleItem extends IEBaseItem
 				BlockState coresample = StoneDecoration.CORESAMPLE.defaultBlockState();
 				if(world.setBlock(pos, coresample, 3))
 				{
-					((IEBaseBlock)StoneDecoration.CORESAMPLE.get()).onIEBlockPlacedBy(blockCtx, coresample);
+					StoneDecoration.CORESAMPLE.get().onIEBlockPlacedBy(blockCtx, coresample);
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);
@@ -206,6 +207,34 @@ public class CoresampleItem extends IEBaseItem
 		public ColumnPos position()
 		{
 			return new ColumnPos(x, z);
+		}
+	}
+
+	public record CoresampleMapData(Map<String, List<ResourceLocation>> mapDataToMinerals)
+	{
+		public static final DualCodec<ByteBuf, CoresampleMapData> CODECS = DualCodecs.forMap(DualCodecs.STRING, DualCodecs.RESOURCE_LOCATION.listOf())
+				.fieldOf("mapDataToMinerals")
+				.codec()
+				.map(CoresampleMapData::new, CoresampleMapData::mapDataToMinerals);
+		public static final CoresampleMapData EMPTY = new CoresampleMapData(Map.of());
+
+		public CoresampleMapData
+		{
+			mapDataToMinerals = Map.copyOf(mapDataToMinerals);
+		}
+
+		public CoresampleMapData remove(String key)
+		{
+			var newMap = new HashMap<>(mapDataToMinerals);
+			newMap.remove(key);
+			return new CoresampleMapData(newMap);
+		}
+
+		public CoresampleMapData with(String key, List<ResourceLocation> minerals)
+		{
+			var newMap = new HashMap<>(mapDataToMinerals);
+			newMap.put(key, minerals);
+			return new CoresampleMapData(newMap);
 		}
 	}
 }

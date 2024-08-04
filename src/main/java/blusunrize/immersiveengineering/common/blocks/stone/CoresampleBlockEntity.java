@@ -14,10 +14,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.CoresampleMapData;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.ItemData;
+import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSample;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,7 +60,9 @@ import java.util.function.Consumer;
 public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IBlockEntityDrop, IPlayerInteraction,
 		IBlockOverlayText, IBlockBounds
 {
-	public CoresampleItem.ItemData containedSample;
+	public static final String CORESAMPLE_MAP_PREFIX = "ie:coresample_";
+
+	public CoresampleItem.ItemData containedSample = ItemData.EMPTY;
 
 	public CoresampleBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -67,10 +72,10 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		containedSample = ItemData.CODECS.codec().decode(NbtOps.INSTANCE, nbt.get("containedSample"))
+		containedSample = ItemData.CODECS.codec().decode(NbtOps.INSTANCE, nbt.get("coresample"))
 				.result()
-				.orElseThrow()
-				.getFirst();
+				.map(Pair::getFirst)
+				.orElse(ItemData.EMPTY);
 	}
 
 	@Override
@@ -125,13 +130,15 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 						return ItemInteractionResult.sidedSuccess(getLevelNonnull().isClientSide);
 					}
 
-					String ident = "ie:coresample_"+containedSample.position().position();
+					String ident = CORESAMPLE_MAP_PREFIX+containedSample.position().position();
 					MapDecorations oldDecorations = heldItem.getOrDefault(DataComponents.MAP_DECORATIONS, MapDecorations.EMPTY);
 					if(oldDecorations.decorations().containsKey(ident))
 					{
 						HashMap<String, Entry> newMap = new HashMap<>(oldDecorations.decorations());
 						newMap.remove(ident);
 						heldItem.set(DataComponents.MAP_DECORATIONS, new MapDecorations(newMap));
+						var mineralData = heldItem.getOrDefault(IEDataComponents.CORESAMPLE_MAP_DATA, CoresampleMapData.EMPTY);
+						heldItem.set(IEDataComponents.CORESAMPLE_MAP_DATA, mineralData.remove(ident));
 					}
 					else
 					{
@@ -146,8 +153,12 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 							MapDecorations.Entry sampleEntry = new MapDecorations.Entry(
 									MapDecorationTypes.TARGET_POINT, sampleX, sampleZ, 180
 							);
-							// TODO
-							// tagCompound.put("minerals", CoresampleItem.getSimplifiedMineralList(level, coresample));
+							var mineralData = heldItem.getOrDefault(IEDataComponents.CORESAMPLE_MAP_DATA, CoresampleMapData.EMPTY);
+							var minerals = containedSample.veins().stream()
+									.map(VeinSample::mineral)
+									.toList();
+
+							heldItem.set(IEDataComponents.CORESAMPLE_MAP_DATA, mineralData.with(ident, minerals));
 							heldItem.set(
 									DataComponents.MAP_DECORATIONS, oldDecorations.withDecoration(ident, sampleEntry)
 							);
