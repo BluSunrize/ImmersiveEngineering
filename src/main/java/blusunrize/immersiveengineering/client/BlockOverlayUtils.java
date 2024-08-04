@@ -9,15 +9,24 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.Lib.GuiLayers;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
+import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
+import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
@@ -35,6 +44,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,21 +54,98 @@ import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.component.MapDecorations;
 import net.minecraft.world.item.component.MapDecorations.Entry;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
+@EventBusSubscriber(value = Dist.CLIENT, modid = Lib.MODID, bus = Bus.MOD)
 public class BlockOverlayUtils
 {
+	@SubscribeEvent
+	public static void register(RegisterGuiLayersEvent ev)
+	{
+		ev.registerBelow(
+				VanillaGuiLayers.DEBUG_OVERLAY,
+				GuiLayers.BLOCKS,
+				BlockOverlayUtils::renderBlockOverlays
+		);
+	}
+
+	private static void renderBlockOverlays(GuiGraphics graphics, DeltaTracker delta)
+	{
+		Player player = ClientUtils.mc().player;
+		if(player==null||ClientUtils.mc().hitResult==null)
+			return;
+		int scaledWidth = ClientUtils.mc().getWindow().getGuiScaledWidth();
+		int scaledHeight = ClientUtils.mc().getWindow().getGuiScaledHeight();
+		var transform = graphics.pose();
+
+		ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
+		boolean hammer = !held.isEmpty()&&Utils.isHammer(held);
+		HitResult mop = ClientUtils.mc().hitResult;
+		if(mop instanceof EntityHitResult)
+		{
+			Entity entity = ((EntityHitResult)mop).getEntity();
+			if(entity instanceof ItemFrame)
+				BlockOverlayUtils.renderOreveinMapOverlays(graphics, (ItemFrame)entity, mop, scaledWidth, scaledHeight);
+			else if(entity instanceof IEMinecartEntity<?> ieMinecart&&ieMinecart.getContainedBlockEntity() instanceof IBlockOverlayText overlayText)
+			{
+				Component[] text = overlayText.getOverlayText(player, mop, false);
+				BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
+			}
+		}
+		else if(mop instanceof BlockHitResult)
+		{
+			BlockPos pos = ((BlockHitResult)mop).getBlockPos();
+			Direction face = ((BlockHitResult)mop).getDirection();
+			BlockEntity tileEntity = player.level().getBlockEntity(pos);
+			if(tileEntity instanceof IBlockOverlayText overlayBlock)
+			{
+				Component[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
+				BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
+			}
+			else if(!(tileEntity instanceof IMultiblockBE<?> multiblock)||!renderMultiblockOverlay(
+					multiblock, hammer, transform, scaledWidth, scaledHeight
+			))
+			{
+				List<ItemFrame> list = player.level().getEntitiesOfClass(ItemFrame.class,
+						new AABB(pos.relative(face)), entity -> entity!=null&&entity.getDirection()==face);
+				if(list.size()==1)
+					BlockOverlayUtils.renderOreveinMapOverlays(graphics, list.get(0), mop, scaledWidth, scaledHeight);
+			}
+		}
+	}
+
+	private static <S extends IMultiblockState> boolean renderMultiblockOverlay(
+			IMultiblockBE<S> be, boolean hammer, PoseStack transform, int scaledWidth, int scaledHeight
+	)
+	{
+		final IMultiblockBEHelper<S> helper = be.getHelper();
+		if(!(helper.getMultiblock().logic() instanceof MBOverlayText<S> overlayHandler))
+			return false;
+		final List<Component> overlayText = overlayHandler.getOverlayText(
+				helper.getState(), ClientUtils.mc().player, hammer
+		);
+		if(overlayText==null)
+			return false;
+		BlockOverlayUtils.drawBlockOverlayText(transform, overlayText, scaledWidth, scaledHeight);
+		return true;
+	}
+
 	/* ----------- OVERLAY TEXT ----------- */
 
 	public static void drawBlockOverlayText(PoseStack transform, Component[] text, int scaledWidth, int scaledHeight)

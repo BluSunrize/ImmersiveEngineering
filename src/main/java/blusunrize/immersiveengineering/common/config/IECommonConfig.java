@@ -11,14 +11,9 @@ package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModules;
 import com.google.common.collect.ImmutableList;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.EventBusSubscriber.Bus;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
@@ -27,12 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IECommonConfig
 {
 	public static final BooleanValue enableWireLogger;
 	public static final BooleanValue validateNet;
 	public static final Map<String, BooleanValue> compat = new HashMap<>();
+	// TODO could potentially move to server config?
 	public static final ConfigValue<List<? extends String>> preferredOres;
 
 	public static final ModConfigSpec CONFIG_SPEC;
@@ -72,13 +67,9 @@ public class IECommonConfig
 		CONFIG_SPEC = builder.build();
 	}
 
-	@SubscribeEvent
-	public static void onCommonReload(ModConfigEvent ev)
+	public static void onLoad()
 	{
-		if(CONFIG_SPEC==ev.getConfig().getSpec())
-		{
-			WireLogger.logger.setEnabled(enableWireLogger.get());
-			IEApi.modPreference = preferredOres.get();
-		}
+		WireLogger.logger.setEnabled(enableWireLogger.get());
+		IEApi.modPreference = preferredOres.get();
 	}
 }

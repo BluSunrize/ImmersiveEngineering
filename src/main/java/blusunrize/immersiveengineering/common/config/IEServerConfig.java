@@ -634,7 +634,7 @@ public class IEServerConfig
 	}
 
 	@SubscribeEvent
-	public static void onConfigReload(ModConfigEvent ev)
+	public static void onConfigReload(ModConfigEvent.Reloading ev)
 	{
 		if(CONFIG_SPEC==ev.getConfig().getSpec())
 			refresh();

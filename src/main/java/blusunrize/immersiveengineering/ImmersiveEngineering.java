@@ -197,6 +197,7 @@ public class ImmersiveEngineering
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));
 
 		MetalPressPackingRecipes.init();
+		IECommonConfig.onLoad();
 	}
 
 	private void setupNetwork(RegisterPayloadHandlersEvent ev)

@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.api;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Rarity;
@@ -92,8 +93,11 @@ public class Lib
 	//Entities
 	public static final String GUIID_CartCrate = "cart_crate";
 
-	public static final String NBT_Powerpack = "IE:Powerpack";
-	public static final String NBT_DAMAGE = "Damage";
+	public static class GuiLayers
+	{
+		public static final ResourceLocation ITEMS = IEApi.ieLoc("items");
+		public static final ResourceLocation BLOCKS = IEApi.ieLoc("blocks");
+	}
 
 	public static class DamageTypes
 	{

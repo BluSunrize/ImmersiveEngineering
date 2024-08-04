@@ -9,13 +9,9 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.env.IMultiblockBEHelper;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockBE;
-import blusunrize.immersiveengineering.api.multiblocks.blocks.logic.IMultiblockState;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
@@ -28,17 +24,17 @@ import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer;
 import blusunrize.immersiveengineering.client.render.tile.BlueprintRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.generic.CatwalkBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WindowBlock;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.interfaces.MBOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
-import blusunrize.immersiveengineering.common.network.*;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.network.MessageMagnetEquip;
+import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
+import blusunrize.immersiveengineering.common.network.MessageRevolverRotate;
+import blusunrize.immersiveengineering.common.network.MessageScrollwheelItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -47,7 +43,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font.DisplayMode;
@@ -55,9 +50,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -81,24 +74,25 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -307,285 +301,81 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 	}
 
-	/*
 	@SubscribeEvent
-	// TODO RegisterGuiLayersEvent
-	public void onRenderOverlayPre(RenderGuiOverlayEvent.Pre event)
+	public void onRenderOverlayPre(RenderGuiLayerEvent.Pre event)
 	{
-		if(event.getOverlay().id().equals(VanillaGuiOverlay.SUBTITLES.id()))
-			handleSubtitleOffset(true);
-		if(ZoomHandler.isZooming&&event.getOverlay().id().equals(VanillaGuiOverlay.CROSSHAIR.id()))
-		{
-			event.setCanceled(true);
-			if(ZoomHandler.isZooming)
-			{
-				MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-				PoseStack transform = new PoseStack();
-				transform.pushPose();
-				int width = ClientUtils.mc().getWindow().getGuiScaledWidth();
-				int height = ClientUtils.mc().getWindow().getGuiScaledHeight();
-				int resMin = Math.min(width, height);
-				float offsetX = (width-resMin)/2f;
-				float offsetY = (height-resMin)/2f;
-
-				if(resMin==width)
-				{
-					GuiHelper.drawColouredRect(0, 0, width, (int)offsetY+1, 0xff000000, buffers, transform);
-					GuiHelper.drawColouredRect(0, (int)offsetY+resMin, width, (int)offsetY+1, 0xff000000, buffers, transform);
-				}
-				else
-				{
-					GuiHelper.drawColouredRect(0, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
-					GuiHelper.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
-				}
-				transform.translate(offsetX, offsetY, 0);
-				VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGuiTranslucent(rl("textures/gui/scope.png")));
-				GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
-
-				builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
-				GuiHelper.drawTexturedColoredRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
-				ItemStack equipped = ClientUtils.mc().player.getItemInHand(InteractionHand.MAIN_HAND);
-				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool tool)
-				{
-					float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().player);
-					if(steps!=null&&steps.length > 1)
-					{
-						int curStep = -1;
-						float dist = 0;
-
-						float totalOffset = 0;
-						float stepLength = 118/(float)steps.length;
-						float stepOffset = (stepLength-7)/2f;
-						transform.translate(223/256f*resMin, 64/256f*resMin, 0);
-						transform.translate(0, (5+stepOffset)/256*resMin, 0);
-						for(int i = 0; i < steps.length; i++)
-						{
-							GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 96/256f, 96/256f, 103/256f);
-							transform.translate(0, stepLength/256*resMin, 0);
-							totalOffset += stepLength;
-
-							if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
-							{
-								curStep = i;
-								dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
-							}
-						}
-						transform.translate(0, -totalOffset/256*resMin, 0);
-
-						if(curStep < steps.length)
-						{
-							transform.translate(6/256f*resMin, curStep*stepLength/256*resMin, 0);
-							GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
-							ClientUtils.font().drawInBatch((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff, true,
-									transform.last().pose(), buffers, DisplayMode.NORMAL, 0, 0xf000f0);
-							transform.translate(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
-						}
-						transform.translate(0, -((5+stepOffset)/256*resMin), 0);
-						transform.translate(-223/256f*resMin, -64/256f*resMin, 0);
-					}
-				}
-
-				transform.translate(-offsetX, -offsetY, 0);
-				buffers.endBatch();
-			}
-		}
-	}
-
-	@SubscribeEvent()
-	public void onRenderOverlayPost(RenderGuiOverlayEvent.Post event)
-	{
-		int scaledWidth = ClientUtils.mc().getWindow().getGuiScaledWidth();
-		int scaledHeight = ClientUtils.mc().getWindow().getGuiScaledHeight();
-
-		if(event.getOverlay().id().equals(VanillaGuiOverlay.SUBTITLES.id()))
-			handleSubtitleOffset(false);
-		int leftHeight;
-		if(Minecraft.getInstance().gui instanceof ExtendedGui forgeUI)
-			leftHeight = forgeUI.leftHeight;
-		else
-			leftHeight = 0;
-		if(ClientUtils.mc().player!=null&&event.getOverlay().id().equals(VanillaGuiOverlay.ITEM_NAME.id()))
-		{
-			Player player = ClientUtils.mc().player;
-			GuiGraphics graphics = event.getGuiGraphics();
-			PoseStack transform = graphics.pose();
-
-			for(InteractionHand hand : InteractionHand.values())
-				if(!player.getItemInHand(hand).isEmpty())
-				{
-					MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-					ItemStack equipped = player.getItemInHand(hand);
-					if(equipped.is(Tools.VOLTMETER.asItem())||equipped.getItem() instanceof IWireCoil)
-					{
-						if(WirecoilUtils.hasWireLink(equipped))
-						{
-							WireLink link = WireLink.readFromItem(equipped);
-							BlockPos pos = link.cp.position();
-							String s = I18n.get(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
-							int col = WireType.ELECTRUM.getColour(null);
-							if(equipped.getItem() instanceof IWireCoil)
-							{
-								//TODO use actual connection offset rather than pos
-								HitResult rtr = ClientUtils.mc().hitResult;
-								double d;
-								if(rtr instanceof BlockHitResult)
-									d = ((BlockHitResult)rtr).getBlockPos().distSqr(pos);
-								else
-									d = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
-								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
-								if(d > max*max)
-									col = 0xdd3333;
-							}
-							ClientUtils.font().drawInBatch(
-									s, scaledWidth/2-ClientUtils.font().width(s)/2, scaledHeight-leftHeight-20, col,
-									true, transform.last().pose(), buffer, DisplayMode.NORMAL, 0, 0xf000f0);
-						}
-					}
-					else if(equipped.getItem()==Misc.FLUORESCENT_TUBE.get())
-					{
-						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
-						String s = I18n.get(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
-						ClientUtils.font().drawInBatch(s, scaledWidth/2-ClientUtils.font().width(s)/2,
-								scaledHeight-leftHeight-20, FluorescentTubeItem.getRGBInt(equipped, 1),
-								true, transform.last().pose(), buffer, DisplayMode.NORMAL, 0, 0xf000f0
-						);
-					}
-					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
-						ItemOverlayUtils.renderRevolverOverlay(buffer, graphics, scaledWidth, scaledHeight, player, hand, equipped);
-					else if(equipped.getItem() instanceof RailgunItem)
-						ItemOverlayUtils.renderRailgunOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					else if(equipped.getItem() instanceof DrillItem)
-						ItemOverlayUtils.renderDrillOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					else if(equipped.getItem() instanceof BuzzsawItem)
-						ItemOverlayUtils.renderBuzzsawOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					else if(equipped.getItem() instanceof ChemthrowerItem)
-						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					else if(equipped.getItem() instanceof IEShieldItem)
-						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					if(equipped.getItem()==Tools.VOLTMETER.get())
-						renderVoltmeterOverlay(player, scaledWidth, scaledHeight, transform, buffer);
-					buffer.endBatch();
-					Lighting.setupFor3DItems();
-				}
-			if(ClientUtils.mc().hitResult!=null)
-			{
-				ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
-				boolean hammer = !held.isEmpty()&&Utils.isHammer(held);
-				HitResult mop = ClientUtils.mc().hitResult;
-				if(mop instanceof EntityHitResult)
-				{
-					Entity entity = ((EntityHitResult)mop).getEntity();
-					if(entity instanceof ItemFrame)
-						BlockOverlayUtils.renderOreveinMapOverlays(graphics, (ItemFrame)entity, mop, scaledWidth, scaledHeight);
-					else if(entity instanceof IEMinecartEntity<?> ieMinecart&&ieMinecart.getContainedBlockEntity() instanceof IBlockOverlayText overlayText)
-					{
-						Component[] text = overlayText.getOverlayText(player, mop, false);
-						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
-					}
-				}
-				else if(mop instanceof BlockHitResult)
-				{
-					BlockPos pos = ((BlockHitResult)mop).getBlockPos();
-					Direction face = ((BlockHitResult)mop).getDirection();
-					BlockEntity tileEntity = player.level().getBlockEntity(pos);
-					if(tileEntity instanceof IBlockOverlayText overlayBlock)
-					{
-						Component[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
-						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
-					}
-					else if(!(tileEntity instanceof IMultiblockBE<?> multiblock)||!renderMultiblockOverlay(
-							multiblock, hammer, transform, scaledWidth, scaledHeight
-					))
-					{
-						List<ItemFrame> list = player.level().getEntitiesOfClass(ItemFrame.class,
-								new AABB(pos.relative(face)), entity -> entity!=null&&entity.getDirection()==face);
-						if(list.size()==1)
-							BlockOverlayUtils.renderOreveinMapOverlays(graphics, list.get(0), mop, scaledWidth, scaledHeight);
-					}
-				}
-			}
-		}
-	}
-	 */
-
-	private <S extends IMultiblockState> boolean renderMultiblockOverlay(
-			IMultiblockBE<S> be, boolean hammer, PoseStack transform, int scaledWidth, int scaledHeight
-	)
-	{
-		final IMultiblockBEHelper<S> helper = be.getHelper();
-		if(!(helper.getMultiblock().logic() instanceof MBOverlayText<S> overlayHandler))
-			return false;
-		final List<Component> overlayText = overlayHandler.getOverlayText(
-				helper.getState(), ClientUtils.mc().player, hammer
-		);
-		if(overlayText==null)
-			return false;
-		BlockOverlayUtils.drawBlockOverlayText(transform, overlayText, scaledWidth, scaledHeight);
-		return true;
-	}
-
-	private void renderVoltmeterOverlay(Player player, float scaledWidth, float scaledHeight, PoseStack transform, MultiBufferSource buffer)
-	{
-		HitResult rrt = ClientUtils.mc().hitResult;
-		Either<BlockPos, Integer> pos = null;
-		if(rrt instanceof BlockHitResult mop)
-			pos = Either.left(mop.getBlockPos());
-		else if(rrt instanceof EntityHitResult ehr)
-			pos = Either.right(ehr.getEntity().getId());
-
-		if(pos==null)
+		if(!ZoomHandler.isZooming||!event.getLayer().equals(VanillaGuiLayers.CROSSHAIR))
 			return;
 
-		ArrayList<String> text = new ArrayList<>();
+		event.setCanceled(true);
+		MultiBufferSource.BufferSource buffers = event.getGuiGraphics().bufferSource();
+		PoseStack transform = new PoseStack();
+		transform.pushPose();
+		int width = ClientUtils.mc().getWindow().getGuiScaledWidth();
+		int height = ClientUtils.mc().getWindow().getGuiScaledHeight();
+		int resMin = Math.min(width, height);
+		float offsetX = (width-resMin)/2f;
+		float offsetY = (height-resMin)/2f;
 
-		boolean matches = VoltmeterItem.lastEnergyUpdate.pos().equals(pos);
-		long sinceLast = player.level().getGameTime()-VoltmeterItem.lastEnergyUpdate.measuredInTick();
-		if(!matches||sinceLast > 20)
-			PacketDistributor.sendToServer(new MessageRequestEnergyUpdate(pos));
-
-		if(VoltmeterItem.lastEnergyUpdate.isValid()&&matches)
+		if(resMin==width)
 		{
-			int maxStorage = VoltmeterItem.lastEnergyUpdate.capacity();
-			int storage = VoltmeterItem.lastEnergyUpdate.stored();
-			String storageText = Utils.toScientificNotation(storage, "0##", 100000);
-			String capacityText = Utils.toScientificNotation(maxStorage, "0##", 100000);
-			text.addAll(Arrays.asList(I18n.get(Lib.DESC_INFO+"energyStored", "<br>"+storageText+" / "+capacityText)
-					.split("<br>")));
+			GuiHelper.drawColouredRect(0, 0, width, (int)offsetY+1, 0xff000000, buffers, transform);
+			GuiHelper.drawColouredRect(0, (int)offsetY+resMin, width, (int)offsetY+1, 0xff000000, buffers, transform);
 		}
-
-		if(rrt instanceof BlockHitResult mop)
+		else
 		{
-			matches = VoltmeterItem.lastRedstoneUpdate.pos().equals(mop);
-			sinceLast = player.level().getGameTime()-VoltmeterItem.lastRedstoneUpdate.measuredInTick();
-			if(!matches||sinceLast > 20)
-				PacketDistributor.sendToServer(new MessageRequestRedstoneUpdate(mop.getBlockPos()));
+			GuiHelper.drawColouredRect(0, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
+			GuiHelper.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
+		}
+		transform.translate(offsetX, offsetY, 0);
+		VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGuiTranslucent(rl("textures/gui/scope.png")));
+		GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
 
-			if(VoltmeterItem.lastRedstoneUpdate.isSignalSource()&&matches)
+		builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
+		GuiHelper.drawTexturedColoredRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
+		ItemStack equipped = ClientUtils.mc().player.getItemInHand(InteractionHand.MAIN_HAND);
+		if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool tool)
+		{
+			float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().player);
+			if(steps!=null&&steps.length > 1)
 			{
-				text.addAll(Arrays.asList(I18n.get(Lib.DESC_INFO+"redstoneLevel", "<br>"+VoltmeterItem.lastRedstoneUpdate.rsLevel())
-						.split("<br>")));
+				int curStep = -1;
+				float dist = 0;
+
+				float totalOffset = 0;
+				float stepLength = 118/(float)steps.length;
+				float stepOffset = (stepLength-7)/2f;
+				transform.translate(223/256f*resMin, 64/256f*resMin, 0);
+				transform.translate(0, (5+stepOffset)/256*resMin, 0);
+				for(int i = 0; i < steps.length; i++)
+				{
+					GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 96/256f, 96/256f, 103/256f);
+					transform.translate(0, stepLength/256*resMin, 0);
+					totalOffset += stepLength;
+
+					if(curStep==-1||Math.abs(steps[i]-ZoomHandler.fovZoom) < dist)
+					{
+						curStep = i;
+						dist = Math.abs(steps[i]-ZoomHandler.fovZoom);
+					}
+				}
+				transform.translate(0, -totalOffset/256*resMin, 0);
+
+				if(curStep < steps.length)
+				{
+					transform.translate(6/256f*resMin, curStep*stepLength/256*resMin, 0);
+					GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
+					ClientUtils.font().drawInBatch((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff, true,
+							transform.last().pose(), buffers, DisplayMode.NORMAL, 0, 0xf000f0);
+					transform.translate(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
+				}
+				transform.translate(0, -((5+stepOffset)/256*resMin), 0);
+				transform.translate(-223/256f*resMin, -64/256f*resMin, 0);
 			}
 		}
 
-		if(text!=null)
-		{
-			int col = 0xffffff;
-			int i = 0;
-			RenderSystem.enableBlend();
-			for(String s : text)
-				if(s!=null)
-				{
-					s = s.trim();
-					int w = ClientUtils.font().width(s);
-					ClientUtils.font().drawInBatch(
-							s, scaledWidth/2-w/2f,
-							scaledHeight/2+4+(i++)*(ClientUtils.font().lineHeight+2), col,
-							false, transform.last().pose(), buffer, DisplayMode.NORMAL,
-							0, 0xf000f0
-					);
-				}
-			RenderSystem.disableBlend();
-		}
+		transform.translate(-offsetX, -offsetY, 0);
+		buffers.endBatch();
 	}
 
 	@SubscribeEvent()

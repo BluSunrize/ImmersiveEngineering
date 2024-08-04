@@ -159,14 +159,13 @@ public class GuiHelper
 		drawSlot(graphics, x, y, w, h, 0x77222222, 0x77111111, 0x77999999);
 	}
 
-	public static void renderItemWithOverlayIntoGUI(
-			MultiBufferSource buffer, PoseStack transform, ItemStack stack, int x, int y, Level level
-	)
+	public static void renderItemWithOverlayIntoGUI(GuiGraphics graphics, ItemStack stack, int x, int y, Level level)
 	{
 		ItemRenderer itemRenderer = mc().getItemRenderer();
 		BakedModel bakedModel = itemRenderer.getModel(stack, null, mc().player, 0);
 		if(!bakedModel.usesBlockLight())
 			Lighting.setupForFlatItems();
+		var transform = graphics.pose();
 		transform.pushPose();
 		transform.translate(x, y, 100);
 		transform.pushPose();
@@ -177,6 +176,7 @@ public class GuiHelper
 		itemRenderer.renderStatic(
 				stack, ItemDisplayContext.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY, transform, batchBuffer, level, 0
 		);
+		var buffer = graphics.bufferSource();
 		batchBuffer.pipe(buffer);
 		transform.popPose();
 		renderDurabilityBar(stack, buffer, transform);
