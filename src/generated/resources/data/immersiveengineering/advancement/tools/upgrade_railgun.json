@@ -14,8 +14,7 @@
       "components": {
         "immersiveengineering:upgrade_nbt": [
           {
-            "type": "scope",
-            "data": {}
+            "type": "scope"
           },
           {
             "type": "speed",

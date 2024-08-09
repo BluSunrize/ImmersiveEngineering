@@ -68,6 +68,14 @@ neoForge {
         }
         data {
             data()
+            sourceSet = sourceSets.datagen
+            programArguments = [
+                    '--mod', 'immersiveengineering',
+                    '--all',
+                    '--output', file('src/generated/resources/').toString(),
+                    '--validate',
+                    '--existing', sourceSets.main.resources.srcDirs[0].toString()
+            ]
         }
         server {
             server()
@@ -80,6 +88,8 @@ neoForge {
             sourceSet sourceSets.manual
             sourceSet sourceSets.api
             sourceSet sourceSets.main
+            // TODO can we not load this except in datagen
+            sourceSet sourceSets.datagen
         }
     }
 

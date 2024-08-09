@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
@@ -213,7 +214,8 @@ public class IEBlockEntities
 			"cloche", ClocheBlockEntity::new, MetalDevices.CLOCHE
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ChuteBlockEntity>> CHUTE = REGISTER.register(
-			"chute", makeTypeMultipleBlocks(ChuteBlockEntity::new, MetalDevices.CHUTES.values())
+			"chute",
+			makeTypeMultipleBlocks(ChuteBlockEntity::new, MetalDevices.CHUTES.values(), MetalDevices.DYED_CHUTES.values())
 	);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectromagnetBlockEntity>> ELECTROMAGNET = REGISTER.register(
 			"electromagnet", makeType(ElectromagnetBlockEntity::new, MetalDevices.ELECTROMAGNET)
@@ -235,12 +237,18 @@ public class IEBlockEntities
 		return makeTypeMultipleBlocks(create, ImmutableSet.of(valid));
 	}
 
+	@SafeVarargs
 	public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeTypeMultipleBlocks(
-			BlockEntityType.BlockEntitySupplier<T> create, Collection<? extends Supplier<? extends Block>> valid
+			BlockEntityType.BlockEntitySupplier<T> create, Collection<? extends Supplier<? extends Block>>... valid
 	)
 	{
 		return () -> new BlockEntityType<>(
-				create, ImmutableSet.copyOf(valid.stream().map(Supplier::get).collect(Collectors.toList())), null
+				create,
+				Arrays.stream(valid)
+						.flatMap(Collection::stream)
+						.map(Supplier::get)
+						.collect(Collectors.toSet()),
+				null
 		);
 	}
 
