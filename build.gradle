@@ -1,19 +1,29 @@
 import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-import net.neoforged.gradle.common.tasks.PotentiallySignJar
-import org.gradle.work.Incremental
 
 plugins {
-    id 'net.neoforged.gradle.userdev' version "$version_neogradle"
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    // Apply the plugin. You can find the latest version at https://projects.neoforged.net/neoforged/ModDevGradle
+    id 'net.neoforged.moddev' version '1.0.11'
 }
 
-version = "${version_minecraft}-${buildVersionString()}"
-group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'ImmersiveEngineering'
+def version_replaces = [
+        'version'      : project.version,
+        'ie_version'   : buildVersionString(),
+        'mc_version'   : version_minecraft,
+        'forge_version': version_neoforge,
+        'jei_version'  : version_jei,
+]
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-jar.enabled = false
+def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    inputs.properties(version_replaces)
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand version_replaces
+    }
+    exclude ".cache"
+    exclude "assets/immersiveengineering/lang_base"
+}
 
 sourceSets {
     manual {
@@ -40,62 +50,42 @@ sourceSets {
         compileClasspath += main.output
         runtimeClasspath += main.output
     }
-    gametest {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
-    }
     test {
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
     }
 }
 
-def version_replaces = [
-        'version'      : project.version,
-        'ie_version'   : buildVersionString(),
-        'mc_version'   : version_minecraft,
-        'forge_version': version_neoforge,
-        'jei_version'  : version_jei,
-]
+neoForge {
+    version = "$version_neoforge"
+    addModdingDependenciesTo sourceSets.manual
+    addModdingDependenciesTo sourceSets.api
+    addModdingDependenciesTo sourceSets.test
 
-def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
-
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    inputs.properties(version_replaces)
-    filesMatching("META-INF/neoforge.mods.toml") {
-        expand version_replaces
-    }
-    exclude ".cache"
-    exclude "assets/immersiveengineering/lang_base"
-    //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
+    runs {
+        client {
+            client()
+        }
+        data {
+            data()
+        }
+        server {
+            server()
+            programArguments = ["-nogui"]
         }
     }
-}
 
-runs {
-    configureEach {
-        workingDirectory project.file('run')
-        systemProperty 'forge.logging.console.level', 'debug'
-        modSource sourceSets.main
-        modSource sourceSets.manual
-        modSource sourceSets.api
-        modSource sourceSets.gametest
+    mods {
+        immersiveengineering {
+            sourceSet sourceSets.manual
+            sourceSet sourceSets.api
+            sourceSet sourceSets.main
+        }
     }
-    client
 
-    server {
-        programArguments.add '-nogui'
-    }
-    data {
-        programArguments.addAll '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/').toString(),
-                '--validate', '--existing', sourceSets.main.resources.srcDirs[0].toString()
-        modSource sourceSets.datagen
+    unitTest {
+        enable()
+        testedMod = mods.immersiveengineering
     }
 }
 
@@ -120,8 +110,6 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${version_neoforge}"
-
     compileOnly "mezz.jei:jei-1.20.4-neoforge-api:${version_jei}"
     compileOnly "mezz.jei:jei-1.20.4-common-api:${version_jei}"
     compileOnly "com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:14.0.34"
@@ -131,7 +119,12 @@ dependencies {
     compileOnly "curse.maven:jade-324717:4801177"
     compileOnly "curse.maven:opencomputers2-437654:3630307"
 
-    implementation "malte0811:BlockModelSplitter:2.0.1"
+    jarJar(implementation("malte0811:BlockModelSplitter")) {
+        version {
+            strictly '[2.0.0,3)'
+            prefer '2.0.1'
+        }
+    }
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("net.neoforged:testframework:${version_neoforge}")
@@ -141,22 +134,6 @@ def customGradle = rootProject.file('custom.gradle');
 if (customGradle.exists()) {
     apply from: customGradle;
 }
-
-task signJar(type: PotentiallySignJar) {
-    input = shadowJar.archiveFile
-    output = jar.archiveFile
-    if (project.hasProperty('keyStore')) {
-        keyStore = project.keyStore
-        alias = project.storeAlias
-        storePass = project.storePass
-        keyPass = project.storePass
-    } else {
-        logger.warn("No key store found, not signing the output jar\n")
-    }
-}
-
-build.dependsOn signJar
-signJar.dependsOn shadowJar
 
 String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
@@ -196,116 +173,6 @@ String buildVersionString() {
     return ie_output_version
 }
 
-task datagenJar(type: Jar, dependsOn: datagenClasses) {
-    archiveClassifier = 'datagen'
-    from sourceSets.datagen.output
-    manifest {
-        attributes "FMLModType": "GAMELIBRARY"
-    }
-}
-
-task apiJar(type: Jar, dependsOn: apiClasses) {
-    archiveClassifier = 'api'
-    from sourceSets.api.output
-    from sourceSets.manual.output
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allSource
-    from sourceSets.manual.allSource
-    from sourceSets.api.allSource
-    from sourceSets.datagen.allSource
-}
-
-artifacts {
-    archives sourcesJar
-    archives signJar.output
-    archives datagenJar
-    archives apiJar
-}
-
-shadowJar {
-    archiveClassifier = 'unsigned'
-    dependencies {
-        include(dependency('malte0811:BlockModelSplitter:.*'))
-    }
-    from(sourceSets.manual.output)
-    from(sourceSets.api.output)
-}
-
-//Minimize/optimize all png files, requires optipng on the PATH
-// Credits: BrainStone
-void minimizePNGFile(File file) {
-    long size = file.length()
-    exec {
-        executable "optipng"
-        args "-q", "-o7", "-zm1-9", "-strip", "all", file
-    }
-    long newSize = file.length()
-    if (newSize < size) {
-        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
-                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
-    }
-}
-
-task optimizePng {
-    def pngPatterns = ["**/*.png"]
-    doLast {
-        //Ensure the logo is minimized (we add this file to each jar)
-        //Minimize any PNGs in the source sets
-        for (dir in sourceSets.main.resources.srcDirs) {
-            fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
-        }
-    }
-}
-
-apply plugin: 'maven-publish'
-
-publishing {
-    repositories {
-        maven {
-            url = "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven"))
-        }
-    }
-    publications {
-        maven(MavenPublication) {
-            groupId = project.group
-            version = project.version
-            artifactId = project.archivesBaseName
-
-            artifact sourcesJar
-            artifact signJar.output
-            artifact datagenJar
-            artifact apiJar
-
-            pom {
-                name = project.archivesBaseName
-                description = project.archivesBaseName
-                url = 'https://www.curseforge.com/minecraft/mc-mods/immersive-engineering'
-                scm {
-                    url = 'https://github.com/BluSunrize/ImmersiveEngineering'
-                    connection = 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
-                    developerConnection = 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
-                }
-                issueManagement {
-                    system = 'github'
-                    url = 'https://github.com/BluSunrize/ImmersiveEngineering/issues'
-                }
-
-                developers {
-                    developer {
-                        id = 'BluSunrize'
-                        name = 'BluSunrize'
-                    }
-                }
-            }
-        }
-    }
-}
-
-publish.dependsOn build
-
 //Code for automatic update JSON generation
 abstract class GenerateUpdateJSON extends DefaultTask {
     static def initVersions = { mcFromIEVersion ->
@@ -328,6 +195,9 @@ abstract class GenerateUpdateJSON extends DefaultTask {
     @PathSensitive(PathSensitivity.NAME_ONLY)
     @InputFile
     abstract RegularFileProperty getMarkdown()
+
+    @Input
+    abstract Property<String> getBuildingForVersion()
 
     @OutputFile
     abstract RegularFileProperty getOnlineJSON()
@@ -385,7 +255,7 @@ abstract class GenerateUpdateJSON extends DefaultTask {
                         }
                         if (mcVer == null) {
                             throw new NullPointerException("Could not find MC version for " + currentVersion);
-                        } else if (mcVer == project.ext.version_minecraft) {
+                        } else if (mcVer == getBuildingForVersion()) {
                             if (!changelogForVersions.containsKey(mcVer)) {
                                 promos.put(mcVer + RECOMMENDED, currentVersion)
                                 promos.put(mcVer + LATEST, currentVersion)
@@ -426,7 +296,7 @@ abstract class GenerateUpdateJSON extends DefaultTask {
             outF << updateJson
 
             //JSON for the manual
-            def mapForCurrent = changelogForVersions.getOrDefault(project.ext.version_minecraft, new HashMap<>())
+            def mapForCurrent = changelogForVersions.getOrDefault(getBuildingForVersion(), new HashMap<>())
             def manualJson = JsonOutput.toJson(mapForCurrent)
             manualJson = JsonOutput.prettyPrint(manualJson)
             outF = getIncludedJSON().get().asFile;
@@ -440,10 +310,109 @@ task updateJson(type: GenerateUpdateJSON) {
     markdown = file("changelog.md")
     includedJSON = file("src/main/resources/assets/immersiveengineering/changelog.json")
     onlineJSON = file("changelog.json")
+    buildingForVersion = "$version_minecraft"
 }
 
 processResources.dependsOn updateJson
 
+task datagenJar(type: Jar, dependsOn: datagenClasses) {
+    archiveClassifier = 'datagen'
+    from sourceSets.datagen.output
+    manifest {
+        attributes "FMLModType": "GAMELIBRARY"
+    }
+}
+
+task apiJar(type: Jar, dependsOn: apiClasses) {
+    archiveClassifier = 'api'
+    from sourceSets.api.output
+    from sourceSets.manual.output
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+    from sourceSets.manual.allSource
+    from sourceSets.api.allSource
+    from sourceSets.datagen.allSource
+}
+
+artifacts {
+    archives sourcesJar
+    archives jar
+    archives datagenJar
+    archives apiJar
+}
+
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+        maven {
+            url = "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven"))
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            version = project.version
+            artifactId = project.archivesBaseName
+
+            artifact sourcesJar
+            artifact jar
+            artifact datagenJar
+            artifact apiJar
+
+            pom {
+                name = project.archivesBaseName
+                description = project.archivesBaseName
+                url = 'https://www.curseforge.com/minecraft/mc-mods/immersive-engineering'
+                scm {
+                    url = 'https://github.com/BluSunrize/ImmersiveEngineering'
+                    connection = 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                    developerConnection = 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                }
+                issueManagement {
+                    system = 'github'
+                    url = 'https://github.com/BluSunrize/ImmersiveEngineering/issues'
+                }
+
+                developers {
+                    developer {
+                        id = 'BluSunrize'
+                        name = 'BluSunrize'
+                    }
+                }
+            }
+        }
+    }
+}
+
+//Minimize/optimize all png files, requires optipng on the PATH
+// Credits: BrainStone
+void minimizePNGFile(File file) {
+    long size = file.length()
+    exec {
+        executable "optipng"
+        args "-q", "-o7", "-zm1-9", "-strip", "all", file
+    }
+    long newSize = file.length()
+    if (newSize < size) {
+        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
+                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
+    }
+}
+
+task optimizePng {
+    def pngPatterns = ["**/*.png"]
+    doLast {
+        //Ensure the logo is minimized (we add this file to each jar)
+        //Minimize any PNGs in the source sets
+        for (dir in sourceSets.main.resources.srcDirs) {
+            fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
+        }
+    }
+}
 
 tasks.withType(Task) {
     if (it.name == "runServer") {
