@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool.upgrade;
 
+import blusunrize.immersiveengineering.api.utils.IECodecs;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import com.mojang.datafixers.util.Unit;
@@ -21,6 +22,13 @@ public record UpgradeData(List<UpgradeEntry<?>> entries)
 {
 	public static final DualCodec<ByteBuf, UpgradeData> CODECS = UpgradeEntry.CODECS.listOf()
 			.map(UpgradeData::new, UpgradeData::entries);
+	public static final DualCodec<ByteBuf, UpgradeData> SPECIAL_REVOLVER_CODEC = new DualCodec<>(
+			IECodecs.directDispatchMap(
+					s -> UpgradeEffect.get(s).entryCodec().codec(),
+					e -> e.type.name()
+			).xmap(UpgradeData::new, UpgradeData::entries),
+			CODECS.streamCodec()
+	);
 	public static final UpgradeData EMPTY = new UpgradeData(List.of());
 
 	public UpgradeData

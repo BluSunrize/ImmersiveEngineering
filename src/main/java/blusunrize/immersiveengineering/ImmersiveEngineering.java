@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.items.*;
+import blusunrize.immersiveengineering.common.items.RevolverItem.SpecialRevolver;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
@@ -36,7 +37,6 @@ import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModules;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import net.minecraft.Util;
@@ -311,7 +311,6 @@ public class ImmersiveEngineering
 		@Override
 		public void run()
 		{
-			Gson gson = new Gson();
 			try
 			{
 				IELogger.info("Attempting to download special revolvers from GitHub");
@@ -322,7 +321,7 @@ public class ImmersiveEngineering
 					try
 					{
 						JsonElement je = parser.next();
-						RevolverItem.SpecialRevolver revolver = gson.fromJson(je, RevolverItem.SpecialRevolver.class);
+						RevolverItem.SpecialRevolver revolver = SpecialRevolver.CODECS.fromJSON(je);
 						if(revolver!=null)
 						{
 							if(revolver.uuid()!=null)
@@ -332,7 +331,7 @@ public class ImmersiveEngineering
 						}
 					} catch(Exception excepParse)
 					{
-						IELogger.warn("Error on parsing a SpecialRevolver");
+						IELogger.logger.trace("Error on parsing a SpecialRevolver", excepParse);
 					}
 				}
 			} catch(Exception e)

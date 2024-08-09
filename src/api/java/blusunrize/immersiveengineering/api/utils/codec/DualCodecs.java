@@ -80,7 +80,7 @@ public class DualCodecs
 
 	public static <T, S extends ByteBuf> DualCodec<S, T> unit(T value)
 	{
-		return new DualCodec<>(Codec.unit(value), StreamCodec.unit(value));
+		return new DualCodec<>(IECodecs.betterUnitCodec(value), StreamCodec.unit(value));
 	}
 
 	public static <S extends ByteBuf, T, E1, E2> DualCodec<S, T> composite(
@@ -177,7 +177,7 @@ public class DualCodecs
 	DualCodec<S, Map<K, V>> forMap(DualCodec<? super S, K> keyCodec, DualCodec<? super S, V> valueCodec)
 	{
 		return new DualCodec<>(
-				IECodecs.mapCodec(keyCodec.codec(), valueCodec.codec()),
+				IECodecs.listBasedMap(keyCodec.codec(), valueCodec.codec()),
 				IECodecs.mapStreamCodec(keyCodec.streamCodec(), valueCodec.streamCodec())
 		);
 	}
@@ -186,7 +186,7 @@ public class DualCodecs
 	DualCodec<S, EnumMap<E, V>> forEnumMap(E[] keys, DualCodec<? super S, V> valueCodec)
 	{
 		return new DualCodec<>(
-				IECodecs.enumMapCodec(keys, valueCodec.codec()),
+				IECodecs.listBasedEnumMap(keys, valueCodec.codec()),
 				IECodecs.enumMapStreamCodec(keys, valueCodec.streamCodec())
 		);
 	}

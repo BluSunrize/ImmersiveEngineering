@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.api.utils;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.NonNullList;
@@ -23,10 +25,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -102,7 +101,7 @@ public class IECodecs
 		return mapStreamCodec(keyCodec, valueCodec).map(EnumMap::new, Function.identity()).cast();
 	}
 
-	public static <K, T> Codec<Map<K, T>> mapCodec(Codec<K> keyCodec, Codec<T> valueCodec)
+	public static <K, T> Codec<Map<K, T>> listBasedMap(Codec<K> keyCodec, Codec<T> valueCodec)
 	{
 		Codec<Pair<K, T>> entryCodec = RecordCodecBuilder.create(inst -> inst.group(
 				keyCodec.fieldOf("key").forGetter(Pair::getFirst),
@@ -111,10 +110,72 @@ public class IECodecs
 		return entryCodec.listOf().xmap(IECodecs::listToMap, IECodecs::mapToList);
 	}
 
-	public static <E extends Enum<E>, T> Codec<EnumMap<E, T>> enumMapCodec(E[] keys, Codec<T> valueCodec)
+	public static <E extends Enum<E>, T> Codec<EnumMap<E, T>> listBasedEnumMap(E[] keys, Codec<T> valueCodec)
 	{
 		final var keyCodec = enumCodec(keys);
-		return mapCodec(keyCodec, valueCodec).xmap(EnumMap::new, Function.identity());
+		return listBasedMap(keyCodec, valueCodec).xmap(EnumMap::new, Function.identity());
+	}
+
+	public static <V> Codec<List<V>> directDispatchMap(
+			Function<String, Codec<V>> valueCodec, Function<V, String> getKey
+	)
+	{
+		return new Codec<>()
+		{
+			@Override
+			public <T> DataResult<Pair<List<V>, T>> decode(DynamicOps<T> ops, T input)
+			{
+				return ops.getMapValues(input).flatMap(s -> {
+					DataResult<List<V>> result = DataResult.success(new ArrayList<>());
+					for(var entry : s.toList())
+						result = result.flatMap(
+								current -> ops.getStringValue(entry.getFirst()).flatMap(
+										key -> valueCodec.apply(key).decode(ops, entry.getSecond()).map(
+												value -> {
+													var newMap = new ArrayList<>(current);
+													newMap.add(value.getFirst());
+													return newMap;
+												}
+										)
+								)
+						);
+					return result.map(m -> new Pair<>(m, ops.empty()));
+				});
+			}
+
+			@Override
+			public <T> DataResult<T> encode(List<V> input, DynamicOps<T> ops, T prefix)
+			{
+				DataResult<T> result = DataResult.success(prefix);
+				for(var entry : input)
+					result = result.flatMap(oldT -> {
+						var type = getKey.apply(entry);
+						var maybeValue = valueCodec.apply(type).encodeStart(ops, entry);
+						var key = ops.createString(type);
+						return maybeValue.flatMap(valueT -> ops.mergeToMap(oldT, key, valueT));
+					});
+				return result;
+			}
+		};
+	}
+
+	// DFU unit codec produces an error when presented with a non-map input
+	public static <T> Codec<T> betterUnitCodec(T value)
+	{
+		return new Codec<T>()
+		{
+			@Override
+			public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input)
+			{
+				return DataResult.success(Pair.of(value, input));
+			}
+
+			@Override
+			public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix)
+			{
+				return DataResult.success(prefix);
+			}
+		};
 	}
 
 	public static <C> Codec<Set<C>> setOf(Codec<C> codec)

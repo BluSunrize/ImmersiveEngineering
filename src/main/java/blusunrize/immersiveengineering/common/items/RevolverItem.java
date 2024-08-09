@@ -526,13 +526,21 @@ public boolean useSpeedloader(Level level, Player player, ItemStack revolver, In
 	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<>();
 
 	public record SpecialRevolver(
-			String[] uuid,
+			List<String> uuid,
 			String tag,
 			String flavour,
 			UpgradeData baseUpgrades,
-			String[] renderAdditions
+			List<String> renderAdditions
 	)
 	{
+		public static final DualCodec<ByteBuf, SpecialRevolver> CODECS = DualCodecs.composite(
+				DualCodecs.STRING.listOf().fieldOf("uuid"), SpecialRevolver::uuid,
+				DualCodecs.STRING.fieldOf("tag"), SpecialRevolver::tag,
+				DualCodecs.STRING.fieldOf("flavour"), SpecialRevolver::flavour,
+				UpgradeData.SPECIAL_REVOLVER_CODEC.fieldOf("baseUpgrades"), SpecialRevolver::baseUpgrades,
+				DualCodecs.STRING.listOf().fieldOf("renderAdditions"), SpecialRevolver::renderAdditions,
+				SpecialRevolver::new
+		);
 	}
 
 	@ParametersAreNonnullByDefault

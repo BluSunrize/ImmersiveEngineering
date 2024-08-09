@@ -8,7 +8,9 @@
 
 package blusunrize.immersiveengineering.api.utils.codec;
 
+import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -78,6 +80,11 @@ public record DualCodec<S extends ByteBuf, T>(Codec<T> codec, StreamCodec<S, T> 
 	public Tag toNBT(T object)
 	{
 		return codec().encodeStart(NbtOps.INSTANCE, object).getOrThrow();
+	}
+
+	public T fromJSON(JsonElement json)
+	{
+		return codec().decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
 	}
 
 	public T fromNBT(Tag nbt)

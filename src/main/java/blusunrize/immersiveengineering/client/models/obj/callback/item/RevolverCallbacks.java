@@ -102,13 +102,13 @@ public class RevolverCallbacks implements ItemCallback<Key>
 		{
 			SpecialRevolver r = specialRevolversByTag.get(tag);
 			if(r!=null&&r.renderAdditions()!=null)
-				Collections.addAll(render, r.renderAdditions());
+				render.addAll(r.renderAdditions());
 		}
 		else if(!flavour.isEmpty()&&specialRevolversByTag.containsKey(flavour))
 		{
 			SpecialRevolver r = specialRevolversByTag.get(flavour);
 			if(r!=null&&r.renderAdditions()!=null)
-				Collections.addAll(render, r.renderAdditions());
+				render.addAll(r.renderAdditions());
 		}
 		if(stack.extraBullets()&&!render.contains("dev_mag"))
 			render.add("player_mag");
