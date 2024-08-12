@@ -110,6 +110,7 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 
 	static class SidedFluidHandler implements IFluidHandler
 	{
+		private boolean inUse = false;
 		PipeValveBlockEntity valve;
 		@Nullable
 		Direction side;
@@ -123,31 +124,40 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 		@Override
 		public int fill(FluidStack resource, FluidAction doFill)
 		{
-			if(valve.isRSPowered()||resource.isEmpty()||side==null||(!side.equals(valve.getFacing().getOpposite()))) return 0;
+			if(inUse||valve.isRSPowered()||resource.isEmpty()||side==null||(!side.equals(valve.getFacing().getOpposite())))
+				return 0;
+			this.inUse = true;
 			//Try to pass fluid through immediately, if we can't do this then don't bother
 			IEBlockCapabilityCache<IFluidHandler> capRef = valve.blockFluidHandlers.get(valve.getFacing());
 			IFluidHandler handler = capRef.getCapability();
 			int filled = 0;
 			if(handler!=null) filled = handler.fill(resource, doFill);
+			this.inUse = false;
 			return filled;
 		}
 
 		@Override
 		public FluidStack drain(FluidStack resource, FluidAction doDrain)
 		{
-			if(valve.isRSPowered()||resource.isEmpty()||side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
+			if(inUse||valve.isRSPowered()||resource.isEmpty()||side==null||(!side.equals(valve.getFacing())))
+				return FluidStack.EMPTY;
+			this.inUse = true;
 			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing().getOpposite()).getCapability();
-			if(input!=null) return input.drain(resource, doDrain);
-			else return FluidStack.EMPTY;
+			FluidStack drained = input!=null?input.drain(resource, doDrain): FluidStack.EMPTY;
+			this.inUse = false;
+			return drained;
 		}
 
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction doDrain)
 		{
-			if(valve.isRSPowered()||side==null||(!side.equals(valve.getFacing()))) return FluidStack.EMPTY;
+			if(inUse||valve.isRSPowered()||side==null||(!side.equals(valve.getFacing())))
+				return FluidStack.EMPTY;
+			this.inUse = true;
 			IFluidHandler input = valve.blockFluidHandlers.get(valve.getFacing().getOpposite()).getCapability();
-			if(input!=null) return input.drain(maxDrain, doDrain);
-			else return FluidStack.EMPTY;
+			FluidStack drained = input!=null?input.drain(maxDrain, doDrain): FluidStack.EMPTY;
+			this.inUse = false;
+			return drained;
 		}
 
 		@Override
