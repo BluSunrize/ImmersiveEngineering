@@ -1,5 +1,5 @@
-##### Version 1.20.4-11.6.1-pre
-- Fix pipe valves causing a crash when used in a loop of pipes
+##### Version 1.20.4-11.6.1-181
+- Fix pipe valves causing a crash when used in a loop of pipes (BluSunrize)
 
 ##### Version 1.20.4-11.6.0-180
 - "The Redstone Update!"
