@@ -49,6 +49,9 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> implements RecipeS
 		if(outputObject.isJsonObject()&&outputObject.getAsJsonObject().has("item"))
 			return Lazy.of(() -> ShapedRecipe.itemStackFromJson(outputObject.getAsJsonObject()));
 		IngredientWithSize outgredient = IngredientWithSize.deserialize(outputObject);
+		if (outgredient.hasNoMatchingItems() || (outgredient.getMatchingStacks().length == 0)) {
+			throw new RuntimeException("Outgredient "+outgredient+" has no matching items");
+		}
 		return Lazy.of(() -> IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks()));
 	}
 

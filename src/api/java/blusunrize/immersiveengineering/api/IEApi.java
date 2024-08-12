@@ -98,8 +98,9 @@ public class IEApi
 
 	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
 	{
+		if (array.length == 0) throw new RuntimeException("Empty Array!");
 		return getPreferredElementbyMod(Arrays.stream(array), stack -> Registry.ITEM.getKey(stack.getItem()))
-				.orElseThrow(() -> new RuntimeException("Empty array?"));
+				.orElseThrow(() -> new RuntimeException("getPreferredElementbyMod did not return a valid ItemStack"));
 	}
 
 	public static boolean isAllowedInCrate(ItemStack stack)
