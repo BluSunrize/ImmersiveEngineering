@@ -42,23 +42,23 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 			FluidHandler.BLOCK, this
 	);
 	VoxelShape SHAPE_X = Shapes.join(Shapes.box(0f, 0.125f, 0.125f, 0.125f, 0.875f, 0.875f),
-						 Shapes.join(Shapes.box(0.125f, 0.25f, 0.25f, 0.3125f, 0.75f, 0.75f),
-						 Shapes.join(Shapes.box(0.3125f, 0.1875, 0.1875, 0.6875f, 0.8125f, 0.8125f),
-						 Shapes.join(Shapes.box(0.6875f, 0.25f, 0.25f, 0.875f, 0.75f, 0.75f),
-									 Shapes.box(0.875f, 0.125f, 0.125f, 1f, 0.875f, 0.875f),
-									 BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
+			Shapes.join(Shapes.box(0.125f, 0.25f, 0.25f, 0.3125f, 0.75f, 0.75f),
+					Shapes.join(Shapes.box(0.3125f, 0.1875, 0.1875, 0.6875f, 0.8125f, 0.8125f),
+							Shapes.join(Shapes.box(0.6875f, 0.25f, 0.25f, 0.875f, 0.75f, 0.75f),
+									Shapes.box(0.875f, 0.125f, 0.125f, 1f, 0.875f, 0.875f),
+									BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
 	VoxelShape SHAPE_Y = Shapes.join(Shapes.box(0.125f, 0f, 0.125f, 0.875f, 0.125f, 0.875f),
-						 Shapes.join(Shapes.box(0.25f, 0.125f, 0.25f, 0.75f, 0.3125f, 0.75f),
-						 Shapes.join(Shapes.box(0.1875f, 0.3125f, 0.1875, 0.8125f, 0.6875f, 0.8125f),
-						 Shapes.join(Shapes.box(0.25f, 0.6875f, 0.25f, 0.75f, 0.875f, 0.75f),
-									 Shapes.box(0.125f, 0.875f, 0.125f, 0.875f, 1f, 0.875f),
-									 BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
+			Shapes.join(Shapes.box(0.25f, 0.125f, 0.25f, 0.75f, 0.3125f, 0.75f),
+					Shapes.join(Shapes.box(0.1875f, 0.3125f, 0.1875, 0.8125f, 0.6875f, 0.8125f),
+							Shapes.join(Shapes.box(0.25f, 0.6875f, 0.25f, 0.75f, 0.875f, 0.75f),
+									Shapes.box(0.125f, 0.875f, 0.125f, 0.875f, 1f, 0.875f),
+									BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
 	VoxelShape SHAPE_Z = Shapes.join(Shapes.box(0.125f, 0.125f, 0f, 0.875f, 0.875f, 0.125f),
-						 Shapes.join(Shapes.box(0.25f, 0.25f, 0.125f, 0.75f, 0.75f, 0.3125f),
-						 Shapes.join(Shapes.box(0.1875, 0.1875, 0.3125f, 0.8125f, 0.8125f, 0.6875f),
-						 Shapes.join(Shapes.box(0.25f, 0.25f, 0.6875f, 0.75f, 0.75f, 0.875f),
-									 Shapes.box(0.125f, 0.125f, 0.875f, 0.875f, 0.875f, 1f),
-									 BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
+			Shapes.join(Shapes.box(0.25f, 0.25f, 0.125f, 0.75f, 0.75f, 0.3125f),
+					Shapes.join(Shapes.box(0.1875, 0.1875, 0.3125f, 0.8125f, 0.8125f, 0.6875f),
+							Shapes.join(Shapes.box(0.25f, 0.25f, 0.6875f, 0.75f, 0.75f, 0.875f),
+									Shapes.box(0.125f, 0.125f, 0.875f, 0.875f, 0.875f, 1f),
+									BooleanOp.OR), BooleanOp.OR), BooleanOp.OR), BooleanOp.OR);
 
 	public PipeValveBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -82,11 +82,11 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 	{
 		if(ctx==null) return Shapes.block();
 		return switch(getFacing().getAxis())
-		{
-			case X -> SHAPE_X;
-			case Y -> SHAPE_Y;
-			case Z -> SHAPE_Z;
-		};
+				{
+					case X -> SHAPE_X;
+					case Y -> SHAPE_Y;
+					case Z -> SHAPE_Z;
+				};
 	}
 
 	@Override
@@ -96,16 +96,20 @@ public class PipeValveBlockEntity extends IEBaseBlockEntity implements IStateBas
 	}
 
 	@Override
-	public void readCustomNBT(CompoundTag nbt, boolean descPacket) { }
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+	{
+	}
 
 	@Override
-	public void writeCustomNBT(CompoundTag nbt, boolean descPacket) { }
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+	{
+	}
 
 	public static void registerCapabilities(BECapabilityRegistrar<? extends PipeValveBlockEntity> registrar)
 	{
 		registrar.register(FluidHandler.BLOCK, (be, side) ->
-				(side==be.getFacing()? new SidedFluidHandler(be, be.getFacing()):
-				(side==be.getFacing().getOpposite()? new SidedFluidHandler(be, be.getFacing().getOpposite()):null)));
+				(side==be.getFacing()?new SidedFluidHandler(be, be.getFacing()):
+						(side==be.getFacing().getOpposite()?new SidedFluidHandler(be, be.getFacing().getOpposite()): null)));
 	}
 
 	static class SidedFluidHandler implements IFluidHandler
