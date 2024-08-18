@@ -15,9 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab.Output;
 import net.minecraft.world.item.Item;
@@ -29,7 +27,7 @@ import javax.annotation.Nullable;
 
 public class IEBaseItem extends Item
 {
-	private int burnTime = -1;
+	private int burnTime = 0;
 	private boolean isHidden = false;
 
 	public IEBaseItem()

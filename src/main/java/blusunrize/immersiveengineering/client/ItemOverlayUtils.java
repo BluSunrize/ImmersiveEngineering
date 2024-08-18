@@ -33,6 +33,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
@@ -89,7 +90,6 @@ public class ItemOverlayUtils
 			return;
 		int scaledWidth = ClientUtils.mc().getWindow().getGuiScaledWidth();
 		int scaledHeight = ClientUtils.mc().getWindow().getGuiScaledHeight();
-		// TODO how do we check if we collide with subtitles now?
 
 		for(InteractionHand hand : InteractionHand.values())
 			if(!player.getItemInHand(hand).isEmpty())
@@ -120,27 +120,26 @@ public class ItemOverlayUtils
 			GuiGraphics graphics, ItemStack equipped, Player player, int scaledWidth, int scaledHeight
 	)
 	{
-		if(equipped.has(IEApiDataComponents.WIRE_LINK))
+		if(!equipped.has(IEApiDataComponents.WIRE_LINK))
+			return;
+		WireLink link = equipped.get(IEApiDataComponents.WIRE_LINK);
+		BlockPos pos = link.cp().position();
+		String s = I18n.get(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
+		int col = WireType.ELECTRUM.getColour(null);
+		if(equipped.getItem() instanceof IWireCoil)
 		{
-			WireLink link = equipped.get(IEApiDataComponents.WIRE_LINK);
-			BlockPos pos = link.cp().position();
-			String s = I18n.get(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
-			int col = WireType.ELECTRUM.getColour(null);
-			if(equipped.getItem() instanceof IWireCoil)
-			{
-				//TODO use actual connection offset rather than pos
-				HitResult rtr = ClientUtils.mc().hitResult;
-				double d;
-				if(rtr instanceof BlockHitResult)
-					d = ((BlockHitResult)rtr).getBlockPos().distSqr(pos);
-				else
-					d = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
-				int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
-				if(d > max*max)
-					col = 0xdd3333;
-			}
-			graphics.drawCenteredString(ClientUtils.font(), s, scaledWidth/2, scaledHeight-20, col);
+			//TODO use actual connection offset rather than pos
+			HitResult rtr = ClientUtils.mc().hitResult;
+			double d;
+			if(rtr instanceof BlockHitResult)
+				d = ((BlockHitResult)rtr).getBlockPos().distSqr(pos);
+			else
+				d = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
+			int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
+			if(d > max*max)
+				col = 0xdd3333;
 		}
+		graphics.drawCenteredString(ClientUtils.font(), s, scaledWidth/2, scaledHeight-20-leftHeight(), col);
 	}
 
 	private static void renderFluorescentTubeOverlay(
@@ -150,7 +149,7 @@ public class ItemOverlayUtils
 		int color = FluorescentTubeItem.getRGBInt(equipped, 1);
 		String s = I18n.get(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
 		graphics.drawCenteredString(
-				ClientUtils.font(), s, scaledWidth/2, scaledHeight-20, FluorescentTubeItem.getRGBInt(equipped, 1)
+				ClientUtils.font(), s, scaledWidth/2, scaledHeight-20-leftHeight(), FluorescentTubeItem.getRGBInt(equipped, 1)
 		);
 	}
 
@@ -393,4 +392,13 @@ public class ItemOverlayUtils
 		}
 	}
 
+	private static int leftHeight()
+	{
+		return Minecraft.getInstance().gui.leftHeight;
+	}
+
+	private static int rightHeight()
+	{
+		return Minecraft.getInstance().gui.rightHeight;
+	}
 }

@@ -16,7 +16,7 @@ import net.minecraft.world.item.DyeColor;
 
 public record Color4(float r, float g, float b, float a)
 {
-	public static final Color4 WHITE = new Color4(1, 1, 1, 1);
+	public static final Color4 WHITE = new Color4(1f, 1, 1, 1);
 	public static final DualCodec<ByteBuf, Color4> CODECS = DualCodecs.composite(
 			DualCodecs.FLOAT.fieldOf("r"), Color4::r,
 			DualCodecs.FLOAT.fieldOf("g"), Color4::g,
@@ -38,7 +38,7 @@ public record Color4(float r, float g, float b, float a)
 	public static Color4 from(DyeColor dyeColor)
 	{
 		if(dyeColor==null)
-			return new Color4(1, 1, 1, 1);
+			return WHITE;
 		int rgb = dyeColor.getTextureDiffuseColor();
 		return new Color4(((rgb>>16)&255)/255f, ((rgb>>8)&255)/255f, (rgb&255)/255f, 1);
 	}
