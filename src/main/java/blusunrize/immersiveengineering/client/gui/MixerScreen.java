@@ -9,7 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.MultitankArea;
@@ -27,9 +28,14 @@ import net.minecraft.world.entity.player.Inventory;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class MixerScreen extends IEContainerScreen<MixerMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("mixer");
+	private static final ButtonTexture OUTPUT_BOTTOM = new ButtonTexture(ieLoc("mixer/output_bottom"));
+	private static final ButtonTexture OUTPUT_ALL = new ButtonTexture(ieLoc("mixer/output_all"));
+	private static final ResourceLocation PROGRESS = ieLoc("mixer/progress");
 
 	public MixerScreen(MixerMenu container, Inventory inventoryPlayer, Component title)
 	{
@@ -57,8 +63,9 @@ public class MixerScreen extends IEContainerScreen<MixerMenu>
 	{
 		super.init();
 		this.clearWidgets();
-		this.addRenderableWidget(new GuiButtonBooleanOld(
-				leftPos+106, topPos+61, 30, 16, Component.empty(), menu.outputAll::get, TEXTURE, 176, 82, 1,
+		this.addRenderableWidget(new GuiButtonBoolean(
+				leftPos+106, topPos+61, 30, 16, Component.empty(), menu.outputAll::get,
+				OUTPUT_BOTTOM, OUTPUT_ALL,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					tag.putBoolean("outputAll", !menu.outputAll.get());
@@ -75,7 +82,9 @@ public class MixerScreen extends IEContainerScreen<MixerMenu>
 		{
 			final int slot = slotProgress.slot();
 			final int h = (int)Math.max(1, slotProgress.progress()*16);
-			graphics.blit(TEXTURE, leftPos+24+slot%2*21, topPos+7+slot/2*18+(16-h), 176, 16-h, 2, h);
+			graphics.blitSprite(
+					PROGRESS, 3, 16, 0, 16-h, leftPos+24+slot%2*21, topPos+7+slot/2*18+(16-h), 2, h
+			);
 		}
 		graphics.pose().popPose();
 	}

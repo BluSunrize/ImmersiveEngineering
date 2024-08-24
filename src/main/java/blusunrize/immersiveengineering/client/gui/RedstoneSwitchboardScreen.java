@@ -9,8 +9,9 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneSwitchboardBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneSwitchboardBlockEntity.SwitchboardSetting;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -34,12 +35,16 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
 
 public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneSwitchboardBlockEntity>
 {
-
-	public static final ResourceLocation TEXTURE = makeTextureLocation("switchboard");
+	private static final ResourceLocation TEXTURE = makeTextureLocation("switchboard");
+	public static final ButtonTexture IDENT = new ButtonTexture(ieLoc("switchboard/ident"));
+	public static final ButtonTexture INVERT = new ButtonTexture(ieLoc("switchboard/invert"));
+	public static final ButtonTexture EMPTY = new ButtonTexture(ieLoc("switchboard/empty"));
+	public static final ResourceLocation PLUG = ieLoc("switchboard/plug");
 
 	public RedstoneSwitchboardScreen(RedstoneSwitchboardBlockEntity tileEntity, Component title)
 	{
@@ -62,10 +67,10 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 		{
 			int finalIndex = i;
 			// invert button
-			this.addRenderableWidget(new GuiButtonBooleanOld(
+			this.addRenderableWidget(new GuiButtonBoolean(
 					guiLeft+9+i*14, guiTop+105, 12, 11, Component.empty(),
 					() -> inverterStates[finalIndex],
-					TEXTURE, 0, 138, 0,
+					IDENT, INVERT,
 					btn -> {
 						this.inverterStates[finalIndex] = btn.getNextState();
 						findConnectionWidget(w -> w.setting.output().getId()==finalIndex).ifPresent(oldWidget ->
@@ -79,16 +84,16 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 			));
 
 			// input socket
-			this.addRenderableWidget(new GuiButtonIEOld(
+			this.addRenderableWidget(new GuiButtonIE(
 					guiLeft+9+i*14, guiTop+30, 12, 12, Component.empty(),
-					TEXTURE, 24, 138,
+					EMPTY,
 					btn -> this.clickedInput = DyeColor.byId(finalIndex)
 			));
 
 			// output socket
-			this.addRenderableWidget(new GuiButtonIEOld(
+			this.addRenderableWidget(new GuiButtonIE(
 					guiLeft+9+i*14, guiTop+86, 12, 12, Component.empty(),
-					TEXTURE, 24, 138,
+					EMPTY,
 					btn -> {
 						if(clickedInput!=null)
 						{
@@ -164,7 +169,7 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 		if(this.clickedInput!=null)
 		{
 			// input plug
-			graphics.blit(TEXTURE, guiLeft+7+clickedInput.getId()*14, guiTop+31, 0, 149, 16, 16);
+			graphics.blitSprite(PLUG, guiLeft+7+clickedInput.getId()*14, guiTop+31, 16, 16);
 			CableQuad.build(this, clickedInput, new Vec2(mouseX, mouseY)).draw(graphics);
 		}
 	}
@@ -270,9 +275,9 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 		protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 		{
 			// input plug
-			graphics.blit(TEXTURE, getX()+7+setting.input().getId()*14, getY()+31, 0, 149, 16, 16);
+			graphics.blitSprite(PLUG, getX()+7+setting.input().getId()*14, getY()+31, 16, 16);
 			// output plug
-			graphics.blit(TEXTURE, getX()+7+setting.output().getId()*14, getY()+87, 0, 149, 16, 16);
+			graphics.blitSprite(PLUG, getX()+7+setting.output().getId()*14, getY()+87, 16, 16);
 			// cable
 			this.quad.draw(graphics);
 		}

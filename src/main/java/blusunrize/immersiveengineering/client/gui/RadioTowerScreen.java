@@ -9,8 +9,9 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
-import blusunrize.immersiveengineering.client.gui.elements_old.ITooltipWidgetOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
+import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
@@ -43,9 +44,15 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("radio_tower");
+	private static final ButtonTexture SAVE = new ButtonTexture(
+			ieLoc("radio_tower/save"), ieLoc("radio_tower/save_hovered")
+	);
+	private static final ResourceLocation SAVE_COLOR = ieLoc("radio_tower/save_color");
 
 	public RadioTowerScreen(RadioTowerMenu container, Inventory inventoryPlayer, Component title)
 	{
@@ -131,7 +138,7 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 		for(final DyeColor color : DyeColor.values())
 		{
 			final int ordinal = color.ordinal();
-			this.addRenderableWidget(new SaveButtonOld(
+			this.addRenderableWidget(new SaveButton(
 					getGuiLeft()+12+(ordinal%8)*20,
 					getGuiTop()+78+(ordinal/8)*22,
 					color,
@@ -277,17 +284,16 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 		}
 	}
 
-	private static class SaveButtonOld extends GuiButtonIEOld implements ITooltipWidgetOld
+	private static class SaveButton extends GuiButtonIE implements ITooltipWidget
 	{
 		private final DyeColor color;
 		private final IntSupplier frequency;
 
-		public SaveButtonOld(int x, int y, DyeColor color, IntSupplier frequency, IIEPressable handler)
+		public SaveButton(int x, int y, DyeColor color, IntSupplier frequency, IIEPressable handler)
 		{
-			super(x, y, 17, 17, Component.empty(), TEXTURE, 110, 239, handler);
+			super(x, y, 17, 17, Component.empty(), SAVE, handler);
 			this.color = color;
 			this.frequency = frequency;
-			this.setHoverOffset(width, 0);
 		}
 
 		@Override
@@ -296,7 +302,7 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 			super.renderWidget(graphics, mouseX, mouseY, partialTicks);
 			var rgb = Utils.vec4fFromDye(this.color);
 			graphics.setColor(rgb.x, rgb.y, rgb.z, 1);
-			graphics.blit(texture, getX(), getY(), texU+width*2, texV, width, height);
+			graphics.blitSprite(SAVE_COLOR, getX(), getY(), width, height);
 			graphics.setColor(1, 1, 1, 1);
 		}
 

@@ -35,6 +35,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -227,7 +228,8 @@ public class RedstoneTimerBlockEntity extends ConnectorRedstoneBlockEntity
 		if(ticks < 20)
 			return Component.translatable(Lib.DESC_INFO+"ticks", ticks);
 		double seconds = ticks/20.0;
-		return Component.translatable(Lib.DESC_INFO+"seconds", seconds);
+		DecimalFormat format = new DecimalFormat("0.00");
+		return Component.translatable(Lib.DESC_INFO+"seconds", format.format(seconds));
 	}
 
 }

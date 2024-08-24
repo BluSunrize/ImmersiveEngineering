@@ -6,25 +6,31 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements_old;
+package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.MachineInterfaceScreen;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class GuiSelectBoxOld<E> extends GuiButtonStateOld<E>
+public class GuiSelectBox<E> extends GuiButtonState<E>
 {
+	private static final ResourceLocation TEXTURE = ieLoc("machine_interface/select_box");
+	private static final ResourceLocation BUTTON = ieLoc("machine_interface/select_button");
+
 	private static final int WIDTH_LEFT = 8;
 	private static final int WIDTH_MIDDLE = 4;
 	private static final int WIDTH_RIGHT = 12;
@@ -42,13 +48,13 @@ public class GuiSelectBoxOld<E> extends GuiButtonStateOld<E>
 
 	private int selectedState = -1;
 
-	public GuiSelectBoxOld(
+	public GuiSelectBox(
 			int x, int y, int minWidth, Supplier<E[]> optionGetter, IntSupplier selectedOption,
-			Function<E, Component> messageGetter, IIEPressable<GuiSelectBoxOld<E>> handler
+			Function<E, Component> messageGetter, IIEPressable<GuiSelectBox<E>> handler
 	)
 	{
 		super(x, y, 64, 16, Component.empty(), optionGetter.get(), selectedOption,
-				MachineInterfaceScreen.TEXTURE, 166, 18, -1, btn -> handler.onIEPress((GuiSelectBoxOld<E>)btn));
+				allSame(optionGetter.get(), new ButtonTexture(TEXTURE)), btn -> handler.onIEPress((GuiSelectBox<E>)btn));
 		this.optionGetter = optionGetter;
 		this.messageGetter = messageGetter;
 		this.minWidth = minWidth;
@@ -128,14 +134,12 @@ public class GuiSelectBoxOld<E> extends GuiButtonStateOld<E>
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 			RenderSystem.blendFunc(770, 771);
 
-			// basic field
-			graphics.blit(texture, getX(), getY(), texU, texV, WIDTH_LEFT, HEIGHT_BASE);
-			for(int i = 0; i < width-WIDTH_STATIC; i += WIDTH_MIDDLE)
-				graphics.blit(texture, getX()+WIDTH_LEFT+i, getY(), texU+WIDTH_LEFT+1, texV, WIDTH_MIDDLE, HEIGHT_BASE);
-			graphics.blit(texture, getX()+width-WIDTH_RIGHT, getY(), texU+WIDTH_LEFT+WIDTH_MIDDLE+2, texV, WIDTH_RIGHT, HEIGHT_BASE);
-
+			graphics.blitSprite(BUTTON, getX()+width-WIDTH_BUTTON, getY(), WIDTH_BUTTON, HEIGHT_BASE);
 			if(!this.opened)
 			{
+				// basic field
+				graphics.blitSprite(TEXTURE, getX(), getY(), width-WIDTH_BUTTON, height);
+
 				// text
 				Component text = getMessage();
 				int textX = getX()+TEXT_INDENT;
@@ -148,19 +152,7 @@ public class GuiSelectBoxOld<E> extends GuiButtonStateOld<E>
 				graphics.pose().translate(0, 0, 2);
 				// background
 
-				int openV = texV+17;
-				int borderV = texV+20;
-				for(int j = 0; j < openedHeight; j += 2)
-				{
-					graphics.blit(texture, getX(), getY()+OPEN_OFFSET+j, texU, openV, WIDTH_LEFT, 2);
-					for(int i = 0; i < width-WIDTH_STATIC; i += WIDTH_MIDDLE)
-						graphics.blit(texture, getX()+WIDTH_LEFT+i, getY()+OPEN_OFFSET+j, texU+WIDTH_LEFT+1, openV, WIDTH_MIDDLE, 2);
-					graphics.blit(texture, getX()+width-WIDTH_RIGHT, getY()+OPEN_OFFSET+j, texU+WIDTH_LEFT+WIDTH_MIDDLE+2, openV, WIDTH_RIGHT, 2);
-				}
-				graphics.blit(texture, getX(), getY()+8+openedHeight, texU, borderV, WIDTH_LEFT, 2);
-				for(int i = 0; i < width-WIDTH_STATIC; i += WIDTH_MIDDLE)
-					graphics.blit(texture, getX()+WIDTH_LEFT+i, getY()+8+openedHeight, texU+WIDTH_LEFT+1, borderV, WIDTH_MIDDLE, 2);
-				graphics.blit(texture, getX()+width-WIDTH_RIGHT, getY()+8+openedHeight, texU+WIDTH_LEFT+WIDTH_MIDDLE+2, borderV, WIDTH_RIGHT, 2);
+				graphics.blitSprite(TEXTURE, getX(), getY(), width-WIDTH_BUTTON, openedHeight+OPEN_OFFSET+2);
 
 				// text
 				for(int j = 0; j < states.length; j++)

@@ -24,12 +24,12 @@ import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class GuiReactiveList extends Button
 {
-	private static final ResourceLocation SCROLL_TOP = ieLoc("hud/scrollbar_top");
-	private static final ResourceLocation SCROLL_BOTTOM = ieLoc("hud/scrollbar_bottom");
-	private static final ResourceLocation SCROLL_CENTER = ieLoc("hud/scrollbar_center");
-	private static final ResourceLocation SCROLL_BUTTON_TOP = ieLoc("hud/scroll_button_top");
-	private static final ResourceLocation SCROLL_BUTTON_BOTTOM = ieLoc("hud/scroll_button_bottom");
-	private static final ResourceLocation SCROLL_BUTTON_CENTER = ieLoc("hud/scroll_button_center");
+	private static final ResourceLocation SCROLL_TOP = ieLoc("slider_vertical/top");
+	private static final ResourceLocation SCROLL_BOTTOM = ieLoc("slider_vertical/bottom");
+	private static final ResourceLocation SCROLL_CENTER = ieLoc("slider_vertical/center");
+	private static final ResourceLocation SCROLL_BUTTON_TOP = ieLoc("slider_vertical/button_top");
+	private static final ResourceLocation SCROLL_BUTTON_BOTTOM = ieLoc("slider_vertical/button_bottom");
+	private static final ResourceLocation SCROLL_BUTTON_CENTER = ieLoc("slider_vertical/button_center");
 
 	protected Supplier<List<String>> entries;
 	private final int[] padding = {0, 0, 0, 0};

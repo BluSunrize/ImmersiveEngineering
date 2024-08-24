@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.elements_old.ITooltipWidgetOld;
+import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.common.gui.SorterMenu;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -82,7 +82,7 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 			}
 	}
 
-	public static class ButtonSorter extends Button implements ITooltipWidgetOld
+	public static class ButtonSorter extends Button implements ITooltipWidget
 	{
 		private final FilterBit type;
 		private final IntSupplier state;

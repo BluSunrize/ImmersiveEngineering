@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiSelectBoxOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiSelectBox;
 import blusunrize.immersiveengineering.common.blocks.metal.SirenBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.SirenBlockEntity.SirenSound;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -37,7 +37,7 @@ public class SirenScreen extends ClientBlockEntityScreen<SirenBlockEntity>
 		this.ySize = 120;
 	}
 
-	private GuiButtonBooleanOld[] colorButtons;
+	private GuiButtonBoolean[] colorButtons;
 
 	@Override
 	public void init()
@@ -46,7 +46,7 @@ public class SirenScreen extends ClientBlockEntityScreen<SirenBlockEntity>
 
 		clearWidgets();
 
-		colorButtons = new GuiButtonBooleanOld[16];
+		colorButtons = new GuiButtonBoolean[16];
 		for(int i = 0; i < colorButtons.length; i++)
 		{
 			final DyeColor color = DyeColor.byId(i);
@@ -55,7 +55,7 @@ public class SirenScreen extends ClientBlockEntityScreen<SirenBlockEntity>
 			this.addRenderableWidget(colorButtons[i]);
 		}
 
-		this.addRenderableWidget(new GuiSelectBoxOld<>(
+		this.addRenderableWidget(new GuiSelectBox<>(
 				guiLeft+64, guiTop+22, 50, SirenSound::values, () -> blockEntity.sound.ordinal(),
 				SirenSound::getComponent, box -> sendConfig("sound", box.getClickedState())
 		));

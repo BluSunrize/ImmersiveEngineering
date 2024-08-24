@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiSliderIEOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
@@ -54,7 +54,7 @@ public abstract class ToolModificationScreen<C extends AbstractContainerMenu> ex
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
-					this.addRenderableWidget(new GuiSliderIEOld(
+					this.addRenderableWidget(new GuiSliderIE(
 							leftPos+f.x, topPos+f.y, 80,
 							tool.fomatConfigName(stack, f), f.min, f.max,
 							f.value, value -> sendChange(value, f.name, FloatTag::valueOf)

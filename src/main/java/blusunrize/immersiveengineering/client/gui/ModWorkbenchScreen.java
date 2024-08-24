@@ -10,7 +10,8 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.info.BlueprintOutputArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -35,9 +36,13 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("workbench");
+	private static final ButtonTexture PAGE_LEFT = new ButtonTexture(ieLoc("mod_workbench/page_left"));
+	private static final ButtonTexture PAGE_RIGHT = new ButtonTexture(ieLoc("mod_workbench/page_right"));
 
 	private final ModWorkbenchBlockEntity workbench;
 
@@ -66,12 +71,12 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 			);
 			if(recipes!=null&&!recipes.isEmpty()&&recipes.size() > ModWorkbenchContainer.OUTPUTS_PER_PAGE)
 			{
-				this.addRenderableWidget(new GuiButtonIEOld(leftPos+118, topPos+9, 18, 12, Component.empty(), TEXTURE, 176, 0, b -> {
-					sendButton(1);
-				}));
-				this.addRenderableWidget(new GuiButtonIEOld(leftPos+154, topPos+9, 18, 12, Component.empty(), TEXTURE, 176, 12, b -> {
-					sendButton(2);
-				}));
+				this.addRenderableWidget(new GuiButtonIE(
+						leftPos+118, topPos+9, 18, 12, Component.empty(), PAGE_LEFT, b -> sendButton(1)
+				));
+				this.addRenderableWidget(new GuiButtonIE(
+						leftPos+154, topPos+9, 18, 12, Component.empty(), PAGE_RIGHT, b -> sendButton(2)
+				));
 			}
 		}
 	}

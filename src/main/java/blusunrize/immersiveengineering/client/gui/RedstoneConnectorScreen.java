@@ -12,8 +12,9 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonStateOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -21,20 +22,24 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRedstoneBlockEntity>
 {
-	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("redstone_configuration");
+	private static final ButtonTexture INPUT = new ButtonTexture(ieLoc("redstone_configuration/input"));
+	private static final ButtonTexture OUTPUT = new ButtonTexture(ieLoc("redstone_configuration/output"));
+	private static final ButtonTexture COLOR_TRUE = new ButtonTexture(ieLoc("redstone_configuration/color_true"));
+	private static final ButtonTexture COLOR_FALSE = new ButtonTexture(ieLoc("redstone_configuration/color_false"));
 
 	public RedstoneConnectorScreen(ConnectorRedstoneBlockEntity tileEntity, Component title)
 	{
@@ -43,8 +48,8 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		this.ySize = 120;
 	}
 
-	private GuiButtonStateOld<IOSideConfig> buttonInOut;
-	private GuiButtonBooleanOld[] colorButtons;
+	private GuiButtonState<IOSideConfig> buttonInOut;
+	private GuiButtonBoolean[] colorButtons;
 
 	@Override
 	public void init()
@@ -53,13 +58,15 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 
 		clearWidgets();
 
-		buttonInOut = new GuiButtonStateOld<>(guiLeft+41, guiTop+20, 18, 18, Component.empty(), new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
-				() -> blockEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
+		buttonInOut = new GuiButtonState<>(
+				guiLeft+41, guiTop+20, 18, 18, Component.empty(), new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
+				() -> blockEntity.ioMode.ordinal()-1,
+				Map.of(IOSideConfig.INPUT, INPUT, IOSideConfig.OUTPUT, OUTPUT),
 				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
 		);
 		this.addRenderableWidget(buttonInOut);
 
-		colorButtons = new GuiButtonBooleanOld[16];
+		colorButtons = new GuiButtonBoolean[16];
 		for(int i = 0; i < colorButtons.length; i++)
 		{
 			final DyeColor color = DyeColor.byId(i);
@@ -116,15 +123,15 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
-	public static GuiButtonBooleanOld buildColorButton(
-			GuiButtonBooleanOld[] buttons, int posX, int posY, Supplier<Boolean> active, DyeColor color, Consumer<GuiButtonBooleanOld> onClick
+	public static GuiButtonBoolean buildColorButton(
+			GuiButtonBoolean[] buttons, int posX, int posY, Supplier<Boolean> active, DyeColor color, Consumer<GuiButtonBoolean> onClick
 	)
 	{
-		return new GuiButtonBooleanOld(posX, posY, 12, 12, Component.empty(), active,
-				TEXTURE, 194, 0, 1,
+		return new GuiButtonBoolean(posX, posY, 12, 12, Component.empty(), active,
+				COLOR_FALSE, COLOR_TRUE,
 				btn -> {
 					if(btn.getNextState())
-						onClick.accept((GuiButtonBooleanOld)btn);
+						onClick.accept((GuiButtonBoolean)btn);
 					for(int j = 0; j < buttons.length; j++)
 						if(j!=color.ordinal()&&buttons[j].getState())
 							buttons[j].onClick(buttons[j].getX(), buttons[j].getY());

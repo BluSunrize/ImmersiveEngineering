@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiSliderIEOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import net.minecraft.ChatFormatting;
@@ -33,8 +33,8 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 		this.ySize = 80;
 	}
 
-	private GuiButtonBooleanOld[] colorButtonsSend;
-	private GuiButtonBooleanOld[] colorButtonsReceive;
+	private GuiButtonBoolean[] colorButtonsSend;
+	private GuiButtonBoolean[] colorButtonsReceive;
 
 	@Override
 	public void init()
@@ -43,8 +43,8 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 
 		clearWidgets();
 
-		colorButtonsSend = new GuiButtonBooleanOld[16];
-		colorButtonsReceive = new GuiButtonBooleanOld[16];
+		colorButtonsSend = new GuiButtonBoolean[16];
+		colorButtonsReceive = new GuiButtonBoolean[16];
 		for(int i = 0; i < colorButtonsSend.length; i++)
 		{
 			final DyeColor color = DyeColor.byId(i);
@@ -61,7 +61,7 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 			this.addRenderableWidget(colorButtonsReceive[i]);
 		}
 
-		this.addRenderableWidget(new GuiSliderIEOld(guiLeft+15, guiTop, 64, Component.translatable(Lib.GUI_CONFIG+"output_threshold"),
+		this.addRenderableWidget(new GuiSliderIE(guiLeft+15, guiTop, 64, Component.translatable(Lib.GUI_CONFIG+"output_threshold"),
 				0, 15, this.blockEntity.outputThreshold,
 				value -> sendConfig("outputThreshold", Math.round(value*15)))
 		);
