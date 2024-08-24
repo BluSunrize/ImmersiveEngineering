@@ -23,9 +23,13 @@ import net.minecraft.world.entity.player.Inventory;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class ClocheScreen extends IEContainerScreen<ClocheMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("cloche");
+	private static final ResourceLocation TANK_OVERLAY = ieLoc("cloche/tank_overlay");
+	private static final ResourceLocation PROGRESS = ieLoc("cloche/progress");
 
 	public ClocheScreen(ClocheMenu container, Inventory inventoryPlayer, Component title)
 	{
@@ -37,7 +41,7 @@ public class ClocheScreen extends IEContainerScreen<ClocheMenu>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(menu.tank, new Rect2i(leftPos+8, topPos+8, 16, 47), 176, 30, 20, 51, TEXTURE),
+				new FluidInfoArea(menu.tank, new Rect2i(leftPos+8, topPos+8, 16, 47), 20, 51, TANK_OVERLAY),
 				new EnergyInfoArea(leftPos+158, topPos+22, menu.energyStorage),
 				new FertilizerInfoArea(leftPos+30, topPos+22, menu.fertilizerAmount, menu.fertilizerMod)
 		);
@@ -50,7 +54,7 @@ public class ClocheScreen extends IEContainerScreen<ClocheMenu>
 		if(process > 0)
 		{
 			int w = (int)Math.max(1, process*12);
-			graphics.blit(TEXTURE, leftPos+101, topPos+36, 181, 2, w, 12);
+			graphics.blitSprite(PROGRESS, 12, 12, 0, 0, leftPos+101, topPos+36, w, 12);
 		}
 	}
 }

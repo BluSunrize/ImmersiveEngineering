@@ -252,7 +252,7 @@ public class AutoWorkbenchLogic
 		{
 			nbt.put("processor", processor.toNBT(provider));
 			nbt.putBoolean("active", active);
-			nbt.put("blueprint", inventory.getStackInSlot(BLUEPRINT_SLOT).save(provider, new CompoundTag()));
+			nbt.put("blueprint", inventory.getStackInSlot(BLUEPRINT_SLOT).saveOptional(provider));
 			nbt.putInt("selectedRecipe", selectedRecipe);
 		}
 

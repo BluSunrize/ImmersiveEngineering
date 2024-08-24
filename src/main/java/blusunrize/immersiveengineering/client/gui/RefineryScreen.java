@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
-import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
+import blusunrize.immersiveengineering.client.gui.info_old.FluidInfoAreaOld;
 import blusunrize.immersiveengineering.common.gui.RefineryMenu;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
@@ -38,9 +38,9 @@ public class RefineryScreen extends IEContainerScreen<RefineryMenu>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(menu.tanks.leftInput(), new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(menu.tanks.rightInput(), new Rect2i(leftPos+40, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(menu.tanks.output(), new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoAreaOld(menu.tanks.leftInput(), new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoAreaOld(menu.tanks.rightInput(), new Rect2i(leftPos+40, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoAreaOld(menu.tanks.output(), new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
 				new EnergyInfoArea(leftPos+157, topPos+21, menu.energy)
 		);
 	}

@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
+import blusunrize.immersiveengineering.client.gui.info_old.FluidInfoAreaOld;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.logic.CokeOvenLogic;
 import blusunrize.immersiveengineering.common.gui.CokeOvenMenu;
 import com.google.common.collect.ImmutableList;
@@ -36,7 +36,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenMenu>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(menu.tank, new Rect2i(leftPos+129, topPos+20, 16, 47), 176, 31, 20, 51, TEXTURE)
+				new FluidInfoAreaOld(menu.tank, new Rect2i(leftPos+129, topPos+20, 16, 47), 176, 31, 20, 51, TEXTURE)
 		);
 	}
 

@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2024
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -9,23 +9,25 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
-import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
 import java.util.Locale;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRegister> implements ITooltipWidget
 {
-	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
+	private static final ButtonTexture TEXTURE = new ButtonTexture(ieLoc("circuit_table/register_button"));
 	private final MutableInt state;
 
 	public static GuiButtonLogicCircuitRegister create(
@@ -43,7 +45,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 			int x, int y, Component name, IIEPressable<GuiButtonState<LogicCircuitRegister>> handler, MutableInt state
 	)
 	{
-		super(x, y, 18, 18, name, LogicCircuitRegister.values(), state::getValue, TEXTURE, 234, 0, -1, handler);
+		super(x, y, 18, 18, name, LogicCircuitRegister.values(), state::getValue, allSame(LogicCircuitRegister.values(), TEXTURE), handler);
 		this.textOffset = new int[]{3, 5};
 		this.state = state;
 	}

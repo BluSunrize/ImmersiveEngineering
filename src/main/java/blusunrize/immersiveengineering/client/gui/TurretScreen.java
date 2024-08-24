@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
@@ -19,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,9 +29,12 @@ import org.lwjgl.glfw.GLFW;
 import javax.annotation.Nonnull;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScreen<C>
 {
 	protected static final ResourceLocation TEXTURE = makeTextureLocation("turret");
+	private static final ButtonTexture BUTTON_ADD = new ButtonTexture(ieLoc("turret/button_add"));
 
 	private EditBox nameField;
 
@@ -74,8 +77,10 @@ public abstract class TurretScreen<C extends TurretMenu> extends IEContainerScre
 					}
 				}, menu.data.targetList())
 				.setPadding(0, 0, 2, 2));
-		this.addRenderableWidget(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, Component.translatable(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
-				btn -> addName()));
+		this.addRenderableWidget(new GuiButtonIE(
+				leftPos+74, topPos+84, 24, 16, Component.translatable(Lib.GUI_CONFIG+"turret.add"), BUTTON_ADD,
+				btn -> addName()
+		));
 		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, Component.translatable(Lib.GUI_CONFIG+"turret.blacklist"), () -> !menu.data.whitelist().get(),
 				btn -> {
 					CompoundTag tag = new CompoundTag();

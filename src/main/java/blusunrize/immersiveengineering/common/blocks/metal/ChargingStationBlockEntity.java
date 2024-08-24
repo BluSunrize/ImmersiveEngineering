@@ -172,7 +172,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 		EnergyHelper.serializeTo(energyStorage, nbt, provider);
 		nbt.putBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
-			nbt.put("inventory", inventory.get(0).save(provider, new CompoundTag()));
+			nbt.put("inventory", inventory.get(0).saveOptional(provider));
 	}
 
 	@Override

@@ -13,12 +13,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class GuiButtonItem extends Button
 {
+	private static final ResourceLocation FALSE_TEXTURE = ieLoc("hud/square_out");
+	private static final ResourceLocation TRUE_TEXTURE = ieLoc("hud/square_in");
 	public boolean state;
-	ItemStack item;
+	private final ItemStack item;
 
 	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, OnPress handler)
 	{
@@ -34,7 +39,9 @@ public class GuiButtonItem extends Button
 		{
 			this.isHovered = mouseX >= this.getX()&&mouseY >= this.getY()&&mouseX < this.getX()+this.width&&mouseY < this.getY()+this.height;
 			RenderSystem.defaultBlendFunc();
-			graphics.blit(GuiReactiveList.TEXTURE, getX(), getY(), 24+(state?18: 0), 128, width, height);
+			graphics.blitSprite(
+					state?TRUE_TEXTURE: FALSE_TEXTURE, getX(), getY(), width, height
+			);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 
 			if(!item.isEmpty())

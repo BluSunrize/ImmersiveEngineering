@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneSwitchboardBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneSwitchboardBlockEntity.SwitchboardSetting;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -62,7 +62,7 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 		{
 			int finalIndex = i;
 			// invert button
-			this.addRenderableWidget(new GuiButtonBoolean(
+			this.addRenderableWidget(new GuiButtonBooleanOld(
 					guiLeft+9+i*14, guiTop+105, 12, 11, Component.empty(),
 					() -> inverterStates[finalIndex],
 					TEXTURE, 0, 138, 0,
@@ -79,14 +79,14 @@ public class RedstoneSwitchboardScreen extends ClientBlockEntityScreen<RedstoneS
 			));
 
 			// input socket
-			this.addRenderableWidget(new GuiButtonIE(
+			this.addRenderableWidget(new GuiButtonIEOld(
 					guiLeft+9+i*14, guiTop+30, 12, 12, Component.empty(),
 					TEXTURE, 24, 138,
 					btn -> this.clickedInput = DyeColor.byId(finalIndex)
 			));
 
 			// output socket
-			this.addRenderableWidget(new GuiButtonIE(
+			this.addRenderableWidget(new GuiButtonIEOld(
 					guiLeft+9+i*14, guiTop+86, 12, 12, Component.empty(),
 					TEXTURE, 24, 138,
 					btn -> {

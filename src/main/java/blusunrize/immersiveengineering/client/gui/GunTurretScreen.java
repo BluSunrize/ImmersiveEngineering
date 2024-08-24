@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -24,8 +25,13 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class GunTurretScreen extends TurretScreen<GunTurretMenu>
 {
+	private static final ButtonTexture NO_EJECT = new ButtonTexture(ieLoc("turret/no_eject"));
+	private static final ButtonTexture EJECT = new ButtonTexture(ieLoc("turret/eject"));
+
 	public GunTurretScreen(GunTurretMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
@@ -54,12 +60,14 @@ public class GunTurretScreen extends TurretScreen<GunTurretMenu>
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addRenderableWidget(new GuiButtonBoolean(leftPos+134, topPos+31, 16, 16, Component.empty(), menu.expelCasings, TEXTURE, 176, 81, 0,
+		this.addRenderableWidget(new GuiButtonBoolean(
+				leftPos+134, topPos+31, 16, 16, Component.empty(), menu.expelCasings, NO_EJECT, EJECT,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tag.putBoolean("expelCasings", btn.getNextState());
 					handleButtonClick(tag, listOffset);
-				}));
+				}
+		));
 	}
 }

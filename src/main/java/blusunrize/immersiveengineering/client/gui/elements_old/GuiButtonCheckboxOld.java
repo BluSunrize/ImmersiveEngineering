@@ -6,26 +6,24 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements;
+package blusunrize.immersiveengineering.client.gui.elements_old;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
+import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
-
-public class GuiButtonCheckbox extends GuiButtonBoolean
+public class GuiButtonCheckboxOld extends GuiButtonBooleanOld
 {
-	private static final ButtonTexture TEXTURE = new ButtonTexture(ieLoc("hud/checkbox"));
+	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("hud_elements");
 
-	public GuiButtonCheckbox(int x, int y, Component name, Supplier<Boolean> state, IIEPressable<GuiButtonState<Boolean>> handler)
+	public GuiButtonCheckboxOld(int x, int y, Component name, Supplier<Boolean> state, IIEPressable<GuiButtonStateOld<Boolean>> handler)
 	{
-		super(x, y, 8, 8, name, state, TEXTURE, TEXTURE, handler);
+		super(x, y, 8, 8, name, state, TEXTURE, 0, 128, -1, handler);
 	}
 
 	@Override

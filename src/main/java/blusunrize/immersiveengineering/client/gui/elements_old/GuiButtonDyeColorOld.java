@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements;
+package blusunrize.immersiveengineering.client.gui.elements_old;
 
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,19 +18,19 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.IntSupplier;
 
-public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
+public class GuiButtonDyeColorOld extends GuiButtonStateOld<DyeColor>
 {
-	public GuiButtonDyeColor(
+	public GuiButtonDyeColorOld(
 			int x, int y, String name, IntSupplier color,
-			IIEPressable<GuiButtonState<DyeColor>> handler, BiConsumer<List<Component>, DyeColor> tooltip
+			IIEPressable<GuiButtonStateOld<DyeColor>> handler, BiConsumer<List<Component>, DyeColor> tooltip
 	)
 	{
-		super(x, y, 8, 8, Component.nullToEmpty(name), DyeColor.values(), color, GuiReactiveList.TEXTURE, 0, 128, -1, handler, tooltip);
+		super(x, y, 8, 8, Component.nullToEmpty(name), DyeColor.values(), color, GuiReactiveListOld.TEXTURE, 0, 128, -1, handler, tooltip);
 	}
 
-	public GuiButtonDyeColor(
+	public GuiButtonDyeColorOld(
 			int x, int y, int w, int h, IntSupplier color, ResourceLocation texture, int u, int v,
-			IIEPressable<GuiButtonState<DyeColor>> handler, BiConsumer<List<Component>, DyeColor> tooltip
+			IIEPressable<GuiButtonStateOld<DyeColor>> handler, BiConsumer<List<Component>, DyeColor> tooltip
 	)
 	{
 		super(x, y, w, h, Component.empty(), DyeColor.values(), color, texture, u, v, -1, handler, tooltip);

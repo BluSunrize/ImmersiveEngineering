@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneStateCellBlockEntity;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import net.minecraft.ChatFormatting;
@@ -32,9 +32,9 @@ public class RedstoneStateCellScreen extends ClientBlockEntityScreen<RedstoneSta
 		this.ySize = 80;
 	}
 
-	private GuiButtonBoolean[] colorButtonsSet;
-	private GuiButtonBoolean[] colorButtonsReset;
-	private GuiButtonBoolean[] colorButtonsOut;
+	private GuiButtonBooleanOld[] colorButtonsSet;
+	private GuiButtonBooleanOld[] colorButtonsReset;
+	private GuiButtonBooleanOld[] colorButtonsOut;
 
 	@Override
 	public void init()
@@ -43,9 +43,9 @@ public class RedstoneStateCellScreen extends ClientBlockEntityScreen<RedstoneSta
 
 		clearWidgets();
 
-		colorButtonsSet = new GuiButtonBoolean[16];
-		colorButtonsReset = new GuiButtonBoolean[16];
-		colorButtonsOut = new GuiButtonBoolean[16];
+		colorButtonsSet = new GuiButtonBooleanOld[16];
+		colorButtonsReset = new GuiButtonBooleanOld[16];
+		colorButtonsOut = new GuiButtonBooleanOld[16];
 		for(int i = 0; i < colorButtonsSet.length; i++)
 		{
 			final DyeColor color = DyeColor.byId(i);

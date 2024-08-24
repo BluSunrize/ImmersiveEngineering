@@ -1,69 +1,49 @@
 /*
  * BluSunrize
- * Copyright (c) 2024
+ * Copyright (c) 2017
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements;
+package blusunrize.immersiveengineering.client.gui.elements_old;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.IntSupplier;
 
-public class GuiButtonState<E> extends Button implements ITooltipWidget
+public class GuiButtonStateOld<E> extends GuiButtonIEOld implements ITooltipWidgetOld
 {
 	public E[] states;
 	private final IntSupplier state;
+	protected final int offsetDir;
 	private final BiConsumer<List<Component>, E> tooltip;
-	private final Map<E, ButtonTexture> texture;
 	public int[] textOffset;
 
-	protected static <E> Map<E, ButtonTexture> allSame(E[] keys, ButtonTexture texture)
+	public GuiButtonStateOld(int x, int y, int w, int h, Component name, E[] states, IntSupplier state, ResourceLocation texture, int u,
+							 int v, int offsetDir, IIEPressable<GuiButtonStateOld<E>> handler)
 	{
-		Map<E, ButtonTexture> map = new HashMap<>();
-		for(E key : keys)
-			map.put(key, texture);
-		return map;
-	}
-
-	public GuiButtonState(
-			int x, int y, int w, int h,
-			Component name,
-			E[] states, IntSupplier state, Map<E, ButtonTexture> texture,
-			IIEPressable<GuiButtonState<E>> handler
-	)
-	{
-		this(x, y, w, h, name, states, state, texture, handler, (a, b) -> {
+		this(x, y, w, h, name, states, state, texture, u, v, offsetDir, handler, (a, b) -> {
 		});
 	}
 
-	public GuiButtonState(
-			int x, int y, int w, int h,
-			Component name,
-			E[] states, IntSupplier state, Map<E, ButtonTexture> texture,
-			IIEPressable<GuiButtonState<E>> handler,
-			BiConsumer<List<Component>, E> tooltip)
+	public GuiButtonStateOld(int x, int y, int w, int h, Component name, E[] states, IntSupplier state, ResourceLocation texture, int u,
+							 int v, int offsetDir, IIEPressable<GuiButtonStateOld<E>> handler, BiConsumer<List<Component>, E> tooltip)
 	{
-		super(x, y, w, h, name, handler, DEFAULT_NARRATION);
+		super(x, y, w, h, name, texture, u, v, handler);
 		this.states = states;
 		this.state = state;
+		this.offsetDir = offsetDir;
 		this.tooltip = tooltip;
-		this.textOffset = new int[]{width+1, height/2-3};
-		this.texture = texture;
+		textOffset = new int[]{width+1, height/2-3};
 	}
 
 	protected int getNextStateInt()
@@ -109,9 +89,9 @@ public class GuiButtonState<E> extends Button implements ITooltipWidget
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(770, 771, 1, 0);
 		RenderSystem.blendFunc(770, 771);
-		graphics.blitSprite(
-				texture.get(this.states[state.getAsInt()]).get(this.isHovered), getX(), getY(), width, height
-		);
+		int u = texU+(offsetDir==0?width: offsetDir==2?-width: 0)*state.getAsInt();
+		int v = texV+(offsetDir==1?height: offsetDir==3?-height: 0)*state.getAsInt();
+		graphics.blit(texture, getX(), getY(), u, v, width, height);
 		if(!getMessage().getString().isEmpty())
 		{
 			int[] offset = getTextOffset(fontrenderer);

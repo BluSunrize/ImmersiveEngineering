@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements;
+package blusunrize.immersiveengineering.client.gui.elements_old;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.MachineInterfaceScreen;
@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class GuiSelectBox<E> extends GuiButtonState<E>
+public class GuiSelectBoxOld<E> extends GuiButtonStateOld<E>
 {
 	private static final int WIDTH_LEFT = 8;
 	private static final int WIDTH_MIDDLE = 4;
@@ -42,13 +42,13 @@ public class GuiSelectBox<E> extends GuiButtonState<E>
 
 	private int selectedState = -1;
 
-	public GuiSelectBox(
+	public GuiSelectBoxOld(
 			int x, int y, int minWidth, Supplier<E[]> optionGetter, IntSupplier selectedOption,
-			Function<E, Component> messageGetter, IIEPressable<GuiSelectBox<E>> handler
+			Function<E, Component> messageGetter, IIEPressable<GuiSelectBoxOld<E>> handler
 	)
 	{
 		super(x, y, 64, 16, Component.empty(), optionGetter.get(), selectedOption,
-				MachineInterfaceScreen.TEXTURE, 166, 18, -1, btn -> handler.onIEPress((GuiSelectBox<E>)btn));
+				MachineInterfaceScreen.TEXTURE, 166, 18, -1, btn -> handler.onIEPress((GuiSelectBoxOld<E>)btn));
 		this.optionGetter = optionGetter;
 		this.messageGetter = messageGetter;
 		this.minWidth = minWidth;

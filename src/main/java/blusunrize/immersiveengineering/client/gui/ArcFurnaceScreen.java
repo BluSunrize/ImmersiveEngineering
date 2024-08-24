@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu;
@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("arc_furnace");
-	private GuiButtonIE distributeButton;
+	private GuiButtonIEOld distributeButton;
 
 	public ArcFurnaceScreen(ArcFurnaceMenu container, Inventory inventoryPlayer, Component title)
 	{
@@ -91,7 +91,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 	public void init()
 	{
 		super.init();
-		distributeButton = new GuiButtonIE(leftPos+10, topPos+10, 16, 16, Component.empty(), TEXTURE, 179, 0,
+		distributeButton = new GuiButtonIEOld(leftPos+10, topPos+10, 16, 16, Component.empty(), TEXTURE, 179, 0,
 				btn -> {
 					if(menu.getCarried().isEmpty())
 						autoSplitStacks();

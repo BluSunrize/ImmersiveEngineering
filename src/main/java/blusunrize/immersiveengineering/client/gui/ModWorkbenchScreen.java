@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.IEApiDataComponents;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
 import blusunrize.immersiveengineering.client.gui.info.BlueprintOutputArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
@@ -66,10 +66,10 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 			);
 			if(recipes!=null&&!recipes.isEmpty()&&recipes.size() > ModWorkbenchContainer.OUTPUTS_PER_PAGE)
 			{
-				this.addRenderableWidget(new GuiButtonIE(leftPos+118, topPos+9, 18, 12, Component.empty(), TEXTURE, 176, 0, b -> {
+				this.addRenderableWidget(new GuiButtonIEOld(leftPos+118, topPos+9, 18, 12, Component.empty(), TEXTURE, 176, 0, b -> {
 					sendButton(1);
 				}));
-				this.addRenderableWidget(new GuiButtonIE(leftPos+154, topPos+9, 18, 12, Component.empty(), TEXTURE, 176, 12, b -> {
+				this.addRenderableWidget(new GuiButtonIEOld(leftPos+154, topPos+9, 18, 12, Component.empty(), TEXTURE, 176, 12, b -> {
 					sendButton(2);
 				}));
 			}

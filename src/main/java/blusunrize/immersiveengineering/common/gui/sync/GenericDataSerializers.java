@@ -32,7 +32,7 @@ public class GenericDataSerializers
 	private static final List<DataSerializer<?>> SERIALIZERS = new ArrayList<>();
 	public static final DataSerializer<Integer> INT32 = register(ByteBufCodecs.INT);
 	public static final DataSerializer<FluidStack> FLUID_STACK = register(
-			FluidStack.STREAM_CODEC, FluidStack::copy, FluidStack::matches
+			FluidStack.OPTIONAL_STREAM_CODEC, FluidStack::copy, FluidStack::matches
 	);
 	public static final DataSerializer<Boolean> BOOLEAN = register(ByteBufCodecs.BOOL);
 	public static final DataSerializer<Float> FLOAT = register(ByteBufCodecs.FLOAT);
@@ -41,7 +41,7 @@ public class GenericDataSerializers
 	);
 	// Allows items to be synced without requiring a slot
 	public static final DataSerializer<ItemStack> ITEM_STACK = register(
-			ItemStack.STREAM_CODEC, ItemStack::copy, ItemStack::matches
+			ItemStack.OPTIONAL_STREAM_CODEC, ItemStack::copy, ItemStack::matches
 	);
 	public static final DataSerializer<byte[]> BYTE_ARRAY = register(
 			ByteBufCodecs.BYTE_ARRAY, arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
@@ -51,7 +51,7 @@ public class GenericDataSerializers
 			arr -> Arrays.copyOf(arr, arr.length), Arrays::equals
 	);
 	public static final DataSerializer<List<FluidStack>> FLUID_STACKS = register(
-			FluidStack.STREAM_CODEC.apply(ByteBufCodecs.list()),
+			FluidStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()),
 			l -> l.stream().map(FluidStack::copy).toList(),
 			(l1, l2) -> {
 				if(l1.size()!=l2.size())

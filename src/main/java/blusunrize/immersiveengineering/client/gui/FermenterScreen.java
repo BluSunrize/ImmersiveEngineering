@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
-import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
+import blusunrize.immersiveengineering.client.gui.info_old.FluidInfoAreaOld;
 import blusunrize.immersiveengineering.common.gui.FermenterMenu;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
@@ -35,7 +35,7 @@ public class FermenterScreen extends IEContainerScreen<FermenterMenu>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(menu.tank, new Rect2i(leftPos+112, topPos+21, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoAreaOld(menu.tank, new Rect2i(leftPos+112, topPos+21, 16, 47), 177, 31, 20, 51, TEXTURE),
 				new EnergyInfoArea(leftPos+158, topPos+22, menu.energyStorage)
 		);
 	}

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
@@ -38,14 +39,19 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.IntConsumer;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 {
-	private static final ResourceLocation TEXTURE = makeTextureLocation("assembler");
-	private GuiButtonBoolean recursiveButton;
+	private static final ResourceLocation BACKGROUND = makeTextureLocation("assembler");
+	private static final ResourceLocation TANK = ieLoc("assembler/tank_overlay");
+	private static final ButtonTexture NO_RECURSIVE = new ButtonTexture(ieLoc("assembler/no_recursive"));
+	private static final ButtonTexture RECURSIVE = new ButtonTexture(ieLoc("assembler/recursive"));
+	private static final ButtonTexture CLEAR = new ButtonTexture(ieLoc("assembler/clear"), ieLoc("assembler/clear_hovered"));
 
 	public AssemblerScreen(AssemblerMenu container, Inventory inventoryPlayer, Component title)
 	{
-		super(container, inventoryPlayer, title, TEXTURE);
+		super(container, inventoryPlayer, title, BACKGROUND);
 		this.imageWidth = 230;
 		this.imageHeight = 218;
 		this.inventoryLabelY = 127;
@@ -56,9 +62,9 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		List<InfoArea> areas = Lists.newArrayList(
-				new FluidInfoArea(menu.tanks[0], new Rect2i(leftPos+204, topPos+13, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new FluidInfoArea(menu.tanks[1], new Rect2i(leftPos+182, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new FluidInfoArea(menu.tanks[2], new Rect2i(leftPos+204, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
+				new FluidInfoArea(menu.tanks[0], new Rect2i(leftPos+204, topPos+13, 16, 46), 20, 50, TANK),
+				new FluidInfoArea(menu.tanks[1], new Rect2i(leftPos+182, topPos+70, 16, 46), 20, 50, TANK),
+				new FluidInfoArea(menu.tanks[2], new Rect2i(leftPos+204, topPos+70, 16, 46), 20, 50, TANK),
 				new EnergyInfoArea(leftPos+187, topPos+13, menu.energy),
 				new TooltipArea(
 						new Rect2i(leftPos+162, topPos+69, 16, 16),
@@ -104,16 +110,21 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.addRenderableWidget(new GuiButtonIE(leftPos+11+i*59, topPos+67, 10, 10, Component.empty(), TEXTURE, 230, 50,
-					btn -> sendButtonClick.accept(id))
-					.setHoverOffset(0, 10));
+			this.addRenderableWidget(new GuiButtonIE(
+					leftPos+11+i*59, topPos+67, 10, 10, Component.empty(),
+					CLEAR,
+					btn -> sendButtonClick.accept(id)
+			));
 		}
-		this.recursiveButton = new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, Component.empty(), menu.recursiveIngredients::get, TEXTURE, 240, 66, 3,
+		this.addRenderableWidget(new GuiButtonBoolean(
+				leftPos+162, topPos+69, 16, 16,
+				Component.empty(), menu.recursiveIngredients::get,
+				NO_RECURSIVE, RECURSIVE,
 				btn -> {
 					sendButtonClick.accept(3);
 					fullInit();
-				});
-		this.addRenderableWidget(recursiveButton);
+				}
+		));
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public class CrafterPatternInventory
 			{
 				CompoundTag itemTag = new CompoundTag();
 				itemTag.putByte("Slot", (byte)i);
-				this.inv.get(i).save(provider, itemTag);
+				this.inv.get(i).saveOptional(provider);
 				list.add(itemTag);
 			}
 		return list;

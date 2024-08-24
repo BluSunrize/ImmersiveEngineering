@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
-import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonCheckboxOld;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiSliderIEOld;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneTimerBlockEntity;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
@@ -35,8 +35,8 @@ public class RedstoneTimerScreen extends ClientBlockEntityScreen<RedstoneTimerBl
 		this.ySize = 80;
 	}
 
-	private GuiButtonBoolean[] colorButtonsOutput;
-	private GuiButtonBoolean[] colorButtonsControl;
+	private GuiButtonBooleanOld[] colorButtonsOutput;
+	private GuiButtonBooleanOld[] colorButtonsControl;
 
 	@Override
 	public void init()
@@ -45,8 +45,8 @@ public class RedstoneTimerScreen extends ClientBlockEntityScreen<RedstoneTimerBl
 
 		clearWidgets();
 
-		colorButtonsOutput = new GuiButtonBoolean[16];
-		colorButtonsControl = new GuiButtonBoolean[16];
+		colorButtonsOutput = new GuiButtonBooleanOld[16];
+		colorButtonsControl = new GuiButtonBooleanOld[16];
 		for(int i = 0; i < colorButtonsOutput.length; i++)
 		{
 			final DyeColor color = DyeColor.byId(i);
@@ -63,7 +63,7 @@ public class RedstoneTimerScreen extends ClientBlockEntityScreen<RedstoneTimerBl
 			this.addRenderableWidget(colorButtonsControl[i]);
 		}
 
-		this.addRenderableWidget(new GuiButtonCheckbox(guiLeft+106, guiTop+84, Component.translatable(Lib.GUI_CONFIG+"redstone_require_control_signal"),
+		this.addRenderableWidget(new GuiButtonCheckboxOld(guiLeft+106, guiTop+84, Component.translatable(Lib.GUI_CONFIG+"redstone_require_control_signal"),
 				() -> blockEntity.requireControlSignal,
 				btn -> sendConfig("requireControlSignal", btn.getNextState())));
 
@@ -111,7 +111,7 @@ public class RedstoneTimerScreen extends ClientBlockEntityScreen<RedstoneTimerBl
 			graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
 	}
 
-	private static class TimerSlider extends GuiSliderIE
+	private static class TimerSlider extends GuiSliderIEOld
 	{
 		public TimerSlider(int x, int y, int width, int min, int max, int value, FloatConsumer handler)
 		{

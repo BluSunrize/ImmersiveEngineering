@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
-import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
+import blusunrize.immersiveengineering.client.gui.elements_old.ITooltipWidgetOld;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
@@ -131,7 +131,7 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 		for(final DyeColor color : DyeColor.values())
 		{
 			final int ordinal = color.ordinal();
-			this.addRenderableWidget(new SaveButton(
+			this.addRenderableWidget(new SaveButtonOld(
 					getGuiLeft()+12+(ordinal%8)*20,
 					getGuiTop()+78+(ordinal/8)*22,
 					color,
@@ -277,12 +277,12 @@ public class RadioTowerScreen extends IEContainerScreen<RadioTowerMenu>
 		}
 	}
 
-	private static class SaveButton extends GuiButtonIE implements ITooltipWidget
+	private static class SaveButtonOld extends GuiButtonIEOld implements ITooltipWidgetOld
 	{
 		private final DyeColor color;
 		private final IntSupplier frequency;
 
-		public SaveButton(int x, int y, DyeColor color, IntSupplier frequency, IIEPressable handler)
+		public SaveButtonOld(int x, int y, DyeColor color, IntSupplier frequency, IIEPressable handler)
 		{
 			super(x, y, 17, 17, Component.empty(), TEXTURE, 110, 239, handler);
 			this.color = color;

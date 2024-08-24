@@ -6,16 +6,19 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.info;
+package blusunrize.immersiveengineering.client.gui.info_old;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
+import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -28,19 +31,23 @@ import java.util.function.Consumer;
 import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class FluidInfoArea extends InfoArea
+public class FluidInfoAreaOld extends InfoArea
 {
 	private final IFluidTank tank;
 	private final Rect2i area;
+	private final int overlayUMin;
+	private final int overlayVMin;
 	private final int overlayWidth;
 	private final int overlayHeight;
 	private final ResourceLocation overlayTexture;
 
-	public FluidInfoArea(IFluidTank tank, Rect2i area, int overlayWidth, int overlayHeight, ResourceLocation overlayTexture)
+	public FluidInfoAreaOld(IFluidTank tank, Rect2i area, int overlayUMin, int overlayVMin, int overlayWidth, int overlayHeight, ResourceLocation overlayTexture)
 	{
 		super(area);
 		this.tank = tank;
 		this.area = area;
+		this.overlayUMin = overlayUMin;
+		this.overlayVMin = overlayVMin;
 		this.overlayWidth = overlayWidth;
 		this.overlayHeight = overlayHeight;
 		this.overlayTexture = overlayTexture;
@@ -97,15 +104,15 @@ public class FluidInfoArea extends InfoArea
 		if(!fluid.isEmpty())
 		{
 			int fluidHeight = (int)(area.getHeight()*(fluid.getAmount()/capacity));
-			// TODO broken?
 			GuiHelper.drawRepeatedFluidSpriteGui(buffer, graphics.pose(), fluid, area.getX(), area.getY()+area.getHeight()-fluidHeight, area.getWidth(), fluidHeight);
 		}
 		int xOff = (area.getWidth()-overlayWidth)/2;
 		int yOff = (area.getHeight()-overlayHeight)/2;
-		graphics.blitSprite(
-				overlayTexture,
-				area.getX()+xOff, area.getY()+yOff,
-				overlayWidth, overlayHeight
+		RenderType renderType = IERenderTypes.getGui(overlayTexture);
+		GuiHelper.drawTexturedRect(
+				buffer.getBuffer(renderType), graphics.pose(),
+				area.getX()+xOff, area.getY()+yOff, overlayWidth, overlayHeight,
+				256f, overlayUMin, overlayUMin+overlayWidth, overlayVMin, overlayVMin+overlayHeight
 		);
 		graphics.pose().popPose();
 	}

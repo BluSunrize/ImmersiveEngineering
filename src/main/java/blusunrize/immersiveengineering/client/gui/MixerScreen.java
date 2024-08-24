@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.MultitankArea;
@@ -57,7 +57,7 @@ public class MixerScreen extends IEContainerScreen<MixerMenu>
 	{
 		super.init();
 		this.clearWidgets();
-		this.addRenderableWidget(new GuiButtonBoolean(
+		this.addRenderableWidget(new GuiButtonBooleanOld(
 				leftPos+106, topPos+61, 30, 16, Component.empty(), menu.outputAll::get, TEXTURE, 176, 82, 1,
 				btn -> {
 					CompoundTag tag = new CompoundTag();

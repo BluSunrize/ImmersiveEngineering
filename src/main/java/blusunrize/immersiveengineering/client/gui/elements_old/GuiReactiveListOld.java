@@ -6,11 +6,12 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements;
+package blusunrize.immersiveengineering.client.gui.elements_old;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
+import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld.IIEPressable;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -20,16 +21,9 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
-
-public class GuiReactiveList extends Button
+public class GuiReactiveListOld extends Button
 {
-	private static final ResourceLocation SCROLL_TOP = ieLoc("hud/scrollbar_top");
-	private static final ResourceLocation SCROLL_BOTTOM = ieLoc("hud/scrollbar_bottom");
-	private static final ResourceLocation SCROLL_CENTER = ieLoc("hud/scrollbar_center");
-	private static final ResourceLocation SCROLL_BUTTON_TOP = ieLoc("hud/scroll_button_top");
-	private static final ResourceLocation SCROLL_BUTTON_BOTTOM = ieLoc("hud/scroll_button_bottom");
-	private static final ResourceLocation SCROLL_BUTTON_CENTER = ieLoc("hud/scroll_button_center");
+	static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("hud_elements");
 
 	protected Supplier<List<String>> entries;
 	private final int[] padding = {0, 0, 0, 0};
@@ -43,7 +37,7 @@ public class GuiReactiveList extends Button
 	private int targetEntry = -1;
 	private int hoverTimer = 0;
 
-	public GuiReactiveList(int x, int y, int w, int h, IIEPressable<? extends GuiReactiveList> handler, Supplier<List<String>> entries)
+	public GuiReactiveListOld(int x, int y, int w, int h, IIEPressable<? extends GuiReactiveListOld> handler, Supplier<List<String>> entries)
 	{
 		super(x, y, w, h, Component.empty(), handler, DEFAULT_NARRATION);
 		this.entries = entries;
@@ -66,7 +60,7 @@ public class GuiReactiveList extends Button
 		}
 	}
 
-	public GuiReactiveList setPadding(int up, int down, int left, int right)
+	public GuiReactiveListOld setPadding(int up, int down, int left, int right)
 	{
 		this.padding[0] = up;
 		this.padding[1] = down;
@@ -101,18 +95,18 @@ public class GuiReactiveList extends Button
 		int strWidth = width-padding[2]-padding[3]-(needsSlider?6: 0);
 		if(needsSlider)
 		{
-			graphics.blitSprite(SCROLL_TOP, getX()+width-6, getY(), 6, 4);
-			graphics.blitSprite(SCROLL_BOTTOM, getX()+width-6, getY()+height-4, 6, 4);
+			graphics.blit(TEXTURE, getX()+width-6, getY(), 16, 136, 6, 4);
+			graphics.blit(TEXTURE, getX()+width-6, getY()+height-4, 16, 144, 6, 4);
 			for(int i = 0; i < height-8; i += 2)
-				graphics.blitSprite(SCROLL_CENTER, getX()+width-6, getY()+4+i, 6, 2);
+				graphics.blit(TEXTURE, getX()+width-6, getY()+4+i, 16, 141, 6, 2);
 
 			int sliderSize = Math.max(6, height-maxOffset*fr.lineHeight);
 			float silderShift = (height-sliderSize)/(float)maxOffset*offset;
 
-			graphics.blitSprite(SCROLL_BUTTON_TOP, getX()+width-5, (int)(getY()+silderShift+1), 4, 2);
-			graphics.blitSprite(SCROLL_BUTTON_BOTTOM, getX()+width-5, (int)(getY()+silderShift+sliderSize-4), 4, 3);
+			graphics.blit(TEXTURE, getX()+width-5, (int)(getY()+silderShift+1), 20, 129, 4, 2);
+			graphics.blit(TEXTURE, getX()+width-5, (int)(getY()+silderShift+sliderSize-4), 20, 132, 4, 3);
 			for(int i = 0; i < sliderSize-7; i++)
-				graphics.blitSprite(SCROLL_BUTTON_CENTER, getX()+width-5, (int)(getY()+silderShift+3+i), 4, 1);
+				graphics.blit(TEXTURE, getX()+width-5, (int)(getY()+silderShift+3+i), 20, 131, 4, 1);
 		}
 
 		graphics.pose().scale(textScale, textScale, 1);

@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.CheckOption;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
-import blusunrize.immersiveengineering.client.gui.elements.*;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
+import blusunrize.immersiveengineering.client.gui.elements_old.*;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld.IIEPressable;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity.MachineInterfaceConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -57,7 +57,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	private List<MachineInterfaceConfig<?>> configList;
 	private final static MachineInterfaceConfig<?> FALLBACK_CONFIG = new MachineInterfaceConfig<>(0, 0, DyeColor.WHITE);
 
-	private WidgetRowList<?> rowList;
+	private WidgetRowListOld<?> rowList;
 
 	private static final int MAX_SCROLL = 6;
 	private static final int ROW_HEIGHT = 24;
@@ -88,11 +88,11 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			// initialize list of rows
 			int finalLongestCheck = longestCheck;
 			int finalLongestOption = longestOption;
-			this.rowList = new WidgetRowList<>(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
-					(x, y, idx) -> new GuiButtonDelete(
+			this.rowList = new WidgetRowListOld<>(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
+					(x, y, idx) -> new GuiButtonDeleteOld(
 							x, y, btn -> removeConfigurationRow(idx.getAsInt())
 					),
-					(x, y, idx) -> new GuiButtonDyeColor(
+					(x, y, idx) -> new GuiButtonDyeColorOld(
 							x+4, y, 16, 16,
 							() -> getConfigSafe(idx).getOutputColor().getId(), TEXTURE, 192, 18,
 							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
@@ -100,7 +100,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 							),
 							ItemBatcherScreen::gatherRedstoneTooltip
 					),
-					(x, y, idx) -> new GuiSelectBox<>(
+					(x, y, idx) -> new GuiSelectBoxOld<>(
 							x+4, y, finalLongestCheck, () -> availableChecks, () -> getConfigSafe(idx).getSelectedCheck(),
 							MachineCheckImplementation::getName,
 							btn -> {
@@ -108,11 +108,11 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 										.setSelectedCheck(btn.getClickedState())
 										.setSelectedOption(0) // we can't assume the number of options on the check, so reset it
 								);
-								if(this.renderables.get(this.renderables.indexOf(btn)+1) instanceof GuiSelectBox<?> optionButton)
+								if(this.renderables.get(this.renderables.indexOf(btn)+1) instanceof GuiSelectBoxOld<?> optionButton)
 									optionButton.recalculateOptionsAndSize();
 							}
 					),
-					(x, y, idx) -> new GuiSelectBox<>(
+					(x, y, idx) -> new GuiSelectBoxOld<>(
 							x+4, y, finalLongestOption, () -> availableChecks[getConfigSafe(idx).getSelectedCheck()].options(),
 							() -> getConfigSafe(idx).getSelectedOption(),
 							CheckOption::getName,
@@ -140,7 +140,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			});
 
 			// add button
-			this.addRenderableWidget(new GuiButtonIE(
+			this.addRenderableWidget(new GuiButtonIEOld(
 					guiLeft+6, guiTop+162,
 					72, 18, Component.translatable(Lib.GUI_CONFIG+"machine_interface.add"),
 					TEXTURE, 184, 0,
@@ -156,7 +156,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			));
 
 			// input color button
-			this.addRenderableWidget(new GuiButtonDyeColor(
+			this.addRenderableWidget(new GuiButtonDyeColorOld(
 					guiLeft+xSize-40, guiTop+163, 16, 16,
 					() -> blockEntity.inputColor.getId(), TEXTURE, 192, 18,
 					btn -> sendInputColor(btn.getNextState()),
@@ -164,12 +164,12 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			));
 
 			// scroll buttons
-			this.addRenderableWidget(new GuiButtonIE(
+			this.addRenderableWidget(new GuiButtonIEOld(
 					guiLeft+xSize-20, guiTop+12, 16, 12, Component.empty(), TEXTURE, 224, 18,
 					(IIEPressable<Button>)btn -> this.rowList.scrollUp()
 			).setHoverOffset(16, 0));
 
-			this.addRenderableWidget(new GuiButtonIE(
+			this.addRenderableWidget(new GuiButtonIEOld(
 					guiLeft+xSize-20, guiTop+147, 16, 12, Component.empty(), TEXTURE, 224, 30,
 					(IIEPressable<Button>)btn -> this.rowList.scrollDown()
 			).setHoverOffset(16, 0));
@@ -259,16 +259,16 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 
 		ArrayList<Component> tooltip = new ArrayList<>();
 		for(GuiEventListener w : children())
-			if(w.isMouseOver(mouseX, mouseY)&&w instanceof ITooltipWidget ttw)
+			if(w.isMouseOver(mouseX, mouseY)&&w instanceof ITooltipWidgetOld ttw)
 				ttw.gatherTooltip(mouseX, mouseY, tooltip);
 
 		if(!tooltip.isEmpty())
 			graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
 	}
 
-	private static class GuiButtonDelete extends GuiButtonIE implements ITooltipWidget
+	private static class GuiButtonDeleteOld extends GuiButtonIEOld implements ITooltipWidgetOld
 	{
-		public GuiButtonDelete(int x, int y, IIEPressable<?> handler)
+		public GuiButtonDeleteOld(int x, int y, IIEPressable<?> handler)
 		{
 			super(x, y, 16, 16, Component.empty(), TEXTURE, 208, 18, handler);
 			this.setHoverOffset(0, 16);

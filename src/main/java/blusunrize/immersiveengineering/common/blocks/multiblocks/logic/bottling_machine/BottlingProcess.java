@@ -150,7 +150,7 @@ public class BottlingProcess extends MultiblockProcessInWorld<BottlingMachineRec
 		nbt.putBoolean("isFilling", isFilling);
 		final ListTag filledNBT = new ListTag();
 		for(ItemStack stack : this.filledContainer)
-			filledNBT.add(stack.save(provider, new CompoundTag()));
+			filledNBT.add(stack.saveOptional(provider));
 		nbt.put("filledContainer", filledNBT);
 	}
 }

@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements;
+package blusunrize.immersiveengineering.client.gui.elements_old;
 
-import blusunrize.immersiveengineering.client.gui.elements.WidgetRowList.WidgetRow;
+import blusunrize.immersiveengineering.client.gui.elements_old.WidgetRowListOld.WidgetRow;
 import net.minecraft.client.gui.components.AbstractWidget;
 
 import javax.annotation.Nullable;
@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
-public class WidgetRowList<R extends WidgetRow>
+public class WidgetRowListOld<R extends WidgetRow>
 {
 	// Size values
 	private int xPos;
@@ -32,7 +32,7 @@ public class WidgetRowList<R extends WidgetRow>
 	private final LinkedList<WidgetRow> rows = new LinkedList<>();
 	private int scrollIndex = 0;
 
-	public WidgetRowList(int xPos, int yPos, int rowHeight, int maxScroll, WidgetAssemblyFunction<?>... widgets)
+	public WidgetRowListOld(int xPos, int yPos, int rowHeight, int maxScroll, WidgetAssemblyFunction<?>... widgets)
 	{
 		this.xPos = xPos;
 		this.yPos = yPos;
@@ -146,11 +146,11 @@ public class WidgetRowList<R extends WidgetRow>
 
 	public static class WidgetRow
 	{
-		private final WidgetRowList<?> list;
+		private final WidgetRowListOld<?> list;
 		private int rowIndex;
 		private final AbstractWidget[] widgets;
 
-		public WidgetRow(WidgetRowList<?> list, int initialIdx, int x, int y)
+		public WidgetRow(WidgetRowListOld<?> list, int initialIdx, int x, int y)
 		{
 			this.list = list;
 			this.rowIndex = initialIdx;

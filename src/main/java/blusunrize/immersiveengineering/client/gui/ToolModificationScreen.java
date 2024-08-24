@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
-import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonCheckboxOld;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiSliderIEOld;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
@@ -49,12 +49,12 @@ public abstract class ToolModificationScreen<C extends AbstractContainerMenu> ex
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			if(boolArray!=null)
 				for(ToolConfigBoolean b : boolArray)
-					this.addRenderableWidget(new GuiButtonCheckbox(leftPos+b.x, topPos+b.y, Component.literal(tool.fomatConfigName(stack, b)), () -> b.value,
+					this.addRenderableWidget(new GuiButtonCheckboxOld(leftPos+b.x, topPos+b.y, Component.literal(tool.fomatConfigName(stack, b)), () -> b.value,
 							btn -> sendChange(!btn.getState(), b.name, ByteTag::valueOf)));
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
-					this.addRenderableWidget(new GuiSliderIE(
+					this.addRenderableWidget(new GuiSliderIEOld(
 							leftPos+f.x, topPos+f.y, 80,
 							tool.fomatConfigName(stack, f), f.min, f.max,
 							f.value, value -> sendChange(value, f.name, FloatTag::valueOf)

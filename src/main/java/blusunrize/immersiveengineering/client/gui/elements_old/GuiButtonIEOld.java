@@ -1,15 +1,14 @@
 /*
  * BluSunrize
- * Copyright (c) 2024
+ * Copyright (c) 2017
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements;
+package blusunrize.immersiveengineering.client.gui.elements_old;
 
 import blusunrize.immersiveengineering.api.Lib;
-import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -20,14 +19,26 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class GuiButtonIE extends Button
+public class GuiButtonIEOld extends Button
 {
-	protected final ButtonTexture texture;
+	protected final ResourceLocation texture;
+	protected final int texU;
+	protected final int texV;
 
-	public GuiButtonIE(int x, int y, int w, int h, Component name, ButtonTexture texture, IIEPressable handler)
+	public GuiButtonIEOld(int x, int y, int w, int h, Component name, ResourceLocation texture, int u, int v, IIEPressable handler)
 	{
 		super(x, y, w, h, name, handler, DEFAULT_NARRATION);
 		this.texture = texture;
+		this.texU = u;
+		this.texV = v;
+	}
+
+	int[] hoverOffset;
+
+	public GuiButtonIEOld setHoverOffset(int x, int y)
+	{
+		this.hoverOffset = new int[]{x, y};
+		return this;
 	}
 
 	private boolean isPressable(double mouseX, double mouseY)
@@ -44,7 +55,10 @@ public class GuiButtonIE extends Button
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
 		RenderSystem.blendFunc(770, 771);
-		graphics.blitSprite(texture.get(this.isHovered), getX(), getY(), width, height);
+		if(hoverOffset!=null&&this.isHovered)
+			graphics.blit(texture, getX(), getY(), texU+hoverOffset[0], texV+hoverOffset[1], width, height);
+		else
+			graphics.blit(texture, getX(), getY(), texU, texV, width, height);
 		if(!getMessage().getString().isEmpty())
 		{
 			int txtCol = 0xE0E0E0;
@@ -70,25 +84,6 @@ public class GuiButtonIE extends Button
 		default void onPress(Button var1)
 		{
 			this.onIEPress((B)var1);
-		}
-	}
-
-	public record ButtonTexture(ResourceLocation texture, ResourceLocation hovered)
-	{
-		public ButtonTexture
-		{
-			Preconditions.checkArgument(texture!=null);
-			Preconditions.checkArgument(hovered!=null);
-		}
-
-		public ButtonTexture(ResourceLocation texture)
-		{
-			this(texture, texture);
-		}
-
-		public ResourceLocation get(boolean hovered)
-		{
-			return hovered?this.hovered: texture;
 		}
 	}
 }

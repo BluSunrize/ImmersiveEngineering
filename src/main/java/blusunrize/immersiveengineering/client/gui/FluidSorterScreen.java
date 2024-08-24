@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.FilterBit;
-import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
+import blusunrize.immersiveengineering.client.gui.info_old.FluidInfoAreaOld;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
@@ -59,7 +59,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			for(int i = 0; i < 8; i++)
 				if(!menu.getFilter(side, i).isEmpty())
 					if(getSlotArea(side, i).contains(mouseX, mouseY))
-						FluidInfoArea.fillTooltip(menu.getFilter(side, i), -1, addLine);
+						FluidInfoAreaOld.fillTooltip(menu.getFilter(side, i), -1, addLine);
 	}
 
 	@Override
