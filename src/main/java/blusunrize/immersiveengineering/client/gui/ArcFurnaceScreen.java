@@ -9,7 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu;
@@ -28,10 +29,16 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
+
 public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("arc_furnace");
-	private GuiButtonIEOld distributeButton;
+	private static final ButtonTexture DISTRIBUTE = new ButtonTexture(
+			ieLoc("arc_furnace/distribute"), ieLoc("arc_furnace/distribute_hover")
+	);
+	private static final ResourceLocation PROGRESS = ieLoc("arc_furnace/progress");
+	private GuiButtonIE distributeButton;
 
 	public ArcFurnaceScreen(ArcFurnaceMenu container, Inventory inventoryPlayer, Component title)
 	{
@@ -62,7 +69,9 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 		{
 			int slot = process.slot();
 			int h = process.processStep();
-			graphics.blit(background, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
+			graphics.blitSprite(
+					PROGRESS, 3, 16, 0, 16-h, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 2, h
+			);
 		}
 	}
 
@@ -91,7 +100,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 	public void init()
 	{
 		super.init();
-		distributeButton = new GuiButtonIEOld(leftPos+10, topPos+10, 16, 16, Component.empty(), TEXTURE, 179, 0,
+		distributeButton = new GuiButtonIE(leftPos+10, topPos+10, 16, 16, Component.empty(), DISTRIBUTE,
 				btn -> {
 					if(menu.getCarried().isEmpty())
 						autoSplitStacks();
@@ -102,7 +111,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 			{
 				return super.isHoveredOrFocused()&&menu.getCarried().isEmpty();
 			}
-		}.setHoverOffset(0, 16);
+		};
 		this.addRenderableWidget(distributeButton);
 	}
 

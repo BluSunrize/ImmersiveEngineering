@@ -12,8 +12,13 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.CheckOption;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.IMachineInterfaceConnection;
 import blusunrize.immersiveengineering.api.tool.MachineInterfaceHandler.MachineCheckImplementation;
-import blusunrize.immersiveengineering.client.gui.elements_old.*;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
+import blusunrize.immersiveengineering.client.gui.elements.WidgetRowList;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld;
 import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonIEOld.IIEPressable;
+import blusunrize.immersiveengineering.client.gui.elements_old.GuiSelectBoxOld;
+import blusunrize.immersiveengineering.client.gui.elements_old.ITooltipWidgetOld;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.MachineInterfaceBlockEntity.MachineInterfaceConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -34,11 +39,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.IntSupplier;
 
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 import static blusunrize.immersiveengineering.client.gui.IEContainerScreen.makeTextureLocation;
 
 public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInterfaceBlockEntity>
 {
 	public static final ResourceLocation TEXTURE = makeTextureLocation("machine_interface");
+	private static final ButtonTexture COLOR_BUTTON = new ButtonTexture(ieLoc("machine_interface/color_button"));
+
 	private static final int GUI_WIDTH_LEFT = 23;
 	private static final int GUI_WIDTH_MIDDLE = 16;
 	private static final int GUI_WIDTH_RIGHT = 41;
@@ -57,7 +65,7 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 	private List<MachineInterfaceConfig<?>> configList;
 	private final static MachineInterfaceConfig<?> FALLBACK_CONFIG = new MachineInterfaceConfig<>(0, 0, DyeColor.WHITE);
 
-	private WidgetRowListOld<?> rowList;
+	private WidgetRowList rowList;
 
 	private static final int MAX_SCROLL = 6;
 	private static final int ROW_HEIGHT = 24;
@@ -88,13 +96,13 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			// initialize list of rows
 			int finalLongestCheck = longestCheck;
 			int finalLongestOption = longestOption;
-			this.rowList = new WidgetRowListOld<>(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
+			this.rowList = new WidgetRowList(guiLeft+10, guiTop+10, ROW_HEIGHT, MAX_SCROLL,
 					(x, y, idx) -> new GuiButtonDeleteOld(
 							x, y, btn -> removeConfigurationRow(idx.getAsInt())
 					),
-					(x, y, idx) -> new GuiButtonDyeColorOld(
+					(x, y, idx) -> new GuiButtonDyeColor(
 							x+4, y, 16, 16,
-							() -> getConfigSafe(idx).getOutputColor().getId(), TEXTURE, 192, 18,
+							() -> getConfigSafe(idx).getOutputColor().getId(), COLOR_BUTTON,
 							btn -> sendConfig(idx.getAsInt(), getConfigSafe(idx)
 									.setOutputColor(btn.getNextState())
 							),
@@ -156,9 +164,9 @@ public class MachineInterfaceScreen extends ClientBlockEntityScreen<MachineInter
 			));
 
 			// input color button
-			this.addRenderableWidget(new GuiButtonDyeColorOld(
+			this.addRenderableWidget(new GuiButtonDyeColor(
 					guiLeft+xSize-40, guiTop+163, 16, 16,
-					() -> blockEntity.inputColor.getId(), TEXTURE, 192, 18,
+					() -> blockEntity.inputColor.getId(), COLOR_BUTTON,
 					btn -> sendInputColor(btn.getNextState()),
 					ItemBatcherScreen::gatherRedstoneTooltip
 			));

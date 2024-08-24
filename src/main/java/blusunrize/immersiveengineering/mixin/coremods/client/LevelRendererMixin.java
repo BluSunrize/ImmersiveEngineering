@@ -29,9 +29,11 @@ public class LevelRendererMixin
 			args = {"ldc=destroyProgress"}
 	))
 	public void afterTESRRender(
-			DeltaTracker p_348530_, boolean p_109603_, Camera p_109604_, GameRenderer p_109605_, LightTexture p_109606_,
-			Matrix4f p_254120_, Matrix4f p_323920_, CallbackInfo ci)
+			DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer,
+			LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci
+	)
 	{
-		VertexBufferHolder.afterTERRendering();
+		// TODO move to render level stage event
+		VertexBufferHolder.afterTERRendering(frustumMatrix);
 	}
 }

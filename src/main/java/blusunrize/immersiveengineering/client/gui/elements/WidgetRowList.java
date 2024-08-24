@@ -6,17 +6,18 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.gui.elements_old;
+package blusunrize.immersiveengineering.client.gui.elements;
 
-import blusunrize.immersiveengineering.client.gui.elements_old.WidgetRowListOld.WidgetRow;
 import net.minecraft.client.gui.components.AbstractWidget;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 
-public class WidgetRowListOld<R extends WidgetRow>
+public class WidgetRowList
 {
 	// Size values
 	private int xPos;
@@ -27,18 +28,18 @@ public class WidgetRowListOld<R extends WidgetRow>
 	private final int maxScroll;
 
 	// Content values
-	private final WidgetAssemblyFunction<?>[] widgetFunctions;
+	private final List<WidgetAssemblyFunction<?>> widgetFunctions;
 
 	private final LinkedList<WidgetRow> rows = new LinkedList<>();
 	private int scrollIndex = 0;
 
-	public WidgetRowListOld(int xPos, int yPos, int rowHeight, int maxScroll, WidgetAssemblyFunction<?>... widgets)
+	public WidgetRowList(int xPos, int yPos, int rowHeight, int maxScroll, WidgetAssemblyFunction<?>... widgets)
 	{
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.rowHeight = rowHeight;
 		this.maxScroll = maxScroll;
-		this.widgetFunctions = widgets;
+		this.widgetFunctions = Arrays.asList(widgets);
 		// calculate width
 		AbstractWidget[] dummyRow = assembleWidgets(() -> 0);
 		int maxX = dummyRow[dummyRow.length-1].getX()+dummyRow[dummyRow.length-1].getWidth();
@@ -52,10 +53,10 @@ public class WidgetRowListOld<R extends WidgetRow>
 
 	private AbstractWidget[] assembleWidgets(int x, int y, IntSupplier rowIndex)
 	{
-		AbstractWidget[] widgets = new AbstractWidget[widgetFunctions.length];
-		for(int iW = 0; iW < this.widgetFunctions.length; iW++)
+		AbstractWidget[] widgets = new AbstractWidget[widgetFunctions.size()];
+		for(int iW = 0; iW < this.widgetFunctions.size(); iW++)
 		{
-			widgets[iW] = this.widgetFunctions[iW].apply(x, y, rowIndex);
+			widgets[iW] = this.widgetFunctions.get(iW).apply(x, y, rowIndex);
 			x = widgets[iW].getX()+widgets[iW].getWidth();
 		}
 		return widgets;
@@ -146,11 +147,11 @@ public class WidgetRowListOld<R extends WidgetRow>
 
 	public static class WidgetRow
 	{
-		private final WidgetRowListOld<?> list;
+		private final WidgetRowList list;
 		private int rowIndex;
 		private final AbstractWidget[] widgets;
 
-		public WidgetRow(WidgetRowListOld<?> list, int initialIdx, int x, int y)
+		public WidgetRow(WidgetRowList list, int initialIdx, int x, int y)
 		{
 			this.list = list;
 			this.rowIndex = initialIdx;

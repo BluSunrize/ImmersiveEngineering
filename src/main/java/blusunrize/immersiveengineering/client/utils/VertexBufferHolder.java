@@ -75,7 +75,6 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		this.renderer = renderer;
 		this.buffer = new ResettableLazy<>(
 				() -> {
-					// TODO WTF does "Usage" do?
 					VertexBuffer vb = new VertexBuffer(Usage.STATIC);
 					RenderSystem.setShader(IEGLShaders::getVboShader);
 					Tesselator tes = Tesselator.getInstance();
@@ -132,7 +131,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		renderer.render(builder, transform, light, overlay);
 	}
 
-	public static void afterTERRendering()
+	public static void afterTERRendering(Matrix4f frustumMatrix)
 	{
 		if(JOBS.isEmpty())
 			return;
@@ -156,7 +155,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 						.set(job.light&0xffff, (job.light>>16)&0xffff);
 				Objects.requireNonNull(shader.getUniform("OverlayUV"))
 						.set(job.overlay&0xffff, (job.overlay>>16)&0xffff);
-				buffer.drawWithShader(job.transform, RenderSystem.getProjectionMatrix(), shader);
+				buffer.drawWithShader(job.transform.mulLocal(frustumMatrix), RenderSystem.getProjectionMatrix(), shader);
 			}
 			if(inverted)
 				GL11.glCullFace(GL11.GL_BACK);

@@ -11,8 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.FilterBit;
-import blusunrize.immersiveengineering.client.gui.info_old.FluidInfoAreaOld;
-import blusunrize.immersiveengineering.client.utils.GuiHelper;
+import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -59,7 +58,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			for(int i = 0; i < 8; i++)
 				if(!menu.getFilter(side, i).isEmpty())
 					if(getSlotArea(side, i).contains(mouseX, mouseY))
-						FluidInfoAreaOld.fillTooltip(menu.getFilter(side, i), -1, addLine);
+						FluidInfoArea.fillTooltip(menu.getFilter(side, i), -1, addLine);
 	}
 
 	@Override
@@ -103,11 +102,12 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 					TextureAtlasSprite sprite = ClientUtils.getSprite(props.getStillTexture(filter));
 					Rect2i slotArea = getSlotArea(side, i);
 					int col = props.getTintColor(filter);
-					GuiHelper.drawTexturedColoredRect(
-							builder, graphics.pose(),
-							slotArea.getX(), slotArea.getY(), slotArea.getWidth(), slotArea.getHeight(),
-							(col>>16&255)/255.0f, (col>>8&255)/255.0f, (col&255)/255.0f, 1,
-							sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1());
+					graphics.blit(
+							slotArea.getX(), slotArea.getY(),
+							0, slotArea.getWidth(), slotArea.getHeight(),
+							sprite,
+							(col>>16&255)/255.0f, (col>>8&255)/255.0f, (col&255)/255.0f, 1
+					);
 				}
 			}
 		for(int side = 0; side < 6; side++)

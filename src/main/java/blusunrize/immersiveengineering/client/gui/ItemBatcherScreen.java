@@ -10,8 +10,9 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonDyeColorOld;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonStateOld;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherBlockEntity.BatchMode;
 import blusunrize.immersiveengineering.common.gui.ItemBatcherMenu;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
@@ -25,10 +26,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
 
 import java.util.List;
+import java.util.Map;
+
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("item_batcher");
+	private static final ButtonTexture MODE_SINGLE = new ButtonTexture(ieLoc("item_batcher/mode_single"));
+	private static final ButtonTexture MODE_ALL = new ButtonTexture(ieLoc("item_batcher/mode_all"));
 
 	public ItemBatcherScreen(ItemBatcherMenu container, Inventory inventoryPlayer, Component title)
 	{
@@ -42,9 +48,10 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherMenu>
 		super.init();
 
 		this.clearWidgets();
-		this.addRenderableWidget(new GuiButtonStateOld<>(leftPos+7, topPos+92, 18, 18, Component.empty(),
-				BatchMode.values(), menu.batchMode::get, TEXTURE,
-				176, 36, 1,
+		this.addRenderableWidget(new GuiButtonState<>(
+				leftPos+7, topPos+92, 18, 18, Component.empty(),
+				BatchMode.values(), menu.batchMode::get,
+				Map.of(BatchMode.ALL, MODE_ALL, BatchMode.SINGLE, MODE_SINGLE),
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					final int newMode = btn.getNextState().ordinal();
@@ -56,7 +63,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherMenu>
 		{
 			final int finalSlot = slot;
 			final GetterAndSetter<Integer> color = menu.colors.get(slot);
-			this.addRenderableWidget(new GuiButtonDyeColorOld(
+			this.addRenderableWidget(new GuiButtonDyeColor(
 					leftPos+12+slot*18, topPos+77, "", color::get, btn -> {
 				CompoundTag tag = new CompoundTag();
 				final int newState = btn.getNextState().getId();

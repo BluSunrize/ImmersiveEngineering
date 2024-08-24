@@ -148,7 +148,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 
 	public Direction[][] getValidOutputs(Direction inputSide, @Nullable FluidStack fluidStack)
 	{
-		if(fluidStack==null || fluidStack.isEmpty())
+		if(fluidStack==null||fluidStack.isEmpty())
 			return new Direction[2][0];
 		// Strip pressure tag, since it confuses the sorting
 		fluidStack = fluidStack.copyWithAmount(1);
@@ -164,7 +164,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 				filterIteration:
 				{
 					for(FluidStack filterStack : filters[side.ordinal()])
-						if(filterStack!=null && !filterStack.isEmpty())
+						if(!filterStack.isEmpty())
 						{
 							unmapped = false;
 							boolean b = filterStack.getFluid()==fluidStack.getFluid();
@@ -208,12 +208,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		{
 			ListTag filterList = new ListTag();
 			for(int i = 0; i < filters[side].length; i++)
-			{
-				CompoundTag tag = new CompoundTag();
-				if(filters[side][i]!=null)
-					filters[side][i].save(provider, tag);
-				filterList.add(tag);
-			}
+				filterList.add(filters[side][i].saveOptional(provider));
 			nbt.put("filter_"+side, filterList);
 		}
 	}
@@ -231,7 +226,6 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	@Override
 	public void onBEPlaced(BlockPlaceContext ctx)
 	{
-		final ItemStack stack = ctx.getItemInHand();
 		var data = ctx.getItemInHand().get(DataComponents.BLOCK_ENTITY_DATA);
 		if(data!=null)
 			readCustomNBT(data.copyTag(), false, ctx.getLevel().registryAccess());

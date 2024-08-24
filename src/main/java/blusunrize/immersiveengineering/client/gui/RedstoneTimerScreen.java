@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonBooleanOld;
-import blusunrize.immersiveengineering.client.gui.elements_old.GuiButtonCheckboxOld;
 import blusunrize.immersiveengineering.client.gui.elements_old.GuiSliderIEOld;
 import blusunrize.immersiveengineering.common.blocks.metal.RedstoneTimerBlockEntity;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -63,7 +63,7 @@ public class RedstoneTimerScreen extends ClientBlockEntityScreen<RedstoneTimerBl
 			this.addRenderableWidget(colorButtonsControl[i]);
 		}
 
-		this.addRenderableWidget(new GuiButtonCheckboxOld(guiLeft+106, guiTop+84, Component.translatable(Lib.GUI_CONFIG+"redstone_require_control_signal"),
+		this.addRenderableWidget(new GuiButtonCheckbox(guiLeft+106, guiTop+84, Component.translatable(Lib.GUI_CONFIG+"redstone_require_control_signal"),
 				() -> blockEntity.requireControlSignal,
 				btn -> sendConfig("requireControlSignal", btn.getNextState())));
 
@@ -111,6 +111,7 @@ public class RedstoneTimerScreen extends ClientBlockEntityScreen<RedstoneTimerBl
 			graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
 	}
 
+	// TODO update
 	private static class TimerSlider extends GuiSliderIEOld
 	{
 		public TimerSlider(int x, int y, int width, int min, int max, int value, FloatConsumer handler)

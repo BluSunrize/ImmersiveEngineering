@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
-import blusunrize.immersiveengineering.client.gui.elements_old.ITooltipWidgetOld;
+import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
 import com.google.common.collect.ImmutableList;
@@ -77,7 +77,7 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 		for(InfoArea area : infoAreas.get())
 			area.fillTooltip(mouseX, mouseY, tooltip);
 		for(GuiEventListener w : children())
-			if(w.isMouseOver(mouseX, mouseY)&&w instanceof ITooltipWidgetOld ttw)
+			if(w.isMouseOver(mouseX, mouseY)&&w instanceof ITooltipWidget ttw)
 				ttw.gatherTooltip(mouseX, mouseY, tooltip);
 		gatherAdditionalTooltips(
 				mouseX, mouseY, tooltip::add, t -> tooltip.add(TextUtils.applyFormat(t, ChatFormatting.GRAY))

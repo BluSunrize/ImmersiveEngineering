@@ -21,7 +21,7 @@ import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class GuiButtonCheckbox extends GuiButtonBoolean
 {
-	private static final ButtonTexture TEXTURE = new ButtonTexture(ieLoc("hud/checkbox"));
+	public static final ButtonTexture TEXTURE = new ButtonTexture(ieLoc("hud/checkbox"));
 
 	public GuiButtonCheckbox(int x, int y, Component name, Supplier<Boolean> state, IIEPressable<GuiButtonState<Boolean>> handler)
 	{

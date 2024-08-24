@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.gui.info;
 
-import blusunrize.immersiveengineering.client.gui.info_old.FluidInfoAreaOld;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -41,7 +40,7 @@ public class MultitankArea extends InfoArea
 			int myRelative = area.getY()+area.getHeight()-mouseY;
 			forEachFluid((fluid, lastY, newY) -> {
 				if(myRelative >= lastY&&myRelative < newY)
-					FluidInfoAreaOld.fillTooltip(fluid, capacity, tooltip::add);
+					FluidInfoArea.fillTooltip(fluid, capacity, tooltip::add);
 			});
 		}
 	}
