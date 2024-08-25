@@ -398,28 +398,23 @@ publishing {
     }
 }
 
-//Minimize/optimize all png files, requires optipng on the PATH
+def pngPatterns = ["**/*.png"]
+//Minimize any PNGs in the source sets
 // Credits: BrainStone
-void minimizePNGFile(File file) {
-    long size = file.length()
-    exec {
-        executable "optipng"
-        args "-q", "-o7", "-zm1-9", "-strip", "all", file
-    }
-    long newSize = file.length()
-    if (newSize < size) {
-        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
-                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
+for (dir in project.sourceSets.main.resources.srcDirs) {
+    fileTree(dir: dir, includes: pngPatterns).each { file ->
+        // TODO relative to some reasonable root?
+        tasks.create(name: "optimizePng_"+file.getPath().replace('/', '_'), type: Exec) {
+            // TODO log size reductions? Somehow this is all very brittle right now
+            executable "optipng"
+            args "-q", "-o7", "-zm1-9", "-strip", "all", file
+        }
     }
 }
-
 task optimizePng {
-    def pngPatterns = ["**/*.png"]
-    doLast {
-        //Ensure the logo is minimized (we add this file to each jar)
-        //Minimize any PNGs in the source sets
-        for (dir in sourceSets.main.resources.srcDirs) {
-            fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
+    for (dir in project.sourceSets.main.resources.srcDirs) {
+        fileTree(dir: dir, includes: pngPatterns).each { file ->
+            dependsOn "optimizePng_"+file.getPath().replace('/', '_')
         }
     }
 }
