@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualMapCodec;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -38,6 +39,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+// TODO consider using SizedFluidIngredient instead?
 public class FluidTagInput implements Predicate<FluidStack>
 {
 	public static final MapCodec<FluidTagInput> MAP_CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
@@ -48,14 +50,14 @@ public class FluidTagInput implements Predicate<FluidStack>
 			Codec.INT.fieldOf("amount").forGetter(t -> t.amount),
 			DataComponentPredicate.CODEC.optionalFieldOf("nbt", DataComponentPredicate.EMPTY).forGetter(t -> t.predicate)
 	).apply(inst, FluidTagInput::new));
-	public static final Codec<FluidTagInput> CODEC = MAP_CODEC.codec();
 	public static final StreamCodec<RegistryFriendlyByteBuf, FluidTagInput> STREAM_CODEC = StreamCodec.composite(
 			ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), FluidTagInput::getMatchingFluidNames,
 			ByteBufCodecs.INT, t -> t.amount,
 			DataComponentPredicate.STREAM_CODEC, t -> t.predicate,
 			(names, amount, tag) -> new FluidTagInput(Either.right(names), amount, tag)
 	);
-	public static final DualCodec<RegistryFriendlyByteBuf, FluidTagInput> CODECS = new DualCodec<>(CODEC, STREAM_CODEC);
+	public static final DualMapCodec<RegistryFriendlyByteBuf, FluidTagInput> MAP_CODECS = new DualMapCodec<>(MAP_CODEC, STREAM_CODEC);
+	public static final DualCodec<RegistryFriendlyByteBuf, FluidTagInput> CODECS = MAP_CODECS.codec();
 
 	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;
@@ -119,7 +121,6 @@ public class FluidTagInput implements Predicate<FluidStack>
 						t -> TagUtils.elementStream(BuiltInRegistries.FLUID, t),
 						l -> l.stream().map(BuiltInRegistries.FLUID::get)
 				)
-				// TODO include components/nbt
 				.map(fluid -> {
 					final FluidStack matchingStack = new FluidStack(fluid, FluidTagInput.this.amount);
 					matchingStack.applyComponents(predicate.asPatch());

@@ -770,5 +770,10 @@ public class ShaderRegistry
 				return effectFunction;
 			return DEFAULT_EFFECT;
 		}
+
+		public Holder<Item> getItem()
+		{
+			return GET_SHADER_ITEM.get().apply(this.name);
+		}
 	}
 }

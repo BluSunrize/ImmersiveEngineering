@@ -245,9 +245,9 @@ public final class IEItems
 		{
 			ResourceLocation name = BulletHandler.findRegistryName(bullet);
 			if(name.getNamespace().equals(ImmersiveEngineering.MODID))
-				return name.getPath();
+				return "bullet_"+name.getPath();
 			else
-				return name.getNamespace()+"_"+name.getPath();
+				return "bullet_"+name.getNamespace()+"_"+name.getPath();
 		}
 	}
 
@@ -286,6 +286,7 @@ public final class IEItems
 		// We can't use an EnumMap here, since Rarity is an "extensible enum" (Forge), so people may add to it later on.
 		// And since this map is created during static class init, it may be initialized before another mod has any
 		// chance of adding the rarity.
+		// TODO probably no longer true due to data driven extension
 		@SuppressWarnings("MapReplaceableByEnumMap")
 		public static final Map<Rarity, ItemRegObject<ShaderBagItem>> SHADER_BAG = new HashMap<>();
 		public static final ItemRegObject<EarmuffsItem> EARMUFFS = register("earmuffs", EarmuffsItem::new);
@@ -330,7 +331,7 @@ public final class IEItems
 					));
 			for(var shader : ShaderRegistry.shaderRegistry.keySet())
 				// TODO fix for non-IE shaders
-				SHADERS.put(shader, register(shader.getPath(), () -> new ShaderItem(shader)));
+				SHADERS.put(shader, register("shader_"+shader.getPath(), () -> new ShaderItem(shader)));
 		}
 
 		public static void registerShaderBags()

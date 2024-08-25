@@ -10,12 +10,12 @@
     },
     {
       "basePredicate": {
-        "item": "immersiveengineering:homing"
+        "item": "immersiveengineering:bullet_homing"
       },
       "count": 4
     }
   ],
   "result": {
-    "item": "immersiveengineering:wolfpack"
+    "item": "immersiveengineering:bullet_wolfpack"
   }
 }

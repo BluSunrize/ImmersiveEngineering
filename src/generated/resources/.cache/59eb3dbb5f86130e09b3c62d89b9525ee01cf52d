@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-09T19:03:20.526063093	Loot Tables
+// 1.21.1	2024-08-25T13:16:39.337490932	Loot Tables
 9c060ea0f446ec61e9c85308e84656f4d6d7cfdb data/immersiveengineering/loot_table/advancements/shader_epic.json
 f489826de5f3b715a6cd3fc912efe614b774ad09 data/immersiveengineering/loot_table/advancements/shader_masterwork.json
 8d86832db0fabe3f83b53243e237e1045490e1ff data/immersiveengineering/loot_table/advancements/shader_rare.json
@@ -374,6 +374,6 @@ fe28192eb9ca6422e8e62befd0767aeb8496ebe4 data/immersiveengineering/loot_table/en
 8faac8959932de4e0f904d6727215d193c906ab0 data/immersiveengineering/loot_table/entities/fusilier.json
 16868e07090acec651ada6aa4d1da34fad1b7692 data/immersiveengineering/loot_table/gameplay/hero_of_the_village/electrician.json
 be1d556ecd7c086f4b94475539ff09b065780f2a data/immersiveengineering/loot_table/gameplay/hero_of_the_village/engineer.json
-3a1e7e09c151f7ff0adce2e9591a271c8254bb8f data/immersiveengineering/loot_table/gameplay/hero_of_the_village/gunsmith.json
+c83b87dd1ed8076fed38ec1065bc034dea0969f6 data/immersiveengineering/loot_table/gameplay/hero_of_the_village/gunsmith.json
 2ddd3608138d653c7bcc3b5563353ac5b28f08b5 data/immersiveengineering/loot_table/gameplay/hero_of_the_village/machinist.json
 6cd8047e84419683d1d94c108d50d7085c147e79 data/immersiveengineering/loot_table/gameplay/hero_of_the_village/outfitter.json

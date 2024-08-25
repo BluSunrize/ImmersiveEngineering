@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "immersiveengineering:item/bullet_potion",
-    "layer1": "immersiveengineering:item/bullet_potion_layer"
-  }
-}

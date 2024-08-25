@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-09T19:03:20.608140894	Advancements
+// 1.21.1	2024-08-25T13:16:39.374182048	Advancements
 6aeb82e9126df35ae4ffad9315152d4b80c3014c data/immersiveengineering/advancement/main/buy_shaderbag.json
 e09defe04c195d77ae4e0327762f4af55ac6a5a2 data/immersiveengineering/advancement/main/chorus_cloche.json
 ad01b455ef5deeae2de6af19e455ba556b9d1036 data/immersiveengineering/advancement/main/chute_bonk.json
@@ -46,7 +46,7 @@ ae4b797f95d8072b5aa8ce009e7f33d651205387 data/immersiveengineering/advancement/m
 9996f7e82fccd5925b51e70840f88b30b4f3293b data/immersiveengineering/advancement/tools/craft_powerpack.json
 21d559c7b44fce03ac8dbba283e912a539ad066c data/immersiveengineering/advancement/tools/craft_railgun.json
 747effab6ab6b49a0a2a6c6244cc1e35633cfedd data/immersiveengineering/advancement/tools/craft_revolver.json
-34d3f4ff4c11bf756da486da5cdb319088e19a8e data/immersiveengineering/advancement/tools/craft_wolfpack.json
+5a655c8af90c3c2e0703d680f5034d2571541bd2 data/immersiveengineering/advancement/tools/craft_wolfpack.json
 12caeaac98ff5bd505dec9525301f1f5240c94f4 data/immersiveengineering/advancement/tools/secret_birthdayparty.json
 0b38a9b2f98a5d5ea05d6d6c15b415e7a5d0debf data/immersiveengineering/advancement/tools/secret_bttf.json
 674583c54eebef5306da99083b8da01cfb66bbe4 data/immersiveengineering/advancement/tools/secret_drillbreak.json

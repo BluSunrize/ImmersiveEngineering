@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.gui.sync;
 
 import blusunrize.immersiveengineering.api.utils.IECodecs;
+import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
 import blusunrize.immersiveengineering.common.gui.MixerMenu;
 import blusunrize.immersiveengineering.common.gui.MixerMenu.SlotProgress;
@@ -70,6 +71,7 @@ public class GenericDataSerializers
 			ArrayList::new, List::equals
 	);
 	public static final DataSerializer<NearbyComponents> RADIO_TOWER_NEARBY = register(NearbyComponents.STREAM_CODEC);
+	public static final DataSerializer<FilterConfig> FILTER_CONFIG = register(FilterConfig.CODEC.streamCodec());
 
 	private static <T> DataSerializer<T> register(StreamCodec<? super RegistryFriendlyByteBuf, T> codec)
 	{

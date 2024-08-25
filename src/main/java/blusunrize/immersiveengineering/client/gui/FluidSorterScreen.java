@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.FilterBit;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -134,7 +135,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 			final int sideFinal = side;
 			final BooleanSupplier value = () -> menu.sortWithNBT.get()[sideFinal]!=0;
 			ButtonSorter b = new ButtonSorter(
-					x, y, FilterBit.NBT, () -> value.getAsBoolean()?FilterBit.NBT.mask(): 0,
+					x, y, FilterBit.NBT, () -> new FilterConfig(false, value.getAsBoolean(), false),
 					btn -> {
 						CompoundTag tag = new CompoundTag();
 						tag.putInt("useNBT", value.getAsBoolean()?0: 1);

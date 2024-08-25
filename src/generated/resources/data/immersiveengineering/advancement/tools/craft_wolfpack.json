@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "immersiveengineering:wolfpack"
+            "items": "immersiveengineering:bullet_wolfpack"
           }
         ]
       },
@@ -19,7 +19,7 @@
     "hidden": true,
     "icon": {
       "count": 1,
-      "id": "immersiveengineering:wolfpack"
+      "id": "immersiveengineering:bullet_wolfpack"
     },
     "title": {
       "translate": "advancement.immersiveengineering.craft_wolfpack"

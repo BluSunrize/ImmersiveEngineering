@@ -11,13 +11,17 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.ButtonTexture;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE.IIEPressable;
+import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
+import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.SorterMenu;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,12 +32,10 @@ import net.minecraft.world.entity.player.Inventory;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.IntSupplier;
+import java.util.Map;
+import java.util.function.Supplier;
 
-import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
-import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
-import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
-import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class SorterScreen extends IEContainerScreen<SorterMenu>
 {
@@ -64,16 +66,17 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 	{
 		super.init();
 		this.clearWidgets();
-		for(int side = 0; side < 6; side++)
+		for(Direction side : Direction.values())
 			for(final FilterBit bit : FilterBit.values())
 			{
-				int x = leftPos+3+(side/2)*58+bit.ordinal()*18;
-				int y = topPos+3+(side%2)*76;
-				final int sideFinal = side;
-				final GetterAndSetter<Integer> value = menu.filterMasks.get(side);
+				int sideId = side.ordinal();
+				int x = leftPos+3+(sideId/2)*58+bit.ordinal()*18;
+				int y = topPos+3+(sideId%2)*76;
+				final int sideFinal = sideId;
+				final GetterAndSetter<FilterConfig> value = menu.filterMasks.get(side);
 				ButtonSorter b = new ButtonSorter(x, y, bit, value::get, btn -> {
 					CompoundTag tag = new CompoundTag();
-					tag.putInt("sideConfigVal", value.get()^bit.mask());
+					tag.put("sideConfigVal", FilterConfig.CODEC.toNBT(bit.toggle(value.get())));
 					tag.putInt("sideConfigId", sideFinal);
 					sendUpdateToServer(tag);
 					fullInit();
@@ -82,30 +85,31 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 			}
 	}
 
-	public static class ButtonSorter extends Button implements ITooltipWidget
+	// TODO replace by GuiButtonBoolean
+	public static class ButtonSorter extends GuiButtonBoolean implements ITooltipWidget
 	{
-		private final FilterBit type;
-		private final IntSupplier state;
+		private static final Map<FilterBit, ButtonTexture> TRUE_TEXTURES = Map.of(
+				FilterBit.DAMAGE, new ButtonTexture(ieLoc("sorter/damage")),
+				FilterBit.NBT, new ButtonTexture(ieLoc("sorter/components")),
+				FilterBit.TAG, new ButtonTexture(ieLoc("sorter/tags"))
+		);
+		private static final Map<FilterBit, ButtonTexture> FALSE_TEXTURES = Map.of(
+				FilterBit.DAMAGE, new ButtonTexture(ieLoc("sorter/no_damage")),
+				FilterBit.NBT, new ButtonTexture(ieLoc("sorter/no_components")),
+				FilterBit.TAG, new ButtonTexture(ieLoc("sorter/no_tags"))
+		);
 
-		public ButtonSorter(int x, int y, FilterBit type, IntSupplier state, OnPress handler)
+		private final FilterBit type;
+		private final Supplier<FilterConfig> state;
+
+		public ButtonSorter(int x, int y, FilterBit type, Supplier<FilterConfig> state, IIEPressable<GuiButtonState<Boolean>> handler)
 		{
-			super(x, y, 18, 18, Component.empty(), handler, DEFAULT_NARRATION);
+			super(
+					x, y, 18, 18, Component.empty(), () -> type.get(state.get()),
+					FALSE_TEXTURES.get(type), TRUE_TEXTURES.get(type), handler
+			);
 			this.type = type;
 			this.state = state;
-		}
-
-		@Override
-		public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTicks)
-		{
-			if(this.visible)
-			{
-				ClientUtils.bindTexture(TEXTURE);
-				isHovered = mx >= this.getX()&&my >= this.getY()&&mx < this.getX()+this.width&&my < this.getY()+this.height;
-				RenderSystem.enableBlend();
-				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
-				final boolean active = (state.getAsInt()&type.mask())!=0;
-				graphics.blit(TEXTURE, this.getX(), this.getY(), 176+type.ordinal()*18, (active?3: 21), this.width, this.height);
-			}
 		}
 
 		@Override
@@ -129,9 +133,25 @@ public class SorterScreen extends IEContainerScreen<SorterMenu>
 			return Lib.DESC_INFO+"filter."+name().toLowerCase(Locale.ROOT);
 		}
 
-		public int mask()
+		public boolean get(FilterConfig config)
 		{
-			return 1<<ordinal();
+			return switch(this)
+			{
+				case TAG -> config.allowTags();
+				case NBT -> config.considerComponents();
+				case DAMAGE -> config.ignoreDamage();
+			};
+		}
+
+		public FilterConfig toggle(FilterConfig config)
+		{
+			return switch(this)
+			{
+				case TAG -> new FilterConfig(!config.allowTags(), config.considerComponents(), config.ignoreDamage());
+				case NBT -> new FilterConfig(config.allowTags(), !config.considerComponents(), config.ignoreDamage());
+				case DAMAGE ->
+						new FilterConfig(config.allowTags(), config.considerComponents(), !config.ignoreDamage());
+			};
 		}
 	}
 }

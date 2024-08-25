@@ -30,6 +30,66 @@ import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 public class IEShaders
 {
+
+	public static final ShaderRegistryEntry ROSEQUARTZ = addShader("rosequartz", 0, Rarity.COMMON, 0xff412323, 0xffe6b4b4, 0xfff0cdcd, 0xffe6b4b4).setInfo(null, null, "rosequartz");
+	public static final ShaderRegistryEntry ARGO = addShader("argo", 2, Rarity.COMMON, 0xff2d2d2d, 0xffdcdcdc, 0xffdc7823, 0xffc8c8c8).setInfo(null, null, "argo");
+	public static final ShaderRegistryEntry SUNSTRIKE = addShader("sunstrike", 5, Rarity.RARE, 0xff737373, 0xffcd6900, 0xb9d73a00, 0xb9d73a00).setInfo(null, null, "sunstrike");
+	public static final ShaderRegistryEntry LOCUS = addShader("locus", 2, Rarity.COMMON, 0xff0a0a0a, 0xff4a4a4a, 0xff84964c, 0xff4a4a4a).setInfo("Mercenaries", "Red vs Blue", "locus");
+	public static final ShaderRegistryEntry FELIX = addShader("felix", 1, Rarity.COMMON, 0xff0a0a0a, 0xff4a4a4a, 0xfff08803, 0xff4a4a4a).setInfo("Mercenaries", "Red vs Blue", "felix");
+	public static final ShaderRegistryEntry SHARKFACE = addShader("sharkface", 2, Rarity.UNCOMMON, 0xff0a0a0a, 0xff4a4a4a, 0xff910008, 0xff4a4a4a, "shark", true, 0xffffffff).setInfo("Mercenaries", "Red vs Blue", "sharkface");
+	public static final ShaderRegistryEntry DRAGONSBREATH = addShader("dragonsbreath", 1, Rarity.UNCOMMON, 0xff191919, 0xff333f2b, 0xff8a8a8a, 0xff8a8a8a, "shark", true, 0xffffffff).setInfo(null, "Destiny", "dragonsbreath");
+	public static final ShaderRegistryEntry HAWK = addShader("hawk", 3, Rarity.COMMON, 0xff67636b, 0xfff4eeeb, 0xff2d2d2d, 0xfff4eeeb).setInfo(null, "Destiny", "hawk");
+	public static final ShaderRegistryEntry EYAS = addShader("eyas", 3, Rarity.COMMON, 0xff52534e, 0xff7a2a08, 0xff2d2d2d, 0xfff4eeeb).setInfo(null, "Destiny", "eyas");
+	public static final ShaderRegistryEntry MAGNUM = addShader("magnum", 1, Rarity.COMMON, 0xff56382c, 0xffdcdcdc, 0xffa0a0a0, 0xffdcdcdc).setInfo(null, null, "magnum");
+	public static final ShaderRegistryEntry FOX = addShader("fox", 2, Rarity.UNCOMMON, 0xff2d2d2d, 0xffd47e31, 0xffeaeaea, 0xffeaeaea).setInfo(null, null, "fox");
+	public static final ShaderRegistryEntry VAULTTEC = addShader("vaulttec", 0, Rarity.COMMON, 0xff56382c, 0xff1a4785, 0xffc0aa50, 0xffaaaaaa).setInfo(null, "Fallout", "vaulttec");
+	public static final ShaderRegistryEntry SPONSOR = addShader("sponsor", 0, Rarity.EPIC, 0xff191919, 0xfff71b24, 0xffffffff, 0xffaaaaaa, "sponsor", false, 0xffffffff).setInfo(null, "Fallout", "sponsor");
+	public static final ShaderRegistryEntry LUSUSNATURAE = addShader("lususnaturae", 0, Rarity.EPIC, 0xff141919, 0xff141919, 0xffadb4bf, 0xffadb4bf).setInfo(null, "RWBY", "lususnaturae");
+	public static final ShaderRegistryEntry IKELOS = addShader("ikelos", 2, Lib.RARITY_MASTERWORK.getValue(), 0xff74665d, 0xff424348, 0xff424348, 0xff313131).setInfo(null, "Destiny", "ikelos");
+	public static final ShaderRegistryEntry MASSFUSION = addShader("massfusion", 3, Rarity.RARE, 0xff6e5a37, 0xff394730, 0xff545454, 0xffaaaaaa, "fusion", true, 0xffffffff).setInfo(null, "Fallout", "massfusion");
+	public static final ShaderRegistryEntry STORMFLOWER = addShader("stormflower", 1, Rarity.COMMON, 0xff273427, 0xff286f30, 0xff4b9255, 0xff286f30).setInfo(null, "RWBY", "stormflower");
+	public static final ShaderRegistryEntry MILO = addShader("milo", 2, Rarity.UNCOMMON, 0xff3b1b10, 0xff670004, 0xffce7e10, 0xff670004).setInfo(null, "RWBY", "milo");
+	public static final ShaderRegistryEntry TRIDENT = addShader("trident", 2, Rarity.UNCOMMON, 0xff515151, 0xffa8a8a8, 0xff29d3ff, 0xffafafaf).setInfo(null, "RWBY", "trident");
+	public static final ShaderRegistryEntry CHLORIS = addShader("chloris", 4, Rarity.RARE, 0xff38322a, 0xff38322a, 0xff88fabe, 0xffc8c8c8).setInfo(null, "RWBY", "chloris");
+	public static final ShaderRegistryEntry CRESCENTROSE = addShader("crescentrose", 2, Rarity.COMMON, 0xff141414, 0xff910008, 0xff080808, 0xffa4a4a4).setInfo(null, "RWBY", "crescentrose");
+	public static final ShaderRegistryEntry QROW = addShader("qrow", 2, Rarity.UNCOMMON, 0xff6d1c11, 0xffd8d7d0, 0xff313640, 0xff730008).setInfo(null, "RWBY", "qrow");
+	public static final ShaderRegistryEntry VANGUARD = addShader("vanguard", 3, Rarity.UNCOMMON, 0xff373737, 0xff131b42, 0xffb86c14, 0xffdcdcdc).setInfo(null, "Destiny", "vanguard");
+	public static final ShaderRegistryEntry REGAL = addShader("regal", 4, Rarity.UNCOMMON, 0xffd8d4d1, 0xff431c1d, 0xffd8d4d1, 0xffd8d4d1).setInfo(null, "Destiny", "regal");
+	public static final ShaderRegistryEntry HARROWED = addShader("harrowed", 4, Rarity.RARE, 0xff161321, 0xff431c1d, 0xff161321, 0xff161321).setInfo(null, "Destiny", "harrowed");
+	public static final ShaderRegistryEntry TAKEN = addShader("taken", 5, Rarity.EPIC, 0xff111c26, 0xff111c26, 0xffbad7dd, 0xff111c26, null, false, 0xffffffff).setInfo(null, "Destiny", "taken");
+	public static final ShaderRegistryEntry ANGELSTHESIS = addShader("angelsthesis", 2, Rarity.EPIC, 0xff1e1e1e, 0xff754697, 0xff77b93d, 0xff505050, null, false, 0xffffffff).setInfo("Mecha", "Neon Genesis Evangelion", "angelsthesis");
+	public static final ShaderRegistryEntry SUTHERLAND = addShader("sutherland", 0, Rarity.RARE, 0xff44404f, 0xff6b5eae, 0xff702739, 0xff44404f, "whitestripe", true, 0xff702034).setInfo("Mecha", "Code Geass", "sutherland");
+	public static final ShaderRegistryEntry EXIA = addShader("exia", 8, Rarity.RARE, 0xffb2220c, 0xff5571d2, 0xffece7e1, 0xffc0fdc7, "whitestripe", true, 0xffc09032).setInfo("Mecha", "Gundam 00", "exia");
+	public static final ShaderRegistryEntry CRIMSONLOTUS = addShader("crimsonlotus", 3, Lib.RARITY_MASTERWORK.getValue(), 0xffd83239, 0xffd83239, 0xff4e4f53, 0xff2ff177, "whitestripe", true, 0xfff4b951).setInfo("Mecha", "Gurren Lagann", "crimsonlotus");
+	public static final ShaderRegistryEntry DOMINATOR = addShader("dominator", 1, Rarity.UNCOMMON, 0xff4c311f, 0xff2a2c36, 0xff5bfffb, 0xff2a2c36, "1_3", true, 0xff2a2c36).setInfo(null, "Psycho-Pass", "dominator");
+	public static final ShaderRegistryEntry WARBIRD = addShader("warbird", 7, Rarity.UNCOMMON, 0xff313640, 0xffd8d7d0, 0xffebac00, 0xffd8d7d0).setInfo(null, null, "warbird");
+	public static final ShaderRegistryEntry MATRIX = addShader("matrix", 7, Rarity.RARE, 0xff053f3c, 0xffe1e1ff, 0xffd4ffff, 0xffffffff, "pipes", true, 0xff84ddd8).setInfo(null, null, "matrix");
+	public static final ShaderRegistryEntry TWILI = addShader("twili", 5, Rarity.EPIC, 0xff555d70, 0xff1a1e2b, 0xff222739, 0xff1db58e, "circuit", false, 0xff1db58e).setInfo(null, "The Legend of Zelda: Twilight Princess", "twili");
+	public static final ShaderRegistryEntry USURPER = addShader("usurper", 3, Rarity.EPIC, 0xff3e1e1e, 0xff5c6156, 0xff111010, 0xff737a6c, "circuit", false, 0xffca2f38).setInfo(null, "The Legend of Zelda: Twilight Princess", "usurper");
+	public static final ShaderRegistryEntry ANCIENT = addShader("ancient", 6, Lib.RARITY_MASTERWORK.getValue(), 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
+	public static final ShaderRegistryEntry GLACIS = addShader("glacis", 6, Rarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd).setInfo(null, null, "glacis");
+	public static final ShaderRegistryEntry PHOENIX = addShader("phoenix", 5, Rarity.RARE, 0xff750000, 0xffd00000, 0xffff7f00, 0xffff7f00).setInfo(null, null, "phoenix");
+	public static final ShaderRegistryEntry RADIANT = addShader("radiant", 3, Rarity.UNCOMMON, 0xffa36eab, 0xfff8dbbc, 0xffc79ab1, 0xffd8d8e3, "pipes", true, 0xfff1c91e).setInfo(null, "Kingdom Hearts", "radiant");
+	public static final ShaderRegistryEntry HOLLOW = addShader("hollow", 4, Rarity.UNCOMMON, 0xff542d1c, 0xffeec5e5, 0xffcc8980, 0xffc4a1aa, "pipes", true, 0xffc49838).setInfo(null, "Kingdom Hearts", "hollow");
+	public static final ShaderRegistryEntry MICROSHARK = addShader("microshark", 8, Rarity.RARE, 0xff775054, 0xfff7f6cf, 0xff936267, 0xff936267, "shark", true, 0xffffffff).setInfo(null, "Terraria", "microshark");
+	public static final ShaderRegistryEntry N7 = addShader("n7", 2, Rarity.EPIC, 0xff13171b, 0xff524d4a, 0xffe01919, 0xff8a8684, "whitestripe", false, 0xffffffff).setInfo(null, "Mass Effect", "n7");
+	public static final ShaderRegistryEntry NORMANDY = addShader("normandy", 8, Rarity.RARE, 0xffffffff, 0xff1a1a1a, 0xffffffff, 0xffffffff, "whitestripe", true, 0xff35447e).setInfo(null, "Mass Effect", "normandy");
+	public static final ShaderRegistryEntry OMNITOOL = addShader("omnitool", 2, Rarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null, "Mass Effect", "omnitool");
+	public static final ShaderRegistryEntry KINDLED = addShader("kindled", 5, Rarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff4f4f4f).setInfo(null, "Dark Souls", "kindled");
+	public static final ShaderRegistryEntry DARKFIRE = addShader("darkfire", 5, Rarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null, "Kingdom Hearts", "darkfire");
+	public static final ShaderRegistryEntry ERRUPTION = addShader("erruption", 5, Rarity.RARE, 0xff2b160b, 0xff58432f, 0x80bf301f, 0xff58432f).setInfo(null, null, "erruption");
+	public static final ShaderRegistryEntry WAAAGH = addShader("waaagh", 5, Rarity.RARE, 0xff0f0f0f, 0xffdea712, 0xffc15b09, 0xff2f2f2f, "1_7", true, 0xff2f2f2f).setInfo(null, "Warhammer 40k", "waaagh");
+	public static final ShaderRegistryEntry ASTARTES = addShader("astartes", 3, Rarity.RARE, 0xff212429, 0xff8e3334, 0xff7b7e87, 0xff7b7e87).setInfo(null, "Warhammer 40k", "astartes");
+	public static final ShaderRegistryEntry NETHERFORGED = addShader("netherforged", 0, Rarity.EPIC, 0xff575046, 0xff323c2c, 0x80bf541f, 0xff4f4f4f).setInfo(null, null, "netherforged");
+	public static final ShaderRegistryEntry TRANSPRIDE = addShader("transpride", 2, Rarity.EPIC, 0xfff5abb9, 0xff5bcffa, 0xfff5abb9, 0xffffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "transpride");
+	public static final ShaderRegistryEntry ENBYPRIDE = addShader("enbypride", 8, Rarity.EPIC, 0xff282828, 0xff282828, 0xff9d59d2, 0xffffffff, "1_2", true, 0xfffcf431).setInfo("Pride", "Pride Flags", "enbypride");
+	public static final ShaderRegistryEntry GAYPRIDE = addShader("gaypride", 8, Rarity.EPIC, 0xff5049cc, 0xff26ceaa, 0xff7bade2, 0xffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "gaypride");
+	public static final ShaderRegistryEntry LESBIANPRIDE = addShader("lesbianpride", 8, Rarity.EPIC, 0xffa50062, 0xffd462a5, 0xffff9b55, 0xffa50062, "1_2", true, 0xffd62900).setInfo("Pride", "Pride Flags", "lesbianpride");
+	public static final ShaderRegistryEntry BIPRIDE = addShader("bipride", 8, Rarity.EPIC, 0xff0035a9, 0xff9c4e97, 0xffd70071, 0xff0035a9).setInfo("Pride", "Pride Flags", "bipride");
+	public static final ShaderRegistryEntry ACEPRIDE = addShader("acepride", 8, Rarity.EPIC, 0xff510053, 0xffffffff, 0xff6c6c6c, 0xff6c6c6c, "1_2", true, 0xff000000).setInfo("Pride", "Pride Flags", "acepride");
+
+
+
 	public static void commonConstruction()
 	{
 		//DEFAULT CUTOUTS
@@ -38,130 +98,63 @@ public class IEShaders
 		setDefaultTextureBounds(ieLoc("item/shaders/drill_diesel_whitestripe"), 0, 17/64d, .5, 42/64d);
 
 		//REGISTER SHADERS
-		addShader("rosequartz", 0, Rarity.COMMON, 0xff412323, 0xffe6b4b4, 0xfff0cdcd, 0xffe6b4b4).setInfo(null, null, "rosequartz");
-		addShader("argo", 2, Rarity.COMMON, 0xff2d2d2d, 0xffdcdcdc, 0xffdc7823, 0xffc8c8c8).setInfo(null, null, "argo");
-		addShader("sunstrike", 5, Rarity.RARE, 0xff737373, 0xffcd6900, 0xb9d73a00, 0xb9d73a00).setInfo(null, null, "sunstrike");
-		addShader("locus", 2, Rarity.COMMON, 0xff0a0a0a, 0xff4a4a4a, 0xff84964c, 0xff4a4a4a).setInfo("Mercenaries", "Red vs Blue", "locus");
-		addShader("felix", 1, Rarity.COMMON, 0xff0a0a0a, 0xff4a4a4a, 0xfff08803, 0xff4a4a4a).setInfo("Mercenaries", "Red vs Blue", "felix");
-		addShader("sharkface", 2, Rarity.UNCOMMON, 0xff0a0a0a, 0xff4a4a4a, 0xff910008, 0xff4a4a4a, "shark", true, 0xffffffff).setInfo("Mercenaries", "Red vs Blue", "sharkface");
-		addShader("dragonsbreath", 1, Rarity.UNCOMMON, 0xff191919, 0xff333f2b, 0xff8a8a8a, 0xff8a8a8a, "shark", true, 0xffffffff).setInfo(null, "Destiny", "dragonsbreath");
-		addShader("hawk", 3, Rarity.COMMON, 0xff67636b, 0xfff4eeeb, 0xff2d2d2d, 0xfff4eeeb).setInfo(null, "Destiny", "hawk");
-		addShader("eyas", 3, Rarity.COMMON, 0xff52534e, 0xff7a2a08, 0xff2d2d2d, 0xfff4eeeb).setInfo(null, "Destiny", "eyas");
-		addShader("magnum", 1, Rarity.COMMON, 0xff56382c, 0xffdcdcdc, 0xffa0a0a0, 0xffdcdcdc).setInfo(null, null, "magnum");
-		addShader("fox", 2, Rarity.UNCOMMON, 0xff2d2d2d, 0xffd47e31, 0xffeaeaea, 0xffeaeaea).setInfo(null, null, "fox");
-		addShader("vaulttec", 0, Rarity.COMMON, 0xff56382c, 0xff1a4785, 0xffc0aa50, 0xffaaaaaa).setInfo(null, "Fallout", "vaulttec");
+		((ShaderCaseMinecart)SPONSOR.getCase(ieLoc("minecart"))).mirrorSideForPass[2] = false;
+		SPONSOR.getCase(ieLoc("revolver")).getLayers()[4].setTextureBounds(0, .75, .25, 1);
+		SPONSOR.getCase(ieLoc("drill")).getLayers()[3].setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d);
+		SPONSOR.getCase(ieLoc("buzzsaw")).getLayers()[3].setTextureBounds(2/64d, 33/64d, 23/64d, 54/64d);
+		SPONSOR.getCase(ieLoc("chemthrower")).getLayers()[3].setTextureBounds(6/64d, 32/64d, 22/64d, 48/64d);
+		SPONSOR.getCase(ieLoc("shield")).getLayers()[2].setTextureBounds(0/32d, 7/32d, 14/32d, 23/32d).setCutoutBounds(.0625, 0, .9375, 1);
 
-		final ShaderRegistryEntry sponsor = addShader("sponsor", 0, Rarity.EPIC, 0xff191919, 0xfff71b24, 0xffffffff, 0xffaaaaaa, "sponsor", false, 0xffffffff).setInfo(null, "Fallout", "sponsor");
-		((ShaderCaseMinecart)sponsor.getCase(ieLoc("minecart"))).mirrorSideForPass[2] = false;
-		sponsor.getCase(ieLoc("revolver")).getLayers()[4].setTextureBounds(0, .75, .25, 1);
-		sponsor.getCase(ieLoc("drill")).getLayers()[3].setTextureBounds(10/64d, 14/64d, 26/64d, 30/64d);
-		sponsor.getCase(ieLoc("buzzsaw")).getLayers()[3].setTextureBounds(2/64d, 33/64d, 23/64d, 54/64d);
-		sponsor.getCase(ieLoc("chemthrower")).getLayers()[3].setTextureBounds(6/64d, 32/64d, 22/64d, 48/64d);
-		sponsor.getCase(ieLoc("shield")).getLayers()[2].setTextureBounds(0/32d, 7/32d, 14/32d, 23/32d).setCutoutBounds(.0625, 0, .9375, 1);
+		addBlockScaledLayer(LUSUSNATURAE, "minecraft:block/destroy_stage_8", 0xbb940c0c);
+		addLayer(LUSUSNATURAE, "1_4", 0xffadb4bf);
 
-		addShader("massfusion", 3, Rarity.RARE, 0xff6e5a37, 0xff394730, 0xff545454, 0xffaaaaaa, "fusion", true, 0xffffffff).setInfo(null, "Fallout", "massfusion");
-
-		addShader("stormflower", 1, Rarity.COMMON, 0xff273427, 0xff286f30, 0xff4b9255, 0xff286f30).setInfo(null, "RWBY", "stormflower");
-		addShader("milo", 2, Rarity.UNCOMMON, 0xff3b1b10, 0xff670004, 0xffce7e10, 0xff670004).setInfo(null, "RWBY", "milo");
-		addShader("trident", 2, Rarity.UNCOMMON, 0xff515151, 0xffa8a8a8, 0xff29d3ff, 0xffafafaf).setInfo(null, "RWBY", "trident");
-		addShader("chloris", 4, Rarity.RARE, 0xff38322a, 0xff38322a, 0xff88fabe, 0xffc8c8c8).setInfo(null, "RWBY", "chloris");
-		addShader("crescentrose", 2, Rarity.COMMON, 0xff141414, 0xff910008, 0xff080808, 0xffa4a4a4).setInfo(null, "RWBY", "crescentrose");
-		addShader("qrow", 2, Rarity.UNCOMMON, 0xff6d1c11, 0xffd8d7d0, 0xff313640, 0xff730008).setInfo(null, "RWBY", "qrow");
-		final ShaderRegistryEntry lususnaturae = addShader("lususnaturae", 0, Rarity.EPIC, 0xff141919, 0xff141919, 0xffadb4bf, 0xffadb4bf).setInfo(null, "RWBY", "lususnaturae");
-		addBlockScaledLayer(lususnaturae, "minecraft:block/destroy_stage_8", 0xbb940c0c);
-		addLayer(lususnaturae, "1_4", 0xffadb4bf);
-
-		addShader("vanguard", 3, Rarity.UNCOMMON, 0xff373737, 0xff131b42, 0xffb86c14, 0xffdcdcdc).setInfo(null, "Destiny", "vanguard");
-		addShader("regal", 4, Rarity.UNCOMMON, 0xffd8d4d1, 0xff431c1d, 0xffd8d4d1, 0xffd8d4d1).setInfo(null, "Destiny", "regal");
-		addShader("harrowed", 4, Rarity.RARE, 0xff161321, 0xff431c1d, 0xff161321, 0xff161321).setInfo(null, "Destiny", "harrowed");
-		addShader("taken", 5, Rarity.EPIC, 0xff111c26, 0xff111c26, 0xffbad7dd, 0xff111c26, null, false, 0xffffffff).setInfo(null, "Destiny", "taken");
-		final ShaderRegistryEntry ikelos = addShader("ikelos", 2, Lib.RARITY_MASTERWORK.getValue(), 0xff74665d, 0xff424348, 0xff424348, 0xff313131).setInfo(null, "Destiny", "ikelos");
-		addDynamicLayer(ikelos, "circuit", 0xffefa117,
+		addDynamicLayer(IKELOS, "circuit", 0xffefa117,
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
 				pre -> {
 				},
 				true
 		);
-		addLayer(ikelos, "1_4", 0xff5f646a);
-		ikelos.setEffectFunction((world, item, shaderType, pos, dir, scale) -> {
+		addLayer(IKELOS, "1_4", 0xff5f646a);
+		IKELOS.setEffectFunction((world, item, shaderType, pos, dir, scale) -> {
 			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 1, 0), scale, 2, null);
 			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 0, 1), scale, 2, null);
 			ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(1, 0, 0), scale, 2, null);
 		});
 
-		addShader("angelsthesis", 2, Rarity.EPIC, 0xff1e1e1e, 0xff754697, 0xff77b93d, 0xff505050, null, false, 0xffffffff).setInfo("Mecha", "Neon Genesis Evangelion", "angelsthesis");
-		addShader("sutherland", 0, Rarity.RARE, 0xff44404f, 0xff6b5eae, 0xff702739, 0xff44404f, "whitestripe", true, 0xff702034).setInfo("Mecha", "Code Geass", "sutherland");
-		addShader("exia", 8, Rarity.RARE, 0xffb2220c, 0xff5571d2, 0xffece7e1, 0xffc0fdc7, "whitestripe", true, 0xffc09032).setInfo("Mecha", "Gundam 00", "exia");
-		addShader("crimsonlotus", 3, Lib.RARITY_MASTERWORK.getValue(), 0xffd83239, 0xffd83239, 0xff4e4f53, 0xff2ff177, "whitestripe", true, 0xfff4b951).setInfo("Mecha", "Gurren Lagann", "crimsonlotus");
-		addShader("dominator", 1, Rarity.UNCOMMON, 0xff4c311f, 0xff2a2c36, 0xff5bfffb, 0xff2a2c36, "1_3", true, 0xff2a2c36).setInfo(null, "Psycho-Pass", "dominator");
-
-		addShader("warbird", 7, Rarity.UNCOMMON, 0xff313640, 0xffd8d7d0, 0xffebac00, 0xffd8d7d0).setInfo(null, null, "warbird");
-		addShader("matrix", 7, Rarity.RARE, 0xff053f3c, 0xffe1e1ff, 0xffd4ffff, 0xffffffff, "pipes", true, 0xff84ddd8).setInfo(null, null, "matrix");
-		addShader("twili", 5, Rarity.EPIC, 0xff555d70, 0xff1a1e2b, 0xff222739, 0xff1db58e, "circuit", false, 0xff1db58e).setInfo(null, "The Legend of Zelda: Twilight Princess", "twili");
-		addShader("usurper", 3, Rarity.EPIC, 0xff3e1e1e, 0xff5c6156, 0xff111010, 0xff737a6c, "circuit", false, 0xffca2f38).setInfo(null, "The Legend of Zelda: Twilight Princess", "usurper");
-		final ShaderRegistryEntry ancient = addShader("ancient", 6, Lib.RARITY_MASTERWORK.getValue(), 0xff9c3a2d, 0xff514848, 0xfff6ae4a, 0xff80fcf2).setInfo(null, "The Legend of Zelda: Breath of the Wild", "ancient");
-		addDynamicLayer(ancient, "1_6", 0xff80fcf2,//0xaafaf307,
+		addDynamicLayer(ANCIENT, "1_6", 0xff80fcf2,//0xaafaf307,
 				(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
 				pre -> {
 				},
 				true
 		);
-		addLayer(ancient, "circuit", 0x99bc9377);
-		((ShaderCaseDrill)ancient.getCase(ieLoc("drill"))).addHeadLayers(new ShaderLayer(ieLoc("item/drill_iron"), 0xff80fcf2));
+		addLayer(ANCIENT, "circuit", 0x99bc9377);
+		((ShaderCaseDrill)ANCIENT.getCase(ieLoc("drill"))).addHeadLayers(new ShaderLayer(ieLoc("item/drill_iron"), 0xff80fcf2));
 
-		addShader("glacis", 6, Rarity.RARE, 0xff499bc2, 0x3376d0f9, 0x33bdfffd, 0x33bdfffd).setInfo(null, null, "glacis");
-		addShader("phoenix", 5, Rarity.RARE, 0xff750000, 0xffd00000, 0xffff7f00, 0xffff7f00).setInfo(null, null, "phoenix");
+		addBlockScaledLayer(KINDLED, "minecraft:block/fire_0", 0x80ffffff);
+		addBlockScaledLayer(DARKFIRE, "immersiveengineering:block/shaders/greyscale_fire", 0xff9e83eb);
+		addBlockScaledLayer(ERRUPTION, "minecraft:block/destroy_stage_8", 0xffff6314);
+		addLayer(ASTARTES, "1_8", 0xff8e3334);
 
-		addShader("radiant", 3, Rarity.UNCOMMON, 0xffa36eab, 0xfff8dbbc, 0xffc79ab1, 0xffd8d8e3, "pipes", true, 0xfff1c91e).setInfo(null, "Kingdom Hearts", "radiant");
-		addShader("hollow", 4, Rarity.UNCOMMON, 0xff542d1c, 0xffeec5e5, 0xffcc8980, 0xffc4a1aa, "pipes", true, 0xffc49838).setInfo(null, "Kingdom Hearts", "hollow");
-
-		addShader("microshark", 8, Rarity.RARE, 0xff775054, 0xfff7f6cf, 0xff936267, 0xff936267, "shark", true, 0xffffffff).setInfo(null, "Terraria", "microshark");
-
-		addShader("n7", 2, Rarity.EPIC, 0xff13171b, 0xff524d4a, 0xffe01919, 0xff8a8684, "whitestripe", false, 0xffffffff).setInfo(null, "Mass Effect", "n7");
-		addShader("normandy", 8, Rarity.RARE, 0xffffffff, 0xff1a1a1a, 0xffffffff, 0xffffffff, "whitestripe", true, 0xff35447e).setInfo(null, "Mass Effect", "normandy");
-		addShader("omnitool", 2, Rarity.RARE, 0x40ff952c, 0x30ff952c, 0x40ff952c, 0x20ff952c).setInfo(null, "Mass Effect", "omnitool");
-
-		final ShaderRegistryEntry kindled = addShader("kindled", 5, Rarity.EPIC, 0xff2b160b, 0xff3a3a3a, 0x80bf541f, 0xff4f4f4f).setInfo(null, "Dark Souls", "kindled");
-		addBlockScaledLayer(kindled, "minecraft:block/fire_0", 0x80ffffff);
-
-		final ShaderRegistryEntry darkfire = addShader("darkfire", 5, Rarity.EPIC, 0xff1e131b, 0xff211633, 0xff330812, 0xff412965).setInfo(null, "Kingdom Hearts", "darkfire");
-		addBlockScaledLayer(darkfire, "immersiveengineering:block/shaders/greyscale_fire", 0xff9e83eb);
-
-		final ShaderRegistryEntry erruption = addShader("erruption", 5, Rarity.RARE, 0xff2b160b, 0xff58432f, 0x80bf301f, 0xff58432f).setInfo(null, null, "erruption");
-		addBlockScaledLayer(erruption, "minecraft:block/destroy_stage_8", 0xffff6314);
-
-		addShader("waaagh", 5, Rarity.RARE, 0xff0f0f0f, 0xffdea712, 0xffc15b09, 0xff2f2f2f, "1_7", true, 0xff2f2f2f).setInfo(null, "Warhammer 40k", "waaagh");
-
-		final ShaderRegistryEntry astartes = addShader("astartes", 3, Rarity.RARE, 0xff212429, 0xff8e3334, 0xff7b7e87, 0xff7b7e87).setInfo(null, "Warhammer 40k", "astartes");
-		addLayer(astartes, "1_8", 0xff8e3334);
-
-		final ShaderRegistryEntry netherforged = addShader("netherforged", 0, Rarity.EPIC, 0xff575046, 0xff323c2c, 0x80bf541f, 0xff4f4f4f).setInfo(null, null, "netherforged");
 		{
-			addBlockScaledLayer(netherforged, "minecraft:block/magma", 0xffffffff);
-			netherforged.getCase(ieLoc("revolver")).getLayers()[4].setTextureBounds(0, .6875, .3125, 1);
-			addLayer(netherforged, "1_8", 0xff323c2c);
-			netherforged.getCase(ieLoc("revolver")).getLayers()[5].setTextureBounds(0, .8125, 1, 1).setCutoutBounds(0, 0, 1, .1875);
-			addLayer(netherforged, "1_0", 0xff323c2c);
+			addBlockScaledLayer(NETHERFORGED, "minecraft:block/magma", 0xffffffff);
+			NETHERFORGED.getCase(ieLoc("revolver")).getLayers()[4].setTextureBounds(0, .6875, .3125, 1);
+			addLayer(NETHERFORGED, "1_8", 0xff323c2c);
+			NETHERFORGED.getCase(ieLoc("revolver")).getLayers()[5].setTextureBounds(0, .8125, 1, 1).setCutoutBounds(0, 0, 1, .1875);
+			addLayer(NETHERFORGED, "1_0", 0xff323c2c);
 		}
 
-		addShader("transpride", 2, Rarity.EPIC, 0xfff5abb9, 0xff5bcffa, 0xfff5abb9, 0xffffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "transpride");
-		final ShaderRegistryEntry enbypride = addShader("enbypride", 8, Rarity.EPIC, 0xff282828, 0xff282828, 0xff9d59d2, 0xffffffff, "1_2", true, 0xfffcf431).setInfo("Pride", "Pride Flags", "enbypride");
-		addLayer(enbypride, "whitestripe", 0xffffffff);
-		final ShaderRegistryEntry gaypride = addShader("gaypride", 8, Rarity.EPIC, 0xff5049cc, 0xff26ceaa, 0xff7bade2, 0xffffff, "whitestripe", true, 0xffffffff).setInfo("Pride", "Pride Flags", "gaypride");
-		addLayer(gaypride, "1_3", 0xff98e8e6);
-		final ShaderRegistryEntry lesbianpride = addShader("lesbianpride", 8, Rarity.EPIC, 0xffa50062, 0xffd462a5, 0xffff9b55, 0xffa50062, "1_2", true, 0xffd62900).setInfo("Pride", "Pride Flags", "lesbianpride");
-		addLayer(lesbianpride, "whitestripe", 0xffffffff);
-		addShader("bipride", 8, Rarity.EPIC, 0xff0035a9, 0xff9c4e97, 0xffd70071, 0xff0035a9).setInfo("Pride", "Pride Flags", "bipride");
-		final ShaderRegistryEntry acepride = addShader("acepride", 8, Rarity.EPIC, 0xff510053, 0xffffffff, 0xff6c6c6c, 0xff6c6c6c, "1_2", true, 0xff000000).setInfo("Pride", "Pride Flags", "acepride");
-		addLayer(acepride, "whitestripe", 0xff510053);
+		addLayer(ENBYPRIDE, "whitestripe", 0xffffffff);
+		addLayer(GAYPRIDE, "1_3", 0xff98e8e6);
+		addLayer(LESBIANPRIDE, "whitestripe", 0xffffffff);
+		addLayer(ACEPRIDE, "whitestripe", 0xff510053);
 	}
 
-	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
+	private static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade)
 	{
 		return addShader(name, overlayType, rarity, colourBackground, colourPrimary, colourSecondary, colourBlade, null, true, 0xffffffff);
 	}
 
-	public static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
+	private static ShaderRegistryEntry addShader(String name, int overlayType, Rarity rarity, int colourBackground, int colourPrimary, int colourSecondary, int colourBlade, String additionalTexture, boolean loot, int colourOverlay)
 	{
 		return ShaderRegistry.registerShader(ieLoc(name), Integer.toString(overlayType), rarity, colourPrimary, colourSecondary, colourBackground, colourBlade, additionalTexture, colourOverlay, loot, true);
 	}

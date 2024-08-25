@@ -6,15 +6,15 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:silver"
+          "name": "immersiveengineering:bullet_silver"
         },
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:dragons_breath"
+          "name": "immersiveengineering:bullet_dragons_breath"
         },
         {
           "type": "minecraft:item",
-          "name": "immersiveengineering:homing"
+          "name": "immersiveengineering:bullet_homing"
         },
         {
           "type": "minecraft:item",

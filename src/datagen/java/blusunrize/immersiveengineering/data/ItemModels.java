@@ -58,6 +58,7 @@ import java.util.Collection;
 import java.util.Map.Entry;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 import static net.minecraft.client.renderer.RenderType.translucent;
 
 public class ItemModels extends TRSRItemModelProvider
@@ -248,6 +249,11 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("metal_", IEItems.Metals.PLATES.values().toArray(new ItemLike[0]));
 		for(ItemLike bag : IEItems.Misc.SHADER_BAG.values())
 			addItemModel("shader_bag", bag);
+		for(ItemLike shader : Misc.SHADERS.values())
+			withExistingParent(name(shader), ieLoc("item/ie_item_base"))
+					.texture("layer0", ieLoc("item/shader_0"))
+					.texture("layer1", ieLoc("item/shader_1"))
+					.texture("layer2", ieLoc("item/shader_2"));
 
 		addItemModels("material_", Ingredients.STICK_TREATED, Ingredients.STICK_IRON, Ingredients.STICK_STEEL, Ingredients.STICK_ALUMINUM, Ingredients.STICK_NETHERITE,
 				Ingredients.HEMP_FIBER, Ingredients.HEMP_FABRIC, Ingredients.ERSATZ_LEATHER, Ingredients.COAL_COKE, Ingredients.SLAG,

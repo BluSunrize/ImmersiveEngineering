@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 
 public interface IScreenMessageReceive
 {
+	// TODO some nicer system based on stream codecs?
 	default void receiveMessageFromScreen(CompoundTag nbt)
 	{
 	}

@@ -9,11 +9,13 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.upgrade.UpgradeEffect;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.PowerpackCallbacks;
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
+import blusunrize.immersiveengineering.client.render.tile.ShaderBannerRenderer;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
@@ -33,7 +35,6 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -67,6 +68,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
 /**
  * @author BluSunrize
@@ -144,9 +147,9 @@ public class ModelPowerpack
 		{
 			matrixStackIn.pushPose();
 
-			ResourceLocation shaderTexture = null/*TODO ShaderBannerRenderer.getShaderResourceLocation(
-					banner, IEApi.ieLoc("banner")
-			)*/;
+			ResourceLocation shaderTexture = banner.getItem() instanceof IShaderItem shaderItem?
+					ShaderBannerRenderer.getShaderResourceLocation(shaderItem.getShaderName(), ieLoc("banner")):
+					null;
 			if(shaderTexture!=null)
 			{
 				// set up to render the large-texture banner

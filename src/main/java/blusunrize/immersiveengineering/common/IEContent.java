@@ -127,6 +127,7 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Rarity.RARE, 5);
 		ShaderRegistry.rarityWeightMap.put(Rarity.EPIC, 3);
 		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK.getValue(), 1);
+		IEShaders.commonConstruction();
 
 		IEDataComponents.init(modBus);
 		IEFluids.REGISTER.register(modBus);
@@ -157,7 +158,6 @@ public class IEContent
 
 		ClocheRenderFunctions.init();
 
-		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		IEMultiblockLogic.init(modBus);
 		populateAPI();

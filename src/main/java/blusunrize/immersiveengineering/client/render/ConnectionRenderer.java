@@ -25,6 +25,7 @@ import malte0811.modelsplitter.model.UVCoords;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -229,6 +230,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 				out.addVertex(transform.last(), v.posX, v.posY, v.posZ)
 						.setColor(v.red, v.green, v.blue, 1)
 						.setUv(v.texU, v.texV)
+						.setOverlay(OverlayTexture.NO_OVERLAY)
 						.setLight(v.lightForStart?lightStart: lightEnd)
 						.setNormal(transform.last(), v.normalX, v.normalY, v.normalZ);
 		}

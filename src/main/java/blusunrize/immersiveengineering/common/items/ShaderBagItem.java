@@ -8,13 +8,10 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,7 +22,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
-import java.util.Locale;
 
 public class ShaderBagItem extends IEBaseItem implements IColouredItem
 {
@@ -42,20 +38,6 @@ public class ShaderBagItem extends IEBaseItem implements IColouredItem
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		return rarity.color().getColor();
-	}
-
-	@Override
-	public Component getName(ItemStack stack)
-	{
-		return Component.translatable(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
-				.append(" ")
-				.append(super.getName(stack));
-	}
-
-	@Override
-	public String getDescriptionId()
-	{
-		return "item."+ImmersiveEngineering.MODID+".shader_bag";
 	}
 
 	@Override

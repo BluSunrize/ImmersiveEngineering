@@ -141,9 +141,20 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 		return itc;
 	}
 
+	@Override
+	public String getDescriptionId()
+	{
+		return "item.immersiveengineering.shader";
+	}
+
 	public static Component getShaderName(ResourceLocation shader)
 	{
-		return Component.translatable("item."+shader.getNamespace()+".shader.name."+shader.getPath());
+		return Component.translatable(getShaderNameKey(shader));
+	}
+
+	public static String getShaderNameKey(ResourceLocation shader)
+	{
+		return "item."+shader.getNamespace()+".shader.name."+shader.getPath();
 	}
 
 	@Override

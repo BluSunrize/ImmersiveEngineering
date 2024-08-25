@@ -9,9 +9,12 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity.FilterConfig;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,8 +26,9 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SorterMenu extends IEContainerMenu
 {
@@ -32,26 +36,26 @@ public class SorterMenu extends IEContainerMenu
 			MenuType<?> type, int id, Inventory invPlayer, SorterBlockEntity be
 	)
 	{
-		final List<GetterAndSetter<Integer>> filters = IntStream.range(0, 6)
-				.mapToObj(i -> new GetterAndSetter<>(() -> be.sideFilter[i], f -> be.sideFilter[i] = f))
-				.toList();
+		final Map<Direction, GetterAndSetter<FilterConfig>> filters = Arrays.stream(Direction.values())
+				.map(d -> Pair.of(d, new GetterAndSetter<>(() -> be.sideFilter.get(d), f -> be.sideFilter.put(d, f))))
+				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 		return new SorterMenu(blockCtx(type, id, be), invPlayer, be.filter, filters);
 	}
 
 	public static SorterMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
 	{
-		final List<GetterAndSetter<Integer>> filters = IntStream.range(0, 6)
-				.mapToObj(i -> GetterAndSetter.standalone(0))
-				.toList();
+		final Map<Direction, GetterAndSetter<FilterConfig>> filters = Arrays.stream(Direction.values())
+				.map(d -> Pair.of(d, GetterAndSetter.standalone(FilterConfig.DEFAULT)))
+				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 		return new SorterMenu(
 				clientCtx(type, id), invPlayer, new ItemStackHandler(SorterBlockEntity.TOTAL_SLOTS), filters
 		);
 	}
 
-	public final List<GetterAndSetter<Integer>> filterMasks;
+	public final Map<Direction, GetterAndSetter<FilterConfig>> filterMasks;
 
 	private SorterMenu(
-			MenuContext ctx, Inventory inventoryPlayer, IItemHandler filter, List<GetterAndSetter<Integer>> filterMasks
+			MenuContext ctx, Inventory inventoryPlayer, IItemHandler filter, Map<Direction, GetterAndSetter<FilterConfig>> filterMasks
 	)
 	{
 		super(ctx);
@@ -70,8 +74,8 @@ public class SorterMenu extends IEContainerMenu
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 221));
-		for(final GetterAndSetter<Integer> mask : filterMasks)
-			addGenericData(new GenericContainerData<>(GenericDataSerializers.INT32, mask));
+		for(final GetterAndSetter<FilterConfig> mask : filterMasks.values())
+			addGenericData(new GenericContainerData<>(GenericDataSerializers.FILTER_CONFIG, mask));
 	}
 
 	@Nonnull
@@ -84,7 +88,9 @@ public class SorterMenu extends IEContainerMenu
 	@Override
 	public void receiveMessageFromScreen(CompoundTag message)
 	{
-		if(message.contains("sideConfigVal", Tag.TAG_INT))
-			filterMasks.get(message.getInt("sideConfigId")).set(message.getInt("sideConfigVal"));
+		if(!message.contains("sideConfigId", Tag.TAG_INT))
+			return;
+		var filter = FilterConfig.CODEC.fromNBT(message.get("sideConfigVal"));
+		filterMasks.get(Direction.values()[message.getInt("sideConfigId")]).set(filter);
 	}
 }

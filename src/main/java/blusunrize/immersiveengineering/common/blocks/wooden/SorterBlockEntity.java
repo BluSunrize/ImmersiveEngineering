@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodec;
+import blusunrize.immersiveengineering.api.utils.codec.DualCodecs;
 import blusunrize.immersiveengineering.common.blocks.BlockCapabilityRegistration.BECapabilityRegistrar;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
@@ -21,7 +23,9 @@ import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches;
 import blusunrize.immersiveengineering.common.util.IEBlockCapabilityCaches.IEBlockCapabilityCache;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -51,9 +55,15 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 {
 	public static final int FILTER_SLOTS_PER_SIDE = 8;
 	public static final int TOTAL_SLOTS = 6*SorterBlockEntity.FILTER_SLOTS_PER_SIDE;
+	public static final DualCodec<ByteBuf, EnumMap<Direction, FilterConfig>> FILTER_CODEC = DualCodecs.forEnumMap(
+			Direction.values(), FilterConfig.CODEC
+	);
 
 	public SorterInventory filter;
-	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
+	public EnumMap<Direction, FilterConfig> sideFilter = Util.make(new EnumMap<>(Direction.class), l -> {
+		for(Direction d : Direction.values())
+			l.put(d, FilterConfig.DEFAULT);
+	});
 	/**
 	 * The positions of the routers that have been used in the current "outermost" `routeItem` call.
 	 * Necessary to stop "blocks" of routers (and similar setups) from causing massive lag (using just a boolean
@@ -112,27 +122,6 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			lengthFiltered--;
 		}
 		return stack;
-	}
-
-	public boolean doOredict(int side)
-	{
-		if(side >= 0&&side < this.sideFilter.length)
-			return (this.sideFilter[side]&1)!=0;
-		return false;
-	}
-
-	public boolean doNBT(int side)
-	{
-		if(side >= 0&&side < this.sideFilter.length)
-			return (this.sideFilter[side]&2)!=0;
-		return false;
-	}
-
-	public boolean doFuzzy(int side)
-	{
-		if(side >= 0&&side < this.sideFilter.length)
-			return (this.sideFilter[side]&4)!=0;
-		return false;
 	}
 
 	@Override
@@ -213,37 +202,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		return ItemStack.EMPTY;
 	}
 
-	private static final CompoundTag EMPTY_NBT = new CompoundTag();
-
-	private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean oredict, boolean nbt)
-	{
-		// "Item level" tests
-		if(oredict)
-		{
-			if(!stack.getItem().builtInRegistryHolder().tags().anyMatch(filterStack::is))
-				return false;
-		}
-		else if(!ItemStack.isSameItem(filterStack, stack))
-			return false;
-		// "NBT level" tests
-		if(!fuzzy&&(stack.isDamageableItem()||filterStack.isDamageableItem()))
-		{
-			final int damageStack = stack.getDamageValue();
-			final int damageFilter = filterStack.getDamageValue();
-			if(damageStack!=damageFilter)
-				return false;
-		}
-		if(nbt)
-		{
-			final var stackTag = getTagWithoutDamage(stack);
-			final var filterTag = getTagWithoutDamage(filterStack);
-			if(!stackTag.equals(filterTag))
-				return false;
-		}
-		return true;
-	}
-
-	private static DataComponentMap getTagWithoutDamage(ItemStack stack)
+	private static DataComponentMap getComponentsWithoutDamage(ItemStack stack)
 	{
 		return stack.getComponents().filter(type -> type!=DataComponents.DAMAGE);
 	}
@@ -260,7 +219,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			if(!filterStack.isEmpty())
 			{
 				unmapped = false;
-				if(compareStackToFilterstack(stack, filterStack, doFuzzy(side.ordinal()), doOredict(side.ordinal()), doNBT(side.ordinal())))
+				if(sideFilter.get(side).compareStackToFilterstack(stack, filterStack))
 					return EnumFilterResult.VALID_FILTERED;
 			}
 		if(unmapped)
@@ -279,15 +238,16 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			if(!filterStack.isEmpty())
 				concat.add(filterStack);
 
-		Predicate<ItemStack> matchFilter = concat.isEmpty()?(stack) -> true: new Predicate<ItemStack>()
+		Predicate<ItemStack> matchFilter = concat.isEmpty()?(stack) -> true: new Predicate<>()
 		{
 			final Set<ItemStack> filter = new HashSet<>(concat);
+			final FilterConfig config = sideFilter.get(side0);
 
 			@Override
 			public boolean test(ItemStack stack)
 			{
 				for(ItemStack filterStack : filter)
-					if(compareStackToFilterstack(stack, filterStack, doFuzzy(side0.ordinal()), doOredict(side0.ordinal()), doNBT(side0.ordinal())))
+					if(config.compareStackToFilterstack(stack, filterStack))
 						return true;
 				return false;
 			}
@@ -297,13 +257,17 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			if(!filterStack.isEmpty()&&matchFilter.test(filterStack))
 				concat.add(filterStack);
 
-		final boolean concatFuzzy = doFuzzy(side0.ordinal())|doFuzzy(side1.ordinal());
-		final boolean concatOredict = doOredict(side0.ordinal())|doOredict(side1.ordinal());
-		final boolean concatNBT = doNBT(side0.ordinal())|doNBT(side1.ordinal());
+		// TODO this looks dodgy
+		final var filterFrom = sideFilter.get(side0);
+		final var filterTo = sideFilter.get(side1);
+		final boolean concatFuzzy = filterFrom.ignoreDamage||filterTo.ignoreDamage;
+		final boolean concatOredict = filterFrom.allowTags||filterTo.allowTags;
+		final boolean concatNBT = filterFrom.considerComponents||filterTo.considerComponents;
+		final var combinedFilter = new FilterConfig(concatOredict, concatNBT, concatFuzzy);
 
 		return concat.isEmpty()?stack -> true: stack -> {
 			for(ItemStack filterStack : concat)
-				if(compareStackToFilterstack(stack, filterStack, concatFuzzy, concatOredict, concatNBT))
+				if(combinedFilter.compareStackToFilterstack(stack, filterStack))
 					return true;
 			return false;
 		};
@@ -317,7 +281,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		sideFilter = nbt.getIntArray("sideFilter");
+		sideFilter = FILTER_CODEC.fromNBT(nbt.get("sideFilter"));
 		if(!descPacket)
 		{
 			ListTag filterList = nbt.getList("filter", 10);
@@ -329,7 +293,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket, Provider provider)
 	{
-		nbt.putIntArray("sideFilter", sideFilter);
+		nbt.put("sideFilter", FILTER_CODEC.toNBT(sideFilter));
 		if(!descPacket)
 		{
 			ListTag filterList = new ListTag();
@@ -489,5 +453,44 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		INVALID,
 		VALID_FILTERED,
 		VALID_UNFILTERED
+	}
+
+	public record FilterConfig(boolean allowTags, boolean considerComponents, boolean ignoreDamage)
+	{
+		public static final FilterConfig DEFAULT = new FilterConfig(false, false, false);
+		public static final DualCodec<ByteBuf, FilterConfig> CODEC = DualCodecs.composite(
+				DualCodecs.BOOL.fieldOf("allowTags"), FilterConfig::allowTags,
+				DualCodecs.BOOL.fieldOf("considerComponents"), FilterConfig::considerComponents,
+				DualCodecs.BOOL.fieldOf("ignoreDamage"), FilterConfig::ignoreDamage,
+				FilterConfig::new
+		);
+
+		public boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack)
+		{
+			// "Item level" tests
+			if(allowTags)
+			{
+				if(stack.getItem().builtInRegistryHolder().tags().noneMatch(filterStack::is))
+					return false;
+			}
+			else if(!ItemStack.isSameItem(filterStack, stack))
+				return false;
+			// "NBT level" tests
+			if(!ignoreDamage&&(stack.isDamageableItem()||filterStack.isDamageableItem()))
+			{
+				final int damageStack = stack.getDamageValue();
+				final int damageFilter = filterStack.getDamageValue();
+				if(damageStack!=damageFilter)
+					return false;
+			}
+			if(considerComponents)
+			{
+				final var stackTag = getComponentsWithoutDamage(stack);
+				final var filterTag = getComponentsWithoutDamage(filterStack);
+				if(!stackTag.equals(filterTag))
+					return false;
+			}
+			return true;
+		}
 	}
 }

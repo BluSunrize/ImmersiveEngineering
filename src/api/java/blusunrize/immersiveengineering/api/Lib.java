@@ -13,14 +13,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.SimpleTier;
 
 import static blusunrize.immersiveengineering.api.IEApi.ieLoc;
 
@@ -134,45 +133,9 @@ public class Lib
 		}
 	}
 
-	// TODO SimpleTier
-	public static final Tier MATERIAL_Steel = new Tier()
-	{
-		@Override
-		public int getUses()
-		{
-			return 641;
-		}
-
-		@Override
-		public float getSpeed()
-		{
-			return 7F;
-		}
-
-		@Override
-		public float getAttackDamageBonus()
-		{
-			return 3F;
-		}
-
-		@Override
-		public TagKey<Block> getIncorrectBlocksForDrops()
-		{
-			return IETags.incorrectDropsSteel;
-		}
-
-		@Override
-		public int getEnchantmentValue()
-		{
-			return 10;
-		}
-
-		@Override
-		public Ingredient getRepairIngredient()
-		{
-			return Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot);
-		}
-	};
+	public static final Tier MATERIAL_Steel = new SimpleTier(
+			IETags.incorrectDropsSteel, 641, 7, 3, 10, () -> Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot)
+	);
 	public static final EnumProxy<Rarity> RARITY_MASTERWORK = new EnumProxy<>(
 			// 0 is "index" parameter, should get replaced by Neo's enum extension handler
 			Rarity.class, 0, MODID+":masterwork", ChatFormatting.GOLD
