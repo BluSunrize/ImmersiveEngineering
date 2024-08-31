@@ -113,7 +113,7 @@ public class ClocheCallbacks implements BlockCallback<Key>
 	{
 		ItemStack soil = key.soil().stack;
 		if(!soil.isEmpty()&&"farmland".equals(material)&&Utils.isFluidRelatedItemStack(soil))
-			return new Color4(
+			return Color4.fromARGB(
 					FluidUtil.getFluidContained(soil)
 							.map(fs -> IClientFluidTypeExtensions.of(fs.getFluid()).getTintColor(fs))
 							.orElse(0xffffffff)

@@ -25,9 +25,14 @@ public record Color4(float r, float g, float b, float a)
 			Color4::new
 	);
 
-	public Color4(int rgba)
+	public static Color4 fromARGB(int rgba)
 	{
-		this(rgba>>16&255, rgba>>8&255, rgba&255, rgba>>24&255);
+		return new Color4(rgba>>16&255, rgba>>8&255, rgba&255, rgba>>24&255);
+	}
+
+	public static Color4 fromRGB(int rgb)
+	{
+		return new Color4(rgb>>16&255, rgb>>8&255, rgb&255, 255);
 	}
 
 	public Color4(int r, int g, int b, int a)

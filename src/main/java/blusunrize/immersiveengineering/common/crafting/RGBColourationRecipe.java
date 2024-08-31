@@ -99,7 +99,7 @@ public record RGBColourationRecipe(Ingredient target) implements CraftingRecipe
 			b = (int)((float)b*colourMod/highestColour);
 			int newColour = (r<<8)+g;
 			newColour = (newColour<<8)+b;
-			newItem.set(IEDataComponents.COLOR, new Color4(newColour));
+			newItem.set(IEDataComponents.COLOR, Color4.fromRGB(newColour));
 			return newItem;
 		}
 		return ItemStack.EMPTY;

@@ -64,7 +64,7 @@ public class EarmuffsItem extends IEBaseItem implements IConfigurableTool, IColo
 		super(new Properties()
 				.stacksTo(1)
 				.component(IEDataComponents.EARMUFF_DATA, EarmuffData.DEFAULT)
-				.component(IEDataComponents.COLOR, new Color4(0xff486c94))
+				.component(IEDataComponents.COLOR, Color4.fromRGB(0x486c94))
 		);
 	}
 

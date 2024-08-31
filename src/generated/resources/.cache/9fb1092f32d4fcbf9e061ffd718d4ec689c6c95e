@@ -1,4 +1,4 @@
-// 1.21.1	2024-08-25T13:16:39.3468769	Recipes
+// 1.21.1	2024-08-31T10:08:09.822417804	Recipes
 e46a17053b96b7062a3dbf804ed3e25c134fc397 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick.json
 6a92fb93f1478200a7237b19770f94285cc3d955 data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_from_slab.json
 bba88ea9b8e42c09c4e5df2344ccef6ad7ed4b8d data/immersiveengineering/advancement/recipes/misc/crafting/alloybrick_to_slab.json
@@ -1021,6 +1021,7 @@ bb3266b2df6148eec4198e192e628d2f0a2fbb52 data/immersiveengineering/recipe/crafti
 d82de992bd8f23eb008143374c7eff81dfc5e492 data/immersiveengineering/recipe/crafting/drillhead_steel.json
 aafc1a0449dbcf9fa9edce0ae90f2f4ba2c2571a data/immersiveengineering/recipe/crafting/dynamo.json
 ed451fae95277953caffe209c1c4b03463d2c7c8 data/immersiveengineering/recipe/crafting/earmuffs.json
+5225eab61a020fee3cf70918611b934681d6f6b0 data/immersiveengineering/recipe/crafting/earmuffs_colour.json
 3dca5adb002113d77401927e5e21bf8bd4de376f data/immersiveengineering/recipe/crafting/electric_lantern.json
 474262f03ccd177a14e96ebc93c115e0e6aa14a6 data/immersiveengineering/recipe/crafting/electromagnet.json
 e604537df117eacee771bac49a481ac4cd2d328b data/immersiveengineering/recipe/crafting/electrum_mix.json

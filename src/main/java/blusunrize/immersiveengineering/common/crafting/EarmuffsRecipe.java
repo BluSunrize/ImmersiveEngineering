@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.utils.Color4;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.components.AttachedItem;
 import blusunrize.immersiveengineering.common.register.IEDataComponents;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
@@ -74,9 +72,6 @@ public class EarmuffsRecipe implements CraftingRecipe
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
-		int[] colourArray = new int[3];
-		int j = 0;
-		int totalColourSets = 0;
 		for(int i = 0; i < inv.size(); i++)
 		{
 			ItemStack stackInSlot = inv.getItem(i);
@@ -84,51 +79,17 @@ public class EarmuffsRecipe implements CraftingRecipe
 			{
 				final boolean isEarmuffs = stackInSlot.is(Misc.EARMUFFS.asItem());
 				if(earmuffs.isEmpty()&&isEarmuffs)
-				{
 					earmuffs = stackInSlot;
-					int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
-					float r = (float)(colour >> 16&255)/255.0F;
-					float g = (float)(colour >> 8&255)/255.0F;
-					float b = (float)(colour&255)/255.0F;
-					j = (int)((float)j+Math.max(r, Math.max(g, b))*255.0F);
-					colourArray[0] = (int)((float)colourArray[0]+r*255.0F);
-					colourArray[1] = (int)((float)colourArray[1]+g*255.0F);
-					colourArray[2] = (int)((float)colourArray[2]+b*255.0F);
-					++totalColourSets;
-				}
-				else if(Utils.isDye(stackInSlot))
-				{
-					int color = Utils.getDye(stackInSlot).getTextureDiffuseColor();
-					int r = (color>>16)&255;
-					int g = (color>>8)&255;
-					int b = color&255;
-					j += Math.max(r, Math.max(g, b));
-					colourArray[0] += r;
-					colourArray[1] += g;
-					colourArray[2] += b;
-					++totalColourSets;
-				}
 				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem&&
 						((ArmorItem)stackInSlot.getItem()).getEquipmentSlot()==EquipmentSlot.HEAD&&
 						!isEarmuffs)
 					armor = stackInSlot;
+				// TODO else fail?
 			}
 		}
 
 		if(!earmuffs.isEmpty())
 		{
-			if(totalColourSets > 1)
-			{
-				int r = colourArray[0]/totalColourSets;
-				int g = colourArray[1]/totalColourSets;
-				int b = colourArray[2]/totalColourSets;
-				float colourMod = (float)j/(float)totalColourSets;
-				float highestColour = (float)Math.max(r, Math.max(g, b));
-				r = (int)((float)r*colourMod/highestColour);
-				g = (int)((float)g*colourMod/highestColour);
-				b = (int)((float)b*colourMod/highestColour);
-				earmuffs.set(IEDataComponents.COLOR, new Color4(r, g, b, 1));
-			}
 			ItemStack output;
 			if(!armor.isEmpty())
 			{

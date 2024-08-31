@@ -73,6 +73,7 @@ public class ToolRecipes extends IERecipeProvider
 				.save(out, ImmersiveEngineering.MODID+":powerpack_attach");
 		SpecialRecipeBuilder.special($ -> new EarmuffsRecipe())
 				.save(out, ImmersiveEngineering.MODID+":earmuffs_attach");
+		out.accept(toRL("earmuffs_colour"), new RGBColourationRecipe(Ingredient.of(Misc.EARMUFFS)), null);
 		SpecialRecipeBuilder.special(JerrycanRefillRecipe::new)
 				.save(out, ImmersiveEngineering.MODID+":jerrycan_refill");
 		SpecialRecipeBuilder.special(RevolverCycleRecipe::new)

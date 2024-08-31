@@ -323,6 +323,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 				else if(f.getFluid().getFluidType().getTemperature(f) >= WoodenBarrelBlockEntity.IGNITION_TEMPERATURE)
 				{
 					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"tooHot"), true);
+					// TODO this still places the hot fluid, not great for health&safety
 					return ItemInteractionResult.FAIL;
 				}
 				else
