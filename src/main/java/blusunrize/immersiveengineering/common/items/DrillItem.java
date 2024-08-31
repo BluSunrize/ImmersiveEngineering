@@ -225,27 +225,6 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity living)
-	{
-		if(state.getDestroySpeed(world, pos)!=0)
-		{
-			ItemStack head = getHead(stack);
-			if(!head.isEmpty())
-			{
-				if(living instanceof Player)
-				{
-					if(((Player)living).getAbilities().instabuild)
-						return true;
-					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (Player)living);
-				}
-				consumeDurability(stack, world, state, pos, living);
-			}
-		}
-
-		return true;
-	}
-
-	@Override
 	protected void damageHead(ItemStack head, int amount, LivingEntity living)
 	{
 		((IDrillHead)head.getItem()).damageHead(head, amount);
@@ -284,14 +263,15 @@ public class DrillItem extends DieselToolItem
 		return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
 	}
 
-	// TODO fix this!
-	//  @Override
-	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, Player player)
+
+	@Override
+	public boolean mineBlock(ItemStack stack, Level world, BlockState centerState, BlockPos centerPos, LivingEntity entity)
 	{
-		Level world = player.level();
 		// early exit for client
-		if(world.isClientSide||!(player instanceof ServerPlayer))
+		if(world.isClientSide||!(entity instanceof ServerPlayer player))
 			return false;
+		// Damage head for center block
+		onBlockMined(centerState, world, centerPos, stack, entity);
 		// if sneaking or toggled, don't multi-mine
 		if(player.isShiftKeyDown()||isSingleBlockMode(stack))
 			return false;
@@ -312,7 +292,7 @@ public class DrillItem extends DieselToolItem
 				if(!this.canBreakExtraBlock(world, pos, state, player, stack, head))
 					continue;
 				var event = CommonHooks.fireBlockBreak(
-						world, ((ServerPlayer)player).gameMode.getGameModeForPlayer(), (ServerPlayer)player, pos, state
+						world, player.gameMode.getGameModeForPlayer(), player, pos, state
 				);
 				if(event.isCanceled())
 					continue;
@@ -326,7 +306,7 @@ public class DrillItem extends DieselToolItem
 				{
 					BlockEntity te = world.getBlockEntity(pos);
 					//implicitly damages head
-					stack.mineBlock(world, state, pos, player);
+					onBlockMined(state, world, pos, stack, entity);
 					if(block.onDestroyedByPlayer(state, world, pos, player, true, state.getFluidState()))
 					{
 						block.destroy(world, pos, state);
@@ -337,9 +317,27 @@ public class DrillItem extends DieselToolItem
 					}
 				}
 				world.levelEvent(2001, pos, Block.getId(state));
-				((ServerPlayer)player).connection.send(new ClientboundBlockUpdatePacket(world, pos));
+				player.connection.send(new ClientboundBlockUpdatePacket(world, pos));
 			}
 		}
 		return false;
+	}
+
+	private void onBlockMined(BlockState state, Level world, BlockPos pos, ItemStack stack, LivingEntity entity)
+	{
+		if(state.getDestroySpeed(world, pos)!=0)
+		{
+			ItemStack head = getHead(stack);
+			if(!head.isEmpty())
+			{
+				if(entity instanceof Player player)
+				{
+					if(player.getAbilities().instabuild)
+						return;
+					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, player);
+				}
+				consumeDurability(stack, world, state, pos, entity);
+			}
+		}
 	}
 }
