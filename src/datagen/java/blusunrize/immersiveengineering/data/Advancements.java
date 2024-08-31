@@ -38,8 +38,11 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.raid.Raid;
@@ -118,17 +121,13 @@ public class Advancements extends AdvancementProvider
 						Misc.SHADER_BAG.get(Rarity.RARE)
 				))).save(consumer);
 
-		// TODO
-		//CompoundTag displayTag = new CompoundTag();
-		//displayTag.putString("Name", Component.Serializer.toJson(
-		//		Component.translatable("item.immersiveengineering.map_orevein"), lookup
-		//));
-		//CompoundTag mapNBT = new CompoundTag();
-		//mapNBT.put("display", displayTag);
-		//AdvancementHolder oremap = AdvancementBuilder.child("buy_oremap", villagers).icon(Items.FILLED_MAP)
-		//		.addCriterion("buy_oremap", tradedForItem(
-		//				ItemPredicate.Builder.item().of(Items.FILLED_MAP).hasNbt(mapNBT)
-		//		)).save(consumer);
+		DataComponentPredicate oreMapPredicate = DataComponentPredicate.builder()
+				.expect(DataComponents.ITEM_NAME, Component.translatable("item.immersiveengineering.map_orevein"))
+				.build();
+		AdvancementHolder oremap = AdvancementBuilder.child("buy_oremap", villagers).icon(Items.FILLED_MAP)
+				.addCriterion("buy_oremap", tradedForItem(
+						ItemPredicate.Builder.item().of(Items.FILLED_MAP).hasComponents(oreMapPredicate)
+				)).save(consumer);
 
 		AdvancementHolder illager = AdvancementBuilder.child("kill_illager", villagers).goal().icon(Raid.getLeaderBannerInstance(
 						lookup.lookupOrThrow(Registries.BANNER_PATTERN)

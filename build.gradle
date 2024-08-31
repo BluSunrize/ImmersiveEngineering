@@ -15,6 +15,9 @@ def version_replaces = [
 
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
+archivesBaseName = 'ImmersiveEngineering'
+version = buildVersionString()
+
 processResources {
     duplicatesStrategy = DuplicatesStrategy.FAIL
     inputs.properties(version_replaces)
